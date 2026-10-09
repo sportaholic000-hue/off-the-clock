@@ -14,7 +14,7 @@ test('ambiguous AI answer returns clarification over HTTP without changing the s
   const originalFetch=globalThis.fetch, originalEnvironment={...process.env};
   Object.assign(process.env,{NODE_ENV:'test',PORT:'0',DATABASE_PATH:join(directory,'test.sqlite'),PRICEBOOK_PATH:join(directory,'books'),
     JWT_SECRET:'SYNTHETIC_PRICEBOOK_CLARIFICATION_TEST_SECRET',ALLOW_PROVIDER_WRITES:'true',VOICE_RUNTIME_ENABLED:'false',
-    TWILIO_ACCOUNT_SID:'AC'+'0'.repeat(32),TWILIO_API_KEY_SID:'SK'+'0'.repeat(32),TWILIO_API_KEY_SECRET:'SYNTHETIC_TEST_ONLY',GEMINI_API_KEY:'SYNTHETIC_TEST_ONLY'});
+    TWILIO_ACCOUNT_SID:'AC'+'0'.repeat(32),TWILIO_API_KEY_SID:'SK'+'0'.repeat(32),TWILIO_API_KEY_SECRET:'SYNTHETIC_TEST_ONLY',GEMINI_TEXT_MODEL:'synthetic-text-model',GEMINI_API_KEY:'SYNTHETIC_TEST_ONLY'});
   let providerValue=null,providerCalls=0,lifecycle;
   globalThis.fetch=async(url,options)=>{
     const parsed=new URL(url);

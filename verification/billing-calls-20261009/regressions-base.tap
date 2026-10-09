@@ -1,0 +1,3778 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Off The Clock AI server listening on 0
+# [shutdown] requests and workers drained; database closed
+# Subtest: calls audit 3 HTTP: missing text model gives the owner a readable refusal and does not save a draft
+not ok 1 - calls audit 3 HTTP: missing text model gives the owner a readable refusal and does not save a draft
+  ---
+  duration_ms: 428.433478
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Http.spec.mjs:9:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"knowledgeBase":{"about":"[SYNTHETIC] Draft","hours":"","services":"","policies":"","faqs":"","neverSay":[],"draft":true},"status":"DRAFT"}
+
+    200 !== 503
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 503
+  actual: 200
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Http.spec.mjs:24:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:19) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:19) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: calls audit 1: missing callback recovered by GET adds exactly 350 cents, late callback and restart count once
+not ok 2 - calls audit 1: missing callback recovered by GET adds exactly 350 cents, late callback and restart count once
+  ---
+  duration_ms: 31.144107
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:19:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:21:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: calls audit 1: trial recovered 61 seconds uses two minutes and zero cents
+not ok 3 - calls audit 1: trial recovered 61 seconds uses two minutes and zero cents
+  ---
+  duration_ms: 15.477531
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:29:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:30:124)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: calls audit 1: an ended call without a metering row is recovered through the callback path
+not ok 4 - calls audit 1: an ended call without a metering row is recovered through the callback path
+  ---
+  duration_ms: 17.726769
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:33:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:34:155)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched account_sid=ACffffffffffffffffffffffffffffffff is refused
+not ok 5 - calls audit 1: fetched account_sid=ACffffffffffffffffffffffffffffffff is refused
+  ---
+  duration_ms: 18.008026
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched sid=CAffffffffffffffffffffffffffffffff is refused
+not ok 6 - calls audit 1: fetched sid=CAffffffffffffffffffffffffffffffff is refused
+  ---
+  duration_ms: 17.410591
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched from=+19025550999 is refused
+not ok 7 - calls audit 1: fetched from=+19025550999 is refused
+  ---
+  duration_ms: 16.804032
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched to=+19025550999 is refused
+not ok 8 - calls audit 1: fetched to=+19025550999 is refused
+  ---
+  duration_ms: 15.873142
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched direction=outbound-api is refused
+not ok 9 - calls audit 1: fetched direction=outbound-api is refused
+  ---
+  duration_ms: 17.305206
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched status=in-progress is refused
+not ok 10 - calls audit 1: fetched status=in-progress is refused
+  ---
+  duration_ms: 16.52507
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched duration=1.5 is refused
+not ok 11 - calls audit 1: fetched duration=1.5 is refused
+  ---
+  duration_ms: 15.917956
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched duration=null is refused
+not ok 12 - calls audit 1: fetched duration=null is refused
+  ---
+  duration_ms: 15.43524
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: fetched duration=-1 is refused
+not ok 13 - calls audit 1: fetched duration=-1 is refused
+  ---
+  duration_ms: 15.996984
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:37:249'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:38:91)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: recovered failed call remains zero
+not ok 14 - calls audit 1: recovered failed call remains zero
+  ---
+  duration_ms: 17.450383
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:41:37'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:42:115)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: recovered spam call remains zero
+not ok 15 - calls audit 1: recovered spam call remains zero
+  ---
+  duration_ms: 16.347183
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:41:37'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:42:115)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: ten-minute boundary, active calls and tenant isolation
+not ok 16 - calls audit 1: ten-minute boundary, active calls and tenant isolation
+  ---
+  duration_ms: 17.937216
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:45:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:46:106)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: retry backoff survives restart and stops at seven days
+not ok 17 - calls audit 1: retry backoff survives restart and stops at seven days
+  ---
+  duration_ms: 15.923864
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:50:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:51:84)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: retry can recover later and simultaneous workers reserve only one read
+not ok 18 - calls audit 1: retry can recover later and simultaneous workers reserve only one read
+  ---
+  duration_ms: 15.492834
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:59:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:60:84)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: scheduled worker ticks and stops without provider writes
+not ok 19 - calls audit 1: scheduled worker ticks and stops without provider writes
+  ---
+  duration_ms: 15.942168
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:63:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Missing duration recovery job is absent on the base
+    + actual - expected
+
+    + 'undefined'
+    - 'function'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    Object.worker (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:13:27)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:64:71)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: production starts and stops the recovery worker
+not ok 20 - calls audit 1: production starts and stops the recovery worker
+  ---
+  duration_ms: 0.455059
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:67:1'
+  failureType: 'testCodeFailure'
+  error: 'production recovery startup is missing'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:68:94)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 1: expired recovery remains a pending count after the allowance month ends
+not ok 21 - calls audit 1: expired recovery remains a pending count after the allowance month ends
+  ---
+  duration_ms: 17.230674
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:70:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    undefined !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Recovery.spec.mjs:73:39)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:16:
+#       3 │ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DE...
+#         ╵                 ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# ▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: calls audit 2 render: GEMINI_SESSION_CLOSED
+not ok 22 - calls audit 2 render: GEMINI_SESSION_CLOSED
+  ---
+  duration_ms: 190.761218
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'GEMINI_SESSION_CLOSED'
+    - 'The AI receptionist connection closed unexpectedly.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The AI receptionist connection closed unexpectedly.'
+  actual: 'GEMINI_SESSION_CLOSED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: calls audit 2 render: GEMINI_SESSION_ERROR
+not ok 23 - calls audit 2 render: GEMINI_SESSION_ERROR
+  ---
+  duration_ms: 13.266513
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'GEMINI_SESSION_ERROR'
+    - 'The AI receptionist encountered a connection error.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The AI receptionist encountered a connection error.'
+  actual: 'GEMINI_SESSION_ERROR'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: GEMINI_CONNECT_FAILED
+not ok 24 - calls audit 2 render: GEMINI_CONNECT_FAILED
+  ---
+  duration_ms: 8.923793
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'GEMINI_CONNECT_FAILED'
+    - 'The AI receptionist encountered a connection error.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The AI receptionist encountered a connection error.'
+  actual: 'GEMINI_CONNECT_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_MEDIA_FAILURE
+not ok 25 - calls audit 2 render: VOICE_MEDIA_FAILURE
+  ---
+  duration_ms: 6.994725
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_MEDIA_FAILURE'
+    - 'The AI receptionist encountered a connection error.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The AI receptionist encountered a connection error.'
+  actual: 'VOICE_MEDIA_FAILURE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_SOCKET_CLOSED
+not ok 26 - calls audit 2 render: TWILIO_SOCKET_CLOSED
+  ---
+  duration_ms: 7.419574
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_SOCKET_CLOSED'
+    - 'The phone connection closed unexpectedly.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The phone connection closed unexpectedly.'
+  actual: 'TWILIO_SOCKET_CLOSED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_SOCKET_ERROR
+not ok 27 - calls audit 2 render: TWILIO_SOCKET_ERROR
+  ---
+  duration_ms: 7.954242
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_SOCKET_ERROR'
+    - 'The phone connection closed unexpectedly.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The phone connection closed unexpectedly.'
+  actual: 'TWILIO_SOCKET_ERROR'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: MEDIA_SOCKET_CLOSED
+not ok 28 - calls audit 2 render: MEDIA_SOCKET_CLOSED
+  ---
+  duration_ms: 6.746917
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'MEDIA_SOCKET_CLOSED'
+    - 'The phone connection closed unexpectedly.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The phone connection closed unexpectedly.'
+  actual: 'MEDIA_SOCKET_CLOSED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: SESSION_PERSISTENCE_FAILED
+not ok 29 - calls audit 2 render: SESSION_PERSISTENCE_FAILED
+  ---
+  duration_ms: 6.725555
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'SESSION_PERSISTENCE_FAILED'
+    - 'The receptionist could not save the final call details.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not save the final call details.'
+  actual: 'SESSION_PERSISTENCE_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TRANSCRIPT_CALLBACK_FAILED
+not ok 30 - calls audit 2 render: TRANSCRIPT_CALLBACK_FAILED
+  ---
+  duration_ms: 10.263315
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TRANSCRIPT_CALLBACK_FAILED'
+    - 'The receptionist could not save the final call details.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not save the final call details.'
+  actual: 'TRANSCRIPT_CALLBACK_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: CALL_PERSISTENCE_FAILED
+not ok 31 - calls audit 2 render: CALL_PERSISTENCE_FAILED
+  ---
+  duration_ms: 11.238104
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'CALL_PERSISTENCE_FAILED'
+    - 'The receptionist could not save the final call details.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not save the final call details.'
+  actual: 'CALL_PERSISTENCE_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TOOL_CALLBACK_FAILED
+not ok 32 - calls audit 2 render: TOOL_CALLBACK_FAILED
+  ---
+  duration_ms: 6.940682
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TOOL_CALLBACK_FAILED'
+    - 'The receptionist could not complete a requested action.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not complete a requested action.'
+  actual: 'TOOL_CALLBACK_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TOOL_RESPONSE
+not ok 33 - calls audit 2 render: INVALID_TOOL_RESPONSE
+  ---
+  duration_ms: 6.646084
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TOOL_RESPONSE'
+    - 'The receptionist could not complete a requested action.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not complete a requested action.'
+  actual: 'INVALID_TOOL_RESPONSE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_TOOL_CALL
+not ok 34 - calls audit 2 render: INVALID_GEMINI_TOOL_CALL
+  ---
+  duration_ms: 5.247731
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_GEMINI_TOOL_CALL'
+    - 'The receptionist could not complete a requested action.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not complete a requested action.'
+  actual: 'INVALID_GEMINI_TOOL_CALL'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: GEMINI_AUDIO_RATE_LIMIT
+not ok 35 - calls audit 2 render: GEMINI_AUDIO_RATE_LIMIT
+  ---
+  duration_ms: 5.268194
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'GEMINI_AUDIO_RATE_LIMIT'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'GEMINI_AUDIO_RATE_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INPUT_AUDIO_BACKPRESSURE_LIMIT
+not ok 36 - calls audit 2 render: INPUT_AUDIO_BACKPRESSURE_LIMIT
+  ---
+  duration_ms: 6.054922
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INPUT_AUDIO_BACKPRESSURE_LIMIT'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'INPUT_AUDIO_BACKPRESSURE_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: OUTPUT_AUDIO_BACKPRESSURE_LIMIT
+not ok 37 - calls audit 2 render: OUTPUT_AUDIO_BACKPRESSURE_LIMIT
+  ---
+  duration_ms: 10.505164
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'OUTPUT_AUDIO_BACKPRESSURE_LIMIT'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'OUTPUT_AUDIO_BACKPRESSURE_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: PENDING_MARK_LIMIT
+not ok 38 - calls audit 2 render: PENDING_MARK_LIMIT
+  ---
+  duration_ms: 4.970198
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'PENDING_MARK_LIMIT'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'PENDING_MARK_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: SOCKET_BACKPRESSURE_LIMIT
+not ok 39 - calls audit 2 render: SOCKET_BACKPRESSURE_LIMIT
+  ---
+  duration_ms: 4.91842
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'SOCKET_BACKPRESSURE_LIMIT'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'SOCKET_BACKPRESSURE_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_AUDIO_RATE_LIMIT
+not ok 40 - calls audit 2 render: TWILIO_AUDIO_RATE_LIMIT
+  ---
+  duration_ms: 5.541972
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_AUDIO_RATE_LIMIT'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'TWILIO_AUDIO_RATE_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_MESSAGE_BACKPRESSURE_LIMIT
+not ok 41 - calls audit 2 render: TWILIO_MESSAGE_BACKPRESSURE_LIMIT
+  ---
+  duration_ms: 5.377575
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_MESSAGE_BACKPRESSURE_LIMIT'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'TWILIO_MESSAGE_BACKPRESSURE_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_MESSAGE_RATE_LIMIT
+not ok 42 - calls audit 2 render: TWILIO_MESSAGE_RATE_LIMIT
+  ---
+  duration_ms: 5.74495
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_MESSAGE_RATE_LIMIT'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'TWILIO_MESSAGE_RATE_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_MESSAGE_TOO_LARGE
+not ok 43 - calls audit 2 render: TWILIO_MESSAGE_TOO_LARGE
+  ---
+  duration_ms: 6.051534
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_MESSAGE_TOO_LARGE'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'TWILIO_MESSAGE_TOO_LARGE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: AUDIO_PAYLOAD_TOO_LARGE
+not ok 44 - calls audit 2 render: AUDIO_PAYLOAD_TOO_LARGE
+  ---
+  duration_ms: 5.918282
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'AUDIO_PAYLOAD_TOO_LARGE'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'AUDIO_PAYLOAD_TOO_LARGE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: MULAW_AUDIO_TOO_LARGE
+not ok 45 - calls audit 2 render: MULAW_AUDIO_TOO_LARGE
+  ---
+  duration_ms: 9.05648
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'MULAW_AUDIO_TOO_LARGE'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'MULAW_AUDIO_TOO_LARGE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: PCM_AUDIO_TOO_LARGE
+not ok 46 - calls audit 2 render: PCM_AUDIO_TOO_LARGE
+  ---
+  duration_ms: 4.621477
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'PCM_AUDIO_TOO_LARGE'
+    - 'The call exceeded a safe audio or connection limit.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call exceeded a safe audio or connection limit.'
+  actual: 'PCM_AUDIO_TOO_LARGE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_CALL_CONTEXT
+not ok 47 - calls audit 2 render: INVALID_CALL_CONTEXT
+  ---
+  duration_ms: 5.358491
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_CALL_CONTEXT'
+    - 'The call connection did not match the saved call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call connection did not match the saved call.'
+  actual: 'INVALID_CALL_CONTEXT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_START_BINDING_MISMATCH
+not ok 48 - calls audit 2 render: TWILIO_START_BINDING_MISMATCH
+  ---
+  duration_ms: 4.744078
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_START_BINDING_MISMATCH'
+    - 'The call connection did not match the saved call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call connection did not match the saved call.'
+  actual: 'TWILIO_START_BINDING_MISMATCH'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_STOP_BINDING_MISMATCH
+not ok 49 - calls audit 2 render: TWILIO_STOP_BINDING_MISMATCH
+  ---
+  duration_ms: 4.243802
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_STOP_BINDING_MISMATCH'
+    - 'The call connection did not match the saved call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call connection did not match the saved call.'
+  actual: 'TWILIO_STOP_BINDING_MISMATCH'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_STREAM_SID_MISMATCH
+not ok 50 - calls audit 2 render: TWILIO_STREAM_SID_MISMATCH
+  ---
+  duration_ms: 4.270309
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_STREAM_SID_MISMATCH'
+    - 'The call connection did not match the saved call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call connection did not match the saved call.'
+  actual: 'TWILIO_STREAM_SID_MISMATCH'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CALL_BINDING_MISMATCH
+not ok 51 - calls audit 2 render: VOICE_CALL_BINDING_MISMATCH
+  ---
+  duration_ms: 8.113129
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CALL_BINDING_MISMATCH'
+    - 'The call connection did not match the saved call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call connection did not match the saved call.'
+  actual: 'VOICE_CALL_BINDING_MISMATCH'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_RESTART_RECOVERY
+not ok 52 - calls audit 2 render: VOICE_RESTART_RECOVERY
+  ---
+  duration_ms: 5.050683
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_RESTART_RECOVERY'
+    - 'The receptionist stopped when the service restarted.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist stopped when the service restarted.'
+  actual: 'VOICE_RESTART_RECOVERY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: APPLICATION_CLOSE
+not ok 53 - calls audit 2 render: APPLICATION_CLOSE
+  ---
+  duration_ms: 4.320085
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'APPLICATION_CLOSE'
+    - 'The receptionist stopped when the service restarted.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist stopped when the service restarted.'
+  actual: 'APPLICATION_CLOSE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: SESSION_ENDED_DURING_CONNECT
+not ok 54 - calls audit 2 render: SESSION_ENDED_DURING_CONNECT
+  ---
+  duration_ms: 4.275158
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'SESSION_ENDED_DURING_CONNECT'
+    - 'The receptionist stopped when the service restarted.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist stopped when the service restarted.'
+  actual: 'SESSION_ENDED_DURING_CONNECT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_DISABLED
+not ok 55 - calls audit 2 render: VOICE_DISABLED
+  ---
+  duration_ms: 4.687853
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_DISABLED'
+    - 'The receptionist was unavailable for this call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist was unavailable for this call.'
+  actual: 'VOICE_DISABLED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_RUNTIME_DISABLED
+not ok 56 - calls audit 2 render: VOICE_RUNTIME_DISABLED
+  ---
+  duration_ms: 5.742519
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_RUNTIME_DISABLED'
+    - 'The receptionist was unavailable for this call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist was unavailable for this call.'
+  actual: 'VOICE_RUNTIME_DISABLED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_FALLBACK
+not ok 57 - calls audit 2 render: VOICE_FALLBACK
+  ---
+  duration_ms: 5.876495
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_FALLBACK'
+    - 'The receptionist was unavailable for this call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist was unavailable for this call.'
+  actual: 'VOICE_FALLBACK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_SESSION_UNAVAILABLE
+not ok 58 - calls audit 2 render: VOICE_SESSION_UNAVAILABLE
+  ---
+  duration_ms: 12.453607
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_SESSION_UNAVAILABLE'
+    - 'The receptionist was unavailable for this call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist was unavailable for this call.'
+  actual: 'VOICE_SESSION_UNAVAILABLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_ADMISSION_UNAVAILABLE
+not ok 59 - calls audit 2 render: VOICE_ADMISSION_UNAVAILABLE
+  ---
+  duration_ms: 4.635939
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_ADMISSION_UNAVAILABLE'
+    - 'The receptionist was unavailable for this call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist was unavailable for this call.'
+  actual: 'VOICE_ADMISSION_UNAVAILABLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_SESSION_NOT_PERSISTED
+not ok 60 - calls audit 2 render: VOICE_SESSION_NOT_PERSISTED
+  ---
+  duration_ms: 5.616063
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_SESSION_NOT_PERSISTED'
+    - 'The receptionist was unavailable for this call.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist was unavailable for this call.'
+  actual: 'VOICE_SESSION_NOT_PERSISTED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CIRCUIT_OPEN
+not ok 61 - calls audit 2 render: VOICE_CIRCUIT_OPEN
+  ---
+  duration_ms: 4.265394
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CIRCUIT_OPEN'
+    - 'The receptionist is temporarily paused after repeated connection failures.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist is temporarily paused after repeated connection failures.'
+  actual: 'VOICE_CIRCUIT_OPEN'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CONCURRENCY_LIMIT
+not ok 62 - calls audit 2 render: VOICE_CONCURRENCY_LIMIT
+  ---
+  duration_ms: 4.093511
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CONCURRENCY_LIMIT'
+    - 'All available receptionist call connections were in use.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'All available receptionist call connections were in use.'
+  actual: 'VOICE_CONCURRENCY_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_PLATFORM_CAPACITY
+not ok 63 - calls audit 2 render: VOICE_PLATFORM_CAPACITY
+  ---
+  duration_ms: 4.279078
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_PLATFORM_CAPACITY'
+    - 'All available receptionist call connections were in use.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'All available receptionist call connections were in use.'
+  actual: 'VOICE_PLATFORM_CAPACITY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CALLER_THROTTLED
+not ok 64 - calls audit 2 render: VOICE_CALLER_THROTTLED
+  ---
+  duration_ms: 4.876155
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CALLER_THROTTLED'
+    - 'The caller reached the daily answering limit. Their request is saved for review.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The caller reached the daily answering limit. Their request is saved for review.'
+  actual: 'VOICE_CALLER_THROTTLED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_SPAM_BLOCKED
+not ok 65 - calls audit 2 render: VOICE_SPAM_BLOCKED
+  ---
+  duration_ms: 8.64166
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_SPAM_BLOCKED'
+    - 'This caller was blocked as spam.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'This caller was blocked as spam.'
+  actual: 'VOICE_SPAM_BLOCKED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: OPERATOR_INELIGIBLE
+not ok 66 - calls audit 2 render: OPERATOR_INELIGIBLE
+  ---
+  duration_ms: 4.698869
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'OPERATOR_INELIGIBLE'
+    - 'The account was not eligible for receptionist service.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The account was not eligible for receptionist service.'
+  actual: 'OPERATOR_INELIGIBLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: ACCOUNT_REQUIRED
+not ok 67 - calls audit 2 render: ACCOUNT_REQUIRED
+  ---
+  duration_ms: 4.249421
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'ACCOUNT_REQUIRED'
+    - 'The account was not eligible for receptionist service.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The account was not eligible for receptionist service.'
+  actual: 'ACCOUNT_REQUIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_PLAN
+not ok 68 - calls audit 2 render: INVALID_PLAN
+  ---
+  duration_ms: 4.078816
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_PLAN'
+    - 'The account was not eligible for receptionist service.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The account was not eligible for receptionist service.'
+  actual: 'INVALID_PLAN'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_STATUS
+not ok 69 - calls audit 2 render: INVALID_STATUS
+  ---
+  duration_ms: 4.576724
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_STATUS'
+    - 'The account was not eligible for receptionist service.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The account was not eligible for receptionist service.'
+  actual: 'INVALID_STATUS'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_NOW
+not ok 70 - calls audit 2 render: INVALID_NOW
+  ---
+  duration_ms: 4.802649
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_NOW'
+    - 'The account was not eligible for receptionist service.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The account was not eligible for receptionist service.'
+  actual: 'INVALID_NOW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TRIAL_END_REQUIRED
+not ok 71 - calls audit 2 render: TRIAL_END_REQUIRED
+  ---
+  duration_ms: 4.050743
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TRIAL_END_REQUIRED'
+    - 'The account was not eligible for receptionist service.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The account was not eligible for receptionist service.'
+  actual: 'TRIAL_END_REQUIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: PAYMENT_FAILURE_TIME_REQUIRED
+not ok 72 - calls audit 2 render: PAYMENT_FAILURE_TIME_REQUIRED
+  ---
+  duration_ms: 6.843417
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'PAYMENT_FAILURE_TIME_REQUIRED'
+    - 'The account was not eligible for receptionist service.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The account was not eligible for receptionist service.'
+  actual: 'PAYMENT_FAILURE_TIME_REQUIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: SUSPENDED_OR_CANCELED
+not ok 73 - calls audit 2 render: SUSPENDED_OR_CANCELED
+  ---
+  duration_ms: 4.119966
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'SUSPENDED_OR_CANCELED'
+    - 'The account was not eligible for receptionist service.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The account was not eligible for receptionist service.'
+  actual: 'SUSPENDED_OR_CANCELED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TRIAL_EXPIRED
+not ok 74 - calls audit 2 render: TRIAL_EXPIRED
+  ---
+  duration_ms: 4.048881
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TRIAL_EXPIRED'
+    - 'The trial had ended.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The trial had ended.'
+  actual: 'TRIAL_EXPIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: PAYMENT_FAILURE_GRACE_EXPIRED
+not ok 75 - calls audit 2 render: PAYMENT_FAILURE_GRACE_EXPIRED
+  ---
+  duration_ms: 4.237043
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'PAYMENT_FAILURE_GRACE_EXPIRED'
+    - 'The payment grace period had ended.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The payment grace period had ended.'
+  actual: 'PAYMENT_FAILURE_GRACE_EXPIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TRIAL_VOICE_CAP_REACHED
+not ok 76 - calls audit 2 render: TRIAL_VOICE_CAP_REACHED
+  ---
+  duration_ms: 4.278649
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TRIAL_VOICE_CAP_REACHED'
+    - 'The trial had no included call minutes left.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The trial had no included call minutes left.'
+  actual: 'TRIAL_VOICE_CAP_REACHED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CAP_REACHED
+not ok 77 - calls audit 2 render: VOICE_CAP_REACHED
+  ---
+  duration_ms: 4.386033
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CAP_REACHED'
+    - 'The trial had no included call minutes left.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The trial had no included call minutes left.'
+  actual: 'VOICE_CAP_REACHED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TRIAL_USAGE_REQUIRED
+not ok 78 - calls audit 2 render: TRIAL_USAGE_REQUIRED
+  ---
+  duration_ms: 3.937689
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TRIAL_USAGE_REQUIRED'
+    - 'Call usage could not be verified before answering.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Call usage could not be verified before answering.'
+  actual: 'TRIAL_USAGE_REQUIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE
+not ok 79 - calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE
+  ---
+  duration_ms: 4.050239
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CALLER_CHECK_UNAVAILABLE'
+    - 'The caller safety check could not be completed.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The caller safety check could not be completed.'
+  actual: 'VOICE_CALLER_CHECK_UNAVAILABLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_INVALID
+not ok 80 - calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_INVALID
+  ---
+  duration_ms: 7.323258
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CALLER_CHECK_UNAVAILABLE_INVALID'
+    - 'The receptionist could not verify whether it was allowed to answer.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not verify whether it was allowed to answer.'
+  actual: 'VOICE_CALLER_CHECK_UNAVAILABLE_INVALID'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_UNAVAILABLE
+not ok 81 - calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_UNAVAILABLE
+  ---
+  duration_ms: 4.078235
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CALLER_CHECK_UNAVAILABLE_UNAVAILABLE'
+    - 'The receptionist could not verify whether it was allowed to answer.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not verify whether it was allowed to answer.'
+  actual: 'VOICE_CALLER_CHECK_UNAVAILABLE_UNAVAILABLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_RUNTIME_DISABLED_INVALID
+not ok 82 - calls audit 2 render: VOICE_RUNTIME_DISABLED_INVALID
+  ---
+  duration_ms: 4.224696
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_RUNTIME_DISABLED_INVALID'
+    - 'The receptionist could not verify whether it was allowed to answer.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not verify whether it was allowed to answer.'
+  actual: 'VOICE_RUNTIME_DISABLED_INVALID'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_RUNTIME_DISABLED_UNAVAILABLE
+not ok 83 - calls audit 2 render: VOICE_RUNTIME_DISABLED_UNAVAILABLE
+  ---
+  duration_ms: 4.968935
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_RUNTIME_DISABLED_UNAVAILABLE'
+    - 'The receptionist could not verify whether it was allowed to answer.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not verify whether it was allowed to answer.'
+  actual: 'VOICE_RUNTIME_DISABLED_UNAVAILABLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: OPERATOR_INELIGIBLE_INVALID
+not ok 84 - calls audit 2 render: OPERATOR_INELIGIBLE_INVALID
+  ---
+  duration_ms: 6.109142
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'OPERATOR_INELIGIBLE_INVALID'
+    - 'The receptionist could not verify whether it was allowed to answer.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not verify whether it was allowed to answer.'
+  actual: 'OPERATOR_INELIGIBLE_INVALID'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: OPERATOR_INELIGIBLE_UNAVAILABLE
+not ok 85 - calls audit 2 render: OPERATOR_INELIGIBLE_UNAVAILABLE
+  ---
+  duration_ms: 3.98968
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'OPERATOR_INELIGIBLE_UNAVAILABLE'
+    - 'The receptionist could not verify whether it was allowed to answer.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not verify whether it was allowed to answer.'
+  actual: 'OPERATOR_INELIGIBLE_UNAVAILABLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CAP_REACHED_INVALID
+not ok 86 - calls audit 2 render: VOICE_CAP_REACHED_INVALID
+  ---
+  duration_ms: 4.589007
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CAP_REACHED_INVALID'
+    - 'The receptionist could not verify whether it was allowed to answer.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not verify whether it was allowed to answer.'
+  actual: 'VOICE_CAP_REACHED_INVALID'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: VOICE_CAP_REACHED_UNAVAILABLE
+not ok 87 - calls audit 2 render: VOICE_CAP_REACHED_UNAVAILABLE
+  ---
+  duration_ms: 9.888695
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'VOICE_CAP_REACHED_UNAVAILABLE'
+    - 'The receptionist could not verify whether it was allowed to answer.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not verify whether it was allowed to answer.'
+  actual: 'VOICE_CAP_REACHED_UNAVAILABLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: BINARY_TWILIO_MESSAGE_REJECTED
+not ok 88 - calls audit 2 render: BINARY_TWILIO_MESSAGE_REJECTED
+  ---
+  duration_ms: 6.76298
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'BINARY_TWILIO_MESSAGE_REJECTED'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'BINARY_TWILIO_MESSAGE_REJECTED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: EMPTY_AUDIO_PAYLOAD
+not ok 89 - calls audit 2 render: EMPTY_AUDIO_PAYLOAD
+  ---
+  duration_ms: 6.813618
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'EMPTY_AUDIO_PAYLOAD'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'EMPTY_AUDIO_PAYLOAD'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: EMPTY_MULAW_AUDIO
+not ok 90 - calls audit 2 render: EMPTY_MULAW_AUDIO
+  ---
+  duration_ms: 12.475412
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'EMPTY_MULAW_AUDIO'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'EMPTY_MULAW_AUDIO'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: EMPTY_PCM_AUDIO
+not ok 91 - calls audit 2 render: EMPTY_PCM_AUDIO
+  ---
+  duration_ms: 6.304924
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'EMPTY_PCM_AUDIO'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'EMPTY_PCM_AUDIO'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: GEMINI_SESSION_OPENER_REQUIRED
+not ok 92 - calls audit 2 render: GEMINI_SESSION_OPENER_REQUIRED
+  ---
+  duration_ms: 5.30009
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'GEMINI_SESSION_OPENER_REQUIRED'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'GEMINI_SESSION_OPENER_REQUIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_AUDIO_BASE64
+not ok 93 - calls audit 2 render: INVALID_AUDIO_BASE64
+  ---
+  duration_ms: 3.890698
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_AUDIO_BASE64'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_AUDIO_BASE64'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_AUDIO_LIMIT
+not ok 94 - calls audit 2 render: INVALID_AUDIO_LIMIT
+  ---
+  duration_ms: 3.77907
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_AUDIO_LIMIT'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_AUDIO_LIMIT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_AUDIO
+not ok 95 - calls audit 2 render: INVALID_GEMINI_AUDIO
+  ---
+  duration_ms: 3.616492
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_GEMINI_AUDIO'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_GEMINI_AUDIO'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_AUDIO_FORMAT
+not ok 96 - calls audit 2 render: INVALID_GEMINI_AUDIO_FORMAT
+  ---
+  duration_ms: 4.415124
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_GEMINI_AUDIO_FORMAT'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_GEMINI_AUDIO_FORMAT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_SESSION_ADAPTER
+not ok 97 - calls audit 2 render: INVALID_GEMINI_SESSION_ADAPTER
+  ---
+  duration_ms: 4.297368
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_GEMINI_SESSION_ADAPTER'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_GEMINI_SESSION_ADAPTER'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_TRANSCRIPT
+not ok 98 - calls audit 2 render: INVALID_GEMINI_TRANSCRIPT
+  ---
+  duration_ms: 3.653504
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_GEMINI_TRANSCRIPT'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_GEMINI_TRANSCRIPT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_MEDIA_CLOCK
+not ok 99 - calls audit 2 render: INVALID_MEDIA_CLOCK
+  ---
+  duration_ms: 3.581386
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_MEDIA_CLOCK'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_MEDIA_CLOCK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_MEDIA_LIMITS
+not ok 100 - calls audit 2 render: INVALID_MEDIA_LIMITS
+  ---
+  duration_ms: 6.001036
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_MEDIA_LIMITS'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_MEDIA_LIMITS'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_MEDIA_SOCKET
+not ok 101 - calls audit 2 render: INVALID_MEDIA_SOCKET
+  ---
+  duration_ms: 4.364754
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_MEDIA_SOCKET'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_MEDIA_SOCKET'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_MULAW_BUFFER
+not ok 102 - calls audit 2 render: INVALID_MULAW_BUFFER
+  ---
+  duration_ms: 3.626533
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_MULAW_BUFFER'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_MULAW_BUFFER'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_MULAW_SAMPLE
+not ok 103 - calls audit 2 render: INVALID_MULAW_SAMPLE
+  ---
+  duration_ms: 4.087042
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_MULAW_SAMPLE'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_MULAW_SAMPLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_PCM_BUFFER
+not ok 104 - calls audit 2 render: INVALID_PCM_BUFFER
+  ---
+  duration_ms: 4.253262
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_PCM_BUFFER'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_PCM_BUFFER'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_PCM_SAMPLE
+not ok 105 - calls audit 2 render: INVALID_PCM_SAMPLE
+  ---
+  duration_ms: 5.755102
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_PCM_SAMPLE'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_PCM_SAMPLE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_PROVIDER_MESSAGE
+not ok 106 - calls audit 2 render: INVALID_PROVIDER_MESSAGE
+  ---
+  duration_ms: 9.679144
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_PROVIDER_MESSAGE'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_PROVIDER_MESSAGE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_SOCKET_BACKPRESSURE
+not ok 107 - calls audit 2 render: INVALID_SOCKET_BACKPRESSURE
+  ---
+  duration_ms: 3.776277
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_SOCKET_BACKPRESSURE'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_SOCKET_BACKPRESSURE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_CONNECTED_EVENT
+not ok 108 - calls audit 2 render: INVALID_TWILIO_CONNECTED_EVENT
+  ---
+  duration_ms: 3.65488
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TWILIO_CONNECTED_EVENT'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_TWILIO_CONNECTED_EVENT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_CUSTOM_PARAMETERS
+not ok 109 - calls audit 2 render: INVALID_TWILIO_CUSTOM_PARAMETERS
+  ---
+  duration_ms: 3.934691
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TWILIO_CUSTOM_PARAMETERS'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_TWILIO_CUSTOM_PARAMETERS'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_JSON
+not ok 110 - calls audit 2 render: INVALID_TWILIO_JSON
+  ---
+  duration_ms: 4.222081
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TWILIO_JSON'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_TWILIO_JSON'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_MEDIA_CHUNK
+not ok 111 - calls audit 2 render: INVALID_TWILIO_MEDIA_CHUNK
+  ---
+  duration_ms: 4.161741
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TWILIO_MEDIA_CHUNK'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_TWILIO_MEDIA_CHUNK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_MEDIA_TIMESTAMP
+not ok 112 - calls audit 2 render: INVALID_TWILIO_MEDIA_TIMESTAMP
+  ---
+  duration_ms: 4.093622
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TWILIO_MEDIA_TIMESTAMP'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_TWILIO_MEDIA_TIMESTAMP'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_MESSAGE
+not ok 113 - calls audit 2 render: INVALID_TWILIO_MESSAGE
+  ---
+  duration_ms: 3.766565
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TWILIO_MESSAGE'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_TWILIO_MESSAGE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_SEQUENCE
+not ok 114 - calls audit 2 render: INVALID_TWILIO_SEQUENCE
+  ---
+  duration_ms: 6.797795
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TWILIO_SEQUENCE'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_TWILIO_SEQUENCE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_STREAM_SID
+not ok 115 - calls audit 2 render: INVALID_TWILIO_STREAM_SID
+  ---
+  duration_ms: 3.473419
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'INVALID_TWILIO_STREAM_SID'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'INVALID_TWILIO_STREAM_SID'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: MARK_BEFORE_ACTIVE_START
+not ok 116 - calls audit 2 render: MARK_BEFORE_ACTIVE_START
+  ---
+  duration_ms: 3.597992
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'MARK_BEFORE_ACTIVE_START'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'MARK_BEFORE_ACTIVE_START'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: MEDIA_BEFORE_ACTIVE_START
+not ok 117 - calls audit 2 render: MEDIA_BEFORE_ACTIVE_START
+  ---
+  duration_ms: 3.671507
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'MEDIA_BEFORE_ACTIVE_START'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'MEDIA_BEFORE_ACTIVE_START'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: MEDIA_CLOCK_REQUIRED
+not ok 118 - calls audit 2 render: MEDIA_CLOCK_REQUIRED
+  ---
+  duration_ms: 3.879285
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'MEDIA_CLOCK_REQUIRED'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'MEDIA_CLOCK_REQUIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: MISALIGNED_PCM16_AUDIO
+not ok 119 - calls audit 2 render: MISALIGNED_PCM16_AUDIO
+  ---
+  duration_ms: 3.99677
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'MISALIGNED_PCM16_AUDIO'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'MISALIGNED_PCM16_AUDIO'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: NON_CANONICAL_AUDIO_BASE64
+not ok 120 - calls audit 2 render: NON_CANONICAL_AUDIO_BASE64
+  ---
+  duration_ms: 3.725251
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'NON_CANONICAL_AUDIO_BASE64'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'NON_CANONICAL_AUDIO_BASE64'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: SESSION_END_CALLBACK_INVALID
+not ok 121 - calls audit 2 render: SESSION_END_CALLBACK_INVALID
+  ---
+  duration_ms: 6.617702
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'SESSION_END_CALLBACK_INVALID'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'SESSION_END_CALLBACK_INVALID'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: STOP_BEFORE_ACTIVE_START
+not ok 122 - calls audit 2 render: STOP_BEFORE_ACTIVE_START
+  ---
+  duration_ms: 3.597943
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'STOP_BEFORE_ACTIVE_START'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'STOP_BEFORE_ACTIVE_START'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TOOL_CALLBACK_REQUIRED
+not ok 123 - calls audit 2 render: TOOL_CALLBACK_REQUIRED
+  ---
+  duration_ms: 3.588576
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TOOL_CALLBACK_REQUIRED'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'TOOL_CALLBACK_REQUIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TRANSCRIPT_CALLBACK_REQUIRED
+not ok 124 - calls audit 2 render: TRANSCRIPT_CALLBACK_REQUIRED
+  ---
+  duration_ms: 3.646379
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TRANSCRIPT_CALLBACK_REQUIRED'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'TRANSCRIPT_CALLBACK_REQUIRED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_MEDIA_ORDER_MISMATCH
+not ok 125 - calls audit 2 render: TWILIO_MEDIA_ORDER_MISMATCH
+  ---
+  duration_ms: 3.510596
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_MEDIA_ORDER_MISMATCH'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'TWILIO_MEDIA_ORDER_MISMATCH'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: TWILIO_SEQUENCE_MISMATCH
+not ok 126 - calls audit 2 render: TWILIO_SEQUENCE_MISMATCH
+  ---
+  duration_ms: 3.93941
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'TWILIO_SEQUENCE_MISMATCH'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'TWILIO_SEQUENCE_MISMATCH'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: UNEXPECTED_TWILIO_MEDIA_TRACK
+not ok 127 - calls audit 2 render: UNEXPECTED_TWILIO_MEDIA_TRACK
+  ---
+  duration_ms: 3.979327
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'UNEXPECTED_TWILIO_MEDIA_TRACK'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'UNEXPECTED_TWILIO_MEDIA_TRACK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: UNEXPECTED_TWILIO_START
+not ok 128 - calls audit 2 render: UNEXPECTED_TWILIO_START
+  ---
+  duration_ms: 6.776369
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'UNEXPECTED_TWILIO_START'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'UNEXPECTED_TWILIO_START'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: UNKNOWN_TWILIO_MARK
+not ok 129 - calls audit 2 render: UNKNOWN_TWILIO_MARK
+  ---
+  duration_ms: 3.794502
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'UNKNOWN_TWILIO_MARK'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'UNKNOWN_TWILIO_MARK'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: UNSUPPORTED_TWILIO_EVENT
+not ok 130 - calls audit 2 render: UNSUPPORTED_TWILIO_EVENT
+  ---
+  duration_ms: 3.789845
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'UNSUPPORTED_TWILIO_EVENT'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'UNSUPPORTED_TWILIO_EVENT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: UNSUPPORTED_TWILIO_MEDIA_FORMAT
+not ok 131 - calls audit 2 render: UNSUPPORTED_TWILIO_MEDIA_FORMAT
+  ---
+  duration_ms: 4.679992
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'UNSUPPORTED_TWILIO_MEDIA_FORMAT'
+    - 'The call contained audio or connection data the receptionist could not process safely.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The call contained audio or connection data the receptionist could not process safely.'
+  actual: 'UNSUPPORTED_TWILIO_MEDIA_FORMAT'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: GOOGLE_LIVE_INSTRUCTION_FAILED
+not ok 132 - calls audit 2 render: GOOGLE_LIVE_INSTRUCTION_FAILED
+  ---
+  duration_ms: 4.238575
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:15:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'GOOGLE_LIVE_INSTRUCTION_FAILED'
+    - 'The receptionist could not load its voice settings.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not load its voice settings.'
+  actual: 'GOOGLE_LIVE_INSTRUCTION_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:16:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 render: unknown and absent codes do not invent a cause
+not ok 133 - calls audit 2 render: unknown and absent codes do not invent a cause
+  ---
+  duration_ms: 4.795971
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'SYNTHETIC_UNKNOWN'
+    - 'The receptionist could not complete this call. The technical detail below may help support investigate.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'The receptionist could not complete this call. The technical detail below may help support investigate.'
+  actual: 'SYNTHETIC_UNKNOWN'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:19:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 2 inventory: every bridge and codec code has reviewed wording
+ok 134 - calls audit 2 inventory: every bridge and codec code has reviewed wording
+  ---
+  duration_ms: 0.67832
+  type: 'test'
+  ...
+# Subtest: calls audit 1 render: pending calls remain visible without a current allowance period
+not ok 135 - calls audit 1 render: pending calls remain visible without a current allowance period
+  ---
+  duration_ms: 0.499509
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:24:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Calls still being confirmed: 1/. Input:
+
+    '<section class="billing-panel minute-usage" aria-label="Voice minute usage" aria-live="polite"><h2>Minutes this billing month</h2><p>Minute usage is waiting for verified billing-period information.</p></section>'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="billing-panel minute-usage" aria-label="Voice minute usage" aria-live="polite"><h2>Minutes this billing month</h2><p>Minute usage is waiting for verified billing-period information.</p></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Render.spec.mjs:25:96)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:48) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: calls audit 3: knowledge draft sends only the explicit text model to generateContent
+not ok 136 - calls audit 3: knowledge draft sends only the explicit text model to generateContent
+  ---
+  duration_ms: 3.583815
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /synthetic-text-model:generateContent$/. Input:
+
+    'https://generativelanguage.googleapis.com/v1beta/models/synthetic-live-model:generateContent?key=SYNTHETIC-key'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'https://generativelanguage.googleapis.com/v1beta/models/synthetic-live-model:generateContent?key=SYNTHETIC-key'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:20:70)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: calls audit 3: knowledge refuses text model undefined without a Google request
+not ok 137 - calls audit 3: knowledge refuses text model undefined without a Google request
+  ---
+  duration_ms: 1.15134
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:23:105'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:24:15)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 3: knowledge refuses text model "" without a Google request
+not ok 138 - calls audit 3: knowledge refuses text model "" without a Google request
+  ---
+  duration_ms: 0.702867
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:23:105'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:24:15)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 3: knowledge refuses text model "synthetic-live-model" without a Google request
+not ok 139 - calls audit 3: knowledge refuses text model "synthetic-live-model" without a Google request
+  ---
+  duration_ms: 0.383468
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:23:105'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:24:15)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 3: knowledge refuses text model "synthetic-audio-model" without a Google request
+not ok 140 - calls audit 3: knowledge refuses text model "synthetic-audio-model" without a Google request
+  ---
+  duration_ms: 0.414743
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:23:105'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:24:15)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 3: knowledge refuses text model "bad/model?key=secret" without a Google request
+not ok 141 - calls audit 3: knowledge refuses text model "bad/model?key=secret" without a Google request
+  ---
+  duration_ms: 0.368354
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:23:105'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:24:15)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 3: starter uses GEMINI_TEXT_MODEL and refuses missing configuration
+not ok 142 - calls audit 3: starter uses GEMINI_TEXT_MODEL and refuses missing configuration
+  ---
+  duration_ms: 71.643744
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:26:46'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /synthetic-text-model:generateContent$/. Input:
+
+    'https://generativelanguage.googleapis.com/v1beta/models/synthetic-obsolete-model:generateContent'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'https://generativelanguage.googleapis.com/v1beta/models/synthetic-obsolete-model:generateContent'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:29:109)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 3: interview uses GEMINI_TEXT_MODEL and refuses missing configuration
+not ok 143 - calls audit 3: interview uses GEMINI_TEXT_MODEL and refuses missing configuration
+  ---
+  duration_ms: 31.431743
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:26:46'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /synthetic-text-model:generateContent$/. Input:
+
+    'https://generativelanguage.googleapis.com/v1beta/models/synthetic-obsolete-model:generateContent'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'https://generativelanguage.googleapis.com/v1beta/models/synthetic-obsolete-model:generateContent'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:29:109)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 3: startup lists missing text configuration and validates a supplied model independently
+not ok 144 - calls audit 3: startup lists missing text configuration and validates a supplied model independently
+  ---
+  duration_ms: 1.376062
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:32:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + undefined
+    - {
+    -   enabled: false,
+    -   missing: [
+    -     'GEMINI_API_KEY',
+    -     'GEMINI_TEXT_MODEL'
+    -   ]
+    - }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    enabled: false
+    missing:
+      0: 'GEMINI_API_KEY'
+      1: 'GEMINI_TEXT_MODEL'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-calls-base/test/billingCalls20261009Text.spec.mjs:34:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: calls audit 3: literal website import needs no text model or Google request
+ok 145 - calls audit 3: literal website import needs no text model or Google request
+  ---
+  duration_ms: 0.21649
+  type: 'test'
+  ...
+1..145
+# tests 145
+# suites 0
+# pass 2
+# fail 143
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2449.908948

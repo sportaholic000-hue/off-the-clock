@@ -30,7 +30,7 @@ test('currency binding preserves legacy engine-only callers whose retained defau
   assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(result.midEstimate,125);
 });
 
-const env={GEMINI_API_KEY:'[SYNTHETIC] test key'};
+const env={GEMINI_TEXT_MODEL:'synthetic-text-model',GEMINI_API_KEY:'[SYNTHETIC] test key'};
 const response=value=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(value)}]}}]})});
 const answer={serviceType:'CUSTOM',field:'price',pricing:{unit:'flat',customPricingMode:'fixed'},answer:'[SYNTHETIC] I am unsure of the price'};
 test('ambiguous interview answer asks for clarification after one provider response',async()=>{

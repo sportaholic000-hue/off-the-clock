@@ -1,5 +1,6 @@
 import { loadBillingConfig, stripeBillingEnabled } from './billingConfig.js';
 import {validLiveModelName} from './voice/liveModelName.js';
+import {geminiTextModel,textAIConfiguration} from './geminiTextModel.js';
 
 // Release pin: an older engine must never start serving production quotes.
 // Advance deliberately with an approved engine release, not through an env override.
@@ -58,6 +59,7 @@ export function allowedCorsOrigins(env = process.env, { production = env.NODE_EN
 export function validateRuntimeConfig(env = process.env) {
   const production = env.NODE_ENV === 'production';
   const errors = [];
+  if(env.GEMINI_TEXT_MODEL)try{geminiTextModel(env);}catch{errors.push('GEMINI_TEXT_MODEL must be an explicit text generation model, separate from GEMINI_MODEL');}
   const jwtSecret = String(env.JWT_SECRET || '');
   if (!jwtSecret) errors.push('JWT_SECRET is required');
   else if (INSECURE_JWT_SECRETS.has(jwtSecret.toLowerCase()) || jwtSecret.length < 32) {
@@ -133,6 +135,7 @@ export function validateRuntimeConfig(env = process.env) {
     providerWrites: providerWritesEnabled(env),
     voiceRuntime: voiceRuntimeEnabled(env),
     stripeBilling: stripeBillingEnabled(env),
+    textAI:textAIConfiguration(env),
     corsOrigins: allowedCorsOrigins(env, { production })
   };
 }

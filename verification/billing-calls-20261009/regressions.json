@@ -1,0 +1,872 @@
+[
+  {
+    "item": 3,
+    "test": "calls audit 3 HTTP: missing text model gives the owner a readable refusal and does not save a draft",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: missing callback recovered by GET adds exactly 350 cents, late callback and restart count once",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: trial recovered 61 seconds uses two minutes and zero cents",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: an ended call without a metering row is recovered through the callback path",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched account_sid=ACffffffffffffffffffffffffffffffff is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched sid=CAffffffffffffffffffffffffffffffff is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched from=+19025550999 is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched to=+19025550999 is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched direction=outbound-api is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched status=in-progress is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched duration=1.5 is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched duration=null is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: fetched duration=-1 is refused",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: recovered failed call remains zero",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: recovered spam call remains zero",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: ten-minute boundary, active calls and tenant isolation",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: retry backoff survives restart and stops at seven days",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: retry can recover later and simultaneous workers reserve only one read",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: scheduled worker ticks and stops without provider writes",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: production starts and stops the recovery worker",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1: expired recovery remains a pending count after the allowance month ends",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: GEMINI_SESSION_CLOSED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: GEMINI_SESSION_ERROR",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: GEMINI_CONNECT_FAILED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_MEDIA_FAILURE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_SOCKET_CLOSED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_SOCKET_ERROR",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: MEDIA_SOCKET_CLOSED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: SESSION_PERSISTENCE_FAILED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TRANSCRIPT_CALLBACK_FAILED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: CALL_PERSISTENCE_FAILED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TOOL_CALLBACK_FAILED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TOOL_RESPONSE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_GEMINI_TOOL_CALL",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: GEMINI_AUDIO_RATE_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INPUT_AUDIO_BACKPRESSURE_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: OUTPUT_AUDIO_BACKPRESSURE_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: PENDING_MARK_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: SOCKET_BACKPRESSURE_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_AUDIO_RATE_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_MESSAGE_BACKPRESSURE_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_MESSAGE_RATE_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_MESSAGE_TOO_LARGE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: AUDIO_PAYLOAD_TOO_LARGE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: MULAW_AUDIO_TOO_LARGE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: PCM_AUDIO_TOO_LARGE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_CALL_CONTEXT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_START_BINDING_MISMATCH",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_STOP_BINDING_MISMATCH",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_STREAM_SID_MISMATCH",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CALL_BINDING_MISMATCH",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_RESTART_RECOVERY",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: APPLICATION_CLOSE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: SESSION_ENDED_DURING_CONNECT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_DISABLED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_RUNTIME_DISABLED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_FALLBACK",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_SESSION_UNAVAILABLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_ADMISSION_UNAVAILABLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_SESSION_NOT_PERSISTED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CIRCUIT_OPEN",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CONCURRENCY_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_PLATFORM_CAPACITY",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CALLER_THROTTLED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_SPAM_BLOCKED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: OPERATOR_INELIGIBLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: ACCOUNT_REQUIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_PLAN",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_STATUS",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_NOW",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TRIAL_END_REQUIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: PAYMENT_FAILURE_TIME_REQUIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: SUSPENDED_OR_CANCELED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TRIAL_EXPIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: PAYMENT_FAILURE_GRACE_EXPIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TRIAL_VOICE_CAP_REACHED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CAP_REACHED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TRIAL_USAGE_REQUIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_INVALID",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_UNAVAILABLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_RUNTIME_DISABLED_INVALID",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_RUNTIME_DISABLED_UNAVAILABLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: OPERATOR_INELIGIBLE_INVALID",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: OPERATOR_INELIGIBLE_UNAVAILABLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CAP_REACHED_INVALID",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: VOICE_CAP_REACHED_UNAVAILABLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: BINARY_TWILIO_MESSAGE_REJECTED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: EMPTY_AUDIO_PAYLOAD",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: EMPTY_MULAW_AUDIO",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: EMPTY_PCM_AUDIO",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: GEMINI_SESSION_OPENER_REQUIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_AUDIO_BASE64",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_AUDIO_LIMIT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_GEMINI_AUDIO",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_GEMINI_AUDIO_FORMAT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_GEMINI_SESSION_ADAPTER",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_GEMINI_TRANSCRIPT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_MEDIA_CLOCK",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_MEDIA_LIMITS",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_MEDIA_SOCKET",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_MULAW_BUFFER",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_MULAW_SAMPLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_PCM_BUFFER",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_PCM_SAMPLE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_PROVIDER_MESSAGE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_SOCKET_BACKPRESSURE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TWILIO_CONNECTED_EVENT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TWILIO_CUSTOM_PARAMETERS",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TWILIO_JSON",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TWILIO_MEDIA_CHUNK",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TWILIO_MEDIA_TIMESTAMP",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TWILIO_MESSAGE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TWILIO_SEQUENCE",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: INVALID_TWILIO_STREAM_SID",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: MARK_BEFORE_ACTIVE_START",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: MEDIA_BEFORE_ACTIVE_START",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: MEDIA_CLOCK_REQUIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: MISALIGNED_PCM16_AUDIO",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: NON_CANONICAL_AUDIO_BASE64",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: SESSION_END_CALLBACK_INVALID",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: STOP_BEFORE_ACTIVE_START",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TOOL_CALLBACK_REQUIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TRANSCRIPT_CALLBACK_REQUIRED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_MEDIA_ORDER_MISMATCH",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: TWILIO_SEQUENCE_MISMATCH",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: UNEXPECTED_TWILIO_MEDIA_TRACK",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: UNEXPECTED_TWILIO_START",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: UNKNOWN_TWILIO_MARK",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: UNSUPPORTED_TWILIO_EVENT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: UNSUPPORTED_TWILIO_MEDIA_FORMAT",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: GOOGLE_LIVE_INSTRUCTION_FAILED",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 render: unknown and absent codes do not invent a cause",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 2,
+    "test": "calls audit 2 inventory: every bridge and codec code has reviewed wording",
+    "base": "pass",
+    "fixed": "pass"
+  },
+  {
+    "item": 1,
+    "test": "calls audit 1 render: pending calls remain visible without a current allowance period",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: knowledge draft sends only the explicit text model to generateContent",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: knowledge refuses text model undefined without a Google request",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: knowledge refuses text model \"\" without a Google request",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: knowledge refuses text model \"synthetic-live-model\" without a Google request",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: knowledge refuses text model \"synthetic-audio-model\" without a Google request",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: knowledge refuses text model \"bad/model?key=secret\" without a Google request",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: starter uses GEMINI_TEXT_MODEL and refuses missing configuration",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: interview uses GEMINI_TEXT_MODEL and refuses missing configuration",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: startup lists missing text configuration and validates a supplied model independently",
+    "base": "fail",
+    "fixed": "pass"
+  },
+  {
+    "item": 3,
+    "test": "calls audit 3: literal website import needs no text model or Google request",
+    "base": "pass",
+    "fixed": "pass"
+  }
+]

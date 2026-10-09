@@ -11,6 +11,8 @@ import 'dotenv/config';
 import {deploymentConfig} from './deploymentEnvironment.js';
 import {quoteDateContext} from './quoteDate.js';
 import {PriceBookAIError} from './priceBookAI.js';
+import {TextAIConfigurationError} from './geminiTextModel.js';
+import {createVoiceDurationRecovery} from './voiceDurationRecovery.js';
 import {configureClientAddress} from './clientAddress.js';
 import {createLifecycle} from './lifecycle.js';
 import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';
@@ -104,6 +106,7 @@ import {
 } from './platformIntegrations.js';
 
 const runtimeConfig = validateRuntimeConfig();
+if(!runtimeConfig.textAI.enabled)console.warn('Text AI unavailable: configure '+runtimeConfig.textAI.missing.join(', '));
 requireProductionQuoteEngineVersion(ENGINE_VERSION);
 
 const app = express();
@@ -524,7 +527,7 @@ app.use((err, req, res, _next) => {
     ? 'The saved price book cannot be used. Quoting is paused until it is restored. Restore the saved price-book file from backup or email support@offtheclockai.com; do not create a replacement book.'
     : null;
   res.status(status).json({
-    error: ownerPricebookRecovery || (status >= 500 ? 'Internal server error' : err.message),
+    error: ownerPricebookRecovery || (err instanceof TextAIConfigurationError?err.message:status >= 500 ? 'Internal server error' : err.message),
     ...(code ? { code } : {}),
     ...(typeof err.retryable === 'boolean' ? { retryable: err.retryable } : {}),
     ...(err.details ? { details: err.details } : {})
@@ -533,6 +536,8 @@ app.use((err, req, res, _next) => {
 
 const stopBillingWorker = billingStateService ? startBillingLifecycleWorker({service:billingStateService,onError:code=>console.error('[billing-worker]',code)}) : ()=>{};
 const stopMinuteWorker=minuteBilling.start({onError:code=>console.error('[minute-worker]',code)});
+const durationRecovery=createVoiceDurationRecovery({database:db,ownerQuery,onUsage:ownerId=>{minuteBilling.syncOwner(ownerId);void minuteBilling.processOwner(ownerId).catch(()=>console.error('MINUTE_BILLING_PENDING'));},onError:code=>console.error('[duration-recovery]',code)});
+const stopDurationRecovery=durationRecovery.start();
 const stopCustomerLifecycle=customerLifecycle.start();
 const stopCalendarChanges=bookingService?.startChangeReconciler({enabled:providerWritesEnabled,onError:code=>console.error('[calendar-change-worker]',code)})||(()=>{});
 const httpServer = app.listen(port, () => {
@@ -544,8 +549,8 @@ const stopQuoteEmailWorker=quoteEmailDelivery.start({onError:code=>console.error
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
 if(deploymentConfig.production) offsiteBackups.start();
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopCalendarChanges,stopOwnerAlertWorker,stopQuoteEmailWorker,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopCalendarChanges();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopDurationRecovery,stopCustomerLifecycle,stopCalendarChanges,stopOwnerAlertWorker,stopQuoteEmailWorker,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopDurationRecovery();void stopCustomerLifecycle();void stopCalendarChanges();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
 
 export {httpServer,lifecycle,voiceRuntime};
 

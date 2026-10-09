@@ -365,7 +365,7 @@ test('F05: the sanitizer binds currency to the reproduced quote', () => {
 test('F06: an AI answer with no clear price asks the owner to clarify, with one provider call and no retry', async () => {
   let calls = 0;
   const fetchImpl = async () => { calls++; return { ok:true, json:async () => ({ candidates:[{ finishReason:'STOP', content:{ parts:[{ text:'{"value":null}' }] } }] }) }; };
-  await assert.rejects(interpretInterviewAnswer({ serviceType:'CUSTOM', field:'price', answer:'not sure what to charge', pricing:{ unit:'flat' } }, { env:{ GEMINI_API_KEY:'synthetic' }, fetchImpl }),
+  await assert.rejects(interpretInterviewAnswer({ serviceType:'CUSTOM', field:'price', answer:'not sure what to charge', pricing:{ unit:'flat' } }, { env:{ GEMINI_TEXT_MODEL:'synthetic-text-model',GEMINI_API_KEY:'synthetic' }, fetchImpl }),
     error => error.code === 'PRICEBOOK_AI_CLARIFICATION_REQUIRED' && error.statusCode === 422 && error.retryable === false);
   assert.equal(calls, 1);
 });

@@ -1,0 +1,908 @@
+{
+  "npm test": {
+    "command": "npm test",
+    "exitCode": 1,
+    "summary": {
+      "tests": 4549,
+      "pass": 4492,
+      "fail": 57,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "sha256": "19673172a42add715b18a73c734976a57c138abd369b34643797b83f8a42a2aa",
+    "failedTests": [
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "expired export window disables all CSV buttons and no longer offers setup/service",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "scope editor groups entries of the same kind and names them by their matching facts",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "F13 browser legacy flat and two-level controls use the same exact parser",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "unverified period and pending historical charge are visible without an invented zero balance",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save preserves a newer numeric edit and its question",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save preserves a newer structured price-map edit",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save prevents duplicate confirmation and premature review",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "unchanged confirmed value saves once and advances normally",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "failed manual save keeps the confirmed value available for retry",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "late 200 response cannot replace a new service preview",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "late 400 response cannot replace a new service preview",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "old completion cannot clear current loading and invalid input cannot retain old ready",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview owner can add separate demolition entries and explicitly choose up-to access",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview accepts ordinary floor names and retains invalid drafts for correction",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: actual dashboard and owner preview show production missing-price labels",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "website owner screen says no prices found and preserves the current prices",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      }
+    ]
+  },
+  "npm run test:quote": {
+    "command": "npm run test:quote",
+    "exitCode": 1,
+    "summary": {
+      "tests": 3190,
+      "pass": 3133,
+      "fail": 57,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "sha256": "b59c37a38a0be81a44db1e28a21cb7a7aa845bcf9424049b2991f9ede6dc4fdd",
+    "failedTests": [
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "expired export window disables all CSV buttons and no longer offers setup/service",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "scope editor groups entries of the same kind and names them by their matching facts",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "F13 browser legacy flat and two-level controls use the same exact parser",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "unverified period and pending historical charge are visible without an invented zero balance",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save preserves a newer numeric edit and its question",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save preserves a newer structured price-map edit",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save prevents duplicate confirmation and premature review",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "unchanged confirmed value saves once and advances normally",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "failed manual save keeps the confirmed value available for retry",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "late 200 response cannot replace a new service preview",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "late 400 response cannot replace a new service preview",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "old completion cannot clear current loading and invalid input cannot retain old ready",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview owner can add separate demolition entries and explicitly choose up-to access",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview accepts ordinary floor names and retains invalid drafts for correction",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: actual dashboard and owner preview show production missing-price labels",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "website owner screen says no prices found and preserves the current prices",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      }
+    ]
+  },
+  "preliminary full run": {
+    "command": "npm test",
+    "exitCode": 1,
+    "summary": {
+      "tests": 4548,
+      "pass": 4490,
+      "fail": 58,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "sha256": "35d2f3b6044cc66a9770d2fc4c22fd9529bfdc9bd096189b382bba57e711d3e9",
+    "failedTests": [
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "expired export window disables all CSV buttons and no longer offers setup/service",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "scope editor groups entries of the same kind and names them by their matching facts",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "follow-up actual AI response returns the normalized $5 rate and registry-compatible key",
+        "reason": "OTHER",
+        "detail": "  ---\n  duration_ms: 10.755564\n  type: 'test'\n  location: '/workspace/scratch/18cbdaa4aace/off-the-clock/test/engineLaunchFixes20261005.spec.mjs:211:1'\n  failureType: 'testCodeFailure'\n  error: 'AI drafting is unavailable because its text model is not configured. You can enter your business information and prices manually. Contact support@offtheclockai.com for help.'\n  code: 'TEXT_AI_UNAVAILABLE'\n  stack: |-\n    geminiTextModel (file:///workspace/scratch/18cbdaa4aace/off-the-clock/server/src/geminiTextModel.js:7:146)\n    priceBookModel (file:///workspace/scratch/18cbdaa4aace/off-the-clock/server/src/priceBookAI.js:108:10)\n    generateDraft (file:///workspace/scratch/18cbdaa4aace/off-the-clock/server/src/priceBookAI.js:113:9)\n    interpretInterviewAnswer (file:///workspace/scratch/18cbdaa4aace/off-the-clock/server/src/priceBookAI.js:166:10)\n    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/off-the-clock/test/engineLaunchFixes20261005.spec.mjs:212:22)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n"
+      },
+      {
+        "name": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "F13 browser legacy flat and two-level controls use the same exact parser",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "unverified period and pending historical charge are visible without an invented zero balance",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save preserves a newer numeric edit and its question",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save preserves a newer structured price-map edit",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "pending manual save prevents duplicate confirmation and premature review",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "unchanged confirmed value saves once and advances normally",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "failed manual save keeps the confirmed value available for retry",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "late 200 response cannot replace a new service preview",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "late 400 response cannot replace a new service preview",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "old completion cannot clear current loading and invalid input cannot retain old ready",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview owner can add separate demolition entries and explicitly choose up-to access",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "interview accepts ordinary floor names and retains invalid drafts for correction",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: actual dashboard and owner preview show production missing-price labels",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      },
+      {
+        "name": "website owner screen says no prices found and preserves the current prices",
+        "reason": "Chromium launch SIGTRAP",
+        "detail": null
+      }
+    ],
+    "resolution": "The existing engineLaunchFixes20261005 fixture relied on the removed text-model default. It now supplies GEMINI_TEXT_MODEL explicitly; its original monetary assertions pass in the targeted recheck and both final full gates."
+  }
+}
