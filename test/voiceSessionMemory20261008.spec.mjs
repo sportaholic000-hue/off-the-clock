@@ -80,7 +80,7 @@ function prior(f,{ownerId='synthetic-a',minutesAgo=30,status='FAILED',message='[
 }
 async function affirm(f,c,v,name='Sally'){
  const row=f.db.prepare('SELECT transcriptJson FROM calls WHERE ownerId=? AND id=?').get(c.ownerId,c.callSid);
- const transcript=JSON.parse(row.transcriptJson||'[]');transcript.push({role:'assistant',text:`Am I speaking with ${name}?`,final:true},{role:'caller',text:'Yes, speaking.',final:true});
+ const transcript=JSON.parse(row.transcriptJson||'[]');transcript.push({role:'assistant',text:name==='Have you called us before from this number'?`${name}?`:`Am I speaking with ${name}?`,final:true},{role:'caller',text:'Yes, speaking.',final:true});
  f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify(transcript),c.ownerId,c.callSid);
  return v.tool('getCustomerContext',{callerConfirmedIdentity:true});
 }
@@ -95,13 +95,13 @@ test('B same-number dropped call has gated name, then bounded previous transcrip
 test('B a price at the very start of old speech is redacted before the model sees history',async t=>{
  const f=fixture(t);prior(f,{message:'$875 was the old price for the deck',amount:'CA$910'});
  const old=f.context(),v=f.voice(old),first=await v.tool('getCustomerContext',{});
- assert.equal(first.status,'identity_unconfirmed');const result=await affirm(f,old,v,'the person who called this business from this number');
+ assert.equal(first.status,'identity_unconfirmed');const result=await affirm(f,old,v,'Have you called us before from this number');
  assert.doesNotMatch(JSON.stringify(result.previousCall),/\$875|\$910/);assert.match(JSON.stringify(result.previousCall),/past amount omitted/);
 });
 test('B a dropped Twilio socket is flagged as an unexpected previous call',async t=>{
  const f=fixture(t),old=prior(f,{status:'COMPLETED'});f.ownerQuery('UPDATE calls SET outcome=? WHERE ownerId=? AND id=?').run('TWILIO_SOCKET_CLOSED',old.ownerId,old.callSid);
  const current=f.context(),v=f.voice(current);assert.equal((await v.tool('getCustomerContext',{})).status,'identity_unconfirmed');
- assert.equal((await affirm(f,current,v,'the person who called this business from this number')).previousCall.endedUnexpectedly,true);
+ assert.equal((await affirm(f,current,v,'Have you called us before from this number')).previousCall.endedUnexpectedly,true);
 });
 test('B all caller history reads use the tenant ownerQuery, including the previous call',async t=>{
  const f=fixture(t),old=prior(f);await f.voice(old).tool('captureLead',{name:'Sally Synthetic',description:'[SYNTHETIC] deck repair'});

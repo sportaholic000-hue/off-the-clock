@@ -3,8 +3,15 @@ const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)
 const refusal=()=>({status:'needs_review',message:'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'});
 const decimal=/^(?:0|[1-9]\d{0,11})(?:\.\d{1,6})?$/;
 const coefficient=value=>{const [whole,fraction='']=value.split('.');return {value:BigInt(whole+fraction),scale:fraction.length};};
-const priceSentence=/^(?<item>[\p{L}\p{M}\[][\p{L}\p{M}\s:'’()\[\]-]*?\s*)?(?<currency>CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|CAD|USD|EUR|GBP|AUD|NZD)\s*(?<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)\s*(?:each|(?:per\s+|\/\s*)(?:(?:square|sq\.?|linear|lineal|lin\.?|cubic|cu\.?|board)\s+(?:foot|feet|ft|yards?|yds?|meters?|metres?|m|inch(?:es)?|in)|[a-z]+))\.?$/iu;
-const qualifiedPricePrefix=/\p{N}|\b(?:minimum|min|maximum|max|from|starting|start|up\s+to|about|approx|around|only|first|second|half|discount|off|sale|special|promo|deal|free|extra|additional|each\s+additional|per)\b/iu;
+const priceSentence=/^(?<item>[\p{L}\p{M}\p{N}#\[][\p{L}\p{M}\p{N}\s:'’()\[\]#./×-]*?\s*)?(?<currency>CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|CAD|USD|EUR|GBP|AUD|NZD)\s*(?<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)\s*(?:each|(?:per\s+|\/\s*)(?:(?:square|sq\.?|linear|lineal|lin\.?|cubic|cu\.?|board)\s+(?:foot|feet|ft|yards?|yds?|meters?|metres?|m|inch(?:es)?|in)|[a-z]+))\.?$/iu;
+const qualifiedPricePrefix=/\p{N}|\b(?:minimum|min|maximum|max|from|starting|start|up\s+to|about|approx|around|only|first|second|half|discount|off|sale|special|promo|deal|free|extra|additional|each\s+additional|per|over|pack)\b/iu;
+// Only numbers with a recognizable product-name role may precede the one
+// saved unit price. Any remaining number might be a quantity or condition.
+const withoutProductNumbers=item=>item
+ .replace(/\b\d+\s*[x×]\s*\d+\b/giu,'')
+ .replace(/\bgrade\s+\d+\b/giu,'')
+ .replace(/\b\d+\/\d+\s+inch(?:es)?\b/giu,'')
+ .replace(/#\d+\b/giu,'');
 // A unit is one word, or a standard two-word measure (square foot, linear
 // foot, cubic yard...). Any other second word ("per hour minimum", "per item
 // daily", "per sqft twice") can change the charge, so it is not multiplied.
@@ -24,7 +31,7 @@ export function calculateSavedListedPrice(knowledge,args){
   if(match){
    // A qualification anywhere before the price can change the charge. Even
    // genuine item names such as "Half-round gutter" must be repeated as saved.
-   if(price||qualifiedPricePrefix.test(match.groups.item||''))return refusal();
+   if(price||qualifiedPricePrefix.test(withoutProductNumbers(match.groups.item||'')))return refusal();
    price=match.groups;
   }else if(!taxSentence.test(sentence)&&!contactSentence.test(sentence))return refusal();
  }

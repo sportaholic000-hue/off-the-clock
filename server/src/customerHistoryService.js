@@ -5,16 +5,28 @@ const parsed=value=>{try{return JSON.parse(value)||{};}catch{return {};}};
 const text=value=>typeof value==='string'&&value.trim()?value.trim().slice(0,500):null;
 const jsonPhone=(column,path)=>`customer_phone(CASE WHEN json_valid(${column}) THEN json_extract(${column},'${path}') END)`;
 
-const oldAmount=value=>value.replace(/(?:(?:\b(?:CA|US|AU|NZ|C|A|NZ))?\s*[$€£¥]\s*\d[\d,.]*|\b\d[\d,.]*\s*(?:dollars?|cents?)\b)/gi,'[past amount omitted]');
+const numberWord='(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)';
+const numberValue=new RegExp(`\\b(?:\\d[\\d,.]*|${numberWord}(?:[\\s-]+(?:and[\\s-]+)?${numberWord})*)\\b`,'giu');
+const measurementUnit=/^\s*(?:square\s+|sq\.?\s*)?(?:feet|foot|ft|inches|inch|yards?|yds?|meters?|metres?|miles?|acres?|centimeters?|cm|millimeters?|mm)\b/i;
+function redactPreviousText(value,role){
+ const source=value.trim().slice(0,role==='caller'?500:300);
+ if(role==='receptionist')return source.replace(numberValue,'[past number omitted]');
+ // The transcript is quoted context, never a source of prices. Measurements
+ // explicitly followed by a length/area unit may remain; every other number
+ // or number-word sequence could be an amount and is removed.
+ return source.replace(numberValue,(match,offset,input)=>measurementUnit.test(input.slice(offset+match.length))?match:'[past amount omitted]')
+  .replace(/(?:\b(?:CA|US|AU|NZ|C|A)\s*)?[$€£¥]\s*\[past amount omitted\]/gi,'[past amount omitted]')
+  .replace(/\[past amount omitted\]\s*(?:dollars?|cents?|bucks?|grand|k)\b/gi,'[past amount omitted]');
+}
 function previousCallContext(row){
  if(!row)return null;
  let entries;try{entries=JSON.parse(row.transcriptJson||'[]');}catch{return null;}
  if(!Array.isArray(entries))return null;
  const utterances=entries.filter(item=>item&&typeof item==='object'&&['caller','user','assistant','model'].includes(item.role)&&typeof item.text==='string');
  const backup=utterances.filter(item=>typeof item.fallbackKey==='string').at(-1);
- const excerpt=utterances.filter(item=>typeof item.fallbackKey!=='string').slice(-10).map(item=>({role:['caller','user'].includes(item.role)?'caller':'receptionist',text:oldAmount(item.text.trim().slice(0,300))})).filter(item=>item.text);
+ const excerpt=utterances.filter(item=>typeof item.fallbackKey!=='string').slice(-10).map(item=>{const role=['caller','user'].includes(item.role)?'caller':'receptionist';return {role,text:redactPreviousText(item.text,role)};}).filter(item=>item.text);
  let remaining=2500;const recent=[];for(const item of excerpt.reverse()){if(item.text.length>remaining)break;recent.push(item);remaining-=item.text.length;}
- return {recordedAt:row.createdAt,endedUnexpectedly:row.status==='FAILED'||row.outcome==='TWILIO_SOCKET_CLOSED'||Boolean(row.failureCode&&/^(?:GEMINI_|TWILIO_SOCKET_)/.test(row.failureCode)),transcriptExcerpt:recent.reverse(),...(backup?{backupMessage:oldAmount(backup.text.trim().slice(0,500))}:{})};
+ return {recordedAt:row.createdAt,endedUnexpectedly:row.status==='FAILED'||row.outcome==='TWILIO_SOCKET_CLOSED'||Boolean(row.failureCode&&/^(?:GEMINI_|TWILIO_SOCKET_)/.test(row.failureCode)),transcriptExcerpt:recent.reverse(),...(backup?{backupMessage:redactPreviousText(backup.text,'caller')}:{})};
 }
 export function customerHistory(database,{ownerId,from,callSid},{now=Date.now(),ownerQuery}={}) {
  customerQuery(database); // Register the same normalized phone function used by existing history joins.
