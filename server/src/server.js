@@ -64,6 +64,7 @@ import { createBillingStateService } from './billingStateService.js';
 import {startBillingLifecycleWorker} from './billingLifecycleWorker.js';
 import {createBillingMinuteService} from './billingMinuteService.js';
 import {createBillingCustomerLifecycle,installBillingCustomerLifecycleRoutes} from './billingCustomerLifecycle.js';
+import {createCalendarRetentionRevoker} from './calendarRetentionRevocation.js';
 import {createStripeOverageProvider} from './billingOverageProvider.js';
 import {createOwnerEmailProvider} from './ownerEmailDelivery.js';
 import { installBillingRoutes, installBillingWebhookRoute } from './billingRoutes.js';
@@ -327,6 +328,8 @@ const telephonyOperations = createTelephonyOperations({
 const customerLifecycle=createBillingCustomerLifecycle({database:db,ownerQuery,
   priceIds:billingConfig?.priceIds||{},stripeClient,emailProvider:createOwnerEmailProvider(),
   enabled:providerWritesEnabled,releaseNumber:releaseTwilioNumber,
+  revokeCalendar:createCalendarRetentionRevoker({enabled:providerWritesEnabled}),
+  eraseBackupCopies:ownerId=>offsiteBackups.eraseOwner(ownerId),
   dashboardUrl:billingConfig?.portalReturnUrl});
 installBillingCustomerLifecycleRoutes(app,{service:customerLifecycle,requireAuth,
   requireProviderWrites:requireProviderOperationsEnabled,asyncHandler});

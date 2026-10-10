@@ -14,9 +14,9 @@ export function withBillingLease(db,ownerId,work,options={}) {
 // Retention deadlines must progress while a financial-provider read holds its
 // own lease. Keep independent fencing for phone/data cleanup across processes.
 export function withBillingRetentionLease(db,ownerId,work,options={}) {
-  return withOwnerLease(db,ownerId,work,'billingRetentionLeases',options);
+  return withOwnerLease(db,ownerId,work,'billingRetentionLeases',{...options,renew:true});
 }
-async function withOwnerLease(db,ownerId,work,table,{clock=()=>new Date(),leaseMs=120000}={}) {
+async function withOwnerLease(db,ownerId,work,table,{clock=()=>new Date(),leaseMs=120000,renew=false}={}) {
   const token=crypto.randomUUID(),at=clock().toISOString();
   const expiresAt=new Date(clock().getTime()+leaseMs).toISOString();
   const result=usageOwnerQuery(db)(`INSERT INTO ${table}(ownerId,token,expiresAt) VALUES(?,?,?)
@@ -27,8 +27,15 @@ async function withOwnerLease(db,ownerId,work,table,{clock=()=>new Date(),leaseM
     const current=usageOwnerQuery(db)(`SELECT token,expiresAt FROM ${table} WHERE ownerId=?`).get(ownerId);
     if (current?.token!==token || current.expiresAt<=clock().toISOString()) throw billingProviderError('BILLING_LEASE_LOST');
   };
+  // Redacting retained archives can take longer than one provider request.
+  // Renew only the separate retention lease, never the financial mutation lease.
+  const timer=renew?setInterval(()=>{
+    try{assertLease();usageOwnerQuery(db)(`UPDATE ${table} SET expiresAt=? WHERE ownerId=? AND token=?`)
+      .run(new Date(clock().getTime()+leaseMs).toISOString(),ownerId,token);}catch{/* Fencing remains authoritative. */}
+  },Math.max(10,Math.floor(leaseMs/3))):null;
+  timer?.unref?.();
   try {return await work(assertLease);}
-  finally {usageOwnerQuery(db)(`DELETE FROM ${table} WHERE ownerId=? AND token=?`).run(ownerId,token);}
+  finally {clearInterval(timer);usageOwnerQuery(db)(`DELETE FROM ${table} WHERE ownerId=? AND token=?`).run(ownerId,token);}
 }
 export async function billingProviderRead(call) {
   let timer;

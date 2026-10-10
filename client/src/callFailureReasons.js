@@ -11,7 +11,7 @@ for(const code of "VOICE_RESTART_RECOVERY APPLICATION_CLOSE SESSION_ENDED_DURING
 for(const code of "VOICE_DISABLED VOICE_RUNTIME_DISABLED VOICE_FALLBACK VOICE_SESSION_UNAVAILABLE VOICE_ADMISSION_UNAVAILABLE VOICE_SESSION_NOT_PERSISTED".split(" "))reasons[code]="The receptionist was unavailable for this call.";
 for(const code of "VOICE_CIRCUIT_OPEN".split(" "))reasons[code]="The receptionist is temporarily paused after repeated connection failures.";
 for(const code of "VOICE_CONCURRENCY_LIMIT VOICE_PLATFORM_CAPACITY".split(" "))reasons[code]="All available receptionist call connections were in use.";
-for(const code of "VOICE_CALLER_THROTTLED".split(" "))reasons[code]="The caller reached the daily answering limit. Their request is saved for review.";
+for(const code of "VOICE_CALLER_THROTTLED".split(" "))reasons[code]="This caller called too many times in 24 hours and was asked to leave a message.";
 for(const code of "VOICE_SPAM_BLOCKED".split(" "))reasons[code]="This caller was blocked as spam.";
 for(const code of "OPERATOR_INELIGIBLE ACCOUNT_REQUIRED INVALID_PLAN INVALID_STATUS INVALID_NOW TRIAL_END_REQUIRED PAYMENT_FAILURE_TIME_REQUIRED SUSPENDED_OR_CANCELED".split(" "))reasons[code]="The account was not eligible for receptionist service.";
 for(const code of "TRIAL_EXPIRED".split(" "))reasons[code]="The trial had ended.";

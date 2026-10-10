@@ -2,6 +2,48 @@
 // The scan test validates every signature and rejects unused entries.
 export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   {
+    "file": "server/priceBookService.js",
+    "function": "assertRetainedAccount",
+    "reason": "Schema-only check for standalone file stores; the account read itself uses ownerQuery.",
+    "signature": "f64feea1f3586e24256576d02ae4fd01a4ad9e951b0a1f83f0a554939925d4a9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "function": "installBillingLifecycleSchema",
+    "reason": "Additive migration checks for safe calendar-revocation evidence columns.",
+    "signature": "b6d3034770657e7fcde4f03e8114b949c06dba7d737dc8345a62ffac72aa51d1",
+    "occurrence": 2
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "function": "erase",
+    "reason": "Database-wide WAL checkpoint removes stale pages after tenant-bound deletion; reads no business rows.",
+    "signature": "72169fb0b5e93a70ed5564e6e38d92f8b1d8d6625c54244a2c704d3f1af67e39",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "reason": "Schema table inventory for optional migrations; all row deletions use ownerQuery.",
+    "signature": "fcc4b4cb20dec612668244230b551775d49a62b1d7fad3a1a825e47f07ed955b",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "installTenantErasureGuards",
+    "reason": "Migration enumerates schema tables before installing tenant-bound erasure triggers.",
+    "signature": "fcc4b4cb20dec612668244230b551775d49a62b1d7fad3a1a825e47f07ed955b",
+    "occurrence": 2
+  },
+  {
+    "file": "server/src/tenantBackupErasure.js",
+    "function": "scrubBundle",
+    "reason": "Schema-only migration check in a recovery copy; the account lookup uses ownerQuery.",
+    "signature": "f337e4cb63867f8e607be6269f8f62026eef41d4f8aad0f81ebe1b8cf9c51988",
+    "occurrence": 1
+  },
+  {
     "file": "server/quoteLog.js",
     "function": "hasColumn",
     "reason": "Migration checks or schema repair before tenant operations.",

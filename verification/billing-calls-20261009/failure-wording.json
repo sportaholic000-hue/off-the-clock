@@ -42,7 +42,7 @@
     "VOICE_CIRCUIT_OPEN": "The receptionist is temporarily paused after repeated connection failures.",
     "VOICE_CONCURRENCY_LIMIT": "All available receptionist call connections were in use.",
     "VOICE_PLATFORM_CAPACITY": "All available receptionist call connections were in use.",
-    "VOICE_CALLER_THROTTLED": "The caller reached the daily answering limit. Their request is saved for review.",
+    "VOICE_CALLER_THROTTLED": "This caller called too many times in 24 hours and was asked to leave a message.",
     "VOICE_SPAM_BLOCKED": "This caller was blocked as spam.",
     "OPERATOR_INELIGIBLE": "The account was not eligible for receptionist service.",
     "ACCOUNT_REQUIRED": "The account was not eligible for receptionist service.",

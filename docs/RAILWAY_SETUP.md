@@ -129,6 +129,33 @@ fixtures are not live integration acceptance. See
 
 ## 6. Choose an independent off-site destination
 
+### Railway storage bucket
+
+For a new private Railway bucket, copy the endpoint and S3 credentials from its
+Credentials tab. The bucket's `BUCKET` value is the S3 bucket name; its display
+name is not. Configure the application service with these values:
+
+```dotenv
+OFFSITE_BACKUP_ENDPOINT=https://t3.storageapi.dev
+OFFSITE_BACKUP_REGION=auto
+OFFSITE_BACKUP_URL_STYLE=virtual
+OFFSITE_BACKUP_BUCKET=REPLACE_WITH_BUCKET_VALUE
+OFFSITE_BACKUP_ACCESS_KEY_ID=REPLACE_WITH_ACCESS_KEY_ID
+OFFSITE_BACKUP_SECRET_ACCESS_KEY=REPLACE_WITH_SECRET_ACCESS_KEY
+OFFSITE_BACKUP_ENCRYPTION_KEY=REPLACE_WITH_64_HEX_CHARACTERS_FROM_32_RANDOM_BYTES
+OFFSITE_BACKUP_PREFIX=off-the-clock/production
+```
+
+Use private Railway variable references for bucket credentials. Keep the archive
+encryption key independent and securely recoverable. The SDK places the bucket
+name in the hostname; do not add it to the endpoint yourself. Both daily and
+continuous backups use these settings. No bucket is provisioned by this code.
+
+`OFFSITE_BACKUP_URL_STYLE` accepts only `virtual` or `path` and defaults to `path`
+for existing setups. Older Railway buckets may require `path`; follow their
+Credentials tab. `OFFSITE_BACKUP_REGION=auto` is accepted. See Railway's
+[storage bucket connection documentation](https://docs.railway.com/storage-buckets).
+
 Snapshots on /data alone cannot recover from loss of the entire volume. The application supports both encrypted daily uploads and continuous complete recovery copies to the same separately configured private S3-compatible bucket. `server/src/offsiteBackups.js:161-170` starts both using the same OFFSITE_BACKUP settings; no extra enable flag is read. Continuous copies respond to local changes with a one-second polling fallback, coalesce bursts, and retry failures with backoff starting at one minute (`server/src/continuousOffsite.js:61-67,159`). Replication is asynchronous and cannot promise zero loss during an outage. Missing or invalid destination settings warn and report unhealthy rather than rejecting startup. See the current [off-site status and restore guide](OFFSITE_BACKUPS.md) for checkpoint retention and recovery commands. No real destination was provisioned or checked in this documentation task.
 
 These storage-only USD estimates use an average **50 GB stored**, not a promise of your final bill. API operations, transfers and taxes may add cost.
@@ -252,6 +279,7 @@ startup requirements. Listed-but-unread settings are explained after the table.
 | `OFFSITE_BACKUP_REGION` | offsiteStore.js:19 | O-config: not fatal startup; no region validation | us-east-1 | No | S G |
 | `OFFSITE_BACKUP_SECRET_ACCESS_KEY` | offsiteStore.js:20 (required loop:8-9) | O-config: not fatal startup; nonempty; no credential validity check | None | Yes | S G |
 | `OFFSITE_BACKUP_SESSION_TOKEN` | offsiteStore.js:20 | O-config: not fatal startup; optional; no token validation | None | Yes | S G |
+| `OFFSITE_BACKUP_URL_STYLE` | offsiteStore.js:19-20 | O-config: exactly virtual or path; invalid disables uploads | path | No | S G |
 | `OUTBOUND_WEBHOOKS_ENABLED` | outboundWebhookTransport.js:108-109; deploymentConfig.js:42-43 | D-bool: optional; if supplied exactly true or false | true in production; false outside production | No | G |
 | `PORT` | deploymentConfig.js:59 → integer:13; server.js:115 | D-int: 1..65535 | 3000 | No | G L |
 | `PRICEBOOK_PATH` | ../priceBookService.js:16; deploymentConfig.js:54-55 | D-derived: supplied override must match derived path | Production: APP_DATA_DIR/pricebooks; dev: repo/data/pricebooks | No | G |

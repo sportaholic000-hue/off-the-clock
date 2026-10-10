@@ -251,7 +251,7 @@ export function createAuthHandlers({
     const email=normalizedEmail(req.body?.email);
     const password=typeof req.body?.password==='string'?req.body.password:'';
     const user=email?database.prepare('SELECT * FROM users WHERE email=?').get(email):null;
-    if(!user||user.role==='admin'||(user.role==='owner'&&!user.emailVerifiedAt)||!(await comparePassword(password,user.passwordHash)))return res.status(401).json({error:'Invalid credentials'});
+    if(!user||user.dataDeletedAt||user.role==='admin'||(user.role==='owner'&&!user.emailVerifiedAt)||!(await comparePassword(password,user.passwordHash)))return res.status(401).json({error:'Invalid credentials'});
     try {const result=sessions.create(user);limits.release(receipt);return http.sessionReply(res,result);}
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);if(error instanceof AuthLimitError)return res.status(503).json({error:error.message});throw error;}
   }

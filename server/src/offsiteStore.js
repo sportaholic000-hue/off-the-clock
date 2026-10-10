@@ -16,13 +16,16 @@ export function readOffsiteConfig(env=process.env) {
     if(key.length!==32 || (!/^[a-fA-F0-9]{64}$/.test(text) && key.toString('base64')!==text))throw Error();
     const prefix=env.OFFSITE_BACKUP_PREFIX || 'off-the-clock';
     if(!/^[A-Za-z0-9][A-Za-z0-9_/-]{0,127}$/.test(prefix) || prefix.split('/').some(s=>!s) || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(env.OFFSITE_BACKUP_BUCKET))throw Error();
-    return {enabled:true,endpoint:endpoint.href,bucket:env.OFFSITE_BACKUP_BUCKET,key,prefix,region:env.OFFSITE_BACKUP_REGION || 'us-east-1',
+    const urlStyle=env.OFFSITE_BACKUP_URL_STYLE || 'path';
+    if(!['path','virtual'].includes(urlStyle))throw Error();
+    return {enabled:true,endpoint:endpoint.href,bucket:env.OFFSITE_BACKUP_BUCKET,key,prefix,urlStyle,region:env.OFFSITE_BACKUP_REGION || 'us-east-1',
       credentials:{accessKeyId:env.OFFSITE_BACKUP_ACCESS_KEY_ID,secretAccessKey:env.OFFSITE_BACKUP_SECRET_ACCESS_KEY,...(env.OFFSITE_BACKUP_SESSION_TOKEN?{sessionToken:env.OFFSITE_BACKUP_SESSION_TOKEN}:{})}};
   } catch {return {enabled:false,reason:'OFFSITE_CONFIG_INVALID',missing:[]};}
 }
-export function createS3BackupStore(config) {
-  const client=new S3Client({endpoint:config.endpoint,region:config.region,credentials:config.credentials,forcePathStyle:true,maxAttempts:3,
-    requestChecksumCalculation:'WHEN_REQUIRED',responseChecksumValidation:'WHEN_REQUIRED',requestHandler:{connectionTimeout:5000,requestTimeout:30000}});
+export function createS3BackupStore(config,{requestHandler}={}) {
+  if(config.urlStyle!==undefined&&!['path','virtual'].includes(config.urlStyle))throw Error('OFFSITE_CONFIG_INVALID');
+  const client=new S3Client({endpoint:config.endpoint,region:config.region,credentials:config.credentials,forcePathStyle:config.urlStyle!=='virtual',maxAttempts:3,
+    requestChecksumCalculation:'WHEN_REQUIRED',responseChecksumValidation:'WHEN_REQUIRED',requestHandler:requestHandler||{connectionTimeout:5000,requestTimeout:30000}});
   const send=command=>client.send(command,{abortSignal:AbortSignal.timeout(30000)});
   const params=Key=>({Bucket:config.bucket,Key});
   return {

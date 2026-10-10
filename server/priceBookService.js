@@ -47,9 +47,18 @@ export function pricebookCreationRecorded(ownerId) {
   return Boolean(ownerQuery('SELECT 1 FROM priceBookCreationRecords WHERE ownerId = ?').get(String(ownerId)));
 }
 function recordPricebookCreation(ownerId, timestamp = new Date().toISOString()) {
+  assertRetainedAccount(ownerId);
   ensureCreationRecords();
   ownerQuery(`INSERT INTO priceBookCreationRecords(ownerId,createdAt,updatedAt)
     VALUES(?,?,?) ON CONFLICT(ownerId) DO UPDATE SET updatedAt=excluded.updatedAt`).run(String(ownerId),timestamp,timestamp);
+}
+function assertRetainedAccount(ownerId){
+  // This module also supports standalone file stores before the application
+  // account schema is installed. Do not turn those stores into auth clients.
+  // Once the account table exists, always consult its current erasure marker.
+  if(!applicationDb.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='users'").get())return;
+  if(ownerQuery('SELECT * FROM users WHERE id=@ownerId').get({ownerId})?.dataDeletedAt)
+    throw Object.assign(new Error('This account has been erased. Create a new account to start again.'),{code:'ACCOUNT_ERASED',statusCode:410});
 }
 function missingCreatedPricebook(ownerId) {
   return unreadablePricebook(ownerId, 'a durable creation record exists but the saved file is missing', {ownerRecovery:true});
@@ -144,6 +153,7 @@ function closeSaveMutex(database) {
 }
 const busySave = cause => Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409, cause });
 export function withPricebookLock(ownerId, work) {
+  assertRetainedAccount(ownerId);
   const ownerKey = String(ownerId);
   if (heldSaves.has(ownerKey)) return runSaveWork(work);
   const directory = resolve(pricebookDirectory()) + '.saves';
@@ -153,6 +163,7 @@ export function withPricebookLock(ownerId, work) {
   try {
     try { mutex.exec('BEGIN IMMEDIATE'); }
     catch (error) { if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') throw busySave(error); throw error; }
+    assertRetainedAccount(ownerId);
     heldSaves.add(ownerKey);
     return runSaveWork(work);
   } finally { heldSaves.delete(ownerKey); closeSaveMutex(mutex); }
