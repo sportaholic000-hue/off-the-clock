@@ -1,0 +1,12 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+[Error: EINVAL: invalid argument, chown '/workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/.runtime/libEGL.so'] {
+  errno: -22,
+  code: 'EINVAL',
+  syscall: 'chown',
+  path: '/workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/.runtime/libEGL.so'
+}
+
+Node.js v24.19.0
