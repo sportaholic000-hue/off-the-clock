@@ -4,6 +4,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { createBookingService, BookingServiceError } from '../server/src/bookingService.js';
 import { localDateTimeCandidates } from '../server/src/calendarTime.js';
 import {installAppointmentChangeSchema} from '../server/src/appointmentChangeSchema.js';
+import {CREATE_TABLE_STATEMENTS} from '../server/src/schema.js';
 
 const OWNER = 'owner-a';
 const OTHER_OWNER = 'owner-b';
@@ -179,6 +180,10 @@ function database() {
     );
   `);
   installAppointmentChangeSchema(db);
+  // Confirmation now reads source records to link widget bookings into Leads.
+  // These booking-only fixtures have no widget source: expected leads = 0.
+  // Use the production record schemas without changing any booking assertion.
+  for (const sql of CREATE_TABLE_STATEMENTS.filter(sql=>/CREATE TABLE IF NOT EXISTS (leads|quotes|customers)\b/.test(sql))) db.exec(sql);
   return db;
 }
 
@@ -646,6 +651,7 @@ test('confirmed provider result commits one appointment and one outbox event, wi
   assert.equal(state.db.prepare('SELECT status FROM appointments').get().status, 'CONFIRMED');
   assert.equal(state.db.prepare('SELECT status FROM bookingHolds').get().status, 'CONFIRMED');
   assert.equal(state.db.prepare('SELECT COUNT(*) AS count FROM outboxEvents').get().count, 1);
+  assert.equal(state.db.prepare('SELECT COUNT(*) AS count FROM leads').get().count, 0);
 
   const exactRetry = await state.restart().confirm({
     ownerId: OWNER,

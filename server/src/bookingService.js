@@ -1,4 +1,5 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
+import {linkWidgetBookingLead} from './widgetBookingLead.js';
 import crypto from 'node:crypto';
 import { serviceAreaFromKnowledgeBase, serviceAreaDecision } from './serviceArea.js';
 import {
@@ -892,6 +893,7 @@ export function createBookingService({
       usageOwnerQuery(db)(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
         providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
         WHERE id = ? AND ownerId = ?`).run(eventId, nowIso, nowIso, appointmentId, ownerId);
+      linkWidgetBookingLead(db,{ownerId,intentId,appointmentId,createdAt:nowIso});
       usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
         WHERE id = ? AND ownerId = ?`).run(nowIso, holdId, ownerId);
       usageOwnerQuery(db)(`INSERT OR IGNORE INTO outboxEvents (
@@ -1256,6 +1258,7 @@ export function createBookingService({
         resolved.intentId
       );
       if (transition.changes === 1) {
+        linkWidgetBookingLead(db,{ownerId:resolved.ownerId,intentId:resolved.intentId,appointmentId:appointment.id,createdAt:nowIso});
         usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
           WHERE id = ? AND ownerId = ? AND intentId = ?
             AND status = 'CONFIRMING'`).run(

@@ -10,6 +10,11 @@ import { findInvalidStaffOwnerLinks } from './tenant.js';
 import { installAuthTokenSchema } from './authTokenService.js';
 import {installAuthSessionSchema} from './authSessionService.js';
 import {installAuthLimitSchema} from './authRateLimitService.js';
+import {resolveCustomer} from './customerIdentityService.js';
+import {hasCallbackContact} from './quoteContact.js';
+import {storedObject,followUpContact} from './ownerRecordViews.js';
+import {linkWidgetBookingLead} from './widgetBookingLead.js';
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 const USERS_CREATE_SQL = CREATE_TABLE_STATEMENTS[0];
 const USERS_MIGRATION_TABLE = 'users_owner_migration';
@@ -254,6 +259,32 @@ export function migrateStarterPlanConstraints(database) {
   } finally {setPragma(database,`foreign_keys = ${foreignKeysWereEnabled?'ON':'OFF'}`);}
 }
 
+export function backfillWidgetLeads(database) {
+  runTransaction(database,()=>{
+    // Only missing widget records are materialized. Keep original quote bytes,
+    // IDs and timestamps; never reopen a dismissed lead or touch call leads.
+    const quotes=database.prepare(`SELECT q.* FROM quotes q WHERE q.callId IS NULL AND q.callerType='customer'
+      AND NOT EXISTS (SELECT 1 FROM leads l WHERE l.ownerId=q.ownerId AND l.id=q.id)`).all();
+    const insert=usageOwnerQuery(database)(`INSERT INTO leads(id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
+      VALUES(?,?,?,?,?,?,?,?,?)`);
+    for(const quote of quotes){
+      const detail=storedObject(quote.resultJson),original=detail.originalSubmission;
+      if(!hasCallbackContact(original?.contact))continue;
+      const contact=followUpContact(original.contact);
+      const customer=resolveCustomer(database,{ownerId:quote.ownerId,phone:contact.phone,createdAt:quote.createdAt});
+      const partial=(detail.customerResult||detail.applicationOutcome?.customerResult)?.resultType==='PARTIAL_ESTIMATE_READY';
+      insert.run(quote.id,quote.ownerId,contact.name||null,contact.phone||null,typeof original.serviceRequest==='string'?original.serviceRequest:quote.serviceType||'Customer service request',
+        JSON.stringify({...detail,customerId:customer?.id??null,linkedQuoteId:quote.id}),partial?'additional_work':'widget_quote',partial?'NEEDS REVIEW':'NEW',quote.createdAt);
+    }
+    const bookings=database.prepare(`SELECT a.ownerId,a.id,a.bookingIntentId,a.createdAt FROM appointments a
+      JOIN bookingIntents i ON i.ownerId=a.ownerId AND i.id=a.bookingIntentId
+      JOIN quotes q ON q.ownerId=i.ownerId AND q.id=i.sourceId AND i.sourceType='quote'
+      WHERE a.status='CONFIRMED' AND q.callId IS NULL AND q.callerType='customer'
+      AND (a.customerId IS NULL OR NOT EXISTS(SELECT 1 FROM leads l WHERE l.ownerId=q.ownerId AND l.id=q.id))`).all();
+    for(const row of bookings)linkWidgetBookingLead(database,{ownerId:row.ownerId,intentId:row.bookingIntentId,appointmentId:row.id,createdAt:row.createdAt});
+  });
+}
+
 export function migrateDatabase(database) {
   for (const statement of CREATE_TABLE_STATEMENTS) {
     database.exec(statement);
@@ -294,5 +325,6 @@ export function migrateDatabase(database) {
   installOwnerAlertSchema(database);
   installOwnerDashboardSchema(database);
   installBillingLifecycleSchema(database);
+  backfillWidgetLeads(database);
   return CREATE_TABLE_STATEMENTS;
 }

@@ -59,7 +59,7 @@ function AvailabilityForm({configuration,onSaved,onSaving}) {
     </fieldset>)}</div>
     <h2>Booking availability</h2><div className="calendar-settings-grid">{NUMBER_SETTINGS.map(([key,label,min,max])=><Field key={key} label={label}><TextInput type="number" required step="1" min={min} max={max} value={form[key]} onChange={event=>change(key,event.target.value)}/></Field>)}</div>
     <label className="calendar-checkbox"><input type="checkbox" checked={form.directBookingEnabled} onChange={event=>change('directBookingEnabled',event.target.checked)}/>Allow customers to book available times</label>
-    <p className="calendar-muted">A connected calendar, service area and enabled service with a duration are also required.</p>
+    <p className="calendar-muted">Set your service area in Onboarding → Knowledge base. A connected calendar and an enabled service with a duration are also required.</p>
     <h2>Blackout dates</h2><p className="calendar-muted">Block a period when you cannot take appointments. Enter times in {form.timezone||'your business timezone'}.</p>
     {form.blackouts.map((block,index)=><div key={index} className="calendar-blackout">
       {['start','end'].map(key=><Field key={key} label={`Blocked period ${index+1} ${key}`}><TextInput type="datetime-local" required value={block[key+'Local']} onChange={event=>change('blackouts',form.blackouts.map((row,i)=>i===index?{...row,[key+'Local']:event.target.value}:row))}/></Field>)}
@@ -88,7 +88,7 @@ function ServicePolicy({service,onSaved,onSaving}) {
     </div>
     <label className="calendar-checkbox"><input type="checkbox" checked={enabled} onChange={event=>setEnabled(event.target.checked)}/>Offer booking for {service.name}</label>
     <p>{service.capability==='DIRECT'?'Ready for direct booking':service.capability==='EXTERNAL_HANDOFF'?'Uses your Calendly link':service.capability==='NONE'?'Booking disabled':'Preferred-time requests only'}</p>
-    {!!service.blockers?.length&&<details><summary>What is needed for direct booking?</summary><ul>{service.blockers.map((block,index)=><li key={index}>{block.message}</li>)}</ul></details>}
+    {!!service.blockers?.length&&<><p>What is needed for direct booking?</p><ul aria-label={service.name+' missing booking requirements'}>{service.blockers.map((block,index)=><li key={index}>{block.message}</li>)}</ul></>}
     <ErrorMessage error={error}/><Button type="submit">{saving?'Saving…':'Save '+service.name+' booking'}</Button>
   </fieldset></form>;
 }
@@ -119,6 +119,21 @@ function Connection({connection,onChanged}) {
   </section>;
 }
 
+export function BookingRequirements({configuration}) {
+  const blocks=[...(configuration.directBooking?.globalBlockers||[]),...(configuration.directBooking?.releaseBlockers||[])];
+  return <section aria-label="Booking requirements">
+    <h2>Booking requirements</h2>
+    {!!blocks.length&&<ul>{blocks.map((block,index)=><li key={index}>{block.message}</li>)}</ul>}
+    <p>Set your service area in Onboarding → Knowledge base.</p>
+    <Button variant="secondary" onClick={()=>go('/onboarding?step=5')}>Set service area</Button>
+    {configuration.directBooking?.ready&&<p>Ready for direct booking</p>}
+    {!configuration.services?.length&&<p>Add a service in your price book to configure its booking options.</p>}
+    {(configuration.services||[]).map(service=>({...service,blockers:(service.blockers||[]).filter(block=>!blocks.some(global=>global.code===block.code))})).filter(service=>service.blockers.length).map(service=><div key={service.serviceId}>
+      <h3>{service.name}</h3><ul aria-label={service.name+' missing booking requirements'}>{service.blockers.map((block,index)=><li key={index}>{block.message}</li>)}</ul>
+    </div>)}
+  </section>;
+}
+
 export default function Calendar() {
   const [schedule,setSchedule]=useState(null),[configuration,setConfiguration]=useState(null),[fromDate,setFromDate]=useState('');
   const [tab,setTab]=useState('Schedule'),[loading,setLoading]=useState(true),[error,setError]=useState(null),[notice,setNotice]=useState('');
@@ -141,13 +156,14 @@ export default function Calendar() {
       }
     }catch(nextError){if(requestId.current===version){setSchedule(null);setError(nextError);setLoading(false);}}
   }
-  useEffect(()=>{load('');return()=>{requestId.current++;};},[]);
+  useEffect(()=>{load(new URLSearchParams(window.location.search).get('fromDate')||'');return()=>{requestId.current++;};},[]);
   async function saved(config,message){setConfiguration(config);setNotice(message);await load();}
   const manageable=schedule?.canManage===true;
   return <AppShell activePath="/calendar"><main className="calendar-page">
     <PageHeader eyebrow="YOUR BUSINESS" title="Calendar" description="See bookings and requested times. Set when customers can book." actions={<Button variant="secondary" disabled={loading} onClick={()=>load()}>Refresh calendar</Button>}/>
     {notice&&<div role="status"><Notice tone="success">{notice}</Notice></div>}
     <ErrorMessage error={error}/>
+    {manageable&&configuration&&<BookingRequirements configuration={configuration}/>}
     <div className="calendar-tabs" role="tablist" aria-label="Calendar views">{['Schedule',...(manageable?['Availability','Connection']:[])].map(name=><button key={name} type="button" role="tab" aria-selected={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</div>
     {tab==='Schedule'&&<section aria-label="Schedule"><form className="calendar-range" onSubmit={event=>{event.preventDefault();load();}}><Field label="Week starting"><TextInput type="date" required value={fromDate} onChange={event=>setFromDate(event.target.value)}/></Field><Button type="submit" disabled={loading}>Show week</Button></form>
       {loading?<Loading label="Loading calendar"/>:schedule&&<>

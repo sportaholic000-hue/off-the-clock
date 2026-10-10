@@ -493,6 +493,20 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/migrations.js",
+    "function": "backfillWidgetLeads",
+    "reason": "Startup migration enumerates missing widget leads across tenants; each resulting write binds the quote's owner through ownerQuery.",
+    "signature": "adb78314b8c7c2283d390fb9d6ce2422042d8efe3b0c0923727a2d744f1a3e1f",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/migrations.js",
+    "function": "backfillWidgetLeads",
+    "reason": "Startup migration enumerates confirmed widget bookings needing repair; all joins bind ownerId and the repair uses ownerQuery.",
+    "signature": "e450558c987500bbd48ff7a6a026fe029db9c6a29977c9230585096bc03280d1",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/migrations.js",
     "function": "tableColumns",
     "reason": "Migration schema inspection or cross-tenant repair.",
     "signature": "9b532957dcbed18da5ee46065845ac2c17fb3a7120ec749766aa636a33f10447",
@@ -796,7 +810,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "850c2484d4887ab1f03eb91af48152257ebf25861178890ed2e29235d21c7b7c",
     "occurrence": 1,
-    "line": 262
+    "line": 263
   },
   {
     "file": "server/src/calendarOAuthState.js",

@@ -156,8 +156,8 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
     if(response.resultType==='INSTANT_ESTIMATE_READY'||partial) {
       ownerQuery(`INSERT INTO quotes (id,ownerId,quoteId,serviceType,customerInputsJson,resultJson,status,callerType,createdAt)
         VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,response.quoteId,service?.serviceType??null,JSON.stringify(body.customerInputs??null),JSON.stringify(internal),partial?'PARTIAL':'INSTANT','customer',createdAt);
-      if(partial)ownerQuery(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
-        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify({...internal,linkedQuoteId:recordId}),'additional_work','NEEDS REVIEW',createdAt);
+      ownerQuery(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
+        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify({...internal,linkedQuoteId:recordId}),partial?'additional_work':'widget_quote',partial?'NEEDS REVIEW':'NEW',createdAt);
     } else {
       ownerQuery(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
         VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify(internal),'quote_review','NEEDS REVIEW',createdAt);

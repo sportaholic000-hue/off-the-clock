@@ -1,6 +1,8 @@
 import {PLAN_DESCRIPTIONS,PRICE_BOOK_UNAVAILABLE,BOOKING_UNAVAILABLE} from './planDescriptions.js';
 import InterviewConfiguration from './interviewConfiguration.jsx';
 import {applyKnowledgeDraft} from './knowledgeDraft.js';
+import {ServiceAreaEditor} from './serviceAreaEditor.jsx';
+import {normalizeServiceArea} from '../../server/src/serviceArea.js';
 import {CONFIGURATION_FIELDS,validateInterviewConfiguration,describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
@@ -385,6 +387,7 @@ export function KnowledgeStep({ state, refresh, back, next }) {
     policies:initial.policies || '', faqs:initial.faqs || '', prices:initial.prices || '',
     neverSay:Array.isArray(initial.neverSay) ? initial.neverSay.join('\n') : '',
     websiteUrl:initial.website || '',
+    ...(initial.serviceArea?{serviceArea:initial.serviceArea}:{}),
     reviewContact:initial.reviewContact || {name:state.account?.firstName || '',role:'owner'}
   });
   const [draft, setDraft] = useState(Boolean(initial.draft));
@@ -406,7 +409,8 @@ export function KnowledgeStep({ state, refresh, back, next }) {
   async function save() {
     setBusy(true); setError(null);
     try {
-      await api('/api/onboarding/knowledge-base', { method:'POST', body:form });
+      const body={...form,...(form.serviceArea?{serviceArea:normalizeServiceArea(form.serviceArea)}:{})};
+      await api('/api/onboarding/knowledge-base', { method:'POST', body });
       setDraft(false);
       await refresh();
       next();
@@ -435,6 +439,7 @@ export function KnowledgeStep({ state, refresh, back, next }) {
         <p>{websiteImport.message}</p>
         {websiteImport.entries.length>0&&<ul>{[...new Set(websiteImport.entries.map(entry=>entry.sourceUrl))].map(url=><li key={url}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>)}</ul>}
       </div>}
+      {['Operator','QuoteDone','Scale'].includes(state.account?.plan)&&<ServiceAreaEditor value={form.serviceArea} disabled={busy} onChange={value=>change('serviceArea',value)}/>}
       <div className="kb-grid">
         <Field label="About & area"><Textarea disabled={busy} rows="5" value={form.about} onChange={event => change('about', event.target.value)} /></Field>
         <Field label="Hours"><Textarea disabled={busy} rows="5" value={form.hours} onChange={event => change('hours', event.target.value)} /></Field>
