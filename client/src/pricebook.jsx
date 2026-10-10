@@ -1,3 +1,4 @@
+import {ownerValidationMessages,ownerMessage,ownerDiagnosticLabels} from './pricebookDiagnostics.js';
 import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {ServiceStatusNotices,priceOptionChipText} from './quoteDoneControls.jsx';
 import {InstalledMaterialsEditor} from './installedMaterialsEditor.jsx';
@@ -469,7 +470,7 @@ function Preview({ preview, loading, status }) {
                 field: preview.missingOwnerFields?.[index] || String(index),
                 label
               }))}
-              emptyLabel={preview.reviewReason || 'Complete the required pricing before previewing this quote.'}
+              emptyLabel={ownerMessage(preview.reviewReason, 'Complete the required pricing before previewing this quote.')}
             />
           </div>
         )}
@@ -597,6 +598,12 @@ export default function PriceBook() {
   }, [book, revisionConflict?.remote, conflictChoices]);
   useEffect(() => () => { conflictGeneration.current++; validationSeq.current++; }, []);
 
+  // Invalidate immediately, before React can flush the busy state. Late
+  // background replies from our own preceding revision are no longer current.
+  const mutationGeneration = useRef(0);
+  function beginMutation() { mutationGeneration.current++; validationSeq.current++; setValidating(false); }
+  function approvalBusy(busy) { if(busy)beginMutation(); setApprovalPending(busy); }
+
   async function recoverConflict(problem) {
     const generation = ++conflictGeneration.current;
     validationSeq.current++;
@@ -651,7 +658,7 @@ export default function PriceBook() {
     setBook({...next, services});
     if (!services.some((service, index) => editorServiceKey(service, index) === selectedType)) setSelectedType(services.length ? editorServiceKey(services[0], 0) : null);
     setStatuses(validation?.statuses || null);
-    setDraftValidationErrors(validation?.validationErrors || []);
+    setDraftValidationErrors(validation ? ownerValidationMessages(validation,next,metadata) : []);
     setRevisionConflict(null);
     setConflictChoices({});
     setError(null);
@@ -714,7 +721,7 @@ export default function PriceBook() {
 
 
   useEffect(() => {
-    if (!book || locked || revisionConflict) return;
+    if (!book || locked || revisionConflict || saving || approvalPending) return;
     // Do NOT clear statuses here. Clearing on every keystroke made every
     // service chip fall back to NEEDS PRICING mid-typing, including services
     // already proven QUOTING LIVE. The previous confirmed result stays on
@@ -728,7 +735,7 @@ export default function PriceBook() {
           // Out-of-order guard: ignore anything but the newest request.
           if (validationSeq.current !== seq) return;
           setStatuses(result.statuses || []);
-          setDraftValidationErrors(result.validationErrors || []);
+          setDraftValidationErrors(ownerValidationMessages(result,book,metadata));
           setValidating(false);
         })
         .catch(nextError => {
@@ -738,20 +745,22 @@ export default function PriceBook() {
           // claiming the draft is valid. Surface the error, but do not
           // fabricate NEEDS PRICING for every service -- the last confirmed
           // statuses remain, and the error banner states the draft is unverified.
-          setDraftValidationErrors([nextError.message]);
+          setDraftValidationErrors([ownerMessage(nextError.message)]);
           setValidating(false);
         });
     }, 250);
     return () => { clearTimeout(timer); if (validationSeq.current === seq) validationSeq.current++; };
-  }, [book, locked, !!revisionConflict]);
+  }, [book, locked, !!revisionConflict, saving, approvalPending]);
 
   useEffect(() => {
     // Every response, rejection and completion belongs to this exact draft.
     // Cleanup invalidates already-running requests as well as the debounce.
     let current = true;
+    const generation = mutationGeneration.current;
+    const isCurrent = () => current && generation === mutationGeneration.current;
     setPreview(null);
     if(revisionConflict){setPreviewLoading(false);setPreview({resultType:'ESTIMATE_REQUIRES_REVIEW',reviewReason:'Reconcile your unsaved changes with the latest saved price book before previewing.'});return () => {current=false;};}
-    if (!selected || !selectedMeta || !book || locked) {
+    if (!selected || !selectedMeta || !book || locked || saving || approvalPending) {
       setPreviewLoading(false);
       return () => { current = false; };
     }
@@ -766,12 +775,12 @@ export default function PriceBook() {
       api('/api/pricebook/preview', {
         method:'POST',
         body:pricebookPayload({ serviceId:selected.id, revision:book.revision, service:selected, defaults:book.defaults, customerInputs:selected.validationInputs || selectedMeta.sampleInputs, customerFeeSelections })
-      }).then(result => { if (current) setPreview(result); })
-        .catch(nextError => { if (current) { if (isRevisionConflict(nextError)) recoverConflict(nextError); else setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:nextError.message }); } })
-        .finally(() => { if (current) setPreviewLoading(false); });
+      }).then(result => { if (isCurrent()) setPreview(result); })
+        .catch(nextError => { if (isCurrent()) { if (isRevisionConflict(nextError)) recoverConflict(nextError); else setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:nextError.message }); } })
+        .finally(() => { if (isCurrent()) setPreviewLoading(false); });
     }, 350);
     return () => { current = false; clearTimeout(timer); };
-  }, [selected, selectedMeta, book?.defaults, book?.revision, locked, customerFeeSelections, revisionConflict]);
+  }, [selected, selectedMeta, book?.defaults, book?.revision, locked, customerFeeSelections, revisionConflict, saving, approvalPending]);
 
   function replaceSelected(next) {
     setBook({ ...book, services:book.services.map((service, index) => editorServiceKey(service, index) === selectedType ? next : service) });
@@ -797,7 +806,7 @@ export default function PriceBook() {
 
   async function save() {
     if (revisionConflict) { await recoverConflict(); return; }
-    setSaving(true); setError(null);
+    beginMutation(); setSaving(true); setError(null);
     try {
       if(!contract.engineVersion)validatePricebookNumericDraft(book);else if(document.querySelector('[aria-invalid="true"]'))throw Error('Correct invalid numeric inputs before saving or previewing.');
       const result = await api('/api/pricebook/save', { method:'POST', body:pricebookPayload(book) });
@@ -966,7 +975,7 @@ export default function PriceBook() {
                     <h3>{selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}</h3>
                     <ul>{selectedStatus.productCoverage.map((product,index)=><li key={index}>
                       <strong>{[product.tierName,...Object.values(product.selection).map(humanPricingKey)].filter(Boolean).join(' · ')}</strong>
-                      <span>{!product.configurationComplete&&product.missingOwnerLabels?.length?'Prices needed: '+product.missingOwnerLabels.join('; '):product.coverageMessage||(product.configurationComplete?'Ready to quote':'Needs setup: '+product.ownerDiagnostics.map(item=>item.message).join(' '))}</span>
+                      <span>{!product.configurationComplete&&product.missingOwnerLabels?.length?'Prices needed: '+product.missingOwnerLabels.join('; '):product.coverageMessage||(product.configurationComplete?'Ready to quote':'Needs setup: '+ownerDiagnosticLabels(product,selected,selectedMeta).join('; '))}</span>
                     </li>)}</ul>
                   </section>}
                   {!!selectedStatus.laborAdjustmentCoverage?.length&&<section className="scope-coverage" aria-label="Labor adjustment coverage"><h3>Conditions that still need a labor portion</h3><ul>{selectedStatus.laborAdjustmentCoverage.map((row,index)=><li key={index}><strong>{[row.tierName,...Object.entries(row.selection).map(([key,value])=>key==='stories'?value+'-story building':humanPricingKey(value)+' '+(key==='terrainSlope'?'ground':'walls'))].filter(Boolean).join(' · ')}</strong><span>{row.message} {row.components.map(humanPricingKey).join('; ')}.</span></li>)}</ul><p>Enter the percentages under Labor and materials in installed prices. Supported jobs remain available to quote.</p></section>}
@@ -1026,7 +1035,7 @@ export default function PriceBook() {
                 {contract.engineVersion&&<>
                   <InstalledMaterialsEditor service={selected} onChange={replaceSelected}/>
                   <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} services={book.services} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
-                  <div className="editor-optional"><SavedApproval meta={selectedMeta} key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={pricebookPayload(book)} onBusyChange={setApprovalPending} onRevisionConflict={recoverConflict} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(draftRef.current,before,after,serviceId,revision);basePricebook.current=clone(after);setPreview(null);setStatuses(null);setBook(next);}}/></div>
+                  <div className="editor-optional"><SavedApproval meta={selectedMeta} key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={pricebookPayload(book)} onBusyChange={approvalBusy} onRevisionConflict={recoverConflict} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(draftRef.current,before,after,serviceId,revision);basePricebook.current=clone(after);setPreview(null);setStatuses(null);setBook(next);}}/></div>
                 </>}
 
                 {/* OPTIONAL PRICES — collapsed until relevant. */}
@@ -1172,7 +1181,7 @@ export default function PriceBook() {
         {transferNotice&&<Notice tone="warning">{transferNotice}</Notice>}
         {contract.engineVersion&&<QuoteAccess/>}<ErrorMessage error={error} />
         {draftValidationErrors.length > 0 && (
-          <Notice tone="warning">{draftValidationErrors.join(' ')}</Notice>
+          <Notice tone="warning">{draftValidationErrors.map(message=>ownerMessage(message)).join(' ')}</Notice>
         )}
         <div className="save-bar">
           <StatusChip status={selectedStatus.status} label={priceOptionChipText(selectedStatus)} pending={validating} />

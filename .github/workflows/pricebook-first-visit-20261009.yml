@@ -1,0 +1,68 @@
+name: Price Book first visit synthetic verification
+on:
+  push:
+    branches: ['fix/pricebook-first-visit-20261009']
+permissions:
+  contents: read
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [base, final]
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Pin the base with the same regression and rehearsal
+        if: matrix.version == 'base'
+        run: |
+          cp test/pricebookFirstVisit20261009.dom.spec.mjs /tmp/first-visit.spec.mjs
+          cp -R verification/first-customer-20261009 /tmp/first-customer
+          git checkout --detach be473b6542c498a6e96b056b5be2c3d59d9e4055
+          cp /tmp/first-visit.spec.mjs test/pricebookFirstVisit20261009.dom.spec.mjs
+          cp -R /tmp/first-customer verification/first-customer-20261009
+      - name: Clean dependencies and browser
+        run: |
+          rm -rf node_modules server/node_modules client/node_modules
+          npm ci
+          npm install --no-save --no-audit --no-fund playwright@1.56.0
+          npx playwright install --with-deps chromium
+          npm run build
+          mkdir -p /tmp/pricebook-evidence
+      - name: New regression before and after
+        env:
+          VERSION: '${{ matrix.version }}'
+          PRICEBOOK_FIRST_VISIT_EVIDENCE: /tmp/pricebook-evidence/dom
+        run: |
+          set +e
+          node --test test/pricebookFirstVisit20261009.dom.spec.mjs > /tmp/pricebook-evidence/regression.tap 2>&1
+          result=$?
+          cat /tmp/pricebook-evidence/regression.tap
+          if [ "$VERSION" = base ]; then
+            test "$result" -ne 0 && grep -q '^# fail 4$' /tmp/pricebook-evidence/regression.tap
+          else
+            test "$result" -eq 0
+          fi
+      - name: Real production rehearsal with synthetic providers
+        if: always()
+        env:
+          REHEARSAL_OUTPUT: /tmp/pricebook-evidence/rehearsal
+          REHEARSAL_COMMIT: '${{ github.sha }}'
+        run: |
+          node verification/first-customer-20261009/rehearsal.mjs > /tmp/pricebook-evidence/rehearsal.log 2>&1
+      - name: Full test suite
+        if: matrix.version == 'final'
+        run: npm test > /tmp/pricebook-evidence/npm-test.tap 2>&1
+      - name: Strict quote suite
+        if: always() && matrix.version == 'final'
+        run: npm run test:quote > /tmp/pricebook-evidence/test-quote.tap 2>&1
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'pricebook-first-visit-${{ matrix.version }}'
+          path: /tmp/pricebook-evidence
