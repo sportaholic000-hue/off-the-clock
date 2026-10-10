@@ -1,4 +1,4 @@
-const VALID_PLANS = new Set(['Operator', 'QuoteDone', 'Scale']);
+const VALID_PLANS = new Set(['Starter', 'Operator', 'QuoteDone', 'Scale']);
 const QUOTEDONE_PLANS = new Set(['QuoteDone', 'Scale']);
 const PAYMENT_FAILURE_STATUSES = new Set(['payment_failed', 'past_due']);
 const TERMINAL_STATUSES = new Set([
@@ -129,15 +129,21 @@ export function accountAccessDecision(account, { now = Date.now() } = {}) {
   return denied(ACCESS_REASON.INVALID_STATUS);
 }
 
-export function hasOperatorAccess(account, options) {
+export function hasReceptionistAccess(account, options) {
   return accountAccessDecision(account, options).allowed;
 }
 
+export function hasOperatorAccess(account, options) {
+  return ['Operator', 'QuoteDone', 'Scale'].includes(account?.plan) && hasReceptionistAccess(account, options);
+}
+
+export const hasPriceBookAccess = hasOperatorAccess;
+
 // Provider configuration/cost switches remain separate runtime guards. This
 // helper answers only whether the current database account is entitled to make
-// an Operator-tier provider write.
+// a provider write included in its plan. Feature-specific routes add their own guards.
 export function hasProviderWriteAccess(account, options) {
-  return hasOperatorAccess(account, options);
+  return hasReceptionistAccess(account, options);
 }
 
 export function hasQuoteDoneAccess(account, options) {

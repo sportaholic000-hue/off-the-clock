@@ -131,7 +131,10 @@ test('voice-core malformed transfer settings are rejected before storage',()=>{
 
 test('voice-core production Operator completes quote-free booking through signed HTTP and live WS tools',async t=>{
  const options={install:{},beforeInstall:f=>{configureBooking(f,{ownerId:'synthetic-a'});options.install.bookingService=createBookingService({db:f.db,clock:()=>new Date(at),slotTokenSecret:secret,calendar:{listBusy:async()=>[],createEvent:async input=>({status:'CONFIRMED',eventId:input.eventId,startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc})}});}};
- const h=await harness(t,options),c=await h.connect();assert.equal((await h.tool(c.callback,'matchService',{query:'Synthetic appointment'})).status,'needs_details');
+ let configuration;options.onConnect=input=>{configuration=input;};
+ const h=await harness(t,options),c=await h.connect();
+ const declarations=configuration.config.tools.flatMap(tool=>tool.functionDeclarations||[]).map(tool=>tool.name);
+ assert.equal(declarations.includes('matchService'),false);assert.equal(declarations.includes('getQuote'),false);
  const lead=await h.tool(c.callback,'captureLead',{name:'Synthetic Caller',address});const slots=await h.tool(c.callback,'checkAvailability',{leadHandle:lead.leadHandle,preference:{fromDate:'2026-10-07',days:1}});assert.equal(slots.status,'available');
  const booked=await h.tool(c.callback,'bookAppointment',{leadHandle:lead.leadHandle,slotHandle:slots.slotOptions[0].slotHandle,customerConfirmed:true});assert.equal(booked.status,'confirmed');assert.equal(h.db.prepare('SELECT COUNT(*) n FROM appointments WHERE ownerId=?').get(h.owner).n,1);
 });

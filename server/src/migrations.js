@@ -230,6 +230,30 @@ export function rebuildUsersTableForOwnerConstraint(database) {
   return true;
 }
 
+export function migrateStarterPlanConstraints(database) {
+  const tables=['billingCheckoutRequests','billingUsagePeriods'].filter(table=>{
+    const sql=tableSql(database,table);return sql && !sql.includes("'Starter'");
+  });
+  if(!tables.length)return;
+  const foreignKeysWereEnabled=Number(pragmaValue(database,'foreign_keys'))===1;
+  setPragma(database,'foreign_keys = OFF');
+  try {
+    runTransaction(database,()=>{
+      for(const table of tables){
+        const sql=tableSql(database,table),temporary=table+'_starter_migration';
+        const dependents=database.prepare("SELECT sql FROM sqlite_master WHERE tbl_name=? AND type IN ('index','trigger') AND sql IS NOT NULL").all(table);
+        const columns=tableColumns(database,table).map(name=>`"${name}"`).join(',');
+        database.exec(sql.replace(/^(CREATE TABLE (?:IF NOT EXISTS )?)(?:"[^"]+"|\w+)/i,'$1'+temporary).replace(/plan IN \(\s*'Operator'/,"plan IN ('Starter','Operator'"));
+        database.exec(`INSERT INTO ${temporary} (${columns}) SELECT ${columns} FROM ${table}`);
+        database.exec(`DROP TABLE ${table}`);
+        database.exec(`ALTER TABLE ${temporary} RENAME TO ${table}`);
+        for(const row of dependents)database.exec(row.sql);
+      }
+      assertMigrationIntegrity(database);
+    });
+  } finally {setPragma(database,`foreign_keys = ${foreignKeysWereEnabled?'ON':'OFF'}`);}
+}
+
 export function migrateDatabase(database) {
   for (const statement of CREATE_TABLE_STATEMENTS) {
     database.exec(statement);
@@ -238,6 +262,7 @@ export function migrateDatabase(database) {
   migrateBillingCheckoutRecovery(database,CREATE_TABLE_STATEMENTS.find(sql=>sql.startsWith('CREATE TABLE IF NOT EXISTS billingCheckoutRequests')));
   const rebuilt = rebuildUsersTableForOwnerConstraint(database);
   if (!rebuilt) assertMigrationIntegrity(database);
+  migrateStarterPlanConstraints(database);
   enforceFailClosedTrialEvidence(database);
   backfillBillingSubscriptionHistory(database);
   // Old receipts omit subscription identity. Never guess which invoice settled

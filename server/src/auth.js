@@ -18,7 +18,7 @@ import {
   isAuthToken
 } from './authTokenService.js';
 
-const ALLOWED_REQUESTED_PLANS = new Set(['Operator', 'QuoteDone']);
+const ALLOWED_REQUESTED_PLANS = new Set(['Starter', 'Operator', 'QuoteDone']);
 const SAFE_TOKEN_ERROR = 'This link is invalid or has expired.';
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_FAILED_ATTEMPTS = 5;

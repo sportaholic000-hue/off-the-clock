@@ -52,7 +52,8 @@ function request({ body, headers = {}, tenantOwnerId } = {}) {
 
 function prices() {
   return {
-    Operator: {
+    Starter:{monthly:'price_SYNTHETIC_starter_month',annual:'price_SYNTHETIC_starter_year'},
+  Operator: {
       monthly: 'price_operator_monthly_1',
       annual: 'price_operator_annual_1'
     },

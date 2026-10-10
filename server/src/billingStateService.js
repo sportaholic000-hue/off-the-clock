@@ -6,7 +6,7 @@ import {recordAnnualPaidTerm} from './billingAnnualTerms.js';
 import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 import {createBillingEvidence, subscriptionFacts, billingReference, billingInvoiceSubscription} from './billingEvidence.js';
 
-const ALLOWED_PLANS = new Set(['Operator', 'QuoteDone', 'Scale']);
+const ALLOWED_PLANS = new Set(['Starter', 'Operator', 'QuoteDone', 'Scale']);
 const SUPPORTED_EVENTS = new Set([
   'checkout.session.completed',
   'checkout.session.async_payment_succeeded',

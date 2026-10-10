@@ -41,8 +41,8 @@ export function createAuthSessionService(database,{environment=process.env,clock
       if(userId!=='admin'||!environment.ADMIN_EMAIL||!environment.ADMIN_PASSWORD_HASH)throw new AuthSessionError();
       return {id:'admin',role:'admin',email:environment.ADMIN_EMAIL,passwordHash:environment.ADMIN_PASSWORD_HASH};
     }
-    const user=database.prepare("SELECT account.*,parent.role AS ownerRole FROM users account LEFT JOIN users parent ON parent.id=account.ownerId WHERE account.id=?").get(userId);
-    if(!user || !['owner','staff'].includes(role) || user.role!==role || (role==='staff'&&(!user.ownerId||user.ownerRole!=='owner')))throw new AuthSessionError();
+    const user=database.prepare("SELECT account.*,parent.role AS ownerRole,parent.plan AS ownerPlan FROM users account LEFT JOIN users parent ON parent.id=account.ownerId WHERE account.id=?").get(userId);
+    if(!user || !['owner','staff'].includes(role) || user.role!==role || (role==='staff'&&(!user.ownerId||user.ownerRole!=='owner'||user.ownerPlan==='Starter')))throw new AuthSessionError();
     return user;
   }
   function secret() {const bytes=randomBytes(32);if(!bytes||bytes.length!==32)throw new AuthSessionError('SESSION_STORE_UNAVAILABLE');return Buffer.from(bytes).toString('base64url');}

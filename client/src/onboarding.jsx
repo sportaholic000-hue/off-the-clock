@@ -1,3 +1,4 @@
+import {PLAN_DESCRIPTIONS,PRICE_BOOK_UNAVAILABLE,BOOKING_UNAVAILABLE} from './planDescriptions.js';
 import {voiceOperatorControl} from './voiceOperatorControl.js';
 import InterviewConfiguration from './interviewConfiguration.jsx';
 import {applyKnowledgeDraft} from './knowledgeDraft.js';
@@ -29,7 +30,7 @@ const STEPS = [
   { name:'Calendar', optional:true },
   { name:'Voice & greeting' }
 ];
-const PLANS = ['Operator','QuoteDone'];
+const PLANS = ['Starter','Operator','QuoteDone'];
 const TRADE_GROUPS = [
   { label: 'Roofing', types: ['ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR'] },
   { label: 'Painting', types: ['INTERIOR_PAINTING','EXTERIOR_PAINTING'] },
@@ -162,7 +163,7 @@ function AuthStep({ onAuthenticated }) {
           <Field label="Plan">
             <div className="choice-grid two">
               {PLANS.map(plan => (
-                <button type="button" key={plan} aria-label={plan} aria-pressed={form.plan === plan} className={form.plan === plan ? 'choice selected' : 'choice'} onClick={() => setForm({ ...form, plan })}>{plan}</button>
+                <button type="button" key={plan} aria-label={plan} aria-pressed={form.plan === plan} className={form.plan === plan ? 'choice selected' : 'choice'} onClick={() => setForm({ ...form, plan })}>{plan}<span>{PLAN_DESCRIPTIONS[plan]}</span></button>
               ))}
             </div>
           </Field>
@@ -225,7 +226,7 @@ function BusinessTypeStep({ state, refresh, back, next }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 2 of 9" title="What work do you do?" description="Select every trade your business handles. Answering works for any service business. QuoteDone pricing is optional." />
+      <PageHeader eyebrow="Step 2 of 9" title="What work do you do?" description="Select every trade your business handles. Answering works for any service business. Price-book setup is optional on Operator and QuoteDone." />
       <div className="choice-grid trade-grid">
         {TRADE_GROUPS.map(group => (
           <button key={group.label} type="button" className={chosenGroups.includes(group.label) ? 'choice selected' : 'choice'} onClick={() => toggle(group)}>
@@ -240,7 +241,7 @@ function BusinessTypeStep({ state, refresh, back, next }) {
 }
 
 function JurisdictionStep({ state, refresh, back, next }) {
-  const deferred = state.account.plan === 'Operator';
+  const deferred = state.account.plan === 'Starter';
   const [form, setForm] = useState({
     country: state.profile.country || 'US',
     region: state.profile.region || '',
@@ -261,9 +262,9 @@ function JurisdictionStep({ state, refresh, back, next }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 3 of 9" title="Set your jurisdiction" description={deferred ? 'You can add jurisdiction settings when you turn on QuoteDone.' : 'QuoteDone uses this only to apply the tax mode and rate you confirm.'} />
+      <PageHeader eyebrow="Step 3 of 9" title="Set your jurisdiction" description={deferred ? 'You can add jurisdiction settings with Operator or QuoteDone.' : 'The price book uses this only to apply the tax mode and rate you confirm.'} />
       {deferred ? (
-        <Notice>Operator answering does not need a tax setting.</Notice>
+        <Notice>Starter answering does not need a tax setting.</Notice>
       ) : (
         <>
           <div className="form-grid two">
@@ -477,7 +478,7 @@ function GoLiveStep({ state, refresh, back, next }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 6 of 9" title={simulated ? 'Review the operator control' : 'Put your operator on the line'} description={simulated ? 'This control is simulated for visual review. No calls are answered or routed.' : 'Answering is ready before pricing. QuoteDone activates separately as each service gets its prices.'} />
+      <PageHeader eyebrow="Step 6 of 9" title={simulated ? 'Review the operator control' : 'Put your operator on the line'} description={simulated ? 'This control is simulated for visual review. No calls are answered or routed.' : 'Answering is ready before pricing. Website quoting is available on Operator and QuoteDone; phone price-book quoting requires QuoteDone. Each service needs approved prices.'} />
       <div className={!simulated && control.live ? 'go-live-control live' : 'go-live-control'}>
         <Toggle
           checked={enabled}
@@ -497,7 +498,7 @@ function GoLiveStep({ state, refresh, back, next }) {
 }
 
 function PriceBookStep({ state, metadata, back, next }) {
-  const quoteAccess = ['QuoteDone','Scale'].includes(state.account.plan);
+  const quoteAccess = ['Operator','QuoteDone','Scale'].includes(state.account.plan);
   const activeTypes = state.profile.businessTypes || [];
   const available = metadata.filter(service => activeTypes.includes(service.serviceType));
   const [mode, setMode] = useState('browser');
@@ -706,9 +707,9 @@ function PriceBookStep({ state, metadata, back, next }) {
   if (!quoteAccess) {
     return (
       <section className="step-panel">
-        <PageHeader eyebrow="Step 7 of 9" title="Price book" description="QuoteDone pricing is available on QuoteDone and Scale." />
-        <Notice>Operator keeps answering, booking, and capturing pricing requests without guessing.</Notice>
-        <Button onClick={() => go('/onboarding?step=1')}>Choose QuoteDone</Button>
+        <PageHeader eyebrow="Step 7 of 9" title="Price book" description={PRICE_BOOK_UNAVAILABLE} />
+        <Notice>Starter keeps answering and capturing pricing requests for owner review.</Notice>
+        <Button onClick={() => go('/settings/billing')}>Choose Operator or QuoteDone</Button>
         <StepActions onBack={back} onNext={next} nextLabel="Skip for now" />
       </section>
     );
@@ -831,6 +832,7 @@ function CalendarStep({ state, refresh, back, next }) {
       next();
     } catch (nextError) { setError(nextError); }
   }
+  if(state.account.plan==='Starter')return <section className="step-panel"><PageHeader eyebrow="Step 8 of 9" title="Calendar" description={BOOKING_UNAVAILABLE}/><StepActions onBack={back} onNext={next} nextLabel="Continue"/></section>;
   return (
     <section className="step-panel">
       <PageHeader eyebrow="Step 8 of 9" title="Connect your calendar" description="Until a calendar is connected, your operator collects preferred times and puts them on the lead card." />
@@ -875,7 +877,8 @@ function VoiceStep({ state, refresh, back }) {
   }
   async function finish() {
     try {
-      await api('/api/onboarding/voice', { method:'POST', body:form });
+      const {transferNumber,transferWindows,...answering}=form;
+      await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:form });
       await refresh();
       go('/dashboard');
     } catch (nextError) { setError(nextError); }
@@ -890,12 +893,14 @@ function VoiceStep({ state, refresh, back }) {
       <Field label="Agent name"><TextInput maxLength={500} value={form.agentName} onChange={event => update('agentName', event.target.value)} /></Field>
       <Field label="Greeting"><Textarea maxLength={1000} rows="4" value={form.greeting} onChange={event => update('greeting', event.target.value)} /></Field>
       <Button icon={Volume2} variant="secondary" onClick={preview}>Preview greeting</Button>
+      {state.account.plan==='Starter'?<Notice>{BOOKING_UNAVAILABLE}</Notice>:<>
       <h2>Transfer windows</h2><p>Transfers use {state.account.timezone||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
       <Field label="Transfer number"><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
       {['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
         {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
         <Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:[...(form.transferWindows[day]||[]),{start:'',end:''}]})}>Add {({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]} hours</Button>
       </fieldset>)}
+      </>}
       <ErrorMessage error={error} />
       <StepActions onBack={back} onNext={finish} nextLabel="Finish setup" nextDisabled={!form.agentName.trim() || !form.greeting.trim()} />
     </section>
@@ -950,7 +955,7 @@ export default function Onboarding() {
   if (step === 7) content = <PriceBookStep {...props} metadata={metadata} />;
   if (step === 8) content = <CalendarStep {...props} />;
   if (step === 9) content = <VoiceStep {...props} />;
-  if ([3,7].includes(step) && state.account.plan === 'QuoteDone' && state.quoteDoneAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="QuoteDone setup" title="Activate your QuoteDone plan" description="Complete checkout and confirm your trial or payment before setting up QuoteDone." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
+  if ([3,7].includes(step) && ['Operator','QuoteDone','Scale'].includes(state.account.plan) && state.priceBookAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="Price-book setup" title="Activate your plan" description="Complete checkout and confirm your trial or payment before setting up the price book." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
 
   return (
     <AppShell activePath="/onboarding" operator={state.operator}>

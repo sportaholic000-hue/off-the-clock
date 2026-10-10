@@ -9,7 +9,7 @@ import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
 import { normalizeReviewContact, readReviewContact } from './reviewContact.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
-import { hasOperatorAccess } from './planAccess.js';
+import { hasReceptionistAccess, hasPriceBookAccess, hasOperatorAccess } from './planAccess.js';
 import {voiceRouteReadiness} from './voice/voiceReadiness.js';
 import {applicationMetadata,bookQuoteStatuses,applicationServiceName} from './quoteDoneBridge.js';
 import {quoteDateContext} from './quoteDate.js';
@@ -318,7 +318,7 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,ownerId,new Date())).map(row=>[row.serviceId,row]));
     services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
   }
-  compileVoiceSystemInstruction({guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||'Assistant'},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
+  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||'Assistant'},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
     onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)
@@ -478,8 +478,8 @@ export function onboardingState(ownerId) {
   const profile = getBusinessProfile(ownerId);
   const account = ownerAccount(ownerId);
   const eligibility=operatorEligibility(profile);
-  if(!hasOperatorAccess(account)){eligibility.eligible=false;eligibility.missing.push('Operator plan access');}
-  return { account, quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: profile.operatorEnabled&&eligibility.eligible, configuredEnabled:profile.operatorEnabled, ...eligibility } };
+  if(!hasReceptionistAccess(account)){eligibility.eligible=false;eligibility.missing.push('Receptionist plan access');}
+  return { account, priceBookAccess: hasPriceBookAccess(account), bookingAccess: hasOperatorAccess(account), quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: profile.operatorEnabled&&eligibility.eligible, configuredEnabled:profile.operatorEnabled, ...eligibility } };
 }
 
 function draftRevision(row) {

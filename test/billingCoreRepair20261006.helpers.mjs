@@ -6,7 +6,8 @@ import {createBillingStateService} from '../server/src/billingStateService.js';
 import {installBillingRoutes,installBillingWebhookRoute} from '../server/src/billingRoutes.js';
 const T=1791288000, day=86400;
 const iso=t=>new Date(t*1000).toISOString();
-const catalogue={Operator:{monthly:'price_op_month',annual:'price_op_year'},QuoteDone:{monthly:'price_qd_month',annual:'price_qd_year'}};
+const catalogue={Starter:{monthly:'price_SYNTHETIC_starter_month',annual:'price_SYNTHETIC_starter_year'},
+  Operator:{monthly:'price_op_month',annual:'price_op_year'},QuoteDone:{monthly:'price_qd_month',annual:'price_qd_year'}};
 const amounts={price_op_month:11900,price_op_year:119000,price_qd_month:27900,price_qd_year:279000};
 const rows=[];
 function harness({filename=':memory:',resume=false}={}){

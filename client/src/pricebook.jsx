@@ -1,3 +1,4 @@
+import {PRICE_BOOK_UNAVAILABLE} from './planDescriptions.js';
 import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {ServiceStatusNotices,priceOptionChipText} from './quoteDoneControls.jsx';
 import {InstalledMaterialsEditor} from './installedMaterialsEditor.jsx';
@@ -667,7 +668,7 @@ export default function PriceBook() {
       api('/api/onboarding/state'),
       api('/api/pricebook/meta')
     ]);
-    const canQuote = ['QuoteDone','Scale'].includes(state.account.plan);
+    const canQuote = ['Operator','QuoteDone','Scale'].includes(state.account.plan);
     const loadedBook = canQuote ? await api(`/api/pricebook/${dash.ownerId}`) : { services:[], defaults:{} };
     basePricebook.current = clone(loadedBook);
     setLocked(!canQuote);
@@ -841,11 +842,11 @@ export default function PriceBook() {
     return (
       <AppShell activePath="/pricebook" operator={dashboard.operator}>
         <main className="pricebook-page">
-          <PageHeader eyebrow="QUOTEDONE" title="Price book" description="Upgrade to QuoteDone or Scale to give callers prices from your own book." />
+          <PageHeader eyebrow="PRICE BOOK" title="Price book" description={PRICE_BOOK_UNAVAILABLE} />
           <section className="locked-pricebook">
             <div><p className="eyebrow">QUOTE REQUESTS CAPTURED</p><strong className="mono">{dashboard.quoteRequestCount}</strong></div>
-            <Notice>Operator keeps answering, booking, and capturing every pricing request without guessing.</Notice>
-            <Button onClick={() => go('/onboarding?step=1')}>Choose QuoteDone</Button>
+            <Notice>Starter keeps answering and capturing every pricing request for owner review.</Notice>
+            <Button onClick={() => go('/settings/billing')}>Choose Operator or QuoteDone</Button>
           </section>
         </main>
       </AppShell>
