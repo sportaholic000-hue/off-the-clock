@@ -6,6 +6,7 @@ import { bookStatuses, bookQuoteStatuses } from './quoteDoneBridge.js';
 import { isValidIanaTimeZone, parseLocalTime } from './calendarTime.js';
 import { serviceAreaFromKnowledgeBase } from './serviceArea.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
+import { calendarScopesSupportBooking, GOOGLE_CALENDAR_SCOPE_MESSAGE } from './googleCalendarScopes.js';
 
 const WEEKDAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const BOOKING_MODES = new Set(['site_visit_first', 'book_job']);
@@ -22,18 +23,6 @@ const SETTINGS_KEYS = [
 ];
 const POLICY_KEYS = ['bookingMode', 'durationMinutes', 'enabled'];
 const WIDGET_KEYS = ['accentColor', 'launcherLabel', 'clickToCallNumber', 'allowedOrigins'];
-const GOOGLE_CALENDAR_FULL_SCOPE = 'https://www.googleapis.com/auth/calendar';
-const GOOGLE_CALENDAR_WRITE_SCOPES = new Set([
-  'https://www.googleapis.com/auth/calendar.events',
-  'https://www.googleapis.com/auth/calendar.events.owned',
-  'https://www.googleapis.com/auth/calendar.app.created'
-]);
-const GOOGLE_CALENDAR_BUSY_SCOPES = new Set([
-  'https://www.googleapis.com/auth/calendar.events.freebusy',
-  'https://www.googleapis.com/auth/calendar.freebusy',
-  'https://www.googleapis.com/auth/calendar.readonly'
-]);
-
 function record(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
@@ -454,15 +443,6 @@ function serviceAreaReadiness(profileRow) {
   };
 }
 
-function calendarScopesSupportBooking(value) {
-  const scopes = parseJson(value, null);
-  if (!Array.isArray(scopes) || scopes.some(scope => typeof scope !== 'string')) return false;
-  const normalized = new Set(scopes.map(scope => scope.trim()).filter(Boolean));
-  if (normalized.has(GOOGLE_CALENDAR_FULL_SCOPE)) return true;
-  return [...GOOGLE_CALENDAR_WRITE_SCOPES].some(scope => normalized.has(scope)) &&
-    [...GOOGLE_CALENDAR_BUSY_SCOPES].some(scope => normalized.has(scope));
-}
-
 function globalReadiness(settingsRow, connectionRow) {
   const blockers = [];
   if (!settingsRow) {
@@ -517,10 +497,10 @@ function globalReadiness(settingsRow, connectionRow) {
       connectionRow.credentialsTag, connectionRow.keyVersion].every(value => typeof value === 'string' && value)) {
       blockers.push(blocker('CALENDAR_CREDENTIALS_MISSING', 'Reconnect Google Calendar before direct booking.'));
     }
-    if (!calendarScopesSupportBooking(connectionRow.scopesJson)) {
+    if (!calendarScopesSupportBooking(parseJson(connectionRow.scopesJson, null))) {
       blockers.push(blocker(
         'CALENDAR_SCOPES_INSUFFICIENT',
-        'Reconnect Google Calendar with availability-read and event-write access.'
+        GOOGLE_CALENDAR_SCOPE_MESSAGE
       ));
     }
   }

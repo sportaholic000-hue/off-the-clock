@@ -1,0 +1,95 @@
+(node:4) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# Subtest: owner settings and per-service policy become direct-ready only from owner-scoped saved state
+ok 1 - owner settings and per-service policy become direct-ready only from owner-scoped saved state
+  ---
+  duration_ms: 27.39127
+  type: 'test'
+  ...
+# Subtest: narrow grant is direct-ready; a missing grant has the owner reconnect message
+not ok 2 - narrow grant is direct-ready; a missing grant has the owner reconnect message
+  ---
+  duration_ms: 7.797639
+  type: 'test'
+  location: '/workspace/scratch/7c2e3c39d840/repo/test/bookingAdminService.spec.mjs:276:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        code: 'CALENDAR_SCOPES_INSUFFICIENT',
+    +   message: 'Reconnect Google Calendar with availability-read and event-write access.'
+    -   message: 'Reconnect Google Calendar to allow availability checks and booking updates.'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'CALENDAR_SCOPES_INSUFFICIENT'
+    message: 'Reconnect Google Calendar to allow availability checks and booking updates.'
+  actual:
+    code: 'CALENDAR_SCOPES_INSUFFICIENT'
+    message: 'Reconnect Google Calendar with availability-read and event-write access.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/7c2e3c39d840/repo/test/bookingAdminService.spec.mjs:289:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: tenant isolation prevents reading or writing another owner service policy
+ok 3 - tenant isolation prevents reading or writing another owner service policy
+  ---
+  duration_ms: 5.300734
+  type: 'test'
+  ...
+# Subtest: settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+ok 4 - settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+  ---
+  duration_ms: 35.393235
+  type: 'test'
+  ...
+# Subtest: policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+ok 5 - policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+  ---
+  duration_ms: 5.153349
+  type: 'test'
+  ...
+# Subtest: widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+ok 6 - widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+  ---
+  duration_ms: 8.734854
+  type: 'test'
+  ...
+# Subtest: widget settings and access-key creation roll back together on key collision
+ok 7 - widget settings and access-key creation roll back together on key collision
+  ---
+  duration_ms: 1.105532
+  type: 'test'
+  ...
+# Subtest: readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+ok 8 - readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+  ---
+  duration_ms: 5.642945
+  type: 'test'
+  ...
+# Subtest: structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+ok 9 - structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+  ---
+  duration_ms: 5.968406
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 119.771102

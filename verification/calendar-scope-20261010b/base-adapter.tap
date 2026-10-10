@@ -1,0 +1,206 @@
+TAP version 13
+# Subtest: owned-events and freebusy grant allows availability and booking on the connected calendar
+ok 1 - owned-events and freebusy grant allows availability and booking on the connected calendar
+  ---
+  duration_ms: 55.505358
+  type: 'test'
+  ...
+# Subtest: missing booking permission refuses the adapter before any provider request
+not ok 2 - missing booking permission refuses the adapter before any provider request
+  ---
+  duration_ms: 2.328289
+  type: 'test'
+  location: '/workspace/scratch/7c2e3c39d840/repo/test/googleCalendarAdapter.spec.mjs:152:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    GoogleCalendarAdapterError: Google Calendar is temporarily unavailable.
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: [Function (anonymous)]
+  actual:
+    name: 'GoogleCalendarAdapterError'
+    statusCode: 503
+    retryable: true
+    ambiguous: false
+  error: 'Google Calendar is temporarily unavailable.'
+  code: 'CALENDAR_PROVIDER_UNAVAILABLE'
+  name: 'GoogleCalendarAdapterError'
+  stack: |-
+    adapterError (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:47:10)
+    providerUnavailable (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:74:10)
+    timedFetch (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:397:13)
+    async apiRequest (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:514:23)
+    async Object.listBusy (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:559:21)
+    async waitForActual (node:assert:644:5)
+    async Function.rejects (node:assert:767:25)
+    async TestContext.<anonymous> (file:///workspace/scratch/7c2e3c39d840/repo/test/googleCalendarAdapter.spec.mjs:158:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/scratch/7c2e3c39d840/repo/test/googleCalendarAdapter.spec.mjs:158:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: an existing full Calendar grant remains usable without reconnecting
+ok 3 - an existing full Calendar grant remains usable without reconnecting
+  ---
+  duration_ms: 1.794049
+  type: 'test'
+  ...
+# Subtest: a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials
+not ok 4 - a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials
+  ---
+  duration_ms: 1.972402
+  type: 'test'
+  location: '/workspace/scratch/7c2e3c39d840/repo/test/googleCalendarAdapter.spec.mjs:178:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    GoogleCalendarAdapterError: Google Calendar is temporarily unavailable.
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: [Function (anonymous)]
+  actual:
+    name: 'GoogleCalendarAdapterError'
+    statusCode: 503
+    retryable: true
+    ambiguous: false
+  error: 'Google Calendar is temporarily unavailable.'
+  code: 'CALENDAR_PROVIDER_UNAVAILABLE'
+  name: 'GoogleCalendarAdapterError'
+  stack: |-
+    adapterError (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:47:10)
+    providerUnavailable (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:74:10)
+    timedFetch (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:397:13)
+    async apiRequest (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:514:23)
+    async Object.listBusy (file:///workspace/scratch/7c2e3c39d840/repo/server/src/googleCalendarAdapter.js:559:21)
+    async waitForActual (node:assert:644:5)
+    async Function.rejects (node:assert:767:25)
+    async TestContext.<anonymous> (file:///workspace/scratch/7c2e3c39d840/repo/test/googleCalendarAdapter.spec.mjs:190:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/scratch/7c2e3c39d840/repo/test/googleCalendarAdapter.spec.mjs:190:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listBusy is owner scoped and maps the Google freebusy request and response
+ok 5 - listBusy is owner scoped and maps the Google freebusy request and response
+  ---
+  duration_ms: 1.344158
+  type: 'test'
+  ...
+# Subtest: UTC request bounds and freebusy response bounds fail closed before use
+ok 6 - UTC request bounds and freebusy response bounds fail closed before use
+  ---
+  duration_ms: 1.86288
+  type: 'test'
+  ...
+# Subtest: createEvent uses the deterministic BookingService event ID and getEvent validates it
+ok 7 - createEvent uses the deterministic BookingService event ID and getEvent validates it
+  ---
+  duration_ms: 4.529014
+  type: 'test'
+  ...
+# Subtest: getEvent preserves cancelled provider status for BookingService reconciliation
+ok 8 - getEvent preserves cancelled provider status for BookingService reconciliation
+  ---
+  duration_ms: 0.929589
+  type: 'test'
+  ...
+# Subtest: an expired access token is refreshed, persisted with its refresh token, and never returned
+ok 9 - an expired access token is refreshed, persisted with its refresh token, and never returned
+  ---
+  duration_ms: 1.803305
+  type: 'test'
+  ...
+# Subtest: concurrent expired-token requests coalesce one owner-scoped refresh
+ok 10 - concurrent expired-token requests coalesce one owner-scoped refresh
+  ---
+  duration_ms: 11.935462
+  type: 'test'
+  ...
+# Subtest: a 401 refreshes and retries the Calendar request once
+ok 11 - a 401 refreshes and retries the Calendar request once
+  ---
+  duration_ms: 1.230282
+  type: 'test'
+  ...
+# Subtest: a staggered concurrent 401 reloads a token another request already rotated
+ok 12 - a staggered concurrent 401 reloads a token another request already rotated
+  ---
+  duration_ms: 2.087399
+  type: 'test'
+  ...
+# Subtest: a repeated 401 is not retried or refreshed more than once
+ok 13 - a repeated 401 is not retried or refreshed more than once
+  ---
+  duration_ms: 0.730512
+  type: 'test'
+  ...
+# Subtest: create network and timeout failures are ambiguous without exposing underlying errors
+ok 14 - create network and timeout failures are ambiguous without exposing underlying errors
+  ---
+  duration_ms: 0.92571
+  type: 'test'
+  ...
+# Subtest: the request deadline covers a stalled create response body
+ok 15 - the request deadline covers a stalled create response body
+  ---
+  duration_ms: 20.630578
+  type: 'test'
+  ...
+# Subtest: a known Google 4xx write failure is non-ambiguous and sanitized
+ok 16 - a known Google 4xx write failure is non-ambiguous and sanitized
+  ---
+  duration_ms: 0.94724
+  type: 'test'
+  ...
+# Subtest: tenant and credential failures fail closed before a provider call
+ok 17 - tenant and credential failures fail closed before a provider call
+  ---
+  duration_ms: 0.486486
+  type: 'test'
+  ...
+# Subtest: refresh rejection and persistence failures expose no OAuth or credential material
+ok 18 - refresh rejection and persistence failures expose no OAuth or credential material
+  ---
+  duration_ms: 0.935343
+  type: 'test'
+  ...
+# Subtest: malformed Google response shapes fail closed and create parse failures remain ambiguous
+ok 19 - malformed Google response shapes fail closed and create parse failures remain ambiguous
+  ---
+  duration_ms: 0.763742
+  type: 'test'
+  ...
+# Subtest: Owner ruling: cancel suppresses all calendar messages and reminders
+ok 20 - Owner ruling: cancel suppresses all calendar messages and reminders
+  ---
+  duration_ms: 0.708955
+  type: 'test'
+  ...
+# Subtest: Owner ruling: reschedule suppresses all calendar messages and reminders
+ok 21 - Owner ruling: reschedule suppresses all calendar messages and reminders
+  ---
+  duration_ms: 0.377084
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 19
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 136.497455

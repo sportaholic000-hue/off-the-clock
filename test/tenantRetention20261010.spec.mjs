@@ -27,8 +27,14 @@ function lifecycle(f,options={}){
   return createBillingCustomerLifecycle({database:f.db,clock:f.clock,enabled:()=>false,
     erasePricebookFiles:ownerId=>eraseTenantPricebookFiles(ownerId,{directory:f.deployment.pricebookPath}),...options});
 }
-for(const outcome of ['success','http-error','network-error','timeout'])test('day-90 complete tenant inventory, Google '+outcome,async t=>{
+// Both grant generations must revoke the saved token before deletion, regardless
+// of whether Google succeeds, rejects, disconnects or times out.
+for(const [grant,scopes] of [
+  ['legacy full-scope',['https://www.googleapis.com/auth/calendar']],
+  ['narrowed',['https://www.googleapis.com/auth/calendar.events.owned','https://www.googleapis.com/auth/calendar.freebusy']]
+])for(const outcome of ['success','http-error','network-error','timeout'])test('day-90 complete tenant inventory, Google '+grant+' '+outcome,async t=>{
   const f=retentionFixture(t),beforeB=businessRows(f.db,B),bookB=fs.readFileSync(path.join(f.deployment.pricebookPath,B+'.json'));
+  f.db.prepare('UPDATE calendarConnections SET scopesJson=? WHERE ownerId=?').run(JSON.stringify(scopes),A);
   const ownedTmp=path.join(f.deployment.pricebookPath,A+'.11111111-1111-4111-8111-111111111111.tmp');fs.writeFileSync(ownedTmp,A);
   fs.writeFileSync(path.join(f.deployment.pricebookPath,A+'.unconfirmed'),A);
   const locks=f.deployment.pricebookPath+'.saves';fs.mkdirSync(locks);
@@ -45,7 +51,10 @@ for(const outcome of ['success','http-error','network-error','timeout'])test('da
     if(outcome==='timeout')return new Promise(()=>{});
     return {status:outcome==='success'?200:400};
   }});
-  const service=lifecycle(f,{revokeCalendar:revoker});
+  const service=lifecycle(f,{revokeCalendar:connection=>{
+    assert.deepEqual(JSON.parse(connection.scopesJson),scopes);
+    return revoker(connection);
+  }});
   await service.processOwner(A,{localOnly:true});assert.equal(attempts,0);
   assert.ok(f.db.prepare('SELECT * FROM businessProfiles WHERE ownerId=?').get(A));assert.ok(fs.existsSync(ownedTmp));
   // Sessions are created immediately before the deadline, so rejection below

@@ -14,6 +14,9 @@ const NOW = '2026-09-29T12:00:00.000Z';
 const ACCESS_TOKEN = 'synthetic-access-token';
 const REFRESH_TOKEN = 'synthetic-refresh-token';
 const CLIENT_SECRET = 'synthetic-client-secret';
+const EVENTS_OWNED = 'https://www.googleapis.com/auth/calendar.events.owned';
+const FREEBUSY = 'https://www.googleapis.com/auth/calendar.freebusy';
+const OWNER_MESSAGE = 'Reconnect Google Calendar to allow availability checks and booking updates.';
 
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -128,6 +131,69 @@ function eventResource(status = 'confirmed') {
 function hasCode(code) {
   return error => error instanceof GoogleCalendarAdapterError && error.code === code;
 }
+
+test('owned-events and freebusy grant allows availability and booking on the connected calendar', async () => {
+  const calls = [];
+  const credentials = repository({ value: connection({ scopesJson: JSON.stringify([EVENTS_OWNED, FREEBUSY]) }) });
+  const { adapter } = makeAdapter(async (url, options) => {
+    calls.push({ url, options });
+    return options.method === 'POST' && url.endsWith('/freeBusy')
+      ? jsonResponse({ calendars: { [CALENDAR]: { busy: [] } } })
+      : jsonResponse(eventResource());
+  }, credentials);
+  assert.deepEqual(await adapter.listBusy(busyRequest()), []);
+  assert.equal((await adapter.createEvent(eventRequest())).status, 'CONFIRMED');
+  assert.deepEqual(calls.map(call => [call.options.method, new URL(call.url).pathname]), [
+    ['POST', '/calendar/v3/freeBusy'],
+    ['POST', `/calendar/v3/calendars/${encodeURIComponent(CALENDAR)}/events`]
+  ]);
+});
+
+test('missing booking permission refuses the adapter before any provider request', async () => {
+  for (const granted of [[FREEBUSY], [EVENTS_OWNED]]) {
+    let calls = 0;
+    const credentials = repository({ value: connection({ scopesJson: JSON.stringify(granted) }) });
+    const { adapter } = makeAdapter(async () => { calls++; throw new Error('Unexpected provider request'); }, credentials);
+    for (const request of [() => adapter.listBusy(busyRequest()), () => adapter.createEvent(eventRequest())]) {
+      await assert.rejects(request(), error => error.code === 'CALENDAR_SCOPES_INSUFFICIENT' &&
+        error.statusCode === 409 && error.message === OWNER_MESSAGE);
+    }
+    assert.equal(calls, 0);
+  }
+});
+
+test('an existing full Calendar grant remains usable without reconnecting', async () => {
+  const urls = [];
+  const { adapter } = makeAdapter(async (url, options) => {
+    urls.push(url);
+    return url.endsWith('/freeBusy')
+      ? jsonResponse({ calendars: { [CALENDAR]: { busy: [] } } })
+      : jsonResponse(eventResource());
+  });
+  assert.deepEqual(await adapter.listBusy(busyRequest()), []);
+  assert.equal((await adapter.createEvent(eventRequest())).status, 'CONFIRMED');
+  assert.equal(urls.length, 2);
+});
+
+test('a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials', async () => {
+  for (const remaining of [FREEBUSY, EVENTS_OWNED]) {
+    const urls = [];
+    const credentials = repository({ value: connection({
+      scopesJson: JSON.stringify([EVENTS_OWNED, FREEBUSY]),
+      expiresAtUtc: '2026-09-29T11:59:59.000Z'
+    }) });
+    const { adapter } = makeAdapter(async url => {
+      urls.push(url);
+      if (url !== 'https://oauth2.googleapis.com/token') throw new Error('Unexpected Calendar API call');
+      return jsonResponse({ access_token: 'synthetic-new-token', expires_in: 3600, scope: remaining });
+    }, credentials);
+    await assert.rejects(adapter.listBusy(busyRequest()), error =>
+      error.code === 'CALENDAR_SCOPES_INSUFFICIENT' && error.statusCode === 409 &&
+      error.message === OWNER_MESSAGE);
+    assert.deepEqual(urls, ['https://oauth2.googleapis.com/token']);
+    assert.deepEqual(credentials.state.saves, []);
+  }
+});
 
 test('listBusy is owner scoped and maps the Google freebusy request and response', async () => {
   const calls = [];

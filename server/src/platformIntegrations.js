@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { installTelephonyOperationsSchema } from './telephonyOperationsMigration.js';
 import {geminiTextModel,TextAIConfigurationError} from './geminiTextModel.js';
+import { GOOGLE_CALENDAR_BOOKING_SCOPES } from './googleCalendarScopes.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json' };
 
@@ -296,7 +297,7 @@ export function googleCalendarAuthorizationUrl(state) {
     response_type: 'code',
     access_type: 'offline',
     prompt: 'consent',
-    scope: 'https://www.googleapis.com/auth/calendar',
+    scope: GOOGLE_CALENDAR_BOOKING_SCOPES.join(' '),
     state
   }).toString();
   return url.toString();

@@ -1,3 +1,5 @@
+import { calendarScopesSupportBooking, GOOGLE_CALENDAR_SCOPE_MESSAGE } from './googleCalendarScopes.js';
+
 const CALENDAR_API_BASE_URL = 'https://www.googleapis.com/calendar/v3';
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_EVENT_ID = /^[0-9a-v]{5,1024}$/;
@@ -53,6 +55,10 @@ function invalidRequest() {
 
 function connectionUnavailable() {
   return adapterError('CALENDAR_NOT_CONNECTED', 'The calendar connection is unavailable.', { statusCode: 409 });
+}
+
+function insufficientScopes() {
+  return adapterError('CALENDAR_SCOPES_INSUFFICIENT', GOOGLE_CALENDAR_SCOPE_MESSAGE, { statusCode: 409 });
 }
 
 function authorizationUnavailable(code = 'CALENDAR_AUTHORIZATION_UNAVAILABLE') {
@@ -200,12 +206,14 @@ function normalizeConnection(connection, ownerId, calendarId) {
       throw authorizationUnavailable();
     }
   }
+  const scopes = parseScopes(connection);
+  if (!calendarScopesSupportBooking(scopes)) throw insufficientScopes();
   return {
     calendarId,
     accessToken,
     refreshToken,
     expiresAtMs,
-    scopes: parseScopes(connection)
+    scopes
   };
 }
 
@@ -451,6 +459,8 @@ export function createGoogleCalendarAdapter({
       throw authorizationUnavailable();
     }
     const scope = typeof payload.scope === 'string' ? payload.scope : connection.scopes.join(' ');
+    const scopes = scope.split(/\s+/).filter(Boolean);
+    if (!calendarScopesSupportBooking(scopes)) throw insufficientScopes();
     const tokens = {
       access_token: accessToken,
       refresh_token: rotatedRefreshToken,
@@ -469,7 +479,7 @@ export function createGoogleCalendarAdapter({
       accessToken,
       refreshToken: rotatedRefreshToken,
       expiresAtMs: nowFrom(clock).getTime() + expiresIn * 1000,
-      scopes: scope.split(/\s+/).filter(Boolean)
+      scopes
     };
   }
 

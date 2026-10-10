@@ -836,7 +836,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "850c2484d4887ab1f03eb91af48152257ebf25861178890ed2e29235d21c7b7c",
     "occurrence": 1,
-    "line": 632
+    "line": 612
   },
   {
     "file": "server/src/bookingPreferenceService.js",
