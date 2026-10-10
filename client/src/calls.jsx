@@ -64,7 +64,7 @@ export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===t
   return <section className="editor-section" aria-label="Call details">
     <h2>{call.callerNumber||'Call'}</h2><StatusChip status={call.outcome||call.status||'Not recorded'}/>
     <CallSpamControls call={call} onRefresh={onRefresh}/>
-    {call.failureCode==='VOICE_CALLER_THROTTLED'&&<Notice title="Repeated caller — review requested">The caller reached the daily answering limit. Their request is saved for review.</Notice>}
+    {call.failureCode==='VOICE_CALLER_THROTTLED'&&<Notice title="Repeated caller">This caller called too many times in 24 hours and was asked to leave a message.</Notice>}
     <dl><dt>Created</dt><dd>{callTime(call.createdAt,call.ownerTimezone)}</dd><dt>Status</dt><dd>{text(call.status)}</dd>
       <dt>Outcome</dt><dd>{text(call.outcome)}</dd><dt>Duration</dt><dd>{call.duration===null?'Not recorded':call.duration+' sec'}</dd>
       <dt>Billed minutes</dt><dd>{text(call.minutesBilled)}</dd><dt>Transport outcome</dt><dd>{text(call.transportOutcome)}</dd>

@@ -1,8 +1,9 @@
-import {randomUUID,createHash} from 'node:crypto';
+import {randomUUID} from 'node:crypto';
 import {billingReference,billingPrice,billingIso,createBillingEvidence} from './billingEvidence.js';
 import {billingUsageId,billingMoney,MINUTE_PLANS,monthlyAnniversary,usageOwnerQuery,usageTransaction} from './billingUsagePolicy.js';
 import {withBillingLease,withBillingRetentionLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
+import {eraseTenantRows,eraseTenantPricebookFiles} from './billingTenantErasure.js';
 
 const DAY=86400000;
 const error=(code,statusCode=409)=>Object.assign(new Error(code),{code,statusCode});
@@ -48,6 +49,7 @@ export function installBillingLifecycleSchema(database){
     CREATE TABLE IF NOT EXISTS billingRetentionLeases (
     ownerId TEXT PRIMARY KEY REFERENCES users(id),token TEXT NOT NULL,expiresAt TEXT NOT NULL);`);
   if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name==='restoredForwardingAt'))database.exec('ALTER TABLE billingCancellations ADD COLUMN restoredForwardingAt TEXT');
+  for(const name of ['calendarRevokeAttemptedAt','calendarRevokeStatus'])if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name===name))database.exec(`ALTER TABLE billingCancellations ADD COLUMN ${name} TEXT`);
   // Existing queued notices need the same dispatch condition as new ones.
   usageOwnerQuery(database)(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
     SELECT n.referenceId FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')
@@ -96,12 +98,9 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
   query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt});
 }
 
-const DATA_TABLES=['ownerRecordEvents','ownerRecordWorkflows','callerBlocklist','quoteEmailDeliveries','quoteEmailRecipients','voiceQuoteNarrations','callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
-  'appointmentChanges','appointments','bookingIdempotency','bookingPreferences','bookingHolds','bookingIntents',
-  'quoteSubmissions','transcriptTurns','voiceOpaqueHandles','voiceToolReceipts','voiceSessionNonces',
-  'billingVoiceUsage','webhookDeliveries','voiceForwardingArrivals','leads','quoteRequests','quotes','calls','customers'];
 export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},stripeClient,emailProvider,
-  releaseNumber,enabled=()=>false,clock=()=>new Date(),dashboardUrl}={}){
+  releaseNumber,revokeCalendar,erasePricebookFiles=eraseTenantPricebookFiles,eraseBackupCopies,
+  enabled=()=>false,clock=()=>new Date(),dashboardUrl}={}){
   const query=usageOwnerQuery(database,ownerQuery),now=()=>clock().toISOString();
   const emails=createOwnerEmailDelivery({database,ownerQuery,provider:emailProvider,enabled,clock});
   const owner=ownerId=>query(`SELECT u.*,b.stripeCustomerId,b.stripeSubscriptionId,b.stripePriceId,b.currentPeriodEndAt,b.cancelAtPeriodEnd,b.graceEndsAt
@@ -113,6 +112,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   function notice(ownerId,kind,referenceId,message,{amountCents=null,currency=null,dueAt=null}={}){
     return usageTransaction(database,()=>{
       const account=owner(ownerId);if(!account)throw error('OWNER_NOT_FOUND',404);
+      if(account.dataDeletedAt)return null;
       const id=billingUsageId('billing-lifecycle-v1',ownerId,kind,referenceId),at=now();
       if(query('SELECT id FROM billingLifecycleNotices WHERE ownerId=? AND id=?').get(ownerId,id))return id;
       query(`INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt)
@@ -217,6 +217,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     },{clock});
   }
   async function reactivate(ownerId){
+    if(owner(ownerId)?.dataDeletedAt)throw error('BILLING_NEW_ACCOUNT_REQUIRED');
     if(!enabled()||!stripeClient)throw error('BILLING_PROVIDER_UNAVAILABLE',503);
     const prior=cancellation(ownerId);if(!prior||prior.state==='RESTORED')return snapshot(ownerId);
     if(prior.endAt<=now()&&prior.state!=='RESTORING')throw error('BILLING_NEW_SUBSCRIPTION_REQUIRED');
@@ -237,25 +238,33 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     },{clock});
   }
   function restoreLocal(ownerId,row){usageTransaction(database,()=>{
+    if(owner(ownerId)?.dataDeletedAt)throw error('BILLING_NEW_ACCOUNT_REQUIRED');
     query("UPDATE users SET serviceEndsAt=NULL WHERE id=@ownerId AND role='owner'").run({ownerId});
     query('UPDATE billingAccounts SET cancelAtPeriodEnd=0 WHERE ownerId=?').run(ownerId);
     query("UPDATE billingCancellations SET state='RESTORED',lastError=NULL,updatedAt=? WHERE ownerId=?").run(now(),ownerId);
     notice(ownerId,'reactivated',row.operationId,`Your retained service and data are reactivated. ${row.phoneReleasedAt?'The previous phone number has already been released; set up a new number.':''} ${row.dataDeletedAt?'The previous records have already been deleted.':''} ${link()}`);
   });}
-  function erase(ownerId,row){usageTransaction(database,()=>{
-    // Child-first, explicitly enumerated record tables. Billing evidence and
-    // the account survive. No FK bypass, provider calls or unscoped DELETEs.
-    for(const call of query('SELECT callSid FROM calls WHERE ownerId=? AND callSid IS NOT NULL').all(ownerId)){
-      for(const prefix of ['', 'inbound\0'])query(`DELETE FROM voiceToolIdempotencyReceipts WHERE scopeHash=@scopeHash
-        AND EXISTS(SELECT 1 FROM calls WHERE ownerId=@ownerId AND callSid=@callSid)`).run({ownerId,callSid:call.callSid,
-        scopeHash:createHash('sha256').update(`${prefix}${ownerId}\0${call.callSid}`,'utf8').digest('hex')});
+  async function erase(ownerId,row,assertLease){
+    const connection=query("SELECT * FROM calendarConnections WHERE ownerId=? AND provider='google'").get(ownerId);
+    if(connection){
+      // Persist before calling Google. A crash can retry while the tokens still
+      // exist; a failed/disabled/timed-out revoke never blocks local erasure.
+      query("UPDATE billingCancellations SET calendarRevokeAttemptedAt=?,calendarRevokeStatus='ATTEMPTING' WHERE ownerId=? AND operationId=?").run(now(),ownerId,row.operationId);
+      let result='UNAVAILABLE';try{if(revokeCalendar)result=await revokeCalendar(connection);}catch{result='FAILED';}
+      assertLease();
+      if(!['REVOKED','FAILED','TIMEOUT','UNREADABLE','PROVIDER_DISABLED'].includes(result))result='UNAVAILABLE';
+      query('UPDATE billingCancellations SET calendarRevokeStatus=? WHERE ownerId=? AND operationId=?').run(result,ownerId,row.operationId);
     }
-    for(const table of DATA_TABLES)query(`DELETE FROM ${table} WHERE ownerId=?`).run(ownerId);
-    query("DELETE FROM voicePlatformAlerts WHERE json_extract(detailsJson,'$.ownerId')=?").run(ownerId);
-    query("DELETE FROM outboxEvents WHERE ownerId=? AND eventType NOT LIKE 'billing.%'").run(ownerId);
-    query("DELETE FROM events WHERE ownerId=? AND eventType NOT LIKE 'billing.%'").run(ownerId);
-    query("UPDATE billingCancellations SET dataDeletedAt=?,updatedAt=? WHERE ownerId=? AND operationId=?").run(now(),now(),ownerId,row.operationId);
-  });}
+    eraseTenantRows(database,ownerId,now(),{ownerQuery});
+    // A filesystem failure leaves the completion marker unset so cleanup can
+    // retry. Local credentials and sign-in have already been irreversibly erased.
+    await erasePricebookFiles(ownerId);assertLease();
+    if(eraseBackupCopies){await eraseBackupCopies(ownerId);assertLease();}
+    // secure_delete clears freed cells; truncate the WAL so stale token/profile
+    // pages do not remain in an application-owned database sidecar.
+    if(database.prepare('PRAGMA wal_checkpoint(TRUNCATE)').all().some(row=>row.busy))throw error('RETENTION_DATABASE_BUSY',503);
+    query('UPDATE billingCancellations SET dataDeletedAt=?,updatedAt=? WHERE ownerId=? AND operationId=?').run(now(),now(),ownerId,row.operationId);
+  }
   async function reconcileEndedUsage(ownerId,assertLease){
     if(!enabled()||!stripeClient)return;
     const charges=query(`SELECT c.*,p.stripeCustomerId,p.stripeSubscriptionId FROM billingUsageCharges c JOIN billingUsagePeriods p
@@ -295,12 +304,13 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Export records before ${addDays(row.endAt,90)}. ${link()}`);
     });
     row=cancellation(ownerId);
-    if(!row.dataDeletedAt&&deadlineAt>=addDays(row.endAt,90))erase(ownerId,row);
+    const erasureDue=!row.dataDeletedAt&&deadlineAt>=addDays(row.endAt,90);
     if(enabled()){
       const profile=query('SELECT * FROM businessProfiles WHERE ownerId=?').get(ownerId);
       if(!row.phoneReleasedAt&&deadlineAt>=addDays(row.endAt,30)&&releaseNumber){
         // Release the saved SID, never a number discovered by a broad search.
-        const result=profile?.twilioNumberSid?await releaseNumber({ownerId,sid:profile.twilioNumberSid}):{released:true};
+        let result;try{result=profile?.twilioNumberSid?await releaseNumber({ownerId,sid:profile.twilioNumberSid}):{released:true};}
+        catch(error){if(!erasureDue)throw error;query("UPDATE billingCancellations SET lastError='PHONE_RELEASE_UNCONFIRMED',updatedAt=? WHERE ownerId=?").run(now(),ownerId);}
         assertLease();
         if(result?.released===true)usageTransaction(database,()=>{
           query("UPDATE businessProfiles SET twilioNumber=NULL,twilioNumberSid=NULL,operatorEnabled=0,phoneProvisioningStatus='not_started' WHERE ownerId=?").run(ownerId);
@@ -310,6 +320,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         });
       }
     }
+    if(erasureDue)await erase(ownerId,row,assertLease);
   }
   async function processOwner(ownerId,{localOnly=false}={}){
     let row=cancellation(ownerId);
@@ -317,10 +328,10 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     if(!localOnly&&row?.state==='RESTORING')try{await reactivate(ownerId);}catch{/* Safe current-state read on replay. */}
     await withBillingRetentionLease(database,ownerId,async assertLease=>{
       syncBillingPaidThrough(database,ownerId);const account=owner(ownerId);row=cancellation(ownerId);
-      const restoring=row&&['CONFIRMED','ENDED'].includes(row.state)&&account.stripeSubscriptionId!==row.stripeSubscriptionId&&account.planStatus==='active'&&account.paidThroughAt>now();
+      const restoring=!account.dataDeletedAt&&row&&['CONFIRMED','ENDED'].includes(row.state)&&account.stripeSubscriptionId!==row.stripeSubscriptionId&&account.planStatus==='active'&&account.paidThroughAt>now();
       const payment=restoring?query("SELECT MIN(paidAt) paidAt FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND amountPaid>0").get(ownerId,account.stripeSubscriptionId):null;
       await cleanup(ownerId,{deadlineAt:payment?.paidAt!=null?billingIso(payment.paidAt):now(),assertLease});assertLease();row=cancellation(ownerId);
-      if(restoring){
+      if(restoring&&!owner(ownerId).dataDeletedAt){
         restoreLocal(ownerId,row);
       }
       row=cancellation(ownerId);

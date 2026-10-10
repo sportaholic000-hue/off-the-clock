@@ -6,6 +6,8 @@ import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
 import {createContinuousOffsiteService} from './continuousOffsite.js';
+import {assertBackupRetentionIdle} from './backupRetentionLock.js';
+import {eraseTenantBackupCopies} from './tenantBackupErasure.js';
 export {restoreContinuousBackup,pruneContinuousBackups} from './continuousOffsite.js';
 
 const dayAt=now=>new Date(now).toISOString().slice(0,10);
@@ -134,6 +136,7 @@ export function createDailyOffsiteBackupService(database,deployment,{env=process
     } finally {fs.rmSync(lockFile,{force:true});}
   }
   function run() {
+    try{assertBackupRetentionIdle(deployment);}catch(error){return Promise.reject(error);}
     if(active)return active;
     if(stopped)return Promise.reject(Error('OFFSITE_STOPPED'));
     if(stateInvalid)return Promise.reject(Error('OFFSITE_LOCAL_STATE_INVALID'));
@@ -156,16 +159,18 @@ export function createDailyOffsiteBackupService(database,deployment,{env=process
     timer=setTimeout(tick,0);timer.unref?.();
   }
   async function stop() {stopped=true;clearTimeout(timer);await active?.catch(()=>{});if(closeStore)store.close?.();}
-  return {run,start,stop,status};
+  return {run,start,stop,status,drain:()=>active?.catch(()=>{})};
 }
 export function createOffsiteBackupService(database,deployment,options={}){
   const config=options.config||(deployment.production?readOffsiteConfig(options.env):{enabled:false,reason:'OFFSITE_PRODUCTION_ONLY',missing:[]});
   const store=config.enabled?(options.store||createS3BackupStore(config)):null,common={...options,config,store,closeStore:false};
   const daily=createDailyOffsiteBackupService(database,deployment,common);
-  if(!daily.status().configured)return daily;
+  const erasureTime=()=>new Date(options.now?.()??Date.now()).toISOString();
+  if(!daily.status().configured)return {...daily,eraseOwner:ownerId=>eraseTenantBackupCopies(ownerId,deployment,{config,store,at:erasureTime()})};
   const replica=createContinuousOffsiteService(database,deployment,common);let stopping;
   const status=()=>{const d=daily.status(),r=replica.status();return {...d,ok:d.ok&&r.ok,error:d.error||r.error,continuous:r};};
   return {status,replicate:replica.run,
+    eraseOwner:ownerId=>eraseTenantBackupCopies(ownerId,deployment,{config,store,at:erasureTime(),drain:()=>Promise.all([daily.drain(),replica.drain()])}),
     async run(){const results=await Promise.allSettled([daily.run(),replica.run()]);for(const result of results)if(result.status==='rejected')throw result.reason;return status();},
     start(){daily.start();replica.start();},stop(){return stopping||(stopping=Promise.all([replica.stop(),daily.stop()]).finally(()=>store.close?.()));}};
 }

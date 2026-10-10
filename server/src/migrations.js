@@ -4,6 +4,7 @@ import {installAppointmentChangeSchema} from './appointmentChangeSchema.js';
 import {installOwnerAlertSchema} from './ownerAlertSchema.js';
 import {installOwnerDashboardSchema} from './ownerDashboardSchema.js';
 import {installBillingLifecycleSchema} from './billingCustomerLifecycle.js';
+import {installTenantErasureGuards} from './billingTenantErasure.js';
 import { installOutboundWebhookSchema } from './outboundWebhookSchema.js';
 import { CREATE_INDEX_STATEMENTS, CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
 import { findInvalidStaffOwnerLinks } from './tenant.js';
@@ -15,7 +16,7 @@ const USERS_CREATE_SQL = CREATE_TABLE_STATEMENTS[0];
 const USERS_MIGRATION_TABLE = 'users_owner_migration';
 const USERS_COLUMNS = [
   'id', 'ownerId', 'email', 'passwordHash', 'firstName', 'businessName',
-  'plan', 'planStatus', 'trialEndsAt', 'paymentFailedAt', 'annualPaidThroughAt', 'paidThroughAt', 'serviceEndsAt', 'emailVerifiedAt', 'timezone', 'role', 'createdAt'
+  'plan', 'planStatus', 'trialEndsAt', 'paymentFailedAt', 'annualPaidThroughAt', 'paidThroughAt', 'serviceEndsAt', 'emailVerifiedAt', 'dataDeletedAt', 'timezone', 'role', 'createdAt'
 ];
 const USERS_ROLE_NULLABILITY_CHECK = /CHECK\s*\(\s*\(\s*role\s*=\s*'staff'\s+AND\s+ownerId\s+IS\s+NOT\s+NULL\s*\)\s+OR\s+\(\s*role\s+IN\s*\(\s*'owner'\s*,\s*'admin'\s*\)\s+AND\s+ownerId\s+IS\s+NULL\s*\)\s*\)/i;
 
@@ -29,7 +30,8 @@ const ADDITIVE_COLUMNS = {
     serviceEndsAt: 'TEXT',
     annualPaidThroughAt: 'TEXT',
     paymentFailedAt: 'TEXT',
-    emailVerifiedAt: 'TEXT'
+    emailVerifiedAt: 'TEXT',
+    dataDeletedAt: 'TEXT'
   },
   quoteSubmissions: {
     bookingIntentId: 'TEXT',
@@ -294,5 +296,6 @@ export function migrateDatabase(database) {
   installOwnerAlertSchema(database);
   installOwnerDashboardSchema(database);
   installBillingLifecycleSchema(database);
+  installTenantErasureGuards(database);
   return CREATE_TABLE_STATEMENTS;
 }

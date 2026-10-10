@@ -5,6 +5,7 @@ import {createSnapshot,restoreBackup} from './backups.js';
 import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
+import {assertBackupRetentionIdle} from './backupRetentionLock.js';
 
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const dayAt=at=>new Date(at).toISOString().slice(0,10);
@@ -151,6 +152,7 @@ export function createContinuousOffsiteService(database,deployment,{env=process.
     }finally{if(fs.existsSync(lockFile)&&JSON.parse(fs.readFileSync(lockFile,'utf8')).token===token)fs.unlinkSync(lockFile);}
   }
   function run({draining=false}={}){
+    try{assertBackupRetentionIdle(deployment);}catch(error){return Promise.reject(error);}
     if(active)return active;
     if(closing&&!draining)return Promise.reject(Error('OFFSITE_STOPPED'));
     if(invalid)return Promise.reject(Error('OFFSITE_LOCAL_STATE_INVALID'));
@@ -180,5 +182,5 @@ export function createContinuousOffsiteService(database,deployment,{env=process.
     if(stopPromise)return stopPromise;closing=true;clearTimeout(timer);for(const watcher of watchers)watcher.close();
     stopPromise=(async()=>{await active?.catch(()=>{});if(started&&database.open!==false&&status().pendingChanges)await run({draining:true}).catch(()=>{});if(closeStore)store.close?.();})();return stopPromise;
   }
-  return {run,start,stop,status};
+  return {run,start,stop,status,drain:()=>active?.catch(()=>{})};
 }

@@ -58,7 +58,7 @@ export function createAuthSessionService(database,{environment=process.env,clock
         AND (seat.createdAt<account.createdAt OR (seat.createdAt=account.createdAt AND seat.id<account.id))) AS seatIndex
       FROM users account LEFT JOIN users parent ON parent.id=account.ownerId
       LEFT JOIN staffInvitations invitation ON invitation.staffId=account.id WHERE account.id=?`).get(userId);
-    if(!user || !['owner','staff'].includes(role) || user.role!==role || (role==='staff'&&(!user.ownerId||user.ownerRole!=='owner')))throw new AuthSessionError();
+    if(!user || user.dataDeletedAt || !['owner','staff'].includes(role) || user.role!==role || (role==='staff'&&(!user.ownerId||user.ownerRole!=='owner')))throw new AuthSessionError();
     if(role==='staff' && (user.inviteStatus==='pending' ||
       (user.inviteStatus && (user.inviteOwnerId!==user.ownerId||user.inviteEmail!==user.email)) ||
       user.seatIndex>=staffLimit(user.ownerPlan)))throw new AuthSessionError();

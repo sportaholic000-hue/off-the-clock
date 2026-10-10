@@ -3,6 +3,10 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import Database from 'better-sqlite3';
 import {inside,assertRealContainment} from './deploymentConfig.js';
+import {assertBackupRetentionIdle} from './backupRetentionLock.js';
+
+const activeSnapshots=new Set();
+export async function drainSnapshots(){await Promise.allSettled([...activeSnapshots]);}
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const bookName = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}\.json$/;
@@ -88,6 +92,12 @@ export function pruneSnapshots(backupPath,{retentionDays=30,now=Date.now()}={}) 
 }
 
 export async function createSnapshot(database, config, {now = Date.now, sourceCommit = process.env.RAILWAY_GIT_COMMIT_SHA || null} = {}) {
+  assertBackupRetentionIdle(config);
+  let finish;const pending=new Promise(resolve=>{finish=resolve;});activeSnapshots.add(pending);
+  try{return await writeSnapshot(database,config,{now,sourceCommit});}
+  finally{activeSnapshots.delete(pending);finish();}
+}
+async function writeSnapshot(database,config,{now,sourceCommit}){
   const root = path.resolve(config.root), backupPath = path.resolve(config.backupPath);
   if(!inside(root,backupPath)) throw new Error('BACKUP_OUTSIDE_STORAGE');
   assertRealContainment(root,backupPath);
@@ -101,6 +111,7 @@ export async function createSnapshot(database, config, {now = Date.now, sourceCo
     // main database file; that can omit recent commits or capture half a write.
     const sqliteFile=path.join(stage,'off-the-clock.sqlite');
     await database.backup(sqliteFile);
+    assertBackupRetentionIdle(config);
     // The online copy yields. A concurrent save may have added a book or a
     // pause marker in the meantime. Never publish a mixed inventory silently.
     const currentBooks=readSourceBooks(root,config.pricebookPath);

@@ -14,6 +14,7 @@ export const CREATE_TABLE_STATEMENTS = [
     paidThroughAt TEXT,
     serviceEndsAt TEXT,
     emailVerifiedAt TEXT,
+    dataDeletedAt TEXT,
     timezone TEXT NOT NULL DEFAULT 'UTC',
     role TEXT NOT NULL CHECK (role IN ('owner', 'staff', 'admin')),
     createdAt TEXT NOT NULL,

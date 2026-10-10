@@ -5,8 +5,8 @@ const xml=text=>String(text).replaceAll('&','&amp;').replaceAll('<','&lt;').repl
 export async function fakeS3(t) {
   const objects=new Map(),requests=[],controls={failDataPuts:0,loseResponse:false,failDeletes:0,failDeleteKey:null};
   const server=http.createServer(async(req,res)=>{
-    const url=new URL(req.url,'http://fake.invalid'),key=decodeURIComponent(url.pathname).slice('/synthetic-bucket/'.length);
-    requests.push({method:req.method,key,authorization:req.headers.authorization});
+    const url=new URL(req.url,'http://fake.invalid'),virtual=req.headers.host?.startsWith('synthetic-bucket.'),key=decodeURIComponent(url.pathname).slice(virtual?1:'/synthetic-bucket/'.length);
+    requests.push({method:req.method,key,host:req.headers.host,path:url.pathname,authorization:req.headers.authorization});
     const error=(status,code)=>{res.writeHead(status,{'content-type':'application/xml'});res.end('<Error><Code>'+code+'</Code><Message>SYNTHETIC FAILURE</Message></Error>');};
     if(!req.headers.authorization?.startsWith('AWS4-HMAC-SHA256 Credential=SYNTHETIC_ACCESS/'))return error(403,'AccessDenied');
     if(url.searchParams.get('list-type')==='2') {

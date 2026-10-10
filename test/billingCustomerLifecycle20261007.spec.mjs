@@ -195,10 +195,13 @@ for(const [start,end,released,deleted] of [['2026-12-01T12:00:00.000Z','2027-01-
     const f=setup(t);f.activate();f.profile();f.db.prepare("INSERT INTO leads(id,ownerId,customerName,createdAt) VALUES('SYNTHETIC-retained',?,'SYNTHETIC',?)").run(A,START);
     f.setTime('2026-11-01T12:00:00.000Z');await f.lifecycle.cancel(A);f.setTime(END);f.subscription(A,{status:'canceled'});await f.lifecycle.processOwner(A);
     f.setTime(start);await f.lifecycle.processOwner(A);replacement(f,start,end);assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,false);
-    await f.lifecycle.processOwner(A);assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,true);assert.equal(f.user().serviceEndsAt,null);
+    // Owner ruling, October 9: after erasure a new account is required. Before
+    // day 90 the same verified reactivation must still restore retained data.
+    await f.lifecycle.processOwner(A);assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,!deleted);assert.equal(f.user().serviceEndsAt,deleted?END:null);
     assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,deleted?0:1);
-    assert.equal(f.db.prepare('SELECT twilioNumber FROM businessProfiles WHERE ownerId=?').get(A).twilioNumber,released?null:'+19025550101');
-    assert.equal(f.lifecycle.snapshot(A).cancellation.state,'RESTORED');
+    assert.equal(f.db.prepare('SELECT twilioNumber FROM businessProfiles WHERE ownerId=?').get(A)?.twilioNumber,deleted?undefined:released?null:'+19025550101');
+    assert.equal(f.lifecycle.snapshot(A).cancellation.state,deleted?'ENDED':'RESTORED');
+    if(deleted)await assert.rejects(f.lifecycle.reactivate(A),{code:'BILLING_NEW_ACCOUNT_REQUIRED'});
   });
 }
 test('new active/card-only subscription without its paid invoice cannot restore retained service',async t=>{

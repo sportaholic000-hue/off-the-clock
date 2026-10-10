@@ -5,7 +5,7 @@
   },
   {
     "file": "src/billingCustomerLifecycle.js",
-    "sha256": "cd7c15833ec4da1cc29bb4aef42fd2a9d379510a7525ef8d736d0e508148e646"
+    "sha256": "d8bcc2d239a132ba15948efb673bcb07b4f066b7f4eb6423d8fe2feb41d8ef47"
   },
   {
     "file": "src/billingRoutes.js",
@@ -41,7 +41,7 @@
   },
   {
     "file": "src/offsiteBackups.js",
-    "sha256": "2d18ca1ba879ba01b012837dd990fc6a0e281bb22ae407d098c2dabc6d7b27d2"
+    "sha256": "bcbb60194c4593095149776cd1557fd605e352b46a026e1a12afa42d581512c8"
   },
   {
     "file": "src/ownerAlertRoutes.js",
@@ -77,7 +77,7 @@
   },
   {
     "file": "src/server.js",
-    "sha256": "ed711cf8ecba9ce2da066231404fd7d9ba0f370aaea8e5f18e6be7f86a317185"
+    "sha256": "6d47404801b807d11cc49a8f06fbd727ed0224470442fdaa0c3ba2f2dbd579a9"
   },
   {
     "file": "src/staffRoutes.js",
