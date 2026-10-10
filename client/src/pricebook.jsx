@@ -1181,7 +1181,7 @@ export default function PriceBook() {
         {transferNotice&&<Notice tone="warning">{transferNotice}</Notice>}
         {contract.engineVersion&&<QuoteAccess/>}<ErrorMessage error={error} />
         {draftValidationErrors.length > 0 && (
-          <Notice tone="warning">{draftValidationErrors.map(message=>ownerMessage(message)).join(' ')}</Notice>
+          <Notice tone="warning">{draftValidationErrors.join(' ')}</Notice>
         )}
         <div className="save-bar">
           <StatusChip status={selectedStatus.status} label={priceOptionChipText(selectedStatus)} pending={validating} />

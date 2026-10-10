@@ -70,12 +70,36 @@ jobs:
       - name: Full test suite
         if: matrix.version == 'final'
         run: npm test > /tmp/pricebook-evidence/npm-test.tap 2>&1
-      - name: Strict quote suite
-        if: always() && matrix.version == 'final'
-        run: npm run test:quote > /tmp/pricebook-evidence/test-quote.tap 2>&1
       - name: Preserve evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: 'pricebook-first-visit-${{ matrix.version }}'
           path: /tmp/pricebook-evidence
+
+  quote-gate:
+    if: github.head_ref == 'fix/pricebook-first-visit-20261009'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '${{ github.event.pull_request.head.sha }}'
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Clean dependencies, browser and build
+        run: |
+          rm -rf node_modules server/node_modules client/node_modules
+          npm ci
+          npm install --no-save --no-audit --no-fund playwright@1.56.0
+          npx playwright install --with-deps chromium
+          npm run build
+          mkdir -p /tmp/pricebook-quote-evidence
+      - name: Strict quote suite on the exact final commit
+        run: npm run test:quote > /tmp/pricebook-quote-evidence/test-quote.tap 2>&1
+      - name: Preserve strict gate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pricebook-strict-quote
+          path: /tmp/pricebook-quote-evidence
