@@ -67,6 +67,12 @@ jobs:
           for(const screen of evidence.pricebookScreens){assert.deepEqual(screen.rawKeys,[]);assert.equal(screen.recoveryDialogs,0);}
           for(const number of [3,'3b','pricebook-review'])assert.equal(evidence.steps.find(s=>s.number===number).status,'pass');
           JS
+      - name: Preserve rehearsal before the long suites
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'pricebook-rehearsal-${{ matrix.version }}'
+          path: /tmp/pricebook-evidence/rehearsal
       - name: Full test suite
         if: matrix.version == 'final'
         run: npm test > /tmp/pricebook-evidence/npm-test.tap 2>&1
