@@ -17,7 +17,7 @@ const stored=()=>db.prepare('SELECT knowledgeBaseJson FROM businessProfiles WHER
 const bad=(fn,field)=>assert.throws(fn,error=>error.statusCode===400&&error.message.includes(field));
 async function signedSave(t,save,verify=()=>{}){
  const connections=[];
- const h=await harness(t,{filename:process.env.DATABASE_PATH,beforeInstall:save,onConnect:input=>connections.push(input)});
+ const h=await harness(t,{filename:process.env.DATABASE_PATH,beforeInstall:f=>{save(f);const current=JSON.parse(stored());if(!current.about||!current.hours)saveKnowledgeBase(owner,{...current,about:current.about||'Synthetic business',hours:current.hours||'Weekdays'});},onConnect:input=>connections.push(input)});
  const serial=++sequence;await h.connect(serial,'+1902555'+String(serial).padStart(4,'0'));
  assert.equal(connections.length,1);assert.equal(h.errors.includes('VOICE_SETTINGS_INVALID'),false);
  const prompt=connections[0].config.systemInstruction;verify(JSON.parse(prompt.match(/<OWNER_FACTS_JSON>\n([\s\S]*?)\n<\/OWNER_FACTS_JSON>/)[1]));
@@ -114,7 +114,7 @@ test('receptionist 5 1000 live services accepted, 1001st approval and activation
 });
 test('receptionist 5 compilation failure names the setting in durable dashboard and email alerts, isolated by tenant',async t=>{
  const messages=[];
- const h=await harness(t,{fail:true,beforeInstall:f=>f.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({hours:'X'.repeat(20001)}),owner)});
+ const h=await harness(t,{fail:true,beforeInstall:f=>f.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({about:'Synthetic business',hours:'X'.repeat(20001)}),owner)});
  await h.connect();assert.equal(h.callbacks.length,0);assert.ok(h.errors.includes('VOICE_SETTINGS_INVALID'));
  const service=createOwnerAlertService({database:h.db,ready:()=>true,send:async message=>{messages.push(message);return {accepted:true,id:'synthetic-email'};}});
  const alert=service.list({ownerId:owner}).alerts.find(a=>a.eventType==='voice.settings_invalid');assert.ok(alert);assert.match(alert.settingMessage,/Hours/);
@@ -123,7 +123,7 @@ test('receptionist 5 compilation failure names the setting in durable dashboard 
  const settingEmails=messages.filter(message=>message.subject.includes('Receptionist setting'));assert.equal(settingEmails.length,1);assert.match(settingEmails[0].text,/Hours/);assert.equal(settingEmails[0].to,'synthetic-a@example.invalid');assert.equal(service.list({ownerId:owner}).alerts.find(a=>a.id===alert.id).status,'ACCEPTED');
 });
 test('oversized preexisting receptionist prompt raises settings invalid before the provider opens',async t=>{
- const knowledge={about:'Synthetic work',neverSay:Array.from({length:10},(_,i)=>`${i}:`+'z'.repeat(19998))};
+ const knowledge={about:'Synthetic work',hours:'Weekdays',neverSay:Array.from({length:10},(_,i)=>`${i}:`+'z'.repeat(19998))};
  const h=await harness(t,{fail:true,beforeInstall:f=>f.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify(knowledge),owner)});
  await h.connect();assert.equal(h.callbacks.length,0);assert.ok(h.errors.includes('VOICE_SETTINGS_INVALID'));
  const alert=createOwnerAlertService({database:h.db,ready:()=>false}).list({ownerId:owner}).alerts.find(a=>a.eventType==='voice.settings_invalid');

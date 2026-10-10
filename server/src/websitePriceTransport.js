@@ -15,7 +15,8 @@ export function publicWebsiteAddress(address){
   if(!isIP(address)||address.includes('%'))return false;
   const parsed=ipaddr.parse(address);
   // Allow only ordinary public unicast; never IPv4-mapped, transition,
-  // documentation, multicast, link-local, reserved or private ranges.
+  // documentation, benchmarking, multicast, link-local, reserved or private ranges.
+  if(parsed.kind()==='ipv4'&&parsed.match(ipaddr.parse('198.18.0.0'),15))return false;
   return parsed.range()==='unicast' && (parsed.kind()==='ipv4'||parsed.match(ipaddr.parse('2000::'),3));
 }
 export function websiteUrl(input,host){

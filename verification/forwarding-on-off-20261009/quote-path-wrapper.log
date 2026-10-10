@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: signed production voice exposes server-only listed-price multiplication and speaks its exact response
+ok 1 - signed production voice exposes server-only listed-price multiplication and speaks its exact response
+  ---
+  duration_ms: 420.534241
+  type: 'test'
+  ...
+# Subtest: signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+ok 2 - signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+  ---
+  duration_ms: 851.010958
+  type: 'test'
+  ...
+# Subtest: caller-estimated phone quote saves flag, owner warnings and identical written narration
+ok 3 - caller-estimated phone quote saves flag, owner warnings and identical written narration
+  ---
+  duration_ms: 382.005732
+  type: 'test'
+  ...
+# Subtest: session-start failure captures before signed forwarding; mismatched caller fails closed
+ok 4 - session-start failure captures before signed forwarding; mismatched caller fails closed
+  ---
+  duration_ms: 212.256327
+  type: 'test'
+  ...
+# Subtest: ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+ok 5 - ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+  ---
+  duration_ms: 360.51142
+  type: 'test'
+  ...
+# Subtest: phone readiness uses cached quick statuses with the same live answer
+ok 6 - phone readiness uses cached quick statuses with the same live answer
+  ---
+  duration_ms: 303.023997
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value 0
+ok 7 - forbidden quote key __proto__ value 0
+  ---
+  duration_ms: 0.779178
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value null
+ok 8 - forbidden quote key __proto__ value null
+  ---
+  duration_ms: 0.140319
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value "x"
+ok 9 - forbidden quote key __proto__ value "x"
+  ---
+  duration_ms: 0.458007
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value {"sentinel":true}
+ok 10 - forbidden quote key __proto__ value {"sentinel":true}
+  ---
+  duration_ms: 0.359115
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value 0
+ok 11 - forbidden quote key constructor value 0
+  ---
+  duration_ms: 0.107507
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value null
+ok 12 - forbidden quote key constructor value null
+  ---
+  duration_ms: 0.072611
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value "x"
+ok 13 - forbidden quote key constructor value "x"
+  ---
+  duration_ms: 0.408518
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value {"sentinel":true}
+ok 14 - forbidden quote key constructor value {"sentinel":true}
+  ---
+  duration_ms: 0.107211
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value 0
+ok 15 - forbidden quote key prototype value 0
+  ---
+  duration_ms: 0.238315
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value null
+ok 16 - forbidden quote key prototype value null
+  ---
+  duration_ms: 0.073696
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value "x"
+ok 17 - forbidden quote key prototype value "x"
+  ---
+  duration_ms: 0.055707
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value {"sentinel":true}
+ok 18 - forbidden quote key prototype value {"sentinel":true}
+  ---
+  duration_ms: 0.05156
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value 0
+ok 19 - forbidden quote key __PrOtO__ value 0
+  ---
+  duration_ms: 0.127604
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value null
+ok 20 - forbidden quote key __PrOtO__ value null
+  ---
+  duration_ms: 0.281169
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value "x"
+ok 21 - forbidden quote key __PrOtO__ value "x"
+  ---
+  duration_ms: 0.121674
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value {"sentinel":true}
+ok 22 - forbidden quote key __PrOtO__ value {"sentinel":true}
+  ---
+  duration_ms: 0.062363
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected ownerId
+ok 23 - caller identity or money rejected ownerId
+  ---
+  duration_ms: 0.117237
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected price
+ok 24 - caller identity or money rejected price
+  ---
+  duration_ms: 0.047173
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected offeringId
+ok 25 - caller identity or money rejected offeringId
+  ---
+  duration_ms: 0.044601
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected confirmedFacts
+ok 26 - caller identity or money rejected confirmedFacts
+  ---
+  duration_ms: 0.050668
+  type: 'test'
+  ...
+# Subtest: full written disclosure survives both projections while short summary preserves both ranges and exclusions
+ok 27 - full written disclosure survives both projections while short summary preserves both ranges and exclusions
+  ---
+  duration_ms: 1.546906
+  type: 'test'
+  ...
+# Subtest: booking already owns hold then confirm; caller hold/finalize injection stays rejected
+ok 28 - booking already owns hold then confirm; caller hold/finalize injection stays rejected
+  ---
+  duration_ms: 0.28964
+  type: 'test'
+  ...
+# Subtest: actual start entry point installs the signed runtime instead of the placeholder
+ok 29 - actual start entry point installs the signed runtime instead of the placeholder
+  ---
+  duration_ms: 0.29925
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3158.680932

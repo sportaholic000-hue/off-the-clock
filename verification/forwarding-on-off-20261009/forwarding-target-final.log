@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: forwarding: signed call is answered when the provisioned owner disabled the old dashboard switch
+ok 1 - forwarding: signed call is answered when the provisioned owner disabled the old dashboard switch
+  ---
+  duration_ms: 79.759951
+  type: 'test'
+  ...
+# Subtest: forwarding: active trial and payment grace also answer without the old switch
+ok 2 - forwarding: active trial and payment grace also answer without the old switch
+  ---
+  duration_ms: 67.489649
+  type: 'test'
+  ...
+# Subtest: forwarding: signed unknown destination is refused with no tenant call
+ok 3 - forwarding: signed unknown destination is refused with no tenant call
+  ---
+  duration_ms: 27.281418
+  type: 'test'
+  ...
+# Subtest: forwarding: expired trial and payment failure beyond grace use backup capture
+ok 4 - forwarding: expired trial and payment failure beyond grace use backup capture
+  ---
+  duration_ms: 59.552503
+  type: 'test'
+  ...
+# Subtest: forwarding: an active trial after 60 used minutes captures a message without AI billing
+ok 5 - forwarding: an active trial after 60 used minutes captures a message without AI billing
+  ---
+  duration_ms: 32.409624
+  type: 'test'
+  ...
+# Subtest: forwarding: service ended uses unavailable message; blocked caller is rejected
+ok 6 - forwarding: service ended uses unavailable message; blocked caller is rejected
+  ---
+  duration_ms: 36.196725
+  type: 'test'
+  ...
+# Subtest: forwarding: completed answered call retains existing minutes, replay does not double bill
+ok 7 - forwarding: completed answered call retains existing minutes, replay does not double bill
+  ---
+  duration_ms: 69.301157
+  type: 'test'
+  ...
+# Subtest: forwarding: signed ForwardedFrom and arrival time are saved once for the correct owner
+ok 8 - forwarding: signed ForwardedFrom and arrival time are saved once for the correct owner
+  ---
+  duration_ms: 29.904172
+  type: 'test'
+  ...
+# Subtest: forwarding: signed empty ForwardedFrom is present while omitted field is absent
+ok 9 - forwarding: signed empty ForwardedFrom is present while omitted field is absent
+  ---
+  duration_ms: 37.314042
+  type: 'test'
+  ...
+# Subtest: forwarding: owner check is tenant scoped; signed destination cannot be rebound across businesses
+ok 10 - forwarding: owner check is tenant scoped; signed destination cannot be rebound across businesses
+  ---
+  duration_ms: 1887.708352
+  type: 'test'
+  ...
+# Subtest: forwarding: Twilio provisioning completes with no carrier bridge URL or token
+ok 11 - forwarding: Twilio provisioning completes with no carrier bridge URL or token
+  ---
+  duration_ms: 22.047242
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2356.421733

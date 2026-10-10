@@ -63,7 +63,7 @@ for(const [interval,end,cancelAt,releaseAt,deleteAt] of [['monthly',END,'2026-11
     f.setTime(Date.parse(end)-1);assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,true);assert.equal(canContinueSetup(f.user(),f.clock()),true);
     f.setTime(end);assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,false);assert.equal(canContinueSetup(f.user(),f.clock()),false);
     assert.equal(billingMutationDecision(f.db,{method:'POST',path:'/api/leads',tenantOwnerId:A},{now:f.clock()}).allowed,false);
-    await f.lifecycle.processOwner(A);assert.deepEqual(f.writes.coverage,[{ownerId:A,enabled:false}]);await f.lifecycle.processOwner(A);assert.equal(f.writes.coverage.length,1);
+    await f.lifecycle.processOwner(A);assert.deepEqual(f.writes.coverage,[]);await f.lifecycle.processOwner(A);assert.equal(f.writes.coverage.length,0);
     const state=f.lifecycle.snapshot(A);assert.equal(state.cancellation.phoneReleaseAt,releaseAt);assert.equal(state.cancellation.exportUntilAt,deleteAt);
   });
   test(`${interval}: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation`,async t=>{
@@ -227,11 +227,13 @@ test('cancelled renewal suppresses the reminder; incorrect preview tenant fails 
 test('90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts',async t=>{
   const f=setup(t);f.activate();f.setTime('2026-11-01T12:00:00.000Z');await f.lifecycle.cancel(A);
   const sid='CA'+'a'.repeat(32);f.db.prepare("INSERT INTO calls(id,ownerId,callSid,transcriptJson,createdAt) VALUES('SYNTHETIC-purge-call',?,?,?,?)").run(A,sid,'SYNTHETIC_TRANSCRIPT',START);
+  f.db.prepare("INSERT INTO voiceForwardingArrivals(ownerId,callSid,accountSid,callerNumber,destinationNumber,forwardedFromPresent,reachedAt) VALUES(?,?,'AC_SYNTHETIC','+19025550100','+19025550101',1,?)").run(A,sid,START);
   f.db.prepare("INSERT INTO transcriptTurns(id,ownerId,callId,sequence,role,text,createdAt) VALUES('SYNTHETIC-turn',?,'SYNTHETIC-purge-call',1,'caller','SYNTHETIC_PRIVATE',?)").run(A,START);
   const {createHash}=await import('node:crypto'),scope=createHash('sha256').update(A+'\0'+sid).digest('hex');
   f.db.prepare("INSERT INTO voiceToolIdempotencyReceipts(scopeHash,idempotencyKey,requestDigest,status,responseJson,leaseExpiresAtUtc,createdAt,updatedAt) VALUES(?,'SYNTHETIC-key',?,'COMPLETED','SYNTHETIC_PRIVATE',?,?,?)").run(scope,'a'.repeat(64),START,START,START);
   f.setTime('2027-02-18T12:00:00.000Z');await f.lifecycle.processOwner(A);
   assert.equal(f.db.prepare('SELECT count(*) n FROM transcriptTurns WHERE ownerId=?').get(A).n,0);assert.equal(f.db.prepare('SELECT count(*) n FROM voiceToolIdempotencyReceipts WHERE scopeHash=?').get(scope).n,0);
+  assert.equal(f.db.prepare('SELECT count(*) n FROM voiceForwardingArrivals WHERE ownerId=?').get(A).n,0);
 });
 test('merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant',async t=>{
   const f=setup(t);f.activate(A);f.activate(B);f.setTime('2026-11-01T12:00:00.000Z');await f.lifecycle.cancel(A);
@@ -286,11 +288,11 @@ test('cancellation intent survives DB restart and no pending intent is advertise
   const g=setup(t,{filename,resume:true,fakes});g.setTime('2026-11-01T12:01:00.000Z');await g.lifecycle.processOwner(A);await g.lifecycle.processOwner(A);
   assert.equal(g.user().serviceEndsAt,END);assert.equal(g.lifecycle.snapshot(A).notices.filter(n=>n.kind==='cancellation').length,1);assert.equal(g.writes.update.length,1);
 });
-test('failed carrier shutdown stays pending and is retried without false confirmation',async t=>{
+test('service end does not attempt a carrier shutdown or claim confirmation',async t=>{
   const f=setup(t);f.activate();f.profile();f.setTime('2026-11-01T12:00:00.000Z');await f.lifecycle.cancel(A);
-  const service=createBillingCustomerLifecycle({database:f.db,stripeClient:f.fakes.stripe,clock:f.clock,enabled:()=>true,telephony:{setCoverage:async()=>({confirmedEnabled:true,pending:true})}});
-  f.setTime(END);await service.processOwner(A);assert.equal(service.snapshot(A).cancellation.forwardingOffAt,null);assert.equal(service.snapshot(A).cancellation.lastError,'FORWARDING_SHUTDOWN_PENDING');
-  await f.lifecycle.processOwner(A);assert.equal(f.lifecycle.snapshot(A).cancellation.forwardingOffAt,END);
+  const service=createBillingCustomerLifecycle({database:f.db,stripeClient:f.fakes.stripe,clock:f.clock,enabled:()=>true,telephony:{setCoverage:async()=>{throw Error('Carrier API must not be called');}}});
+  f.setTime(END);await service.processOwner(A);assert.equal(service.snapshot(A).cancellation.forwardingOffAt,null);assert.equal(service.snapshot(A).cancellation.lastError,null);
+  await f.lifecycle.processOwner(A);assert.equal(f.lifecycle.snapshot(A).cancellation.forwardingOffAt,null);
 });
 test('phone release failure retains its saved SID and retries only that tenant',async t=>{
   const f=setup(t);f.activate();f.profile();f.setTime('2026-11-01T12:00:00.000Z');await f.lifecycle.cancel(A);f.setTime('2026-12-20T12:00:00.000Z');

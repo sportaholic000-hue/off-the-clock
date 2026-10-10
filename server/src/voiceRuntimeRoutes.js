@@ -174,6 +174,7 @@ function normalizeIncomingCall(body, validatedAccountSid, allowedAccountSids) {
   const from = typeof body.From === "string" ? body.From.trim() : "";
   const to = typeof body.To === "string" ? body.To.trim() : "";
   const direction = typeof body.Direction === "string" ? body.Direction.trim() : "";
+  const forwardedFrom = typeof body.ForwardedFrom === "string" ? body.ForwardedFrom.trim() : "";
 
   if (
     !ACCOUNT_SID.test(accountSid) ||
@@ -185,7 +186,7 @@ function normalizeIncomingCall(body, validatedAccountSid, allowedAccountSids) {
   if (!CALL_SID.test(callSid) || !isVoiceCaller(from) || !E164.test(to) || direction !== "inbound") {
     fail("INVALID_INBOUND_CALL", 400);
   }
-  return Object.freeze({ accountSid, callSid, from, to });
+  return Object.freeze({ accountSid, callSid, from, to, forwardedFrom, forwardedFromPresent:Object.hasOwn(body,'ForwardedFrom') });
 }
 
 function xmlText(value) {
@@ -308,6 +309,7 @@ export function installVoiceRuntimeRoutes(app, {
   checkCaller,
   createSession,
   routeIncoming,
+  recordInboundCall,
   resolveFallback = async () => ({ mode: "message", message: DEFAULT_FALLBACK_MESSAGE }),
   recordFallback,
   incomingPath: incomingPathValue,
@@ -379,6 +381,9 @@ export function installVoiceRuntimeRoutes(app, {
       if(await validateCallBinding({context:resolvedContext})!==true)fail('VOICE_CALL_BINDING_MISMATCH',403);
       tenant=resolvedTenant;
       context=resolvedContext;
+      // Record only a signed, tenant-bound arrival. The owner cannot mark a
+      // test successful from the dashboard or by supplying an owner selector.
+      if(recordInboundCall)await recordInboundCall({context,forwardedFrom:call.forwardedFrom,forwardedFromPresent:call.forwardedFromPresent});
 
       const build = async()=>{
       if(checkCaller){

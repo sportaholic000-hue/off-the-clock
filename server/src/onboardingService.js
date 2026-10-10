@@ -336,19 +336,6 @@ export function operatorEligibility(profile, options={}) {
   return { eligible: missing.length === 0, missing };
 }
 
-export function setOperatorEnabled(ownerId, enabled) {
-  const profile = getBusinessProfile(ownerId);
-  const eligibility = operatorEligibility(profile);
-  if (enabled && !eligibility.eligible) {
-    const error = new Error(`Operator cannot go live until these are ready: ${eligibility.missing.join(', ')}`);
-    error.statusCode = 409; error.details = eligibility; throw error;
-  }
-  return updateBusinessProfile(ownerId, {
-    operatorEnabled: enabled ? 1 : 0,
-    onboardingStep: enabled ? Math.max(7, profile.onboardingStep) : profile.onboardingStep
-  });
-}
-
 function readCalendarConnection(ownerId) {
   return ownerQuery(`SELECT ownerId, provider, status, calendarId,
       credentialsCiphertext, credentialsIv, credentialsTag, keyVersion,
@@ -479,7 +466,7 @@ export function onboardingState(ownerId) {
   const account = ownerAccount(ownerId);
   const eligibility=operatorEligibility(profile);
   if(!hasOperatorAccess(account)){eligibility.eligible=false;eligibility.missing.push('Operator plan access');}
-  return { account, quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: profile.operatorEnabled&&eligibility.eligible, configuredEnabled:profile.operatorEnabled, ...eligibility } };
+  return { account, quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: eligibility.eligible, ...eligibility } };
 }
 
 function draftRevision(row) {

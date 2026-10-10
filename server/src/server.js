@@ -33,7 +33,7 @@ import { CREATE_TABLE_STATEMENTS } from './schema.js';
 import {installAccountRoutes} from './accountRoutes.js';
 import { installQuoteDoneRoutes } from './quoteDoneRoutes.js';
 import { createBookingService } from './bookingService.js';
-import {operatorOffRouting} from './voice/operatorOffRouting.js';
+import {latestForwardingArrival} from './voice/voiceForwardingCheck.js';
 import { createBookingPreferenceService } from './bookingPreferenceService.js';
 import { installBookingRoutes } from './bookingRoutes.js';
 import { createGoogleCalendarAdapter } from './googleCalendarAdapter.js';
@@ -91,15 +91,12 @@ import {
   decoratePreviewState,
   localPreviewEnabled,
   previewDashboardActivity,
-  previewOperatorPatch,
   previewPhonePatch
 } from './previewMode.js';
 import {
   draftKnowledgeBase,
   exchangeGoogleCalendarCode,
-  getTwilioCallStatus,
   googleCalendarAuthorizationUrl,
-  placeTwilioTestCall,
   createTelephonyOperations,
   releaseTwilioNumber,
   suggestStarterBook
@@ -124,11 +121,7 @@ const priceBookAIHandler = fn => asyncHandler(async(req,res)=>{
 });
 const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
 const clientOnboardingState = ownerId => {
-  const state=decoratePreviewState(onboardingState(ownerId));
-  const profile=ownerQuery('SELECT operatorEnabled,existingPhoneNumber,twilioNumber,carrierSetupStatus FROM businessProfiles WHERE ownerId=?').get(ownerId);
-  const coverage=ownerQuery('SELECT confirmedEnabled,phase FROM operatorCoverageOperations WHERE ownerId=?').get(ownerId);
-  const routing=operatorOffRouting({profile,coverage,destinationNumber:profile?.twilioNumber});
-  return {...state,operator:{...state.operator,offRouting:{confirmed:routing?.mode==='forward',setupStep:4}}};
+  return decoratePreviewState(onboardingState(ownerId));
 };
 
 function accessAccount(ownerId) {
@@ -271,11 +264,6 @@ if (localPreviewEnabled()) {
     return res.json(clientOnboardingState(req.tenantOwnerId));
   });
 
-  app.post('/api/dev/preview/operator', requireAuth(['owner']), (req, res) => {
-    const profile = getBusinessProfile(req.tenantOwnerId);
-    updateBusinessProfile(req.tenantOwnerId, previewOperatorPatch(profile, req.body?.enabled === true));
-    return res.json(clientOnboardingState(req.tenantOwnerId));
-  });
 }
 
 app.post('/api/onboarding/account', requireAuth(['owner']), asyncHandler(async (req, res) => {
@@ -330,11 +318,11 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
 
 const telephonyOperations = createTelephonyOperations({
   database: db, ownerQuery, getBusinessProfile, savePhoneProvisioning,
-  updateBusinessProfile, operatorEligibility
+  updateBusinessProfile
 });
 const customerLifecycle=createBillingCustomerLifecycle({database:db,ownerQuery,
   priceIds:billingConfig?.priceIds||{},stripeClient,emailProvider:createOwnerEmailProvider(),
-  enabled:providerWritesEnabled,telephony:telephonyOperations,releaseNumber:releaseTwilioNumber,
+  enabled:providerWritesEnabled,releaseNumber:releaseTwilioNumber,
   dashboardUrl:billingConfig?.portalReturnUrl});
 installBillingCustomerLifecycleRoutes(app,{service:customerLifecycle,requireAuth,
   requireProviderWrites:requireProviderOperationsEnabled,asyncHandler});
@@ -344,43 +332,13 @@ app.post('/api/onboarding/phone/provision', requireAuth(['owner']), requireProvi
   return res.status(statusCode).json(result);
 }));
 
-app.post('/api/onboarding/phone/test', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
-  const state = onboardingState(req.tenantOwnerId);
-  const profile = state.profile;
-  if (!profile.twilioNumber || !profile.existingPhoneNumber) {
-    const error = new Error('Connect your business number before testing it');
-    error.statusCode = 409;
-    throw error;
-  }
-  const call = await placeTwilioTestCall({
-    to: profile.existingPhoneNumber,
-    from: profile.twilioNumber,
-    businessName: state.account.businessName,
-    agentName: profile.agentName
-  });
-  return res.json({ callSid: call.sid, status: call.status || 'queued' });
-}));
-
-app.get('/api/onboarding/phone/test/:callSid', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
-  const profile = getBusinessProfile(req.tenantOwnerId);
-  let call;
-  try {call=await getTwilioCallStatus(req.params.callSid);}
-  catch(error) {
-    if(Number(error?.statusCode||error?.status)===404||Number(error?.code)===20404)return res.status(404).json({error:'Test call not found'});
-    throw error;
-  }
-  if (call.to !== profile.existingPhoneNumber || call.from !== profile.twilioNumber) {
-    return res.status(404).json({ error:'Test call not found' });
-  }
-  return res.json({ status:call.status });
-}));
+app.get('/api/onboarding/phone/forwarding-check', requireAuth(['owner']), (req,res)=>{
+  const profile=getBusinessProfile(req.tenantOwnerId);
+  res.json({arrival:latestForwardingArrival(db,req.tenantOwnerId,profile.twilioNumber)});
+});
 
 installKnowledgeDraftRoutes(app,{requireAuth,requireProviderWrites,asyncHandler,onboardingState,draftKnowledgeBase,saveKnowledgeBase});
 
-app.post('/api/operator/toggle', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
-  const { statusCode, ...result } = await telephonyOperations.setCoverage(req.tenantOwnerId, req.body?.enabled);
-  return res.status(statusCode).json({ ...result, operator: clientOnboardingState(req.tenantOwnerId).operator });
-}));
 
 app.post('/api/onboarding/calendar', requireAuth(['owner']), asyncHandler(async (req, res) => {
   const profile = saveCalendar(req.tenantOwnerId, req.body || {});

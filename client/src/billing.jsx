@@ -131,7 +131,7 @@ export default function Billing() {
           {lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'?<>
             <p>Phone release: {lifecycle.cancellation.phoneReleaseAt}. Export deadline: {lifecycle.cancellation.exportUntilAt}.</p>
             {lifecycle.cancellation.lastError?<Notice tone="error">A lifecycle action is pending confirmation. Refresh to check progress.</Notice>:null}
-            {lifecycle.cancellation.forwardingOffAt?<p>Forwarding shutdown confirmed.</p>:state.serviceEndsAt&&Date.parse(state.serviceEndsAt)<=Date.now()?<p>Carrier forwarding shutdown is pending confirmation. Turn off forwarding on your business line.</p>:null}
+            {state.serviceEndsAt&&Date.parse(state.serviceEndsAt)<=Date.now()?<p>Turn off forwarding on your business line from your phone or carrier account.</p>:null}
           </>:null}
           {['leads','quotes','calls'].map(kind=><Button key={kind} variant="secondary" disabled={!!busy||!!(lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'&&Date.parse(lifecycle.cancellation.exportUntilAt)<=Date.now())} onClick={()=>exportRecords(kind)}>Export {kind} (CSV)</Button>)}
         </section>:null}

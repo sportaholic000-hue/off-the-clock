@@ -41,14 +41,13 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
       if(typeof text==='string'&&text.trim())store.appendFallbackText({context,text});
       if(partial)return res.sendStatus(204);
       if(!text?.trim())return res.type('text/xml').send('<Response><Redirect method="POST">'+xml(publicBaseUrl+CAPTURE_PATH+'/again')+'</Redirect></Response>');
-      // A received request is committed before returning any Dial or Hangup.
-      const number=query('SELECT existingPhoneNumber FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.existingPhoneNumber;
+      // A received request is committed before returning Hangup. The owner's
+      // number may forward right back here, so the backup cannot dial it.
       store.finishCall({context,status:'COMPLETED',reason:'FALLBACK_REQUEST_CAPTURED'});
-      const dial=call.failureCode!=='VOICE_CALLER_THROTTLED'&&isPhoneNumber(number)&&number!==context.to?'<Dial answerOnBridge="true" timeout="20"><Number>'+xml(number)+'</Number></Dial>':'';
       const savedVoice=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;
       const voice=call.failureCode==='VOICE_CALLER_THROTTLED'||!Object.hasOwn(TWILIO_BACKUP_VOICES,savedVoice)?null:TWILIO_BACKUP_VOICES[savedVoice];
       const words=call.failureCode==='VOICE_CALLER_THROTTLED'?'Thank you. The business will follow up.':BACKUP_THANK_YOU;
-      return res.type('text/xml').send('<Response><Say'+(voice?' voice="'+xml(voice)+'"':'')+'>'+xml(words)+'</Say>'+dial+'<Hangup/></Response>');
+      return res.type('text/xml').send('<Response><Say'+(voice?' voice="'+xml(voice)+'"':'')+'>'+xml(words)+'</Say><Hangup/></Response>');
     }catch{return res.status(503).send('Request capture unavailable; retry this callback.');}
   });
   app.post(CAPTURE_PATH+'/again',parser,async(req,res)=>{

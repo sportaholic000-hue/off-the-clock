@@ -142,7 +142,6 @@ test('.env.example lists runtime/provider keys without sample secrets', async ()
     'JWT_SECRET',
     'TWILIO_API_KEY_SECRET',
     'TWILIO_AUTH_TOKEN',
-    'CARRIER_CONNECTION_TOKEN',
     'GEMINI_API_KEY',
     'GOOGLE_CLIENT_SECRET',
     'CREDENTIAL_ENCRYPTION_KEY',
@@ -160,5 +159,9 @@ test('.env.example lists runtime/provider keys without sample secrets', async ()
   assert.equal(values.get('ALLOW_PROVIDER_WRITES'), 'false');
   assert.equal(values.get('CORS_ALLOWED_ORIGINS'), 'http://localhost:5173');
   assert.equal(values.get('CREDENTIAL_ENCRYPTION_KEY_VERSION'), 'v1');
+  assert.equal(values.has('CARRIER_CONNECTION_URL'), false);
+  assert.equal(values.has('CARRIER_CONNECTION_TOKEN'), false);
+  const railway = await readFile(new URL('../deployment/railway.env.example', import.meta.url), 'utf8');
+  assert.doesNotMatch(railway, /CARRIER_CONNECTION_(URL|TOKEN)/);
 });
 

@@ -158,17 +158,17 @@ test('price book shape rejects more than three tiers', () => {
   }), /at most three tiers/);
 });
 
-test('owner-facing Phase 2 source has no gradients or forwarding mechanics', () => {
+test('owner-facing source shows phone-controlled forwarding and no dashboard switch', () => {
   const client = [
     'client/src/onboarding.jsx','client/src/pricebook.jsx',
     'client/src/dashboard.jsx','client/src/styles.css','client/src/voiceOperatorControl.js'
   ].map(path => readFileSync(path, 'utf8')).join('\n');
   assert.equal(/gradient/i.test(client), false);
-  assert.equal(/forward(?:ing|ed|s)?/i.test(client), false);
-  assert.match(client, /Keep the number your customers already know/);
-  assert.match(client, /CALLERS CAN LEAVE A REQUEST/);
+  assert.match(client, /Forward calls to your receptionist/);
+  assert.match(client, /FORWARDED CALLS ARE ANSWERED/);
+  assert.doesNotMatch(client, /\/api\/operator\/toggle/);
   assert.match(client, /Tax settings are your responsibility\. Off The Clock applies the mode and rate you set — it does not provide tax advice\./);
-  assert.match(client, /OPERATOR LIVE — every call from here on is covered\./);
+  assert.match(client, /Receptionist ready\. Forwarding is controlled on your business phone\./);
   assert.equal(/planStatus === 'trialing' \|\|/.test(client), false, 'client must not widen plan access for trials');
 });
 
@@ -178,8 +178,8 @@ test('server exposes the complete Phase 2 route surface', () => {
   for (const route of [
     '/api/onboarding/state','/api/onboarding/account','/api/onboarding/business-types',
     '/api/business/jurisdiction','/api/onboarding/phone/provision',
-    '/api/onboarding/phone/test','/api/onboarding/knowledge-base',
-    '/api/operator/toggle','/api/onboarding/calendar','/api/onboarding/voice',
+    '/api/onboarding/phone/forwarding-check','/api/onboarding/knowledge-base',
+    '/api/onboarding/calendar','/api/onboarding/voice',
     '/api/pricebook/interview','/api/pricebook/meta','/api/pricebook/suggest',
     '/api/pricebook/validate','/api/pricebook/preview','/api/pricebook/save','/api/pricebook/:ownerId'
   ]) assert.match(source, new RegExp(route.replaceAll('/','\\/')));

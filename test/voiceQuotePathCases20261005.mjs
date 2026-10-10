@@ -42,7 +42,7 @@ function provider({fail=false}={}){
 function seedDb(db,owner){
   db.pragma('foreign_keys = ON');for(const sql of CREATE_TABLE_STATEMENTS)db.exec(sql);for(const sql of CREATE_INDEX_STATEMENTS)db.exec(sql);installQuoteEmailSchema(db);
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'synthetic','Synthetic','Synthetic Voice Co','QuoteDone','active','UTC','owner',?)").run(owner,owner+'@example.invalid',NOW);
-  db.prepare("INSERT INTO businessProfiles(ownerId,existingPhoneNumber,twilioNumber,twilioNumberSid,phoneProvisioningStatus,operatorEnabled,agentName,knowledgeBaseJson,updatedAt) VALUES(?,?,?,'PN_SYNTHETIC','provisioned',1,'Synthetic Assistant',?,?)").run(owner,FALLBACK,TO,JSON.stringify({serviceArea:{mode:'all',cities:[]}}),NOW);
+  db.prepare("INSERT INTO businessProfiles(ownerId,existingPhoneNumber,twilioNumber,twilioNumberSid,phoneProvisioningStatus,operatorEnabled,agentName,knowledgeBaseJson,updatedAt) VALUES(?,?,?,'PN_SYNTHETIC','provisioned',1,'Synthetic Assistant',?,?)").run(owner,FALLBACK,TO,JSON.stringify({about:'Synthetic Voice Co',hours:'Weekdays',serviceArea:{mode:'all',cities:[]}}),NOW);
 }
 function seedBook(owner){
   const loaded=readApplicationBook(owner);
@@ -89,7 +89,7 @@ test('signed production voice exposes server-only listed-price multiplication an
   // Written in verification/engine-leftovers/EXPECTATIONS.md: $0.10 × 3 = $0.30.
   const h=await harness();try{
     const listedItem='[SYNTHETIC] Widget $0.10 each. Taxes extra.';
-    h.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({prices:listedItem}),h.owner);
+    h.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({about:'Synthetic Voice Co',hours:'Weekdays',prices:listedItem}),h.owner);
     await h.connect();
     const config=h.fake.connects[0].config;
     assert.ok(config.tools[0].functionDeclarations.some(tool=>tool.name==='calculateListedPrice'));
