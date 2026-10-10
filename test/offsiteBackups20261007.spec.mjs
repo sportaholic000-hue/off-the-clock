@@ -127,9 +127,9 @@ test('scheduler stops without overlapping and waits for active upload',async t=>
 test('operator HTTP status requires actual database-backed admin authorization and exposes durable failure only',async t=>{
   const f=await fixture(t),warnings=[];process.env.JWT_SECRET=randomBytes(48).toString('hex');
   const environment={JWT_SECRET:process.env.JWT_SECRET,ADMIN_EMAIL:'synthetic-admin@example.invalid',ADMIN_PASSWORD_HASH:'synthetic-password-hash'};
-  f.db.exec('CREATE TABLE users(id TEXT PRIMARY KEY, role TEXT, ownerId TEXT, email TEXT, passwordHash TEXT)');
+  f.db.exec("CREATE TABLE users(id TEXT PRIMARY KEY, role TEXT, ownerId TEXT, email TEXT, passwordHash TEXT, plan TEXT NOT NULL DEFAULT 'Operator', createdAt TEXT NOT NULL DEFAULT '')");
   installAuthSessionSchema(f.db);
-  for(const role of ['owner','staff'])f.db.prepare('INSERT INTO users VALUES(?,?,?,?,?)').run('synthetic-'+role,role,role==='staff'?'synthetic-owner':null,'synthetic-'+role+'@example.invalid','synthetic-password-hash');
+  for(const role of ['owner','staff'])f.db.prepare('INSERT INTO users(id,role,ownerId,email,passwordHash) VALUES(?,?,?,?,?)').run('synthetic-'+role,role,role==='staff'?'synthetic-owner':null,'synthetic-'+role+'@example.invalid','synthetic-password-hash');
   const sessions=createAuthSessionService(f.db,{environment});
   const service=f.service();f.fake.controls.failDataPuts=10;await assert.rejects(()=>service.run());
   const app=express();installOffsiteBackupStatusRoute(app,{service,requireAuth:roles=>requireAuth(roles,{database:f.db,sessionService:sessions})});

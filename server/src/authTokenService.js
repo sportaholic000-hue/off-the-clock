@@ -8,7 +8,8 @@ const GENERIC_OPERATION_MESSAGE = 'We could not process this link. Please reques
 
 export const AUTH_TOKEN_PURPOSES = Object.freeze({
   VERIFY_EMAIL: 'verify_email',
-  RESET_PASSWORD: 'reset_password'
+  RESET_PASSWORD: 'reset_password',
+  STAFF_INVITE: 'staff_invite'
 });
 
 export const AUTH_TOKEN_TTL_POLICY = Object.freeze({
@@ -21,6 +22,11 @@ export const AUTH_TOKEN_TTL_POLICY = Object.freeze({
     defaultMs: 30 * 60 * 1000,
     minMs: 5 * 60 * 1000,
     maxMs: 24 * 60 * 60 * 1000
+  }),
+  [AUTH_TOKEN_PURPOSES.STAFF_INVITE]: Object.freeze({
+    defaultMs: 24 * 60 * 60 * 1000,
+    minMs: 5 * 60 * 1000,
+    maxMs: 24 * 60 * 60 * 1000
   })
 });
 
@@ -29,7 +35,7 @@ CREATE TABLE IF NOT EXISTS authTokens (
   tokenHash TEXT PRIMARY KEY
     CHECK(length(tokenHash) = 64 AND tokenHash NOT GLOB '*[^0-9a-f]*'),
   userId TEXT NOT NULL,
-  purpose TEXT NOT NULL CHECK(purpose IN ('verify_email', 'reset_password')),
+  purpose TEXT NOT NULL CHECK(purpose IN ('verify_email', 'reset_password', 'staff_invite')),
   expiresAt TEXT NOT NULL,
   createdAt TEXT NOT NULL,
   consumedAt TEXT,
@@ -199,6 +205,26 @@ function assertDatabase(database) {
 
 export function installAuthTokenSchema(database) {
   assertDatabase(database);
+  const existing = database.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='authTokens'").get();
+  if (existing && !existing.sql.includes("'staff_invite'")) {
+    // SQLite cannot alter a CHECK constraint. Retain issued and consumed tokens
+    // while replacing the table, then reinstall its index and immutable triggers.
+    immediate(database, () => {
+      database.exec(`DROP TRIGGER IF EXISTS authTokens_immutable_identity;
+        DROP TRIGGER IF EXISTS authTokens_consumed_once;
+        CREATE TABLE authTokens_staff_upgrade (
+          tokenHash TEXT PRIMARY KEY CHECK(length(tokenHash)=64 AND tokenHash NOT GLOB '*[^0-9a-f]*'),
+          userId TEXT NOT NULL,
+          purpose TEXT NOT NULL CHECK(purpose IN ('verify_email','reset_password','staff_invite')),
+          expiresAt TEXT NOT NULL, createdAt TEXT NOT NULL, consumedAt TEXT,
+          FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE,
+          CHECK(expiresAt > createdAt), CHECK(consumedAt IS NULL OR consumedAt >= createdAt)
+        ) STRICT;
+        INSERT INTO authTokens_staff_upgrade SELECT * FROM authTokens;
+        DROP TABLE authTokens;
+        ALTER TABLE authTokens_staff_upgrade RENAME TO authTokens;`);
+    });
+  }
   database.exec(AUTH_TOKEN_SCHEMA_SQL);
 }
 

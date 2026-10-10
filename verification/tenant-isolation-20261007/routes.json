@@ -16,6 +16,14 @@
     "policy": "booking-capability"
   },
   {
+    "route": "DELETE /api/team/staff/:id",
+    "policy": "owner"
+  },
+  {
+    "route": "DELETE /api/team/staff/:id/invite",
+    "policy": "owner"
+  },
+  {
     "route": "GET *",
     "policy": "platform"
   },
@@ -73,6 +81,10 @@
   },
   {
     "route": "GET /api/calls/:id",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/customers",
     "policy": "team"
   },
   {
@@ -169,11 +181,15 @@
   },
   {
     "route": "GET /api/reports",
-    "policy": "team"
+    "policy": "owner"
   },
   {
     "route": "GET /api/schema",
     "policy": "platform"
+  },
+  {
+    "route": "GET /api/team/staff",
+    "policy": "owner"
   },
   {
     "route": "GET /demo/otc-live-demo.js",
@@ -233,6 +249,10 @@
   },
   {
     "route": "POST /api/auth/reset-password",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/staff-invite/accept",
     "policy": "auth"
   },
   {
@@ -420,8 +440,20 @@
     "policy": "owner"
   },
   {
+    "route": "POST /api/quotes/:id/email",
+    "policy": "team"
+  },
+  {
     "route": "POST /api/stripe/webhook",
     "policy": "stripe"
+  },
+  {
+    "route": "POST /api/team/staff/:id/resend",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/team/staff/invite",
+    "policy": "owner"
   },
   {
     "route": "POST /api/twilio/voice/capture",

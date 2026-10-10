@@ -132,7 +132,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/authSessionService.js",
     "function": "principal",
     "reason": "Authentication session or refresh token handling.",
-    "signature": "b557be4508e492c6d272fdba628d01f7eddc5de018507df282c17a5fdea43dbc",
+    "signature": "882df0bee51f9766658d16f65e76cbcd9bf04736522cbcbf029cabb7d7b176f8",
     "occurrence": 1
   },
   {
@@ -701,6 +701,20 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Migration schema inspection.",
     "signature": "17c7a2c551ac55fe6d7d2531fb73fad4ac4d17483939ff9b559971a9805780ac",
     "occurrence": 1
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "function": "installAuthTokenSchema",
+    "reason": "Migration inspects the existing auth-token CHECK constraint before rebuilding it.",
+    "signature": "5a113c897b59c925ad36b58e4b3a768f238fef73f918e049b08212d7bc2e443a",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/staffService.js",
+    "function": "accept",
+    "reason": "Invite token identifies its staff account before the owner is known; reads only ownerId.",
+    "signature": "b2cbe55225cdfe3de0f6853a0da85ce6540ade643d928ece872bf67824db790a",
+    "occurrence": 1
   }
 ]);
 
@@ -729,7 +743,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "e5ac8ea24d193fdee2095f6e68333587c4a21e90974fa0cb2c117421e8e6474e",
     "occurrence": 1,
-    "line": 195
+    "line": 201
   },
   {
     "file": "server/src/billingRoutes.js",
@@ -817,15 +831,15 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote email application method named draft, not a database access.",
     "signature": "55c15137b2afa99405d2a7fc54c299b619fac5e1dccf838963e9b04e2b515361",
     "occurrence": 1,
-    "line": 19
+    "line": 20
   },
   {
     "file": "server/src/quoteEmailService.js",
     "function": "quote email service",
     "reason": "Quote email application method named draft, not a database access.",
-    "signature": "9fbc4260df1cce701be7c3e1d24f839fb8992ef652f680e698ee5cdddee9f4f4",
+    "signature": "36b890c6677253d910dc009ec080e1fccbfbdafb6e0d1fadfe68448d9a0aa4bf",
     "occurrence": 1,
-    "line": 108
+    "line": 152
   },
   {
     "file": "server/src/voice/productionVoiceRuntime.js",

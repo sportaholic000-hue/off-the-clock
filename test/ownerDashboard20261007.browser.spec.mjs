@@ -45,10 +45,11 @@ test('owner dashboard browser: real compiled calls, review, progression, reports
     const reportText=await p.locator('main').innerText();assert.match(reportText,/CAD \$110.15/);assert.match(reportText,/After-hours classification is unknown/);
     await p.getByText('Business hours for after-hours reporting',{exact:true}).click();assert.equal(await p.getByRole('button',{name:'Save business hours',exact:true}).count(),1);
   });
-  await t.test('staff has safe reads but no owner review or report configuration',async()=>{
+  await t.test('staff has safe work-area reads but no owner review or reports',async()=>{
     await p.evaluate(token=>{localStorage.setItem('otc_token',token);window.dispatchEvent(new Event('otc:session'));},f.tokens['synthetic-staff']);
     await p.goto(f.base+'/leads?record='+s.row.id);await p.getByLabel('Follow-up action',{exact:true}).waitFor();assert.equal(await p.locator('option[value="REVIEW"]').count(),0);
-    await p.goto(f.base+'/reports');await p.getByRole('heading',{name:'Service funnel',exact:true}).waitFor();assert.equal(await p.getByText('Business hours for after-hours reporting',{exact:true}).count(),0);
+    await p.goto(f.base+'/reports');await p.waitForURL(f.base+'/calls');await p.getByRole('heading',{name:'Calls',exact:true}).waitFor();
+    assert.equal(await p.getByText('Business hours for after-hours reporting',{exact:true}).count(),0);
     assert.doesNotMatch(await p.locator('main').innerText(),/OTHER TENANT|foreign@example.invalid|SECRET_COST/);
   });
   assert.deepEqual(errors,[]);

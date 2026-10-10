@@ -20,13 +20,13 @@ test('owner dashboard endpoints enforce tenant, role, idempotency and stale vers
   await t.test('stale, mismatched replay, unknown keys and foreign selectors fail closed',async()=>{
     for(const [change,status] of [[{idempotencyKey:'synthetic-stale'},409],[{note:'[SYNTHETIC] changed'},409],[{ownerId:'synthetic-b'},403],[{actorId:'synthetic-b'},400]])assert.equal((await f.request(route+'/actions','synthetic-a',{method:'POST',body:{...body,...change}})).status,status);
   });
-  await t.test('report hours are owner-only, tenant-scoped and version checked',async()=>{
+  await t.test('reports and hours are owner-only, tenant-scoped and version checked',async()=>{
     const hours={weeklyHours:Object.fromEntries(['sun','mon','tue','wed','thu','fri','sat'].map(day=>[day,[]])),revision:0};
     assert.equal((await f.request('/api/reports/hours','synthetic-staff',{method:'PUT',body:hours})).status,403);
     assert.equal((await f.request('/api/reports/hours','synthetic-a',{method:'PUT',body:hours})).status,200);
     assert.equal((await f.request('/api/reports/hours','synthetic-a',{method:'PUT',body:hours})).status,409);
     const foreign=await f.request('/api/reports?period=all','synthetic-b');assert.equal(foreign.body.settings.revision,0);assert.doesNotMatch(JSON.stringify(foreign),/Original|synthetic-http-quote|SECRET_COST/);
-    const staff=await f.request('/api/reports?period=all','synthetic-staff');assert.equal(staff.status,200);assert.equal(staff.body.canManage,false);assert.doesNotMatch(JSON.stringify(staff),/OTHER TENANT|foreign@example.invalid|SECRET_COST/);
+    const staff=await f.request('/api/reports?period=all','synthetic-staff');assert.equal(staff.status,403);
   });
   await t.test('legacy dismissal uses the same progression rules and cannot reopen a completed review',async()=>{
     assert.equal((await f.request('/api/leads/'+s.row.id,'synthetic-a',{method:'PATCH',body:{status:'NEEDS REVIEW'}})).status,409);

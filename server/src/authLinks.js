@@ -11,7 +11,7 @@ export function accountEmailOrigin(environment = process.env) {
 }
 
 export function accountEmailLink(environment, purpose, token) {
-  const routes = {verify_email: '/verify-email', reset_password: '/reset-password'};
+  const routes = {verify_email: '/verify-email', reset_password: '/reset-password', staff_invite: '/staff-invite'};
   if (!routes[purpose] || typeof token !== 'string' || !/^[A-Za-z0-9_-]{43,86}$/.test(token)) {
     throw new TypeError('Invalid account link.');
   }

@@ -8,6 +8,9 @@ const RECOVERY_PATHS=new Set(['/api/billing/checkout','/api/billing/portal','/ap
 export function billingMutationDecision(database,req,{now=Date.now()}={}) {
   if(READ_METHODS.has(req.method)||!req.method)return {allowed:true};
   const path=req.route?.path || req.path;
+  // Owners can administer or remove a staff seat after a plan change even
+  // when that new plan has no product write entitlement.
+  if(typeof path==='string'&&path.startsWith('/api/team/staff'))return {allowed:true};
   if(req.method==='POST'&&(RECOVERY_PATHS.has(path)||READ_ONLY_POSTS.has(path)))return {allowed:true};
   const owner=usageOwnerQuery(database)("SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(req.tenantOwnerId);
   // Existing cancellation cleanup contract: docs/operator-integrations.md:23.
