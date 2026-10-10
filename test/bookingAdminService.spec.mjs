@@ -273,6 +273,25 @@ test('owner settings and per-service policy become direct-ready only from owner-
   assert.equal(state.revisions(), revisionsBeforeRetry);
 });
 
+test('narrow grant is direct-ready; a missing grant has the owner reconnect message', () => {
+  const scopes = ['https://www.googleapis.com/auth/calendar.events.owned',
+    'https://www.googleapis.com/auth/calendar.freebusy'];
+  const ready = harness();
+  connectGoogle(ready.db, OWNER, { scopesJson: JSON.stringify(scopes) });
+  ready.admin.updateSettings({ ownerId: OWNER, body: settingsBody() });
+  const allowed = ready.admin.updatePolicy({ ownerId: OWNER, serviceId: SERVICE, body: policyBody() });
+  assert.equal(allowed.services[0].directBookingReady, true);
+
+  const missing = harness();
+  connectGoogle(missing.db, OWNER, { scopesJson: JSON.stringify([scopes[0]]) });
+  missing.admin.updateSettings({ ownerId: OWNER, body: settingsBody() });
+  const refused = missing.admin.updatePolicy({ ownerId: OWNER, serviceId: SERVICE, body: policyBody() });
+  assert.deepEqual(refused.services[0].blockers.find(item => item.code === 'CALENDAR_SCOPES_INSUFFICIENT'), {
+    code: 'CALENDAR_SCOPES_INSUFFICIENT',
+    message: 'Reconnect Google Calendar to allow availability checks and booking updates.'
+  });
+});
+
 test('tenant isolation prevents reading or writing another owner service policy', () => {
   const state = harness();
   assert.throws(

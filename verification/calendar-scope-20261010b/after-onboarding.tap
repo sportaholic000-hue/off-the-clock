@@ -1,0 +1,67 @@
+(node:4) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+TAP version 13
+# Subtest: Calendly onboarding synchronizes profile, canonical connection, and existing booking settings
+ok 1 - Calendly onboarding synchronizes profile, canonical connection, and existing booking settings
+  ---
+  duration_ms: 82.66316
+  type: 'test'
+  ...
+# Subtest: calendar selection rejects ambiguous providers, unsafe URLs, and unknown fields without writes
+ok 2 - calendar selection rejects ambiguous providers, unsafe URLs, and unknown fields without writes
+  ---
+  duration_ms: 3.366504
+  type: 'test'
+  ...
+# Subtest: Google selection initializes fail-closed booking metadata while OAuth is pending
+ok 3 - Google selection initializes fail-closed booking metadata while OAuth is pending
+  ---
+  duration_ms: 9.96464
+  type: 'test'
+  ...
+# Subtest: skip disconnects only the authenticated owner and preserves non-calendar scheduling rules
+ok 4 - skip disconnects only the authenticated owner and preserves non-calendar scheduling rules
+  ---
+  duration_ms: 1.206765
+  type: 'test'
+  ...
+# Subtest: invalid owner timezone blocks calendar persistence and leaves canonical rows untouched
+ok 5 - invalid owner timezone blocks calendar persistence and leaves canonical rows untouched
+  ---
+  duration_ms: 0.581092
+  type: 'test'
+  ...
+# Subtest: Google callback validates and encrypts credentials, then synchronizes safe metadata atomically
+ok 6 - Google callback validates and encrypts credentials, then synchronizes safe metadata atomically
+  ---
+  duration_ms: 5.872469
+  type: 'test'
+  ...
+# Subtest: Google callback accepts the narrow booking grant and explains a missing permission
+ok 7 - Google callback accepts the narrow booking grant and explains a missing permission
+  ---
+  duration_ms: 1.853228
+  type: 'test'
+  ...
+# Subtest: Google callback fails closed on missing refresh, unsafe destination, expiry, token type, or scopes
+ok 8 - Google callback fails closed on missing refresh, unsafe destination, expiry, token type, or scopes
+  ---
+  duration_ms: 1.723608
+  type: 'test'
+  ...
+# Subtest: reselecting an already usable Google connection is non-destructive and revision-stable
+ok 9 - reselecting an already usable Google connection is non-destructive and revision-stable
+  ---
+  duration_ms: 4.601877
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 152.95948

@@ -6,6 +6,8 @@ const OWNER = 'owner-calendar-a';
 const OTHER_OWNER = 'owner-calendar-b';
 const ENCRYPTION_KEY = Buffer.from('0123456789abcdef0123456789abcdef').toString('base64');
 const FULL_SCOPE = 'https://www.googleapis.com/auth/calendar';
+const BOOKING_SCOPE = 'https://www.googleapis.com/auth/calendar.events.owned https://www.googleapis.com/auth/calendar.freebusy';
+const OWNER_MESSAGE = 'Reconnect Google Calendar to allow availability checks and booking updates.';
 
 function database() {
   const native = new DatabaseSync(':memory:');
@@ -338,6 +340,21 @@ if (typeof mock.module !== 'function') {
     });
     assert.equal(JSON.stringify(profile).includes(access), false);
     assert.equal(JSON.stringify(row('businessProfiles')).includes(refresh), false);
+  });
+
+  test('Google callback accepts the narrow booking grant and explains a missing permission', () => {
+    reset();
+    seedSettings(OWNER);
+    const tokens = { access_token: 'synthetic-access', refresh_token: 'synthetic-refresh',
+      token_type: 'Bearer', expires_in: 3600, scope: BOOKING_SCOPE };
+    saveGoogleCalendarTokens(OWNER, tokens);
+    assert.deepEqual(JSON.parse(row('calendarConnections').scopesJson), BOOKING_SCOPE.split(' '));
+    reset();
+    seedSettings(OWNER);
+    assert.throws(() => saveGoogleCalendarTokens(OWNER, { ...tokens, scope: BOOKING_SCOPE.split(' ')[0] }),
+      error => error.code === 'CALENDAR_SCOPES_INSUFFICIENT' && error.statusCode === 409 &&
+        error.message === OWNER_MESSAGE);
+    assert.equal(row('calendarConnections'), null);
   });
 
   test('Google callback fails closed on missing refresh, unsafe destination, expiry, token type, or scopes', () => {

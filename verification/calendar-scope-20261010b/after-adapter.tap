@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: owned-events and freebusy grant allows availability and booking on the connected calendar
+ok 1 - owned-events and freebusy grant allows availability and booking on the connected calendar
+  ---
+  duration_ms: 119.478983
+  type: 'test'
+  ...
+# Subtest: missing booking permission refuses the adapter before any provider request
+ok 2 - missing booking permission refuses the adapter before any provider request
+  ---
+  duration_ms: 1.919782
+  type: 'test'
+  ...
+# Subtest: an existing full Calendar grant remains usable without reconnecting
+ok 3 - an existing full Calendar grant remains usable without reconnecting
+  ---
+  duration_ms: 1.805722
+  type: 'test'
+  ...
+# Subtest: a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials
+ok 4 - a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials
+  ---
+  duration_ms: 3.423798
+  type: 'test'
+  ...
+# Subtest: listBusy is owner scoped and maps the Google freebusy request and response
+ok 5 - listBusy is owner scoped and maps the Google freebusy request and response
+  ---
+  duration_ms: 1.149944
+  type: 'test'
+  ...
+# Subtest: UTC request bounds and freebusy response bounds fail closed before use
+ok 6 - UTC request bounds and freebusy response bounds fail closed before use
+  ---
+  duration_ms: 1.419032
+  type: 'test'
+  ...
+# Subtest: createEvent uses the deterministic BookingService event ID and getEvent validates it
+ok 7 - createEvent uses the deterministic BookingService event ID and getEvent validates it
+  ---
+  duration_ms: 3.822845
+  type: 'test'
+  ...
+# Subtest: getEvent preserves cancelled provider status for BookingService reconciliation
+ok 8 - getEvent preserves cancelled provider status for BookingService reconciliation
+  ---
+  duration_ms: 0.617
+  type: 'test'
+  ...
+# Subtest: an expired access token is refreshed, persisted with its refresh token, and never returned
+ok 9 - an expired access token is refreshed, persisted with its refresh token, and never returned
+  ---
+  duration_ms: 1.790768
+  type: 'test'
+  ...
+# Subtest: concurrent expired-token requests coalesce one owner-scoped refresh
+ok 10 - concurrent expired-token requests coalesce one owner-scoped refresh
+  ---
+  duration_ms: 48.112546
+  type: 'test'
+  ...
+# Subtest: a 401 refreshes and retries the Calendar request once
+ok 11 - a 401 refreshes and retries the Calendar request once
+  ---
+  duration_ms: 4.108623
+  type: 'test'
+  ...
+# Subtest: a staggered concurrent 401 reloads a token another request already rotated
+ok 12 - a staggered concurrent 401 reloads a token another request already rotated
+  ---
+  duration_ms: 3.399296
+  type: 'test'
+  ...
+# Subtest: a repeated 401 is not retried or refreshed more than once
+ok 13 - a repeated 401 is not retried or refreshed more than once
+  ---
+  duration_ms: 1.909827
+  type: 'test'
+  ...
+# Subtest: create network and timeout failures are ambiguous without exposing underlying errors
+ok 14 - create network and timeout failures are ambiguous without exposing underlying errors
+  ---
+  duration_ms: 6.075168
+  type: 'test'
+  ...
+# Subtest: the request deadline covers a stalled create response body
+ok 15 - the request deadline covers a stalled create response body
+  ---
+  duration_ms: 25.31961
+  type: 'test'
+  ...
+# Subtest: a known Google 4xx write failure is non-ambiguous and sanitized
+ok 16 - a known Google 4xx write failure is non-ambiguous and sanitized
+  ---
+  duration_ms: 1.563537
+  type: 'test'
+  ...
+# Subtest: tenant and credential failures fail closed before a provider call
+ok 17 - tenant and credential failures fail closed before a provider call
+  ---
+  duration_ms: 0.804454
+  type: 'test'
+  ...
+# Subtest: refresh rejection and persistence failures expose no OAuth or credential material
+ok 18 - refresh rejection and persistence failures expose no OAuth or credential material
+  ---
+  duration_ms: 15.481984
+  type: 'test'
+  ...
+# Subtest: malformed Google response shapes fail closed and create parse failures remain ambiguous
+ok 19 - malformed Google response shapes fail closed and create parse failures remain ambiguous
+  ---
+  duration_ms: 4.198861
+  type: 'test'
+  ...
+# Subtest: Owner ruling: cancel suppresses all calendar messages and reminders
+ok 20 - Owner ruling: cancel suppresses all calendar messages and reminders
+  ---
+  duration_ms: 4.513429
+  type: 'test'
+  ...
+# Subtest: Owner ruling: reschedule suppresses all calendar messages and reminders
+ok 21 - Owner ruling: reschedule suppresses all calendar messages and reminders
+  ---
+  duration_ms: 1.925217
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 304.78775

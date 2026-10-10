@@ -5,6 +5,7 @@ import {validateVoiceSettings} from './voice/voiceSettings.js';
 import { db, ownerQuery } from './db.js';
 import { SERVICE_NAMES } from '../priceBookMetadata.js';
 import { saveGoogleCalendarConnection } from './calendarCredentials.js';
+import { calendarScopesSupportBooking, GOOGLE_CALENDAR_SCOPE_MESSAGE } from './googleCalendarScopes.js';
 import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
 import { normalizeReviewContact, readReviewContact } from './reviewContact.js';
@@ -47,16 +48,6 @@ const EMPTY_CALENDAR = { provider: null, status: 'not_connected', calendlyUrl: n
 const CALENDAR_INPUT_KEYS = new Set(['provider', 'calendlyUrl', 'skipped']);
 const CALENDLY_HOSTS = new Set(['calendly.com', 'www.calendly.com']);
 const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/;
-const GOOGLE_CALENDAR_FULL_SCOPE = 'https://www.googleapis.com/auth/calendar';
-const GOOGLE_CALENDAR_WRITE_SCOPES = new Set([
-  'https://www.googleapis.com/auth/calendar.events',
-  'https://www.googleapis.com/auth/calendar.events.owned',
-  'https://www.googleapis.com/auth/calendar.app.created'
-]);
-const GOOGLE_CALENDAR_BUSY_SCOPES = new Set([
-  'https://www.googleapis.com/auth/calendar.events.freebusy',
-  'https://www.googleapis.com/auth/calendar.freebusy'
-]);
 const PROFILE_COLUMNS = new Set([
   'businessTypesJson','country','region','existingPhoneNumber','twilioNumber',
   'twilioNumberSid','phoneProvisioningStatus','carrierSetupStatus',
@@ -149,13 +140,6 @@ function normalizedCalendarInput(input) {
   return { provider: 'calendly', externalUrl: normalizedCalendlyUrl(input.calendlyUrl), skipped: false };
 }
 
-function calendarScopesSupportBooking(scopes) {
-  const normalized = new Set(scopes);
-  if (normalized.has(GOOGLE_CALENDAR_FULL_SCOPE)) return true;
-  return [...GOOGLE_CALENDAR_WRITE_SCOPES].some(scope => normalized.has(scope)) &&
-    [...GOOGLE_CALENDAR_BUSY_SCOPES].some(scope => normalized.has(scope));
-}
-
 function normalizedCalendarId(value) {
   if (typeof value !== 'string' || value !== value.trim() || !value || value.length > 1024 ||
       CONTROL_CHARACTERS.test(value) || /[\s\/\\?]/.test(value)) {
@@ -180,7 +164,7 @@ function normalizedGoogleTokens(tokens) {
   const scope = token(tokens.scope, 'permission scope', { allowWhitespace: true });
   const scopes = [...new Set(scope.split(/\s+/).filter(Boolean))];
   if (!calendarScopesSupportBooking(scopes)) {
-    throw onboardingError('Google Calendar did not grant availability-read and event-write access', {
+    throw onboardingError(GOOGLE_CALENDAR_SCOPE_MESSAGE, {
       code: 'CALENDAR_SCOPES_INSUFFICIENT', statusCode: 409
     });
   }
