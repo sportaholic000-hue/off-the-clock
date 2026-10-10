@@ -28,8 +28,10 @@ function scrubBundle(bundle,ownerId,at){
     if(!columns.some(c=>c.name==='dataDeletedAt'))db.exec('ALTER TABLE users ADD COLUMN dataDeletedAt TEXT');
     const owner=usageOwnerQuery(db)("SELECT dataDeletedAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId});
     if(!owner)return false;
-    changed=!owner.dataDeletedAt||fs.existsSync(journal);
-    if(!changed)return false;
+    // A snapshot can capture the account tombstone before a failed price-book
+    // deletion completes. That marker never proves the bundle's files are gone;
+    // reapply the idempotent row/file cleanup whenever the billing owner exists.
+    changed=true;
     fs.writeFileSync(journal,'pending',{mode:0o600,flush:true});
     eraseTenantRows(db,ownerId,at);
     // Do not leave deleted values in freelist pages or a retained WAL.

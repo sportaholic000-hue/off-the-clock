@@ -130,3 +130,8 @@ and a later retry succeeds. Handwritten S3 expectations are path-style
 `/synthetic-bucket/probe.json` on `localhost`, virtual-style `/probe.json` on
 `synthetic-bucket.localhost`, and `auto` in both signatures. The approved caller
 copy and banner title match exactly.
+
+A snapshot captured between database erasure and a failed file deletion must
+still lose the owned price-book file on retry. A disabled account marker alone
+does not certify that the snapshot's files were erased; backup redaction
+reapplies idempotent row and file cleanup for every retained billing owner.

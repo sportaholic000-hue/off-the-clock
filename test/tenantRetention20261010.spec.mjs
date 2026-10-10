@@ -5,7 +5,7 @@ import path from 'node:path';
 import Database from 'better-sqlite3';
 import {A,B,END,DEADLINE,START,KEY,hash,retentionFixture,businessRows,assertErased} from './helpers/tenantRetentionFixture.mjs';
 import {createBillingCustomerLifecycle} from '../server/src/billingCustomerLifecycle.js';
-import {eraseTenantPricebookFiles} from '../server/src/billingTenantErasure.js';
+import {eraseTenantRows,eraseTenantPricebookFiles} from '../server/src/billingTenantErasure.js';
 import {createCalendarRetentionRevoker} from '../server/src/calendarRetentionRevocation.js';
 import {createSnapshot,verifyBackup} from '../server/src/backups.js';
 import {createOffsiteBackupService,restoreOffsiteBackup,restoreContinuousBackup} from '../server/src/offsiteBackups.js';
@@ -142,4 +142,23 @@ test('unpublished encrypted retries are redacted before backup workers resume',a
   await restoreOffsiteBackup({store,config,day,target,volume:f.root});
   const restored=new Database(path.join(target,'off-the-clock.sqlite'),{readonly:true});
   try{assertErased(assert,restored);assert.deepEqual(businessRows(restored,B),beforeB);}finally{restored.close();}
+});
+test('backups captured between database erasure and file deletion still erase the owned pricebook',async t=>{
+  // Before execution: a disabled owner in the copied DB is not evidence that
+  // its book was deleted. Local and remote retries must remove that book while
+  // preserving B, even though A's database marker is already present.
+  const f=retentionFixture(t),beforeB=businessRows(f.db,B),fake=await fakeS3(t);
+  const config={enabled:true,endpoint:fake.endpoint,bucket:'synthetic-bucket',prefix:'synthetic-partial',region:'auto',key:Buffer.from('45'.repeat(32),'hex'),credentials:{accessKeyId:'SYNTHETIC_ACCESS',secretAccessKey:'SYNTHETIC_SECRET'}};
+  eraseTenantRows(f.db,A,DEADLINE);
+  const store=createS3BackupStore(config),offsite=createOffsiteBackupService(f.db,f.deployment,{config,store,now:()=>f.clock().getTime(),warn:()=>{}});t.after(()=>offsite.stop());
+  await offsite.run();const local=await createSnapshot(f.db,f.deployment);
+  assert.ok(fs.existsSync(path.join(local,'pricebooks',A+'.json')));
+  await offsite.eraseOwner(A);verifyBackup(local);
+  const day=new Date(f.clock()).toISOString().slice(0,10),target=path.join(f.root,'restores','partial');
+  await restoreOffsiteBackup({store,config,day,target,volume:f.root});
+  for(const folder of [local,target]){
+    assert.ok(!fs.existsSync(path.join(folder,'pricebooks',A+'.json')));
+    const db=new Database(path.join(folder,'off-the-clock.sqlite'),{readonly:true});
+    try{assertErased(assert,db);assert.deepEqual(businessRows(db,B),beforeB);}finally{db.close();}
+  }
 });
