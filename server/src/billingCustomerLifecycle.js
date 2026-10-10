@@ -99,8 +99,8 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
 const DATA_TABLES=['ownerRecordEvents','ownerRecordWorkflows','callerBlocklist','quoteEmailDeliveries','quoteEmailRecipients','voiceQuoteNarrations','callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
   'appointmentChanges','appointments','bookingIdempotency','bookingPreferences','bookingHolds','bookingIntents',
   'quoteSubmissions','transcriptTurns','voiceOpaqueHandles','voiceToolReceipts','voiceSessionNonces',
-  'billingVoiceUsage','webhookDeliveries','leads','quoteRequests','quotes','calls','customers'];
-export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},stripeClient,emailProvider,telephony,
+  'billingVoiceUsage','webhookDeliveries','voiceForwardingArrivals','leads','quoteRequests','quotes','calls','customers'];
+export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},stripeClient,emailProvider,
   releaseNumber,enabled=()=>false,clock=()=>new Date(),dashboardUrl}={}){
   const query=usageOwnerQuery(database,ownerQuery),now=()=>clock().toISOString();
   const emails=createOwnerEmailDelivery({database,ownerQuery,provider:emailProvider,enabled,clock});
@@ -292,18 +292,12 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     if(!row.endedAt)usageTransaction(database,()=>{
       query("UPDATE billingCancellations SET state='ENDED',endedAt=?,updatedAt=? WHERE ownerId=?").run(row.endAt,now(),ownerId);
       // Access is already denied by the clock guard, even before this sweep.
-      notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Carrier shutdown is tracked in Billing. Export records before ${addDays(row.endAt,90)}. ${link()}`);
+      notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Export records before ${addDays(row.endAt,90)}. ${link()}`);
     });
     row=cancellation(ownerId);
     if(!row.dataDeletedAt&&deadlineAt>=addDays(row.endAt,90))erase(ownerId,row);
     if(enabled()){
       const profile=query('SELECT * FROM businessProfiles WHERE ownerId=?').get(ownerId);
-      if(!row.forwardingOffAt&&profile?.twilioNumber&&telephony){
-        const result=await telephony.setCoverage(ownerId,false);
-        assertLease();
-        if(result.confirmedEnabled===false&&!result.pending)query('UPDATE billingCancellations SET forwardingOffAt=?,lastError=NULL,updatedAt=? WHERE ownerId=?').run(now(),now(),ownerId);
-        else query("UPDATE billingCancellations SET lastError='FORWARDING_SHUTDOWN_PENDING',updatedAt=? WHERE ownerId=?").run(now(),ownerId);
-      }
       if(!row.phoneReleasedAt&&deadlineAt>=addDays(row.endAt,30)&&releaseNumber){
         // Release the saved SID, never a number discovered by a broad search.
         const result=profile?.twilioNumberSid?await releaseNumber({ownerId,sid:profile.twilioNumberSid}):{released:true};
@@ -330,11 +324,6 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         restoreLocal(ownerId,row);
       }
       row=cancellation(ownerId);
-      if(row?.state==='RESTORED'&&row.endedAt&&row.operatorWasEnabled&&!row.phoneReleasedAt&&!row.restoredForwardingAt&&enabled()&&telephony){
-        const result=await telephony.setCoverage(ownerId,true);assertLease();
-        if(result.confirmedEnabled===true&&!result.pending)query('UPDATE billingCancellations SET restoredForwardingAt=?,lastError=NULL,updatedAt=? WHERE ownerId=?').run(now(),now(),ownerId);
-        else query("UPDATE billingCancellations SET lastError='REACTIVATION_FORWARDING_PENDING',updatedAt=? WHERE ownerId=?").run(now(),ownerId);
-      }
     },{clock});
     if(localOnly)return;
     await withBillingLease(database,ownerId,async assertLease=>{

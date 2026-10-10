@@ -128,7 +128,7 @@
     "policy": "owner"
   },
   {
-    "route": "GET /api/onboarding/phone/test/:callSid",
+    "route": "GET /api/onboarding/phone/forwarding-check",
     "policy": "owner"
   },
   {
@@ -308,10 +308,6 @@
     "policy": "platform"
   },
   {
-    "route": "POST /api/dev/preview/operator",
-    "policy": "owner"
-  },
-  {
     "route": "POST /api/dev/preview/telephony",
     "policy": "owner"
   },
@@ -348,15 +344,7 @@
     "policy": "owner"
   },
   {
-    "route": "POST /api/onboarding/phone/test",
-    "policy": "owner"
-  },
-  {
     "route": "POST /api/onboarding/voice",
-    "policy": "owner"
-  },
-  {
-    "route": "POST /api/operator/toggle",
     "policy": "owner"
   },
   {

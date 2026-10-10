@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: dashboard shows phone forwarding instructions and never a dashboard on/off switch
+ok 1 - dashboard shows phone forwarding instructions and never a dashboard on/off switch
+  ---
+  duration_ms: 4805.778396
+  type: 'test'
+  ...
+# Subtest: onboarding status does not claim a configured but expired account is ready to answer
+ok 2 - onboarding status does not claim a configured but expired account is ready to answer
+  ---
+  duration_ms: 402.292324
+  type: 'test'
+  ...
+# Subtest: empty dashboard call feed describes forwarding and has no dashboard on instruction
+ok 3 - empty dashboard call feed describes forwarding and has no dashboard on instruction
+  ---
+  duration_ms: 0.985093
+  type: 'test'
+  ...
+# Subtest: calendar still renders saved appointment changes with accurate confirmation copy
+ok 4 - calendar still renders saved appointment changes with accurate confirmation copy
+  ---
+  duration_ms: 2201.976367
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8459.613834

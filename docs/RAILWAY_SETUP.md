@@ -41,7 +41,7 @@ Defaults/settings: **CREDENTIAL_ENCRYPTION_KEY_VERSION=v1**, **BCRYPT_COST=12** 
 For the first infrastructure check, leave **ALLOW_PROVIDER_WRITES=false**, **STRIPE_BILLING_ENABLED=false**, **VOICE_RUNTIME_ENABLED=false**, **DEMO_ENABLED=false**. These are explicit disabled features, not evidence that paid signup, calendar provider writes or voice are launch-ready. Complete the relevant group before enabling:
 
 - **Google Calendar:** GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GOOGLE_CALENDAR_REDIRECT_URI must be provided together. Register exactly `https://app.offtheclockai.com/api/onboarding/calendar/google/callback` in Google's OAuth application. The existing global provider-write gate also needs enabling for the callback.
-- **Provider writes:** ALLOW_PROVIDER_WRITES=true requires TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID and TWILIO_API_KEY_SECRET in this baseline, even for other provider routes sharing that gate. Keep CARRIER_CONNECTION_URL/CARRIER_CONNECTION_TOKEN only if the separate telephony lane uses them; the token is required at request time when the URL is configured, not by startup. This deployment does not change that coupling.
+- **Provider writes:** ALLOW_PROVIDER_WRITES=true requires TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID and TWILIO_API_KEY_SECRET in this baseline, even for other provider routes sharing that gate. CARRIER_CONNECTION_URL and CARRIER_CONNECTION_TOKEN are no longer read; provisioning no longer uses the removed carrier bridge. This deployment does not change that coupling.
 - **Stripe:** STRIPE_BILLING_ENABLED=true requires the live secret/restricted key, webhook secret, six distinct Starter/Operator/QuoteDone monthly/annual Price IDs, checkout success/cancel URLs, portal return URL, and integration identifier shown in the template. Redirect URLs must share an HTTPS app origin. The identifier ends in eight letters. Register the existing endpoint `https://app.offtheclockai.com/api/stripe/webhook`; the supported event list is exported in server/src/billingRoutes.js. Checkout/portal also require ALLOW_PROVIDER_WRITES=true. Reuse approved prices; Scale is not offered. No Stripe resource is created here.
 
   | Plan | Monthly Price ID variable / cents | Annual Price ID variable / cents | Included minutes per billing month |
@@ -212,8 +212,8 @@ startup requirements. Listed-but-unread settings are explained after the table.
 | `BACKUP_RETENTION_DAYS` | deploymentConfig.js:79 → integer:13 | D-int: 30..365 | 30 days (local snapshots) | No | G L |
 | `BCRYPT_COST` | passwordHashConfig.js:3 | D-cost: integer 12..16 | 12 | No | G |
 | `BOOKING_SLOT_TOKEN_SECRET` | runtimeConfig.js:82-83; deploymentConfig.js:37,41 | D-secret: required ≥32 bytes and ≥8 distinct characters; three secrets distinct | None | Yes | G |
-| `CARRIER_CONNECTION_TOKEN` | platformIntegrations.js:123,139 → required:8 | No startup check; P-required only on configured carrier requests | None | Yes | S G |
-| `CARRIER_CONNECTION_URL` | platformIntegrations.js:118-119,134-135 | No startup check; absent returns platform_action_required | None | No | S G |
+| `CARRIER_CONNECTION_TOKEN` | Removed carrier bridge | No longer read; do not configure | None | Yes | Retired |
+| `CARRIER_CONNECTION_URL` | Removed carrier bridge | No longer read; do not configure | None | No | Retired |
 | `CLIENT_BASE_URL` | deploymentConfig.js:65 | D-legacy: if nonempty must equal PUBLIC_BASE_URL | None; unnecessary legacy validation only | No | R G L |
 | `CLIENT_URL` | deploymentConfig.js:64; server.js:406 | D-client: required and equal to PUBLIC_BASE_URL | None in production; dev account links use localhost:5173 | No | G |
 | `CORS_ALLOWED_ORIGINS` | runtimeConfig.js:39,81; deploymentConfig.js:63 | D-cors: required exact HTTPS origins, comma separated; includes public origin | Empty list (rejected in production) | No | G |
@@ -304,6 +304,6 @@ conditional startup settings, validates synthetic configurations using the real
 pure validators, and checks that deleting each documented setting is detected.
 It separately covers the text-model omission, no-default/Live-model behavior,
 and retired demo settings. It opens no account, database, network client or mount.
-Missing and invalid off-site/email/carrier settings are deliberately not described
+Missing and invalid off-site/email settings are deliberately not described
 as fatal startup requirements. No feature-enable recommendation was changed by
 this audit; real integration acceptance remains an owner/Claude decision.

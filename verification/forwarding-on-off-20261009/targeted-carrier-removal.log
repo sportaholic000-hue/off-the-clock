@@ -1,0 +1,196 @@
+TAP version 13
+# Subtest: forwarding: signed call is answered when the provisioned owner disabled the old dashboard switch
+ok 1 - forwarding: signed call is answered when the provisioned owner disabled the old dashboard switch
+  ---
+  duration_ms: 75.875516
+  type: 'test'
+  ...
+# Subtest: forwarding: active trial and payment grace also answer without the old switch
+ok 2 - forwarding: active trial and payment grace also answer without the old switch
+  ---
+  duration_ms: 59.547708
+  type: 'test'
+  ...
+# Subtest: forwarding: signed unknown destination is refused with no tenant call
+ok 3 - forwarding: signed unknown destination is refused with no tenant call
+  ---
+  duration_ms: 25.389188
+  type: 'test'
+  ...
+# Subtest: forwarding: expired trial and payment failure beyond grace use backup capture
+ok 4 - forwarding: expired trial and payment failure beyond grace use backup capture
+  ---
+  duration_ms: 54.907169
+  type: 'test'
+  ...
+# Subtest: forwarding: an active trial after 60 used minutes captures a message without AI billing
+ok 5 - forwarding: an active trial after 60 used minutes captures a message without AI billing
+  ---
+  duration_ms: 31.571206
+  type: 'test'
+  ...
+# Subtest: forwarding: service ended uses unavailable message; blocked caller is rejected
+ok 6 - forwarding: service ended uses unavailable message; blocked caller is rejected
+  ---
+  duration_ms: 30.07305
+  type: 'test'
+  ...
+# Subtest: forwarding: completed answered call retains existing minutes, replay does not double bill
+ok 7 - forwarding: completed answered call retains existing minutes, replay does not double bill
+  ---
+  duration_ms: 70.003938
+  type: 'test'
+  ...
+# Subtest: forwarding: signed ForwardedFrom and arrival time are saved once for the correct owner
+ok 8 - forwarding: signed ForwardedFrom and arrival time are saved once for the correct owner
+  ---
+  duration_ms: 26.94014
+  type: 'test'
+  ...
+# Subtest: forwarding: owner check is tenant scoped; signed destination cannot be rebound across businesses
+ok 9 - forwarding: owner check is tenant scoped; signed destination cannot be rebound across businesses
+  ---
+  duration_ms: 1809.188491
+  type: 'test'
+  ...
+# Subtest: forwarding: Twilio provisioning completes with no carrier bridge URL or token
+ok 10 - forwarding: Twilio provisioning completes with no carrier bridge URL or token
+  ---
+  duration_ms: 23.08986
+  type: 'test'
+  ...
+# Subtest: production better-sqlite3: durable provisioning completes without carrier coverage
+ok 11 - production better-sqlite3: durable provisioning completes without carrier coverage
+  ---
+  duration_ms: 11.377174
+  type: 'test'
+  ...
+# (node:96420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 20 overlapping provisioning requests purchase exactly once (one connection)
+ok 12 - 20 overlapping provisioning requests purchase exactly once (one connection)
+  ---
+  duration_ms: 25.034842
+  type: 'test'
+  ...
+# Subtest: 20 overlapping provisioning requests purchase exactly once (independent SQLite connections)
+ok 13 - 20 overlapping provisioning requests purchase exactly once (independent SQLite connections)
+  ---
+  duration_ms: 5.625851
+  type: 'test'
+  ...
+# Subtest: SID and local provisioning complete without a carrier operation
+ok 14 - SID and local provisioning complete without a carrier operation
+  ---
+  duration_ms: 3.959987
+  type: 'test'
+  ...
+# Subtest: failure immediately after purchase preserves the independent receipt; restarted service retries without purchase
+ok 15 - failure immediately after purchase preserves the independent receipt; restarted service retries without purchase
+  ---
+  duration_ms: 4.365273
+  type: 'test'
+  ...
+# Subtest: unknown purchase result is recovered by operation receipt, never another purchase
+ok 16 - unknown purchase result is recovered by operation receipt, never another purchase
+  ---
+  duration_ms: 3.922256
+  type: 'test'
+  ...
+# Subtest: absence or failure of a reconciliation read is not permission to purchase again
+ok 17 - absence or failure of a reconciliation read is not permission to purchase again
+  ---
+  duration_ms: 7.335958
+  type: 'test'
+  ...
+# Subtest: expired selecting worker is fenced before the irreversible purchase boundary
+ok 18 - expired selecting worker is fenced before the irreversible purchase boundary
+  ---
+  duration_ms: 4.275267
+  type: 'test'
+  ...
+# Subtest: expired purchase worker is only reconciled, and its late valid receipt cannot overwrite another claim
+ok 19 - expired purchase worker is only reconciled, and its late valid receipt cannot overwrite another claim
+  ---
+  duration_ms: 4.089406
+  type: 'test'
+  ...
+# Subtest: invalid purchased receipt cannot become a confirmed profile (wrong number)
+ok 20 - invalid purchased receipt cannot become a confirmed profile (wrong number)
+  ---
+  duration_ms: 3.220942
+  type: 'test'
+  ...
+# Subtest: invalid purchased receipt cannot become a confirmed profile (wrong SID)
+ok 21 - invalid purchased receipt cannot become a confirmed profile (wrong SID)
+  ---
+  duration_ms: 2.47966
+  type: 'test'
+  ...
+# Subtest: legacy purchased SID with failed setup is adopted and never repurchased
+ok 22 - legacy purchased SID with failed setup is adopted and never repurchased
+  ---
+  duration_ms: 2.346309
+  type: 'test'
+  ...
+# Subtest: legacy completed provisioning is reused with no provider traffic
+ok 23 - legacy completed provisioning is reused with no provider traffic
+  ---
+  duration_ms: 2.348319
+  type: 'test'
+  ...
+# Subtest: tenant operation cannot change the business number or adopt another tenant SID
+ok 24 - tenant operation cannot change the business number or adopt another tenant SID
+  ---
+  duration_ms: 3.175529
+  type: 'test'
+  ...
+# Subtest: migration is idempotent and database uniqueness, not application locks, enforces tenant claims
+ok 25 - migration is idempotent and database uniqueness, not application locks, enforces tenant claims
+  ---
+  duration_ms: 2.771565
+  type: 'test'
+  ...
+# Subtest: the retired dashboard coverage operation is absent
+ok 26 - the retired dashboard coverage operation is absent
+  ---
+  duration_ms: 1.643517
+  type: 'test'
+  ...
+# Subtest: phone provisioning keeps owner/provider gates and rejects a forged body owner
+ok 27 - phone provisioning keeps owner/provider gates and rejects a forged body owner
+  ---
+  duration_ms: 3.767074
+  type: 'test'
+  ...
+# Subtest: Twilio adapter separates selection from purchase and binds immutable operation receipt without changing incoming route
+ok 28 - Twilio adapter separates selection from purchase and binds immutable operation receipt without changing incoming route
+  ---
+  duration_ms: 1.904441
+  type: 'test'
+  ...
+# Subtest: Twilio receipt reconciliation rejects partial, unrelated and paginated results
+ok 29 - Twilio receipt reconciliation rejects partial, unrelated and paginated results
+  ---
+  duration_ms: 1.416767
+  type: 'test'
+  ...
+# (node:96420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:96420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: two isolated workers issuing 10 simultaneous requests each share one database purchase claim
+ok 30 - two isolated workers issuing 10 simultaneous requests each share one database purchase claim
+  ---
+  duration_ms: 262.419351
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2610.734234

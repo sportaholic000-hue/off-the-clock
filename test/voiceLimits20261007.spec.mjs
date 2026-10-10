@@ -26,7 +26,7 @@ const sid=n=>'CA'+n.toString(16).padStart(32,'0');
 function history(f,count=6,owner='synthetic-a',phone=FROM,time=at){
   for(let i=0;i<count;i++)f.db.prepare("INSERT INTO calls(id,ownerId,callerNumber,status,duration,createdAt) VALUES(?,?,?,'COMPLETED',60,?)").run('synthetic-history-'+owner+'-'+i,owner,phone,time);
 }
-function secondOwner(f){f.db.prepare("UPDATE businessProfiles SET twilioNumber='+19025550102',phoneProvisioningStatus='provisioned',operatorEnabled=1 WHERE ownerId='synthetic-b'").run();}
+function secondOwner(f){f.db.prepare("UPDATE businessProfiles SET twilioNumber='+19025550102',twilioNumberSid='PNbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',phoneProvisioningStatus='provisioned',operatorEnabled=1,knowledgeBaseJson=? WHERE ownerId='synthetic-b'").run(JSON.stringify({about:'Synthetic other business',hours:'Weekdays'}));}
 function noStream(result){assert.equal(result.status,200);assert.doesNotMatch(result.xml,/<Stream /);}
 
 test('repeat callers A: six persisted answered calls route the next signed inbound to capture',async t=>{

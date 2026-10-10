@@ -1,7 +1,7 @@
 import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {settingError} from './receptionistSettings.js';
 import {createBillingVoiceUsage} from '../billingVoiceUsage.js';
-import {operatorOffRouting} from './operatorOffRouting.js';
+import {recordForwardingArrival} from './voiceForwardingCheck.js';
 import {createVoiceAdmission} from './voiceAdmission.js';
 import {installBillingVoiceRoutes} from '../billingVoiceRoutes.js';
 import {createVoiceProviderAdapters} from './voiceProviderAdapters.js';
@@ -62,16 +62,9 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   installBillingVoiceRoutes(app,{validator,meter});
   const account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
   const capabilities=ownerId=>voicePlanCapabilities(account(ownerId).account,{now:new Date(clock())});
-  function offRouting(context){
-    const state=account(context.ownerId);
-    if(state.profile?.operatorEnabled!==0)return null;
-    const coverage=usageOwnerQuery(database)('SELECT confirmedEnabled,phase FROM operatorCoverageOperations WHERE ownerId=?').get(context.ownerId);
-    return operatorOffRouting({profile:state.profile,coverage,destinationNumber:context.to});
-  }
   const fallback=({context,reason})=>{
     if(reason==='VOICE_SPAM_BLOCKED')return {mode:'reject'};
-    const state=account(context.ownerId),off=offRouting(context);
-    if(off)return off;
+    const state=account(context.ownerId);
     if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
     const choice=captureChoice(publicBaseUrl,state.profile?.voiceId);
     if(reason==='VOICE_CALLER_THROTTLED'){choice.message="You've reached us several times today. Please leave your name and what you need. The business will review your calls and follow up.";delete choice.voice;}
@@ -87,11 +80,15 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   providers={...productionProviders,...providers};
   const paths=installVoiceRuntimeRoutes(app,{
     twilioValidator:validator,tenantResolver,nonceService,allowedAccountSids:[accountSid],publicBaseUrl,runtimeEnabled:enabled,
-    checkOperatorEligibility:({context})=>{const state=account(context.ownerId);return hasReceptionistAccess(state.account,{now:new Date(clock())})&&state.profile?.operatorEnabled===1&&state.profile.phoneProvisioningStatus==='provisioned'&&state.profile.twilioNumber===context.to;},
+    checkOperatorEligibility:({context})=>{
+      const state=account(context.ownerId);let knowledge;
+      try{knowledge=JSON.parse(state.profile?.knowledgeBaseJson||'{}');}catch{return false;}
+      return hasReceptionistAccess(state.account,{now:new Date(clock())})&&state.profile?.phoneProvisioningStatus==='provisioned'&&Boolean(state.profile.twilioNumberSid)&&state.profile.twilioNumber===context.to&&Boolean(String(knowledge?.about||'').trim())&&Boolean(String(knowledge?.hours||'').trim());
+    },
     checkVoiceCap:({context})=>{const state=account(context.ownerId);return trialVoiceCapDecision(state.account,{now:new Date(clock()),minutesUsed:state.minutesUsed});},
     validateCallBinding:store.validateCallBinding,
     validateIncomingCall:store.validateIncomingCall,
-    checkCaller:admission.checkCaller,createSession:store.createSession,routeIncoming,resolveFallback:fallback,recordFallback:input=>{const choice=input.reason==='VOICE_SPAM_BLOCKED'?null:offRouting(input.context);return choice?store.recordHumanRouting({context:input.context,forwarded:choice.mode==='forward'}):store.recordFallback(input);},incomingPath,streamPath,resumeFallback:true,fallbackPath,loadSessionByNonceHash:store.loadSessionByNonceHash
+    checkCaller:admission.checkCaller,createSession:store.createSession,routeIncoming,recordInboundCall:({context,forwardedFrom,forwardedFromPresent})=>recordForwardingArrival(database,{context,forwardedFrom,forwardedFromPresent,at:iso(clock)}),resolveFallback:fallback,recordFallback:store.recordFallback,incomingPath,streamPath,resumeFallback:true,fallbackPath,loadSessionByNonceHash:store.loadSessionByNonceHash
   });
   const guide=enabled?readFileSync(new URL('./receptionistGuide.md',import.meta.url),'utf8'):null;
   const client=enabled?(googleClient||new GoogleGenAI({apiKey:String(env.GEMINI_API_KEY||'')})):null;

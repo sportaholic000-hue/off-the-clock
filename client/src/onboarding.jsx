@@ -1,5 +1,4 @@
 import {PLAN_DESCRIPTIONS,PRICE_BOOK_UNAVAILABLE,BOOKING_UNAVAILABLE} from './planDescriptions.js';
-import {voiceOperatorControl} from './voiceOperatorControl.js';
 import InterviewConfiguration from './interviewConfiguration.jsx';
 import {applyKnowledgeDraft} from './knowledgeDraft.js';
 import {CONFIGURATION_FIELDS,validateInterviewConfiguration,describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
@@ -13,7 +12,7 @@ import {writePricebookTransfer} from './pricebookDrafts.js';
 import {VerificationNotice} from './accountRecovery.jsx';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
-  PhonePreviewButton, Select, StatusChip, StepActions, Textarea, TextInput, Toggle
+  Select, StatusChip, StepActions, Textarea, TextInput
 } from './ui.jsx';
 import StructuredPricingQuestion, {
   describeStructuredValue, validateStructuredValue
@@ -51,16 +50,15 @@ function setStepUrl(step) {
   window.history.replaceState({}, '', `/onboarding?step=${step}`);
 }
 
-function StepRail({ step, state, onJump }) {
+export function StepRail({ step, state, onJump }) {
   // Reference: design-reference/onboarding/index.html step rail.
-  // Answering status flips once the number is set and About + Hours have
-  // content. Quoting activates per service later; answering never waits on
-  // the price book.
+  // Readiness also checks current account access and voice configuration.
+  // Quoting activates per service later; answering never waits on the book.
   const profile = state?.profile || {};
   const simulated = state?.preview?.telephonySimulated === true;
   const numberReady = simulated || profile.phoneProvisioningStatus === 'provisioned';
   const knowledgeReady = Boolean(profile.knowledgeBase?.about && profile.knowledgeBase?.hours);
-  const answering = numberReady && knowledgeReady;
+  const answering = simulated ? numberReady && knowledgeReady : Boolean(state?.operator?.eligible);
 
   return (
     <nav className="step-rail" aria-label="Setup progress">
@@ -101,7 +99,7 @@ function StepRail({ step, state, onJump }) {
           </span>
         </div>
         <span className="answering-note">
-          Flips on once your number is set and the About and Hours sections have content.
+          Ready when your account has access, your number is set, and the About and Hours sections have content.
           Quoting turns on per service later. Answering never waits on your price book.
         </span>
       </div>
@@ -145,7 +143,7 @@ function AuthStep({ onAuthenticated }) {
 
   return (
     <div className="auth-layout">
-      <div className="auth-brand"><span className="eyebrow">SELF-SERVE SETUP</span><h1>Put your operator on the line.</h1></div>
+      <div className="auth-brand"><span className="eyebrow">SELF-SERVE SETUP</span><h1>Set up your receptionist.</h1></div>
       <form className="auth-form" onSubmit={submit}>
         <div className="segmented">
           <button type="button" className={mode === 'register' ? 'selected' : ''} onClick={() => { setMode('register'); setRegistrationSent(false); }}>Create account</button>
@@ -306,7 +304,7 @@ function PhoneStep({ state, refresh, back, next }) {
   const [number, setNumber] = useState(state.profile.existingPhoneNumber || '');
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [testStatus, setTestStatus] = useState('');
+  const [arrival, setArrival] = useState(null);
   const connected = state.profile.phoneProvisioningStatus === 'provisioned';
   const simulated = state.preview?.telephonySimulated === true;
   const readyToContinue = connected || simulated;
@@ -326,55 +324,48 @@ function PhoneStep({ state, refresh, back, next }) {
     } catch (nextError) { setError(nextError); }
     finally { setBusy(false); }
   }
-  async function test() {
-    setTestStatus('CALLING');
+  async function checkForwarding(){
     setError(null);
-    try {
-      const created = await api('/api/onboarding/phone/test', { method:'POST', body:{} });
-      for (let attempt = 0; attempt < 20; attempt += 1) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const call = await api(`/api/onboarding/phone/test/${created.callSid}`);
-        if (['in-progress','completed'].includes(call.status)) {
-          setTestStatus('LIVE');
-          return;
-        }
-        if (['busy','failed','no-answer','canceled'].includes(call.status)) {
-          throw new Error('The test call was not answered');
-        }
-        setTestStatus(call.status === 'ringing' ? 'RINGING' : 'CALLING');
-      }
-      setTestStatus('CHECK YOUR PHONE');
-    } catch (nextError) {
-      setTestStatus('');
-      setError(new Error('The test call could not be completed. Try again in a moment.'));
-    }
+    try {const result=await api('/api/onboarding/phone/forwarding-check');setArrival(result.arrival||null);}
+    catch(nextError){setError(nextError);}
   }
+  useEffect(()=>{if(!connected)return;checkForwarding();const timer=setInterval(checkForwarding,10000);return()=>clearInterval(timer);},[connected]);
   return (
     <section className="step-panel">
       <PageHeader
         eyebrow="Step 4 of 9"
-        title="Plug in your line"
-        description={state.preview?.enabled ? 'Use a simulated phone step to inspect the remaining screens. No customer calls are affected.' : 'Keep the number your customers already know. Nothing about it changes for them, except that someone always answers.'}
+        title="Forward calls to your receptionist"
+        description={state.preview?.enabled ? 'Use a simulated phone step to inspect the remaining screens. No customer calls are affected.' : 'Keep your business number. Choose when your phone forwards calls to the receptionist number below.'}
       />
       <div className="phone-connect">
         <Field label="The number your customers call" help="This is the line on your trucks, your website, and your business cards. It stays exactly the same.">
           <TextInput type="tel" value={number} onChange={event => setNumber(event.target.value)} placeholder="(506) 214-7788" />
         </Field>
-        <Button icon={Phone} onClick={connect} disabled={busy || connected}>{connected ? 'Connected' : busy ? 'Connecting' : 'Connect this number'}</Button>
+        <Button icon={Phone} onClick={connect} disabled={busy || connected}>{connected ? 'Number ready' : busy ? 'Getting number' : 'Get receptionist number'}</Button>
       </div>
       {state.preview?.enabled && (
         <div className="preview-mode-panel">
-          <Notice tone="warning" title="Local visual preview only">This simulates the setup screens. It does not provision a number, place a call, change carrier setup, contact a carrier, or make the operator available to customers.</Notice>
+          <Notice tone="warning" title="Local visual preview only">This shows setup screens without provisioning a number or routing real calls.</Notice>
           <Button variant="secondary" onClick={simulate} disabled={busy || simulated || !number.trim()}>{simulated ? 'Simulation ready' : 'Use simulated phone step'}</Button>
         </div>
       )}
       {connected && (
         <div className="connection-ready">
-          <Notice tone="success" title="Connected. Your line is ready.">Flip the operator on from your dashboard any time.</Notice>
+          <Notice tone="success" title="Your receptionist number">{state.profile.twilioNumber}</Notice>
           <div>
-            <p className="eyebrow">Hear it answer</p>
-            <p>Call your own number right now. You will hear Off The Clock pick up, the same way your customers will.</p>
-            <div className="test-call-row"><PhonePreviewButton onClick={test}>{testStatus === 'LIVE' ? 'Call again' : 'Call my number now'}</PhonePreviewButton>{testStatus && <StatusChip status={testStatus} />}</div>
+            <h3>Set once: forward missed calls</h3>
+            <p>On your business phone, forward calls you do not answer, decline, or receive while busy or unreachable to {state.profile.twilioNumber}. Check how declined calls behave with your carrier. Your carrier's no-answer delay still applies. Do Not Disturb may wait through that delay too; check it on your phone.</p>
+            <h3>Instant on or off: always forward</h3>
+            <p>Turn on always-forward to send every call to {state.profile.twilioNumber} immediately. Turn it off to let your business phone ring normally.</p>
+            <ul>
+              <li>Samsung Galaxy (Android): Phone → More options → Settings → Supplementary services → Call forwarding. Choose Always forward, Busy, Unanswered, or Unreachable, enter the receptionist number, and enable it. <a href="https://www.samsung.com/us/support/answer/ANS10001907/" target="_blank" rel="noopener noreferrer">Samsung instructions</a>.</li>
+              <li>iPhone (GSM): Settings → Apps → Phone → Call Forwarding → turn on → Forward To → enter the receptionist number. Turn it off in the same menu. For forwarding only missed or busy calls, ask your carrier. <a href="https://support.apple.com/en-au/guide/iphone/iph7405291c4/ios" target="_blank" rel="noopener noreferrer">Apple instructions</a>.</li>
+              {state.profile.country==='US'&&<li>Verizon mobile dial codes (US destinations): dial *71 followed by the 10-digit receptionist number for unanswered calls; dial *72 followed by the 10-digit number for always-forward; dial *73 to turn forwarding off. <a href="https://www.verizon.com/support/call-forwarding-faqs/" target="_blank" rel="noopener noreferrer">Verizon instructions</a>. Other carriers may use different codes.</li>}
+            </ul>
+            <h3>Check that forwarding reaches us</h3>
+            <p>Turn forwarding on, then call your business number from another phone. Wait through your carrier's no-answer delay if you chose missed calls. This check only reports a signed call that reached your receptionist number.</p>
+            <Button variant="secondary" onClick={checkForwarding}>Check recent call</Button>
+            {arrival?<p role="status">Reached {new Date(arrival.reachedAt).toLocaleString()} from {arrival.callerNumber}. Twilio forwarded marker: {arrival.forwardedFromPresent?'present':'absent'}{arrival.forwardedFrom?` (${arrival.forwardedFrom})`:''}.</p>:<p role="status">No call has reached this receptionist number yet.</p>}
           </div>
         </div>
       )}
@@ -459,39 +450,17 @@ export function KnowledgeStep({ state, refresh, back, next }) {
   );
 }
 
-function GoLiveStep({ state, refresh, back, next }) {
-  const [error, setError] = useState(null);
-  const [busy, setBusy] = useState(false);
+function GoLiveStep({ state, back, next }) {
   const operator = state.operator;
   const simulated = operator.simulated === true;
-  const control=voiceOperatorControl(operator);
-  const enabled = simulated ? operator.simulatedEnabled : control.checked;
   const eligible = simulated ? operator.simulatedEligible : operator.eligible;
   const missing = simulated ? operator.simulatedMissing : operator.missing;
-  async function toggle(enabled) {
-    setBusy(true); setError(null);
-    try {
-      await api(simulated ? '/api/dev/preview/operator' : '/api/operator/toggle', { method:'POST', body:{ enabled } });
-      await refresh();
-    } catch (nextError) { setError(nextError); }
-    finally { setBusy(false); }
-  }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 6 of 9" title={simulated ? 'Review the operator control' : 'Put your operator on the line'} description={simulated ? 'This control is simulated for visual review. No calls are answered or routed.' : 'Answering is ready before pricing. Website quoting is available on Operator and QuoteDone; phone price-book quoting requires QuoteDone. Each service needs approved prices.'} />
-      <div className={!simulated && control.live ? 'go-live-control live' : 'go-live-control'}>
-        <Toggle
-          checked={enabled}
-          disabled={busy || (!eligible && !enabled)}
-          onChange={toggle}
-          label={simulated ? (enabled ? 'SIMULATED ON' : 'SIMULATED OFF') : control.title}
-          sublabel={simulated ? 'VISUAL REVIEW ONLY · NO CALLS ARE ROUTED' : control.sub}
-        />
-      </div>
+      <PageHeader eyebrow="Step 6 of 9" title="Review receptionist readiness" description="Calls that reach your receptionist number are answered while your account has access. Choose when to forward on your own phone." />
+      {eligible&&<Notice tone="success">Receptionist ready. Forwarding is controlled on your business phone.</Notice>}
       {!eligible && <Notice tone="warning">Still needed: {missing.join(', ')}</Notice>}
-      {simulated && <Notice tone="warning">SIMULATED FOR VISUAL REVIEW. Production phone eligibility is unchanged and no telephony action has occurred.</Notice>}
-      {!simulated && control.live && <Notice tone="success">OPERATOR LIVE — every call from here on is covered.</Notice>}
-      <ErrorMessage error={error} />
+      {simulated && <Notice tone="warning">SIMULATED FOR VISUAL REVIEW. No number is provisioned and no calls are routed.</Notice>}
       <StepActions onBack={back} onNext={next} />
     </section>
   );

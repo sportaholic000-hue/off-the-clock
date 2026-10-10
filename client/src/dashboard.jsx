@@ -2,7 +2,6 @@ import {OwnerAlerts} from './ownerAlerts.jsx';
 import OwnerIntegrations from './ownerIntegrations.jsx';
 import MinuteUsage from './minuteUsage.jsx';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import {voiceOperatorControl} from './voiceOperatorControl.js';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import {CallFeed} from './calls.jsx';
 import {ReportsPanel} from './reports.jsx';
@@ -22,28 +21,29 @@ import { CounterCard, SimulatedBanner } from './reference.jsx';
 function operatorView(operator) {
   if (operator.simulated) {
     return {
-      live: operator.simulatedEnabled,
+      live: false,
       simulated: true,
-      title: operator.simulatedEnabled ? 'OPERATOR LIVE (SIMULATED)' : 'OPERATOR OFF (SIMULATED)',
-      sub: 'SIMULATED FOR VISUAL REVIEW | NO CALLS ARE ROUTED',
-      checked: operator.simulatedEnabled,
-      blocked: !operator.simulatedEligible && !operator.simulatedEnabled,
+      title: 'RECEPTIONIST PREVIEW',
+      sub: 'VISUAL REVIEW ONLY | NO CALLS ARE ROUTED',
+      blocked: !operator.simulatedEligible,
       missing: operator.simulatedMissing || []
     };
   }
   return {
-    ...voiceOperatorControl(operator),
+    live: Boolean(operator.enabled&&operator.eligible),
+    title: operator.eligible?'RECEPTIONIST READY':'RECEPTIONIST SETUP NEEDED',
+    sub: operator.eligible?'FORWARDED CALLS ARE ANSWERED':'COMPLETE THE PHONE AND BUSINESS SETUP',
+    blocked: !operator.eligible,
     simulated: false,
     missing: operator.missing || []
   };
 }
 
-export function OperatorOffBanner({routing}) {
+export function ForwardingSetupBanner() {
   return <div className="off-banner">
     <span className="off-dot" aria-hidden="true" />
-    {routing?.confirmed?<span>Operator is off. Calls reaching your Off The Clock number ring your phone.</span>
-      :<><span>Operator is off. Calls reaching your Off The Clock number cannot be routed to your phone yet. Finish phone setup.</span>
-        <Button variant="secondary" onClick={()=>go('/onboarding?step=4')}>Finish phone setup</Button></>}
+    <span>Choose when calls reach your receptionist by setting forwarding on your business phone.</span>
+    <Button variant="secondary" onClick={()=>go('/onboarding?step=4')}>Forwarding setup</Button>
   </div>;
 }
 
@@ -86,16 +86,6 @@ export default function Dashboard() {
   },[]);
 
   async function refresh(){setBusy(true);try{await load();setReportRefresh(value=>value+1);}catch(nextError){if(mounted.current)setFeedError(nextError);}finally{if(mounted.current)setBusy(false);}}
-
-  async function toggle(enabled) {
-    setBusy(true); setError(null);
-    try {
-      const path = dashboard.operator.simulated ? '/api/dev/preview/operator' : '/api/operator/toggle';
-      await api(path, { method:'POST', body:{ enabled } });
-      await load();
-    } catch (nextError) { setError(nextError); }
-    finally { setBusy(false); }
-  }
 
   // One row per missing requirement — never a semicolon-joined paragraph.
   // Grouped by service, not a flat field list. A multi-trade owner has one
@@ -154,22 +144,14 @@ export default function Dashboard() {
         {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
         <Button variant="secondary" disabled={busy} onClick={refresh}>Refresh</Button>
 
-        {/* HERO: operator state. Reference top-bar master toggle. */}
+        {/* Receptionist readiness reflects provisioning and account access. */}
         <section className={`operator-hero${view.live ? ' live' : ''}${view.simulated ? ' simulated' : ''}`}>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={view.checked}
-            className="operator-switch"
-            disabled={busy || view.blocked}
-            onClick={() => toggle(!view.checked)}
-          >
-            <span className="operator-track"><span className="operator-knob" /></span>
+          <div className="operator-switch">
             <span className="operator-copy">
               <strong className="mono">{view.title}</strong>
               <small className="mono">{view.sub}</small>
             </span>
-          </button>
+          </div>
           <div className="operator-side">
             {activity && (
               <div className="minutes-meter">
@@ -186,7 +168,7 @@ export default function Dashboard() {
               </div>
             )}
             <span className="mono operator-note">
-              {view.simulated ? 'SIMULATED · REAL OPERATOR REMAINS OFF' : view.live ? 'HANDLING CALLS NOW' : 'NOT HANDLING CALLS'}
+              {view.simulated ? 'SIMULATED · NO CALLS ARE ROUTED' : 'FORWARDING IS CONTROLLED ON YOUR PHONE'}
             </span>
           </div>
         </section>
@@ -196,18 +178,15 @@ export default function Dashboard() {
 
         {view.simulated && (
           <SimulatedBanner>
-            SIMULATED FOR VISUAL REVIEW. No number is provisioned, NO CALLS ARE ROUTED,
-            production eligibility is unchanged, and the real operator remains off.
+            SIMULATED FOR VISUAL REVIEW. No number is provisioned, NO CALLS ARE ROUTED.
           </SimulatedBanner>
         )}
 
-        {!view.live && !view.simulated && (
-          <OperatorOffBanner routing={dashboard.operator.offRouting}/>
-        )}
+        {!view.simulated && <ForwardingSetupBanner/>}
 
         {view.blocked && view.missing.length > 0 && (
           <Notice tone="warning">
-            Finish {view.missing.join(' and ')} before the operator can{view.simulated ? ' be reviewed' : ' go live'}.
+            Finish {view.missing.join(' and ')} before the receptionist can answer calls.
           </Notice>
         )}
 
@@ -404,8 +383,8 @@ export default function Dashboard() {
               <p><strong>No calls yet.</strong></p>
               <p className="empty-detail">
                 {view.live
-                  ? 'Your operator is on. Answered calls will appear here.'
-                  : 'Turn the operator on to start handling calls.'}
+                  ? 'Calls answered at your receptionist number will appear here.'
+                  : 'Once your account and receptionist setup are ready, forwarded calls will appear here.'}
               </p>
             </div>
           )}

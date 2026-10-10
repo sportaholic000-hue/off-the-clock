@@ -1,0 +1,31 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> build
+> npm run build --workspace client
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> off-the-clock-client@0.0.0 build
+> vite build && vite build --config vite.widget.config.js
+
+vite v6.4.3 building for production...
+transforming...
+✓ 1644 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:   0.27 kB
+dist/assets/index-RRevNfiB.css   54.44 kB │ gzip:   9.68 kB
+dist/assets/index-PIrbvupA.js   687.07 kB │ gzip: 196.72 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.27s
+vite v6.4.3 building for production...
+transforming...
+✓ 1610 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/widget-app.js  515.10 kB │ gzip: 119.92 kB
+✓ built in 2.58s

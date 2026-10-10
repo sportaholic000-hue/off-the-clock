@@ -111,11 +111,11 @@ test('D28 provisioned phone alone never claims eligibility when inbound runtime 
   const profile={phoneProvisioningStatus:'provisioned',twilioNumberSid:'PN'+'c'.repeat(32),twilioNumber:TO,knowledgeBase:{about:'Synthetic',hours:'Weekdays'}};
   assert.equal(operatorEligibility(profile,{env:{...env,VOICE_RUNTIME_ENABLED:'false'}}).eligible,false);
 });
-test('D28 both owner controls preserve the off switch while accurately showing unavailable routing',()=>{
+test('D28 receptionist readiness has no dashboard on/off switch',()=>{
   const offline=voiceOperatorControl({configuredEnabled:true,enabled:false,eligible:false});
-  assert.equal(offline.live,false);assert.equal(offline.checked,true);assert.equal(offline.blocked,false);assert.equal(offline.title,'OPERATOR OFF');assert.doesNotMatch(offline.sub,/RING YOUR PHONE|COVERED/);
+  assert.equal(offline.live,false);assert.equal(offline.checked,undefined);assert.equal(offline.blocked,true);assert.equal(offline.title,'RECEPTIONIST SETUP NEEDED');
   assert.equal(voiceOperatorControl({configuredEnabled:false,enabled:false,eligible:false}).blocked,true);
-  const live=voiceOperatorControl({configuredEnabled:true,enabled:true,eligible:true});assert.equal(live.live,true);assert.equal(live.title,'OPERATOR LIVE');
+  const live=voiceOperatorControl({configuredEnabled:true,enabled:true,eligible:true});assert.equal(live.live,true);assert.equal(live.title,'RECEPTIONIST READY');
 });
 test('D31 duplicate signed inbound delivery replays one durable session and never reopens final calls',async t=>{
   const h=await harness(t),results=await Promise.all([h.incoming(),h.incoming(),h.incoming()]);assert.equal(new Set(results.map(r=>r.xml)).size,1);
@@ -167,7 +167,7 @@ test('D07 partial fallback speech survives an empty final result and recovery',a
 });
 test('D25 repeated completed fallback capture neither rewrites request nor forwards again',async t=>{
   const h=await harness(t,{fail:true}),c=await h.connect();await until(()=>c.ws.readyState===3);await h.post(c.fallback,c.params);
-  const body={...c.params,SpeechResult:'[SYNTHETIC] Exact final request'};assert.match(await (await h.post('/api/twilio/voice/capture',body)).text(),/<Dial/);
+  const body={...c.params,SpeechResult:'[SYNTHETIC] Exact final request'};assert.doesNotMatch(await (await h.post('/api/twilio/voice/capture',body)).text(),/<Dial/);
   const before=h.db.prepare('SELECT * FROM calls WHERE callSid=?').get(c.params.CallSid);
   assert.doesNotMatch(await (await h.post('/api/twilio/voice/capture',{...body,SpeechResult:'stale replacement'})).text(),/<Dial|<Gather/);
   assert.deepEqual(h.db.prepare('SELECT * FROM calls WHERE callSid=?').get(c.params.CallSid),before);
@@ -203,7 +203,7 @@ test('D32 sixth caller request is retained and another tenant has independent ca
   const h=await harness(t);for(let i=1;i<=5;i++)assert.match((await h.incoming(i)).xml,/<Stream/);
   const c=await h.incoming(6),r=await h.post('/api/twilio/voice/capture',{...c.params,SpeechResult:'[SYNTHETIC] Over-limit gate request'});assert.equal(r.status,200);
   assert.match(h.db.prepare('SELECT collectedInputsJson FROM leads WHERE ownerId=?').get(h.owner).collectedInputsJson,/Over-limit gate/);
-  h.db.prepare("UPDATE businessProfiles SET twilioNumber='+19025550202',phoneProvisioningStatus='provisioned',operatorEnabled=1 WHERE ownerId='synthetic-b'").run();
+  h.db.prepare("UPDATE businessProfiles SET twilioNumber='+19025550202',twilioNumberSid='PNbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',phoneProvisioningStatus='provisioned',operatorEnabled=1,knowledgeBaseJson=? WHERE ownerId='synthetic-b'").run(JSON.stringify({about:'Synthetic other business',hours:'Weekdays'}));
   const other=await h.post('/api/twilio/voice/incoming',{...h.params(7),To:'+19025550202'});assert.match(await other.text(),/<Stream/);
 });
 test('P01 owner-set policy is available verbatim; caller urgency and business hours are not deadlines',()=>{

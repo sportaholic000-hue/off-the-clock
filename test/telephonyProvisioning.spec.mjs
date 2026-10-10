@@ -8,8 +8,7 @@ import vm from 'node:vm';
 import { Worker } from 'node:worker_threads';
 import {
   createTelephonyOperations, selectTwilioNumber, provisionTwilioNumber,
-  findProvisionedTwilioNumber, setCarrierCoverage, getCarrierCoverage,
-  requestCarrierConnection
+  findProvisionedTwilioNumber
 } from '../server/src/platformIntegrations.js';
 import { installTelephonyOperationsSchema } from '../server/src/telephonyOperationsMigration.js';
 
@@ -26,8 +25,6 @@ const deferred = () => {
   return { promise, resolve, reject };
 };
 const receipt = input => ({ existingNumber: input.existingNumber, twilioNumber: input.candidateNumber, twilioNumberSid: SID });
-const confirmed = input => ({ status: 'confirmed', enabled: input.enabled, operationId: input.operationId, revision: input.revision, ownerId: input.ownerId });
-const rejected = input => ({ ...confirmed(input), status: 'rejected' });
 
 function fixture(t, overrides = {}, { enabled = false, provisioned = false, setup = 'connected', eligible = true } = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'otc-synthetic-telephony-'));
@@ -61,14 +58,11 @@ function fixture(t, overrides = {}, { enabled = false, provisioned = false, setu
     }
   };
   addOwner(OWNER);
-  const calls = { select: [], purchase: [], find: [], connect: [], set: [], read: [] };
+  const calls = { select: [], purchase: [], find: [] };
   const methods = {
     selectNumber: ['select', async () => DESTINATION],
     purchaseNumber: ['purchase', async input => receipt(input)],
-    findPurchasedNumber: ['find', async () => null],
-    connectCarrier: ['connect', async () => ({ status: 'connected', reference: '[SYNTHETIC] carrier receipt' })],
-    setCoverage: ['set', async input => confirmed(input)],
-    readCoverage: ['read', async () => ({ status: 'unknown' })]
+    findPurchasedNumber: ['find', async () => null]
   };
   const provider = Object.fromEntries(Object.entries(methods).map(([method, [key, defaultImpl]]) => [method, async input => {
     calls[key].push({ ...input });
@@ -142,7 +136,7 @@ for (const separateConnections of [false, true]) {
     const results = await Promise.all(requests);
     assert.equal(new Set(results.map(result => result.operationId)).size, 1);
     assert.equal(f.calls.purchase.length, 1);
-    assert.equal(f.calls.connect.length, 1);
+    assert.equal(f.phone().carrierSetupStatus, 'not_required');
     assert.equal(f.phone().twilioNumberSid, SID);
     assert.equal(f.profile().twilioNumberSid, SID);
     assert.equal(results.filter(result => result.statusCode === 201).length, 1);
@@ -154,17 +148,14 @@ for (const separateConnections of [false, true]) {
   });
 }
 
-test('SID is committed and visible from another SQLite connection before carrier forwarding starts', async t => {
-  let f, other;
-  f = fixture(t, { connectCarrier: async () => {
-    const op = other.database.prepare('SELECT * FROM phoneProvisioningOperations WHERE ownerId = ?').get(OWNER);
-    assert.equal(op.twilioNumberSid, SID);
-    assert.equal(other.getBusinessProfile(OWNER).twilioNumberSid, SID);
-    return { status: 'connected' };
-  } });
-  other = f.second();
-  await f.service.provision(OWNER, NUMBER);
-  assert.equal(f.calls.purchase.length, 1);
+test('SID and local provisioning complete without a carrier operation', async t => {
+  const f = fixture(t), other = f.second();
+  const result = await f.service.provision(OWNER, NUMBER);
+  assert.equal(result.statusCode, 201);
+  assert.equal(other.ownerQuery('SELECT twilioNumberSid FROM phoneProvisioningOperations WHERE ownerId=?').get(OWNER).twilioNumberSid, SID);
+  assert.equal(other.getBusinessProfile(OWNER).carrierSetupStatus, 'not_required');
+  assert.equal(f.phone().carrierComplete, 1);
+  assert.deepEqual(Object.keys(f.service), ['provision']);
 });
 
 test('failure immediately after purchase preserves the independent receipt; restarted service retries without purchase', async t => {
@@ -174,35 +165,11 @@ test('failure immediately after purchase preserves the independent receipt; rest
   assert.equal(f.phone().twilioNumberSid, SID);
   assert.equal(f.phone().purchaseState, 'purchased');
   assert.equal(f.profile().twilioNumberSid, null);
-  assert.equal(f.calls.connect.length, 0);
   f.hooks.failProfileSave = false;
   const replay = await f.second().service.provision(OWNER, NUMBER);
   assert.equal(replay.statusCode, 200);
   assert.equal(f.profile().twilioNumberSid, SID);
   assert.equal(f.calls.purchase.length, 1);
-});
-
-test('failed forwarding retains SID and 20 overlapping retries reuse one operation and purchase', async t => {
-  let fail = true;
-  const gate = deferred();
-  const f = fixture(t, { connectCarrier: async () => {
-    if (fail) throw new Error('SYNTHETIC_CARRIER_FAILURE');
-    await gate.promise; return { status: 'connected' };
-  } });
-  const initial = await f.service.provision(OWNER, NUMBER);
-  assert.equal(initial.statusCode, 502);
-  assert.equal(f.profile().twilioNumberSid, SID);
-  assert.equal(f.profile().carrierSetupStatus, 'failed');
-  fail = false;
-  const other = f.second();
-  const retries = Array.from({ length: 20 }, (_, i) => (i % 2 ? other : f).service.provision(OWNER, NUMBER));
-  gate.resolve();
-  const results = await Promise.all(retries);
-  assert.ok(results.every(result => result.operationId === initial.operationId));
-  assert.equal(f.calls.purchase.length, 1);
-  assert.equal(f.calls.connect.length, 2);
-  assert.equal(new Set(f.calls.connect.map(input => input.operationId)).size, 1);
-  assert.equal(f.phone().carrierComplete, 1);
 });
 
 test('unknown purchase result is recovered by operation receipt, never another purchase', async t => {
@@ -261,10 +228,9 @@ test('expired purchase worker is only reconciled, and its late valid receipt can
   purchase.resolve(receipt(input));
   await old;
   assert.equal(f.phone().twilioNumberSid, SID);
-  assert.equal(f.calls.connect.length, 0);
   await f.service.provision(OWNER, NUMBER);
   assert.equal(f.calls.purchase.length, 1);
-  assert.equal(f.calls.connect.length, 1);
+  assert.equal(f.phone().carrierComplete, 1);
 });
 
 for (const invalid of [{ twilioNumber: '+12025550109', twilioNumberSid: SID }, { twilioNumber: DESTINATION, twilioNumberSid: 'NOT_A_SID' }]) {
@@ -272,7 +238,6 @@ for (const invalid of [{ twilioNumber: '+12025550109', twilioNumberSid: SID }, {
     const f = fixture(t, { purchaseNumber: async () => invalid });
     assert.equal((await f.service.provision(OWNER, NUMBER)).statusCode, 202);
     assert.equal(f.profile().twilioNumberSid, null);
-    assert.equal(f.calls.connect.length, 0);
     await f.service.provision(OWNER, NUMBER);
     assert.equal(f.calls.purchase.length, 1);
   });
@@ -283,7 +248,7 @@ test('legacy purchased SID with failed setup is adopted and never repurchased', 
   const result = await f.service.provision(OWNER, NUMBER);
   assert.equal(result.statusCode, 200);
   assert.equal(f.calls.purchase.length, 0);
-  assert.equal(f.calls.connect.length, 1);
+  assert.equal(f.phone().carrierComplete, 1);
   assert.equal(f.phone().twilioNumberSid, SID);
 });
 
@@ -317,183 +282,16 @@ test('migration is idempotent and database uniqueness, not application locks, en
   assert.equal(f.database.prepare('PRAGMA integrity_check').get().integrity_check, 'ok');
 });
 
-for (const enabled of [false, true]) {
-  test(`same-state ${enabled ? 'On' : 'Off'} is idempotent even when the provider would fail`, async t => {
-    const f = fixture(t, { setCoverage: async () => { throw new Error('SYNTHETIC_PROVIDER_DOWN'); } }, { enabled, provisioned: true });
-    const other = f.second();
-    const results = await Promise.all(Array.from({ length: 20 }, (_, i) => (i % 2 ? other : f).service.setCoverage(OWNER, enabled)));
-    assert.ok(results.every(result => result.statusCode === 200 && result.confirmedEnabled === enabled));
-    assert.equal(f.profile().operatorEnabled, enabled);
-    assert.equal(f.calls.set.length, 0);
-  });
-  test(`failed ${enabled ? 'On' : 'Off'} transition retains actual confirmed state, not inverse-request rollback`, async t => {
-    const f = fixture(t, { setCoverage: async input => rejected(input) }, { enabled: !enabled, provisioned: true });
-    const result = await f.service.setCoverage(OWNER, enabled);
-    assert.equal(result.statusCode, 502);
-    assert.equal(result.confirmedEnabled, !enabled);
-    assert.equal(f.profile().operatorEnabled, !enabled);
-    assert.equal(f.calls.set.length, 1);
-    const retry = await f.service.setCoverage(OWNER, enabled);
-    assert.equal(retry.statusCode, 502);
-    assert.equal(f.calls.set.length, 2);
-    assert.notEqual(f.calls.set[0].operationId, f.calls.set[1].operationId);
-  });
-}
-
-test('confirmed state is not committed while a provider mutation is outstanding', async t => {
-  const gate = deferred(), entered = deferred();
-  const f = fixture(t, { setCoverage: async input => { entered.resolve(input); await gate.promise; return confirmed(input); } }, { provisioned: true });
-  const request = f.service.setCoverage(OWNER, true);
-  await entered.promise;
-  assert.equal(f.profile().operatorEnabled, false);
-  assert.equal(f.coverage().confirmedEnabled, 0);
-  assert.equal(f.coverage().desiredEnabled, 1);
-  gate.resolve();
-  assert.equal((await request).statusCode, 200);
-  assert.equal(f.profile().operatorEnabled, true);
-});
-
-test('ambiguous applied mutation is reconciled by the exact operation without a second write', async t => {
-  const f = fixture(t, {
-    setCoverage: async () => { throw new Error('SYNTHETIC_TIMEOUT_AFTER_APPLY'); },
-    readCoverage: async input => confirmed(input)
-  }, { provisioned: true });
-  const result = await f.service.setCoverage(OWNER, true);
-  assert.equal(result.statusCode, 200);
-  assert.equal(f.calls.set.length, 1);
-  assert.equal(f.calls.read.length, 1);
-  assert.equal(f.profile().operatorEnabled, true);
-});
-
-test('unknown mutation remains pending; a later retry reconciles rather than resending it', async t => {
-  let terminal = false;
-  const f = fixture(t, {
-    setCoverage: async () => { throw new Error('SYNTHETIC_TIMEOUT'); },
-    readCoverage: async input => terminal ? confirmed(input) : { status: 'unknown' }
-  }, { provisioned: true });
-  assert.equal((await f.service.setCoverage(OWNER, true)).statusCode, 202);
-  assert.equal(f.profile().operatorEnabled, false);
-  assert.equal((await f.second().service.setCoverage(OWNER, true)).statusCode, 202);
-  terminal = true;
-  assert.equal((await f.second().service.setCoverage(OWNER, true)).statusCode, 200);
-  assert.equal(f.calls.set.length, 1);
-  assert.equal(f.profile().operatorEnabled, true);
-});
-
-for (const response of [{}, { status: 'queued' }, { status: 'platform_action_required' }, { status: 'updated', enabled: false }]) {
-  test(`nonconfirming provider response stays pending (${JSON.stringify(response)})`, async t => {
-    const f = fixture(t, { setCoverage: async () => response }, { provisioned: true });
-    const result = await f.service.setCoverage(OWNER, true);
-    assert.equal(result.statusCode, 202);
-    assert.equal(result.confirmedEnabled, false);
-    assert.equal(f.profile().operatorEnabled, false);
-  });
-}
-
-for (const mismatch of ['operationId', 'revision', 'ownerId', 'enabled']) {
-  test(`unbound reconciliation response is ignored (${mismatch})`, async t => {
-    const f = fixture(t, { setCoverage: async () => ({ status: 'queued' }), readCoverage: async input => ({
-      ...confirmed(input), [mismatch]: mismatch === 'enabled' ? false : mismatch === 'revision' ? input.revision + 1 : 'synthetic-wrong-operation'
-    }) }, { provisioned: true });
-    assert.equal((await f.service.setCoverage(OWNER, true)).statusCode, 202);
-    assert.equal(f.profile().operatorEnabled, false);
-    assert.equal(f.calls.set.length, 1);
-  });
-}
-
-test('overlapping opposite requests serialize provider writes and drain the latest desired state', async t => {
-  const gate = deferred(), entered = deferred();
-  const f = fixture(t, { setCoverage: async input => {
-    if (f.calls.set.length === 1) { entered.resolve(); await gate.promise; }
-    return confirmed(input);
-  } }, { provisioned: true });
-  const first = f.service.setCoverage(OWNER, true);
-  await entered.promise;
-  const opposite = await f.second().service.setCoverage(OWNER, false);
-  assert.equal(opposite.statusCode, 202);
-  assert.equal(f.calls.set.length, 1);
-  gate.resolve();
-  assert.equal((await first).statusCode, 200);
-  assert.deepEqual(f.calls.set.map(input => input.enabled), [true, false]);
-  assert.equal(f.profile().operatorEnabled, false);
-  assert.equal(f.coverage().confirmedRevision, 2);
-});
-
-for (const staleResult of ['failure', 'success']) {
-  test(`stale ${staleResult} cannot overwrite newer opposite success after lease takeover`, async t => {
-    const old = deferred(), entered = deferred();
-    const f = fixture(t, { setCoverage: async input => {
-      if (f.calls.set.length === 1) { entered.resolve(input); return old.promise; }
-      return confirmed(input);
-    }, readCoverage: async input => confirmed(input) }, { provisioned: true });
-    const first = f.service.setCoverage(OWNER, true);
-    const input = await entered.promise;
-    f.expire();
-    const newer = await f.second().service.setCoverage(OWNER, false);
-    assert.equal(newer.statusCode, 200);
-    assert.equal(f.profile().operatorEnabled, false);
-    assert.equal(f.coverage().confirmedRevision, 2);
-    if (staleResult === 'failure') old.reject(new Error('SYNTHETIC_STALE_FAILURE'));
-    else old.resolve(confirmed(input));
-    await first;
-    assert.equal(f.profile().operatorEnabled, false);
-    assert.equal(f.coverage().confirmedRevision, 2);
-    assert.deepEqual(f.calls.set.map(input => input.enabled), [true, false]);
-  });
-}
-
-test('an ambiguous old write blocks the opposite mutation until it is terminal', async t => {
-  const f = fixture(t, { setCoverage: async () => { throw new Error('SYNTHETIC_TIMEOUT'); } }, { provisioned: true });
-  await f.service.setCoverage(OWNER, true);
-  const result = await f.second().service.setCoverage(OWNER, false);
-  assert.equal(result.statusCode, 202);
-  assert.equal(f.calls.set.length, 1);
-  assert.equal(f.coverage().activeEnabled, 1);
-  assert.equal(f.coverage().desiredEnabled, 0);
-  assert.equal(f.profile().operatorEnabled, false);
-});
-
-test('confirmed profile and operation completion are atomic on SQLite failure', async t => {
-  const f = fixture(t, { readCoverage: async input => confirmed(input) }, { provisioned: true });
-  f.hooks.failConfirmedSave = true;
-  await assert.rejects(f.service.setCoverage(OWNER, true), /SYNTHETIC_DB_CONFIRM_FAILURE/);
-  assert.equal(f.profile().operatorEnabled, false);
-  assert.equal(f.coverage().confirmedEnabled, 0);
-  f.hooks.failConfirmedSave = false;
-  f.expire();
-  assert.equal((await f.second().service.setCoverage(OWNER, true)).statusCode, 200);
-  assert.equal(f.profile().operatorEnabled, true);
-  assert.equal(f.calls.set.length, 1);
-});
-
-test('invalid desired state, ineligible owner and partial fake provider fail before any external write', async t => {
-  const f = fixture(t, {}, { provisioned: true, eligible: false });
-  for (const value of [undefined, null, 0, 1, 'true', {}]) {
-    await assert.rejects(f.service.setCoverage(OWNER, value), { code: 'OPERATOR_ENABLED_INVALID' });
-  }
-  await assert.rejects(f.service.setCoverage(OWNER, true), { code: 'OPERATOR_NOT_READY' });
-  assert.equal(f.calls.set.length, 0);
-  assert.throws(() => createTelephonyOperations({ ...f, provider: { purchaseNumber: async () => receipt({}) } }), /Missing telephony provider method/);
-});
-
-test('tenant coverage operations remain independently scoped', async t => {
+test('the retired dashboard coverage operation is absent', async t => {
   const f = fixture(t, {}, { provisioned: true });
-  const otherOwner = 'synthetic-other-coverage';
-  f.addOwner(otherOwner, { twilioNumberSid: `PN${'2'.repeat(32)}`, twilioNumber: '+12025550102' });
-  await f.service.setCoverage(OWNER, true);
-  assert.equal(f.getBusinessProfile(otherOwner).operatorEnabled, false);
-  await f.second().service.setCoverage(otherOwner, true);
-  await f.service.setCoverage(OWNER, false);
-  assert.equal(f.getBusinessProfile(otherOwner).operatorEnabled, true);
+  assert.equal(typeof f.service.setCoverage, 'undefined');
   assert.equal(f.profile().operatorEnabled, false);
-  assert.equal(f.calls.set[1].ownerId, otherOwner);
-  assert.equal(f.calls.set[1].twilioNumber, '+12025550102');
 });
 
-test('real route registrations retain owner/provider gates and use authenticated tenant, never body owner', async t => {
+test('phone provisioning keeps owner/provider gates and rejects a forged body owner', async t => {
   const f = fixture(t);
   const source = readFileSync(new URL('../server/src/server.js', import.meta.url), 'utf8');
-  const paths = ['/api/onboarding/phone/provision', '/api/operator/toggle'];
+  const paths = ['/api/onboarding/phone/provision'];
   const routes = new Map();
   const auth = () => {}, providerGate = () => {};
   const context = {
@@ -519,18 +317,15 @@ test('real route registrations retain owner/provider gates and use authenticated
   assert.equal(provisioned.statusCode, 201);
   assert.equal(f.phone().ownerId, OWNER);
   assert.notEqual(provisioned.body.operationId, OP_ID);
-  const coverage = await call(paths[1], { enabled: true, ownerId: 'synthetic-spoofed' });
-  assert.equal(coverage.statusCode, 200);
-  assert.equal(coverage.body.operator.enabled, true);
-  assert.equal(f.calls.set[0].ownerId, OWNER);
+  assert.doesNotMatch(source,/app\.post\('\/api\/operator\/toggle'/);
 });
 
 function adapterFixture(t, impl) {
-  const keys = ['TWILIO_ACCOUNT_SID', 'TWILIO_API_KEY_SID', 'TWILIO_API_KEY_SECRET', 'PUBLIC_BASE_URL', 'CARRIER_CONNECTION_URL', 'CARRIER_CONNECTION_TOKEN'];
+  const keys = ['TWILIO_ACCOUNT_SID', 'TWILIO_API_KEY_SID', 'TWILIO_API_KEY_SECRET', 'PUBLIC_BASE_URL'];
   const previous = Object.fromEntries(keys.map(key => [key, process.env[key]]));
   Object.assign(process.env, {
     TWILIO_ACCOUNT_SID: 'AC_SYNTHETIC_NOT_A_REAL_ACCOUNT', TWILIO_API_KEY_SID: 'SK_SYNTHETIC', TWILIO_API_KEY_SECRET: 'SYNTHETIC_NOT_A_CREDENTIAL',
-    PUBLIC_BASE_URL: 'https://synthetic.invalid', CARRIER_CONNECTION_URL: 'https://synthetic-carrier.invalid', CARRIER_CONNECTION_TOKEN: 'SYNTHETIC_NOT_A_CREDENTIAL'
+    PUBLIC_BASE_URL: 'https://synthetic.invalid'
   });
   t.mock.method(globalThis, 'fetch', impl);
   t.after(() => { for (const key of keys) { if (previous[key] === undefined) delete process.env[key]; else process.env[key] = previous[key]; } });
@@ -573,41 +368,11 @@ test('Twilio receipt reconciliation rejects partial, unrelated and paginated res
   assert.equal((await findProvisionedTwilioNumber(input)).twilioNumberSid, SID);
 });
 
-test('carrier mutation gets stable idempotency key; status read is uncached and operation-scoped', async t => {
-  const calls = [];
-  adapterFixture(t, async (url, options) => {
-    assert.equal(String(url), 'https://synthetic-carrier.invalid');
-    const body = JSON.parse(options.body); calls.push({ body, headers: options.headers });
-    return jsonResponse(confirmed(body));
-  });
-  const input = { ownerId: OWNER, enabled: true, existingNumber: NUMBER, twilioNumber: DESTINATION, operationId: OP_ID, revision: 3 };
-  await setCarrierCoverage(input);
-  await getCarrierCoverage(input);
-  assert.equal(calls[0].headers['idempotency-key'], OP_ID);
-  assert.equal(calls[1].headers['idempotency-key'], undefined);
-  assert.equal(calls[1].body.action, 'get_coverage');
-  assert.equal(calls[1].body.operationId, OP_ID);
-  assert.equal(calls[1].body.revision, 3);
-});
-
-test('malformed carrier success cannot silently become updated; missing configuration never calls fetch', async t => {
-  adapterFixture(t, async () => ({ ok: true, json: async () => { throw new Error('SYNTHETIC_BAD_JSON'); } }));
-  const input = { ownerId: OWNER, enabled: true, operationId: OP_ID, revision: 1 };
-  assert.equal((await setCarrierCoverage(input)).status, 'unknown');
-  assert.equal((await requestCarrierConnection(input)).status, 'unknown');
-  delete process.env.CARRIER_CONNECTION_URL;
-  const count = globalThis.fetch.mock.callCount();
-  assert.equal((await setCarrierCoverage(input)).status, 'platform_action_required');
-  assert.equal((await getCarrierCoverage(input)).status, 'platform_action_required');
-  assert.equal(globalThis.fetch.mock.callCount(), count);
-});
-
-
 test('two isolated workers issuing 10 simultaneous requests each share one database purchase claim', { timeout: 15_000 }, async t => {
   const f = fixture(t);
   const workers = [];
   const replies = [];
-  let ready = 0, purchases = 0, connections = 0;
+  let ready = 0, purchases = 0;
   const source = `
     const { parentPort, workerData } = require('node:worker_threads');
     const { DatabaseSync } = require('node:sqlite');
@@ -637,7 +402,7 @@ test('two isolated workers issuing 10 simultaneous requests each share one datab
           existingPhoneNumber: value.existingNumber, twilioNumber: value.twilioNumber, twilioNumberSid: value.twilioNumberSid,
           phoneProvisioningStatus: 'provisioned', carrierSetupStatus: value.carrierSetupStatus
         }), operatorEligibility: () => ({ eligible: true, missing: [] }),
-        provider: Object.fromEntries(['selectNumber','purchaseNumber','findPurchasedNumber','connectCarrier','setCoverage','readCoverage']
+        provider: Object.fromEntries(['selectNumber','purchaseNumber','findPurchasedNumber']
           .map(method => [method, input => remote(method, input)]))
       });
       parentPort.on('message', async message => {
@@ -671,7 +436,6 @@ test('two isolated workers issuing 10 simultaneous requests each share one datab
       switch (message.method) {
         case 'selectNumber': return reply(DESTINATION);
         case 'purchaseNumber': purchases++; return reply(receipt(message.input));
-        case 'connectCarrier': connections++; return reply({ status: 'connected' });
         default: return reject(new Error('Unexpected fake provider call: ' + message.method));
       }
     });
@@ -681,6 +445,6 @@ test('two isolated workers issuing 10 simultaneous requests each share one datab
   assert.equal(replies.length, 20);
   assert.equal(new Set(replies.map(result => result.operationId)).size, 1);
   assert.equal(purchases, 1);
-  assert.equal(connections, 1);
+  assert.equal(f.phone().carrierSetupStatus, 'not_required');
   assert.equal(f.phone().twilioNumberSid, SID);
 });

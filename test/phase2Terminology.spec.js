@@ -160,9 +160,9 @@ test('preview endpoints are registered only inside the development guard', () =>
   const server = readFileSync('server/src/server.js', 'utf8');
   const guardedRoutes = server.match(/if \(localPreviewEnabled\(\)\) \{([\s\S]*?)\n\}/)?.[1] || '';
   assert.match(guardedRoutes, /\/api\/dev\/preview\/telephony/);
-  assert.match(guardedRoutes, /\/api\/dev\/preview\/operator/);
+  assert.doesNotMatch(guardedRoutes, /\/api\/dev\/preview\/operator/);
   assert.equal((server.match(/\/api\/dev\/preview\/telephony/g) || []).length, 1);
-  assert.equal((server.match(/\/api\/dev\/preview\/operator/g) || []).length, 1);
+  assert.equal((server.match(/\/api\/dev\/preview\/operator/g) || []).length, 0);
 
   const onboarding = readFileSync('client/src/onboarding.jsx', 'utf8');
   const dashboard = readFileSync('client/src/dashboard.jsx', 'utf8');

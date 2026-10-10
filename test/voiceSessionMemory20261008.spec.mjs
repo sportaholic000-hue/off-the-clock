@@ -148,12 +148,12 @@ test('C backup capture speaks the matching Chirp voice and the exact two new lin
  assert.equal(male.message,"Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we'll get back to you.");
  assert.equal(captureChoice('https://synthetic.example.invalid','unknown').voice,undefined);
 });
-for(const [choice,voice] of [['male','Charon'],['female','Kore']])test(`C signed ${choice} fallback repeats the configured voice on capture and thanks, then retains ring-through`,async t=>{
+for(const [choice,voice] of [['male','Charon'],['female','Kore']])test(`C signed ${choice} fallback repeats the configured voice on capture and thanks without a forwarding loop`,async t=>{
  const h=await harness(t,{beforeInstall:f=>f.ownerQuery('UPDATE businessProfiles SET voiceId=? WHERE ownerId=?').run(choice,'synthetic-a')}),c=await h.connect();
  c.callback.onerror();await until(()=>c.ws.readyState===3);
  const fallback=await h.post(c.fallback,c.params),xml=await fallback.text();assert.match(xml,new RegExp(`<Say voice="Google.en-US-Chirp3-HD-${voice}">Sorry, we got cut off`));
  const again=await h.post('/api/twilio/voice/capture/again',c.params);assert.match(await again.text(),new RegExp(`<Say voice="Google.en-US-Chirp3-HD-${voice}">Sorry, we got cut off`));
  const response=await h.post('/api/twilio/voice/capture',{...c.params,SpeechResult:'[SYNTHETIC] Broken deck; Sally; +19025550100'}),thanks=await response.text();
  assert.match(thanks,new RegExp(`<Say voice="Google.en-US-Chirp3-HD-${voice}">Thanks, we&apos;ll get back to you\\.<\\/Say>`));
- assert.match(thanks,/<Dial answerOnBridge="true"/);
+ assert.doesNotMatch(thanks,/<Dial/);
 });

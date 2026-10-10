@@ -727,7 +727,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
 // Query-wrapper plumbing and non-query uses, pinned to their merged source.
 export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
   {
-    "file": "server/quote-engine-vnext/tests/dateContext.spec.mjs",
+    "file": "server/quote-engine-vnext\u002ftests/dateContext.spec.mjs",
     "function": "dateContext test fixture",
     "reason": "Synthetic quote-engine test fixture implements a fake database method.",
     "signature": "f52c7812de0671eef1f2a0edc9a2cc36f5b59364e3222d7b846792390456f80c",

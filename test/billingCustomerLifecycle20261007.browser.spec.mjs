@@ -34,5 +34,9 @@ test('reactivation refreshes dashboard from persisted backend state and permits 
 });
 test('expired export window disables all CSV buttons and no longer offers setup/service',async t=>{
   const {page}=await screen(t,{expired:true});for(const kind of ['leads','quotes','calls'])assert.equal(await page.getByRole('button',{name:`Export ${kind} (CSV)`,exact:true}).isDisabled(),true);
-  assert.equal(await page.getByRole('button',{name:'Continue setup',exact:true}).count(),0);assert.match(await page.getByRole('region',{name:'Plan lifecycle'}).innerText(),/forwarding shutdown is pending/i);
+  assert.equal(await page.getByRole('button',{name:'Continue setup',exact:true}).count(),0);
+  // Forwarding-branch expectation: the owner controls forwarding after service ends.
+  const notice=await page.getByRole('region',{name:'Plan lifecycle'}).innerText();
+  assert.ok(notice.includes('Turn off forwarding on your business line from your phone or carrier account.'));
+  assert.doesNotMatch(notice,/forwarding shutdown (?:is pending|confirmed)/i);
 });

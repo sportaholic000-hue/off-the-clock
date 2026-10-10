@@ -173,6 +173,13 @@ export const CREATE_TABLE_STATEMENTS = [
     createdAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
   )`,
+  `CREATE TABLE IF NOT EXISTS voiceForwardingArrivals (
+    ownerId TEXT NOT NULL REFERENCES users(id), callSid TEXT PRIMARY KEY,
+    accountSid TEXT NOT NULL, callerNumber TEXT NOT NULL,
+    destinationNumber TEXT NOT NULL, forwardedFromPresent INTEGER NOT NULL
+      CHECK (forwardedFromPresent IN (0,1)), forwardedFrom TEXT,
+    reachedAt TEXT NOT NULL
+  )`,
   `CREATE TABLE IF NOT EXISTS callerBlocklist (
     ownerId TEXT NOT NULL REFERENCES users(id), phoneNumber TEXT NOT NULL,
     createdAt TEXT NOT NULL, PRIMARY KEY(ownerId,phoneNumber)

@@ -2,21 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {harness,until} from './voiceLifecycle20261006Fixture.mjs';
 
-// Real signed HTTP + media WebSocket routes; all AI/carrier providers synthetic.
-for(const failure of ['startup','session-error','session-close'])for(const route of ['owner','message','capture'])test(`billing repair 1 production: ${failure} → ${route}, signed whole-call duration is free`,async t=>{
+// Real signed HTTP + media WebSocket routes; providers are synthetic.
+for(const failure of ['startup','session-error','session-close'])test(`billing repair 1 production: ${failure} → message capture, signed whole-call duration is free`,async t=>{
   const h=await harness(t,{fail:failure==='startup'}),c=await h.connect();
   if(failure==='session-error')c.callback.onerror(Error('[SYNTHETIC] session failed'));
   if(failure==='session-close')c.callback.onclose({code:1011,reason:'[SYNTHETIC] session closed'});
   await until(()=>c.ws.readyState===3);
   assert.equal(h.db.prepare('SELECT status FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,c.params.CallSid).status,'FAILED');
-  if(route!=='capture')h.db.prepare('UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus=? WHERE ownerId=?').run(route==='owner'?'updated':'failed',h.owner);
   const response=await h.post(c.fallback,c.params);assert.equal(response.status,200);const xml=await response.text();
-  if(route==='owner')assert.match(xml,/<Dial/);
-  if(route==='message')assert.doesNotMatch(xml,/<Dial|<Gather|<Stream/);
-  if(route==='capture'){
-    assert.match(xml,/<Gather/);const url=new URL(xml.match(/action="([^"]+)"/)[1].replaceAll('&amp;','&'));
-    const saved=await h.post(url.pathname+url.search,{...c.params,SpeechResult:'[SYNTHETIC] Call me about the gate.'});assert.equal(saved.status,200);assert.match(await saved.text(),/<Dial/);
-  }
+  assert.match(xml,/<Gather/);assert.doesNotMatch(xml,/<Dial|<Stream/);
+  const url=new URL(xml.match(/action="([^"]+)"/)[1].replaceAll('&amp;','&'));
+  const saved=await h.post(url.pathname+url.search,{...c.params,SpeechResult:'[SYNTHETIC] Call me about the gate.'});assert.equal(saved.status,200);assert.doesNotMatch(await saved.text(),/<Dial/);
   const receipt={...c.params,CallStatus:'completed',CallDuration:'601'};
   assert.equal((await h.post('/api/twilio/voice/status',receipt)).status,204);
   assert.equal((await h.post('/api/twilio/voice/status',receipt)).status,204);
@@ -45,12 +41,13 @@ test('billing repair 1 production: failed warm transfer enters capture-again wit
   assert.equal((await h.post('/api/twilio/voice/status',{...c.params,CallStatus:'completed',CallDuration:'601'})).status,204);
   assert.equal(h.db.prepare('SELECT minutesBilled FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,c.params.CallSid).minutesBilled,0);
 });
-test('billing repair 1 production: late media completion and summary cannot erase operator-off exclusion',async t=>{
+test('billing repair 1 production: late media completion cannot erase fallback exclusion',async t=>{
   const h=await harness(t),c=await h.connect();
   h.db.prepare("UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus='updated' WHERE ownerId=?").run(h.owner);
-  assert.match(await (await h.post(c.fallback,c.params)).text(),/<Dial/);
+  assert.match(await (await h.post(c.fallback,c.params)).text(),/<Gather/);
   c.ws.send(JSON.stringify({event:'stop',sequenceNumber:'2',streamSid:c.streamSid,stop:{accountSid:c.params.AccountSid,callSid:c.params.CallSid}}));
-  await until(()=>h.db.prepare('SELECT completedAt FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,c.params.CallSid).completedAt);
+  c.ws.close();
+  await until(()=>c.ws.readyState===3);
   assert.equal((await h.post('/api/twilio/voice/status',{...c.params,CallStatus:'completed',CallDuration:'601'})).status,204);
   assert.equal(h.db.prepare('SELECT minutesBilled FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,c.params.CallSid).minutesBilled,0);
 });

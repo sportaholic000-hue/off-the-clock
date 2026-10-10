@@ -39,7 +39,7 @@ export function Button({ children, icon: Icon, variant = 'primary', className = 
 }
 
 export function StatusChip({ status, pending = false, label = status }) {
-  const live = status === 'QUOTING LIVE' || status === 'OPERATOR LIVE' || status === 'LIVE';
+  const live = status === 'QUOTING LIVE' || status === 'RECEPTIONIST READY' || status === 'LIVE';
   // CHECKING is a genuinely unknown state before the first validation returns.
   // It must not be styled or worded as a failure.
   const checking = status === 'CHECKING';
@@ -91,7 +91,7 @@ export function AppShell({ activePath, children, operator }) {
           </Select>
           <Button variant="secondary" disabled={signingOut} onClick={signOut}>{signingOut?'Signing out…':'Sign out'}</Button>
           {signoutError&&<p role="alert">{signoutError}</p>}
-          {operator && <StatusChip status={operator.simulated ? 'SIMULATED PREVIEW' : operator.enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF'} />}
+          {operator && <StatusChip status={operator.simulated ? 'SIMULATED PREVIEW' : operator.eligible ? 'RECEPTIONIST READY' : 'SETUP NEEDED'} />}
         </header>
         {children}
       </div>

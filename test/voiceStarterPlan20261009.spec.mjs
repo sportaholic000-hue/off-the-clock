@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {harness,until} from './voiceLifecycle20261006Fixture.mjs';
-for(const plan of ['Starter','Operator','QuoteDone'])test(`Starter lineup: ${plan} real phone boundary offers only entitled tools`,async t=>{
- let configuration;const f=await harness(t,{beforeInstall:({db})=>db.prepare('UPDATE users SET plan=? WHERE id=?').run(plan,'synthetic-a'),onConnect:input=>{configuration=input;}});
- const call=await f.connect();const text=JSON.stringify(configuration.config||configuration);
+for(const plan of ['Starter','Operator','QuoteDone'])test(`Starter lineup: ${plan} forwarded call answers with switch off and offers only entitled tools`,async t=>{
+ let configuration;const f=await harness(t,{beforeInstall:({db})=>{db.prepare('UPDATE users SET plan=? WHERE id=?').run(plan,'synthetic-a');db.prepare('UPDATE businessProfiles SET operatorEnabled=0 WHERE ownerId=?').run('synthetic-a');},onConnect:input=>{configuration=input;}});
+ // Expected: a real signed forwarded call opens AI despite the retired switch.
+ const call=await f.connect(1,undefined,'+19025550333');assert.equal(call.status,200);assert.match(call.xml,/<Stream/);const text=JSON.stringify(configuration.config||configuration);
  const declarations=configuration.config.tools.flatMap(t=>t.functionDeclarations||[]).map(t=>t.name);
  assert.equal(declarations.includes('bookAppointment'),plan!=='Starter');assert.equal(declarations.includes('transferCall'),plan!=='Starter');assert.equal(declarations.includes('getQuote'),plan==='QuoteDone');
  if(plan==='Starter'){

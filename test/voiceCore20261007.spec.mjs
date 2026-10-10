@@ -25,7 +25,7 @@ function runtime(h,c,options={}){const r=createVoiceToolRuntime({database:h.db,c
 const invoke=(dispatch,name,args,key='synthetic-'+name)=>dispatch({name,args,toolCallId:key});
 function configureBooking(h,c){
  h.db.prepare("UPDATE users SET plan='Operator' WHERE id=?").run(c.ownerId);
- h.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({serviceArea:{mode:'all',cities:[]}}),c.ownerId);
+ h.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({about:'Synthetic business',hours:'Monday to Friday',serviceArea:{mode:'all',cities:[]}}),c.ownerId);
  h.db.prepare("INSERT INTO bookingSettings(ownerId,revision,timezone,provider,calendarId,weeklyAvailabilityJson,blackoutsJson,bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt) VALUES(?,'v1','UTC','google','synthetic-calendar',?,'[]',30,0,30,0,0,1,?)").run(c.ownerId,JSON.stringify(allDays),at);
  h.db.prepare("INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt) VALUES(?,'voice-appointment','v1','site_visit_first',30,1,?)").run(c.ownerId,at);
 }
@@ -61,8 +61,8 @@ test('voice-core 5 voice settings reject values that cannot compile before persi
  for(const value of ['x'.repeat(501),'Agent\u0000Name'])assert.throws(()=>saveVoice(owner,{voiceId:'female',agentName:value,greeting:'Synthetic greeting'}),e=>e.statusCode===400);
  assert.throws(()=>saveVoice(owner,{voiceId:'female',agentName:{name:'Synthetic'},greeting:'Synthetic greeting'}),e=>e.statusCode===400);
 });
-test('voice-core 6 confirmed Operator OFF routes to the business with no capture, live session or AI billing',async t=>{
- const h=await harness(t,{beforeInstall:f=>f.db.prepare("UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus='updated' WHERE ownerId=?").run('synthetic-a')});const response=await h.incoming();assert.doesNotMatch(response.xml,/<Gather|<Stream/);assert.match(response.xml,/<Dial[^>]*><Number>\+19025550199<\/Number><\/Dial>/);assert.equal(h.callbacks.length,0);
+test('voice-core 6 old switch and carrier state cannot prevent answering a forwarded call',async t=>{
+ const h=await harness(t,{beforeInstall:f=>f.db.prepare("UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus='updated' WHERE ownerId=?").run('synthetic-a')});const response=await h.incoming();assert.match(response.xml,/<Stream/);assert.doesNotMatch(response.xml,/<Gather|<Dial/);assert.equal(h.callbacks.length,0);
  assert.equal(h.db.prepare('SELECT COUNT(*) n FROM leads').get().n,0);assert.equal(h.db.prepare('SELECT minutesBilled FROM calls WHERE ownerId=?').get(h.owner).minutesBilled,0);
 });
 test('voice-core 7 transfers obey saved owner windows and save a callback outside them',async t=>{
@@ -112,13 +112,13 @@ test('voice-core callback owner emails contain the usable corrected contact',asy
  const alerts=createOwnerAlertService({database:h.db,ownerQuery:h.ownerQuery,clock:()=>Date.parse(at),ready:()=>true,environment:{PUBLIC_BASE_URL:'https://synthetic.example.invalid'},send:async message=>{messages.push(message);return {id:'SYNTHETIC_EMAIL',status:'ACCEPTED'};}});
  await alerts.dispatchOnce();assert.match(JSON.stringify(messages),/19025550223/);assert.doesNotMatch(JSON.stringify(messages),/19025550222/);
 });
-for(const status of ['pending','failed'])test('voice-core Operator OFF with '+status+' carrier routing cannot enter AI capture or create a forwarding loop',async t=>{
- const h=await harness(t,{beforeInstall:f=>f.db.prepare('UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus=? WHERE ownerId=?').run(status,'synthetic-a')});const result=await h.incoming();assert.equal(result.status,200);assert.doesNotMatch(result.xml,/<Gather|<Stream|<Dial/);assert.match(result.xml,/operator is off/i);assert.equal(h.db.prepare('SELECT COUNT(*) n FROM leads').get().n,0);
+for(const status of ['pending','failed'])test('voice-core old '+status+' carrier state has no effect on signed inbound answering',async t=>{
+ const h=await harness(t,{beforeInstall:f=>f.db.prepare('UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus=? WHERE ownerId=?').run(status,'synthetic-a')});const result=await h.incoming();assert.equal(result.status,200);assert.match(result.xml,/<Stream/);assert.doesNotMatch(result.xml,/<Dial|operator is off/i);assert.equal(h.db.prepare('SELECT COUNT(*) n FROM leads').get().n,0);
 });
-test('voice-core OFF signed completion remains zero AI minutes and records a completed owner call',async t=>{
+test('voice-core signed completion after an unanswered media start keeps the existing Twilio duration calculation',async t=>{
  const h=await harness(t,{beforeInstall:f=>f.db.prepare("UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus='updated' WHERE ownerId=?").run('synthetic-a')});const result=await h.incoming();assert.equal((await h.incoming()).xml,result.xml);
- const response=await h.post('/api/twilio/voice/status',{...result.params,CallStatus:'completed',CallDuration:'125'});assert.equal(response.status,204);
- const row=h.db.prepare('SELECT * FROM calls WHERE ownerId=?').get(h.owner);assert.equal(row.minutesBilled,0);assert.equal(row.status,'COMPLETED');assert.equal(row.outcome,'OPERATOR_OFF');assert.equal(h.db.prepare('SELECT COUNT(*) n FROM ownerAlerts WHERE ownerId=?').get(h.owner).n,1);
+ assert.match(result.xml,/<Stream/);const response=await h.post('/api/twilio/voice/status',{...result.params,CallStatus:'completed',CallDuration:'125'});assert.equal(response.status,204);
+ const row=h.db.prepare('SELECT * FROM calls WHERE ownerId=?').get(h.owner);assert.equal(row.minutesBilled,3);assert.equal(row.status,'CONNECTING');assert.notEqual(row.outcome,'OPERATOR_OFF');
 });
 for(const [now,allowed] of [['2026-10-06T12:59:59.000Z',false],['2026-10-06T13:00:00.000Z',true],['2026-10-06T19:59:59.000Z',true],['2026-10-06T20:00:00.000Z',false],['2026-11-03T14:00:00.000Z',true],['2026-11-03T13:59:59.000Z',false]])test('voice-core owner-local transfer boundary '+now,t=>{
  const h=fixture(t);h.db.prepare("UPDATE users SET timezone='America/Halifax' WHERE id='synthetic-a'").run();h.db.prepare('UPDATE businessProfiles SET existingPhoneNumber=?,knowledgeBaseJson=? WHERE ownerId=?').run('+19025550199',JSON.stringify({transferWindows:{tue:[{start:'10:00',end:'17:00'}]}}),'synthetic-a');assert.equal(transferDecision(h.db,'synthetic-a',new Date(now)).allowed,allowed);assert.equal(transferDecision(h.db,'synthetic-b',new Date(now)).allowed,false);
@@ -147,6 +147,6 @@ test('voice-core a callback number supplied after an earlier owner email produce
  assert.equal(h.db.prepare("SELECT COUNT(*) n FROM ownerAlerts WHERE ownerId=? AND eventType='lead.contact_updated'").get('synthetic-b').n,0);
 });
 
-for(const planStatus of ['inactive','payment_failed'])test('voice-core OFF human routing remains independent of '+planStatus+' subscription',async t=>{
- const h=await harness(t,{beforeInstall:f=>{f.db.prepare("UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus='updated' WHERE ownerId=?").run('synthetic-a');f.db.prepare('UPDATE users SET planStatus=? WHERE id=?').run(planStatus,'synthetic-a');}});const result=await h.incoming();assert.equal(result.status,200);assert.match(result.xml,/<Dial/);assert.doesNotMatch(result.xml,/<Gather|<Stream/);assert.equal(h.callbacks.length,0);assert.equal(h.db.prepare('SELECT COUNT(*) n FROM leads').get().n,0);
+for(const planStatus of ['inactive','payment_failed'])test('voice-core unavailable '+planStatus+' account uses message capture',async t=>{
+ const h=await harness(t,{beforeInstall:f=>{f.db.prepare("UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus='updated' WHERE ownerId=?").run('synthetic-a');f.db.prepare('UPDATE users SET planStatus=? WHERE id=?').run(planStatus,'synthetic-a');}});const result=await h.incoming();assert.equal(result.status,200);assert.match(result.xml,/<Gather/);assert.doesNotMatch(result.xml,/<Dial|<Stream/);assert.equal(h.callbacks.length,0);assert.equal(h.db.prepare('SELECT COUNT(*) n FROM leads WHERE ownerId=?').get(h.owner).n,1);
 });

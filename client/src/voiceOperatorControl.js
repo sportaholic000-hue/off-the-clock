@@ -1,9 +1,8 @@
-// Saved routing intent and current readiness are different facts. A service
-// interruption must never disable the owner's ability to switch routing off.
+// Readiness reflects account and setup. Forwarding is controlled on the
+// owner's business phone, never through the dashboard.
 export function voiceOperatorControl(operator){
-  const checked=Boolean(operator.configuredEnabled??operator.enabled);
   const live=Boolean(operator.enabled&&operator.eligible);
-  return {checked,live,blocked:!operator.eligible&&!checked,
-    title:live?'OPERATOR LIVE':'OPERATOR OFF',
-    sub:live?'EVERY CALL FROM HERE ON IS COVERED':operator.eligible?'CALLERS CAN LEAVE A REQUEST':'VOICE SETUP NEEDS ATTENTION'};
+  return {live,blocked:!operator.eligible,
+    title:live?'RECEPTIONIST READY':'RECEPTIONIST SETUP NEEDED',
+    sub:live?'FORWARDED CALLS ARE ANSWERED':'COMPLETE THE PHONE AND BUSINESS SETUP'};
 }
