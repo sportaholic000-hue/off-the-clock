@@ -2,8 +2,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
 import Database from 'better-sqlite3';
-import {migrateDatabase} from '../../server/src/migrations.js';
+import {migrateDatabase,backfillWidgetLeads} from '../../server/src/migrations.js';
 import {installTelephonyOperationsSchema} from '../../server/src/telephonyOperationsMigration.js';
 import {createVoiceDurationRecovery} from '../../server/src/voiceDurationRecovery.js';
 import {createAuthSessionService} from '../../server/src/authSessionService.js';
@@ -86,6 +87,32 @@ export function retentionFixture(t){
   }
   const tables=db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(r=>r.name);
   for(const table of tables)if(!BILLING.has(table)&&table!=='staffInvitations'&&db.prepare(`PRAGMA table_info("${table}")`).all().some(c=>c.name==='ownerId'))for(const owner of [A,B])seed(table,owner);
+  // Exercise candidate f's merged records in the same day-90 inventory and
+  // pre-erasure backup restore oracle: widget leads, their quote/customer
+  // links, confirmed booking links, and leads created by the real backfill.
+  for(const ownerId of [A,B]){
+    const quote=db.prepare('SELECT id FROM quotes WHERE ownerId=?').get(ownerId);
+    const intent=db.prepare('SELECT id FROM bookingIntents WHERE ownerId=?').get(ownerId);
+    const contact={name:'[SYNTHETIC] Retention widget',phone:ownerId===A?'+15065550101':'+15065550102',email:ownerId+'@example.invalid'};
+    const originalSubmission={contact,serviceRequest:'[SYNTHETIC] Retention request',location:{city:'[SYNTHETIC] City'}};
+    db.prepare("UPDATE quotes SET callerType='customer',callId=NULL,resultJson=? WHERE ownerId=? AND id=?")
+      .run(JSON.stringify({originalSubmission,customerResult:{resultType:'INSTANT_ESTIMATE_READY'}}),ownerId,quote.id);
+    db.prepare("UPDATE bookingIntents SET sourceType='quote',sourceId=? WHERE ownerId=? AND id=?").run(quote.id,ownerId,intent.id);
+    db.prepare("UPDATE appointments SET bookingIntentId=?,customerId=NULL,status='CONFIRMED',customerJson=?,locationJson=? WHERE ownerId=?")
+      .run(intent.id,JSON.stringify(contact),JSON.stringify(originalSubmission.location),ownerId);
+  }
+  backfillWidgetLeads(db);
+  for(const ownerId of [A,B]){
+    const quote=db.prepare('SELECT id FROM quotes WHERE ownerId=?').get(ownerId);
+    const lead=db.prepare('SELECT * FROM leads WHERE ownerId=? AND id=?').get(ownerId,quote.id);
+    const links=JSON.parse(lead.collectedInputsJson);
+    const booking=db.prepare('SELECT * FROM appointments WHERE ownerId=?').get(ownerId);
+    assert.equal(lead.type,'widget_quote');assert.equal(links.linkedQuoteId,quote.id);
+    assert.ok(links.customerId);assert.equal(booking.customerId,links.customerId);
+    assert.equal(db.prepare('SELECT sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,booking.bookingIntentId).sourceId,lead.id);
+  }
+  const linkedRows=JSON.stringify(tableRows(db));backfillWidgetLeads(db);
+  assert.equal(JSON.stringify(tableRows(db)),linkedRows,'Repeating the merged widget backfill must preserve all rows');
   for(const ownerId of [A,B]){
     seed('events',ownerId);seed('ownerEmailDeliveries',ownerId);
     const calls=db.prepare('SELECT id FROM calls WHERE ownerId=?').get(ownerId),sid='CA'+hash(ownerId).slice(0,32);

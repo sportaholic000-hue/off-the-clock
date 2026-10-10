@@ -467,41 +467,41 @@ function globalReadiness(settingsRow, connectionRow) {
   const blockers = [];
   if (!settingsRow) {
     blockers.push(blocker('BOOKING_SETTINGS_MISSING', 'Save booking hours and scheduling rules.'));
-    return blockers;
-  }
-  if (Number(settingsRow.directBookingEnabled) !== 1) {
-    blockers.push(blocker('DIRECT_BOOKING_DISABLED', 'Turn on direct booking.'));
-  }
-  if (!isValidIanaTimeZone(settingsRow.timezone)) {
-    blockers.push(blocker('TIMEZONE_INVALID', 'Choose a valid IANA timezone.'));
-  }
-  let weekly;
-  try {
-    weekly = normalizedWeeklyAvailability(parseJson(settingsRow.weeklyAvailabilityJson, null));
-  } catch {
-    blockers.push(blocker('WEEKLY_AVAILABILITY_INVALID', 'Save structured, non-overlapping weekly availability.'));
-  }
-  if (weekly && !WEEKDAYS.some(day => weekly[day].length > 0)) {
-    blockers.push(blocker('WEEKLY_AVAILABILITY_EMPTY', 'Open at least one weekly availability window.'));
-  }
-  try {
-    normalizedBlackouts(parseJson(settingsRow.blackoutsJson, null));
-  } catch {
-    blockers.push(blocker('BLACKOUTS_INVALID', 'Correct the saved blackout windows.'));
-  }
-  const integerChecks = [
-    ['BOOKING_HORIZON_INVALID', settingsRow.bookingHorizonDays, 1, 366, 'Choose a booking horizon from 1 to 366 days.'],
-    ['MINIMUM_NOTICE_INVALID', settingsRow.minimumNoticeMinutes, 0, 525600, 'Choose valid minimum notice.'],
-    ['SLOT_INCREMENT_INVALID', settingsRow.slotIncrementMinutes, 1, 1440, 'Choose a slot increment from 1 to 1440 minutes.'],
-    ['BUFFER_BEFORE_INVALID', settingsRow.bufferBeforeMinutes, 0, 1440, 'Choose a valid before buffer.'],
-    ['BUFFER_AFTER_INVALID', settingsRow.bufferAfterMinutes, 0, 1440, 'Choose a valid after buffer.']
-  ];
-  for (const [code, value, min, max, message] of integerChecks) {
-    if (!Number.isInteger(value) || value < min || value > max) blockers.push(blocker(code, message));
-  }
-  if (Number.isInteger(settingsRow.minimumNoticeMinutes) && Number.isInteger(settingsRow.bookingHorizonDays) &&
-      settingsRow.minimumNoticeMinutes > settingsRow.bookingHorizonDays * 1440) {
-    blockers.push(blocker('NOTICE_EXCEEDS_HORIZON', 'Minimum notice cannot extend beyond the booking horizon.'));
+  } else {
+    if (Number(settingsRow.directBookingEnabled) !== 1) {
+      blockers.push(blocker('DIRECT_BOOKING_DISABLED', 'Turn on direct booking.'));
+    }
+    if (!isValidIanaTimeZone(settingsRow.timezone)) {
+      blockers.push(blocker('TIMEZONE_INVALID', 'Choose a valid IANA timezone.'));
+    }
+    let weekly;
+    try {
+      weekly = normalizedWeeklyAvailability(parseJson(settingsRow.weeklyAvailabilityJson, null));
+    } catch {
+      blockers.push(blocker('WEEKLY_AVAILABILITY_INVALID', 'Save structured, non-overlapping weekly availability.'));
+    }
+    if (weekly && !WEEKDAYS.some(day => weekly[day].length > 0)) {
+      blockers.push(blocker('WEEKLY_AVAILABILITY_EMPTY', 'Open at least one weekly availability window.'));
+    }
+    try {
+      normalizedBlackouts(parseJson(settingsRow.blackoutsJson, null));
+    } catch {
+      blockers.push(blocker('BLACKOUTS_INVALID', 'Correct the saved blackout windows.'));
+    }
+    const integerChecks = [
+      ['BOOKING_HORIZON_INVALID', settingsRow.bookingHorizonDays, 1, 366, 'Choose a booking horizon from 1 to 366 days.'],
+      ['MINIMUM_NOTICE_INVALID', settingsRow.minimumNoticeMinutes, 0, 525600, 'Choose valid minimum notice.'],
+      ['SLOT_INCREMENT_INVALID', settingsRow.slotIncrementMinutes, 1, 1440, 'Choose a slot increment from 1 to 1440 minutes.'],
+      ['BUFFER_BEFORE_INVALID', settingsRow.bufferBeforeMinutes, 0, 1440, 'Choose a valid before buffer.'],
+      ['BUFFER_AFTER_INVALID', settingsRow.bufferAfterMinutes, 0, 1440, 'Choose a valid after buffer.']
+    ];
+    for (const [code, value, min, max, message] of integerChecks) {
+      if (!Number.isInteger(value) || value < min || value > max) blockers.push(blocker(code, message));
+    }
+    if (Number.isInteger(settingsRow.minimumNoticeMinutes) && Number.isInteger(settingsRow.bookingHorizonDays) &&
+        settingsRow.minimumNoticeMinutes > settingsRow.bookingHorizonDays * 1440) {
+      blockers.push(blocker('NOTICE_EXCEEDS_HORIZON', 'Minimum notice cannot extend beyond the booking horizon.'));
+    }
   }
   if (!connectionRow) {
     blockers.push(blocker('CALENDAR_NOT_CONNECTED', 'Connect a destination calendar.'));
@@ -524,9 +524,9 @@ function globalReadiness(settingsRow, connectionRow) {
       ));
     }
   }
-  if (settingsRow.provider !== (connectionRow?.provider || null) ||
+  if (settingsRow && (settingsRow.provider !== (connectionRow?.provider || null) ||
       settingsRow.calendarId !== (connectionRow?.calendarId || null) ||
-      settingsRow.externalUrl !== (connectionRow?.externalUrl || null)) {
+      settingsRow.externalUrl !== (connectionRow?.externalUrl || null))) {
     blockers.push(blocker('CALENDAR_SETTINGS_STALE', 'Save booking settings again after changing the calendar connection.'));
   }
   return blockers;

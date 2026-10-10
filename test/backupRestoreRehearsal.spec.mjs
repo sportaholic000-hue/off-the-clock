@@ -126,7 +126,9 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
     await requestJson(publicPath,{method:'POST',body:{...request,serviceId:randomUUID()},auth:false,expected:409});
     assert.deepEqual(await requestJson(publicPath,{method:'POST',body:reviewRequest,auth:false}),leadReceipt);
     assert.deepEqual(await requestJson(bookingPath+'/confirm',{method:'POST',body:confirmationBody,auth:false,expected:201,headers:{'Idempotency-Key':confirmationKey}}),booking);
-    const leads=await requestJson('/api/leads');assert.equal(leads.leads.length,1);
+    // Handwritten inbox expectation: instant widget quote + separate review = 2;
+    // booking and replay reuse the quote's lead rather than adding another.
+    const leads=await requestJson('/api/leads');assert.equal(leads.leads.length,2);
     const schedule=await requestJson('/api/calendar/schedule?fromDate='+fromDate+'&days=1');
     assert.equal(schedule.appointments.length,1);assert.equal(schedule.appointments[0].status,'CONFIRMED');
     assert.deepEqual(persisted(root,ownerId),rows);
@@ -172,8 +174,8 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
     const secondInitial=await requestJson('/api/pricebook/'+secondOwnerId,{headers:{authorization:'Bearer '+second.token}});
     await requestJson('/api/pricebook/save',{method:'POST',headers:{authorization:'Bearer '+second.token},body:{services:[],defaults:{},revision:secondInitial.revision}});
     bookBytes=fs.readFileSync(path.join(root,'pricebooks',ownerId+'.json'));secondBookBytes=fs.readFileSync(path.join(root,'pricebooks',secondOwnerId+'.json'));
-    rows=persisted(root,ownerId);assert.equal(rows.quotes.length,1);assert.equal(rows.leads.length,1);assert.equal(rows.appointments.length,1);assert.equal(rows.quoteSubmissions.length,2);
-    t.diagnostic('Synthetic approved book sha256='+hash(bookBytes)+'; quote=$100.00; quotes=1; leads=1; appointments=1; submissions=2.');
+    rows=persisted(root,ownerId);assert.equal(rows.quotes.length,1);assert.equal(rows.leads.length,2);assert.equal(rows.appointments.length,1);assert.equal(rows.quoteSubmissions.length,2);
+    t.diagnostic('Synthetic approved book sha256='+hash(bookBytes)+'; quote=$100.00; quotes=1; leads=2; appointments=1; submissions=2.');
   });
   await t.test('3. graceful production restart preserves exact book, approval, rows and replay receipts',async()=>{
     await server.stop();server=await launch(env,processes);await verifyState();

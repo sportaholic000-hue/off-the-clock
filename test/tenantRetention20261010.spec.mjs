@@ -11,6 +11,7 @@ import {createSnapshot,verifyBackup} from '../server/src/backups.js';
 import {createOffsiteBackupService,restoreOffsiteBackup,restoreContinuousBackup} from '../server/src/offsiteBackups.js';
 import {createS3BackupStore} from '../server/src/offsiteStore.js';
 import {fakeS3} from './helpers/offsiteFakeS3.mjs';
+import {backfillWidgetLeads} from '../server/src/migrations.js';
 
 // Handwritten oracle before execution: END + 90*24 hours = February 18, 2027,
 // 12:00 UTC. One millisecond earlier, BOTH businesses retain their data, files,
@@ -50,6 +51,7 @@ for(const outcome of ['success','http-error','network-error','timeout'])test('da
   // Sessions are created immediately before the deadline, so rejection below
   // proves erasure, not their normal eight-hour expiration.
   f.setTime(DEADLINE);await service.processOwner(A,{localOnly:true});await service.processOwner(A,{localOnly:true});
+  backfillWidgetLeads(f.db); // A restart must not recreate erased widget links.
   assertErased(assert,f.db);assert.deepEqual(businessRows(f.db,B),beforeB);assert.equal(attempts,1);
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM authTokens WHERE userId LIKE ?').get(A+'%').n,0);
   const sid='CA'+hash(A).slice(0,32);
