@@ -1,9 +1,9 @@
 {
   "codes": {
-    "GEMINI_SESSION_CLOSED": "The AI receptionist connection closed unexpectedly.",
-    "GEMINI_SESSION_ERROR": "The AI receptionist encountered a connection error.",
-    "GEMINI_CONNECT_FAILED": "The AI receptionist encountered a connection error.",
-    "VOICE_MEDIA_FAILURE": "The AI receptionist encountered a connection error.",
+    "GEMINI_SESSION_CLOSED": "The receptionist's connection closed unexpectedly.",
+    "GEMINI_SESSION_ERROR": "The receptionist hit a connection error.",
+    "GEMINI_CONNECT_FAILED": "The receptionist hit a connection error.",
+    "VOICE_MEDIA_FAILURE": "The receptionist hit a connection error.",
     "TWILIO_SOCKET_CLOSED": "The phone connection closed unexpectedly.",
     "TWILIO_SOCKET_ERROR": "The phone connection closed unexpectedly.",
     "MEDIA_SOCKET_CLOSED": "The phone connection closed unexpectedly.",
@@ -43,7 +43,7 @@
     "VOICE_CONCURRENCY_LIMIT": "All available receptionist call connections were in use.",
     "VOICE_PLATFORM_CAPACITY": "All available receptionist call connections were in use.",
     "VOICE_CALLER_THROTTLED": "This caller called too many times in 24 hours and was asked to leave a message.",
-    "VOICE_SPAM_BLOCKED": "This caller was blocked as spam.",
+    "VOICE_SPAM_BLOCKED": "You marked this number as spam.",
     "OPERATOR_INELIGIBLE": "The account was not eligible for receptionist service.",
     "ACCOUNT_REQUIRED": "The account was not eligible for receptionist service.",
     "INVALID_PLAN": "The account was not eligible for receptionist service.",

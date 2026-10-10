@@ -21,7 +21,6 @@ The prices and entitlements implement the owner's October 9 ruling.
 - “Calendar booking and live transfer require Operator or QuoteDone. Your saved settings and bookings are kept.”
 - “Changing to Starter turns off the price book, website widget, calendar booking and live transfer. Your price book, widget settings, calendar connection and existing bookings are kept. Existing appointments are not canceled. Changing from QuoteDone to Operator turns off phone price-book quoting; the website widget, price book, calendar booking and live transfer stay available. Features switch when your confirmed plan changes. Upgrading restores access to saved settings.”
 - “Choose Operator or QuoteDone”
-- “Starter keeps answering and capturing pricing requests for owner review.”
 - “Starter keeps answering and capturing every pricing request for owner review.”
 - “Receptionist plan access” (eligibility blocker, replacing “Operator plan access”)
 - “PRICE BOOK” (price-book screen eyebrow)

@@ -33,8 +33,8 @@ jobs:
           fi
       - name: Build owner app and widget
         run: npm run build
-      - name: Owner dashboard browser regression
-        run: node --test test/ownerDashboard20261007.browser.spec.mjs
+      - name: Owner alerts and dashboard browser regressions
+        run: node --test test/ownerAlertsDelivery20261006.browser.spec.mjs test/ownerDashboard20261007.browser.spec.mjs
       - name: Strict quote engine and price book gate
         run: npm run test:quote
       - name: Full test suite

@@ -5,7 +5,7 @@ import {draftKnowledgeBase} from '../server/src/platformIntegrations.js';
 import {suggestStarterBook,interpretInterviewAnswer} from '../server/src/priceBookAI.js';
 import {validateRuntimeConfig} from '../server/src/runtimeConfig.js';
 
-const message='AI drafting is unavailable because its text model is not configured. You can enter your business information and prices manually. Contact support@offtheclockai.com for help.';
+const message="AI drafting isn't available right now. You can enter your business information and prices yourself. Contact support@offtheclockai.com for help.";
 const env={GEMINI_API_KEY:'SYNTHETIC-key',GEMINI_MODEL:'synthetic-live-model',GEMINI_TEXT_MODEL:'synthetic-text-model'};
 const response=value=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(value)}]}}]})});
 const draftRequest={businessName:'[SYNTHETIC] Business',businessTypes:['[SYNTHETIC] Service']};

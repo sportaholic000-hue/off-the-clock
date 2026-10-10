@@ -1,7 +1,7 @@
 // Proposed owner wording is listed in verification/billing-calls-20261009/REPORT.md.
 const reasons=Object.create(null);
-for(const code of "GEMINI_SESSION_CLOSED".split(" "))reasons[code]="The AI receptionist connection closed unexpectedly.";
-for(const code of "GEMINI_SESSION_ERROR GEMINI_CONNECT_FAILED VOICE_MEDIA_FAILURE".split(" "))reasons[code]="The AI receptionist encountered a connection error.";
+for(const code of "GEMINI_SESSION_CLOSED".split(" "))reasons[code]="The receptionist's connection closed unexpectedly.";
+for(const code of "GEMINI_SESSION_ERROR GEMINI_CONNECT_FAILED VOICE_MEDIA_FAILURE".split(" "))reasons[code]="The receptionist hit a connection error.";
 for(const code of "TWILIO_SOCKET_CLOSED TWILIO_SOCKET_ERROR MEDIA_SOCKET_CLOSED".split(" "))reasons[code]="The phone connection closed unexpectedly.";
 for(const code of "SESSION_PERSISTENCE_FAILED TRANSCRIPT_CALLBACK_FAILED CALL_PERSISTENCE_FAILED".split(" "))reasons[code]="The receptionist could not save the final call details.";
 for(const code of "TOOL_CALLBACK_FAILED INVALID_TOOL_RESPONSE INVALID_GEMINI_TOOL_CALL".split(" "))reasons[code]="The receptionist could not complete a requested action.";
@@ -12,7 +12,7 @@ for(const code of "VOICE_DISABLED VOICE_RUNTIME_DISABLED VOICE_FALLBACK VOICE_SE
 for(const code of "VOICE_CIRCUIT_OPEN".split(" "))reasons[code]="The receptionist is temporarily paused after repeated connection failures.";
 for(const code of "VOICE_CONCURRENCY_LIMIT VOICE_PLATFORM_CAPACITY".split(" "))reasons[code]="All available receptionist call connections were in use.";
 for(const code of "VOICE_CALLER_THROTTLED".split(" "))reasons[code]="This caller called too many times in 24 hours and was asked to leave a message.";
-for(const code of "VOICE_SPAM_BLOCKED".split(" "))reasons[code]="This caller was blocked as spam.";
+for(const code of "VOICE_SPAM_BLOCKED".split(" "))reasons[code]="You marked this number as spam.";
 for(const code of "OPERATOR_INELIGIBLE ACCOUNT_REQUIRED INVALID_PLAN INVALID_STATUS INVALID_NOW TRIAL_END_REQUIRED PAYMENT_FAILURE_TIME_REQUIRED SUSPENDED_OR_CANCELED".split(" "))reasons[code]="The account was not eligible for receptionist service.";
 for(const code of "TRIAL_EXPIRED".split(" "))reasons[code]="The trial had ended.";
 for(const code of "PAYMENT_FAILURE_GRACE_EXPIRED".split(" "))reasons[code]="The payment grace period had ended.";

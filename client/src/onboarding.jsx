@@ -356,7 +356,7 @@ function PhoneStep({ state, refresh, back, next }) {
           <Notice tone="success" title="Your receptionist number">{state.profile.twilioNumber}</Notice>
           <div>
             <h3>Set once: forward missed calls</h3>
-            <p>On your business phone, forward calls you do not answer, decline, or receive while busy or unreachable to {state.profile.twilioNumber}. Check how declined calls behave with your carrier. Your carrier's no-answer delay still applies. Do Not Disturb may wait through that delay too; check it on your phone.</p>
+            <p>On your business phone, forward calls you don't answer, decline, or get while busy or unreachable to {state.profile.twilioNumber}. Your phone rings for your carrier's usual time first, and Do Not Disturb may not skip that wait.</p>
             <h3>Instant on or off: always forward</h3>
             <p>Turn on always-forward to send every call to {state.profile.twilioNumber} immediately. Turn it off to let your business phone ring normally.</p>
             <ul>
@@ -367,7 +367,7 @@ function PhoneStep({ state, refresh, back, next }) {
             <h3>Check that forwarding reaches us</h3>
             <p>Turn forwarding on, then call your business number from another phone. Wait through your carrier's no-answer delay if you chose missed calls. This check only reports a signed call that reached your receptionist number.</p>
             <Button variant="secondary" onClick={checkForwarding}>Check recent call</Button>
-            {arrival?<p role="status">Reached {new Date(arrival.reachedAt).toLocaleString()} from {arrival.callerNumber}. Twilio forwarded marker: {arrival.forwardedFromPresent?'present':'absent'}{arrival.forwardedFrom?` (${arrival.forwardedFrom})`:''}.</p>:<p role="status">No call has reached this receptionist number yet.</p>}
+            {arrival?<p role="status">Reached {new Date(arrival.reachedAt).toLocaleString()} from {arrival.callerNumber}.{arrival.forwardedFromPresent&&arrival.forwardedFrom?` Forwarded from ${arrival.forwardedFrom}.`:''}</p>:<p role="status">No call has reached this receptionist number yet.</p>}
           </div>
         </div>
       )}
@@ -682,7 +682,7 @@ function PriceBookStep({ state, metadata, back, next }) {
     return (
       <section className="step-panel">
         <PageHeader eyebrow="Step 7 of 9" title="Price book" description={PRICE_BOOK_UNAVAILABLE} />
-        <Notice>Starter keeps answering and capturing pricing requests for owner review.</Notice>
+        <Notice>Starter keeps answering and capturing every pricing request for owner review.</Notice>
         <Button onClick={() => go('/settings/billing')}>Choose Operator or QuoteDone</Button>
         <StepActions onBack={back} onNext={next} nextLabel="Skip for now" />
       </section>

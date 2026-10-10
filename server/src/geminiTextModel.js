@@ -1,4 +1,4 @@
-export const TEXT_AI_UNAVAILABLE_MESSAGE='AI drafting is unavailable because its text model is not configured. You can enter your business information and prices manually. Contact support@offtheclockai.com for help.';
+export const TEXT_AI_UNAVAILABLE_MESSAGE="AI drafting isn't available right now. You can enter your business information and prices yourself. Contact support@offtheclockai.com for help.";
 export class TextAIConfigurationError extends Error {
   constructor(){super(TEXT_AI_UNAVAILABLE_MESSAGE);this.code='TEXT_AI_UNAVAILABLE';this.statusCode=503;this.retryable=false;}
 }
