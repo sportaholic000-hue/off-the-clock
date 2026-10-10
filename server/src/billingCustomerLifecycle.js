@@ -49,7 +49,7 @@ export function installBillingLifecycleSchema(database){
     CREATE TABLE IF NOT EXISTS billingRetentionLeases (
     ownerId TEXT PRIMARY KEY REFERENCES users(id),token TEXT NOT NULL,expiresAt TEXT NOT NULL);`);
   if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name==='restoredForwardingAt'))database.exec('ALTER TABLE billingCancellations ADD COLUMN restoredForwardingAt TEXT');
-  for(const name of ['calendarRevokeAttemptedAt','calendarRevokeStatus'])if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name===name))database.exec(`ALTER TABLE billingCancellations ADD COLUMN ${name} TEXT`);
+  for(const [name,type] of [['calendarRevokeAttemptedAt','TEXT'],['calendarRevokeStatus','TEXT'],['dataErasureVersion','INTEGER NOT NULL DEFAULT 0']])if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name===name))database.exec(`ALTER TABLE billingCancellations ADD COLUMN ${name} ${type}`);
   // Existing queued notices need the same dispatch condition as new ones.
   usageOwnerQuery(database)(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
     SELECT n.referenceId FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')
@@ -217,7 +217,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     },{clock});
   }
   async function reactivate(ownerId){
-    if(owner(ownerId)?.dataDeletedAt)throw error('BILLING_NEW_ACCOUNT_REQUIRED');
+    if(owner(ownerId)?.dataDeletedAt||cancellation(ownerId)?.dataDeletedAt)throw error('BILLING_NEW_ACCOUNT_REQUIRED');
     if(!enabled()||!stripeClient)throw error('BILLING_PROVIDER_UNAVAILABLE',503);
     const prior=cancellation(ownerId);if(!prior||prior.state==='RESTORED')return snapshot(ownerId);
     if(prior.endAt<=now()&&prior.state!=='RESTORING')throw error('BILLING_NEW_SUBSCRIPTION_REQUIRED');
@@ -238,7 +238,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     },{clock});
   }
   function restoreLocal(ownerId,row){usageTransaction(database,()=>{
-    if(owner(ownerId)?.dataDeletedAt)throw error('BILLING_NEW_ACCOUNT_REQUIRED');
+    if(owner(ownerId)?.dataDeletedAt||row.dataDeletedAt)throw error('BILLING_NEW_ACCOUNT_REQUIRED');
     query("UPDATE users SET serviceEndsAt=NULL WHERE id=@ownerId AND role='owner'").run({ownerId});
     query('UPDATE billingAccounts SET cancelAtPeriodEnd=0 WHERE ownerId=?').run(ownerId);
     query("UPDATE billingCancellations SET state='RESTORED',lastError=NULL,updatedAt=? WHERE ownerId=?").run(now(),ownerId);
@@ -263,7 +263,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     // secure_delete clears freed cells; truncate the WAL so stale token/profile
     // pages do not remain in an application-owned database sidecar.
     if(database.prepare('PRAGMA wal_checkpoint(TRUNCATE)').all().some(row=>row.busy))throw error('RETENTION_DATABASE_BUSY',503);
-    query('UPDATE billingCancellations SET dataDeletedAt=?,updatedAt=? WHERE ownerId=? AND operationId=?').run(now(),now(),ownerId,row.operationId);
+    query('UPDATE billingCancellations SET dataDeletedAt=?,dataErasureVersion=1,updatedAt=? WHERE ownerId=? AND operationId=?').run(now(),now(),ownerId,row.operationId);
   }
   async function reconcileEndedUsage(ownerId,assertLease){
     if(!enabled()||!stripeClient)return;
@@ -304,7 +304,10 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Export records before ${addDays(row.endAt,90)}. ${link()}`);
     });
     row=cancellation(ownerId);
-    const erasureDue=!row.dataDeletedAt&&deadlineAt>=addDays(row.endAt,90);
+    // Old releases marked DATA_TABLES-only cleanup complete. Version that marker
+    // so an upgrade still erases the account, credentials, files and archives,
+    // and retries them after a failure even when an old timestamp already exists.
+    const erasureDue=(!row.dataDeletedAt||row.dataErasureVersion!==1)&&deadlineAt>=addDays(row.endAt,90);
     if(enabled()){
       const profile=query('SELECT * FROM businessProfiles WHERE ownerId=?').get(ownerId);
       if(!row.phoneReleasedAt&&deadlineAt>=addDays(row.endAt,30)&&releaseNumber){
@@ -328,7 +331,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     if(!localOnly&&row?.state==='RESTORING')try{await reactivate(ownerId);}catch{/* Safe current-state read on replay. */}
     await withBillingRetentionLease(database,ownerId,async assertLease=>{
       syncBillingPaidThrough(database,ownerId);const account=owner(ownerId);row=cancellation(ownerId);
-      const restoring=!account.dataDeletedAt&&row&&['CONFIRMED','ENDED'].includes(row.state)&&account.stripeSubscriptionId!==row.stripeSubscriptionId&&account.planStatus==='active'&&account.paidThroughAt>now();
+      const restoring=!account.dataDeletedAt&&row&&!row.dataDeletedAt&&['CONFIRMED','ENDED'].includes(row.state)&&account.stripeSubscriptionId!==row.stripeSubscriptionId&&account.planStatus==='active'&&account.paidThroughAt>now();
       const payment=restoring?query("SELECT MIN(paidAt) paidAt FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND amountPaid>0").get(ownerId,account.stripeSubscriptionId):null;
       await cleanup(ownerId,{deadlineAt:payment?.paidAt!=null?billingIso(payment.paidAt):now(),assertLease});assertLease();row=cancellation(ownerId);
       if(restoring&&!owner(ownerId).dataDeletedAt){

@@ -83,6 +83,19 @@ test('filesystem failure disables sign-in immediately and retries completion aft
   assert.equal(f.db.prepare('SELECT dataDeletedAt FROM billingCancellations WHERE ownerId=?').get(A).dataDeletedAt,DEADLINE);
   assert.ok(!fs.existsSync(path.join(f.deployment.pricebookPath,A+'.json')));
 });
+test('legacy partial erasures receive expanded cleanup and retry even with an old completion timestamp',async t=>{
+  // Before execution: the old DATA_TABLES-only job already set dataDeletedAt,
+  // but left the profile, tokens, staff and files. The upgrade must delete those
+  // too; a failed file deletion must remain retryable despite that old marker.
+  const f=retentionFixture(t),beforeB=businessRows(f.db,B);f.setTime(DEADLINE);
+  f.db.prepare('UPDATE billingCancellations SET dataDeletedAt=? WHERE ownerId=?').run(DEADLINE,A);
+  const failing=lifecycle(f,{erasePricebookFiles:()=>{throw Error('[SYNTHETIC] file busy');}});
+  await assert.rejects(failing.processOwner(A,{localOnly:true}),/file busy/);
+  assertErased(assert,f.db);assert.equal(f.db.prepare('SELECT dataErasureVersion FROM billingCancellations WHERE ownerId=?').get(A).dataErasureVersion,0);
+  await lifecycle(f).processOwner(A,{localOnly:true});
+  assert.equal(f.db.prepare('SELECT dataErasureVersion FROM billingCancellations WHERE ownerId=?').get(A).dataErasureVersion,1);
+  assert.ok(!fs.existsSync(path.join(f.deployment.pricebookPath,A+'.json')));assert.deepEqual(businessRows(f.db,B),beforeB);
+});
 test('local, daily and continuous backups erase A while preserving B; failed remote replacement retries',async t=>{
   const f=retentionFixture(t),fake=await fakeS3(t),config={enabled:true,endpoint:fake.endpoint,bucket:'synthetic-bucket',prefix:'synthetic-retention',region:'auto',urlStyle:'path',key:Buffer.from('45'.repeat(32),'hex'),credentials:{accessKeyId:'SYNTHETIC_ACCESS',secretAccessKey:'SYNTHETIC_SECRET'}};
   const beforeB=businessRows(f.db,B),bookB=fs.readFileSync(path.join(f.deployment.pricebookPath,B+'.json'));

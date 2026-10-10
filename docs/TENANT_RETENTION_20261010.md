@@ -105,6 +105,12 @@ provider-managed object-version history and independent/manual backup copies
 must also follow the operator's retention policy; no live provider is exercised
 by the tests.
 
+`billingCancellations.dataErasureVersion=1` marks completion of the expanded
+cleanup. The additive migration gives older records version zero, including
+records with an existing `dataDeletedAt` from the old partial cleanup. Those
+businesses receive the expanded cleanup on the next sweep. A file/backup failure
+leaves version zero, so even a legacy completion timestamp cannot prevent retry.
+
 ## Expectations written before execution
 
 For service ending `2026-11-20T12:00:00.000Z`, erasure is due exactly
