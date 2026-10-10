@@ -1,0 +1,13 @@
+{
+  "message": "structuredClone is not defined",
+  "stack": "ReferenceError: structuredClone is not defined\n    at eval (eval at screen (file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:32:14), <anonymous>:15933:22)\n    at eval (eval at screen (file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:32:14), <anonymous>:21576:3)\n    at eval (<anonymous>)\n    at screen (file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:32:14)\n    at file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:46:14\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+  "voiceErrors": [],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/stripe/webhook",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    }
+  ]
+}

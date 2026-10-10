@@ -1,0 +1,86 @@
+{
+  "webhook": {
+    "status": 200,
+    "body": {
+      "received": true,
+      "status": "PROCESSED"
+    },
+    "event": {
+      "id": "evt_SYNTHETIC_trial_1",
+      "type": "customer.subscription.updated",
+      "created": 1791633601,
+      "livemode": false,
+      "data": {
+        "object": {
+          "id": "sub_SYNTHETIC-owner-a",
+          "customer": "cus_SYNTHETIC-owner-a",
+          "status": "trialing",
+          "default_payment_method": "pm_SYNTHETIC",
+          "trial_start": 1791633600,
+          "trial_end": 1792843200,
+          "billing_cycle_anchor": 1792843200,
+          "current_period_start": 1791633600,
+          "current_period_end": 1792843200,
+          "cancel_at_period_end": false,
+          "items": {
+            "data": [
+              {
+                "price": {
+                  "id": "price_SYNTHETIC_op_month",
+                  "currency": "cad",
+                  "recurring": {
+                    "interval": "month",
+                    "interval_count": 1
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "status": {
+    "status": 200,
+    "body": {
+      "billingEnabled": true,
+      "providerAvailable": true,
+      "plan": "Operator",
+      "planStatus": "trialing",
+      "billingInterval": "monthly",
+      "trialEndsAt": "2026-10-24T12:00:00.000Z",
+      "paymentFailedAt": null,
+      "graceEndsAt": null,
+      "currentPeriodEndAt": "2026-10-24T12:00:00.000Z",
+      "cancelAtPeriodEnd": false,
+      "checkoutState": "NONE",
+      "canCheckout": false,
+      "canManageBilling": true
+    }
+  },
+  "usage": {
+    "snapshot": {
+      "status": "TRIAL",
+      "plan": "Operator",
+      "periodId": "984283ad1f4a0bb4ec920ef92a0276d6c15dd56cb4c2c0cd4391ed9be5ddc9ea",
+      "periodStartAt": "2026-10-10T12:00:00.000Z",
+      "periodEndAt": "2026-10-24T12:00:00.000Z",
+      "minutesUsed": 0,
+      "includedMinutes": 60,
+      "minutesLeft": 60,
+      "overageMinutes": 0,
+      "overageCents": 0,
+      "upgradeMessage": null,
+      "confirmedMinutesUsed": 0,
+      "unconfirmedCalls": 0,
+      "chargedCents": 0,
+      "unchargedCents": 0,
+      "annualPaidThroughAt": null,
+      "warnings": [],
+      "pendingCharges": []
+    },
+    "calls": [],
+    "meter": []
+  },
+  "errors": []
+}

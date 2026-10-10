@@ -1,0 +1,15 @@
+(node:4) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/run_main:122
+    triggerUncaughtException(
+    ^
+
+ReferenceError: structuredClone is not defined
+    at eval (eval at screen (file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:32:14), <anonymous>:15933:22)
+    at eval (eval at screen (file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:32:14), <anonymous>:21576:3)
+    at eval (<anonymous>)
+    at screen (file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:32:14)
+    at file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:46:14
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+Node.js v22.14.0

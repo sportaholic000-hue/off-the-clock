@@ -2,6 +2,7 @@
 // Stripe fixture: test/overageMinute20261006Fixture.mjs; signature pattern:
 // test/billingCoreRepair20261006.helpers.mjs. Voice shapes are copied (not imported,
 // because that file registers tests) from test/voiceQuotePathCases20261005.mjs.
+import './environment.mjs';
 import express from 'express';
 import Stripe from 'stripe';
 import twilio from 'twilio';

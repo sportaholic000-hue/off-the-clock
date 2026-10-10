@@ -1,0 +1,67 @@
+{
+  "node": "v22.14.0",
+  "realProviderOperations": 0,
+  "unexpectedProviderWrites": [],
+  "fixtureWrites": {
+    "invoice": [],
+    "item": [],
+    "finalize": [],
+    "email": []
+  },
+  "googleLiveConnections": 0,
+  "voiceErrors": [],
+  "reactErrors": [],
+  "chooserErrors": [],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/stripe/webhook",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/lifecycle",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    }
+  ],
+  "finalUsage": {
+    "snapshot": {
+      "status": "TRIAL",
+      "plan": "Operator",
+      "periodId": "984283ad1f4a0bb4ec920ef92a0276d6c15dd56cb4c2c0cd4391ed9be5ddc9ea",
+      "periodStartAt": "2026-10-10T12:00:00.000Z",
+      "periodEndAt": "2026-10-24T12:00:00.000Z",
+      "minutesUsed": 0,
+      "includedMinutes": 60,
+      "minutesLeft": 60,
+      "overageMinutes": 0,
+      "overageCents": 0,
+      "upgradeMessage": null,
+      "confirmedMinutesUsed": 0,
+      "unconfirmedCalls": 0,
+      "chargedCents": 0,
+      "unchargedCents": 0,
+      "annualPaidThroughAt": null,
+      "warnings": [],
+      "pendingCharges": []
+    },
+    "calls": [],
+    "meter": []
+  },
+  "disabledRequests": [],
+  "note": "No background workers started; Google/Twilio/Stripe clients are injected fakes. Auth is a synthetic fixture middleware, not an authentication test."
+}
