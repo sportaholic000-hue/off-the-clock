@@ -1,3 +1,4 @@
+import {ownerMessage} from './pricebookDiagnostics.js';
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, ErrorMessage, Notice} from './ui.jsx';
 import {pricebookPayload} from './pricebookConflict.js';
@@ -44,7 +45,7 @@ export function PricebookConflict({state, merge, metadata, onChoice, onAccept, o
         <label><input type="radio" name={row.key} checked={row.choice === 'remote'} onChange={() => onChoice(row.key, 'remote')}/>{row.kind === 'remote_deleted' ? 'Discard local service edits' : row.kind === 'local_deleted' ? 'Keep saved service' : 'Keep saved change'}</label>
       </fieldset>;
     })}
-    {state.errors?.length > 0 && <Notice tone="error"><strong>Correct these settings before accepting:</strong><ul>{state.errors.map(message => <li key={message}>{message}</li>)}</ul><span>Return to editing to correct the draft, then reopen recovery.</span></Notice>}
+    {state.errors?.length > 0 && <Notice tone="error"><strong>Correct these settings before accepting:</strong><ul>{state.errors.map(message => <li key={message}>{ownerMessage(message)}</li>)}</ul><span>Return to editing to correct the draft, then reopen recovery.</span></Notice>}
     <ErrorMessage error={state.error}/>
     {confirmDiscard ? <Notice tone="warning"><p>Discard all your unsaved changes and load the latest saved price book?</p><div className="conflict-actions"><Button disabled={busy} onClick={onDiscard}>Discard my draft and load saved version</Button><Button variant="secondary" onClick={() => setConfirmDiscard(false)}>Keep my draft</Button></div></Notice>
       : <div className="conflict-actions"><Button disabled={busy || !merge || merge.unresolved.length > 0 || !!state.error || !!state.errors?.length || state.phase !== 'ready' || state.validatedDraft !== merge.draft} onClick={onAccept}>Accept Merged Price Book</Button><Button variant="secondary" onClick={onEdit}>Return to editing</Button><Button variant="secondary" disabled={busy} onClick={onRetry}>Check latest saved version</Button><Button variant="quiet" disabled={busy || !state.remote} onClick={() => setConfirmDiscard(true)}>Load saved version</Button></div>}

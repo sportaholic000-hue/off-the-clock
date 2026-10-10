@@ -1,0 +1,315 @@
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: first visit: fresh GET revision validates unchanged with no price-book fixture writes
+ok 1 - first visit: fresh GET revision validates unchanged with no price-book fixture writes
+  ---
+  duration_ms: 283.183715
+  type: 'test'
+  ...
+# Subtest: first visit: new owner with nine disabled services sees no raw keys or false tier warning
+not ok 2 - first visit: new owner with nine disabled services sees no raw keys or false tier warning
+  ---
+  duration_ms: 705.873289
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/off-the-clock/test/pricebookFirstVisit20261009.dom.spec.mjs:110:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'serviceId',
+    +   'serviceType',
+    +   'ownerId',
+    +   'operationId',
+    +   'createdAt',
+    +   'feeRules.travel',
+    +   'feeRules.disposal',
+    +   'feeRules.permit',
+    +   'feeRules.overhead',
+    +   'priceBasisByCategory.labor',
+    +   'priceBasisByCategory.material',
+    +   'priceBasisByCategory.removal',
+    +   'priceBasisByCategory.prep',
+    +   'priceBasisByCategory.addon',
+    +   'priceBasisByCategory.equipment',
+    +   'priceBasisByCategory.travel',
+    +   'priceBasisByCategory.disposal',
+    +   'priceBasisByCategory.permit',
+    +   'priceBasisByCategory.overhead',
+    +   'priceBasisByCategory.surcharge',
+    +   'taxabilityByCategory.labor',
+    +   'taxabilityByCategory.material',
+    +   'taxabilityByCategory.removal',
+    +   'taxabilityByCategory.prep',
+    +   'taxabilityByCategory.addon',
+    +   'taxabilityByCategory.equipment',
+    +   'taxabilityByCategory.travel',
+    +   'taxabilityByCategory.disposal',
+    +   'taxabilityByCategory.permit',
+    +   'taxabilityByCategory.overhead',
+    +   'taxabilityByCategory.surcharge',
+    +   'overheadFixed',
+    +   'minimumJobPrice',
+    +   'travelFee',
+    +   'disposalFee',
+    +   'permitFee',
+    +   'markupApplies',
+    +   'markupApplies.labor',
+    +   'markupApplies.material',
+    +   'markupApplies.removal',
+    +   'markupApplies.prep',
+    +   'markupApplies.addon',
+    +   'markupApplies.equipment',
+    +   'markupApplies.travel',
+    +   'markupApplies.disposal',
+    +   'markupApplies.permit',
+    +   'markupApplies.overhead',
+    +   'markupApplies.surcharge'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'serviceId'
+    1: 'serviceType'
+    2: 'ownerId'
+    3: 'operationId'
+    4: 'createdAt'
+    5: 'feeRules.travel'
+    6: 'feeRules.disposal'
+    7: 'feeRules.permit'
+    8: 'feeRules.overhead'
+    9: 'priceBasisByCategory.labor'
+    10: 'priceBasisByCategory.material'
+    11: 'priceBasisByCategory.removal'
+    12: 'priceBasisByCategory.prep'
+    13: 'priceBasisByCategory.addon'
+    14: 'priceBasisByCategory.equipment'
+    15: 'priceBasisByCategory.travel'
+    16: 'priceBasisByCategory.disposal'
+    17: 'priceBasisByCategory.permit'
+    18: 'priceBasisByCategory.overhead'
+    19: 'priceBasisByCategory.surcharge'
+    20: 'taxabilityByCategory.labor'
+    21: 'taxabilityByCategory.material'
+    22: 'taxabilityByCategory.removal'
+    23: 'taxabilityByCategory.prep'
+    24: 'taxabilityByCategory.addon'
+    25: 'taxabilityByCategory.equipment'
+    26: 'taxabilityByCategory.travel'
+    27: 'taxabilityByCategory.disposal'
+    28: 'taxabilityByCategory.permit'
+    29: 'taxabilityByCategory.overhead'
+    30: 'taxabilityByCategory.surcharge'
+    31: 'overheadFixed'
+    32: 'minimumJobPrice'
+    33: 'travelFee'
+    34: 'disposalFee'
+    35: 'permitFee'
+    36: 'markupApplies'
+    37: 'markupApplies.labor'
+    38: 'markupApplies.material'
+    39: 'markupApplies.removal'
+    40: 'markupApplies.prep'
+    41: 'markupApplies.addon'
+    42: 'markupApplies.equipment'
+    43: 'markupApplies.travel'
+    44: 'markupApplies.disposal'
+    45: 'markupApplies.permit'
+    46: 'markupApplies.overhead'
+    47: 'markupApplies.surcharge'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/off-the-clock/test/pricebookFirstVisit20261009.dom.spec.mjs:113:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: first visit: three entered services before and after save have readable actionable rules
+not ok 3 - first visit: three entered services before and after save have readable actionable rules
+  ---
+  duration_ms: 904.857832
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/off-the-clock/test/pricebookFirstVisit20261009.dom.spec.mjs:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    before first save
+    + actual - expected
+    
+    + [
+    +   'serviceId',
+    +   'serviceType',
+    +   'ownerId',
+    +   'operationId',
+    +   'createdAt',
+    +   'feeRules.travel',
+    +   'feeRules.disposal',
+    +   'feeRules.permit',
+    +   'feeRules.overhead',
+    +   'priceBasisByCategory.labor',
+    +   'priceBasisByCategory.material',
+    +   'priceBasisByCategory.removal',
+    +   'priceBasisByCategory.prep',
+    +   'priceBasisByCategory.addon',
+    +   'priceBasisByCategory.equipment',
+    +   'priceBasisByCategory.travel',
+    +   'priceBasisByCategory.disposal',
+    +   'priceBasisByCategory.permit',
+    +   'priceBasisByCategory.overhead',
+    +   'priceBasisByCategory.surcharge',
+    +   'taxabilityByCategory.labor',
+    +   'taxabilityByCategory.material',
+    +   'taxabilityByCategory.removal',
+    +   'taxabilityByCategory.prep',
+    +   'taxabilityByCategory.addon',
+    +   'taxabilityByCategory.equipment',
+    +   'taxabilityByCategory.travel',
+    +   'taxabilityByCategory.disposal',
+    +   'taxabilityByCategory.permit',
+    +   'taxabilityByCategory.overhead',
+    +   'taxabilityByCategory.surcharge',
+    +   'overheadFixed',
+    +   'minimumJobPrice',
+    +   'travelFee',
+    +   'disposalFee',
+    +   'permitFee',
+    +   'markupApplies',
+    +   'markupApplies.labor',
+    +   'markupApplies.material',
+    +   'markupApplies.removal',
+    +   'markupApplies.prep',
+    +   'markupApplies.addon',
+    +   'markupApplies.equipment',
+    +   'markupApplies.travel',
+    +   'markupApplies.disposal',
+    +   'markupApplies.permit',
+    +   'markupApplies.overhead',
+    +   'markupApplies.surcharge'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'serviceId'
+    1: 'serviceType'
+    2: 'ownerId'
+    3: 'operationId'
+    4: 'createdAt'
+    5: 'feeRules.travel'
+    6: 'feeRules.disposal'
+    7: 'feeRules.permit'
+    8: 'feeRules.overhead'
+    9: 'priceBasisByCategory.labor'
+    10: 'priceBasisByCategory.material'
+    11: 'priceBasisByCategory.removal'
+    12: 'priceBasisByCategory.prep'
+    13: 'priceBasisByCategory.addon'
+    14: 'priceBasisByCategory.equipment'
+    15: 'priceBasisByCategory.travel'
+    16: 'priceBasisByCategory.disposal'
+    17: 'priceBasisByCategory.permit'
+    18: 'priceBasisByCategory.overhead'
+    19: 'priceBasisByCategory.surcharge'
+    20: 'taxabilityByCategory.labor'
+    21: 'taxabilityByCategory.material'
+    22: 'taxabilityByCategory.removal'
+    23: 'taxabilityByCategory.prep'
+    24: 'taxabilityByCategory.addon'
+    25: 'taxabilityByCategory.equipment'
+    26: 'taxabilityByCategory.travel'
+    27: 'taxabilityByCategory.disposal'
+    28: 'taxabilityByCategory.permit'
+    29: 'taxabilityByCategory.overhead'
+    30: 'taxabilityByCategory.surcharge'
+    31: 'overheadFixed'
+    32: 'minimumJobPrice'
+    33: 'travelFee'
+    34: 'disposalFee'
+    35: 'permitFee'
+    36: 'markupApplies'
+    37: 'markupApplies.labor'
+    38: 'markupApplies.material'
+    39: 'markupApplies.removal'
+    40: 'markupApplies.prep'
+    41: 'markupApplies.addon'
+    42: 'markupApplies.equipment'
+    43: 'markupApplies.travel'
+    44: 'markupApplies.disposal'
+    45: 'markupApplies.permit'
+    46: 'markupApplies.overhead'
+    47: 'markupApplies.surcharge'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/off-the-clock/test/pricebookFirstVisit20261009.dom.spec.mjs:120:9)
+    runNextTicks (node:internal/process/task_queues:64:5)
+    listOnTimeout (node:internal/timers:547:9)
+    process.processTimers (node:internal/timers:521:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: first visit: own save ignores old background revision responses
+not ok 4 - first visit: own save ignores old background revision responses
+  ---
+  duration_ms: 635.863556
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/off-the-clock/test/pricebookFirstVisit20261009.dom.spec.mjs:132:44'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/off-the-clock/test/pricebookFirstVisit20261009.dom.spec.mjs:154:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: first visit: own approval ignores old background revision responses
+not ok 5 - first visit: own approval ignores old background revision responses
+  ---
+  duration_ms: 675.619508
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/off-the-clock/test/pricebookFirstVisit20261009.dom.spec.mjs:132:44'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/off-the-clock/test/pricebookFirstVisit20261009.dom.spec.mjs:154:9)
+    runNextTicks (node:internal/process/task_queues:64:5)
+    process.processTimers (node:internal/timers:518:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: first visit: two actual editor tabs retain the exact conflict recovery flow
+ok 6 - first visit: two actual editor tabs retain the exact conflict recovery flow
+  ---
+  duration_ms: 1227.736562
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 2
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5143.978006
