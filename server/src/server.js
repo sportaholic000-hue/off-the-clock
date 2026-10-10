@@ -6,6 +6,8 @@ import {createOwnerWorkflowService} from './ownerWorkflowService.js';
 import {installOwnerDashboardRoutes} from './ownerDashboardRoutes.js';
 import {createOwnerAlertService} from './ownerAlertService.js';
 import {installOwnerAlertRoutes} from './ownerAlertRoutes.js';
+import {createStaffService} from './staffService.js';
+import {installStaffRoutes} from './staffRoutes.js';
 // Production storage paths are set here first, before any service module loads.
 import 'dotenv/config';
 import {deploymentConfig} from './deploymentEnvironment.js';
@@ -219,6 +221,8 @@ if (billingConfig) {
   });
 }
 app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
+installStaffRoutes(app,{service:createStaffService({database:db,ownerQuery}),ownerQuery,quoteEmail:quoteEmailDelivery,
+  requireAuth,requirePriceBookPlan,asyncHandler});
 installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
 installOwnerDashboardRoutes(app,{reports:createOwnerReportService({ownerQuery}),workflow:createOwnerWorkflowService({database:db,ownerQuery}),requireAuth,requirePriceBookPlan,asyncHandler});
 installOwnerAlertRoutes(app,{service:ownerAlerts,requireAuth,asyncHandler});
@@ -500,7 +504,8 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
     pricebookStatuses: req.role === 'owner' ? bookStatuses(book) : [],
     // Null outside local preview. Never fabricated for the real product.
     previewActivity: previewDashboardActivity(),
-    sections: ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings']
+    sections: req.role==='staff'?['Calls','Leads','Quotes','Customers','Calendar']:
+      ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings']
   });
 });
 

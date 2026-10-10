@@ -38,21 +38,22 @@ export function VerificationNotice({initialDelivery = null, showVerified = false
 }
 
 const TITLES = {'/forgot-password':'Forgot password', '/resend-verification':'Request a verification email',
-  '/reset-password':'Reset password', '/verify-email':'Verify your email', '/account/email':'Account email'};
+  '/reset-password':'Reset password', '/verify-email':'Verify your email', '/account/email':'Account email',
+  '/staff-invite':'Set up your staff login'};
 
 export default function AccountRecovery({path}) {
   const [token] = useState(initialLinkToken);
   const [email, setEmail] = useState(''), [password, setPassword] = useState(''), [confirmation, setConfirmation] = useState('');
   const [busy, setBusy] = useState(false), [error, setError] = useState(null), [done, setDone] = useState(false);
   const request = ['/forgot-password', '/resend-verification'].includes(path);
-  const reset = path === '/reset-password', verify = path === '/verify-email';
+  const invite=path==='/staff-invite',reset = path === '/reset-password', verify = path === '/verify-email';
   async function submit(event) {
     event.preventDefault(); setError(null); setBusy(true);
     try {
-      if ((reset || verify) && !token) throw Error('This link is invalid or has expired. Request a new one.');
-      if (reset && password !== confirmation) throw Error('The passwords do not match.');
-      await api(request ? '/api/auth' + path : verify ? '/api/auth/verify-email' : '/api/auth/reset-password',
-        {method: 'POST', auth: false, body: request ? {email} : reset ? {token, password} : {token}});
+      if ((reset || verify || invite) && !token) throw Error('This link is invalid or has expired. Request a new one.');
+      if ((reset || invite) && password !== confirmation) throw Error('The passwords do not match.');
+      await api(request ? '/api/auth' + path : invite ? '/api/auth/staff-invite/accept' : verify ? '/api/auth/verify-email' : '/api/auth/reset-password',
+        {method: 'POST', auth: false, body: request ? {email} : reset || invite ? {token, password} : {token}});
       setDone(true); setPassword(''); setConfirmation('');
       if (reset) {try{await logout();}catch{setError(new Error('Your password was reset, but this browser could not finish signing out. Use Back to sign in to retry.'));}}
     } catch (next) {setError(next);} finally {setBusy(false);}
@@ -62,17 +63,19 @@ export default function AccountRecovery({path}) {
     {path === '/account/email' ? getToken() ? <VerificationNotice showVerified/> : <Notice>Sign in to check your account email.</Notice> :
       done ? <div role="status"><Notice tone="success">
         {request ? 'Request received. If this account needs an email, we will attempt to send a new link. Check your inbox and spam folder.' :
-          reset ? 'Your password has been reset. Sign in with your new password.' : 'Your email is verified.'}
+          invite ? 'Your staff login is ready. Sign in with your new password.' : reset ? 'Your password has been reset. Sign in with your new password.' : 'Your email is verified.'}
       </Notice></div> : <form className="auth-form" onSubmit={submit}>
         {request && <Field label="Email"><TextInput type="email" autoComplete="email" required value={email} onChange={event => setEmail(event.target.value)}/></Field>}
-        {(reset || verify) && !token && <Notice>This link is invalid or has expired. Request a new one.</Notice>}
+        {(reset || verify || invite) && !token && <Notice>{invite
+          ? 'This link is invalid or has expired. Ask the owner to resend the invitation.'
+          : 'This link is invalid or has expired. Request a new one.'}</Notice>}
         {verify && token && <p>Confirm to verify the account email associated with this link.</p>}
-        {reset && token && <>
+        {(reset || invite) && token && <>
           <Field label="New password"><TextInput type="password" autoComplete="new-password" minLength="8" maxLength="1024" required value={password} onChange={event => setPassword(event.target.value)}/></Field>
           <Field label="Confirm new password"><TextInput type="password" autoComplete="new-password" minLength="8" maxLength="1024" required value={confirmation} onChange={event => setConfirmation(event.target.value)}/></Field>
         </>}
         <ErrorMessage error={error}/>
-        <Button type="submit" disabled={busy || ((reset || verify) && !token)}>{busy ? 'Working…' : request ? 'Request email' : reset ? 'Reset password' : 'Verify email'}</Button>
+        <Button type="submit" disabled={busy || ((reset || verify || invite) && !token)}>{busy ? 'Working…' : request ? 'Request email' : invite ? 'Set password' : reset ? 'Reset password' : 'Verify email'}</Button>
       </form>}
     <ErrorMessage error={done||path==='/account/email'?error:null}/>
     <div className="account-actions">

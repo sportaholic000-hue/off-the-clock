@@ -199,6 +199,24 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
     }
     assert.deepEqual(after,before,route+' changed B');
   });
+  await t.test('staff role can use calls, leads, quotes, calendar and customers but not owner controls',async()=>{
+    for(const path of ['/api/calls','/api/leads','/api/quotes','/api/calendar/schedule?days=7','/api/customers']){
+      const response=await f.request(path,{token:A.auth.staff.token});
+      assert.equal(response.status,200,path+' staff access');noLeak(response,B,path);
+    }
+    for(const path of ['/api/pricebook/meta','/api/pricebook/'+A.owner,'/api/billing/status','/api/reports','/api/team/staff']){
+      const response=await f.request(path,{token:A.auth.staff.token});assert.equal(response.status,403,path+' staff restriction');
+    }
+    const dashboard=await f.request('/api/dashboard',{token:A.auth.staff.token});
+    assert.deepEqual(JSON.parse(dashboard.text).sections,['Calls','Leads','Quotes','Customers','Calendar']);
+    const action=await f.request('/api/owner-records/quotes/'+A.quote+'/actions',{
+      method:'POST',token:A.auth.staff.token,
+      body:{action:'SENT',version:0,note:'[SYNTHETIC] Customer received the quote outside this action',attested:true,idempotencyKey:crypto.randomUUID()}});
+    assert.equal(action.status,200,'staff may record a sent quote');noLeak(action,B,'staff sent quote');
+    const review=await f.request('/api/owner-records/quotes/'+A.quote+'/actions',{
+      method:'POST',token:A.auth.staff.token,body:{action:'REVIEW',version:1,note:'[SYNTHETIC] Not owner',idempotencyKey:crypto.randomUUID()}});
+    assert.equal(review.status,403,'staff cannot approve pricing');
+  });
   await t.test('own reads work; counts do not include newly added B rows',async()=>{
     const ownRows=(await f.rpc('snapshot',{owner:A.owner})).rows;
     for(const role of ['owner','staff']) {

@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
+import {staffLimit} from './staffSeats.js';
 
 export const AUTH_SESSION_POLICY = Object.freeze({accessMs:15*60*1000, absoluteMs:8*60*60*1000});
 export class AuthSessionError extends Error {
@@ -22,6 +23,15 @@ export function installAuthSessionSchema(database) {
       CHECK(consumedAt IS NULL OR consumedAt>=createdAt)
     ) STRICT;
     CREATE INDEX IF NOT EXISTS authRefreshTokens_session ON authRefreshTokens(sessionId);
+    CREATE TABLE IF NOT EXISTS staffInvitations (
+      staffId TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      ownerId TEXT NOT NULL REFERENCES users(id),
+      email TEXT NOT NULL,
+      status TEXT NOT NULL CHECK(status IN ('pending','active')),
+      createdAt TEXT NOT NULL,
+      acceptedAt TEXT
+    ) STRICT;
+    CREATE INDEX IF NOT EXISTS staffInvitations_owner ON staffInvitations(ownerId);
   `);
 }
 export function authImmediate(database, work) {
@@ -41,8 +51,17 @@ export function createAuthSessionService(database,{environment=process.env,clock
       if(userId!=='admin'||!environment.ADMIN_EMAIL||!environment.ADMIN_PASSWORD_HASH)throw new AuthSessionError();
       return {id:'admin',role:'admin',email:environment.ADMIN_EMAIL,passwordHash:environment.ADMIN_PASSWORD_HASH};
     }
-    const user=database.prepare("SELECT account.*,parent.role AS ownerRole,parent.plan AS ownerPlan FROM users account LEFT JOIN users parent ON parent.id=account.ownerId WHERE account.id=?").get(userId);
-    if(!user || !['owner','staff'].includes(role) || user.role!==role || (role==='staff'&&(!user.ownerId||user.ownerRole!=='owner'||user.ownerPlan==='Starter')))throw new AuthSessionError();
+    const user=database.prepare(`SELECT account.*,parent.role AS ownerRole,
+      parent.plan AS ownerPlan,
+      invitation.status AS inviteStatus,invitation.ownerId AS inviteOwnerId,invitation.email AS inviteEmail,
+      (SELECT COUNT(*) FROM users seat WHERE seat.ownerId=account.ownerId AND seat.role='staff'
+        AND (seat.createdAt<account.createdAt OR (seat.createdAt=account.createdAt AND seat.id<account.id))) AS seatIndex
+      FROM users account LEFT JOIN users parent ON parent.id=account.ownerId
+      LEFT JOIN staffInvitations invitation ON invitation.staffId=account.id WHERE account.id=?`).get(userId);
+    if(!user || !['owner','staff'].includes(role) || user.role!==role || (role==='staff'&&(!user.ownerId||user.ownerRole!=='owner')))throw new AuthSessionError();
+    if(role==='staff' && (user.inviteStatus==='pending' ||
+      (user.inviteStatus && (user.inviteOwnerId!==user.ownerId||user.inviteEmail!==user.email)) ||
+      user.seatIndex>=staffLimit(user.ownerPlan)))throw new AuthSessionError();
     return user;
   }
   function secret() {const bytes=randomBytes(32);if(!bytes||bytes.length!==32)throw new AuthSessionError('SESSION_STORE_UNAVAILABLE');return Buffer.from(bytes).toString('base64url');}

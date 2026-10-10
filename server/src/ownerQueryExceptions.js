@@ -1,5 +1,4 @@
-// Exact direct prepare exceptions: a query must identify an owner first, or be
-// part of authentication, registration, migrations, admin or platform metrics.
+// Allowed non-tenant query categories. Regenerated from the merged source inventory.
 // The scan test validates every signature and rejects unused entries.
 export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   {
@@ -132,7 +131,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/authSessionService.js",
     "function": "principal",
     "reason": "Authentication session or refresh token handling.",
-    "signature": "0e616b2aca97497c8bbfb8e779c9ac5ac946eaf97235baf5a528475b94b109c4",
+    "signature": "882df0bee51f9766658d16f65e76cbcd9bf04736522cbcbf029cabb7d7b176f8",
     "occurrence": 1
   },
   {
@@ -224,6 +223,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "revoke",
     "reason": "Authentication session or refresh token handling.",
     "signature": "f12e071723afb10cb0b899e69b17856bc85896897621e51a78e5f58fc823dec6",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "function": "installAuthTokenSchema",
+    "reason": "Migration inspects the existing auth-token CHECK constraint before rebuilding it.",
+    "signature": "5a113c897b59c925ad36b58e4b3a768f238fef73f918e049b08212d7bc2e443a",
     "occurrence": 1
   },
   {
@@ -529,6 +535,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/migrations.js",
+    "function": "migrateStarterPlanConstraints",
+    "reason": "Schema migration preserves indexes and triggers while adding the Starter CHECK value.",
+    "signature": "2f50e250cec642cec78fbf7370e930f3a0913dfc2b0430cd31a0356458f9e820",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/migrations.js",
     "function": "migrateDatabase",
     "reason": "Migration schema inspection or cross-tenant repair.",
     "signature": "c707a97b2785f634b03c8f7961626b6236a4dfc7c5ec2dd06df23c990badf239",
@@ -553,6 +566,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "publicContext",
     "reason": "Public quote key resolution before owner binding.",
     "signature": "5bf22113596a2833de39f076eb9528a9a3450c96040058348824701e10f93284",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/staffService.js",
+    "function": "accept",
+    "reason": "Invite token identifies its staff account before the owner is known; reads only ownerId.",
+    "signature": "b2cbe55225cdfe3de0f6853a0da85ce6540ade643d928ece872bf67824db790a",
     "occurrence": 1
   },
   {
@@ -701,21 +721,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Migration schema inspection.",
     "signature": "17c7a2c551ac55fe6d7d2531fb73fad4ac4d17483939ff9b559971a9805780ac",
     "occurrence": 1
-  },
-  {
-    "file": "server/src/migrations.js",
-    "function": "migrateStarterPlanConstraints",
-    "reason": "Schema migration preserves indexes and triggers while adding the Starter CHECK value.",
-    "signature": "2f50e250cec642cec78fbf7370e930f3a0913dfc2b0430cd31a0356458f9e820",
-    "occurrence": 1
   }
 ]);
 
-// Explicit non-query spellings of prepare plus the two ownerQuery helper
-// implementations. An exact source signature keeps this inventory reviewable.
+// Query-wrapper plumbing and non-query uses, pinned to their merged source.
 export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
   {
-    "file": "server/quote-engine-vnext\u002ftests/dateContext.spec.mjs",
+    "file": "server/quote-engine-vnext/tests/dateContext.spec.mjs",
     "function": "dateContext test fixture",
     "reason": "Synthetic quote-engine test fixture implements a fake database method.",
     "signature": "f52c7812de0671eef1f2a0edc9a2cc36f5b59364e3222d7b846792390456f80c",
@@ -736,7 +748,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "e5ac8ea24d193fdee2095f6e68333587c4a21e90974fa0cb2c117421e8e6474e",
     "occurrence": 1,
-    "line": 195
+    "line": 201
   },
   {
     "file": "server/src/billingRoutes.js",
@@ -824,15 +836,15 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote email application method named draft, not a database access.",
     "signature": "55c15137b2afa99405d2a7fc54c299b619fac5e1dccf838963e9b04e2b515361",
     "occurrence": 1,
-    "line": 19
+    "line": 20
   },
   {
     "file": "server/src/quoteEmailService.js",
     "function": "quote email service",
     "reason": "Quote email application method named draft, not a database access.",
-    "signature": "9fbc4260df1cce701be7c3e1d24f839fb8992ef652f680e698ee5cdddee9f4f4",
+    "signature": "36b890c6677253d910dc009ec080e1fccbfbdafb6e0d1fadfe68448d9a0aa4bf",
     "occurrence": 1,
-    "line": 108
+    "line": 152
   },
   {
     "file": "server/src/voice/productionVoiceRuntime.js",

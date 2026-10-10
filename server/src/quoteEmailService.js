@@ -1,6 +1,7 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {createQuoteEmailProvider} from './quoteEmailProvider.js';
+import {quoteMoneyFormatter} from '../quoteMoneyFormat.js';
 const EMAIL=/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/;
 const SAFE_REPLAY_MS=23*60*60*1000,LINK_MS=30*24*60*60*1000;
 const fail=(code,statusCode=409)=>{throw Object.assign(Error('The quote email could not be completed safely.'),{code,statusCode});};
@@ -50,6 +51,49 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
       q("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'quote.email_requested',?,?,'PENDING',?,?)").run(id,ownerId,recordId,JSON.stringify({callSid,requestId,recordId}),at,at);
       q(`INSERT INTO quoteEmailDeliveries(id,ownerId,requestId,recordId,callSid,recipient,businessName,narration,messageJson,tokenHash,expiresAt,createdAt,updatedAt)
         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(id,ownerId,requestId,recordId,callSid,email,businessName,saved.narration,JSON.stringify(message),hash(token),clock()+LINK_MS,at,at);
+      return state(row(ownerId,requestId));
+    }).immediate();
+  }
+  function enqueueSavedQuote({ownerId,quoteId,email,customerConfirmed}) {
+    if(customerConfirmed!==true||typeof quoteId!=='string'||quoteId.length>128||
+      typeof email!=='string'||email.length>254||!EMAIL.test(email.trim()))fail('INVALID_QUOTE_EMAIL',400);
+    email=email.trim().toLowerCase();
+    return database.transaction(()=>{
+      const saved=q('SELECT id,callId,serviceType,resultJson FROM quotes WHERE ownerId=? AND id=?').get(ownerId,quoteId);
+      if(!saved)fail('QUOTE_NOT_FOUND',404);
+      const internal=JSON.parse(saved.resultJson||'{}');
+      const result=internal.applicationOutcome?.customerResult||internal.customerResult;
+      const original=internal.originalSubmission||q(`SELECT originalSubmissionJson FROM quoteSubmissions
+        WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,rowid DESC LIMIT 1`).get(ownerId,quoteId)?.originalSubmissionJson;
+      const contact=typeof original==='string'?JSON.parse(original)?.contact:original?.contact;
+      if(!contact?.email||contact.email.trim().toLowerCase()!==email)fail('QUOTE_EMAIL_RECIPIENT_UNCONFIRMED');
+      const estimate=result?.pricedEstimate||result;
+      const options=estimate?.options?.length?estimate.options:[estimate];
+      if(!['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(result?.resultType)||
+        options.some(option=>!Number.isFinite(option?.lowEstimate)||!Number.isFinite(option?.highEstimate)||
+          option.lowEstimate<0||option.lowEstimate>option.highEstimate))fail('QUOTE_EMAIL_UNAVAILABLE');
+      const owner=q("SELECT businessName,email FROM users WHERE id=? AND ownerId IS NULL AND role='owner'").get(ownerId);
+      if(!owner||!EMAIL.test(owner.email)||!owner.businessName?.trim()||/[\r\n]/.test(owner.businessName)||
+        !EMAIL.test(environment.EMAIL_FROM||''))fail('EMAIL_NOT_CONFIGURED');
+      const requestId='saved-quote:'+quoteId,prior=row(ownerId,requestId);
+      if(prior)return state(prior);
+      const money=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate])),
+        narration=typeof result.quoteNarration==='string'&&result.quoteNarration.trim()?result.quoteNarration:
+          [saved.serviceType||'Saved quote',...options.flatMap(option=>[
+            (option.tierName?option.tierName+': ':'')+money.range(option.lowEstimate,option.highEstimate)+
+              (option.priceUnit||estimate.priceUnit?' '+(option.priceUnit||estimate.priceUnit):''),
+            option.taxTreatment||estimate.taxTreatment,option.disclaimer||estimate.disclaimer]),
+            'This is a preliminary estimate. The business will confirm the job details on site.'].filter(Boolean).join('\n');
+      const id=randomUUID(),token=randomBytes(32).toString('base64url'),at=iso();
+      const url=quoteEmailOrigin(environment)+'/quote-copy/'+encodeURIComponent(ownerId)+'/'+token;
+      const message={from:JSON.stringify(owner.businessName)+' <'+environment.EMAIL_FROM+'>',to:email,replyTo:owner.email,
+        subject:'Your quote from '+owner.businessName,text:narration+'\n\nView your saved quote: '+url,
+        idempotencyKey:'quote-email/'+id};
+      q("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'quote.email_requested',?,?,'PENDING',?,?)")
+        .run(id,ownerId,quoteId,JSON.stringify({recordId:quoteId}),at,at);
+      q(`INSERT INTO quoteEmailDeliveries(id,ownerId,requestId,recordId,callSid,recipient,businessName,narration,messageJson,tokenHash,expiresAt,createdAt,updatedAt)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(id,ownerId,requestId,quoteId,saved.callId||'',email,owner.businessName,narration,
+          JSON.stringify(message),hash(token),clock()+LINK_MS,at,at);
       return state(row(ownerId,requestId));
     }).immediate();
   }
@@ -105,5 +149,5 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
     const tick=()=>{if(stopped)return;running=dispatchOnce().catch(()=>onError('QUOTE_EMAIL_WORKER_FAILED')).finally(()=>{if(!stopped){timer=setTimeout(tick,intervalMs);timer.unref?.();}});};tick();
     return async()=>{stopped=true;clearTimeout(timer);await running;};
   }
-  return {prepare,enqueue,publicQuote,processOne,dispatchOnce,start,state:(ownerId,requestId)=>{const r=row(ownerId,requestId);if(!r)fail('QUOTE_EMAIL_NOT_FOUND',404);return state(r);}};
+  return {prepare,enqueue,enqueueSavedQuote,publicQuote,processOne,dispatchOnce,start,state:(ownerId,requestId)=>{const r=row(ownerId,requestId);if(!r)fail('QUOTE_EMAIL_NOT_FOUND',404);return state(r);}};
 }

@@ -14,6 +14,9 @@ import Calendar from './calendar.jsx';
 import AccountRecovery from './accountRecovery.jsx';
 import { Brand } from './ui.jsx';
 import VoiceAdmin from './voiceAdmin.jsx';
+import Team from './team.jsx';
+import Customers from './customers.jsx';
+import {sessionClaims} from './sessionIdentity.js';
 
 function AdminShell() {
   return (
@@ -22,6 +25,11 @@ function AdminShell() {
       <div><Shield size={24} /><p className="eyebrow">ADMIN</p><h1>Platform cockpit</h1></div><VoiceAdmin/>
     </main>
   );
+}
+
+function StaffRedirect() {
+  useEffect(()=>{const timer=setTimeout(()=>go('/calls'),0);return()=>clearTimeout(timer);},[]);
+  return null;
 }
 
 function initialLocation() {
@@ -54,9 +62,13 @@ function App() {
   }, []);
 
   const path = location.url.split(/[?#]/)[0];
-  if (['/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email'].includes(path)) return <AccountRecovery key={location.recoveryKey+(path==='/account/email'?sessionEpoch:'')} path={path}/>;
+  if (['/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email','/staff-invite'].includes(path)) return <AccountRecovery key={location.recoveryKey+(path==='/account/email'?sessionEpoch:'')} path={path}/>;
   if(path.startsWith('/quote/'))return <CustomerQuote key={path} publicKey={path.slice(7)} persistResult/>;
   if (path === '/admin') return <AdminShell />;
+  const staff=sessionClaims(getToken())?.role==='staff';
+  if(staff&&!['/calls','/leads','/quotes','/calendar','/customers'].includes(path)) return <StaffRedirect/>;
+  if (path === '/team') return <Team key={sessionEpoch}/>;
+  if (path === '/customers') return <Customers key={sessionEpoch}/>;
   if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={sessionEpoch} />;
   if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={sessionEpoch} />;
   if(['/leads','/quotes'].includes(path))return <QuoteRecords key={location.url+sessionEpoch} kind={path.slice(1)} recordId={new URLSearchParams(window.location.search).get('record')}/>;

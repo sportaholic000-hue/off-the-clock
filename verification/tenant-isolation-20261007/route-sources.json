@@ -57,7 +57,7 @@
   },
   {
     "file": "src/ownerDashboardRoutes.js",
-    "sha256": "58bff8682dd7a0878e782edec388a6ddaca26911f2303b64b1606bfe010b42ea"
+    "sha256": "5131fd4061ed6eba1e9bcc17eeb7d359e9375eabb71128357fc9bb430a54a83e"
   },
   {
     "file": "src/ownerIntegrationRoutes.js",
@@ -65,7 +65,7 @@
   },
   {
     "file": "src/productionAssets.js",
-    "sha256": "edf754020c014ed05aa62dfde20b3ce4dd601055787955c538d50a90b1a9e273"
+    "sha256": "6aad6bc8d590aa0c1526df6d18911fbc8ee1ed1f66026bafa89ce1d9da8b7e34"
   },
   {
     "file": "src/quoteDoneRoutes.js",
@@ -77,7 +77,11 @@
   },
   {
     "file": "src/server.js",
-    "sha256": "a8ae7eef393b953a9e84b4d8919759833cf26762d766f744f1e6275d394a144a"
+    "sha256": "23fdc726f2b41d3de3de97b2b35d956b8551f6dddbabe4d46b078f559db223bc"
+  },
+  {
+    "file": "src/staffRoutes.js",
+    "sha256": "d6114497fc95126190d9b6e53c14be7a9573de047e58e78fe96af12ecfc0da4e"
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",

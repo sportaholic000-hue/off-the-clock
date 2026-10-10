@@ -4,6 +4,7 @@ import {
   LogOut, PhoneCall, Settings, Sparkles
 } from 'lucide-react';
 import { go, logout } from './api.js';
+import {sessionClaims} from './sessionIdentity.js';
 
 const NAV = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -11,9 +12,11 @@ const NAV = [
   { label: 'Reports', path: '/reports', icon: LayoutDashboard },
   { label: 'Leads', path: '/leads', icon: BookOpen },
   { label: 'Quotes', path: '/quotes', icon: BookOpen },
+  { label: 'Customers', path: '/customers', icon: BookOpen },
   { label: 'Price Book', path: '/pricebook', icon: BookOpen },
   { label: 'Onboarding', path: '/onboarding', icon: Sparkles },
   { label: 'Calendar', path: '/calendar', icon: CalendarDays },
+  { label: 'Team', path: '/team', icon: BookOpen },
   { label: 'Settings', path: '/settings', icon: Settings }
 ];
 
@@ -50,13 +53,15 @@ export function StatusChip({ status, pending = false, label = status }) {
 
 export function AppShell({ activePath, children, operator }) {
   const [signingOut,setSigningOut]=useState(false),[signoutError,setSignoutError]=useState('');
+  const navigation=sessionClaims(globalThis.localStorage?.getItem('otc_token'))?.role==='staff'
+    ? NAV.filter(item=>['/calls','/leads','/quotes','/calendar','/customers'].includes(item.path)) : NAV;
   async function signOut(){if(signingOut)return;setSigningOut(true);setSignoutError('');try{await logout();go('/');}catch(error){setSignoutError(error.message);setSigningOut(false);}}
   return (
     <div className="app-shell">
       <aside className="side-rail">
         <Brand />
         <nav className="side-nav" aria-label="Primary">
-          {NAV.map(item => {
+          {navigation.map(item => {
             const Icon = item.icon;
             const active = activePath === item.path.split('?')[0];
             return (
@@ -82,7 +87,7 @@ export function AppShell({ activePath, children, operator }) {
         <header className="mobile-header">
           <Brand />
           <Select aria-label="Go to page" value={activePath || '/dashboard'} onChange={event => go(event.target.value)}>
-            {NAV.map(item => <option value={item.path} key={item.path}>{item.label}</option>)}
+            {navigation.map(item => <option value={item.path} key={item.path}>{item.label}</option>)}
           </Select>
           <Button variant="secondary" disabled={signingOut} onClick={signOut}>{signingOut?'Signing out…':'Sign out'}</Button>
           {signoutError&&<p role="alert">{signoutError}</p>}
