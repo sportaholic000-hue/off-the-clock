@@ -20,7 +20,16 @@ export const BILLING=new Set(['users','billingAccounts','billingAnnualTerms','bi
   'billingTrialMinuteAlerts','billingUsageCharges','billingUsagePeriods','events','outboxEvents','ownerEmailDeliveries']);
 export function tableRows(db){return Object.fromEntries(db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all()
   .map(({name})=>[name,db.prepare(`SELECT * FROM "${name}"`).all()]));}
-export function businessRows(db,ownerId){return Object.fromEntries(Object.entries(tableRows(db)).map(([table,rows])=>[table,rows.filter(row=>JSON.stringify(row).includes(ownerId))]));}
+export function businessRows(db,ownerId){
+  const all=tableRows(db),users=new Set(all.users.filter(row=>row.id===ownerId||row.ownerId===ownerId).map(row=>row.id));
+  const sessions=new Set(all.authSessions.filter(row=>users.has(row.userId)).map(row=>row.id));
+  const calls=all.calls.filter(row=>row.ownerId===ownerId&&row.callSid).map(row=>row.callSid);
+  const callKeys=new Set(calls.map(hash)),scopes=new Set(calls.flatMap(sid=>['','inbound\0'].map(prefix=>hash(prefix+ownerId+'\0'+sid))));
+  return Object.fromEntries(Object.entries(all).map(([table,rows])=>[table,rows.filter(row=>JSON.stringify(row).includes(ownerId)
+    ||(table==='authRefreshTokens'&&sessions.has(row.sessionId))
+    ||(table==='voiceModelFailures'&&callKeys.has(row.callKey))
+    ||(table==='voiceToolIdempotencyReceipts'&&scopes.has(row.scopeHash)))]));
+}
 export function assertErased(assert,db){
   assert.deepEqual(db.prepare('PRAGMA table_info(users)').all().map(c=>c.name).sort(),
     ['id','ownerId','email','passwordHash','firstName','businessName','plan','planStatus','trialEndsAt','paymentFailedAt',
@@ -32,6 +41,9 @@ export function assertErased(assert,db){
     if(table==='ownerEmailDeliveries')assert.match(db.prepare('SELECT eventType FROM outboxEvents WHERE id=?').get(row.id).eventType,/^billing\./);
     if(table==='users'){assert.equal(row.id,A);assert.equal(row.ownerId,null);assert.equal(row.passwordHash,'!');assert.equal(row.firstName,'');assert.equal(row.businessName,'');assert.equal(row.timezone,'UTC');assert.equal(row.emailVerifiedAt,null);assert.ok(row.dataDeletedAt);assert.match(row.email,/^erased-[a-f0-9]{64}@account.invalid$/);}
   }
+  const sid='CA'+hash(A).slice(0,32);
+  assert.equal(db.prepare('SELECT COUNT(*) n FROM voiceModelFailures WHERE callKey=?').get(hash(sid)).n,0);
+  for(const prefix of ['','inbound\0'])assert.equal(db.prepare('SELECT COUNT(*) n FROM voiceToolIdempotencyReceipts WHERE scopeHash=?').get(hash(prefix+A+'\0'+sid)).n,0);
   assert.deepEqual(db.pragma('foreign_key_check'),[]);
 }
 export function retentionFixture(t){
@@ -128,5 +140,9 @@ export function retentionFixture(t){
   }
   db.prepare("UPDATE users SET serviceEndsAt=?,paidThroughAt=?,planStatus='canceled' WHERE id=?").run(END,END,A);
   db.prepare("INSERT INTO billingCancellations(ownerId,stripeSubscriptionId,operationId,state,endAt,requestedAt,confirmedAt,updatedAt) VALUES(?,'sub_SYNTHETIC','op_SYNTHETIC','CONFIRMED',?,?,?,?)").run(A,END,START,START,START);
+  const kept=businessRows(db,B);
+  assert.equal(kept.authRefreshTokens.length,2,'Snapshot includes owner and staff refresh tokens');
+  assert.equal(kept.voiceModelFailures.length,1,'Snapshot includes the hashed call failure');
+  assert.equal(kept.voiceToolIdempotencyReceipts.filter(row=>row.idempotencyKey==='legacy').length,1,'Snapshot includes the legacy hashed receipt');
   return {db,root,deployment,clock,setTime,sessions,credentials};
 }
