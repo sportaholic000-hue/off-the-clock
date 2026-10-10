@@ -54,9 +54,19 @@ jobs:
         if: always()
         env:
           REHEARSAL_OUTPUT: /tmp/pricebook-evidence/rehearsal
-          REHEARSAL_COMMIT: '${{ github.event.pull_request.head.sha }}'
         run: |
-          node verification/first-customer-20261009/rehearsal.mjs > /tmp/pricebook-evidence/rehearsal.log 2>&1
+          REHEARSAL_COMMIT=$(git rev-parse HEAD) node verification/first-customer-20261009/rehearsal.mjs > /tmp/pricebook-evidence/rehearsal.log 2>&1
+      - name: Require all three Price Book screens to be free of internal keys and false recovery
+        if: matrix.version == 'final'
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          const evidence=JSON.parse(readFileSync('/tmp/pricebook-evidence/rehearsal/raw/execution.json'));
+          assert.deepEqual(evidence.pricebookScreens.map(s=>s.name),['pricebook-new-owner','pricebook-three-services','pricebook-three-approved']);
+          for(const screen of evidence.pricebookScreens){assert.deepEqual(screen.rawKeys,[]);assert.equal(screen.recoveryDialogs,0);}
+          for(const number of [3,'3b','pricebook-review'])assert.equal(evidence.steps.find(s=>s.number===number).status,'pass');
+          JS
       - name: Full test suite
         if: matrix.version == 'final'
         run: npm test > /tmp/pricebook-evidence/npm-test.tap 2>&1

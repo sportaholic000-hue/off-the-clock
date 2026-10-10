@@ -5,8 +5,12 @@ import {once} from 'node:events';
 import {mkdirSync,mkdtempSync,readFileSync,writeFileSync} from 'node:fs';
 import {join,resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {randomBytes} from 'node:crypto';
-import {bookRevision} from '../../server/src/quoteDoneBridge.js';
+import {randomBytes,createHash} from 'node:crypto';
+// Read-only revision observation, identical to bridge canonical/digest. Do not
+// import the bridge here: its database must initialize only after the synthetic
+// voice fixture selects DATABASE_PATH below.
+const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])])):value;
+const bookRevision=value=>createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex');
 import {encryptCredentialPayload} from '../../server/src/credentialEncryption.js';
 
 const here=dirname(fileURLToPath(import.meta.url)),repo=resolve(here,'../..'),raw=join(process.env.REHEARSAL_OUTPUT||here,'raw'),shots=join(process.env.REHEARSAL_OUTPUT||here,'screenshots');

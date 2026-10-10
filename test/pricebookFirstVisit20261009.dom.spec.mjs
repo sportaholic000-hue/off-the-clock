@@ -96,7 +96,7 @@ function rates(service){
   const f=offeringFixture('FENCING_INSTALL','installed').ownerPricing;
   service.pricing=copy(f.pricing);service.knownOfferings=copy(f.knownOfferings);service.pricing.offeringRates.installedFencePerLF=25.98;
  }else if(service.serviceType==='LANDSCAPING_MOWING')service.pricing={mowingBaseRatePerSqft:0.10,minimumServiceCharge:0,frequencyMultipliers:{weekly:1,biweekly:1,monthly:1,one_time:1},overgrowthMultipliers:{maintained:1,overgrown:1,severe:1}};
- else if(service.serviceType==='INTERIOR_PAINTING')service.pricing={laborPerWallSqftPerCoat:2,materialPerWallSqftPerCoat:1,minimumJob:0,finishMaterialWasteFactor:0};
+ else if(service.serviceType==='INTERIOR_PAINTING')service.pricing={laborPerWallSqftPerCoat:2,materialPerWallSqftPerCoat:1,minimumJob:0,paintWasteFactor:0};
  else return;
  service.active=true;
 }
