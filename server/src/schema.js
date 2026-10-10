@@ -77,7 +77,7 @@ export const CREATE_TABLE_STATEMENTS = [
     ownerId TEXT NOT NULL,
     idempotencyKeyHash TEXT NOT NULL,
     requestDigest TEXT NOT NULL,
-    plan TEXT NOT NULL CHECK (plan IN ('Operator', 'QuoteDone', 'Scale')),
+    plan TEXT NOT NULL CHECK (plan IN ('Starter', 'Operator', 'QuoteDone', 'Scale')),
     billingInterval TEXT NOT NULL CHECK (billingInterval IN ('monthly', 'annual')),
     stripePriceId TEXT NOT NULL,
     stripeCustomerId TEXT NOT NULL,

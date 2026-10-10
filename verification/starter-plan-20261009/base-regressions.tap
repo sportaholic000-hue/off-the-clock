@@ -1,0 +1,1718 @@
+(node:6) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter signup → verified trialing → correct onboarding access
+not ok 1 - Starter signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 3.564491
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:22:2'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:23:17)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter signup → verified active → correct onboarding access
+not ok 2 - Starter signup → verified active → correct onboarding access
+  ---
+  duration_ms: 0.425865
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:22:2'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:23:17)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Operator signup → verified trialing → correct onboarding access
+not ok 3 - Operator signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 0.41088
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:22:2'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:23:17)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Operator signup → verified active → correct onboarding access
+not ok 4 - Operator signup → verified active → correct onboarding access
+  ---
+  duration_ms: 0.373386
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:22:2'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:23:17)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: QuoteDone signup → verified trialing → correct onboarding access
+not ok 5 - QuoteDone signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 0.422946
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:22:2'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:23:17)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: QuoteDone signup → verified active → correct onboarding access
+not ok 6 - QuoteDone signup → verified active → correct onboarding access
+  ---
+  duration_ms: 0.480823
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:22:2'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:23:17)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter cannot unlock a trial without verified payment evidence
+not ok 7 - Starter cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 0.64845
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:56:55'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:57:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Operator cannot unlock a trial without verified payment evidence
+not ok 8 - Operator cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 0.331381
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:56:55'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:57:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: QuoteDone cannot unlock a trial without verified payment evidence
+not ok 9 - QuoteDone cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 0.936683
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:56:55'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:57:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Scale signup is rejected without creating an account
+not ok 10 - Scale signup is rejected without creating an account
+  ---
+  duration_ms: 1.173624
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:73:1'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:74:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+not ok 11 - bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+  ---
+  duration_ms: 0.661207
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:78:1'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    createLaunchPlanFixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/helpers/launchPlanFixture.mjs:34:19)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/launchPlans.spec.mjs:79:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Railway three-plan configuration documents STRIPE_STARTER_MONTHLY_PRICE_ID
+not ok 12 - Railway three-plan configuration documents STRIPE_STARTER_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 2.510718
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:8:2'
+  failureType: 'testCodeFailure'
+  error: 'deployment/railway.env.example'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    # Copy values into Railway Variables. Replace each REPLACE_WITH value with a private value.
+    # Do not deploy this template unchanged. No real secrets belong in Git.
+    NODE_ENV=production
+    PORT=3000
+    APP_DATA_DIR=/data/app
+    TRUST_PROXY=railway
+    RAILWAY_DEPLOYMENT_DRAINING_SECONDS=120
+    RAILWAY_DEPLOYMENT_OVERLAP_SECONDS=0
+    SHUTDOWN_TIMEOUT_SECONDS=110
+    PUBLIC_BASE_URL=https://app.offtheclockai.com
+    CLIENT_URL=https://app.offtheclockai.com
+    CORS_ALLOWED_ORIGINS=https://app.offtheclockai.com
+    JWT_SECRET=REPLACE_WITH_RANDOM_JWT
+    BOOKING_SLOT_TOKEN_SECRET=REPLACE_WITH_RANDOM_BOOKING
+    CREDENTIAL_ENCRYPTION_KEY=REPLACE_WITH_64_HEX_CHARACTERS_FROM_32_RANDOM_BYTES
+    CREDENTIAL_ENCRYPTION_KEY_VERSION=v1
+    BCRYPT_COST=12
+    BACKUP_INTERVAL_SECONDS=21600
+    BACKUP_RETENTION_DAYS=30
+    OUTBOUND_WEBHOOKS_ENABLED=true
+    
+    # Infrastructure validation first. Enable provider/billing/demo writes only with existing
+    # owner-approved credentials and after their configuration checks below are complete.
+    ALLOW_PROVIDER_WRITES=false
+    VOICE_RUNTIME_ENABLED=false
+    STRIPE_BILLING_ENABLED=false
+    DEMO_ENABLED=false
+    EMAIL_DELIVERY_ENABLED=false
+    EMAIL_PROVIDER=console
+    LOCAL_PREVIEW_MODE=false
+    
+    # Railway automatically supplies RAILWAY_ENVIRONMENT_ID, RAILWAY_GIT_COMMIT_SHA and
+    # RAILWAY_VOLUME_MOUNT_PATH=/data after the volume is attached.
+    # Do not set DATABASE_PATH, PRICEBOOK_PATH, TEMP, TMP, TMPDIR or DEMO_TRUSTED_PROXY_HOPS.
+    
+    # Optional Google Calendar: all three together, using this exact registered callback.
+    # GOOGLE_CLIENT_ID=
+    # GOOGLE_CLIENT_SECRET=
+    # GOOGLE_CALENDAR_REDIRECT_URI=https://app.offtheclockai.com/api/onboarding/calendar/google/callback
+    
+    # Existing provider provisioning: required together when ALLOW_PROVIDER_WRITES=true.
+    # TWILIO_ACCOUNT_SID=
+    # TWILIO_API_KEY_SID=
+    # TWILIO_API_KEY_SECRET=
+    # CARRIER_CONNECTION_URL=
+    # CARRIER_CONNECTION_TOKEN=
+    
+    # Existing Stripe billing: all of these required when STRIPE_BILLING_ENABLED=true.
+    # STRIPE_SECRET_KEY=sk_live_...
+    # STRIPE_WEBHOOK_SECRET=whsec_...
+    # STRIPE_OPERATOR_MONTHLY_PRICE_ID=price_...
+    # STRIPE_OPERATOR_ANNUAL_PRICE_ID=price_...
+    # STRIPE_QUOTEDONE_MONTHLY_PRICE_ID=price_...
+    # STRIPE_QUOTEDONE_ANNUAL_PRICE_ID=price_...
+    # STRIPE_CHECKOUT_SUCCESS_URL=https://app.offtheclockai.com/onboarding?checkout=success
+    # STRIPE_CHECKOUT_CANCEL_URL=https://app.offtheclockai.com/onboarding?checkout=cancel
+    # STRIPE_PORTAL_RETURN_URL=https://app.offtheclockai.com/settings
+    # STRIPE_INTEGRATION_IDENTIFIER=offtheclock_AbCdEfGh
+    
+    # Existing website demo: required key and origins when DEMO_ENABLED=true.
+    # GEMINI_API_KEY=
+    # GEMINI_LIVE_MODEL=gemini-3.8-live
+    # DEMO_ALLOWED_ORIGINS=https://offtheclockai.com,https://www.offtheclockai.com
+    # DEMO_IP_SALT=REPLACE_WITH_AN_INDEPENDENT_RANDOM_SECRET
+    # DEMO_SESSIONS_PER_IP_PER_HOUR=2
+    # DEMO_DAILY_SESSION_CAP=200
+    # DEMO_MAX_CONCURRENT=10
+    # DEMO_SESSION_SECONDS=180
+    # DEMO_MILES_VOICE=Charon
+    # DEMO_NOVA_VOICE=Kore
+    
+    # Voice lane only after its own integration and shutdown checks pass:
+    # TWILIO_AUTH_TOKEN=
+    # GEMINI_MODEL=
+    # VOICE_HANDLE_SECRET=
+    
+    # Optional admin bootstrap: both together; bcrypt hash cost 10..16, never plaintext.
+    # ADMIN_EMAIL=
+    # ADMIN_PASSWORD_HASH=
+    
+    # Live email remains deferred. Future email lane, not required for this deployment:
+    # EMAIL_FROM=
+    # RESEND_API_KEY=
+    
+    # Required independent off-site daily backup destination (private, HTTPS).
+    OFFSITE_BACKUP_ENDPOINT=
+    OFFSITE_BACKUP_BUCKET=
+    OFFSITE_BACKUP_ACCESS_KEY_ID=
+    OFFSITE_BACKUP_SECRET_ACCESS_KEY=
+    OFFSITE_BACKUP_ENCRYPTION_KEY=
+    # Must be unique to this production environment; do not share with staging.
+    OFFSITE_BACKUP_PREFIX=off-the-clock/production
+    OFFSITE_BACKUP_REGION=us-east-1
+    OFFSITE_BACKUP_SESSION_TOKEN=
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:9:78)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_STARTER_MONTHLY_PRICE_ID
+not ok 13 - Stripe enabled refuses missing STRIPE_STARTER_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 1.729342
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:12:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:14:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_STARTER_ANNUAL_PRICE_ID
+not ok 14 - Railway three-plan configuration documents STRIPE_STARTER_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.533594
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:8:2'
+  failureType: 'testCodeFailure'
+  error: 'deployment/railway.env.example'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    # Copy values into Railway Variables. Replace each REPLACE_WITH value with a private value.
+    # Do not deploy this template unchanged. No real secrets belong in Git.
+    NODE_ENV=production
+    PORT=3000
+    APP_DATA_DIR=/data/app
+    TRUST_PROXY=railway
+    RAILWAY_DEPLOYMENT_DRAINING_SECONDS=120
+    RAILWAY_DEPLOYMENT_OVERLAP_SECONDS=0
+    SHUTDOWN_TIMEOUT_SECONDS=110
+    PUBLIC_BASE_URL=https://app.offtheclockai.com
+    CLIENT_URL=https://app.offtheclockai.com
+    CORS_ALLOWED_ORIGINS=https://app.offtheclockai.com
+    JWT_SECRET=REPLACE_WITH_RANDOM_JWT
+    BOOKING_SLOT_TOKEN_SECRET=REPLACE_WITH_RANDOM_BOOKING
+    CREDENTIAL_ENCRYPTION_KEY=REPLACE_WITH_64_HEX_CHARACTERS_FROM_32_RANDOM_BYTES
+    CREDENTIAL_ENCRYPTION_KEY_VERSION=v1
+    BCRYPT_COST=12
+    BACKUP_INTERVAL_SECONDS=21600
+    BACKUP_RETENTION_DAYS=30
+    OUTBOUND_WEBHOOKS_ENABLED=true
+    
+    # Infrastructure validation first. Enable provider/billing/demo writes only with existing
+    # owner-approved credentials and after their configuration checks below are complete.
+    ALLOW_PROVIDER_WRITES=false
+    VOICE_RUNTIME_ENABLED=false
+    STRIPE_BILLING_ENABLED=false
+    DEMO_ENABLED=false
+    EMAIL_DELIVERY_ENABLED=false
+    EMAIL_PROVIDER=console
+    LOCAL_PREVIEW_MODE=false
+    
+    # Railway automatically supplies RAILWAY_ENVIRONMENT_ID, RAILWAY_GIT_COMMIT_SHA and
+    # RAILWAY_VOLUME_MOUNT_PATH=/data after the volume is attached.
+    # Do not set DATABASE_PATH, PRICEBOOK_PATH, TEMP, TMP, TMPDIR or DEMO_TRUSTED_PROXY_HOPS.
+    
+    # Optional Google Calendar: all three together, using this exact registered callback.
+    # GOOGLE_CLIENT_ID=
+    # GOOGLE_CLIENT_SECRET=
+    # GOOGLE_CALENDAR_REDIRECT_URI=https://app.offtheclockai.com/api/onboarding/calendar/google/callback
+    
+    # Existing provider provisioning: required together when ALLOW_PROVIDER_WRITES=true.
+    # TWILIO_ACCOUNT_SID=
+    # TWILIO_API_KEY_SID=
+    # TWILIO_API_KEY_SECRET=
+    # CARRIER_CONNECTION_URL=
+    # CARRIER_CONNECTION_TOKEN=
+    
+    # Existing Stripe billing: all of these required when STRIPE_BILLING_ENABLED=true.
+    # STRIPE_SECRET_KEY=sk_live_...
+    # STRIPE_WEBHOOK_SECRET=whsec_...
+    # STRIPE_OPERATOR_MONTHLY_PRICE_ID=price_...
+    # STRIPE_OPERATOR_ANNUAL_PRICE_ID=price_...
+    # STRIPE_QUOTEDONE_MONTHLY_PRICE_ID=price_...
+    # STRIPE_QUOTEDONE_ANNUAL_PRICE_ID=price_...
+    # STRIPE_CHECKOUT_SUCCESS_URL=https://app.offtheclockai.com/onboarding?checkout=success
+    # STRIPE_CHECKOUT_CANCEL_URL=https://app.offtheclockai.com/onboarding?checkout=cancel
+    # STRIPE_PORTAL_RETURN_URL=https://app.offtheclockai.com/settings
+    # STRIPE_INTEGRATION_IDENTIFIER=offtheclock_AbCdEfGh
+    
+    # Existing website demo: required key and origins when DEMO_ENABLED=true.
+    # GEMINI_API_KEY=
+    # GEMINI_LIVE_MODEL=gemini-3.8-live
+    # DEMO_ALLOWED_ORIGINS=https://offtheclockai.com,https://www.offtheclockai.com
+    # DEMO_IP_SALT=REPLACE_WITH_AN_INDEPENDENT_RANDOM_SECRET
+    # DEMO_SESSIONS_PER_IP_PER_HOUR=2
+    # DEMO_DAILY_SESSION_CAP=200
+    # DEMO_MAX_CONCURRENT=10
+    # DEMO_SESSION_SECONDS=180
+    # DEMO_MILES_VOICE=Charon
+    # DEMO_NOVA_VOICE=Kore
+    
+    # Voice lane only after its own integration and shutdown checks pass:
+    # TWILIO_AUTH_TOKEN=
+    # GEMINI_MODEL=
+    # VOICE_HANDLE_SECRET=
+    
+    # Optional admin bootstrap: both together; bcrypt hash cost 10..16, never plaintext.
+    # ADMIN_EMAIL=
+    # ADMIN_PASSWORD_HASH=
+    
+    # Live email remains deferred. Future email lane, not required for this deployment:
+    # EMAIL_FROM=
+    # RESEND_API_KEY=
+    
+    # Required independent off-site daily backup destination (private, HTTPS).
+    OFFSITE_BACKUP_ENDPOINT=
+    OFFSITE_BACKUP_BUCKET=
+    OFFSITE_BACKUP_ACCESS_KEY_ID=
+    OFFSITE_BACKUP_SECRET_ACCESS_KEY=
+    OFFSITE_BACKUP_ENCRYPTION_KEY=
+    # Must be unique to this production environment; do not share with staging.
+    OFFSITE_BACKUP_PREFIX=off-the-clock/production
+    OFFSITE_BACKUP_REGION=us-east-1
+    OFFSITE_BACKUP_SESSION_TOKEN=
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:9:78)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_STARTER_ANNUAL_PRICE_ID
+not ok 15 - Stripe enabled refuses missing STRIPE_STARTER_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.653846
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:12:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:14:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_OPERATOR_MONTHLY_PRICE_ID
+not ok 16 - Railway three-plan configuration documents STRIPE_OPERATOR_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 6.927545
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:8:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(readFileSync(new URL('../docs/RAILWAY_SETUP.md',import.meta.url),'utf8').includes(name))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:10:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_OPERATOR_MONTHLY_PRICE_ID
+not ok 17 - Stripe enabled refuses missing STRIPE_OPERATOR_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 3.667652
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:12:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:14:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_OPERATOR_ANNUAL_PRICE_ID
+not ok 18 - Railway three-plan configuration documents STRIPE_OPERATOR_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.964792
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:8:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(readFileSync(new URL('../docs/RAILWAY_SETUP.md',import.meta.url),'utf8').includes(name))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:10:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_OPERATOR_ANNUAL_PRICE_ID
+not ok 19 - Stripe enabled refuses missing STRIPE_OPERATOR_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.598788
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:12:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:14:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_QUOTEDONE_MONTHLY_PRICE_ID
+not ok 20 - Railway three-plan configuration documents STRIPE_QUOTEDONE_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 1.538789
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:8:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(readFileSync(new URL('../docs/RAILWAY_SETUP.md',import.meta.url),'utf8').includes(name))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:10:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_QUOTEDONE_MONTHLY_PRICE_ID
+not ok 21 - Stripe enabled refuses missing STRIPE_QUOTEDONE_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 0.775265
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:12:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:14:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_QUOTEDONE_ANNUAL_PRICE_ID
+not ok 22 - Railway three-plan configuration documents STRIPE_QUOTEDONE_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 1.497486
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:8:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(readFileSync(new URL('../docs/RAILWAY_SETUP.md',import.meta.url),'utf8').includes(name))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:10:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_QUOTEDONE_ANNUAL_PRICE_ID
+not ok 23 - Stripe enabled refuses missing STRIPE_QUOTEDONE_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 1.312548
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:12:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/railwayConfigDocs20261009.spec.mjs:14:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:15) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: Starter prices, included allowance and exact overage
+not ok 24 - Starter lineup: Starter prices, included allowance and exact overage
+  ---
+  duration_ms: 3.712464
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:8:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - {
+    -   annualCents: 69000,
+    -   included: 150,
+    -   monthlyCents: 6900
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    monthlyCents: 6900
+    annualCents: 69000
+    included: 150
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:9:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: Starter account and feature access
+not ok 25 - Starter lineup: Starter account and feature access
+  ---
+  duration_ms: 0.842451
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:14:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:15:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Starter lineup: Operator prices, included allowance and exact overage
+ok 26 - Starter lineup: Operator prices, included allowance and exact overage
+  ---
+  duration_ms: 1.006433
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator account and feature access
+not ok 27 - Starter lineup: Operator account and feature access
+  ---
+  duration_ms: 0.406246
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:14:2'
+  failureType: 'testCodeFailure'
+  error: 'access.hasPriceBookAccess is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:18:23)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: QuoteDone prices, included allowance and exact overage
+ok 28 - Starter lineup: QuoteDone prices, included allowance and exact overage
+  ---
+  duration_ms: 0.191641
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone account and feature access
+not ok 29 - Starter lineup: QuoteDone account and feature access
+  ---
+  duration_ms: 0.302292
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:14:2'
+  failureType: 'testCodeFailure'
+  error: 'access.hasPriceBookAccess is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:18:23)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Starter to Starter recurring price differences
+not ok 30 - Starter lineup: Starter to Starter recurring price differences
+  ---
+  duration_ms: 0.159869
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Starter to Operator recurring price differences
+not ok 31 - Starter lineup: Starter to Operator recurring price differences
+  ---
+  duration_ms: 0.108849
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Starter to QuoteDone recurring price differences
+not ok 32 - Starter lineup: Starter to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.458401
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Operator to Starter recurring price differences
+not ok 33 - Starter lineup: Operator to Starter recurring price differences
+  ---
+  duration_ms: 0.422601
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Operator to Operator recurring price differences
+not ok 34 - Starter lineup: Operator to Operator recurring price differences
+  ---
+  duration_ms: 0.830604
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Operator to QuoteDone recurring price differences
+not ok 35 - Starter lineup: Operator to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.189009
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: QuoteDone to Starter recurring price differences
+not ok 36 - Starter lineup: QuoteDone to Starter recurring price differences
+  ---
+  duration_ms: 0.092905
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: QuoteDone to Operator recurring price differences
+not ok 37 - Starter lineup: QuoteDone to Operator recurring price differences
+  ---
+  duration_ms: 0.132444
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: QuoteDone to QuoteDone recurring price differences
+not ok 38 - Starter lineup: QuoteDone to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.084877
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:23:349'
+  failureType: 'testCodeFailure'
+  error: 'policy.planPriceDifferenceCents is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Starter monthly upgrade savings at 300 minutes
+not ok 39 - Starter lineup: Starter monthly upgrade savings at 300 minutes
+  ---
+  duration_ms: 0.116022
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:26:270'
+  failureType: 'testCodeFailure'
+  error: 'Invalid metered usage.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    Module.usageAmounts (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingUsagePolicy.js:17:71)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:27:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Starter monthly upgrade savings at 1200 minutes
+not ok 40 - Starter lineup: Starter monthly upgrade savings at 1200 minutes
+  ---
+  duration_ms: 0.067898
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:26:270'
+  failureType: 'testCodeFailure'
+  error: 'Invalid metered usage.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    Module.usageAmounts (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingUsagePolicy.js:17:71)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:27:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Operator monthly upgrade savings at 1200 minutes
+not ok 41 - Starter lineup: Operator monthly upgrade savings at 1200 minutes
+  ---
+  duration_ms: 22.63495
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:26:270'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'QuoteDone'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QuoteDone'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:27:62)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Starter annual upgrade savings at 300 minutes
+not ok 42 - Starter lineup: Starter annual upgrade savings at 300 minutes
+  ---
+  duration_ms: 0.404963
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:26:270'
+  failureType: 'testCodeFailure'
+  error: 'Invalid metered usage.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    Module.usageAmounts (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingUsagePolicy.js:17:71)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:27:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: Operator annual upgrade savings at 1200 minutes
+not ok 43 - Starter lineup: Operator annual upgrade savings at 1200 minutes
+  ---
+  duration_ms: 0.679904
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:26:270'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'QuoteDone'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QuoteDone'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlan20261009.spec.mjs:27:62)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:16) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:16) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Starter lineup: Starter monthly confirmed usage, warnings and 2520-cent installment
+not ok 44 - Starter lineup: Starter monthly confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 59.878605
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:7:179'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:8:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: Starter annual confirmed usage, warnings and 2520-cent installment
+not ok 45 - Starter lineup: Starter annual confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 25.438131
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:7:179'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:8:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: Operator monthly confirmed usage, warnings and 2520-cent installment
+not ok 46 - Starter lineup: Operator monthly confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 21.893829
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:7:179'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:8:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: Operator annual confirmed usage, warnings and 2520-cent installment
+not ok 47 - Starter lineup: Operator annual confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 30.223129
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:7:179'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:8:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: QuoteDone monthly confirmed usage, warnings and 2520-cent installment
+not ok 48 - Starter lineup: QuoteDone monthly confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 27.423484
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:7:179'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:8:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: QuoteDone annual confirmed usage, warnings and 2520-cent installment
+not ok 49 - Starter lineup: QuoteDone annual confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 26.875687
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:7:179'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:8:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: Starter trial has 60 minutes, no overage, warnings once
+not ok 50 - Starter lineup: Starter trial has 60 minutes, no overage, warnings once
+  ---
+  duration_ms: 40.682709
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:21:54'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:22:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: Operator trial has 60 minutes, no overage, warnings once
+not ok 51 - Starter lineup: Operator trial has 60 minutes, no overage, warnings once
+  ---
+  duration_ms: 48.254733
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:21:54'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:22:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: QuoteDone trial has 60 minutes, no overage, warnings once
+not ok 52 - Starter lineup: QuoteDone trial has 60 minutes, no overage, warnings once
+  ---
+  duration_ms: 40.316892
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:21:54'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:22:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: verified Starter to Operator subscription event
+not ok 53 - Starter lineup: verified Starter to Operator subscription event
+  ---
+  duration_ms: 23.702697
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:25:118'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: verified Starter to QuoteDone subscription event
+not ok 54 - Starter lineup: verified Starter to QuoteDone subscription event
+  ---
+  duration_ms: 25.941206
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:25:118'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: verified Operator to Starter subscription event
+not ok 55 - Starter lineup: verified Operator to Starter subscription event
+  ---
+  duration_ms: 53.971348
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:25:118'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: verified Operator to QuoteDone subscription event
+not ok 56 - Starter lineup: verified Operator to QuoteDone subscription event
+  ---
+  duration_ms: 50.887597
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:25:118'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: verified QuoteDone to Starter subscription event
+not ok 57 - Starter lineup: verified QuoteDone to Starter subscription event
+  ---
+  duration_ms: 32.752763
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:25:118'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: verified QuoteDone to Operator subscription event
+not ok 58 - Starter lineup: verified QuoteDone to Operator subscription event
+  ---
+  duration_ms: 58.480866
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:25:118'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: legacy CHECK migration preserves periods, charges, indexes and foreign keys
+not ok 59 - Starter lineup: legacy CHECK migration preserves periods, charges, indexes and foreign keys
+  ---
+  duration_ms: 43.711563
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:28:1'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:29:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Starter lineup: downgrade suspends staff login but retains owner login and staff data
+not ok 60 - Starter lineup: downgrade suspends staff login but retains owner login and staff data
+  ---
+  duration_ms: 22.156592
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:44:1'
+  failureType: 'testCodeFailure'
+  error: 'Every configured Stripe price must map to an allowed plan and price kind.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    normalizePriceConfiguration (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:83:13)
+    createBillingStateService (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/server/src/billingStateService.js:253:30)
+    fixture (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/overageMinute20261006Fixture.mjs:48:17)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanBilling20261009.spec.mjs:45:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# (node:22) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: real signup renders three plan choices with exact prices, minutes and exclusions
+not ok 61 - Starter lineup: real signup renders three plan choices with exact prices, minutes and exclusions
+  ---
+  duration_ms: 1700.922152
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanOwnerRender20261009.spec.mjs:6:1'
+  failureType: 'testCodeFailure'
+  error: 'Starter'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanOwnerRender20261009.spec.mjs:12:62)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:28) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: Operator widget quotes 353889 cents; downgrade blocks exact retry without deleting prices or quotes
+not ok 62 - Starter lineup: Operator widget quotes 353889 cents; downgrade blocks exact retry without deleting prices or quotes
+  ---
+  duration_ms: 2091.541476
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanQuote20261009.spec.mjs:21:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    403 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 403
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanQuote20261009.spec.mjs:25:93)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Starter lineup: QuoteDone real phone getQuote remains 353889 cents; Operator downgrade refuses replay
+not ok 63 - Starter lineup: QuoteDone real phone getQuote remains 353889 cents; Operator downgrade refuses replay
+  ---
+  duration_ms: 818.284801
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanQuote20261009.spec.mjs:34:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'quoted'
+    - 'needs_details'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_details'
+  actual: 'quoted'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanQuote20261009.spec.mjs:40:120)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:39) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: downgrade preserves data and blocks owner/public booking, widget and price book
+not ok 64 - Starter lineup: downgrade preserves data and blocks owner/public booking, widget and price book
+  ---
+  duration_ms: 1732.374889
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanRoutes20261009.spec.mjs:6:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'ACCOUNT_READ_ONLY'
+    - 'BOOKING_UNAVAILABLE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'BOOKING_UNAVAILABLE'
+  actual: 'ACCOUNT_READ_ONLY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanRoutes20261009.spec.mjs:17:198)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:40) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: Starter real phone boundary offers only entitled tools
+not ok 65 - Starter lineup: Starter real phone boundary offers only entitled tools
+  ---
+  duration_ms: 147.035178
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanVoice20261009.spec.mjs:4:54'
+  failureType: 'testCodeFailure'
+  error: '<Response><Gather input="speech" action="https://synthetic-voice.example.invalid/api/twilio/voice/capture" method="POST" partialResultCallback="https://synthetic-voice.example.invalid/api/twilio/voice/capture/partial" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto" timeout="8"><Say>Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we&apos;ll get back to you.</Say></Gather></Response>'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.connect (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/voiceLifecycle20261006Fixture.mjs:25:173)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanVoice20261009.spec.mjs:6:13)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Starter lineup: Operator real phone boundary offers only entitled tools
+not ok 66 - Starter lineup: Operator real phone boundary offers only entitled tools
+  ---
+  duration_ms: 106.516192
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanVoice20261009.spec.mjs:4:54'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanVoice20261009.spec.mjs:8:150)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Starter lineup: QuoteDone real phone boundary offers only entitled tools
+ok 67 - Starter lineup: QuoteDone real phone boundary offers only entitled tools
+  ---
+  duration_ms: 110.858356
+  type: 'test'
+  ...
+# Subtest: Starter lineup: pending warm transfer cannot connect after downgrade to Starter
+not ok 68 - Starter lineup: pending warm transfer cannot connect after downgrade to Starter
+  ---
+  duration_ms: 97.606237
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanVoice20261009.spec.mjs:20:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '<Response/>'
+    - '<Response><Hangup/></Response>'
+                ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '<Response><Hangup/></Response>'
+  actual: '<Response/>'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/starter-plan-base/test/starterPlanVoice20261009.spec.mjs:25:9)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..68
+# tests 68
+# suites 0
+# pass 3
+# fail 65
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3715.31992

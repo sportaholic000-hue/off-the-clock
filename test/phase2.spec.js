@@ -299,7 +299,8 @@ test('QuoteDone access requires both an eligible plan and a current lifecycle en
   assert.equal(hasQuoteDoneAccess({ plan:'Scale', planStatus:'active' }), true);
   assert.equal(hasQuoteDoneAccess(null), false);
   const source = readFileSync('server/src/server.js', 'utf8');
-  assert.match(source, /hasQuoteDoneAccess/);
+  assert.match(source, /hasPriceBookAccess/);
+  assert.match(readFileSync('server/src/voice/productionVoiceRuntime.js', 'utf8'), /hasQuoteDoneAccess/);
   assert.equal(/planStatus !== 'trialing'/.test(source), false, 'server must not widen plan access for trials');
 });
 

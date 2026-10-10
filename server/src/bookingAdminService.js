@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import {ownerUtcInstant} from './ownerDate.js';
-import {hasQuoteDoneAccess} from './planAccess.js';
+import {hasPriceBookAccess} from './planAccess.js';
 import { loadPricebook } from '../priceBookService.js';
 import { bookStatuses, bookQuoteStatuses } from './quoteDoneBridge.js';
 import { isValidIanaTimeZone, parseLocalTime } from './calendarTime.js';
@@ -663,7 +663,7 @@ export function createBookingAdminService({
   function catalog(ownerId) {
     const appointment={id:'voice-appointment',serviceType:'APPOINTMENT',name:'Appointment',quoteStatus:'NOT_REQUIRED',allowedQuoteTierNames:[],issues:[]};
     const nativeCatalog=loadServiceCatalog===defaultLoadServiceCatalog;
-    if(nativeCatalog){const owner=query("SELECT * FROM users WHERE id=? AND (ownerId=? OR id=?) AND role='owner'").get(ownerId,ownerId,ownerId);if(!hasQuoteDoneAccess(owner,{now:new Date(clock())}))return [appointment];}
+    if(nativeCatalog){const owner=query("SELECT * FROM users WHERE id=? AND (ownerId=? OR id=?) AND role='owner'").get(ownerId,ownerId,ownerId);if(!hasPriceBookAccess(owner,{now:new Date(clock())}))return [appointment];}
     let loaded;
     try {
       loaded = loadServiceCatalog(ownerId);

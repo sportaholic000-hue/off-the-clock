@@ -52,7 +52,7 @@ import {
   savePricebook,
   withPricebookLock } from '../priceBookService.js';
 import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
-import { hasOperatorAccess, hasProviderWriteAccess, hasQuoteDoneAccess } from './planAccess.js';
+import { hasOperatorAccess, hasProviderWriteAccess, hasPriceBookAccess } from './planAccess.js';
 import { providerWritesEnabled, validateRuntimeConfig, requireProductionQuoteEngineVersion } from './runtimeConfig.js';
 import { createCorsOptionsDelegate } from './corsPolicy.js';
 import { installLiveDemoRoutes } from './demo/liveDemo.js';
@@ -153,18 +153,18 @@ function requireProviderWrites(req, res, next) {
   return next();
 }
 
-function requireQuoteDonePlan(req, res, next) {
+function requirePriceBookPlan(req, res, next) {
   const account = accessAccount(req.tenantOwnerId);
-  if (!hasQuoteDoneAccess(account)) {
+  if (!hasPriceBookAccess(account)) {
     if(account?.serviceEndsAt&&Date.parse(account.serviceEndsAt)<=Date.now())return res.status(403).json({error:'This business is currently unavailable.',code:'BUSINESS_UNAVAILABLE'});
-    return res.status(403).json({ error:'QuoteDone or Scale is required' });
+    return res.status(403).json({ error:'The price book and website widget require Operator or QuoteDone. Your saved data is kept.', code:'PLAN_FEATURE_UNAVAILABLE' });
   }
   return next();
 }
 
 function requireOperatorAccess(req, res, next) {
   if (!hasOperatorAccess(accessAccount(req.tenantOwnerId))) {
-    return res.status(403).json({ error: 'This account does not currently have Operator access.' });
+    return res.status(403).json({ error: 'Calendar booking and live transfer require Operator or QuoteDone. Your saved settings and bookings are kept.', code:'PLAN_FEATURE_UNAVAILABLE' });
   }
   return next();
 }
@@ -220,7 +220,7 @@ if (billingConfig) {
 }
 app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
-installOwnerDashboardRoutes(app,{reports:createOwnerReportService({ownerQuery}),workflow:createOwnerWorkflowService({database:db,ownerQuery}),requireAuth,requireQuoteDonePlan,asyncHandler});
+installOwnerDashboardRoutes(app,{reports:createOwnerReportService({ownerQuery}),workflow:createOwnerWorkflowService({database:db,ownerQuery}),requireAuth,requirePriceBookPlan,asyncHandler});
 installOwnerAlertRoutes(app,{service:ownerAlerts,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);
@@ -287,7 +287,7 @@ app.post('/api/onboarding/business-types', requireAuth(['owner']), asyncHandler(
   res.json({ profile });
 }));
 
-app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
+app.post('/api/business/jurisdiction', requireAuth(['owner']), requirePriceBookPlan, asyncHandler(async (req, res) => {
   const ownerId = req.tenantOwnerId;
   const country = String(req.body?.country || '').toUpperCase();
   const region = String(req.body?.region || '').toUpperCase();
@@ -382,12 +382,12 @@ app.post('/api/operator/toggle', requireAuth(['owner']), requireProviderWrites, 
   return res.status(statusCode).json({ ...result, operator: clientOnboardingState(req.tenantOwnerId).operator });
 }));
 
-app.post('/api/onboarding/calendar', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/onboarding/calendar', requireAuth(['owner']), requireOperatorAccess, asyncHandler(async (req, res) => {
   const profile = saveCalendar(req.tenantOwnerId, req.body || {});
   return res.json({ profile });
 }));
 
-app.get('/api/onboarding/calendar/google/start', requireAuth(['owner']), (req, res) => {
+app.get('/api/onboarding/calendar/google/start', requireAuth(['owner']), requireOperatorAccess, (req, res) => {
   const { state } = calendarOAuthState.issue(req.tenantOwnerId);
   res.json({ authorizationUrl: googleCalendarAuthorizationUrl(state) });
 });
@@ -398,7 +398,7 @@ app.get('/api/onboarding/calendar/google/callback', requireProviderWrites, async
   }
   // Consume the persisted owner-bound state before any provider or account mutation.
   const { ownerId } = calendarOAuthState.consume(req.query.state);
-  if (!hasProviderWriteAccess(accessAccount(ownerId))) {
+  if (!hasOperatorAccess(accessAccount(ownerId))) {
     return res.status(403).json({ error: 'This account is not eligible for provider operations.' });
   }
   const tokens = await exchangeGoogleCalendarCode(req.query.code);
@@ -408,41 +408,42 @@ app.get('/api/onboarding/calendar/google/callback', requireProviderWrites, async
 }));
 
 app.post('/api/onboarding/voice', requireAuth(['owner']), asyncHandler(async (req, res) => {
+  if (['transferNumber','transferWindows'].some(key=>Object.hasOwn(req.body||{},key)) && !hasOperatorAccess(accessAccount(req.tenantOwnerId))) return requireOperatorAccess(req,res,()=>{});
   const profile = saveVoice(req.tenantOwnerId, req.body || {});
   return res.json({ profile });
 }));
 
-app.post('/api/pricebook/interview', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
+app.post('/api/pricebook/interview', requireAuth(['owner']), requirePriceBookPlan, asyncHandler(async (req, res) => {
   const draft = createInterviewDraft(req.tenantOwnerId, req.body || {});
   return res.status(201).json({ draft });
 }));
 
-app.get('/api/pricebook/interview', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
+app.get('/api/pricebook/interview', requireAuth(['owner']), requirePriceBookPlan, (req, res) => {
   res.json({ drafts: listInterviewDrafts(req.tenantOwnerId) });
 });
 
-app.get('/api/pricebook/interview/:draftId', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
+app.get('/api/pricebook/interview/:draftId', requireAuth(['owner']), requirePriceBookPlan, (req, res) => {
   const draft = getInterviewDraft(req.tenantOwnerId, req.params.draftId);
   if (!draft) return res.status(404).json({ error: 'Draft not found' });
   return res.json({ draft });
 });
 
-app.put('/api/pricebook/interview/:draftId', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
+app.put('/api/pricebook/interview/:draftId', requireAuth(['owner']), requirePriceBookPlan, asyncHandler(async (req, res) => {
   const draft = saveInterviewDraft(req.tenantOwnerId, req.params.draftId, req.body || {});
   return res.json({ draft });
 }));
 
-app.post('/api/pricebook/interview/:draftId/assist', requireAuth(['owner']), requireQuoteDonePlan, requireProviderWrites, priceBookAIHandler(async (req, res) => {
+app.post('/api/pricebook/interview/:draftId/assist', requireAuth(['owner']), requirePriceBookPlan, requireProviderWrites, priceBookAIHandler(async (req, res) => {
   res.json(await assistInterviewDraft(req.tenantOwnerId, req.params.draftId, req.body || {}));
 }));
 
-app.get('/api/pricebook/interview/:draftId/review', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
+app.get('/api/pricebook/interview/:draftId/review', requireAuth(['owner']), requirePriceBookPlan, asyncHandler(async (req, res) => {
   return res.json(draftReviewPayload(req.tenantOwnerId, req.params.draftId));
 }));
 
 installQuoteDoneRoutes(app, {
   asyncHandler,
-  requireQuoteDonePlan,
+  requirePriceBookPlan,
   bookingService,
   bookingTokenSecret
 });
@@ -464,11 +465,11 @@ installBookingAdminRoutes(app, {
   adminService: bookingAdminService,
   requireAuth,
   requireOperatorAccess,
-  requireQuoteDonePlan,
+  requirePriceBookPlan,
   asyncHandler
 });
 
-app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, requireProviderWrites, priceBookAIHandler(async (req, res) => {
+app.post('/api/pricebook/suggest', requireAuth(['owner']), requirePriceBookPlan, requireProviderWrites, priceBookAIHandler(async (req, res) => {
   const profile = getBusinessProfile(req.tenantOwnerId);
   const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes, country:profile.country, region:profile.region });
   return res.json({
@@ -477,7 +478,7 @@ app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan,
   });
 }));
 
-app.post('/api/quote/test', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
+app.post('/api/quote/test', requireAuth(['owner']), requirePriceBookPlan, asyncHandler(async (req, res) => {
   if (process.env.NODE_ENV === 'production') return res.status(404).json({ error: 'Not found' });
   const result = previewApplicationQuote(req.tenantOwnerId, req.body || {},quoteDateContext(db,req.tenantOwnerId));
   console.log('[quote-test-breakdown]', JSON.stringify(result, null, 2));

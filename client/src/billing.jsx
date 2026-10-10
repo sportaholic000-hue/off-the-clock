@@ -1,9 +1,10 @@
+import {PLAN_DESCRIPTIONS,DOWNGRADE_EXPLANATION} from './planDescriptions.js';
 import React, {useEffect, useRef, useState} from 'react';
 import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
 import {billingState, billingStorageKey, readBillingJobs, billingDestination, billingFailure, definiteBillingRejection, canContinueSetup, billingRecoveryMessage} from './billingTransport.js';
 
-const PLANS = ['Operator','QuoteDone'];
+const PLANS = ['Starter','Operator','QuoteDone'];
 const STATUS_LABELS = {active:'Active',trialing:'Trial',pending_subscription:'Subscription pending',pending_payment:'Payment pending',past_due:'Payment overdue',payment_failed:'Payment failed',suspended:'Suspended',canceled:'Canceled'};
 
 export default function Billing() {
@@ -113,12 +114,13 @@ export default function Billing() {
               <Field label="Plan"><Select aria-label="Plan" value={plan} onChange={event=>setPlan(event.target.value)} required><option value="">Choose a plan</option>{PLANS.map(item=><option key={item} value={item}>{item}</option>)}</Select></Field>
               <Field label="Billing interval"><Select aria-label="Billing interval" value={interval} onChange={event=>setInterval(event.target.value)} required><option value="">Choose an interval</option><option value="monthly">Monthly</option><option value="annual">Annual</option></Select></Field>
             </fieldset>
-            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end: Operator $119 monthly or $1,190 for 12 months; QuoteDone $279 monthly or $2,790 for 12 months. Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
+            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end: Starter $69 monthly or $690 for 12 months; Operator $119 monthly or $1,190 for 12 months; QuoteDone $279 monthly or $2,790 for 12 months. Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
             {checkout?<p>Your {checkout.body.plan} {checkout.body.billingInterval} request is saved. Retry uses the same request.</p>:null}
             <Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>
           </form>
         </section>:null}
         {state.billingEnabled&&(state.canManageBilling||portal)?<section className="billing-panel" aria-label="Manage subscription">
+          <h2>Plan features</h2>{PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}<p>{DOWNGRADE_EXPLANATION}</p>
           <h2>Manage subscription</h2><p>Manage payment details or change your plan in the billing portal.</p>
           <Button disabled={!!busy||!state.providerAvailable} onClick={()=>open('portal')}>{busy==='portal'?'Opening billing':portal?'Retry opening billing':'Manage billing'}</Button>
         </section>:null}

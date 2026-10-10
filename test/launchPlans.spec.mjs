@@ -18,7 +18,7 @@ async function verifiedSignup(f,input) {
  return {token:login.body.token,account};
 }
 
-for(const plan of ['Operator','QuoteDone']) for(const status of ['trialing','active']) {
+for(const plan of ['Starter','Operator','QuoteDone']) for(const status of ['trialing','active']) {
  test(plan+' signup → verified '+status+' → correct onboarding access',async t=>{
   const f=await createLaunchPlanFixture();t.after(f.close);
   const {token,account}=await verifiedSignup(f,signup(plan));
@@ -44,6 +44,8 @@ for(const plan of ['Operator','QuoteDone']) for(const status of ['trialing','act
   assert.equal(result.status,200);assert.equal(result.body.account.plan,plan);
   assert.equal(result.body.account.planStatus,status);
   assert.equal(result.body.quoteDoneAccess,plan==='QuoteDone');
+  assert.equal(result.body.priceBookAccess,plan!=='Starter');
+  assert.equal(result.body.bookingAccess,plan!=='Starter');
   assert.equal(status==='trialing',Date.parse(result.body.account.trialEndsAt)>Date.now());
   assert.equal(Boolean(f.db.prepare('SELECT paymentMethodVerifiedAt FROM billingAccounts WHERE ownerId=?').get(account.id).paymentMethodVerifiedAt),true);
   const billing=await f.request('/api/billing/status',{token});
@@ -51,7 +53,7 @@ for(const plan of ['Operator','QuoteDone']) for(const status of ['trialing','act
   assert.equal(billing.body.canCheckout,false);
  });
 }
-for(const plan of ['Operator','QuoteDone']) test(plan+' cannot unlock a trial without verified payment evidence',async t=>{
+for(const plan of ['Starter','Operator','QuoteDone']) test(plan+' cannot unlock a trial without verified payment evidence',async t=>{
  const f=await createLaunchPlanFixture();t.after(f.close);
  const {token,account}=await verifiedSignup(f,signup(plan));
  // Locked database guard remains effective against direct status edits.

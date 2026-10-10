@@ -23,7 +23,7 @@ function harness() {
     adminService,
     requireAuth: auth,
     requireOperatorAccess: gate,
-    requireQuoteDonePlan: gate,
+    requirePriceBookPlan: gate,
     asyncHandler: handler => handler
   });
   return { routes, calls };

@@ -1,4 +1,5 @@
 const PLAN_PRICE_ENV = Object.freeze({
+  Starter: Object.freeze({monthly: 'STRIPE_STARTER_MONTHLY_PRICE_ID', annual: 'STRIPE_STARTER_ANNUAL_PRICE_ID'}),
   Operator: Object.freeze({
     monthly: 'STRIPE_OPERATOR_MONTHLY_PRICE_ID',
     annual: 'STRIPE_OPERATOR_ANNUAL_PRICE_ID'

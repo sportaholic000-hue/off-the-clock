@@ -20,6 +20,7 @@ const {installBillingRoutes, installBillingWebhookRoute} = await import('../../s
 const stripeVerifier = new Stripe('sk_test_SYNTHETIC_FIXTURE_ONLY');
 const webhookSecret = 'whsec_SYNTHETIC_FIXTURE_ONLY';
 const priceIds = {
+  Starter:{monthly:'price_SYNTHETIC_starter_month',annual:'price_SYNTHETIC_starter_year'},
   Operator: {monthly:'price_operator_month', annual:'price_operator_year'},
   QuoteDone: {monthly:'price_quote_month', annual:'price_quote_year'}
 };

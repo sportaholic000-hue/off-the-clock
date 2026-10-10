@@ -48,6 +48,7 @@ test('enabled Stripe billing must have one complete validated configuration', ()
     STRIPE_BILLING_ENABLED: 'true',
     STRIPE_SECRET_KEY: 'rk_live_backendOnly',
     STRIPE_WEBHOOK_SECRET: 'whsec_signingSecret',
+    STRIPE_STARTER_MONTHLY_PRICE_ID:'price_SYNTHETIC_starter_month',STRIPE_STARTER_ANNUAL_PRICE_ID:'price_SYNTHETIC_starter_year',
     STRIPE_OPERATOR_MONTHLY_PRICE_ID: 'price_operator_month',
     STRIPE_OPERATOR_ANNUAL_PRICE_ID: 'price_operator_year',
     STRIPE_QUOTEDONE_MONTHLY_PRICE_ID: 'price_quote_month',

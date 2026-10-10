@@ -39,7 +39,7 @@ function owner(zone,{seasonal=true}={}) {
 }
 async function routes(t) {
   const app=express();app.use(express.json());
-  installQuoteDoneRoutes(app,{asyncHandler:fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next),requireQuoteDonePlan:(_req,_res,next)=>next()});
+  installQuoteDoneRoutes(app,{asyncHandler:fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next),requirePriceBookPlan:(_req,_res,next)=>next()});
   app.use((error,_req,res,_next)=>res.status(error.statusCode||500).json({error:error.message}));
   const server=app.listen(0,'127.0.0.1');await once(server,'listening');
   t.after(()=>new Promise(resolve=>server.close(resolve)));

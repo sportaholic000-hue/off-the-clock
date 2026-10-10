@@ -6,7 +6,7 @@ export function installBillingUsageSchema(db) {
   CREATE TABLE IF NOT EXISTS billingUsagePeriods (
     id TEXT PRIMARY KEY, ownerId TEXT NOT NULL REFERENCES users(id),
     stripeCustomerId TEXT NOT NULL, stripeSubscriptionId TEXT NOT NULL, stripePriceId TEXT NOT NULL,
-    plan TEXT NOT NULL CHECK(plan IN ('Operator','QuoteDone')), billingInterval TEXT NOT NULL CHECK(billingInterval IN ('monthly','annual')),
+    plan TEXT NOT NULL CHECK(plan IN ('Starter','Operator','QuoteDone')), billingInterval TEXT NOT NULL CHECK(billingInterval IN ('monthly','annual')),
     startAt TEXT NOT NULL, endAt TEXT NOT NULL, termStartAt TEXT NOT NULL, termEndAt TEXT NOT NULL,
     createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL,
     UNIQUE(ownerId,stripeSubscriptionId,startAt), CHECK(endAt>startAt)

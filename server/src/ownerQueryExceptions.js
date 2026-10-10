@@ -132,7 +132,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/authSessionService.js",
     "function": "principal",
     "reason": "Authentication session or refresh token handling.",
-    "signature": "b557be4508e492c6d272fdba628d01f7eddc5de018507df282c17a5fdea43dbc",
+    "signature": "0e616b2aca97497c8bbfb8e779c9ac5ac946eaf97235baf5a528475b94b109c4",
     "occurrence": 1
   },
   {
@@ -701,6 +701,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Migration schema inspection.",
     "signature": "17c7a2c551ac55fe6d7d2531fb73fad4ac4d17483939ff9b559971a9805780ac",
     "occurrence": 1
+  },
+  {
+    "file": "server/src/migrations.js",
+    "function": "migrateStarterPlanConstraints",
+    "reason": "Schema migration preserves indexes and triggers while adding the Starter CHECK value.",
+    "signature": "2f50e250cec642cec78fbf7370e930f3a0913dfc2b0430cd31a0356458f9e820",
+    "occurrence": 1
   }
 ]);
 
@@ -753,7 +760,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "The injected ownerQuery helper prepares SQL after checking the owner predicate.",
     "signature": "4ec7c53222c8a758c722e2111541035ce700d5ae7bd0898c5f1b1a743e6450fd",
     "occurrence": 1,
-    "line": 56
+    "line": 68
   },
   {
     "file": "server/src/bookingAdminService.js",
@@ -799,7 +806,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "file": "server/src/quoteDoneRoutes.js",
     "function": "quote routes",
     "reason": "HTTP path segment named draft, not a database access.",
-    "signature": "db72570f2623abd12c0b007ed07f930c37bb0c274a1bd6be7bb433c1ad003240",
+    "signature": "5b060122282a853f532d4dcd0903ac21cb793631302c70e7ca2f3e059b04baf5",
     "occurrence": 1,
     "line": 276
   },
@@ -833,7 +840,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "045383ababdcc533677d179156ed2324ae3736c4bd18c1f12905c37a053e2c5e",
     "occurrence": 1,
-    "line": 44
+    "line": 45
   },
   {
     "file": "server/src/voice/voicePersistence.js",

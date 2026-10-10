@@ -1,0 +1,437 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter signup → verified trialing → correct onboarding access
+ok 1 - Starter signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 937.215478
+  type: 'test'
+  ...
+# Subtest: Starter signup → verified active → correct onboarding access
+ok 2 - Starter signup → verified active → correct onboarding access
+  ---
+  duration_ms: 729.396296
+  type: 'test'
+  ...
+# Subtest: Operator signup → verified trialing → correct onboarding access
+ok 3 - Operator signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 661.313102
+  type: 'test'
+  ...
+# Subtest: Operator signup → verified active → correct onboarding access
+ok 4 - Operator signup → verified active → correct onboarding access
+  ---
+  duration_ms: 653.609758
+  type: 'test'
+  ...
+# Subtest: QuoteDone signup → verified trialing → correct onboarding access
+ok 5 - QuoteDone signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 658.403917
+  type: 'test'
+  ...
+# Subtest: QuoteDone signup → verified active → correct onboarding access
+ok 6 - QuoteDone signup → verified active → correct onboarding access
+  ---
+  duration_ms: 656.614571
+  type: 'test'
+  ...
+# Subtest: Starter cannot unlock a trial without verified payment evidence
+ok 7 - Starter cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 627.099936
+  type: 'test'
+  ...
+# Subtest: Operator cannot unlock a trial without verified payment evidence
+ok 8 - Operator cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 637.239381
+  type: 'test'
+  ...
+# Subtest: QuoteDone cannot unlock a trial without verified payment evidence
+ok 9 - QuoteDone cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 623.487505
+  type: 'test'
+  ...
+# Subtest: Scale signup is rejected without creating an account
+ok 10 - Scale signup is rejected without creating an account
+  ---
+  duration_ms: 11.842727
+  type: 'test'
+  ...
+# Subtest: bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+ok 11 - bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+  ---
+  duration_ms: 2206.081682
+  type: 'test'
+  ...
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Railway three-plan configuration documents STRIPE_STARTER_MONTHLY_PRICE_ID
+ok 12 - Railway three-plan configuration documents STRIPE_STARTER_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 3.936406
+  type: 'test'
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_STARTER_MONTHLY_PRICE_ID
+ok 13 - Stripe enabled refuses missing STRIPE_STARTER_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 2.037229
+  type: 'test'
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_STARTER_ANNUAL_PRICE_ID
+ok 14 - Railway three-plan configuration documents STRIPE_STARTER_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.450712
+  type: 'test'
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_STARTER_ANNUAL_PRICE_ID
+ok 15 - Stripe enabled refuses missing STRIPE_STARTER_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.356953
+  type: 'test'
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_OPERATOR_MONTHLY_PRICE_ID
+ok 16 - Railway three-plan configuration documents STRIPE_OPERATOR_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 0.492115
+  type: 'test'
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_OPERATOR_MONTHLY_PRICE_ID
+ok 17 - Stripe enabled refuses missing STRIPE_OPERATOR_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 0.467144
+  type: 'test'
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_OPERATOR_ANNUAL_PRICE_ID
+ok 18 - Railway three-plan configuration documents STRIPE_OPERATOR_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.396326
+  type: 'test'
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_OPERATOR_ANNUAL_PRICE_ID
+ok 19 - Stripe enabled refuses missing STRIPE_OPERATOR_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.285336
+  type: 'test'
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_QUOTEDONE_MONTHLY_PRICE_ID
+ok 20 - Railway three-plan configuration documents STRIPE_QUOTEDONE_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 1.331261
+  type: 'test'
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_QUOTEDONE_MONTHLY_PRICE_ID
+ok 21 - Stripe enabled refuses missing STRIPE_QUOTEDONE_MONTHLY_PRICE_ID
+  ---
+  duration_ms: 0.832381
+  type: 'test'
+  ...
+# Subtest: Railway three-plan configuration documents STRIPE_QUOTEDONE_ANNUAL_PRICE_ID
+ok 22 - Railway three-plan configuration documents STRIPE_QUOTEDONE_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.457154
+  type: 'test'
+  ...
+# Subtest: Stripe enabled refuses missing STRIPE_QUOTEDONE_ANNUAL_PRICE_ID
+ok 23 - Stripe enabled refuses missing STRIPE_QUOTEDONE_ANNUAL_PRICE_ID
+  ---
+  duration_ms: 0.465668
+  type: 'test'
+  ...
+# (node:18) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: Starter prices, included allowance and exact overage
+ok 24 - Starter lineup: Starter prices, included allowance and exact overage
+  ---
+  duration_ms: 6.697708
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter account and feature access
+ok 25 - Starter lineup: Starter account and feature access
+  ---
+  duration_ms: 1.782823
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator prices, included allowance and exact overage
+ok 26 - Starter lineup: Operator prices, included allowance and exact overage
+  ---
+  duration_ms: 2.884093
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator account and feature access
+ok 27 - Starter lineup: Operator account and feature access
+  ---
+  duration_ms: 0.340617
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone prices, included allowance and exact overage
+ok 28 - Starter lineup: QuoteDone prices, included allowance and exact overage
+  ---
+  duration_ms: 0.269183
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone account and feature access
+ok 29 - Starter lineup: QuoteDone account and feature access
+  ---
+  duration_ms: 0.795782
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter to Starter recurring price differences
+ok 30 - Starter lineup: Starter to Starter recurring price differences
+  ---
+  duration_ms: 0.327204
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter to Operator recurring price differences
+ok 31 - Starter lineup: Starter to Operator recurring price differences
+  ---
+  duration_ms: 0.179475
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter to QuoteDone recurring price differences
+ok 32 - Starter lineup: Starter to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.483241
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator to Starter recurring price differences
+ok 33 - Starter lineup: Operator to Starter recurring price differences
+  ---
+  duration_ms: 0.61781
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator to Operator recurring price differences
+ok 34 - Starter lineup: Operator to Operator recurring price differences
+  ---
+  duration_ms: 0.21475
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator to QuoteDone recurring price differences
+ok 35 - Starter lineup: Operator to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.089569
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone to Starter recurring price differences
+ok 36 - Starter lineup: QuoteDone to Starter recurring price differences
+  ---
+  duration_ms: 0.139144
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone to Operator recurring price differences
+ok 37 - Starter lineup: QuoteDone to Operator recurring price differences
+  ---
+  duration_ms: 0.066909
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone to QuoteDone recurring price differences
+ok 38 - Starter lineup: QuoteDone to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.067456
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter monthly upgrade savings at 300 minutes
+ok 39 - Starter lineup: Starter monthly upgrade savings at 300 minutes
+  ---
+  duration_ms: 105.844878
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter monthly upgrade savings at 1200 minutes
+ok 40 - Starter lineup: Starter monthly upgrade savings at 1200 minutes
+  ---
+  duration_ms: 0.317837
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator monthly upgrade savings at 1200 minutes
+ok 41 - Starter lineup: Operator monthly upgrade savings at 1200 minutes
+  ---
+  duration_ms: 0.534537
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter annual upgrade savings at 300 minutes
+ok 42 - Starter lineup: Starter annual upgrade savings at 300 minutes
+  ---
+  duration_ms: 0.238208
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator annual upgrade savings at 1200 minutes
+ok 43 - Starter lineup: Operator annual upgrade savings at 1200 minutes
+  ---
+  duration_ms: 0.170673
+  type: 'test'
+  ...
+# (node:19) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:19) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Starter lineup: Starter monthly confirmed usage, warnings and 2520-cent installment
+ok 44 - Starter lineup: Starter monthly confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 231.986056
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter annual confirmed usage, warnings and 2520-cent installment
+ok 45 - Starter lineup: Starter annual confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 271.943219
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator monthly confirmed usage, warnings and 2520-cent installment
+ok 46 - Starter lineup: Operator monthly confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 195.283047
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator annual confirmed usage, warnings and 2520-cent installment
+ok 47 - Starter lineup: Operator annual confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 299.019667
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone monthly confirmed usage, warnings and 2520-cent installment
+ok 48 - Starter lineup: QuoteDone monthly confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 110.39645
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone annual confirmed usage, warnings and 2520-cent installment
+ok 49 - Starter lineup: QuoteDone annual confirmed usage, warnings and 2520-cent installment
+  ---
+  duration_ms: 133.631434
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter trial has 60 minutes, no overage, warnings once
+ok 50 - Starter lineup: Starter trial has 60 minutes, no overage, warnings once
+  ---
+  duration_ms: 37.001036
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator trial has 60 minutes, no overage, warnings once
+ok 51 - Starter lineup: Operator trial has 60 minutes, no overage, warnings once
+  ---
+  duration_ms: 37.651243
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone trial has 60 minutes, no overage, warnings once
+ok 52 - Starter lineup: QuoteDone trial has 60 minutes, no overage, warnings once
+  ---
+  duration_ms: 40.113829
+  type: 'test'
+  ...
+# Subtest: Starter lineup: verified Starter to Operator subscription event
+ok 53 - Starter lineup: verified Starter to Operator subscription event
+  ---
+  duration_ms: 33.283015
+  type: 'test'
+  ...
+# Subtest: Starter lineup: verified Starter to QuoteDone subscription event
+ok 54 - Starter lineup: verified Starter to QuoteDone subscription event
+  ---
+  duration_ms: 33.49822
+  type: 'test'
+  ...
+# Subtest: Starter lineup: verified Operator to Starter subscription event
+ok 55 - Starter lineup: verified Operator to Starter subscription event
+  ---
+  duration_ms: 31.136364
+  type: 'test'
+  ...
+# Subtest: Starter lineup: verified Operator to QuoteDone subscription event
+ok 56 - Starter lineup: verified Operator to QuoteDone subscription event
+  ---
+  duration_ms: 33.203661
+  type: 'test'
+  ...
+# Subtest: Starter lineup: verified QuoteDone to Starter subscription event
+ok 57 - Starter lineup: verified QuoteDone to Starter subscription event
+  ---
+  duration_ms: 33.084532
+  type: 'test'
+  ...
+# Subtest: Starter lineup: verified QuoteDone to Operator subscription event
+ok 58 - Starter lineup: verified QuoteDone to Operator subscription event
+  ---
+  duration_ms: 39.030743
+  type: 'test'
+  ...
+# Subtest: Starter lineup: legacy CHECK migration preserves periods, charges, indexes and foreign keys
+ok 59 - Starter lineup: legacy CHECK migration preserves periods, charges, indexes and foreign keys
+  ---
+  duration_ms: 79.124429
+  type: 'test'
+  ...
+# Subtest: Starter lineup: downgrade suspends staff login but retains owner login and staff data
+ok 60 - Starter lineup: downgrade suspends staff login but retains owner login and staff data
+  ---
+  duration_ms: 37.809922
+  type: 'test'
+  ...
+# (node:25) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: real signup renders three plan choices with exact prices, minutes and exclusions
+ok 61 - Starter lineup: real signup renders three plan choices with exact prices, minutes and exclusions
+  ---
+  duration_ms: 1328.984596
+  type: 'test'
+  ...
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: Operator widget quotes 353889 cents; downgrade blocks exact retry without deleting prices or quotes
+ok 62 - Starter lineup: Operator widget quotes 353889 cents; downgrade blocks exact retry without deleting prices or quotes
+  ---
+  duration_ms: 1890.263802
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone real phone getQuote remains 353889 cents; Operator downgrade refuses replay
+ok 63 - Starter lineup: QuoteDone real phone getQuote remains 353889 cents; Operator downgrade refuses replay
+  ---
+  duration_ms: 635.337878
+  type: 'test'
+  ...
+# (node:37) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: downgrade preserves data and blocks owner/public booking, widget and price book
+ok 64 - Starter lineup: downgrade preserves data and blocks owner/public booking, widget and price book
+  ---
+  duration_ms: 1743.774955
+  type: 'test'
+  ...
+# (node:44) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: Starter real phone boundary offers only entitled tools
+ok 65 - Starter lineup: Starter real phone boundary offers only entitled tools
+  ---
+  duration_ms: 256.702634
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator real phone boundary offers only entitled tools
+ok 66 - Starter lineup: Operator real phone boundary offers only entitled tools
+  ---
+  duration_ms: 122.823409
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone real phone boundary offers only entitled tools
+ok 67 - Starter lineup: QuoteDone real phone boundary offers only entitled tools
+  ---
+  duration_ms: 97.094929
+  type: 'test'
+  ...
+# Subtest: Starter lineup: pending warm transfer cannot connect after downgrade to Starter
+ok 68 - Starter lineup: pending warm transfer cannot connect after downgrade to Starter
+  ---
+  duration_ms: 222.408572
+  type: 'test'
+  ...
+1..68
+# tests 68
+# suites 0
+# pass 68
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9456.585567
