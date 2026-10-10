@@ -1,11 +1,12 @@
 name: Price Book first visit synthetic verification
 on:
-  push:
-    branches: ['fix/pricebook-first-visit-20261009']
+  pull_request:
+    branches: ['claude/release-candidate-20261009d']
 permissions:
   contents: read
 jobs:
   verification:
+    if: github.head_ref == 'fix/pricebook-first-visit-20261009'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     strategy:
@@ -14,7 +15,9 @@ jobs:
         version: [base, final]
     steps:
       - uses: actions/checkout@v4
-        with: {fetch-depth: 0}
+        with:
+          fetch-depth: 0
+          ref: '${{ github.event.pull_request.head.sha }}'
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - name: Pin the base with the same regression and rehearsal
@@ -51,7 +54,7 @@ jobs:
         if: always()
         env:
           REHEARSAL_OUTPUT: /tmp/pricebook-evidence/rehearsal
-          REHEARSAL_COMMIT: '${{ github.sha }}'
+          REHEARSAL_COMMIT: '${{ github.event.pull_request.head.sha }}'
         run: |
           node verification/first-customer-20261009/rehearsal.mjs > /tmp/pricebook-evidence/rehearsal.log 2>&1
       - name: Full test suite
