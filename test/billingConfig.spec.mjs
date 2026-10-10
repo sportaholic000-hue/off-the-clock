@@ -9,6 +9,7 @@ function completeEnv(overrides = {}) {
     STRIPE_BILLING_ENABLED: 'true',
     STRIPE_SECRET_KEY: 'rk_live_backendOnly',
     STRIPE_WEBHOOK_SECRET: 'whsec_signingSecret',
+    STRIPE_STARTER_MONTHLY_PRICE_ID:'price_SYNTHETIC_starter_month',STRIPE_STARTER_ANNUAL_PRICE_ID:'price_SYNTHETIC_starter_year',
     STRIPE_OPERATOR_MONTHLY_PRICE_ID: 'price_operator_month',
     STRIPE_OPERATOR_ANNUAL_PRICE_ID: 'price_operator_year',
     STRIPE_QUOTEDONE_MONTHLY_PRICE_ID: 'price_quote_month',
@@ -33,7 +34,7 @@ test('one validated configuration drives Checkout and webhook price authority', 
   assert.equal(config.enabled, true);
   assert.equal(config.priceIds.QuoteDone.annual, 'price_quote_year');
   assert.deepEqual(config.pricePlanMap.get('price_quote_year'), { plan: 'QuoteDone', kind: 'base' });
-  assert.equal(config.pricePlanMap.size, 6);
+  assert.equal(config.pricePlanMap.size, 8);
 });
 
 test('billing rejects test credentials in production and malformed signing secrets', () => {
@@ -64,10 +65,10 @@ test('loopback HTTP billing URLs are development-only', () => {
 });
 
 
-test('launch configuration requires only the two offered plans; legacy Scale prices are not offered', () => {
+test('launch configuration requires only the three offered plans; legacy Scale prices are not offered', () => {
   const config = loadBillingConfig(completeEnv({STRIPE_SCALE_MONTHLY_PRICE_ID: '', STRIPE_SCALE_ANNUAL_PRICE_ID: ''}));
-  assert.deepEqual(Object.keys(config.priceIds), ['Operator', 'QuoteDone']);
-  assert.equal(config.pricePlanMap.size, 4);
+  assert.deepEqual(Object.keys(config.priceIds), ['Starter', 'Operator', 'QuoteDone']);
+  assert.equal(config.pricePlanMap.size, 6);
   const legacy = loadBillingConfig(completeEnv());
   assert.equal(legacy.priceIds.Scale, undefined);
   assert.deepEqual(legacy.pricePlanMap.get('price_scale_month'), {plan:'Scale',kind:'base'});

@@ -2,16 +2,16 @@ export function installBookingAdminRoutes(app, {
   adminService,
   requireAuth,
   requireOperatorAccess,
-  requireQuoteDonePlan,
+  requirePriceBookPlan,
   asyncHandler
 }) {
   if (!app || !adminService || typeof requireAuth !== 'function' ||
-      typeof requireOperatorAccess !== 'function' || typeof requireQuoteDonePlan !== 'function' ||
+      typeof requireOperatorAccess !== 'function' || typeof requirePriceBookPlan !== 'function' ||
       typeof asyncHandler !== 'function') {
     throw new TypeError('Booking admin routes require service, auth, entitlement, and async dependencies.');
   }
   const owner = [requireAuth(['owner']), requireOperatorAccess];
-  const quoteOwner = [requireAuth(['owner']), requireQuoteDonePlan];
+  const quoteOwner = [requireAuth(['owner']), requirePriceBookPlan];
 
   app.get('/api/booking/configuration', ...owner, asyncHandler(async (req, res) =>
     res.json(adminService.getConfiguration({ ownerId: req.tenantOwnerId }))

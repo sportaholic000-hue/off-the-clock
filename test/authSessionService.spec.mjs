@@ -11,10 +11,10 @@ function cleanup(t,dir){t.after(()=>{assert.ok(path.resolve(dir).startsWith(path
 const env={JWT_SECRET:'SYNTHETIC-session-secret-'.repeat(3),ADMIN_EMAIL:'admin@example.invalid',ADMIN_PASSWORD_HASH:'SYNTHETIC-admin-hash'};
 function setup(t,{file=':memory:',create=true}={}) {
  const db=new Database(file);db.pragma('foreign_keys=ON');db.pragma('busy_timeout=5000');t.after(()=>db.close());
- if(create){db.exec('CREATE TABLE users(id TEXT PRIMARY KEY,ownerId TEXT,role TEXT,email TEXT,passwordHash TEXT)');installAuthSessionSchema(db);installAuthLimitSchema(db);}
+ if(create){db.exec('CREATE TABLE users(id TEXT PRIMARY KEY,ownerId TEXT,role TEXT,email TEXT,passwordHash TEXT,plan TEXT DEFAULT "Operator")');installAuthSessionSchema(db);installAuthLimitSchema(db);}
  let time=Date.parse('2026-09-30T00:00:00Z');const clock=()=>new Date(time);
  const sessions=createAuthSessionService(db,{environment:env,clock}), limiter=createAuthRateLimiter(db,{secret:env.JWT_SECRET,clock});
- const user=(id='owner-a',role='owner',ownerId=null)=>{const value={id,role,ownerId,email:id+'@example.invalid',passwordHash:'SYNTHETIC-hash-'+id};db.prepare('INSERT INTO users VALUES(?,?,?,?,?)').run(id,ownerId,role,value.email,value.passwordHash);return value;};
+ const user=(id='owner-a',role='owner',ownerId=null)=>{const value={id,role,ownerId,email:id+'@example.invalid',passwordHash:'SYNTHETIC-hash-'+id};db.prepare('INSERT INTO users(id,ownerId,role,email,passwordHash) VALUES(?,?,?,?,?)').run(id,ownerId,role,value.email,value.passwordHash);return value;};
  const claims=token=>jwt.verify(token,env.JWT_SECRET,{algorithms:['HS256'],clockTimestamp:Math.floor(time/1000)});
  return {db,user,sessions,limiter,claims,advance:ms=>{time+=ms;},clock};
 }

@@ -2,7 +2,7 @@ import {usageOwnerQuery} from './billingUsagePolicy.js';
 import crypto from 'node:crypto';
 import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 
-const PLANS = Object.freeze(['Operator', 'QuoteDone']);
+const PLANS = Object.freeze(['Starter', 'Operator', 'QuoteDone']);
 const BILLING_INTERVALS = Object.freeze(['monthly', 'annual']);
 const CHECKOUT_EVENT_TYPES = new Set([
   'checkout.session.completed',

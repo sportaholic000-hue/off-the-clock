@@ -1,3 +1,4 @@
+import {hasOperatorAccess} from '../planAccess.js';
 import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import express from 'express';
 import {transferDecision} from './voiceSettings.js';
@@ -41,6 +42,7 @@ export function createVoiceProviderAdapters({app,database,ownerQuery,twilioClien
       if(body.AccountSid!==valid.accountSid||body.AccountSid!==call.accountSid||
         (stage==='accept'?(body.ParentCallSid!==call.callSid||body.To!==data.destination):(body.CallSid!==call.callSid||body.To!==call.destinationNumber||body.From!==call.callerNumber)))throw Error();
     }catch{return res.sendStatus(403);}
+    if(stage==='accept'&&!hasOperatorAccess(query("SELECT * FROM users WHERE id=@ownerId AND ownerId IS NULL").get({ownerId:call.ownerId}),{now:new Date(clock())}))return res.type('text/xml').send('<Response><Hangup/></Response>');
     if(isFinalVoiceCall(call.status))return res.type('text/xml').send(stage==='accept'&&body.Digits==='1'&&event.status==='CONNECTED'?'<Response/>':'<Response><Hangup/></Response>');
     try{
       if(stage==='accept'){

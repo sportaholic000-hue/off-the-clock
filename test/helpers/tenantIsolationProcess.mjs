@@ -14,6 +14,7 @@ export async function startTenantIsolation(t,{production=false,configured=true}=
     DATABASE_PATH:production?path.join(directory,'off-the-clock.sqlite'):path.join(directory,'synthetic.sqlite'),PRICEBOOK_PATH:path.join(directory,'pricebooks'),
     PUBLIC_BASE_URL:origin,CLIENT_URL:origin,CORS_ALLOWED_ORIGINS:origin,LOCAL_PREVIEW_MODE:production?'false':'true',
     STRIPE_BILLING_ENABLED:configured?'true':'false',STRIPE_SECRET_KEY:'sk_'+(production?'live':'test')+'_SYNTHETIC_NEVER_LIVE',STRIPE_WEBHOOK_SECRET:'whsec_SYNTHETIC',
+    STRIPE_STARTER_MONTHLY_PRICE_ID:'price_SYNTHETIC_starter_month',STRIPE_STARTER_ANNUAL_PRICE_ID:'price_SYNTHETIC_starter_year',
     STRIPE_OPERATOR_MONTHLY_PRICE_ID:'price_synthetic_O_month',STRIPE_OPERATOR_ANNUAL_PRICE_ID:'price_synthetic_O_year',STRIPE_QUOTEDONE_MONTHLY_PRICE_ID:'price_synthetic_Q_month',STRIPE_QUOTEDONE_ANNUAL_PRICE_ID:'price_synthetic_Q_year',
     STRIPE_CHECKOUT_SUCCESS_URL:origin+'/billing/success',STRIPE_CHECKOUT_CANCEL_URL:origin+'/billing/cancel',STRIPE_PORTAL_RETURN_URL:origin+'/billing',STRIPE_INTEGRATION_IDENTIFIER:'Synthetic_abcdefgh',
     TWILIO_ACCOUNT_SID:'AC'+'a'.repeat(32),TWILIO_AUTH_TOKEN:'SYNTHETIC_TWILIO_SIGNING_TOKEN',TWILIO_API_KEY_SID:'SK'+'a'.repeat(32),TWILIO_API_KEY_SECRET:'SYNTHETIC_API_KEY_SECRET',

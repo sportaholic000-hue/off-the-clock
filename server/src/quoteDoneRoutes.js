@@ -215,10 +215,10 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
 function leadView(row,role) {
   return leadFollowUpView(ownerQuery,row,role);
 }
-export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bookingService,bookingTokenSecret}) {
+export function installQuoteDoneRoutes(app,{asyncHandler,requirePriceBookPlan,bookingService,bookingTokenSecret}) {
   registerQuoteDateDatabase(db);
-  const owner=[requireAuth(['owner']),requireQuoteDonePlan];
-  const team=[requireAuth(['owner','staff']),requireQuoteDonePlan];
+  const owner=[requireAuth(['owner']),requirePriceBookPlan];
+  const team=[requireAuth(['owner','staff']),requirePriceBookPlan];
   const leadTeam=[requireAuth(['owner','staff'])]; // CRM is included on Operator.
   app.get('/api/pricebook/meta',requireAuth(['owner']),(_req,res)=>res.json(applicationMetadata()));
   app.get('/api/pricebook/:ownerId',...owner,(req,res)=>{
@@ -248,7 +248,7 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
     const row=ownerQuery('SELECT publicKey,allowedOriginsJson FROM quoteAccessKeys WHERE ownerId = ?').get(req.tenantOwnerId);
     res.json(row?{publicKey:row.publicKey,allowedOrigins:parseStoredQuoteOrigins(row.allowedOriginsJson)}:{publicKey:null,allowedOrigins:[]});
   });
-  app.get('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,(req,res)=>{
+  app.get('/api/public/quote/:publicKey',publicContext,publicLimit,requirePriceBookPlan,(req,res)=>{
     const book=loadPricebook(req.tenantOwnerId),meta=applicationMetadata();
     const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,req.tenantOwnerId)).map(status=>[status.serviceId,status]));
     const services=book.services
@@ -270,10 +270,10 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
       services
     });
   });
-  app.post('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,requireSavedQuoteService,asyncHandler(async(req,res)=>{
+  app.post('/api/public/quote/:publicKey',publicContext,publicLimit,requirePriceBookPlan,requireSavedQuoteService,asyncHandler(async(req,res)=>{
     const result=submitQuote(req.tenantOwnerId,req.body,{bookingService,bookingTokenSecret});res.status(result.status).json(result.response);
   }));
-  app.post('/api/public/quote/:publicKey/prepare',publicContext,publicLimit,requireQuoteDonePlan,requireSavedQuoteService,asyncHandler(async(req,res)=>{
+  app.post('/api/public/quote/:publicKey/prepare',publicContext,publicLimit,requirePriceBookPlan,requireSavedQuoteService,asyncHandler(async(req,res)=>{
     res.json(prepareApplicationIntake(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)));
   }));
   app.post('/api/quote/prepare',...team,requireSavedQuoteService,asyncHandler(async(req,res)=>{

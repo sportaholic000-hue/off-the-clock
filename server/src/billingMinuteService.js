@@ -33,7 +33,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
       if(!verified)pending++;
       else {confirmedMinutes+=row.minutesBilled;proof.push([row.id,row.providerDigest,row.providerDurationSeconds,row.minutesBilled]);}
     }
-    const totals=period.kind==='trial'?{minutesUsed:confirmedMinutes,includedMinutes:60,minutesLeft:Math.max(0,60-confirmedMinutes),overageMinutes:0,overageCents:0,upgradeMessage:null}:usageAmounts(period.plan,confirmedMinutes);
+    const totals=period.kind==='trial'?{minutesUsed:confirmedMinutes,includedMinutes:60,minutesLeft:Math.max(0,60-confirmedMinutes),overageMinutes:0,overageCents:0,upgradeMessage:null}:usageAmounts(period.plan,confirmedMinutes,period.billingInterval);
     return {...totals,confirmedMinutesUsed:confirmedMinutes,unconfirmedCalls:pending,proof,digest:billingUsageId('duration-proof-v1',proof)};
   }
   function warnings(period,totals){

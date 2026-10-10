@@ -25,12 +25,13 @@ import {getVoiceToolDeclarations} from './toolSchemas.js';
 import {createVoiceWebSocketServer} from './voiceWebSocketServer.js';
 import {createGeminiMediaBridge} from './geminiMediaBridge.js';
 import {createGoogleGenAiLiveSessionOpener} from './googleGenAiLiveAdapter.js';
+import {voicePlanCapabilities,voiceToolAllowed,PLAN_TOOL_UNAVAILABLE} from './voicePlanAccess.js';
 import {compileVoiceSystemInstruction} from './voicePromptCompiler.js';
 import {readReviewContact} from '../reviewContact.js';
 import {loadPricebook} from '../../priceBookService.js';
 import {bookQuoteStatuses,applicationServiceName} from '../quoteDoneBridge.js';
 import {quoteDateContext} from '../quoteDate.js';
-import {hasOperatorAccess,hasQuoteDoneAccess,trialVoiceCapDecision} from '../planAccess.js';
+import {hasReceptionistAccess,hasQuoteDoneAccess,trialVoiceCapDecision} from '../planAccess.js';
 
 import {VOICE_NAMES} from './voiceSettings.js';
 
@@ -60,6 +61,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const meter=createBillingVoiceUsage({database,clock,onUsage});
   installBillingVoiceRoutes(app,{validator,meter});
   const account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
+  const capabilities=ownerId=>voicePlanCapabilities(account(ownerId).account,{now:new Date(clock())});
   function offRouting(context){
     const state=account(context.ownerId);
     if(state.profile?.operatorEnabled!==0)return null;
@@ -85,7 +87,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   providers={...productionProviders,...providers};
   const paths=installVoiceRuntimeRoutes(app,{
     twilioValidator:validator,tenantResolver,nonceService,allowedAccountSids:[accountSid],publicBaseUrl,runtimeEnabled:enabled,
-    checkOperatorEligibility:({context})=>{const state=account(context.ownerId);return hasOperatorAccess(state.account,{now:new Date(clock())})&&state.profile?.operatorEnabled===1&&state.profile.phoneProvisioningStatus==='provisioned'&&state.profile.twilioNumber===context.to;},
+    checkOperatorEligibility:({context})=>{const state=account(context.ownerId);return hasReceptionistAccess(state.account,{now:new Date(clock())})&&state.profile?.operatorEnabled===1&&state.profile.phoneProvisioningStatus==='provisioned'&&state.profile.twilioNumber===context.to;},
     checkVoiceCap:({context})=>{const state=account(context.ownerId);return trialVoiceCapDecision(state.account,{now:new Date(clock()),minutesUsed:state.minutesUsed});},
     validateCallBinding:store.validateCallBinding,
     validateIncomingCall:store.validateIncomingCall,
@@ -109,7 +111,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     }
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
-    return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge,greeting:profile?.greeting||undefined});
+    return compileVoiceSystemInstruction({capabilities:capabilities(context.ownerId),guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge,greeting:profile?.greeting||undefined});
    }catch(error){
     const setting=error.setting||({INVALID_BUSINESS_GREETING:'Greeting',INVALID_REVIEW_CONTACT:'Review contact',INVALID_ACTIVE_SERVICE:'Live services and registered products',INVALID_BUSINESS_LABELS:'Business or agent name',INVALID_BUSINESS_KNOWLEDGE:'Business knowledge'}[error.code])||'Receptionist guide or service configuration';
     const message='The receptionist could not load '+setting+'. Calls use the fallback until this is corrected. Review and save '+setting+' in settings; email support@offtheclockai.com if the problem remains.';
@@ -123,10 +125,9 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const {context,session}=input;
     const runtime=createVoiceToolRuntime({database,callContext:context,handleSecret,bookingService,providers,clock});
     const handlers={...runtime.handlers};
-    for(const name of ['matchService','getQuote']){const original=handlers[name];handlers[name]=invocation=>{if(!hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())}))return {status:'needs_details',customerMessage:'The business will review this pricing request.'};return original(invocation);};}
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
     const voiceProfile=usageOwnerQuery(database)('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId);
-    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations(),greetOnConnect:true});
+    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations().filter(tool=>voiceToolAllowed(tool.name,capabilities(context.ownerId))),greetOnConnect:true});
     let started=null;
     const pendingTranscripts=[];
     function flushTranscripts(){
@@ -149,7 +150,13 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
         pendingTranscripts.push({transcript,streamSid});flushTranscripts();
       },
       onToolCall:async({toolCall})=>{
-        try{return await dispatcher.dispatch(toolCall);}catch{
+        try{
+          // Fresh entitlement precedes idempotency replay as well as provider work.
+          if(!voiceToolAllowed(toolCall.name,capabilities(context.ownerId)))return PLAN_TOOL_UNAVAILABLE;
+          const result=await dispatcher.dispatch(toolCall);
+          if(toolCall.name==='captureLead'&&!capabilities(context.ownerId).booking)return {...result,message:'Request saved for owner review.'};
+          return result;
+        }catch{
           onError('VOICE_TOOL_REJECTED');
           return {status:'needs_details',customerMessage:'That action could not be completed. Check the requested details and caller confirmation; no successful price or booking is being reported.'};
         }

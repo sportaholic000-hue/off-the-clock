@@ -9,7 +9,8 @@ import assert from 'node:assert/strict';
 
 export const A='SYNTHETIC-owner-a',B='SYNTHETIC-owner-b';
 export const SIGNUP='2026-10-06T12:00:00.000Z',START='2026-10-20T12:00:00.000Z';
-export const prices={Operator:{monthly:'price_SYNTHETIC_op_month',annual:'price_SYNTHETIC_op_year'},QuoteDone:{monthly:'price_SYNTHETIC_qd_month',annual:'price_SYNTHETIC_qd_year'}};
+export const prices={Starter:{monthly:'price_SYNTHETIC_starter_month',annual:'price_SYNTHETIC_starter_year'},
+  Operator:{monthly:'price_SYNTHETIC_op_month',annual:'price_SYNTHETIC_op_year'},QuoteDone:{monthly:'price_SYNTHETIC_qd_month',annual:'price_SYNTHETIC_qd_year'}};
 const copy=value=>JSON.parse(JSON.stringify(value));
 const sec=iso=>Date.parse(iso)/1000;
 export function fakeProviders(){
