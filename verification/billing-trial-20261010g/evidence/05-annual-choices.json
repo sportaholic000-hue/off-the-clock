@@ -1,0 +1,47 @@
+{
+  "status": {
+    "status": 200,
+    "body": {
+      "billingEnabled": true,
+      "providerAvailable": true,
+      "plan": "Operator",
+      "planStatus": "pending_payment",
+      "billingInterval": null,
+      "trialEndsAt": null,
+      "paymentFailedAt": null,
+      "graceEndsAt": null,
+      "currentPeriodEndAt": null,
+      "cancelAtPeriodEnd": false,
+      "checkoutState": "NONE",
+      "canCheckout": true,
+      "canManageBilling": false
+    }
+  },
+  "selections": [
+    {
+      "plan": "Starter",
+      "interval": "annual",
+      "selectedPlan": "Starter",
+      "selectedInterval": "annual",
+      "screen": "Off The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outOff The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outSettingsBillingChoose a subscription or manage your existing billing.Your accountCalendarVoice & greetingCurrent subscriptionPlanOperatorStatusPayment pendingComplete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.Start subscriptionPlanChoose a planStarterOperatorQuoteDoneBilling intervalChoose an intervalMonthlyAnnualYour selected plan starts with a 14-day trial and a card on file. The first payment is at trial end: Starter $69 monthly or $690 for 12 months; Operator $119 monthly or $1,190 for 12 months; QuoteDone $279 monthly or $2,790 for 12 months. Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.Continue to checkoutPlan lifecycleExport leads (CSV)Export quotes (CSV)Export calls (CSV)Billing noticesNo billing notices yet.Refresh billing status"
+    },
+    {
+      "plan": "Operator",
+      "interval": "annual",
+      "selectedPlan": "Operator",
+      "selectedInterval": "annual",
+      "screen": "Off The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outOff The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outSettingsBillingChoose a subscription or manage your existing billing.Your accountCalendarVoice & greetingCurrent subscriptionPlanOperatorStatusPayment pendingComplete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.Start subscriptionPlanChoose a planStarterOperatorQuoteDoneBilling intervalChoose an intervalMonthlyAnnualYour selected plan starts with a 14-day trial and a card on file. The first payment is at trial end: Starter $69 monthly or $690 for 12 months; Operator $119 monthly or $1,190 for 12 months; QuoteDone $279 monthly or $2,790 for 12 months. Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.Continue to checkoutPlan lifecycleExport leads (CSV)Export quotes (CSV)Export calls (CSV)Billing noticesNo billing notices yet.Refresh billing status"
+    },
+    {
+      "plan": "QuoteDone",
+      "interval": "annual",
+      "selectedPlan": "QuoteDone",
+      "selectedInterval": "annual",
+      "screen": "Off The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outOff The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outSettingsBillingChoose a subscription or manage your existing billing.Your accountCalendarVoice & greetingCurrent subscriptionPlanOperatorStatusPayment pendingComplete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.Start subscriptionPlanChoose a planStarterOperatorQuoteDoneBilling intervalChoose an intervalMonthlyAnnualYour selected plan starts with a 14-day trial and a card on file. The first payment is at trial end: Starter $69 monthly or $690 for 12 months; Operator $119 monthly or $1,190 for 12 months; QuoteDone $279 monthly or $2,790 for 12 months. Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.Continue to checkoutPlan lifecycleExport leads (CSV)Export quotes (CSV)Export calls (CSV)Billing noticesNo billing notices yet.Refresh billing status"
+    }
+  ],
+  "pricesShown": true,
+  "quotasShown": false,
+  "overageShown": true,
+  "monthlyResetShown": true
+}

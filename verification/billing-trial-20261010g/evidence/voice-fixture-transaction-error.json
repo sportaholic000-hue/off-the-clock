@@ -1,0 +1,39 @@
+{
+  "message": "Timed out waiting for media completion",
+  "stack": "Error: Timed out waiting for media completion\n    at until (file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/harness.mjs:31:9)\n    at async Object.finishMedia (file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/harness.mjs:120:5)\n    at async file:///workspace/scratch/1180b13f1fcb/off-the-clock/verification/billing-trial-20261010g/run-dom.mjs:58:38",
+  "voiceErrors": [
+    "VOICE_FINAL_CAPTURE_FAILED"
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/stripe/webhook",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/lifecycle",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/twilio/voice/incoming",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    }
+  ]
+}

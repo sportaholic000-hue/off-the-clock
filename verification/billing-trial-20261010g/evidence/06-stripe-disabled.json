@@ -1,0 +1,31 @@
+{
+  "status": {
+    "status": 404,
+    "body": {
+      "error": "Not found"
+    }
+  },
+  "lifecycle": {
+    "status": 200,
+    "body": {
+      "serviceEndsAt": null,
+      "cancellation": null,
+      "notices": []
+    }
+  },
+  "screen": "Off The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outOff The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outSettingsBillingChoose a subscription or manage your existing billing.Your accountCalendarVoice & greetingBilling is not configured yet.Refresh billing status",
+  "currentSubscriptionPresent": false,
+  "refreshPresent": true,
+  "requests": [
+    {
+      "path": "/api/billing/status",
+      "method": "GET",
+      "status": 404
+    },
+    {
+      "path": "/api/billing/lifecycle",
+      "method": "GET",
+      "status": 200
+    }
+  ]
+}

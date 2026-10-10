@@ -12,7 +12,12 @@ import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import {build} from 'esbuild';
-import {fixture,A,B,prices} from '../../test/overageMinute20261006Fixture.mjs';
+import Database from 'better-sqlite3';
+import {fakeProviders,A,B,prices} from '../../test/overageMinute20261006Fixture.mjs';
+import {migrateDatabase} from '../../server/src/migrations.js';
+import {createBillingStateService} from '../../server/src/billingStateService.js';
+import {createBillingMinuteService} from '../../server/src/billingMinuteService.js';
+import {createStripeOverageProvider} from '../../server/src/billingOverageProvider.js';
 import {installBillingRoutes,installBillingWebhookRoute} from '../../server/src/billingRoutes.js';
 import {createBillingCustomerLifecycle,installBillingCustomerLifecycleRoutes} from '../../server/src/billingCustomerLifecycle.js';
 import {installProductionVoice} from '../../server/src/voice/productionVoiceRuntime.js';
@@ -42,7 +47,18 @@ export async function buildUi(){
 }
 
 export async function startHarness({stripeEnabled=true,dist}={}){
-  const f=fixture(null);f.setTime(START);
+  // Use the production SQLite driver, also used by the requested voice fixture.
+  // Node 22's DatabaseSync lacks the transaction-state property needed by nested
+  // voice finalization; the overage fixture itself only drives the meter directly.
+  const db=new Database(':memory:');db.pragma('foreign_keys=ON');migrateDatabase(db);
+  let time=new Date(START);const clock=()=>new Date(time),fakes=fakeProviders();
+  const billing=createBillingStateService({db,priceIds:prices,pricePlanMap:Object.fromEntries(Object.entries(prices).flatMap(([plan,ids])=>Object.values(ids).map(id=>[id,plan]))),clock});
+  const service=createBillingMinuteService({database:db,priceIds:prices,clock,paymentProvider:createStripeOverageProvider({stripeClient:fakes.stripe}),emailProvider:fakes.email,enabled:()=>true});
+  const f={db,clock,fakes,billing,service,setTime:value=>{time=new Date(value);},close:()=>db.close()};
+  for(const id of [A,B]){
+    db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'SYNTHETIC','[PLACEHOLDER]','[PLACEHOLDER]','Operator','pending_payment','UTC','owner',?)").run(id,id+'@example.invalid',START);
+    billing.registerBillingCustomer({ownerId:id,stripeCustomerId:'cus_'+id});
+  }
   f.db.prepare("UPDATE users SET firstName='[PLACEHOLDER]',businessName='[PLACEHOLDER] Billing rehearsal',createdAt=?").run(START);
   // B represents an owner who has not yet visited Checkout; no Stripe customer exists.
   f.db.prepare('DELETE FROM billingAccounts WHERE ownerId=?').run(B);

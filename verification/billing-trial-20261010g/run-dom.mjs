@@ -34,7 +34,12 @@ async function screen(h,owner=A){
   const button=()=>[...doc.querySelectorAll('button')].find(b=>b.textContent==='Refresh billing status');
   await until(()=>button()&&!button().disabled,'Billing React mount');
   return {dom,doc,text,requests,errors,button,
-    async refresh(){const count=requests.length;button().click();await until(()=>requests.length>count&&button()&&!button().disabled,'Billing refresh');},
+    async refresh(){
+      const count=requests.length;button().click();
+      // Wait for BOTH real responses and React's completed render; counting a
+      // request alone can observe the previous button before busy commits.
+      await until(()=>requests.length>=count+2&&requests.slice(count).every(r=>Number.isInteger(r.status))&&button()&&!button().disabled,'Billing refresh');
+    },
     async select(label,value){const input=doc.querySelector('select[aria-label="'+label+'"]');if(!input)throw Error('Missing selection: '+label);input.value=value;input.dispatchEvent(new dom.window.Event('change',{bubbles:true}));await new Promise(resolve=>setImmediate(resolve));},
     snapshot(name){save(name+'.txt',text()+'\n');save(name+'.html',dom.serialize());return text();},
     close(){dom.window.close();}};
@@ -65,12 +70,12 @@ try{
     save('03-completed-call.json',completed);
     row('3. Completed 125-second call',completion.status===204&&completed.usage.snapshot.minutesUsed===3&&completed.usage.snapshot.minutesLeft===57&&/minutes used/i.test(completed.screen)&&/\b57\b/.test(completed.screen),completed);
     const region=()=>page.doc.querySelector('[aria-label="Current subscription"]').textContent;
-    const refreshBefore=region(),change=await h.setTrial('QuoteDone'),beforeClick=region();
+    const refreshBefore=region(),change=await h.setTrial('QuoteDone'),authoritativeStatus=await h.api('/api/billing/status'),beforeClick=region();
     const getsBefore=page.requests.filter(r=>r.path==='/api/billing/status').length;
     await page.refresh();const refreshAfter=region(),getsAfter=page.requests.filter(r=>r.path==='/api/billing/status').length;
-    const refresh={refreshBefore,beforeClick,refreshAfter,changeStatus:change.status,getsBefore,getsAfter,requests:page.requests,screen:page.snapshot('04-refreshed-page')};
+    const refresh={refreshBefore,beforeClick,refreshAfter,changeStatus:change.status,authoritativeStatus,getsBefore,getsAfter,requests:page.requests,screen:page.snapshot('04-refreshed-page')};
     save('04-refresh.json',refresh);
-    row('4. Refresh billing status',change.status===200&&/Operator/.test(beforeClick)&&/QuoteDone/.test(refreshAfter)&&getsAfter===getsBefore+1,refresh);
+    row('4. Refresh billing status',change.status===200&&authoritativeStatus.body.plan==='QuoteDone'&&/Operator/.test(beforeClick)&&/QuoteDone/.test(refreshAfter)&&getsAfter===getsBefore+1,refresh);
     chooser=await screen(h,B);
     for(const interval of ['monthly','annual']){
       const selections=[];
@@ -102,5 +107,6 @@ try{
     googleLiveConnections:h.connects.length,voiceErrors:h.errors,reactErrors:page.errors,chooserErrors:chooser?.errors||[],requests:h.requests,
     finalUsage:h.usage(),disabledRequests:disabled?.requests||[],note:'No background workers started; Google/Twilio/Stripe clients are injected fakes. Auth is a synthetic fixture middleware, not an authentication test.'});
   console.log(JSON.stringify({total:results.length,passed:results.filter(r=>r.result==='PASS').length,failed:results.filter(r=>r.result==='FAIL').length,screenshots:0}));
+  if(results.some(r=>r.result==='FAIL'))process.exitCode=1;
 }catch(error){save('harness-error.json',{message:error.message,stack:error.stack,voiceErrors:h.errors,requests:h.requests});throw error;}
 finally{page?.close();chooser?.close();disabledPage?.close();await disabled?.close();await h.close();}

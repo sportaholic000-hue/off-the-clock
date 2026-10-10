@@ -8,7 +8,7 @@
     "finalize": [],
     "email": []
   },
-  "googleLiveConnections": 0,
+  "googleLiveConnections": 1,
   "voiceErrors": [],
   "reactErrors": [],
   "chooserErrors": [],
@@ -36,22 +36,118 @@
       "path": "/api/billing/status",
       "at": "2026-10-10T12:00:00.000Z",
       "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/twilio/voice/incoming",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/lifecycle",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/twilio/voice/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 204
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/lifecycle",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/stripe/webhook",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/lifecycle",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/lifecycle",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:02:05.000Z",
+      "status": 200
     }
   ],
   "finalUsage": {
     "snapshot": {
       "status": "TRIAL",
-      "plan": "Operator",
+      "plan": "QuoteDone",
       "periodId": "984283ad1f4a0bb4ec920ef92a0276d6c15dd56cb4c2c0cd4391ed9be5ddc9ea",
       "periodStartAt": "2026-10-10T12:00:00.000Z",
       "periodEndAt": "2026-10-24T12:00:00.000Z",
-      "minutesUsed": 0,
+      "minutesUsed": 3,
       "includedMinutes": 60,
-      "minutesLeft": 60,
+      "minutesLeft": 57,
       "overageMinutes": 0,
       "overageCents": 0,
       "upgradeMessage": null,
-      "confirmedMinutesUsed": 0,
+      "confirmedMinutesUsed": 3,
       "unconfirmedCalls": 0,
       "chargedCents": 0,
       "unchargedCents": 0,
@@ -59,9 +155,50 @@
       "warnings": [],
       "pendingCharges": []
     },
-    "calls": [],
-    "meter": []
+    "calls": [
+      {
+        "id": "f7194f5d-1a3b-4c3d-9167-acb9273fe11f",
+        "status": "COMPLETED",
+        "duration": 125,
+        "minutesBilled": 3,
+        "completedAt": "2026-10-10T12:02:05.000Z"
+      }
+    ],
+    "meter": [
+      {
+        "callId": "f7194f5d-1a3b-4c3d-9167-acb9273fe11f",
+        "usageKind": "trial",
+        "localDurationSeconds": 125,
+        "providerDurationSeconds": 125,
+        "providerDigest": "dee429457df1392939c8072747de994b111d0d2e20bd194ee5ad1963c19a96d3"
+      }
+    ]
   },
-  "disabledRequests": [],
+  "disabledRequests": [
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/lifecycle",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/lifecycle",
+      "at": "2026-10-10T12:00:00.000Z",
+      "status": 200
+    }
+  ],
   "note": "No background workers started; Google/Twilio/Stripe clients are injected fakes. Auth is a synthetic fixture middleware, not an authentication test."
 }
