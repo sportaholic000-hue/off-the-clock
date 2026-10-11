@@ -1,0 +1,43 @@
+[
+  {
+    "label": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "timeout": false
+  },
+  {
+    "label": "full",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "exit": 1,
+    "timeout": false,
+    "tests": 4942,
+    "pass": 4882,
+    "fail": 60,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "label": "quote",
+    "command": [
+      "npm",
+      "run",
+      "test:quote"
+    ],
+    "exit": 1,
+    "timeout": false,
+    "tests": 4211,
+    "pass": 4151,
+    "fail": 60,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  }
+]

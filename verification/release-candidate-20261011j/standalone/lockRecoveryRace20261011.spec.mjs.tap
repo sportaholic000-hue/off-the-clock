@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: lock race: two child recoverers never enter protected callbacks together
+ok 1 - lock race: two child recoverers never enter protected callbacks together
+  ---
+  duration_ms: 250.486023
+  type: 'test'
+  ...
+# Subtest: lock race: stale recovery cannot lose a replacement holder erasure ledger entry
+ok 2 - lock race: stale recovery cannot lose a replacement holder erasure ledger entry
+  ---
+  duration_ms: 292.080658
+  type: 'test'
+  ...
+# Subtest: lock race: overlapping ledger publications preserve both owners without a retention lock
+ok 3 - lock race: overlapping ledger publications preserve both owners without a retention lock
+  ---
+  duration_ms: 2.369045
+  type: 'test'
+  ...
+# Subtest: lock race: legacy ledger migration is complete, repeatable and immutable
+ok 4 - lock race: legacy ledger migration is complete, repeatable and immutable
+  ---
+  duration_ms: 2.630431
+  type: 'test'
+  ...
+# Subtest: lock race: interrupted migration resumes without losing any legacy entry
+ok 5 - lock race: interrupted migration resumes without losing any legacy entry
+  ---
+  duration_ms: 2.232645
+  type: 'test'
+  ...
+# Subtest: lock race: malformed legacy ledger fails closed without deleting the evidence
+ok 6 - lock race: malformed legacy ledger fails closed without deleting the evidence
+  ---
+  duration_ms: 0.844726
+  type: 'test'
+  ...
+# Subtest: lock race: SQLite releases a SIGKILL holder without deleting its lock database
+ok 7 - lock race: SQLite releases a SIGKILL holder without deleting its lock database
+  ---
+  duration_ms: 113.183601
+  type: 'test'
+  ...
+# Subtest: lock race: nested sync and async acquisitions release after an exception
+ok 8 - lock race: nested sync and async acquisitions release after an exception
+  ---
+  duration_ms: 3.350754
+  type: 'test'
+  ...
+# Subtest: lock race: independent processes migrate and append every owner without a retention lock
+ok 9 - lock race: independent processes migrate and append every owner without a retention lock
+  ---
+  duration_ms: 278.029261
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1073.180624

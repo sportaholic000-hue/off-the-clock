@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: retention hardening: Enabled daily erasure removes every historic version and marker
+ok 1 - retention hardening: Enabled daily erasure removes every historic version and marker
+  ---
+  duration_ms: 726.07965
+  type: 'test'
+  ...
+# Subtest: retention hardening: Enabled continuous erasure removes every historic version and marker
+ok 2 - retention hardening: Enabled continuous erasure removes every historic version and marker
+  ---
+  duration_ms: 578.413692
+  type: 'test'
+  ...
+# Subtest: retention hardening: Suspended daily erasure removes every historic version and marker
+ok 3 - retention hardening: Suspended daily erasure removes every historic version and marker
+  ---
+  duration_ms: 526.782675
+  type: 'test'
+  ...
+# Subtest: retention hardening: Suspended continuous erasure removes every historic version and marker
+ok 4 - retention hardening: Suspended continuous erasure removes every historic version and marker
+  ---
+  duration_ms: 558.25712
+  type: 'test'
+  ...
+# Subtest: retention hardening: Unsupported versioning permits ordinary off-site erasure
+ok 5 - retention hardening: Unsupported versioning permits ordinary off-site erasure
+  ---
+  duration_ms: 493.110107
+  type: 'test'
+  ...
+# Subtest: retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+ok 6 - retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+  ---
+  duration_ms: 490.027729
+  type: 'test'
+  ...
+# Subtest: retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+ok 7 - retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 637.173359
+  type: 'test'
+  ...
+# Subtest: retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+ok 8 - retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 620.544826
+  type: 'test'
+  ...
+# Subtest: retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+ok 9 - retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 575.661018
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5449.200459

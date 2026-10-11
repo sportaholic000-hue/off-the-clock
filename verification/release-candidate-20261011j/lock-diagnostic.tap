@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: lock race: two child recoverers never enter protected callbacks together
+ok 1 - lock race: two child recoverers never enter protected callbacks together
+  ---
+  duration_ms: 224.708962
+  type: 'test'
+  ...
+# Subtest: lock race: stale recovery cannot lose a replacement holder erasure ledger entry
+ok 2 - lock race: stale recovery cannot lose a replacement holder erasure ledger entry
+  ---
+  duration_ms: 224.775001
+  type: 'test'
+  ...
+# Subtest: lock race: overlapping ledger publications preserve both owners without a retention lock
+ok 3 - lock race: overlapping ledger publications preserve both owners without a retention lock
+  ---
+  duration_ms: 2.497295
+  type: 'test'
+  ...
+# Subtest: lock race: legacy ledger migration is complete, repeatable and immutable
+ok 4 - lock race: legacy ledger migration is complete, repeatable and immutable
+  ---
+  duration_ms: 3.086455
+  type: 'test'
+  ...
+# Subtest: lock race: interrupted migration resumes without losing any legacy entry
+ok 5 - lock race: interrupted migration resumes without losing any legacy entry
+  ---
+  duration_ms: 2.517264
+  type: 'test'
+  ...
+# Subtest: lock race: malformed legacy ledger fails closed without deleting the evidence
+ok 6 - lock race: malformed legacy ledger fails closed without deleting the evidence
+  ---
+  duration_ms: 1.053675
+  type: 'test'
+  ...
+# SIGKILL child stdout: "HELD\\n"
+# Subtest: lock race: SQLite releases a SIGKILL holder without deleting its lock database
+not ok 7 - lock race: SQLite releases a SIGKILL holder without deleting its lock database
+  ---
+  duration_ms: 117.617695
+  type: 'test'
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock/test/lockRecoveryRace20261011.spec.mjs:66:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock/test/lockRecoveryRace20261011.spec.mjs:72:33)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: lock race: nested sync and async acquisitions release after an exception
+ok 8 - lock race: nested sync and async acquisitions release after an exception
+  ---
+  duration_ms: 7.075185
+  type: 'test'
+  ...
+# Subtest: lock race: independent processes migrate and append every owner without a retention lock
+ok 9 - lock race: independent processes migrate and append every owner without a retention lock
+  ---
+  duration_ms: 191.943717
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 903.995928

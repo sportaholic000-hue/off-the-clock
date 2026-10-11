@@ -1,0 +1,229 @@
+{
+  "runName": "CI",
+  "runId": 38165293833,
+  "commit": "5c6b019ce02cc5bf997eb31e241660786ea32022",
+  "workflowConclusion": "failure",
+  "testJob": {
+    "id": 114546490121,
+    "conclusion": "success"
+  },
+  "dockerJob": {
+    "id": 114546489847,
+    "conclusion": "failure",
+    "voiceSmoke": "pass",
+    "railwaySmoke": "failed during cleanup after printed passing assertions",
+    "error": "EACCES: permission denied, scandir /tmp/otc-docker-proof-m9jrb1/volume/backups"
+  },
+  "summaries": [
+    {
+      "name": "##[group]Run node --test test/ownerAlertsDelivery20261006.browser.spec.mjs test/ownerDashboard20261007.browser.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "passed": 9,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "##[group]Run npm run test:quote",
+      "tests": 4225,
+      "suites": 0,
+      "passed": 4225,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "##[group]Run npm test",
+      "tests": 4956,
+      "suites": 0,
+      "passed": 4956,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/lockRecoveryRace20261011.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "passed": 9,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/retentionHardeningHealth20261011.spec.mjs",
+      "tests": 3,
+      "suites": 0,
+      "passed": 3,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/retentionHardeningLocks20261011.spec.mjs",
+      "tests": 6,
+      "suites": 0,
+      "passed": 6,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/retentionHardeningSecrets20261011.spec.mjs",
+      "tests": 8,
+      "suites": 0,
+      "passed": 8,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/retentionHardeningVersions20261011.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "passed": 9,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/day90Backups20261011.spec.mjs",
+      "tests": 4,
+      "suites": 0,
+      "passed": 4,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/day90Cancellation20261011.spec.mjs",
+      "tests": 4,
+      "suites": 0,
+      "passed": 4,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/day90Guarantees20261011.spec.mjs",
+      "tests": 10,
+      "suites": 0,
+      "passed": 10,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/day90Providers20261011.spec.mjs",
+      "tests": 12,
+      "suites": 0,
+      "passed": 12,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/tenantRetention20261010.spec.mjs",
+      "tests": 13,
+      "suites": 0,
+      "passed": 13,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/continuousOffsite20261007.spec.mjs",
+      "tests": 16,
+      "suites": 0,
+      "passed": 16,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/backups.spec.mjs",
+      "tests": 12,
+      "suites": 0,
+      "passed": 12,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/offsiteBackups20261007.spec.mjs",
+      "tests": 23,
+      "suites": 0,
+      "passed": 23,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/backupRestoreRehearsal.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "passed": 9,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/ownerQueryCoverage20261009.spec.mjs",
+      "tests": 88,
+      "suites": 0,
+      "passed": 88,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "name": "Standalone: test/tenantIsolationRoutes.spec.mjs",
+      "tests": 264,
+      "suites": 0,
+      "passed": 264,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  ],
+  "newRacePassingLines": [
+    "ok 1764 - lock race: two child recoverers never enter protected callbacks together",
+    "ok 1765 - lock race: stale recovery cannot lose a replacement holder erasure ledger entry",
+    "ok 1766 - lock race: overlapping ledger publications preserve both owners without a retention lock",
+    "ok 1767 - lock race: legacy ledger migration is complete, repeatable and immutable",
+    "ok 1768 - lock race: interrupted migration resumes without losing any legacy entry",
+    "ok 1769 - lock race: malformed legacy ledger fails closed without deleting the evidence",
+    "ok 1770 - lock race: SQLite releases a SIGKILL holder without deleting its lock database",
+    "ok 1771 - lock race: nested sync and async acquisitions release after an exception",
+    "ok 1772 - lock race: independent processes migrate and append every owner without a retention lock",
+    "ok 1 - lock race: two child recoverers never enter protected callbacks together",
+    "ok 2 - lock race: stale recovery cannot lose a replacement holder erasure ledger entry",
+    "ok 3 - lock race: overlapping ledger publications preserve both owners without a retention lock",
+    "ok 4 - lock race: legacy ledger migration is complete, repeatable and immutable",
+    "ok 5 - lock race: interrupted migration resumes without losing any legacy entry",
+    "ok 6 - lock race: malformed legacy ledger fails closed without deleting the evidence",
+    "ok 7 - lock race: SQLite releases a SIGKILL holder without deleting its lock database",
+    "ok 8 - lock race: nested sync and async acquisitions release after an exception",
+    "ok 9 - lock race: independent processes migrate and append every owner without a retention lock"
+  ]
+}

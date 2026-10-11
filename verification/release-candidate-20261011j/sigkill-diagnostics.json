@@ -1,0 +1,26 @@
+[
+  {
+    "name": "no-preload",
+    "exit": 1,
+    "tests": "1",
+    "pass": "0",
+    "fail": "1",
+    "skipped": "0"
+  },
+  {
+    "name": "module-mocks",
+    "exit": 1,
+    "tests": "1",
+    "pass": "0",
+    "fail": "1",
+    "skipped": "0"
+  },
+  {
+    "name": "preload",
+    "exit": 1,
+    "tests": "1",
+    "pass": "0",
+    "fail": "1",
+    "skipped": "0"
+  }
+]

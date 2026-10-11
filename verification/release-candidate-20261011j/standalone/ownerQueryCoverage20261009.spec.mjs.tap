@@ -1,0 +1,540 @@
+TAP version 13
+# (node:537) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: every direct database prepare or exec in server is an exact listed exception
+ok 1 - every direct database prepare or exec in server is an exact listed exception
+  ---
+  duration_ms: 1147.940191
+  type: 'test'
+  ...
+# Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+ok 2 - scan rejects bracketed database['prepare'] in .js: 1 finding
+  ---
+  duration_ms: 1.234211
+  type: 'test'
+  ...
+# Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+ok 3 - scan rejects double quoted and template computed prepare in .js: 1 each
+  ---
+  duration_ms: 1.0982
+  type: 'test'
+  ...
+# Subtest: scan rejects dynamic key spelling in .js: 1 finding
+ok 4 - scan rejects dynamic key spelling in .js: 1 finding
+  ---
+  duration_ms: 0.605253
+  type: 'test'
+  ...
+# Subtest: scan rejects database.prepare.bind alias in .js: 1 finding
+ok 5 - scan rejects database.prepare.bind alias in .js: 1 finding
+  ---
+  duration_ms: 0.606104
+  type: 'test'
+  ...
+# Subtest: scan rejects const p = database.prepare alias in .js: 1 finding
+ok 6 - scan rejects const p = database.prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.516602
+  type: 'test'
+  ...
+# Subtest: scan rejects destructured prepare alias in .js: 1 finding
+ok 7 - scan rejects destructured prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.564954
+  type: 'test'
+  ...
+# Subtest: scan covers .mjs and .cjs: 1 finding in each
+ok 8 - scan covers .mjs and .cjs: 1 finding in each
+  ---
+  duration_ms: 0.934709
+  type: 'test'
+  ...
+# Subtest: scan permits an ownerQuery control and ignores commented prepares: 0 findings
+ok 9 - scan permits an ownerQuery control and ignores commented prepares: 0 findings
+  ---
+  duration_ms: 0.853439
+  type: 'test'
+  ...
+# Subtest: scan does not mistake a slash inside a regex literal for a comment: 1 finding
+ok 10 - scan does not mistake a slash inside a regex literal for a comment: 1 finding
+  ---
+  duration_ms: 0.666714
+  type: 'test'
+  ...
+# Subtest: owner-row predicate preserves owner and staff parent lookup results
+ok 11 - owner-row predicate preserves owner and staff parent lookup results
+  ---
+  duration_ms: 3.099032
+  type: 'test'
+  ...
+# Subtest: voice idempotency receipts persist tenant owner and replay legacy scope records
+ok 12 - voice idempotency receipts persist tenant owner and replay legacy scope records
+  ---
+  duration_ms: 6.148091
+  type: 'test'
+  ...
+# Subtest: scan inventories database.exec tenant deletion: 1 finding
+ok 13 - scan inventories database.exec tenant deletion: 1 finding
+  ---
+  duration_ms: 0.616449
+  type: 'test'
+  ...
+# Subtest: scan detects concatenated database prepare and exec properties: 1 finding each
+ok 14 - scan detects concatenated database prepare and exec properties: 1 finding each
+  ---
+  duration_ms: 1.073684
+  type: 'test'
+  ...
+# Subtest: scan detects bracketed exec and unknown computed database keys: 1 finding each
+ok 15 - scan detects bracketed exec and unknown computed database keys: 1 finding each
+  ---
+  duration_ms: 1.28786
+  type: 'test'
+  ...
+# Subtest: computed access cannot be permitted by an exception or non-query entry
+ok 16 - computed access cannot be permitted by an exception or non-query entry
+  ---
+  duration_ms: 0.503914
+  type: 'test'
+  ...
+# Subtest: scan detects optional, escaped, aliased and destructured computed methods
+ok 17 - scan detects optional, escaped, aliased and destructured computed methods
+  ---
+  duration_ms: 1.858211
+  type: 'test'
+  ...
+# Subtest: RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+ok 18 - RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+  ---
+  duration_ms: 1.335671
+  type: 'test'
+  ...
+# Subtest: mutable regex-shaped receivers cannot hide a later database exec: 1 finding
+ok 19 - mutable regex-shaped receivers cannot hide a later database exec: 1 finding
+  ---
+  duration_ms: 0.438728
+  type: 'test'
+  ...
+# Subtest: mutable or shadowed computed keys on database objects remain forbidden
+ok 20 - mutable or shadowed computed keys on database objects remain forbidden
+  ---
+  duration_ms: 0.801763
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: auditor renamed exec through call
+ok 21 - scan destructuring 20261011: auditor renamed exec through call
+  ---
+  duration_ms: 0.452979
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: auditor shorthand exec
+ok 22 - scan destructuring 20261011: auditor shorthand exec
+  ---
+  duration_ms: 0.656519
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration shorthand
+ok 23 - scan destructuring 20261011: exec declaration shorthand
+  ---
+  duration_ms: 0.759
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration renamed
+ok 24 - scan destructuring 20261011: exec declaration renamed
+  ---
+  duration_ms: 0.44022
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration shorthand default
+ok 25 - scan destructuring 20261011: exec declaration shorthand default
+  ---
+  duration_ms: 0.485607
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration renamed default
+ok 26 - scan destructuring 20261011: exec declaration renamed default
+  ---
+  duration_ms: 0.416484
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration quoted key
+ok 27 - scan destructuring 20261011: exec declaration quoted key
+  ---
+  duration_ms: 0.454201
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration computed key
+ok 28 - scan destructuring 20261011: exec declaration computed key
+  ---
+  duration_ms: 0.426289
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested object
+ok 29 - scan destructuring 20261011: exec declaration nested object
+  ---
+  duration_ms: 0.560778
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested array
+ok 30 - scan destructuring 20261011: exec declaration nested array
+  ---
+  duration_ms: 0.563381
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested default
+ok 31 - scan destructuring 20261011: exec declaration nested default
+  ---
+  duration_ms: 0.513858
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec parameter nested default
+ok 32 - scan destructuring 20261011: exec parameter nested default
+  ---
+  duration_ms: 0.439368
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec arrow shorthand parameter
+ok 33 - scan destructuring 20261011: exec arrow shorthand parameter
+  ---
+  duration_ms: 0.566886
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec catch binding
+ok 34 - scan destructuring 20261011: exec catch binding
+  ---
+  duration_ms: 0.432458
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec for-of declaration
+ok 35 - scan destructuring 20261011: exec for-of declaration
+  ---
+  duration_ms: 0.496051
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment shorthand
+ok 36 - scan destructuring 20261011: exec assignment shorthand
+  ---
+  duration_ms: 0.566996
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment renamed
+ok 37 - scan destructuring 20261011: exec assignment renamed
+  ---
+  duration_ms: 0.541489
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment shorthand default
+ok 38 - scan destructuring 20261011: exec assignment shorthand default
+  ---
+  duration_ms: 0.599945
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment renamed default
+ok 39 - scan destructuring 20261011: exec assignment renamed default
+  ---
+  duration_ms: 0.4607
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment quoted key
+ok 40 - scan destructuring 20261011: exec assignment quoted key
+  ---
+  duration_ms: 0.514569
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment computed key
+ok 41 - scan destructuring 20261011: exec assignment computed key
+  ---
+  duration_ms: 0.447551
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested object
+ok 42 - scan destructuring 20261011: exec assignment nested object
+  ---
+  duration_ms: 0.622668
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested array
+ok 43 - scan destructuring 20261011: exec assignment nested array
+  ---
+  duration_ms: 0.511545
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested default
+ok 44 - scan destructuring 20261011: exec assignment nested default
+  ---
+  duration_ms: 0.744057
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment for-of
+ok 45 - scan destructuring 20261011: exec assignment for-of
+  ---
+  duration_ms: 0.984052
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration shorthand
+ok 46 - scan destructuring 20261011: prepare declaration shorthand
+  ---
+  duration_ms: 0.509932
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration renamed
+ok 47 - scan destructuring 20261011: prepare declaration renamed
+  ---
+  duration_ms: 0.412028
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration shorthand default
+ok 48 - scan destructuring 20261011: prepare declaration shorthand default
+  ---
+  duration_ms: 0.564012
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration renamed default
+ok 49 - scan destructuring 20261011: prepare declaration renamed default
+  ---
+  duration_ms: 0.407901
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration quoted key
+ok 50 - scan destructuring 20261011: prepare declaration quoted key
+  ---
+  duration_ms: 0.438237
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration computed key
+ok 51 - scan destructuring 20261011: prepare declaration computed key
+  ---
+  duration_ms: 0.407581
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested object
+ok 52 - scan destructuring 20261011: prepare declaration nested object
+  ---
+  duration_ms: 0.438237
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested array
+ok 53 - scan destructuring 20261011: prepare declaration nested array
+  ---
+  duration_ms: 0.452197
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested default
+ok 54 - scan destructuring 20261011: prepare declaration nested default
+  ---
+  duration_ms: 0.404206
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare parameter nested default
+ok 55 - scan destructuring 20261011: prepare parameter nested default
+  ---
+  duration_ms: 0.449123
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare arrow shorthand parameter
+ok 56 - scan destructuring 20261011: prepare arrow shorthand parameter
+  ---
+  duration_ms: 0.469122
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare catch binding
+ok 57 - scan destructuring 20261011: prepare catch binding
+  ---
+  duration_ms: 0.543041
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare for-of declaration
+ok 58 - scan destructuring 20261011: prepare for-of declaration
+  ---
+  duration_ms: 0.748134
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment shorthand
+ok 59 - scan destructuring 20261011: prepare assignment shorthand
+  ---
+  duration_ms: 0.568799
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment renamed
+ok 60 - scan destructuring 20261011: prepare assignment renamed
+  ---
+  duration_ms: 0.553997
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment shorthand default
+ok 61 - scan destructuring 20261011: prepare assignment shorthand default
+  ---
+  duration_ms: 0.499337
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment renamed default
+ok 62 - scan destructuring 20261011: prepare assignment renamed default
+  ---
+  duration_ms: 0.513578
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment quoted key
+ok 63 - scan destructuring 20261011: prepare assignment quoted key
+  ---
+  duration_ms: 0.434371
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment computed key
+ok 64 - scan destructuring 20261011: prepare assignment computed key
+  ---
+  duration_ms: 0.455873
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested object
+ok 65 - scan destructuring 20261011: prepare assignment nested object
+  ---
+  duration_ms: 0.423115
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested array
+ok 66 - scan destructuring 20261011: prepare assignment nested array
+  ---
+  duration_ms: 0.491845
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested default
+ok 67 - scan destructuring 20261011: prepare assignment nested default
+  ---
+  duration_ms: 0.52232
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment for-of
+ok 68 - scan destructuring 20261011: prepare assignment for-of
+  ---
+  duration_ms: 0.505465
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation direct
+ok 69 - scan destructuring 20261011: extracted exec invocation direct
+  ---
+  duration_ms: 0.438056
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation call
+ok 70 - scan destructuring 20261011: extracted exec invocation call
+  ---
+  duration_ms: 0.444405
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation apply
+ok 71 - scan destructuring 20261011: extracted exec invocation apply
+  ---
+  duration_ms: 0.564182
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation bind
+ok 72 - scan destructuring 20261011: extracted exec invocation bind
+  ---
+  duration_ms: 0.475922
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation direct
+ok 73 - scan destructuring 20261011: extracted prepare invocation direct
+  ---
+  duration_ms: 0.390746
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation call
+ok 74 - scan destructuring 20261011: extracted prepare invocation call
+  ---
+  duration_ms: 0.592494
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation apply
+ok 75 - scan destructuring 20261011: extracted prepare invocation apply
+  ---
+  duration_ms: 0.777036
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation bind
+ok 76 - scan destructuring 20261011: extracted prepare invocation bind
+  ---
+  duration_ms: 0.454961
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: nested dynamic database keys are forbidden
+ok 77 - scan destructuring 20261011: nested dynamic database keys are forbidden
+  ---
+  duration_ms: 1.245658
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted methods cannot be allowlisted
+ok 78 - scan destructuring 20261011: extracted methods cannot be allowlisted
+  ---
+  duration_ms: 1.899942
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: metadata, defaults and safe patterns are not extractions
+ok 79 - scan destructuring 20261011: metadata, defaults and safe patterns are not extractions
+  ---
+  duration_ms: 1.278667
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: multiple methods and nested defaults are counted once
+ok 80 - scan destructuring 20261011: multiple methods and nested defaults are counted once
+  ---
+  duration_ms: 0.839289
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key shorthand parameter declaration
+ok 81 - scan destructuring 20261011: shadowed key shorthand parameter declaration
+  ---
+  duration_ms: 0.475291
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key shorthand parameter assignment
+ok 82 - scan destructuring 20261011: shadowed key shorthand parameter assignment
+  ---
+  duration_ms: 0.436644
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key renamed default parameter declaration
+ok 83 - scan destructuring 20261011: shadowed key renamed default parameter declaration
+  ---
+  duration_ms: 0.432117
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key renamed default parameter assignment
+ok 84 - scan destructuring 20261011: shadowed key renamed default parameter assignment
+  ---
+  duration_ms: 0.464305
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested catch binding declaration
+ok 85 - scan destructuring 20261011: shadowed key nested catch binding declaration
+  ---
+  duration_ms: 0.490984
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested catch binding assignment
+ok 86 - scan destructuring 20261011: shadowed key nested catch binding assignment
+  ---
+  duration_ms: 0.493739
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested variable binding declaration
+ok 87 - scan destructuring 20261011: shadowed key nested variable binding declaration
+  ---
+  duration_ms: 0.429854
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested variable binding assignment
+ok 88 - scan destructuring 20261011: shadowed key nested variable binding assignment
+  ---
+  duration_ms: 0.426139
+  type: 'test'
+  ...
+1..88
+# tests 88
+# suites 0
+# pass 88
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1586.473037

@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: day90 Google retry after 503 survives local deletion and restart
+ok 1 - day90 Google retry after 503 survives local deletion and restart
+  ---
+  duration_ms: 153.270242
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after 429 survives local deletion and restart
+ok 2 - day90 Google retry after 429 survives local deletion and restart
+  ---
+  duration_ms: 123.433565
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after network survives local deletion and restart
+ok 3 - day90 Google retry after network survives local deletion and restart
+  ---
+  duration_ms: 118.713181
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after timeout survives local deletion and restart
+ok 4 - day90 Google retry after timeout survives local deletion and restart
+  ---
+  duration_ms: 129.93767
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after 400 survives local deletion and restart
+ok 5 - day90 Google retry after 400 survives local deletion and restart
+  ---
+  duration_ms: 117.262592
+  type: 'test'
+  ...
+# Subtest: day90 phone retry retains the original SID and never invents release after profile erasure
+ok 6 - day90 phone retry retains the original SID and never invents release after profile erasure
+  ---
+  duration_ms: 111.047472
+  type: 'test'
+  ...
+# Subtest: day90 provider writes disabled retains both retry values without postponing local or off-site deletion
+ok 7 - day90 provider writes disabled retains both retry values without postponing local or off-site deletion
+  ---
+  duration_ms: 113.749579
+  type: 'test'
+  ...
+# Subtest: day90 Google refresh-token invalid_token and number 404 are completed outcomes
+ok 8 - day90 Google refresh-token invalid_token and number 404 are completed outcomes
+  ---
+  duration_ms: 128.981375
+  type: 'test'
+  ...
+# Subtest: day90 retry material expires exactly 30 days after first attempt and permanent failure reaches admin status
+ok 9 - day90 retry material expires exactly 30 days after first attempt and permanent failure reaches admin status
+  ---
+  duration_ms: 135.935323
+  type: 'test'
+  ...
+# Subtest: day90 undecryptable Google token is discarded immediately with a permanent failure, without blocking other steps
+ok 10 - day90 undecryptable Google token is discarded immediately with a permanent failure, without blocking other steps
+  ---
+  duration_ms: 115.200344
+  type: 'test'
+  ...
+# Subtest: day90 provider success removes retry material from the main database and WAL immediately
+ok 11 - day90 provider success removes retry material from the main database and WAL immediately
+  ---
+  duration_ms: 107.368114
+  type: 'test'
+  ...
+# Subtest: day90 sweep deletes every due owner locally before waiting for a slow provider
+ok 12 - day90 sweep deletes every due owner locally before waiting for a slow provider
+  ---
+  duration_ms: 123.18586
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1658.092136

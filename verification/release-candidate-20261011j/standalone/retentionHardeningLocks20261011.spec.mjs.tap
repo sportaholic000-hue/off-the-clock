@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: retention hardening: ordinary snapshot recovers a dead child retention lock
+ok 1 - retention hardening: ordinary snapshot recovers a dead child retention lock
+  ---
+  duration_ms: 189.217905
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers a dead child retention lock
+ok 2 - retention hardening: acquire recovers a dead child retention lock
+  ---
+  duration_ms: 125.645233
+  type: 'test'
+  ...
+# Subtest: retention hardening: worker recovers PID 1 from a previous process instance
+ok 3 - retention hardening: worker recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 242.24936
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers PID 1 from a previous process instance
+ok 4 - retention hardening: acquire recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 231.464793
+  type: 'test'
+  ...
+# Subtest: retention hardening: a live holder excludes workers and a competing erasure
+ok 5 - retention hardening: a live holder excludes workers and a competing erasure
+  ---
+  duration_ms: 258.16255
+  type: 'test'
+  ...
+# Subtest: retention hardening: legacy PID 1 lock predating this process is recoverable
+ok 6 - retention hardening: legacy PID 1 lock predating this process is recoverable
+  ---
+  duration_ms: 235.510498
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1453.144128

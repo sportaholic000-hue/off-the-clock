@@ -1,0 +1,161 @@
+TAP version 13
+# Subtest: full encrypted fake-S3 round trip through actual restore CLI after total synthetic volume loss
+ok 1 - full encrypted fake-S3 round trip through actual restore CLI after total synthetic volume loss
+  ---
+  duration_ms: 582.616845
+  type: 'test'
+  ...
+# Subtest: wrong encryption key fails cleanly through CLI without publishing or overwriting data
+ok 2 - wrong encryption key fails cleanly through CLI without publishing or overwriting data
+  ---
+  duration_ms: 254.314437
+  type: 'test'
+  ...
+# Subtest: corrupted ciphertext is rejected by checksum before decryption and leaves no plaintext
+ok 3 - corrupted ciphertext is rejected by checksum before decryption and leaves no plaintext
+  ---
+  duration_ms: 51.116419
+  type: 'test'
+  ...
+# Subtest: authenticated encryption rejects corruption even if the stored external checksum is replaced
+ok 4 - authenticated encryption rejects corruption even if the stored external checksum is replaced
+  ---
+  duration_ms: 13.679602
+  type: 'test'
+  ...
+# Subtest: one completed backup per UTC day; concurrent calls and same-day restart do not upload duplicates
+ok 5 - one completed backup per UTC day; concurrent calls and same-day restart do not upload duplicates
+  ---
+  duration_ms: 84.437394
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: provider failures are durable and operator-visible; retry and restart reuse identical ciphertext
+ok 6 - provider failures are durable and operator-visible; retry and restart reuse identical ciphertext
+  ---
+  duration_ms: 43.685011
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: lost upload response is retried without overwriting an accepted encrypted object
+ok 7 - lost upload response is retried without overwriting an accepted encrypted object
+  ---
+  duration_ms: 46.496799
+  type: 'test'
+  ...
+# Subtest: restored volume with no local upload state recognizes the existing completed daily backup
+ok 8 - restored volume with no local upload state recognizes the existing completed daily backup
+  ---
+  duration_ms: 47.070761
+  type: 'test'
+  ...
+# Subtest: retention keeps exactly thirty daily backups, paginates, and preserves unrelated objects
+ok 9 - retention keeps exactly thirty daily backups, paginates, and preserves unrelated objects
+  ---
+  duration_ms: 2406.920383
+  type: 'test'
+  ...
+# Subtest: incomplete or missing encrypted copies never count toward the thirty retained backups
+ok 10 - incomplete or missing encrypted copies never count toward the thirty retained backups
+  ---
+  duration_ms: 1582.038287
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: failed uploads cannot prune accepted backups
+ok 11 - failed uploads cannot prune accepted backups
+  ---
+  duration_ms: 33.873786
+  type: 'test'
+  ...
+# Subtest: missing and invalid production config warn clearly and never expose credentials
+ok 12 - missing and invalid production config warn clearly and never expose credentials
+  ---
+  duration_ms: 0.373161
+  type: 'test'
+  ...
+# Subtest: strict configuration accepts canonical keys and rejects malformed key, insecure remote endpoint and unsafe prefix
+ok 13 - strict configuration accepts canonical keys and rejects malformed key, insecure remote endpoint and unsafe prefix
+  ---
+  duration_ms: 2.748144
+  type: 'test'
+  ...
+# Subtest: scheduler stops without overlapping and waits for active upload
+ok 14 - scheduler stops without overlapping and waits for active upload
+  ---
+  duration_ms: 47.892989
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: operator HTTP status requires actual database-backed admin authorization and exposes durable failure only
+ok 15 - operator HTTP status requires actual database-backed admin authorization and exposes durable failure only
+  ---
+  duration_ms: 39.509911
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: upload retry delays are bounded and persisted without exposing provider errors
+ok 16 - upload retry delays are bounded and persisted without exposing provider errors
+  ---
+  duration_ms: 66.823939
+  type: 'test'
+  ...
+# Subtest: interrupted pruning is discoverable and finishes safely on restart
+ok 17 - interrupted pruning is discoverable and finishes safely on restart
+  ---
+  duration_ms: 2058.828608
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: bad local state and destination/key changes fail closed while preserving pending recovery evidence
+ok 18 - bad local state and destination/key changes fail closed while preserving pending recovery evidence
+  ---
+  duration_ms: 16.63999
+  type: 'test'
+  ...
+# Subtest: stale process lock is recovered; a live process lock never allows another upload
+ok 19 - stale process lock is recovered; a live process lock never allows another upload
+  ---
+  duration_ms: 25.453512
+  type: 'test'
+  ...
+# Subtest: corrupted daily remote object remains a failure after local state loss and is never silently replaced
+ok 20 - corrupted daily remote object remains a failure after local state loss and is never silently replaced
+  ---
+  duration_ms: 24.627614
+  type: 'test'
+  ...
+# Subtest: a competing local worker cannot erase another worker's pending upload state
+ok 21 - a competing local worker cannot erase another worker's pending upload state
+  ---
+  duration_ms: 22.087517
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: worker constructed before a failed response reuses the first worker artifact after acquiring its lock
+ok 22 - worker constructed before a failed response reuses the first worker artifact after acquiring its lock
+  ---
+  duration_ms: 32.062693
+  type: 'test'
+  ...
+# Subtest: production backup settings cannot break a development server that has no production volume paths
+ok 23 - production backup settings cannot break a development server that has no production volume paths
+  ---
+  duration_ms: 2.644843
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7704.303136

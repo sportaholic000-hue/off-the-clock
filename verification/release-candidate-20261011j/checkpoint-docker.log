@@ -1,0 +1,12 @@
+2026-10-11T18:48:13.4262453Z PASS: production Docker image, no specs, voice enabled, synthetic credentials, network disabled, /api/health 200
+2026-10-11T18:48:19.8389529Z   "passed": true,
+2026-10-11T18:48:19.8390008Z   "sourceCommit": "5c6b019ce02cc5bf997eb31e241660786ea32022",
+2026-10-11T18:48:19.8391144Z   "checks": [
+2026-10-11T18:48:19.8391695Z     "clean lockfile dependencies and rebuilt bundles; existing demo bytes/routes preserved; private files inaccessible",
+2026-10-11T18:48:19.8392519Z     "real Linux SIGTERM drains HTTP/workers and closes SQLite; same-container restart retains database and price books",
+2026-10-11T18:48:19.8393488Z     "fresh container redeploy retains data; actual restore CLI creates verified new root; fresh production process reads restored data",
+2026-10-11T18:48:19.8394275Z     "startup refuses missing actual mount and Railway development-mode override"
+2026-10-11T18:48:20.1447692Z Error: EACCES: permission denied, scandir '/tmp/otc-docker-proof-m9jrb1/volume/backups'
+2026-10-11T18:48:20.1454601Z   code: 'EACCES',
+2026-10-11T18:48:20.1454999Z   syscall: 'scandir',
+2026-10-11T18:48:20.1506883Z ##[error]Process completed with exit code 1.
