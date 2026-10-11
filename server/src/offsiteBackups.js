@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
-import {createSnapshot,restoreBackup} from './backups.js';
+import {createSnapshot,restoreBackup,cleanupAbandonedSnapshots} from './backups.js';
 import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
 import {createContinuousOffsiteService} from './continuousOffsite.js';
-import {assertBackupRetentionIdle,withBackupRetentionLock} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock,processLockOwner,removeStaleProcessLock} from './backupRetentionLock.js';
 import {eraseTenantBackupCopies} from './tenantBackupErasure.js';
 import {recordOffsiteUpload,backupErasureStatus} from './offsiteHistory.js';
 export {restoreContinuousBackup,pruneContinuousBackups} from './continuousOffsite.js';
@@ -99,17 +99,14 @@ export function createDailyOffsiteBackupService(database,deployment,{env=process
   async function perform() {
     if(stateInvalid)throw Error('OFFSITE_LOCAL_STATE_INVALID');
     // One writer per persistent volume; a live process's lock is never stolen.
-    if(fs.existsSync(lockFile)) {
-      const pid=Number(fs.readFileSync(lockFile,'utf8'));if(!Number.isInteger(pid)||pid<1)throw Error('OFFSITE_LOCK_INVALID');
-      try {process.kill(pid,0);throw Error('OFFSITE_BUSY');}catch(error){if(error.code!=='ESRCH')throw error;}
-      fs.unlinkSync(lockFile);
-    }
-    fs.writeFileSync(lockFile,String(process.pid),{flag:'wx',mode:0o600,flush:true});
+    removeStaleProcessLock(lockFile);
+    fs.writeFileSync(lockFile,JSON.stringify(processLockOwner()),{flag:'wx',mode:0o600,flush:true});
     try {
       // A second worker may have been constructed before the first saved its
       // artifact. Re-read under the lock, preserving that immutable retry.
       if(fs.existsSync(stateFile)){try{state=readState();}catch{stateInvalid=true;throw Error('OFFSITE_LOCAL_STATE_INVALID');}}
       state.lastAttemptAt=now();state.phase='UPLOADING';state.error=null;save();
+      await store.versioning?.();
       const day=state.pending?.day||dayAt(now());
       recordOffsiteUpload(deployment,config,now());
       const existing=await store.record(recordKey(config,day));
@@ -171,11 +168,14 @@ export function createOffsiteBackupService(database,deployment,options={}){
   const store=config.enabled?(options.store||createS3BackupStore(config)):null,common={...options,config,store,closeStore:false};
   const daily=createDailyOffsiteBackupService(database,deployment,common);
   const erasureTime=()=>new Date(options.now?.()??Date.now()).toISOString();
-  const withRetention=status=>{const retention=backupErasureStatus(deployment);return {...status,ok:status.ok&&retention.ok,error:retention.error||status.error,retention};};
-  if(!daily.status().configured)return {...daily,status:()=>withRetention(daily.status()),eraseOwner:ownerId=>eraseTenantBackupCopies(ownerId,deployment,{config,store,at:erasureTime()})};
+  const withRetention=status=>{
+    const retention=backupErasureStatus(deployment),versioning=store?.versioningStatus?.()||{state:config.enabled?'UNKNOWN':'NOT_CONFIGURED',checkedAt:null,error:null};
+    return {...status,ok:status.ok&&retention.ok&&!versioning.error,error:retention.error||versioning.error||status.error,retention,versioning};
+  };
+  if(!daily.status().configured)return {...daily,cleanupRetryCopies:()=>cleanupAbandonedSnapshots(deployment),status:()=>withRetention(daily.status()),eraseOwner:ownerId=>eraseTenantBackupCopies(ownerId,deployment,{config,store,at:erasureTime()})};
   const replica=createContinuousOffsiteService(database,deployment,common);let stopping;
   const status=()=>{const d=daily.status(),r=replica.status();return withRetention({...d,ok:d.ok&&r.ok,error:d.error||r.error,continuous:r});};
-  return {status,replicate:replica.run,
+  return {status,replicate:replica.run,cleanupRetryCopies:()=>cleanupAbandonedSnapshots(deployment),
     eraseOwner:ownerId=>eraseTenantBackupCopies(ownerId,deployment,{config,store,at:erasureTime(),drain:()=>Promise.all([daily.drain(),replica.drain()])}),
     async run(){const results=await Promise.allSettled([daily.run(),replica.run()]);for(const result of results)if(result.status==='rejected')throw result.reason;return status();},
     start(){daily.start();replica.start();},stop(){return stopping||(stopping=Promise.all([replica.stop(),daily.stop()]).finally(()=>store.close?.()));}};
@@ -183,6 +183,7 @@ export function createOffsiteBackupService(database,deployment,options={}){
 export function installOffsiteBackupStatusRoute(app,{service,requireAuth,retentionStatus}) {
   app.get('/api/admin/backups/offsite',requireAuth(['admin']),(_req,res)=>{
     const status=service.status(),erasure=retentionStatus?.();
-    res.set('Cache-Control','no-store').status(status.ok&&erasure?.ok!==false?200:503).json({...status,...(erasure?{erasure}:{})});
+    const ok=status.ok&&erasure?.ok!==false;
+    res.set('Cache-Control','no-store').status(ok?200:503).json({...status,ok,...(erasure?{erasure}:{})});
   });
 }

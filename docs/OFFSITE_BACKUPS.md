@@ -21,9 +21,20 @@ acceptance is implied by the fake-store regression tests.
 No storage account or bucket is created by this implementation. Provision a private
 S3-compatible bucket separately, with no public read access, HTTPS, and credentials
 restricted to Get/Put/Delete under the chosen prefix and ListBucket for that prefix.
-Keep staging and production in separate buckets/prefixes. Bucket versioning/object
-lock/lifecycle policies may retain additional old versions: this app prunes current
-objects, not provider-managed historic versions. Compatible conditional PUT
+Also allow GetBucketVersioning; versioned or suspended buckets require
+ListBucketVersions and DeleteObjectVersion for that prefix. Keep staging and
+production in separate buckets/prefixes. Before completing tenant erasure, the app
+checks bucket versioning. Enabled and suspended buckets have every old version
+and delete marker of affected daily/continuous objects permanently deleted by
+version ID, including keys hidden from current-object listings. Only the verified,
+redacted current recovery copy remains. A second version listing verifies the
+purge; another business's current backup data and billing records are retained.
+An explicit unsupported response (including stores without versioning APIs), or
+a bucket that has never enabled versioning, uses ordinary object deletion.
+Access denial, unknown state, request failure, object lock or undeletable versions
+keep erasure pending and admin health unhealthy with a fixed error reason.
+Ordinary age-based pruning still removes current objects; the day-90 erasure
+inventory also covers their retained historical versions. Compatible conditional PUT
 (`If-None-Match: *`), metadata and ListObjectsV2 pagination are required. The SDK
 uses path-style addressing and Signature V4. Plain HTTP is accepted only for a
 loopback fake store; real endpoints must use HTTPS.
@@ -53,7 +64,13 @@ that state. Keep former keys until their retained backup dates have expired.
 
 ## Publication, retries and retention
 
-The original online SQLite snapshot and complete-book verification run first.
+The SQLite snapshot and complete-book verification run first. SQLite captures
+committed pages, including WAL pages, into memory; the bounded provider-retry
+table is securely cleared and the in-memory database compacted before any snapshot
+database reaches disk. This requires memory for the database image and its working
+copy. Abandoned partial snapshots from older versions are removed under the shared
+retention lock at startup and before provider success or permanent failure is
+recorded. Failure to clear a copy leaves the provider step pending.
 A streamed archive is encrypted locally with AES-256-GCM, a fresh random nonce
 and an authenticated version header. Maximum archive size is 4 GiB; a larger
 snapshot fails visibly rather than exceeding the single-object upload boundary.
@@ -66,7 +83,12 @@ A private `.offsite` directory under the existing backups directory durably stor
 the encrypted pending artifact and retry/status state. Conditional writes never
 overwrite an accepted daily object. Response loss, restart and same-day reruns
 reuse the same encrypted bytes. A process lock prevents concurrent writers on one
-volume; a live lock is never stolen. A corrupted/conflicting remote object stays
+volume; a live lock is never stolen. Locks record PID plus process birth identity
+(Linux boot ID and start tick), so a dead process or reused container PID does not
+block later workers forever. Legacy PID-only locks can be recovered when the PID
+is dead or the lock predates the current process with that PID; ambiguous live
+holders remain excluded. Snapshot workers, restores and erasure use these checks.
+A corrupted/conflicting remote object stays
 failed and requires operator investigation, rather than overwriting evidence.
 
 Each SDK request has at most three attempts and a 30-second deadline. Whole-job
@@ -105,6 +127,14 @@ An unchanged database remains caught up; its nightly verification still has the
 26-hour health limit. Missing configuration is `NOT_CONFIGURED`, with a clear production
 startup warning; local snapshots continue. `/api/health` remains the application
 liveness/readiness check so an object-store outage does not trigger restart loops.
+
+The `versioning` status reports `ENABLED`, `SUSPENDED`, `NEVER_ENABLED`,
+`UNSUPPORTED`, `UNKNOWN` or `NOT_CONFIGURED`, its last check time and a fixed
+error code. The `erasure` summary includes missing or unfinished phone cleanup
+from service end +30 days and local/backup/calendar cleanup from +90 days
+(calendar when connected). It returns 503 and `ok:false` for overdue work even
+when a worker lease prevented step initialization. Tokens, number SIDs and
+provider response bodies are never included in these admin responses.
 
 Monitor this admin status separately and investigate stale/failed backups. This
 change does not add an operator email/SMS alert. Do not delete local state or remote

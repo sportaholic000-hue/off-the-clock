@@ -1,0 +1,87 @@
+Workflow: CI
+Run: 38123390505
+Commit: 77ce537a859c7989772059692a10cd3d77995f32
+Conclusion: success
+Test job: 114422587448 (success)
+voice-docker-startup job: 114422587287 (success)
+Candidate-only tag/smoke actions: skipped by branch condition; no candidate merge/tag/deploy performed.
+Hosted Node 22; all 26 new names have passing results in both strict quote and full test gates.
+Exact retrieved test-job log excerpts:
+2026-10-11T08:02:47.4861255Z # tests 9
+2026-10-11T08:02:47.4861620Z # suites 0
+2026-10-11T08:02:47.4861999Z # pass 9
+2026-10-11T08:02:47.4862361Z # fail 0
+2026-10-11T08:02:47.4863007Z # cancelled 0
+2026-10-11T08:02:47.4863498Z # skipped 0
+2026-10-11T08:02:47.4863967Z # todo 0
+2026-10-11T08:02:47.4864556Z # duration_ms 3926.628767
+2026-10-11T08:02:47.6471580Z PASS: quotes reach the engine only through quoteDoneBridge.js; customers receive sanitized results; no legacy engine in production.
+2026-10-11T08:10:41.6059238Z ok 3513 - retention hardening: admin returns 503 for day-90 erasure blocked before initialization
+2026-10-11T08:10:41.6073125Z ok 3514 - retention hardening: missing due steps count, calendar connected=true
+2026-10-11T08:10:41.6076544Z ok 3515 - retention hardening: missing due steps count, calendar connected=false
+2026-10-11T08:10:42.7003137Z ok 3516 - retention hardening: ordinary snapshot recovers a dead child retention lock
+2026-10-11T08:10:44.2202585Z ok 3517 - retention hardening: acquire recovers a dead child retention lock
+2026-10-11T08:10:44.2206914Z ok 3518 - retention hardening: worker recovers PID 1 from a previous process instance
+2026-10-11T08:10:44.2210755Z ok 3519 - retention hardening: acquire recovers PID 1 from a previous process instance
+2026-10-11T08:10:44.8619090Z ok 3520 - retention hardening: a live holder excludes workers and a competing erasure
+2026-10-11T08:10:44.8623857Z ok 3521 - retention hardening: legacy PID 1 lock predating this process is recoverable
+2026-10-11T08:10:46.0477523Z ok 3522 - retention hardening: interrupted snapshot secrets disappear before provider success
+2026-10-11T08:10:46.5202885Z ok 3523 - retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+2026-10-11T08:10:46.9792718Z ok 3524 - retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+2026-10-11T08:10:47.4470824Z ok 3525 - retention hardening: startup removes abandoned snapshots even when the next backup is not due
+2026-10-11T08:10:47.8968476Z ok 3526 - retention hardening: retry secrets never reach the first snapshot disk write
+2026-10-11T08:10:48.4846503Z ok 3527 - retention hardening: staging cleanup never removes another live process snapshot
+2026-10-11T08:10:48.9030687Z ok 3528 - retention hardening: startup retries partial cleanup after a live restore releases its lock
+2026-10-11T08:10:48.9081571Z ok 3529 - retention hardening: a clean startup does not block scheduled snapshots on active off-site workers
+2026-10-11T08:10:50.7357552Z ok 3530 - retention hardening: Enabled daily erasure removes every historic version and marker
+2026-10-11T08:10:51.6926981Z ok 3531 - retention hardening: Enabled continuous erasure removes every historic version and marker
+2026-10-11T08:10:52.6277478Z ok 3532 - retention hardening: Suspended daily erasure removes every historic version and marker
+2026-10-11T08:10:53.5776991Z ok 3533 - retention hardening: Suspended continuous erasure removes every historic version and marker
+2026-10-11T08:10:54.4468644Z ok 3534 - retention hardening: Unsupported versioning permits ordinary off-site erasure
+2026-10-11T08:10:55.2960012Z ok 3535 - retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+2026-10-11T08:10:56.3823073Z ok 3536 - retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+2026-10-11T08:10:57.4064622Z ok 3537 - retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+2026-10-11T08:10:57.8656566Z ok 3538 - retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+2026-10-11T08:11:52.2820156Z # tests 4157
+2026-10-11T08:11:52.2820488Z # suites 0
+2026-10-11T08:11:52.2820760Z # pass 4157
+2026-10-11T08:11:52.2821025Z # fail 0
+2026-10-11T08:11:52.2821280Z # cancelled 0
+2026-10-11T08:11:52.2821554Z # skipped 0
+2026-10-11T08:11:52.2821809Z # todo 0
+2026-10-11T08:11:52.2822114Z # duration_ms 543554.046517
+2026-10-11T08:11:52.2828128Z PASS: quote engine and price book gate (202 files, 4157/4157 tests, zero skips).
+2026-10-11T08:20:09.2069669Z ok 3889 - retention hardening: admin returns 503 for day-90 erasure blocked before initialization
+2026-10-11T08:20:09.2129157Z ok 3890 - retention hardening: missing due steps count, calendar connected=true
+2026-10-11T08:20:09.2132983Z ok 3891 - retention hardening: missing due steps count, calendar connected=false
+2026-10-11T08:20:10.3017302Z ok 3892 - retention hardening: ordinary snapshot recovers a dead child retention lock
+2026-10-11T08:20:11.7789444Z ok 3893 - retention hardening: acquire recovers a dead child retention lock
+2026-10-11T08:20:11.7800803Z ok 3894 - retention hardening: worker recovers PID 1 from a previous process instance
+2026-10-11T08:20:11.7805777Z ok 3895 - retention hardening: acquire recovers PID 1 from a previous process instance
+2026-10-11T08:20:12.4074282Z ok 3896 - retention hardening: a live holder excludes workers and a competing erasure
+2026-10-11T08:20:12.4079273Z ok 3897 - retention hardening: legacy PID 1 lock predating this process is recoverable
+2026-10-11T08:20:13.5781596Z ok 3898 - retention hardening: interrupted snapshot secrets disappear before provider success
+2026-10-11T08:20:14.0317541Z ok 3899 - retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+2026-10-11T08:20:14.4755784Z ok 3900 - retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+2026-10-11T08:20:14.9317014Z ok 3901 - retention hardening: startup removes abandoned snapshots even when the next backup is not due
+2026-10-11T08:20:15.3835603Z ok 3902 - retention hardening: retry secrets never reach the first snapshot disk write
+2026-10-11T08:20:15.9595176Z ok 3903 - retention hardening: staging cleanup never removes another live process snapshot
+2026-10-11T08:20:16.3788905Z ok 3904 - retention hardening: startup retries partial cleanup after a live restore releases its lock
+2026-10-11T08:20:16.3835982Z ok 3905 - retention hardening: a clean startup does not block scheduled snapshots on active off-site workers
+2026-10-11T08:20:18.1948935Z ok 3906 - retention hardening: Enabled daily erasure removes every historic version and marker
+2026-10-11T08:20:19.1490080Z ok 3907 - retention hardening: Enabled continuous erasure removes every historic version and marker
+2026-10-11T08:20:20.0630467Z ok 3908 - retention hardening: Suspended daily erasure removes every historic version and marker
+2026-10-11T08:20:20.9983137Z ok 3909 - retention hardening: Suspended continuous erasure removes every historic version and marker
+2026-10-11T08:20:21.8635786Z ok 3910 - retention hardening: Unsupported versioning permits ordinary off-site erasure
+2026-10-11T08:20:22.7340171Z ok 3911 - retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+2026-10-11T08:20:23.7616454Z ok 3912 - retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+2026-10-11T08:20:24.7558368Z ok 3913 - retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+2026-10-11T08:20:25.2214360Z ok 3914 - retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+2026-10-11T08:21:43.9761878Z # tests 4866
+2026-10-11T08:21:43.9762239Z # suites 0
+2026-10-11T08:21:43.9762576Z # pass 4866
+2026-10-11T08:21:43.9763153Z # fail 0
+2026-10-11T08:21:43.9763496Z # cancelled 0
+2026-10-11T08:21:43.9763857Z # skipped 0
+2026-10-11T08:21:43.9764179Z # todo 0
+2026-10-11T08:21:43.9764552Z # duration_ms 591491.768548

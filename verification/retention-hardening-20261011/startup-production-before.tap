@@ -1,0 +1,35 @@
+# Standalone production-startup reproduction; CPU affinity: [0, 1]
+TAP version 13
+# Subtest: actual production server starts continuous replication and gates health through the admin route
+not ok 1 - actual production server starts continuous replication and gates health through the admin route
+  ---
+  duration_ms: 11529.616943
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/continuousOffsite20261007.spec.mjs:173:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Text AI unavailable: configure GEMINI_API_KEY, GEMINI_TEXT_MODEL
+    Off The Clock AI server listening on 44371
+    [offsite-backup] OFFSITE_BUSY; backup is not confirmed. Retry scheduled.
+    [offsite-replication] OFFSITE_BUSY; latest changes are not confirmed off-site.
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/continuousOffsite20261007.spec.mjs:184:105)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11839.725957

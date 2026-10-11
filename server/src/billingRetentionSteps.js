@@ -10,7 +10,7 @@ const failureCode=(error,fallback)=>/^(?:OFFSITE_|BACKUP_|RETENTION_)[A-Z0-9_]+$
 // their own non-exported table, removed immediately on success/permanent failure,
 // and excluded from every newly captured backup.
 export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new Date(),enabled=()=>false,
-  revokeCalendar,releaseNumber,eraseLocal,eraseBackups}={}){
+  revokeCalendar,releaseNumber,eraseLocal,eraseBackups,cleanupRetryCopies=async()=>{}}={}){
   const query=usageOwnerQuery(database,ownerQuery),now=()=>clock().toISOString();
   const secrets=ownerId=>query('SELECT * FROM billingRetentionSecrets WHERE ownerId=?').get(ownerId);
   function clearSecret(ownerId,kind){
@@ -64,10 +64,10 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
         const profile=query('SELECT twilioNumberSid FROM businessProfiles WHERE ownerId=?').get(ownerId);
         if(row.phoneReleasedAt)steps.phone={status:'DONE',outcome:'RELEASED',completedAt:row.phoneReleasedAt};
         else if(profile?.twilioNumberSid){
-          if(!/^PN[0-9a-f]{32}$/i.test(profile.twilioNumberSid))permanentlyFail('phone','PHONE_SID_INVALID');
+          if(!/^PN[0-9a-f]{32}$/i.test(profile.twilioNumberSid))steps.phone.discardReason='PHONE_SID_INVALID';
           else query('INSERT INTO billingRetentionSecrets(ownerId,phoneNumberSid) VALUES(?,?) ON CONFLICT(ownerId) DO UPDATE SET phoneNumberSid=excluded.phoneNumberSid')
             .run(ownerId,profile.twilioNumberSid);
-        }else if(row.dataDeletedAt&&!profile)permanentlyFail('phone','PHONE_RETRY_MATERIAL_UNAVAILABLE');
+        }else if(row.dataDeletedAt&&!profile)steps.phone.discardReason='PHONE_RETRY_MATERIAL_UNAVAILABLE';
         else steps.phone={status:'NOT_REQUIRED',outcome:'NO_SAVED_NUMBER',completedAt:at};
       }
       if(due90&&!steps.calendar){
@@ -76,13 +76,13 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
         if(connection){
           let retained;
           try{retained=revokeCalendar?.retain?revokeCalendar.retain(connection):retainCalendarRefreshToken(connection);}
-          catch{permanentlyFail('calendar','CALENDAR_TOKEN_UNREADABLE');}
+          catch{steps.calendar.discardReason='CALENDAR_TOKEN_UNREADABLE';}
           if(retained)query(`INSERT INTO billingRetentionSecrets(ownerId,credentialsCiphertext,credentialsIv,credentialsTag,keyVersion)
             VALUES(?,?,?,?,?) ON CONFLICT(ownerId) DO UPDATE SET credentialsCiphertext=excluded.credentialsCiphertext,
             credentialsIv=excluded.credentialsIv,credentialsTag=excluded.credentialsTag,keyVersion=excluded.keyVersion`)
             .run(ownerId,retained.credentialsCiphertext,retained.credentialsIv,retained.credentialsTag,retained.keyVersion);
         }else if(['REVOKED','ALREADY_REVOKED'].includes(row.calendarRevokeStatus))steps.calendar={status:'DONE',outcome:row.calendarRevokeStatus,completedAt:row.calendarRevokeAttemptedAt};
-        else if(row.calendarRevokeStatus||row.dataDeletedAt)permanentlyFail('calendar','CALENDAR_RETRY_MATERIAL_UNAVAILABLE');
+        else if(row.calendarRevokeStatus||row.dataDeletedAt)steps.calendar.discardReason='CALENDAR_RETRY_MATERIAL_UNAVAILABLE';
         else steps.calendar={status:'NOT_REQUIRED',outcome:'NO_SAVED_GRANT',completedAt:at};
       }
       if(due90){
@@ -114,9 +114,15 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
     }
     async function providerStep(kind){
       const step=steps[kind];if(!step||terminal(step))return;
-      if(clock().getTime()>=Date.parse(step.firstAttemptAt)+30*DAY){permanentlyFail(kind,'RETRY_WINDOW_EXPIRED');return;}
+      async function copiesCleared(){
+        try{await cleanupRetryCopies();assertLease();return true;}
+        catch(error){assertLease();step.outcome=failureCode(error,'RETENTION_STAGING_PENDING');errors.push(error);save();return false;}
+      }
+      async function discard(reason){if(await copiesCleared())permanentlyFail(kind,reason);}
+      if(step.discardReason){await discard(step.discardReason);return;}
+      if(clock().getTime()>=Date.parse(step.firstAttemptAt)+30*DAY){await discard('RETRY_WINDOW_EXPIRED');return;}
       const kept=secrets(ownerId);
-      if(kind==='calendar'?!kept?.credentialsCiphertext:!kept?.phoneNumberSid){permanentlyFail(kind,'RETRY_MATERIAL_UNAVAILABLE');return;}
+      if(kind==='calendar'?!kept?.credentialsCiphertext:!kept?.phoneNumberSid){await discard('RETRY_MATERIAL_UNAVAILABLE');return;}
       let outcome='PROVIDER_DISABLED';
       if(enabled()){
         if(kind==='calendar'){
@@ -129,11 +135,12 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
         }
       }
       assertLease();
-      if(outcome==='UNREADABLE'){permanentlyFail(kind,'CALENDAR_TOKEN_UNREADABLE');return;}
+      if(outcome==='UNREADABLE'){await discard('CALENDAR_TOKEN_UNREADABLE');return;}
       // A request may finish at/after the retry deadline. Confirmed success is
       // still recorded truthfully; failure discards the secret at that boundary.
       const done=['REVOKED','ALREADY_REVOKED','RELEASED','ALREADY_RELEASED'].includes(outcome);
-      if(!done&&clock().getTime()>=Date.parse(step.firstAttemptAt)+30*DAY){permanentlyFail(kind,'RETRY_WINDOW_EXPIRED');return;}
+      if(!done&&clock().getTime()>=Date.parse(step.firstAttemptAt)+30*DAY){await discard('RETRY_WINDOW_EXPIRED');return;}
+      if(done&&!await copiesCleared())return;
       usageTransaction(database,()=>{
         steps[kind]={...step,status:done?'DONE':'PENDING',outcome,...(done?{completedAt:now()}:{lastAttemptAt:now()})};
         if(kind==='calendar')query('UPDATE billingCancellations SET calendarRevokeAttemptedAt=COALESCE(calendarRevokeAttemptedAt,?),calendarRevokeStatus=? WHERE ownerId=? AND operationId=?').run(step.firstAttemptAt,outcome,ownerId,row.operationId);
@@ -149,7 +156,9 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
       });
       if(done)flushDeletedSecrets();
     }
-    await Promise.all([backupStep(),providerStep('calendar'),providerStep('phone')]);
+    // The backup and terminal-provider barriers use the same volume lock.
+    // Finish each before starting the next; never recursively wait on a peer.
+    await backupStep();await providerStep('calendar');await providerStep('phone');
     if(due90&&!state.flushPending&&['local','backups','calendar','phone'].every(kind=>finished(steps[kind]))){
       query('UPDATE billingCancellations SET dataDeletedAt=?,dataErasureVersion=?,lastError=NULL,updatedAt=? WHERE ownerId=? AND operationId=?').run(now(),VERSION,now(),ownerId,row.operationId);
     }else if(state.flushPending||Object.values(steps).some(step=>!finished(step))){
@@ -160,7 +169,7 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
   }
   function retentionStatus(){
     // Admin-only inventory; no credentials, SIDs, names, email, or provider bodies.
-    const rows=database.prepare(`SELECT ownerId,endAt,retentionStateJson,dataErasureVersion,dataDeletedAt FROM billingCancellations
+    const rows=database.prepare(`SELECT ownerId,endAt,retentionStateJson,dataErasureVersion,dataDeletedAt,calendarRevokeStatus FROM billingCancellations
       WHERE state IN ('CONFIRMED','ENDED') ORDER BY ownerId`).all();
     const pending=[],permanentFailures=[];
     for(const row of rows){
@@ -168,8 +177,16 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
       let state;try{state=JSON.parse(row.retentionStateJson||'null');}catch{}
       const steps=state?.steps||{},unresolved=Object.entries(steps).filter(([,step])=>!finished(step));
       if(state?.flushPending)unresolved.push(['storage',{status:'PENDING',outcome:'RETENTION_DATABASE_BUSY'}]);
-      if(!unresolved.length&&clock().getTime()<Date.parse(row.endAt)+90*DAY)continue;
-      if(!unresolved.length&&!Object.keys(steps).length)pending.push({ownerId:row.ownerId,step:'local',outcome:'RETENTION_NOT_STARTED'});
+      // A lease or a stopped sweep must not hide overdue work. Deadlines are
+      // derived from the provider's service end, not from step initialization.
+      const age=clock().getTime()-Date.parse(row.endAt),due=[];
+      if(age>=30*DAY)due.push('phone');
+      if(age>=90*DAY){
+        due.push('local','backups');
+        const connected=query("SELECT 1 FROM calendarConnections WHERE ownerId=? AND provider='google'").get(row.ownerId);
+        if(connected||row.calendarRevokeStatus)due.push('calendar');
+      }
+      for(const step of due)if(!steps[step])pending.push({ownerId:row.ownerId,step,outcome:'RETENTION_NOT_STARTED'});
       for(const [step,value] of unresolved){
         const entry={ownerId:row.ownerId,step,firstAttemptAt:value.firstAttemptAt,outcome:value.outcome||'PENDING'};
         if(value.status==='PERMANENT_FAILURE')permanentFailures.push({...entry,failedAt:value.failedAt});else pending.push(entry);

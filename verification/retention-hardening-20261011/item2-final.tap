@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: backup refuses a missing book recorded in the durable creation ledger
+ok 1 - backup refuses a missing book recorded in the durable creation ledger
+  ---
+  duration_ms: 23.092752
+  type: 'test'
+  ...
+# Subtest: restore refuses a checksum-valid legacy bundle whose database records an omitted price book
+ok 2 - restore refuses a checksum-valid legacy bundle whose database records an omitted price book
+  ---
+  duration_ms: 14.66994
+  type: 'test'
+  ...
+# Subtest: backup cannot discard an unconfirmed save marker and resume quoting after restore
+ok 3 - backup cannot discard an unconfirmed save marker and resume quoting after restore
+  ---
+  duration_ms: 9.071043
+  type: 'test'
+  ...
+# Subtest: backup refuses a price book created while the online database snapshot is in progress
+ok 4 - backup refuses a price book created while the online database snapshot is in progress
+  ---
+  duration_ms: 6.695385
+  type: 'test'
+  ...
+# Subtest: backup refuses a pause marker that appears during the online database snapshot
+ok 5 - backup refuses a pause marker that appears during the online database snapshot
+  ---
+  duration_ms: 5.599338
+  type: 'test'
+  ...
+# Subtest: online backup includes committed WAL rows and price books; restore publishes a verified new directory
+ok 6 - online backup includes committed WAL rows and price books; restore publishes a verified new directory
+  ---
+  duration_ms: 10.301892
+  type: 'test'
+  ...
+# Subtest: a transaction during an online backup never appears half committed
+ok 7 - a transaction during an online backup never appears half committed
+  ---
+  duration_ms: 33.456134
+  type: 'test'
+  ...
+# Subtest: corruption refuses restore before publishing and leaves the current database intact
+ok 8 - corruption refuses restore before publishing and leaves the current database intact
+  ---
+  duration_ms: 7.677574
+  type: 'test'
+  ...
+# Subtest: traversal, symlinks and targets outside the restore directory cannot write files
+ok 9 - traversal, symlinks and targets outside the restore directory cannot write files
+  ---
+  duration_ms: 20.561348
+  type: 'test'
+  ...
+# Subtest: a failed snapshot leaves the last accepted backup and no partial bundle
+ok 10 - a failed snapshot leaves the last accepted backup and no partial bundle
+  ---
+  duration_ms: 8.665312
+  type: 'test'
+  ...
+# Subtest: retention removes only expired completed snapshots and preserves other directories
+ok 11 - retention removes only expired completed snapshots and preserves other directories
+  ---
+  duration_ms: 8.704306
+  type: 'test'
+  ...
+# Subtest: scheduler retries failure, avoids overlapping jobs and waits for its active job when stopped
+ok 12 - scheduler retries failure, avoids overlapping jobs and waits for its active job when stopped
+  ---
+  duration_ms: 151.164868
+  type: 'test'
+  ...
+# Subtest: retention hardening: interrupted snapshot secrets disappear before provider success
+ok 13 - retention hardening: interrupted snapshot secrets disappear before provider success
+  ---
+  duration_ms: 227.758157
+  type: 'test'
+  ...
+# Subtest: retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+ok 14 - retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+  ---
+  duration_ms: 182.055563
+  type: 'test'
+  ...
+# Subtest: retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+ok 15 - retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+  ---
+  duration_ms: 160.752444
+  type: 'test'
+  ...
+# Subtest: retention hardening: startup removes abandoned snapshots even when the next backup is not due
+ok 16 - retention hardening: startup removes abandoned snapshots even when the next backup is not due
+  ---
+  duration_ms: 215.77674
+  type: 'test'
+  ...
+# Subtest: retention hardening: retry secrets never reach the first snapshot disk write
+ok 17 - retention hardening: retry secrets never reach the first snapshot disk write
+  ---
+  duration_ms: 189.634334
+  type: 'test'
+  ...
+# Subtest: retention hardening: staging cleanup never removes another live process snapshot
+ok 18 - retention hardening: staging cleanup never removes another live process snapshot
+  ---
+  duration_ms: 371.721307
+  type: 'test'
+  ...
+# Subtest: retention hardening: startup retries partial cleanup after a live restore releases its lock
+ok 19 - retention hardening: startup retries partial cleanup after a live restore releases its lock
+  ---
+  duration_ms: 173.709828
+  type: 'test'
+  ...
+# Subtest: retention hardening: a clean startup does not block scheduled snapshots on active off-site workers
+ok 20 - retention hardening: a clean startup does not block scheduled snapshots on active off-site workers
+  ---
+  duration_ms: 145.005784
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2024.299379

@@ -1,0 +1,121 @@
+TAP version 13
+# Subtest: retention hardening: interrupted snapshot secrets disappear before provider success
+not ok 1 - retention hardening: interrupted snapshot secrets disappear before provider success
+  ---
+  duration_ms: 177.865735
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:36:70'
+  failureType: 'testCodeFailure'
+  error: |-
+    An abandoned snapshot still contains the finished provider step’s retry material
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:40:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+not ok 2 - retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+  ---
+  duration_ms: 126.198417
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:36:70'
+  failureType: 'testCodeFailure'
+  error: |-
+    An abandoned snapshot still contains the finished provider step’s retry material
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:40:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+not ok 3 - retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+  ---
+  duration_ms: 121.097753
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '2027-02-18T12:00:00.000Z'
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual: '2027-02-18T12:00:00.000Z'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:52:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: startup removes abandoned snapshots even when the next backup is not due
+not ok 4 - retention hardening: startup removes abandoned snapshots even when the next backup is not due
+  ---
+  duration_ms: 151.364594
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:61:49)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: retry secrets never reach the first snapshot disk write
+not ok 5 - retention hardening: retry secrets never reach the first snapshot disk write
+  ---
+  duration_ms: 145.687467
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:63:1'
+  failureType: 'testCodeFailure'
+  error: 'SID reached snapshot disk before normalization'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    Database.backup (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:69:14)
+    async writeSnapshot (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backups.js:123:5)
+    async createSnapshot (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backups.js:107:14)
+    async TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningSecrets20261011.spec.mjs:74:7)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1025.707955

@@ -5,7 +5,7 @@ import {createSnapshot,restoreBackup} from './backups.js';
 import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
-import {assertBackupRetentionIdle,withBackupRetentionLock} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock,processLockOwner,removeStaleProcessLock} from './backupRetentionLock.js';
 import {recordOffsiteUpload} from './offsiteHistory.js';
 
 const hash=value=>createHash('sha256').update(value).digest('hex');
@@ -114,13 +114,8 @@ export function createContinuousOffsiteService(database,deployment,{env=process.
   }
   async function perform(){
     const token=randomUUID();
-    if(fs.existsSync(lockFile)){
-      let prior;try{prior=JSON.parse(fs.readFileSync(lockFile,'utf8'));}catch{throw Error('OFFSITE_LOCK_INVALID');}
-      if(!Number.isInteger(prior.pid)||prior.pid<1||typeof prior.token!=='string')throw Error('OFFSITE_LOCK_INVALID');
-      try{process.kill(prior.pid,0);throw Error('OFFSITE_BUSY');}catch(e){if(e.code!=='ESRCH')throw e;}
-      fs.unlinkSync(lockFile);
-    }
-    fs.writeFileSync(lockFile,JSON.stringify({pid:process.pid,token}),{flag:'wx',mode:0o600,flush:true});
+    removeStaleProcessLock(lockFile);
+    fs.writeFileSync(lockFile,JSON.stringify({...processLockOwner(),token}),{flag:'wx',mode:0o600,flush:true});
     try{
       if(fs.existsSync(stateFile))try{state=readState();}catch{invalid=true;throw Error('OFFSITE_LOCAL_STATE_INVALID');}
       const current=sourceToken();
