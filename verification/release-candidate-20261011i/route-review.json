@@ -1,0 +1,25 @@
+{
+  "filesChecked": 26,
+  "mismatches": [],
+  "integrationHashEdits": [],
+  "inheritedHashChanges": [
+    {
+      "file": "src/billingCustomerLifecycle.js",
+      "baseSha256": "6c29811dd838b4d47ff647deec1b4d2e328abc1f08620b41221ea30bc486d0be",
+      "mergedSha256": "13850e42a6106435b2426e6a9ab8c2aba70145525c3ad68cdf4cbf99b4e824af",
+      "review": "Adds cleanupRetryCopies lifecycle dependency; route paths, authentication and roles unchanged."
+    },
+    {
+      "file": "src/offsiteBackups.js",
+      "baseSha256": "f247115573db7b4a08bb5c537228b2e62f7f6caa6f5a4e1c46810387f4f38714",
+      "mergedSha256": "06cbc06715c04f06aa4a10eed8d551fdf3fb1d59dd286df9648bbd9e282f59de",
+      "review": "Adds versioning and retention health, cleanup hook, and truthful ok:false on existing 503 admin response; route path, admin authentication and roles unchanged."
+    },
+    {
+      "file": "src/server.js",
+      "baseSha256": "bbea024a983128ddc61d8cdb2186870987b3346b27cfbf39a868992b75fe5d59",
+      "mergedSha256": "dc551df50bcd208c9e4626a3c3d8bd1b70696a476c1f70140b22327e6cbff7c1",
+      "review": "Wires cleanupRetryCopies into the lifecycle; route paths, authentication, roles and staff-invite limiter unchanged."
+    }
+  ]
+}
