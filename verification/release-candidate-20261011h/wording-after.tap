@@ -1,0 +1,252 @@
+TAP version 13
+# (node:11) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Billing trial shows end, fourteen days left, 60-minute cap and one unconfirmed call
+ok 1 - Billing trial shows end, fourteen days left, 60-minute cap and one unconfirmed call
+  ---
+  duration_ms: 603.20622
+  type: 'test'
+  ...
+# Subtest: Billing refresh completes the same 125-second trial call as 3 of 60 minutes, never overage
+ok 2 - Billing refresh completes the same 125-second trial call as 3 of 60 minutes, never overage
+  ---
+  duration_ms: 197.820945
+  type: 'test'
+  ...
+# Subtest: Billing paid Operator uses the existing meter: 302 of 300 minutes, $0.70 overage
+ok 3 - Billing paid Operator uses the existing meter: 302 of 300 minutes, $0.70 overage
+  ---
+  duration_ms: 96.763766
+  type: 'test'
+  ...
+# Subtest: Billing monthly choices show all prices and monthly allowances before checkout
+ok 4 - Billing monthly choices show all prices and monthly allowances before checkout
+  ---
+  duration_ms: 104.462612
+  type: 'test'
+  ...
+# Subtest: Billing annual choices show all prices and monthly allowances before checkout
+ok 5 - Billing annual choices show all prices and monthly allowances before checkout
+  ---
+  duration_ms: 161.127124
+  type: 'test'
+  ...
+# Subtest: Billing with Stripe disabled preserves the 404 message and does not request usage
+ok 6 - Billing with Stripe disabled preserves the 404 message and does not request usage
+  ---
+  duration_ms: 118.47259
+  type: 'test'
+  ...
+# Subtest: staff denied Billing status never requests or displays owner minute usage
+ok 7 - staff denied Billing status never requests or displays owner minute usage
+  ---
+  duration_ms: 77.156311
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in UTC
+ok 8 - Billing approved trial date in UTC
+  ---
+  duration_ms: 90.646148
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in America/Los_Angeles
+ok 9 - Billing approved trial date in America/Los_Angeles
+  ---
+  duration_ms: 81.341648
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in Asia/Tokyo
+ok 10 - Billing approved trial date in Asia/Tokyo
+  ---
+  duration_ms: 102.629209
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in invalid-zone
+ok 11 - Billing approved trial date in invalid-zone
+  ---
+  duration_ms: 115.595145
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in null
+ok 12 - Billing approved trial date in null
+  ---
+  duration_ms: 76.561767
+  type: 'test'
+  ...
+# Subtest: owner wording: Starter active dashboard fallback cards
+ok 13 - owner wording: Starter active dashboard fallback cards
+  ---
+  duration_ms: 594.254855
+  type: 'test'
+  ...
+# Subtest: owner wording: Starter active setup answering note
+ok 14 - owner wording: Starter active setup answering note
+  ---
+  duration_ms: 87.683131
+  type: 'test'
+  ...
+# Subtest: owner wording: Starter trialing dashboard fallback cards
+ok 15 - owner wording: Starter trialing dashboard fallback cards
+  ---
+  duration_ms: 72.246685
+  type: 'test'
+  ...
+# Subtest: owner wording: Starter trialing setup answering note
+ok 16 - owner wording: Starter trialing setup answering note
+  ---
+  duration_ms: 30.685037
+  type: 'test'
+  ...
+# Subtest: owner wording: Operator active dashboard fallback cards
+ok 17 - owner wording: Operator active dashboard fallback cards
+  ---
+  duration_ms: 77.330287
+  type: 'test'
+  ...
+# Subtest: owner wording: Operator active setup answering note
+ok 18 - owner wording: Operator active setup answering note
+  ---
+  duration_ms: 29.115483
+  type: 'test'
+  ...
+# Subtest: owner wording: Operator trialing dashboard fallback cards
+ok 19 - owner wording: Operator trialing dashboard fallback cards
+  ---
+  duration_ms: 68.863114
+  type: 'test'
+  ...
+# Subtest: owner wording: Operator trialing setup answering note
+ok 20 - owner wording: Operator trialing setup answering note
+  ---
+  duration_ms: 28.664327
+  type: 'test'
+  ...
+# Subtest: owner wording: QuoteDone active dashboard fallback cards
+ok 21 - owner wording: QuoteDone active dashboard fallback cards
+  ---
+  duration_ms: 83.376972
+  type: 'test'
+  ...
+# Subtest: owner wording: QuoteDone active setup answering note
+ok 22 - owner wording: QuoteDone active setup answering note
+  ---
+  duration_ms: 40.946371
+  type: 'test'
+  ...
+# Subtest: owner wording: QuoteDone trialing dashboard fallback cards
+ok 23 - owner wording: QuoteDone trialing dashboard fallback cards
+  ---
+  duration_ms: 125.035598
+  type: 'test'
+  ...
+# Subtest: owner wording: QuoteDone trialing setup answering note
+ok 24 - owner wording: QuoteDone trialing setup answering note
+  ---
+  duration_ms: 38.144848
+  type: 'test'
+  ...
+# Subtest: owner wording: Scale active dashboard fallback cards
+ok 25 - owner wording: Scale active dashboard fallback cards
+  ---
+  duration_ms: 40.704186
+  type: 'test'
+  ...
+# Subtest: owner wording: Scale active setup answering note
+ok 26 - owner wording: Scale active setup answering note
+  ---
+  duration_ms: 20.903103
+  type: 'test'
+  ...
+# Subtest: owner wording: Scale trialing dashboard fallback cards
+ok 27 - owner wording: Scale trialing dashboard fallback cards
+  ---
+  duration_ms: 39.36147
+  type: 'test'
+  ...
+# Subtest: owner wording: Scale trialing setup answering note
+ok 28 - owner wording: Scale trialing setup answering note
+  ---
+  duration_ms: 32.734453
+  type: 'test'
+  ...
+# Subtest: first visit: fresh GET revision validates unchanged with no price-book fixture writes
+ok 29 - first visit: fresh GET revision validates unchanged with no price-book fixture writes
+  ---
+  duration_ms: 315.152458
+  type: 'test'
+  ...
+# Subtest: first visit: new owner with nine disabled services sees no raw keys or false tier warning
+ok 30 - first visit: new owner with nine disabled services sees no raw keys or false tier warning
+  ---
+  duration_ms: 770.006544
+  type: 'test'
+  ...
+# Subtest: first visit: three entered services before and after save have readable actionable rules
+ok 31 - first visit: three entered services before and after save have readable actionable rules
+  ---
+  duration_ms: 1781.809685
+  type: 'test'
+  ...
+# Subtest: first visit: own save ignores old background revision responses
+ok 32 - first visit: own save ignores old background revision responses
+  ---
+  duration_ms: 1588.946838
+  type: 'test'
+  ...
+# Subtest: first visit: own approval ignores old background revision responses
+ok 33 - first visit: own approval ignores old background revision responses
+  ---
+  duration_ms: 1651.177772
+  type: 'test'
+  ...
+# Subtest: first visit: two actual editor tabs retain the exact conflict recovery flow
+ok 34 - first visit: two actual editor tabs retain the exact conflict recovery flow
+  ---
+  duration_ms: 1194.069025
+  type: 'test'
+  ...
+# Subtest: live service preview: Operator active names its available channel
+ok 35 - live service preview: Operator active names its available channel
+  ---
+  duration_ms: 872.858469
+  type: 'test'
+  ...
+# Subtest: live service preview: Operator trialing names its available channel
+ok 36 - live service preview: Operator trialing names its available channel
+  ---
+  duration_ms: 854.595883
+  type: 'test'
+  ...
+# Subtest: live service preview: QuoteDone active names its available channel
+ok 37 - live service preview: QuoteDone active names its available channel
+  ---
+  duration_ms: 858.802645
+  type: 'test'
+  ...
+# Subtest: live service preview: QuoteDone trialing names its available channel
+ok 38 - live service preview: QuoteDone trialing names its available channel
+  ---
+  duration_ms: 856.399068
+  type: 'test'
+  ...
+# Subtest: live service preview: Scale active names its available channel
+ok 39 - live service preview: Scale active names its available channel
+  ---
+  duration_ms: 847.924419
+  type: 'test'
+  ...
+# Subtest: live service preview: Scale trialing names its available channel
+ok 40 - live service preview: Scale trialing names its available channel
+  ---
+  duration_ms: 838.543332
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13114.19759

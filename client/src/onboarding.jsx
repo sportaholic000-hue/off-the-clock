@@ -101,8 +101,12 @@ export function StepRail({ step, state, onJump }) {
           </span>
         </div>
         <span className="answering-note">
-          Ready when your account has access, your number is set, and the About and Hours sections have content.
-          Quoting turns on per service later. Answering never waits on your price book.
+          Ready when your account has access, your number is set, and the About and Hours sections have content.{' '}
+          {state?.account?.plan === 'Starter'
+            ? 'Price Book quoting is included with Operator and QuoteDone.'
+            : state?.account?.plan === 'Operator'
+              ? 'Website widget quoting turns on per service later. Answering never waits on your price book.'
+              : 'Quoting turns on per service later. Answering never waits on your price book.'}
         </span>
       </div>
     </nav>

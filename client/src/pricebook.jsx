@@ -447,12 +447,12 @@ function Preview({ preview, loading, status, plan }) {
         <div className="quote-preview-head">
           <span className="quote-preview-eyebrow">
             <span className="live-dot" aria-hidden="true" />
-            <span className="eyebrow">What your customer hears</span>
+            <span className="eyebrow">What your customer gets</span>
           </span>
           <span className="mono quote-preview-note">UPDATES AS YOU TYPE</span>
         </div>
         <p className="quote-preview-sub">
-          This is what the estimate will sound like on a call. Nothing saves until you save.
+          This is the estimate your customer will get. Changes here aren't saved until you press Save &amp; validate.
         </p>
 
         {loading && <div className="preview-empty mono">CALCULATING</div>}
@@ -496,7 +496,7 @@ function Preview({ preview, loading, status, plan }) {
             )}
 
             <div className="quote-range">
-              <div className="mono quote-range-label">RANGE YOUR CUSTOMER HEARS</div>
+              <div className="mono quote-range-label">RANGE YOUR CUSTOMER GETS</div>
               <div className="quote-range-values">
                 <span className="quote-low">{money.amount(active.lowEstimate)}</span>
                 {active.lowEstimate!==active.highEstimate&&<><span className="mono quote-dash">–</span>

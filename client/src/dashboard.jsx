@@ -135,6 +135,7 @@ export default function Dashboard() {
   const statuses = dashboard.pricebookStatuses || [];
   const ready = statuses.filter(service => service.status === 'QUOTING LIVE');
   const needs = statuses.filter(service => service.status !== 'QUOTING LIVE');
+  const plan = state.account?.plan;
 
   return (
     <AppShell activePath="/dashboard" operator={dashboard.operator}>
@@ -250,12 +251,12 @@ export default function Dashboard() {
             <>
               <CounterCard label="CALLS ANSWERED" value="—" detail="NO CALLS HANDLED YET" empty />
               <CounterCard label="QUOTES DELIVERED" value="—" detail="NO QUOTES DELIVERED YET" empty />
-              <CounterCard label="READY TO QUOTE" value={ready.length}
+              {plan !== 'Starter' && <><CounterCard label="READY TO QUOTE" value={ready.length}
                 unit={ready.length === 1 ? 'service' : 'services'}
-                detail={ready.length ? 'THESE CAN QUOTE ON A CALL' : 'NO SERVICE IS LIVE YET'} accent={ready.length > 0} />
+                detail={ready.length ? (plan === 'Operator' ? 'THESE CAN QUOTE ON YOUR WIDGET' : 'THESE CAN QUOTE ON A CALL') : 'NO SERVICE IS LIVE YET'} accent={ready.length > 0} />
               <CounterCard label="NEEDS PRICING" value={needs.length}
                 unit={needs.length === 1 ? 'service' : 'services'}
-                detail={needs.length ? 'BLOCKED UNTIL PRICED' : 'NOTHING BLOCKED'} empty={needs.length === 0} />
+                detail={needs.length ? 'BLOCKED UNTIL PRICED' : 'NOTHING BLOCKED'} empty={needs.length === 0} /></>}
             </>
           )}
         </div>

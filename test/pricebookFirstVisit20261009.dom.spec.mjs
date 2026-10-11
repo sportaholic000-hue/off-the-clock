@@ -175,11 +175,16 @@ test('first visit: two actual editor tabs retain the exact conflict recovery flo
 
 // Expected before execution: Operator (active/trial) names the widget;
 // QuoteDone (active/trial) names live calls. This changes no quoted amounts.
-for(const plan of ['Operator','QuoteDone'])for(const planStatus of ['active','trialing'])
+for(const plan of ['Operator','QuoteDone','Scale'])for(const planStatus of ['active','trialing'])
 test(`live service preview: ${plan} ${planStatus} names its available channel`,async t=>{
  const h=await setup(t,{prepared:true,live:true,plan,planStatus});await settled(h);
  await changeDraft(h,book=>{book.services[0].validationInputs={service:'[SYNTHETIC] Visit',serviceConfirmed:true,unit:'flat'};});
  await waitFor(()=>h.document.body.textContent.includes('This service can issue quotes'),'live readiness');
+ assert.equal(h.document.querySelector('.quote-preview .eyebrow').textContent,'What your customer gets');
+ assert.equal(h.document.querySelector('.quote-preview-sub').textContent.trim(),"This is the estimate your customer will get. Changes here aren't saved until you press Save & validate.");
+ assert.ok(h.document.querySelector('.quote-preview').textContent.includes('RANGE YOUR CUSTOMER GETS'));
+ assert.doesNotMatch(h.document.querySelector('.quote-preview').textContent,/What your customer hears|RANGE YOUR CUSTOMER HEARS|sound like on a call/);
+ assert.ok(button(h.document,'Save & validate'));
  const expected=plan==='Operator'?'This service can issue quotes on your website widget.':'This service can issue quotes on a live call.';
  assert.ok(h.document.body.textContent.includes(expected),expected);
  assert.ok(!h.document.body.textContent.includes(plan==='Operator'?'This service can issue quotes on a live call.':'This service can issue quotes on your website widget.'));

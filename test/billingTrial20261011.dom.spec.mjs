@@ -22,18 +22,19 @@ const pause=()=>new Promise(r=>setTimeout(r,10));
 async function waitFor(check){for(let n=0;n<400;n++){if(check())return;await pause();}assert.fail('Billing DOM update timed out');}
 const label=(d,text)=>[...d.querySelectorAll('dt')].find(n=>n.textContent===text)?.nextElementSibling.textContent;
 const refreshButton=d=>[...d.querySelectorAll('button')].find(n=>n.textContent==='Refresh billing status');
-async function mount(t,h,{checkout=false,disabled=false,staff=false}={}){
+async function mount(t,h,{checkout=false,disabled=false,staff=false,timezone='UTC',trialEndsAt}={}){
  const errors=[],calls=[],dom=new JSDOM('<div id="root"></div>',{url:'https://synthetic.invalid/settings/billing',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:new VirtualConsole().on('jsdomError',e=>errors.push(String(e)))});
  const {window}=dom;window.TextEncoder=TextEncoder;Object.defineProperty(window.crypto,'subtle',{value:webcrypto.subtle});window.Date.now=()=>h.clock().getTime();
  window.__transport=async path=>{
   calls.push(path);
   if(disabled)throw Object.assign(new Error('Not found'),{status:404});
   if(staff)throw Object.assign(new Error('Forbidden'),{status:403});
+  if(path==='/api/onboarding/state')return {account:{timezone}};
   if(path==='/api/billing/lifecycle')return {notices:[],cancellation:null};
   if(path==='/api/dashboard')return JSON.parse(JSON.stringify({minuteUsage:h.service.snapshot(A)}));
   if(path==='/api/billing/status'){
    const row=h.db.prepare('SELECT * FROM users WHERE id=?').get(A);
-   return {...row,billingEnabled:true,providerAvailable:true,canCheckout:checkout,canManageBilling:!checkout,cancelAtPeriodEnd:false,checkoutState:'NONE',billingInterval:'monthly'};
+   return {...row,...(trialEndsAt?{trialEndsAt}:{}),billingEnabled:true,providerAvailable:true,canCheckout:checkout,canManageBilling:!checkout,cancelAtPeriodEnd:false,checkoutState:'NONE',billingInterval:'monthly'};
   }
   throw Error('Unexpected synthetic request '+path);
  };
@@ -44,7 +45,7 @@ async function mount(t,h,{checkout=false,disabled=false,staff=false}={}){
 function trial(t){const h=fixture(t);h.setTime(SIGNUP);h.subscription(A,{status:'trialing',start:SIGNUP,end:START});return h;}
 test('Billing trial shows end, fourteen days left, 60-minute cap and one unconfirmed call',async t=>{
  const h=trial(t);h.call(125,{provider:false});const ui=await mount(t,h),d=ui.document;
- assert.equal(label(d,'Status'),'Trial');assert.equal(label(d,'Trial ends'),'2026-10-20');assert.equal(label(d,'Days left'),'14');
+ assert.equal(label(d,'Status'),'Trial');assert.equal(label(d,'Trial ends'),'Oct 20, 2026');assert.equal(label(d,'Days left'),'14');
  assert.match(d.body.textContent,/Trial minutes/);assert.match(d.body.textContent,/60 included minutes/);
  assert.equal(label(d,'Minutes used'),'0');assert.equal(label(d,'Minutes left'),'60');assert.match(d.body.textContent,/Calls still being confirmed: 1/);
 });
@@ -77,4 +78,12 @@ test('Billing with Stripe disabled preserves the 404 message and does not reques
 test('staff denied Billing status never requests or displays owner minute usage',async t=>{
  const ui=await mount(t,fixture(t),{staff:true});assert.match(ui.document.body.textContent,/Only the business owner can manage billing/);
  assert.ok(!ui.calls.includes('/api/dashboard'));assert.equal(ui.document.querySelector('.minute-usage'),null);
+});
+
+// Handwritten expected dates: business timezone, independent of browser timezone.
+for(const [timezone,expected] of [['UTC','Oct 25, 2026'],['America/Los_Angeles','Oct 24, 2026'],['Asia/Tokyo','Oct 25, 2026'],['invalid-zone','Oct 25, 2026'],[null,'Oct 25, 2026']])
+test('Billing approved trial date in '+timezone,async t=>{
+ const h=trial(t);h.setTime('2026-10-11T01:30:00.000Z');
+ const ui=await mount(t,h,{timezone,trialEndsAt:'2026-10-25T01:30:00.000Z'});
+ assert.equal(label(ui.document,'Trial ends'),expected);assert.equal(label(ui.document,'Days left'),'14');
 });
