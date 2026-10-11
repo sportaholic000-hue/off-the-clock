@@ -40,7 +40,7 @@ export function removeStaleProcessLock(file){
     // Upgrade recovery for an old PID-only lock: this process cannot have
     // written it before it was born. Fresh legacy locks remain excluded.
     // The margin tolerates clock precision; this is not a lock-age timeout.
-    else if(!prior.processIdentity&&prior.pid===process.pid&&fs.statSync(file).mtimeMs<processStartedAt-1000)gone=true;
+    else if(!prior.processIdentity&&prior.pid===process.pid&&fs.statSync(file).mtimeMs<processStartedAt-2)gone=true;
   }
   if(!gone)throw Error('OFFSITE_BUSY');
   // Recheck ownership before removing a stale holder; never unlink a lock

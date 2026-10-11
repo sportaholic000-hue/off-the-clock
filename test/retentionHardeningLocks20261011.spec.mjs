@@ -49,7 +49,8 @@ test('retention hardening: a live holder excludes workers and a competing erasur
 });
 test('retention hardening: legacy PID 1 lock predating this process is recoverable',t=>{
   const f=retentionFixture(t),file=writeLock(f.deployment,{pid:1,token:'SYNTHETIC-legacy-container'});
-  fs.utimesSync(file,new Date(0),new Date(0));
+  // A fast restart must recover too; do not rely on an old lock being seconds old.
+  const justBeforeStartup=new Date(Date.now()-20);fs.utimesSync(file,justBeforeStartup,justBeforeStartup);
   const script=`import {assertBackupRetentionIdle} from './server/src/backupRetentionLock.js';
     Object.defineProperty(process,'pid',{value:1});process.kill=()=>true;
     assertBackupRetentionIdle(JSON.parse(process.argv[1]));`;
