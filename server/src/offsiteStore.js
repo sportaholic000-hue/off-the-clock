@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {pipeline} from 'node:stream/promises';
 import {Writable} from 'node:stream';
-import {S3Client,PutObjectCommand,GetObjectCommand,HeadObjectCommand,ListObjectsV2Command,DeleteObjectCommand} from '@aws-sdk/client-s3';
+import {S3Client,PutObjectCommand,GetObjectCommand,HeadObjectCommand,ListObjectsV2Command,DeleteObjectCommand,GetBucketVersioningCommand,ListObjectVersionsCommand} from '@aws-sdk/client-s3';
 import {MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 
 export function readOffsiteConfig(env=process.env) {
@@ -28,7 +28,49 @@ export function createS3BackupStore(config,{requestHandler}={}) {
     requestChecksumCalculation:'WHEN_REQUIRED',responseChecksumValidation:'WHEN_REQUIRED',requestHandler:requestHandler||{connectionTimeout:5000,requestTimeout:30000}});
   const send=command=>client.send(command,{abortSignal:AbortSignal.timeout(30000)});
   const params=Key=>({Bucket:config.bucket,Key});
+  let versioningStatus={state:'UNKNOWN',checkedAt:null,error:null};
   return {
+    versioningStatus:()=>({...versioningStatus}),
+    async versioning(){
+      const checkedAt=new Date().toISOString();
+      try{
+        const result=await send(new GetBucketVersioningCommand({Bucket:config.bucket}));
+        const state=result.Status===undefined?'NEVER_ENABLED':{Enabled:'ENABLED',Suspended:'SUSPENDED'}[result.Status];
+        if(!state)throw Error('OFFSITE_VERSIONING_INVALID');
+        versioningStatus={state,checkedAt,error:null};return state;
+      }catch(error){
+        // Only an explicit provider declaration of unsupported versioning is
+        // equivalent to never enabled. Access denial, timeout and unknown
+        // responses cannot be used as evidence that historic data is absent.
+        if(['NotImplemented','NotSupported','UnsupportedOperation'].includes(error.name)&&[400,405,501].includes(error.$metadata?.httpStatusCode)){
+          versioningStatus={state:'UNSUPPORTED',checkedAt,error:null};return 'UNSUPPORTED';
+        }
+        versioningStatus={state:'UNKNOWN',checkedAt,error:'OFFSITE_VERSIONING_UNAVAILABLE'};
+        throw Error('OFFSITE_VERSIONING_UNAVAILABLE');
+      }
+    },
+    async listVersions(prefix){
+      const versions=[],seen=new Set();let keyMarker,versionMarker;
+      try{
+        for(;;){
+          const response=await send(new ListObjectVersionsCommand({Bucket:config.bucket,Prefix:prefix,KeyMarker:keyMarker,VersionIdMarker:versionMarker}));
+          if(typeof response.IsTruncated!=='boolean')throw Error();
+          for(const [entries,deleteMarker] of [[response.Versions||[],false],[response.DeleteMarkers||[],true]])for(const entry of entries){
+            if(typeof entry.Key!=='string'||!entry.Key.startsWith(prefix)||typeof entry.VersionId!=='string'||!entry.VersionId||typeof entry.IsLatest!=='boolean')throw Error();
+            versions.push({key:entry.Key,versionId:entry.VersionId,isLatest:entry.IsLatest,deleteMarker});
+          }
+          if(!response.IsTruncated)return versions;
+          keyMarker=response.NextKeyMarker;versionMarker=response.NextVersionIdMarker;
+          const cursor=JSON.stringify([keyMarker,versionMarker]);
+          if(!keyMarker||seen.has(cursor))throw Error();seen.add(cursor);
+        }
+      }catch{throw Error('OFFSITE_VERSION_LIST_FAILED');}
+    },
+    async removeVersion(key,versionId){
+      if(typeof versionId!=='string'||!versionId)throw Error('OFFSITE_VERSION_DELETE_FAILED');
+      try{await send(new DeleteObjectCommand({...params(key),VersionId:versionId}));}
+      catch{throw Error('OFFSITE_VERSION_DELETE_FAILED');}
+    },
     async putFile(key,file,sha256) {await send(new PutObjectCommand({...params(key),Body:fs.createReadStream(file),ContentLength:fs.statSync(file).size,ContentType:'application/octet-stream',Metadata:{sha256},IfNoneMatch:'*'}));},
     async putRecord(key,record) {const body=JSON.stringify(record);await send(new PutObjectCommand({...params(key),Body:body,ContentLength:Buffer.byteLength(body),ContentType:'application/json',IfNoneMatch:'*'}));},
     async record(key) {

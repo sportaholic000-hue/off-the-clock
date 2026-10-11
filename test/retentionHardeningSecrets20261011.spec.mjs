@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
+import {spawn} from 'node:child_process';
+import {once} from 'node:events';
 import {A,B,DEADLINE,KEY,retentionFixture,businessRows} from './helpers/tenantRetentionFixture.mjs';
 import {createBillingCustomerLifecycle} from '../server/src/billingCustomerLifecycle.js';
 import {createCalendarRetentionRevoker} from '../server/src/calendarRetentionRevocation.js';
@@ -73,4 +75,16 @@ test('retention hardening: retry secrets never reach the first snapshot disk wri
   };
   try{await createSnapshot(f.db,f.deployment);}finally{Database.prototype.backup=original;}
   assert.equal(observed,true);assert.ok(f.db.prepare('SELECT credentialsCiphertext FROM billingRetentionSecrets WHERE ownerId=?').get(A).credentialsCiphertext);
+});
+test('retention hardening: staging cleanup never removes another live process snapshot',async t=>{
+  const f=retentionFixture(t),offsite=createOffsiteBackupService(f.db,f.deployment,{config:{enabled:false},warn:()=>{}});
+  const script=`import Database from 'better-sqlite3';import {createSnapshot} from './server/src/backups.js';
+    const original=Database.prototype.backup;Database.prototype.backup=async function(file){await original.call(this,file);
+      const hold=setInterval(()=>{},1000);await new Promise(resolve=>{process.once('message',resolve);process.send('WRITTEN');});clearInterval(hold);};
+    const db=new Database(process.argv[1]);try{await createSnapshot(db,JSON.parse(process.argv[2]));}finally{db.close();process.disconnect();}`;
+  const child=spawn(process.execPath,['--input-type=module','-e',script,f.db.name,JSON.stringify(f.deployment)],{stdio:['ignore','ignore','pipe','ipc']});
+  t.after(()=>child.kill());await once(child,'message');
+  try{await assert.rejects(offsite.cleanupRetryCopies(),/OFFSITE_BUSY/);}
+  finally{child.send('FINISH');await once(child,'close');}
+  await offsite.cleanupRetryCopies();
 });

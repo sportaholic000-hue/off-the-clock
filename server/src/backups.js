@@ -3,7 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import Database from 'better-sqlite3';
 import {inside,assertRealContainment} from './deploymentConfig.js';
-import {assertBackupRetentionIdle,withBackupRetentionLock,withBackupRetentionLockSync,removeStaleProcessLock} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock,withBackupRetentionLockSync,removeStaleProcessLock,processLockOwner} from './backupRetentionLock.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 const activeSnapshots=new Set();
@@ -21,7 +21,10 @@ export async function cleanupAbandonedSnapshots(config){
     }
     for(const directory of [config.backupPath,path.join(config.backupPath,'.offsite-continuous','snapshots')]){
       assertRealContainment(config.root,directory);if(!fs.existsSync(directory))continue;
-      for(const name of fs.readdirSync(directory))if(/^\.partial-snapshot-\d{13}-[a-f0-9-]{36}$/.test(name))removeOwnedDirectory(directory,path.join(directory,name));
+      for(const name of fs.readdirSync(directory))if(/^\.partial-snapshot-\d{13}-[a-f0-9-]{36}$/.test(name)){
+        const stage=path.join(directory,name),holder=path.join(stage,'.snapshot-owner.json');
+        assertRealContainment(config.root,holder);removeStaleProcessLock(holder);removeOwnedDirectory(directory,stage);
+      }
     }
   });
 }
@@ -136,6 +139,7 @@ async function writeSnapshot(database,config,{now,sourceCommit}){
   const stage=path.join(backupPath,'.partial-'+id), bundle=path.join(backupPath,id);
   fs.mkdirSync(stage,{mode:0o700});
   try {
+    fs.writeFileSync(path.join(stage,'.snapshot-owner.json'),JSON.stringify(processLockOwner()),{flag:'wx',mode:0o600,flush:true});
     const books = readSourceBooks(root,config.pricebookPath);
     // SQLite serialization captures committed pages (including WAL) in memory.
     // Never put the live retry table into a staging directory, even briefly.
@@ -164,6 +168,7 @@ async function writeSnapshot(database,config,{now,sourceCommit}){
     fs.writeFileSync(path.join(stage,'manifest.json'),JSON.stringify(manifest,null,2),{flag:'wx',mode:0o600,flush:true});
     verifyBackup(stage);
     fs.renameSync(stage,bundle);
+    fs.rmSync(path.join(bundle,'.snapshot-owner.json'));
     pruneSnapshots(backupPath,{retentionDays:config.backupRetentionDays,now:createdAtMs});
     return bundle;
   } catch(error) {

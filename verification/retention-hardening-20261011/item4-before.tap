@@ -1,0 +1,204 @@
+TAP version 13
+# Subtest: retention hardening: Enabled daily erasure removes every historic version and marker
+not ok 1 - retention hardening: Enabled daily erasure removes every historic version and marker
+  ---
+  duration_ms: 725.311621
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:27:84'
+  failureType: 'testCodeFailure'
+  error: |-
+    A historic version containing erased tenant data survived completion
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:40:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: retention hardening: Enabled continuous erasure removes every historic version and marker
+not ok 2 - retention hardening: Enabled continuous erasure removes every historic version and marker
+  ---
+  duration_ms: 570.009989
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:27:84'
+  failureType: 'testCodeFailure'
+  error: |-
+    A historic version containing erased tenant data survived completion
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:40:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: Suspended daily erasure removes every historic version and marker
+not ok 3 - retention hardening: Suspended daily erasure removes every historic version and marker
+  ---
+  duration_ms: 559.040267
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:27:84'
+  failureType: 'testCodeFailure'
+  error: |-
+    A historic version containing erased tenant data survived completion
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:40:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: Suspended continuous erasure removes every historic version and marker
+not ok 4 - retention hardening: Suspended continuous erasure removes every historic version and marker
+  ---
+  duration_ms: 511.321441
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:27:84'
+  failureType: 'testCodeFailure'
+  error: |-
+    A historic version containing erased tenant data survived completion
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:40:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: Unsupported versioning permits ordinary off-site erasure
+not ok 5 - retention hardening: Unsupported versioning permits ordinary off-site erasure
+  ---
+  duration_ms: 589.499206
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:53:50'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'UNSUPPORTED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'UNSUPPORTED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:55:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+not ok 6 - retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+  ---
+  duration_ms: 542.983654
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:53:50'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'NEVER_ENABLED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEVER_ENABLED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:55:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+not ok 7 - retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 1015.476654
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:59:102'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:64:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+not ok 8 - retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 895.926084
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:59:102'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:64:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+not ok 9 - retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 560.917861
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:59:102'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningVersions20261011.spec.mjs:64:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 0
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6303.999769

@@ -1,13 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import path from 'node:path';
-import {createRequire} from 'node:module';
-import {A,B,END,DEADLINE,KEY,retentionFixture,businessRows} from './helpers/tenantRetentionFixture.mjs';
-import {fakeS3} from './helpers/offsiteFakeS3.mjs';
-import {createS3BackupStore} from '../server/src/offsiteStore.js';
-import {createOffsiteBackupService,installOffsiteBackupStatusRoute} from '../server/src/offsiteBackups.js';
-import {decryptBundle} from '../server/src/offsiteArchive.js';
+import {A,END,DEADLINE,KEY,retentionFixture} from './helpers/tenantRetentionFixture.mjs';
+import {installOffsiteBackupStatusRoute} from '../server/src/offsiteBackups.js';
 import {createBillingCustomerLifecycle} from '../server/src/billingCustomerLifecycle.js';
 import {createCalendarRetentionRevoker} from '../server/src/calendarRetentionRevocation.js';
 import {eraseTenantPricebookFiles} from '../server/src/billingTenantErasure.js';
@@ -34,6 +28,7 @@ test('retention hardening: admin returns 503 for day-90 erasure blocked before i
  await s.tick();
  const row=f.db.prepare('SELECT dataDeletedAt,lastError,retentionStateJson FROM billingCancellations WHERE ownerId=?').get(A);
  const status=s.retentionStatus(),remaining=f.db.prepare('SELECT COUNT(*) n FROM businessProfiles WHERE ownerId=?').get(A).n;
+ assert.equal(remaining,1);assert.equal(JSON.parse(row.retentionStateJson).steps.phone.status,'DONE');assert.equal(row.dataDeletedAt,null);
  const environment={JWT_SECRET:'SYNTHETIC-audit-admin-secret',ADMIN_EMAIL:'synthetic-admin@example.invalid',ADMIN_PASSWORD_HASH:'SYNTHETIC-admin-hash'};
  const sessions=createAuthSessionService(f.db,{environment,clock:f.clock});
  const admin=sessions.create({id:'admin',role:'admin',email:environment.ADMIN_EMAIL,passwordHash:environment.ADMIN_PASSWORD_HASH});
@@ -42,7 +37,8 @@ test('retention hardening: admin returns 503 for day-90 erasure blocked before i
  const server=await new Promise(resolve=>{const server=app.listen(0,'127.0.0.1',()=>resolve(server));});
  t.after(()=>new Promise(resolve=>server.close(resolve)));
  const response=await fetch('http://127.0.0.1:'+server.address().port+'/api/admin/backups/offsite',{headers:{authorization:'Bearer '+admin.token}});
- t.diagnostic(JSON.stringify({case:'overdue cleanup blocked by lease',...row,remainingPrivateProfiles:remaining,admin:status,httpStatus:response.status,body:await response.json()}));
+ const body=await response.json();t.diagnostic(JSON.stringify({case:'overdue cleanup blocked by lease',remainingPrivateProfiles:remaining,admin:status,httpStatus:response.status,body}));
+ assert.equal(body.ok,false);
  assert.equal(response.status,503,'Overdue tenant erasure with surviving private data must not return healthy');
 });
 

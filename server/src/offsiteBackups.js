@@ -106,6 +106,7 @@ export function createDailyOffsiteBackupService(database,deployment,{env=process
       // artifact. Re-read under the lock, preserving that immutable retry.
       if(fs.existsSync(stateFile)){try{state=readState();}catch{stateInvalid=true;throw Error('OFFSITE_LOCAL_STATE_INVALID');}}
       state.lastAttemptAt=now();state.phase='UPLOADING';state.error=null;save();
+      await store.versioning?.();
       const day=state.pending?.day||dayAt(now());
       recordOffsiteUpload(deployment,config,now());
       const existing=await store.record(recordKey(config,day));
@@ -167,7 +168,10 @@ export function createOffsiteBackupService(database,deployment,options={}){
   const store=config.enabled?(options.store||createS3BackupStore(config)):null,common={...options,config,store,closeStore:false};
   const daily=createDailyOffsiteBackupService(database,deployment,common);
   const erasureTime=()=>new Date(options.now?.()??Date.now()).toISOString();
-  const withRetention=status=>{const retention=backupErasureStatus(deployment);return {...status,ok:status.ok&&retention.ok,error:retention.error||status.error,retention};};
+  const withRetention=status=>{
+    const retention=backupErasureStatus(deployment),versioning=store?.versioningStatus?.()||{state:config.enabled?'UNKNOWN':'NOT_CONFIGURED',checkedAt:null,error:null};
+    return {...status,ok:status.ok&&retention.ok&&!versioning.error,error:retention.error||versioning.error||status.error,retention,versioning};
+  };
   if(!daily.status().configured)return {...daily,cleanupRetryCopies:()=>cleanupAbandonedSnapshots(deployment),status:()=>withRetention(daily.status()),eraseOwner:ownerId=>eraseTenantBackupCopies(ownerId,deployment,{config,store,at:erasureTime()})};
   const replica=createContinuousOffsiteService(database,deployment,common);let stopping;
   const status=()=>{const d=daily.status(),r=replica.status();return withRetention({...d,ok:d.ok&&r.ok,error:d.error||r.error,continuous:r});};

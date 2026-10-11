@@ -3,12 +3,13 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import Database from 'better-sqlite3';
 import {eraseTenantRows,eraseTenantPricebookFiles} from './billingTenantErasure.js';
-import {verifyBackup,drainSnapshots} from './backups.js';
+import {verifyBackup,drainSnapshots,cleanupAbandonedSnapshots} from './backups.js';
 import {encryptBundle,decryptBundle,fileChecksum} from './offsiteArchive.js';
 import {assertRealContainment} from './deploymentConfig.js';
 import {withBackupRetentionLock,removeStaleProcessLock} from './backupRetentionLock.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {requireOffsiteErasureInventory,rememberBackupErasure} from './offsiteHistory.js';
+import {eraseOldObjectVersions} from './offsiteVersionErasure.js';
 
 const hash=value=>createHash('sha256').update(value).digest('hex');
 function save(file,value){
@@ -93,7 +94,7 @@ export async function eraseTenantBackupCopies(ownerId,deployment,{config={enable
     // redundant staging copies left by a crash, not recovery points. Removing
     // them does not remove another business from any verified backup.
     for(const directory of [daily,continuous])removeAbandonedCopies(directory,/^verify-[a-f0-9-]{36}$/);
-    for(const directory of [deployment.backupPath,path.join(continuous,'snapshots')])removeAbandonedCopies(directory,/^\.partial-snapshot-\d{13}-[a-f0-9-]{36}$/);
+    await cleanupAbandonedSnapshots(deployment);
     if(deployment.volume){
       const restores=path.join(deployment.volume,'restores');assertRealContainment(deployment.volume,restores);
       removeAbandonedCopies(restores,/^\.(?:(?:offsite|continuous)-[A-Za-z0-9]{6}|restore-[a-f0-9-]{36})$/);
@@ -111,6 +112,13 @@ export async function eraseTenantBackupCopies(ownerId,deployment,{config={enable
     // Local plaintext copies have already been erased. Missing settings cannot
     // turn a historical or ambiguous upload into proof of no remote copies.
     requireOffsiteErasureInventory(deployment,config,store);
+    let versioned=false;
+    if(config.enabled){
+      if(typeof store?.versioning!=='function')throw Error('OFFSITE_VERSIONING_UNAVAILABLE');
+      const state=await store.versioning();
+      if(!['ENABLED','SUSPENDED','UNSUPPORTED','NEVER_ENABLED'].includes(state))throw Error('OFFSITE_VERSIONING_UNAVAILABLE');
+      versioned=['ENABLED','SUSPENDED'].includes(state);
+    }
     async function cleanArchive(source,record,directory){
       const bundle=path.join(directory,'bundle');await decryptBundle(source,bundle,config.key);
       let changed=false;
@@ -148,6 +156,7 @@ export async function eraseTenantBackupCopies(ownerId,deployment,{config={enable
       if(JSON.stringify(marker)!==JSON.stringify(record)){
         await store.remove(record.key+'.json');await store.putRecord(record.key+'.json',record);
       }
+      if(versioned)for(const key of [record.key,record.key+'.json'])await eraseOldObjectVersions(store,key);
       fs.rmSync(directory,{recursive:true,force:true});
     }
     async function rebase(directory,journal){
@@ -226,6 +235,13 @@ export async function eraseTenantBackupCopies(ownerId,deployment,{config={enable
           fs.rmSync(encrypted,{force:true});fs.rmSync(path.join(directory,'bundle'),{recursive:true,force:true});
           await publish(directory,journal);
         }finally{if(!durable)fs.rmSync(directory,{recursive:true,force:true});}
+      }
+      // ListObjectVersions also finds pruned objects hidden by delete markers;
+      // current-object LIST alone cannot prove that every copy was erased.
+      if(versioned){
+        const history=[...await store.listVersions(config.prefix+'/daily/'),...await store.listVersions(config.prefix+'/continuous/')];
+        const affected=[...new Set(history.map(v=>v.key))].filter(key=>validKey(key,config)||key.endsWith('.json')&&validKey(key.slice(0,-5),config));
+        for(const key of affected)await eraseOldObjectVersions(store,key);
       }
     }
     fs.rmSync(work,{recursive:true,force:true});
