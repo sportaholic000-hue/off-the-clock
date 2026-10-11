@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: day90 a deployment that never uploaded off-site can complete local-only backup erasure
+ok 1 - day90 a deployment that never uploaded off-site can complete local-only backup erasure
+  ---
+  duration_ms: 240.677516
+  type: 'test'
+  ...
+# Subtest: day90 removes abandoned download, decrypt and restore staging copies
+ok 2 - day90 removes abandoned download, decrypt and restore staging copies
+  ---
+  duration_ms: 800.142739
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight daily restore
+ok 3 - day90 serializes erasure with an in-flight daily restore
+  ---
+  duration_ms: 598.334404
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight continuous restore
+ok 4 - day90 serializes erasure with an in-flight continuous restore
+  ---
+  duration_ms: 553.500947
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — volume
+ok 5 - day90 local restore cannot race a held erasure lock — volume
+  ---
+  duration_ms: 322.501578
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — nested
+ok 6 - day90 local restore cannot race a held erasure lock — nested
+  ---
+  duration_ms: 317.576803
+  type: 'test'
+  ...
+# Subtest: day90 complete cleanup is idempotent across live, local, daily and continuous copies
+ok 7 - day90 complete cleanup is idempotent across live, local, daily and continuous copies
+  ---
+  duration_ms: 682.537376
+  type: 'test'
+  ...
+# Subtest: day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+ok 8 - day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+  ---
+  duration_ms: 482.395537
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — recovered
+ok 9 - day90 admin health is authenticated and secret-free — recovered
+  ---
+  duration_ms: 202.283811
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — permanent
+ok 10 - day90 admin health is authenticated and secret-free — permanent
+  ---
+  duration_ms: 204.559895
+  type: 'test'
+  ...
+# Subtest: retention hardening: ordinary snapshot recovers a dead child retention lock
+ok 11 - retention hardening: ordinary snapshot recovers a dead child retention lock
+  ---
+  duration_ms: 350.614325
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers a dead child retention lock
+ok 12 - retention hardening: acquire recovers a dead child retention lock
+  ---
+  duration_ms: 210.713316
+  type: 'test'
+  ...
+# Subtest: retention hardening: worker recovers PID 1 from a previous process instance
+ok 13 - retention hardening: worker recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 334.822982
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers PID 1 from a previous process instance
+ok 14 - retention hardening: acquire recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 288.936302
+  type: 'test'
+  ...
+# Subtest: retention hardening: a live holder excludes workers and a competing erasure
+ok 15 - retention hardening: a live holder excludes workers and a competing erasure
+  ---
+  duration_ms: 287.526208
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4845.126056

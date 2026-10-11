@@ -1,0 +1,133 @@
+TAP version 13
+# Subtest: retention hardening: ordinary snapshot recovers a dead child retention lock
+not ok 1 - retention hardening: ordinary snapshot recovers a dead child retention lock
+  ---
+  duration_ms: 374.597576
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningLocks20261011.spec.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: 'OFFSITE_BUSY'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    assertBackupRetentionIdle (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:13:57)
+    createSnapshot (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backups.js:105:3)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningLocks20261011.spec.mjs:20:24)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: retention hardening: acquire recovers a dead child retention lock
+ok 2 - retention hardening: acquire recovers a dead child retention lock
+  ---
+  duration_ms: 289.215894
+  type: 'test'
+  ...
+# Subtest: retention hardening: worker recovers PID 1 from a previous process instance
+not ok 3 - retention hardening: worker recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 330.653544
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningLocks20261011.spec.mjs:27:42'
+  failureType: 'testCodeFailure'
+  error: |-
+    file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:13
+      if(fs.existsSync(retentionLockFile(deployment)))throw Error('OFFSITE_BUSY');
+                                                            ^
+    
+    Error: OFFSITE_BUSY
+        at assertBackupRetentionIdle (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:13:57)
+        at file:///workspace/scratch/5228524b6f21/audit-platform/[eval1]:4:5
+        at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+        at async node:internal/modules/esm/loader:224:26
+        at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:221:20)
+        at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+    
+    Node.js v24.19.0
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    assertBackupRetentionIdle (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:13:57)
+    file:///workspace/scratch/5228524b6f21/audit-platform/[eval1]:4:5
+    ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    async node:internal/modules/esm/loader:224:26
+    async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:221:20)
+    async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningLocks20261011.spec.mjs:38:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: acquire recovers PID 1 from a previous process instance
+not ok 4 - retention hardening: acquire recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 285.292511
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningLocks20261011.spec.mjs:27:42'
+  failureType: 'testCodeFailure'
+  error: |-
+    file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:24
+        try{process.kill(prior.pid,0);throw Error('OFFSITE_BUSY');}catch(error){if(error.code!=='ESRCH')throw error;}
+                                            ^
+    
+    Error: OFFSITE_BUSY
+        at acquire (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:24:41)
+        at withBackupRetentionLock (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:33:14)
+        at file:///workspace/scratch/5228524b6f21/audit-platform/[eval1]:4:11
+        at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+        at async node:internal/modules/esm/loader:224:26
+        at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:221:20)
+        at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+    
+    Node.js v24.19.0
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    acquire (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:24:41)
+    withBackupRetentionLock (file:///workspace/scratch/5228524b6f21/audit-platform/server/src/backupRetentionLock.js:33:14)
+    file:///workspace/scratch/5228524b6f21/audit-platform/[eval1]:4:11
+    ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    async node:internal/modules/esm/loader:224:26
+    async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:221:20)
+    async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/audit-platform/test/retentionHardeningLocks20261011.spec.mjs:38:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: retention hardening: a live holder excludes workers and a competing erasure
+ok 5 - retention hardening: a live holder excludes workers and a competing erasure
+  ---
+  duration_ms: 276.563729
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1869.216658
