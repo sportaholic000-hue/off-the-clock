@@ -20,6 +20,10 @@ import {createVoiceAdmission,voiceAdmissionConfig,voiceAdmissionStatus} from '..
 import {createOwnerAlertService} from '../server/src/ownerAlertService.js';
 import {createBillingVoiceUsage} from '../server/src/billingVoiceUsage.js';
 import {createOwnerCallService} from '../server/src/ownerCallService.js';
+import {hasReceptionistAccess,hasOperatorAccess,hasPriceBookAccess,hasQuoteDoneAccess,TRIAL_VOICE_MINUTE_CAP} from '../server/src/planAccess.js';
+import {MINUTE_PLANS,OVERAGE_CENTS_PER_MINUTE} from '../server/src/billingUsagePolicy.js';
+import {staffLimit} from '../server/src/staffSeats.js';
+import {voicePlanCapabilities,voiceToolAllowed} from '../server/src/voice/voicePlanAccess.js';
 
 const limits={...env,VOICE_MAX_CONCURRENT:'100',VOICE_CALLER_DAILY_LIMIT:'6',VOICE_BREAKER_FAILURE_THRESHOLD:'3',VOICE_BREAKER_WINDOW_SECONDS:'60',VOICE_BREAKER_COOLDOWN_SECONDS:'30'};
 const sid=n=>'CA'+n.toString(16).padStart(32,'0');
@@ -72,7 +76,7 @@ async function demoHarness(t,{patch={},filename=':memory:',fetchImpl}={}){
   installLiveDemoRoutes(app,{db,env:{...demoEnv,...patch},now:()=>Date.parse(at),fetchImpl:async(url,init)=>{bodies.push(JSON.parse(init.body));return fetchImpl?fetchImpl(url,init):{ok:true,json:async()=>({name:'auth_tokens/synthetic'})};}});
   const server=app.listen(0,'127.0.0.1');await once(server,'listening');
   t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));db.close();});
-  return {db,bodies,post:async()=>{const r=await fetch('http://127.0.0.1:'+server.address().port+'/api/demo/session',{method:'POST',headers:{'content-type':'application/json',origin:demoEnv.DEMO_ALLOWED_ORIGINS},body:JSON.stringify({agent:'nova'})});return {status:r.status,body:await r.json()};}};
+  return {db,bodies,post:async(agent='nova')=>{const r=await fetch('http://127.0.0.1:'+server.address().port+'/api/demo/session',{method:'POST',headers:{'content-type':'application/json',origin:demoEnv.DEMO_ALLOWED_ORIGINS},body:JSON.stringify({agent})});return {status:r.status,body:await r.json()};}};
 }
 for(const shared of [false,true])test('demo admission '+(shared?'B: separate database connections':'A: one HTTP server')+' cannot race any ceiling',async t=>{
   for(const [key,error]of [['DEMO_SESSIONS_PER_IP_PER_HOUR','hourly'],['DEMO_DAILY_SESSION_CAP','daily'],['DEMO_MAX_CONCURRENT','busy']])await t.test(key,async t=>{
@@ -87,13 +91,50 @@ for(const shared of [false,true])test('demo admission '+(shared?'B: separate dat
   });
 });
 function currentFacts(text){
-  assert.doesNotMatch(text,/automatic text follow-ups|text reminders|Thirty-day money-back guarantee|Quotes are ranges|To answer calls themselves again, they turn forwarding off/);
-  assert.match(text,/does not send text messages/i);assert.match(text,/master toggle/i);assert.match(text,/dashboard and (?:by )?email/i);
+  assert.doesNotMatch(text,/automatic text follow-ups|text reminders|Thirty-day money-back guarantee|Quotes are ranges/);
+  assert.match(text,/does not send text messages/i);assert.match(text,/dashboard and (?:by )?email/i);
+  const noDashboardSwitch='There is no on/off switch in the dashboard.';
+  assert.ok(text.includes('To stop answering, the owner turns off call forwarding on their phone. '+noDashboardSwitch));
+  assert.doesNotMatch(text.replaceAll(noDashboardSwitch,''),/master toggle|dashboard[^.\n]*(?:toggle|switch)|(?:toggle|switch)[^.\n]*dashboard|Carrier forwarding settings are separate from this toggle/i);
 }
 test('demo facts A: generated instructions match the current owner ruling',()=>currentFacts(demoInstructions('Nova')));
 test('demo facts B: the token provider receives those same corrected locked instructions',async t=>{
   const h=await demoHarness(t);assert.equal((await h.post()).status,200);const text=h.bodies[0].bidiGenerateContentSetup.systemInstruction.parts[0].text;
   currentFacts(text);assert.equal(text,lockedSetup(liveDemoConfig(demoEnv),'nova').systemInstruction.parts[0].text);
+});
+
+// Literal owner-approved wording, recorded before changing the production facts.
+// Each assertion reads the instruction actually submitted by the HTTP token route.
+const approvedDemoFacts={
+  Starter:"- Starter plan, $69 per month, 150 included minutes: 24/7 answering, transcripts and lead capture, owner alerts in the dashboard and by email, owner-managed spam filtering, one number and one owner login. Starter does not include booking, live transfer, the Price Book, the website quote widget or quoting by phone.",
+  Operator:"- Operator plan, $119 per month, 300 included minutes: 24/7 answering and booking, calendar connection and customer records, transcripts and lead capture, owner alerts in the dashboard and by email, live transfer, owner-managed spam filtering, one number, an owner login plus one office-staff login, a quote-request counter, webhooks and CSV support, the Price Book and a quote widget for their website.",
+  QuoteDone:"- QuoteDone plan, $279 per month, 1,200 included minutes: everything in Operator, plus quoting by phone from the owner's own prices.",
+  annual:"- Annual billing is available on all three plans and costs ten times the monthly price, which is two months free: Starter $690 per year, Operator $1,190 per year, QuoteDone $2,790 per year.",
+  trial:'A 14-day trial with 60 included minutes is available.',
+};
+for(const agent of ['nova','miles'])for(const [fact,approved] of Object.entries(approvedDemoFacts))
+test(`demo approved session facts 20261011: ${agent} ${fact}`,async t=>{
+  const h=await demoHarness(t),response=await h.post(agent);
+  assert.equal(response.status,200);assert.equal(response.body.agent.key,agent);assert.equal(h.bodies.length,1);
+  const text=h.bodies[0].bidiGenerateContentSetup.systemInstruction.parts[0].text;
+  assert.ok(text.includes(approved),`${agent} session must include the approved ${fact} fact`);
+  currentFacts(text);
+  assert.equal(text,lockedSetup(liveDemoConfig(demoEnv),agent).systemInstruction.parts[0].text);
+  assert.ok(text.includes(`I'm ${agent==='nova'?'Nova':'Miles'}!`));
+});
+for(const [plan,terms,seats,operator,phoneQuoting] of [
+  ['Starter',{included:150,monthlyCents:6900,annualCents:69000},0,false,false],
+  ['Operator',{included:300,monthlyCents:11900,annualCents:119000},1,true,false],
+  ['QuoteDone',{included:1200,monthlyCents:27900,annualCents:279000},1,true,true],
+])test(`demo approved plan entitlements 20261011: ${plan}`,()=>{
+  const account={plan,planStatus:'active'},capabilities=voicePlanCapabilities(account);
+  assert.deepEqual(MINUTE_PLANS[plan],terms);assert.equal(staffLimit(plan),seats);
+  assert.equal(hasReceptionistAccess(account),true);assert.equal(hasOperatorAccess(account),operator);
+  assert.equal(hasPriceBookAccess(account),operator);assert.equal(hasQuoteDoneAccess(account),phoneQuoting);
+  for(const name of ['checkAvailability','bookAppointment','modifyAppointment','transferCall'])assert.equal(voiceToolAllowed(name,capabilities),operator,name);
+  for(const name of ['matchService','getQuote','calculateVoiceArea','prepareQuoteEmail','sendQuoteEmail'])assert.equal(voiceToolAllowed(name,capabilities),phoneQuoting,name);
+  assert.equal(voiceToolAllowed('calculateListedPrice',capabilities),true);
+  assert.equal(TRIAL_VOICE_MINUTE_CAP,60);assert.equal(OVERAGE_CENTS_PER_MINUTE,35);
 });
 
 test('platform ceiling A: configured capacity applies across owners',async t=>{

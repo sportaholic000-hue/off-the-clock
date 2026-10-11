@@ -1,0 +1,552 @@
+TAP version 13
+# Subtest: merged login limits: Starter keeps owner login and 0 staff seats
+ok 1 - merged login limits: Starter keeps owner login and 0 staff seats
+  ---
+  duration_ms: 10.622431
+  type: 'test'
+  ...
+# Subtest: merged login limits: Operator keeps owner login and 1 staff seats
+ok 2 - merged login limits: Operator keeps owner login and 1 staff seats
+  ---
+  duration_ms: 6.277751
+  type: 'test'
+  ...
+# Subtest: merged login limits: QuoteDone keeps owner login and 1 staff seats
+ok 3 - merged login limits: QuoteDone keeps owner login and 1 staff seats
+  ---
+  duration_ms: 4.57974
+  type: 'test'
+  ...
+# Subtest: merged login limits: Scale keeps owner login and unlimited staff seats
+ok 4 - merged login limits: Scale keeps owner login and unlimited staff seats
+  ---
+  duration_ms: 7.247556
+  type: 'test'
+  ...
+# Subtest: Operator invite is pending, has no owner-selected password, accepts once and binds email and business
+ok 5 - Operator invite is pending, has no owner-selected password, accepts once and binds email and business
+  ---
+  duration_ms: 8.454749
+  type: 'test'
+  ...
+# Subtest: the 24-hour deadline, resend and cancellation do not leave a usable old link
+ok 6 - the 24-hour deadline, resend and cancellation do not leave a usable old link
+  ---
+  duration_ms: 6.848073
+  type: 'test'
+  ...
+# Subtest: failed fake email delivery leaves a retryable pending invite and invalidates the failed link
+ok 7 - failed fake email delivery leaves a retryable pending invite and invalidates the failed link
+  ---
+  duration_ms: 6.192362
+  type: 'test'
+  ...
+# Subtest: invite accepted just before expiry; changed email or owner binding cannot accept
+ok 8 - invite accepted just before expiry; changed email or owner binding cannot accept
+  ---
+  duration_ms: 9.851895
+  type: 'test'
+  ...
+# Subtest: Scale excess staff is suspended in stable seat order on Operator and restored on Scale
+ok 9 - Scale excess staff is suspended in stable seat order on Operator and restored on Scale
+  ---
+  duration_ms: 6.715432
+  type: 'test'
+  ...
+# Subtest: plan limits, downgrade suspension, restoration and immediate removal revoke staff sessions
+ok 10 - plan limits, downgrade suspension, restoration and immediate removal revoke staff sessions
+  ---
+  duration_ms: 9.494512
+  type: 'test'
+  ...
+# Subtest: tenant-bound staff routes deny staff management and isolate customers
+ok 11 - tenant-bound staff routes deny staff management and isolate customers
+  ---
+  duration_ms: 22.142353
+  type: 'test'
+  ...
+# Subtest: existing durable account tokens survive a purpose CHECK upgrade, and consumed tokens remain spent
+ok 12 - existing durable account tokens survive a purpose CHECK upgrade, and consumed tokens remain spent
+  ---
+  duration_ms: 2.971983
+  type: 'test'
+  ...
+# Subtest: staff queues a saved quote once through the fake email provider, with no cross-tenant or recipient substitution
+ok 13 - staff queues a saved quote once through the fake email provider, with no cross-tenant or recipient substitution
+  ---
+  duration_ms: 25.89573
+  type: 'test'
+  ...
+# Subtest: staff acceptance preflight: unknown token performs zero password hashes
+ok 14 - staff acceptance preflight: unknown token performs zero password hashes
+  ---
+  duration_ms: 3.520879
+  type: 'test'
+  ...
+# Subtest: staff acceptance preflight: expired token performs zero password hashes
+ok 15 - staff acceptance preflight: expired token performs zero password hashes
+  ---
+  duration_ms: 2.721159
+  type: 'test'
+  ...
+# Subtest: staff acceptance preflight: used token performs zero password hashes
+ok 16 - staff acceptance preflight: used token performs zero password hashes
+  ---
+  duration_ms: 2.544781
+  type: 'test'
+  ...
+# Subtest: staff acceptance preflight: wrong-purpose token performs zero password hashes
+ok 17 - staff acceptance preflight: wrong-purpose token performs zero password hashes
+  ---
+  duration_ms: 1.794349
+  type: 'test'
+  ...
+# Subtest: staff acceptance preflight: non-staff token performs zero password hashes
+ok 18 - staff acceptance preflight: non-staff token performs zero password hashes
+  ---
+  duration_ms: 1.925793
+  type: 'test'
+  ...
+# Subtest: staff acceptance preflight: changed-invite token performs zero password hashes
+ok 19 - staff acceptance preflight: changed-invite token performs zero password hashes
+  ---
+  duration_ms: 3.467337
+  type: 'test'
+  ...
+# Subtest: valid staff acceptance hashes exactly once and creates an active login
+ok 20 - valid staff acceptance hashes exactly once and creates an active login
+  ---
+  duration_ms: 3.201072
+  type: 'test'
+  ...
+# Subtest: staff acceptance rechecks atomically when token expires while hashing
+ok 21 - staff acceptance rechecks atomically when token expires while hashing
+  ---
+  duration_ms: 3.205823
+  type: 'test'
+  ...
+# Subtest: staff acceptance rechecks atomically when token consumed while hashing
+ok 22 - staff acceptance rechecks atomically when token consumed while hashing
+  ---
+  duration_ms: 2.969217
+  type: 'test'
+  ...
+# Subtest: staff acceptance rechecks atomically when token invitation-changed while hashing
+ok 23 - staff acceptance rechecks atomically when token invitation-changed while hashing
+  ---
+  duration_ms: 2.32291
+  type: 'test'
+  ...
+# Subtest: staff invite public route shares recovery rate limits: ten per IP per fifteen minutes
+ok 24 - staff invite public route shares recovery rate limits: ten per IP per fifteen minutes
+  ---
+  duration_ms: 5.073843
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter prices, included allowance and exact overage
+ok 25 - Starter lineup: Starter prices, included allowance and exact overage
+  ---
+  duration_ms: 1.808732
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter account and feature access
+ok 26 - Starter lineup: Starter account and feature access
+  ---
+  duration_ms: 1.060721
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator prices, included allowance and exact overage
+ok 27 - Starter lineup: Operator prices, included allowance and exact overage
+  ---
+  duration_ms: 0.202347
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator account and feature access
+ok 28 - Starter lineup: Operator account and feature access
+  ---
+  duration_ms: 0.183713
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone prices, included allowance and exact overage
+ok 29 - Starter lineup: QuoteDone prices, included allowance and exact overage
+  ---
+  duration_ms: 0.155194
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone account and feature access
+ok 30 - Starter lineup: QuoteDone account and feature access
+  ---
+  duration_ms: 0.315907
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter to Starter recurring price differences
+ok 31 - Starter lineup: Starter to Starter recurring price differences
+  ---
+  duration_ms: 0.153689
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter to Operator recurring price differences
+ok 32 - Starter lineup: Starter to Operator recurring price differences
+  ---
+  duration_ms: 0.072753
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter to QuoteDone recurring price differences
+ok 33 - Starter lineup: Starter to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.100478
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator to Starter recurring price differences
+ok 34 - Starter lineup: Operator to Starter recurring price differences
+  ---
+  duration_ms: 0.201531
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator to Operator recurring price differences
+ok 35 - Starter lineup: Operator to Operator recurring price differences
+  ---
+  duration_ms: 0.153704
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator to QuoteDone recurring price differences
+ok 36 - Starter lineup: Operator to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.073912
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone to Starter recurring price differences
+ok 37 - Starter lineup: QuoteDone to Starter recurring price differences
+  ---
+  duration_ms: 0.05082
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone to Operator recurring price differences
+ok 38 - Starter lineup: QuoteDone to Operator recurring price differences
+  ---
+  duration_ms: 0.049613
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone to QuoteDone recurring price differences
+ok 39 - Starter lineup: QuoteDone to QuoteDone recurring price differences
+  ---
+  duration_ms: 0.070023
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter monthly upgrade savings at 300 minutes
+ok 40 - Starter lineup: Starter monthly upgrade savings at 300 minutes
+  ---
+  duration_ms: 16.557369
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter monthly upgrade savings at 1200 minutes
+ok 41 - Starter lineup: Starter monthly upgrade savings at 1200 minutes
+  ---
+  duration_ms: 0.60458
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator monthly upgrade savings at 1200 minutes
+ok 42 - Starter lineup: Operator monthly upgrade savings at 1200 minutes
+  ---
+  duration_ms: 0.121262
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter annual upgrade savings at 300 minutes
+ok 43 - Starter lineup: Starter annual upgrade savings at 300 minutes
+  ---
+  duration_ms: 0.55284
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator annual upgrade savings at 1200 minutes
+ok 44 - Starter lineup: Operator annual upgrade savings at 1200 minutes
+  ---
+  duration_ms: 0.164325
+  type: 'test'
+  ...
+# Subtest: Starter lineup: downgrade preserves data and blocks owner/public booking, widget and price book
+ok 45 - Starter lineup: downgrade preserves data and blocks owner/public booking, widget and price book
+  ---
+  duration_ms: 1323.423283
+  type: 'test'
+  ...
+# Subtest: repeat callers A: six persisted answered calls route the next signed inbound to capture
+ok 46 - repeat callers A: six persisted answered calls route the next signed inbound to capture
+  ---
+  duration_ms: 100.751905
+  type: 'test'
+  ...
+# Subtest: repeat callers B: repeated real signed HTTP/WebSocket sessions exhaust the allowance
+ok 47 - repeat callers B: repeated real signed HTTP/WebSocket sessions exhaust the allowance
+  ---
+  duration_ms: 250.734157
+  type: 'test'
+  ...
+# Subtest: spam controls A: owner can mark a stored call and retain its number in the blocklist
+ok 48 - spam controls A: owner can mark a stored call and retain its number in the blocklist
+  ---
+  duration_ms: 47.540764
+  type: 'test'
+  ...
+# Subtest: spam controls B: the actual call component exposes the owner spam action
+ok 49 - spam controls B: the actual call component exposes the owner spam action
+  ---
+  duration_ms: 779.179697
+  type: 'test'
+  ...
+# Subtest: demo admission A: one HTTP server cannot race any ceiling
+    # Subtest: DEMO_SESSIONS_PER_IP_PER_HOUR
+    ok 1 - DEMO_SESSIONS_PER_IP_PER_HOUR
+      ---
+      duration_ms: 32.0137
+      type: 'test'
+      ...
+    # Subtest: DEMO_DAILY_SESSION_CAP
+    ok 2 - DEMO_DAILY_SESSION_CAP
+      ---
+      duration_ms: 24.180047
+      type: 'test'
+      ...
+    # Subtest: DEMO_MAX_CONCURRENT
+    ok 3 - DEMO_MAX_CONCURRENT
+      ---
+      duration_ms: 23.442609
+      type: 'test'
+      ...
+    1..3
+ok 50 - demo admission A: one HTTP server cannot race any ceiling
+  ---
+  duration_ms: 80.586939
+  type: 'test'
+  ...
+# Subtest: demo admission B: separate database connections cannot race any ceiling
+    # Subtest: DEMO_SESSIONS_PER_IP_PER_HOUR
+    ok 1 - DEMO_SESSIONS_PER_IP_PER_HOUR
+      ---
+      duration_ms: 29.620986
+      type: 'test'
+      ...
+    # Subtest: DEMO_DAILY_SESSION_CAP
+    ok 2 - DEMO_DAILY_SESSION_CAP
+      ---
+      duration_ms: 27.670736
+      type: 'test'
+      ...
+    # Subtest: DEMO_MAX_CONCURRENT
+    ok 3 - DEMO_MAX_CONCURRENT
+      ---
+      duration_ms: 27.020134
+      type: 'test'
+      ...
+    1..3
+ok 51 - demo admission B: separate database connections cannot race any ceiling
+  ---
+  duration_ms: 85.317928
+  type: 'test'
+  ...
+# Subtest: demo facts A: generated instructions match the current owner ruling
+ok 52 - demo facts A: generated instructions match the current owner ruling
+  ---
+  duration_ms: 0.386875
+  type: 'test'
+  ...
+# Subtest: demo facts B: the token provider receives those same corrected locked instructions
+ok 53 - demo facts B: the token provider receives those same corrected locked instructions
+  ---
+  duration_ms: 4.920229
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: nova Starter
+ok 54 - demo approved session facts 20261011: nova Starter
+  ---
+  duration_ms: 4.201006
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: nova Operator
+ok 55 - demo approved session facts 20261011: nova Operator
+  ---
+  duration_ms: 6.410583
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: nova QuoteDone
+ok 56 - demo approved session facts 20261011: nova QuoteDone
+  ---
+  duration_ms: 7.750677
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: nova annual
+ok 57 - demo approved session facts 20261011: nova annual
+  ---
+  duration_ms: 6.375547
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: nova trial
+ok 58 - demo approved session facts 20261011: nova trial
+  ---
+  duration_ms: 5.888642
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: miles Starter
+ok 59 - demo approved session facts 20261011: miles Starter
+  ---
+  duration_ms: 10.149312
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: miles Operator
+ok 60 - demo approved session facts 20261011: miles Operator
+  ---
+  duration_ms: 6.178481
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: miles QuoteDone
+ok 61 - demo approved session facts 20261011: miles QuoteDone
+  ---
+  duration_ms: 7.008631
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: miles annual
+ok 62 - demo approved session facts 20261011: miles annual
+  ---
+  duration_ms: 5.478955
+  type: 'test'
+  ...
+# Subtest: demo approved session facts 20261011: miles trial
+ok 63 - demo approved session facts 20261011: miles trial
+  ---
+  duration_ms: 4.042412
+  type: 'test'
+  ...
+# Subtest: demo approved plan entitlements 20261011: Starter
+ok 64 - demo approved plan entitlements 20261011: Starter
+  ---
+  duration_ms: 0.637608
+  type: 'test'
+  ...
+# Subtest: demo approved plan entitlements 20261011: Operator
+ok 65 - demo approved plan entitlements 20261011: Operator
+  ---
+  duration_ms: 0.219909
+  type: 'test'
+  ...
+# Subtest: demo approved plan entitlements 20261011: QuoteDone
+ok 66 - demo approved plan entitlements 20261011: QuoteDone
+  ---
+  duration_ms: 0.079775
+  type: 'test'
+  ...
+# Subtest: platform ceiling A: configured capacity applies across owners
+ok 67 - platform ceiling A: configured capacity applies across owners
+  ---
+  duration_ms: 56.565558
+  type: 'test'
+  ...
+# Subtest: platform ceiling B: simultaneous signed inbound requests share the same reservation limit
+ok 68 - platform ceiling B: simultaneous signed inbound requests share the same reservation limit
+  ---
+  duration_ms: 63.705628
+  type: 'test'
+  ...
+# Subtest: circuit breaker A: repeated model-open failures stop subsequent model admissions
+ok 69 - circuit breaker A: repeated model-open failures stop subsequent model admissions
+  ---
+  duration_ms: 95.634481
+  type: 'test'
+  ...
+# Subtest: circuit breaker B: repeated mid-call provider failures stop subsequent model admissions
+ok 70 - circuit breaker B: repeated mid-call provider failures stop subsequent model admissions
+  ---
+  duration_ms: 127.13556
+  type: 'test'
+  ...
+# Subtest: owner spam actions reject staff, foreign records and ambiguous phone identities
+ok 71 - owner spam actions reject staff, foreign records and ambiguous phone identities
+  ---
+  duration_ms: 78.281536
+  type: 'test'
+  ...
+# Subtest: blocklist survives database reopen and remains scoped to its owner
+ok 72 - blocklist survives database reopen and remains scoped to its owner
+  ---
+  duration_ms: 72.77848
+  type: 'test'
+  ...
+# Subtest: blocked signed calls are rejected before AI, create no lead and cannot accrue minutes
+ok 73 - blocked signed calls are rejected before AI, create no lead and cannot accrue minutes
+  ---
+  duration_ms: 40.681619
+  type: 'test'
+  ...
+# Subtest: repeat limit isolates owners and phones, resets after 24 hours, and never groups withheld callers
+ok 74 - repeat limit isolates owners and phones, resets after 24 hours, and never groups withheld callers
+  ---
+  duration_ms: 66.081632
+  type: 'test'
+  ...
+# Subtest: simultaneous caller reservations cannot bypass a configured repeat limit; retries do not consume it twice
+ok 75 - simultaneous caller reservations cannot bypass a configured repeat limit; retries do not consume it twice
+  ---
+  duration_ms: 48.209251
+  type: 'test'
+  ...
+# Subtest: repeat warning is durable, emailed once through the fake sender, and visible without forwarding the abuser
+ok 76 - repeat warning is durable, emailed once through the fake sender, and visible without forwarding the abuser
+  ---
+  duration_ms: 73.246408
+  type: 'test'
+  ...
+# Subtest: platform reservations expire or release on termination; 80 percent produces an admin alert
+ok 77 - platform reservations expire or release on termination; 80 percent produces an admin alert
+  ---
+  duration_ms: 60.526115
+  type: 'test'
+  ...
+# Subtest: circuit state is durable, ignores duplicate failures, and grants exactly one recovering probe
+ok 78 - circuit state is durable, ignores duplicate failures, and grants exactly one recovering probe
+  ---
+  duration_ms: 35.334187
+  type: 'test'
+  ...
+# Subtest: healthy calls and caller disconnects do not count as model failures; old failures age out
+ok 79 - healthy calls and caller disconnects do not count as model failures; old failures age out
+  ---
+  duration_ms: 84.935318
+  type: 'test'
+  ...
+# Subtest: invalid admission environment values fail closed at construction
+ok 80 - invalid admission environment values fail closed at construction
+  ---
+  duration_ms: 1.749488
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Starter forwarded call answers with switch off and offers only entitled tools
+ok 81 - Starter lineup: Starter forwarded call answers with switch off and offers only entitled tools
+  ---
+  duration_ms: 154.705803
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator forwarded call answers with switch off and offers only entitled tools
+ok 82 - Starter lineup: Operator forwarded call answers with switch off and offers only entitled tools
+  ---
+  duration_ms: 89.513703
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone forwarded call answers with switch off and offers only entitled tools
+ok 83 - Starter lineup: QuoteDone forwarded call answers with switch off and offers only entitled tools
+  ---
+  duration_ms: 98.728252
+  type: 'test'
+  ...
+# Subtest: Starter lineup: pending warm transfer cannot connect after downgrade to Starter
+ok 84 - Starter lineup: pending warm transfer cannot connect after downgrade to Starter
+  ---
+  duration_ms: 89.626414
+  type: 'test'
+  ...
+1..84
+# tests 90
+# suites 0
+# pass 90
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5774.232183
