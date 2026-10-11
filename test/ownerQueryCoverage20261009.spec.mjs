@@ -137,3 +137,7 @@ test('RegExp exec is not database SQL; shadowed or unknown receivers still need 
  scratchScan('shadowed-regexp','.js','const expression=/x/; function work(expression){expression.exec("DELETE FROM customers")}',1);
  scratchScan('unknown-exec','.js','connection.exec("DELETE FROM customers")',1);
 });
+
+test('mutable regex-shaped receivers cannot hide a later database exec: 1 finding',()=>{
+ scratchScan('mutable-regexp','.js','let expression=/x/; expression=database; expression.exec("DELETE FROM customers")',1);
+});

@@ -100,12 +100,16 @@ export function prepareInventory(root) {
     const tree=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
     if(tree.parseDiagnostics.length)throw Error('Cannot inventory invalid JavaScript: '+file);
     const rows=legacy.filter(row=>row.file===file),extra=[],hidden=[];
-    const declarations=new Map(),ambiguousNames=new Set(),databaseNames=new Set(['database','db','applicationDb','mutex']);
+    const declarations=new Map(),ambiguousNames=new Set(),immutableNames=new Set(),databaseNames=new Set(['database','db','applicationDb','mutex']);
     const walk=(node,visit)=>{visit(node);ts.forEachChild(node,child=>walk(child,visit));};
     const bare=node=>ts.isParenthesizedExpression(node)?bare(node.expression):node;
     function isDatabase(node){node=bare(node);return ts.isIdentifier(node)?databaseNames.has(node.text)||/database|(?:^|_)db$|Db$/.test(node.text):ts.isPropertyAccessExpression(node)&&/^(?:db|database)$/.test(node.name.text);}
     walk(tree,node=>{
-      if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name)&&node.initializer){if(declarations.has(node.name.text))ambiguousNames.add(node.name.text);declarations.set(node.name.text,node.initializer);if(ts.isNewExpression(node.initializer)&&/Database|Sqlite/i.test(node.initializer.expression.getText(tree)))databaseNames.add(node.name.text);}
+      if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name)){
+        if(declarations.has(node.name.text)||!node.initializer||!(node.parent.flags&ts.NodeFlags.Const))ambiguousNames.add(node.name.text);
+        else immutableNames.add(node.name.text);
+        if(node.initializer){declarations.set(node.name.text,node.initializer);if(ts.isNewExpression(node.initializer)&&/Database|Sqlite/i.test(node.initializer.expression.getText(tree)))databaseNames.add(node.name.text);}
+      }
       if(ts.isParameter(node)&&ts.isIdentifier(node.name))ambiguousNames.add(node.name.text);
       if(ts.isPropertyAccessExpression(node)&&node.name.text==='prepare'&&ts.isIdentifier(node.expression))databaseNames.add(node.expression.text);
     });
@@ -120,7 +124,7 @@ export function prepareInventory(root) {
     function isRegex(node,seen=new Set()){
       node=bare(node);
       if(node.kind===ts.SyntaxKind.RegularExpressionLiteral)return true;
-      if(ts.isIdentifier(node)&&!ambiguousNames.has(node.text)&&declarations.has(node.text)&&!seen.has(node.text))return isRegex(declarations.get(node.text),new Set([...seen,node.text]));
+      if(ts.isIdentifier(node)&&immutableNames.has(node.text)&&!ambiguousNames.has(node.text)&&declarations.has(node.text)&&!seen.has(node.text))return isRegex(declarations.get(node.text),new Set([...seen,node.text]));
       return false;
     }
     function containingFunction(node){
