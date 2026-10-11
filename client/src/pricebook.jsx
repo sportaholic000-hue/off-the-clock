@@ -419,7 +419,7 @@ function TierBuilder({ tiers, definitions, onChange }) {
   );
 }
 
-function Preview({ preview, loading, status }) {
+function Preview({ preview, loading, status, plan }) {
   // Reference: design-reference/pricebook-editor/index.html "THE SIGNATURE
   // MOMENT" — the customer-facing estimate is the hero of the right rail.
   // Owner-only markup, margin and internal rates are never rendered here.
@@ -546,7 +546,7 @@ function Preview({ preview, loading, status }) {
                 <StatusChip status={status.status} label={priceOptionChipText(status)} />
                 <span>
                   {status.status === 'QUOTING LIVE'
-                    ? 'This service can issue quotes on a live call.'
+                    ? (plan === 'Operator' ? 'This service can issue quotes on your website widget.' : 'This service can issue quotes on a live call.')
                     : status.status === 'DISABLED' ? 'Quoting is disabled for this service. This preview does not enable it.' : 'This service still needs pricing before it can quote.'}
                 </span>
               </div>
@@ -1174,7 +1174,7 @@ export default function PriceBook() {
                   </Disclosure>
                 </div>
               </div>
-              <div className="preview-tools"><Disclosure key={'preview-'+selectedType} title="Project measurements for preview" subtitle="Enter a job to check the customer estimate."><section className="preview-measurements"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerFeePreview service={selected} feeNames={contract.feeNames} value={customerFeeSelections} onChange={values=>setPreviewFeeDraft({context:feeContext,serviceKey:selectedType,rules:{...selected.feeRules},values})}/><CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section></Disclosure><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
+              <div className="preview-tools"><Disclosure key={'preview-'+selectedType} title="Project measurements for preview" subtitle="Enter a job to check the customer estimate."><section className="preview-measurements"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerFeePreview service={selected} feeNames={contract.feeNames} value={customerFeeSelections} onChange={values=>setPreviewFeeDraft({context:feeContext,serviceKey:selectedType,rules:{...selected.feeRules},values})}/><CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section></Disclosure><Preview preview={preview} loading={previewLoading} status={selectedStatus} plan={onboarding.account.plan} /></div>
             </div>
             </PricingContext.Provider>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}

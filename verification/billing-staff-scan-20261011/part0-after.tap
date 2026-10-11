@@ -1,0 +1,60 @@
+TAP version 13
+# Subtest: first visit: fresh GET revision validates unchanged with no price-book fixture writes
+ok 1 - first visit: fresh GET revision validates unchanged with no price-book fixture writes
+  ---
+  duration_ms: 243.772011
+  ...
+# Subtest: first visit: new owner with nine disabled services sees no raw keys or false tier warning
+ok 2 - first visit: new owner with nine disabled services sees no raw keys or false tier warning
+  ---
+  duration_ms: 794.961788
+  ...
+# Subtest: first visit: three entered services before and after save have readable actionable rules
+ok 3 - first visit: three entered services before and after save have readable actionable rules
+  ---
+  duration_ms: 2002.009879
+  ...
+# Subtest: first visit: own save ignores old background revision responses
+ok 4 - first visit: own save ignores old background revision responses
+  ---
+  duration_ms: 1645.273904
+  ...
+# Subtest: first visit: own approval ignores old background revision responses
+ok 5 - first visit: own approval ignores old background revision responses
+  ---
+  duration_ms: 1774.646628
+  ...
+# Subtest: first visit: two actual editor tabs retain the exact conflict recovery flow
+ok 6 - first visit: two actual editor tabs retain the exact conflict recovery flow
+  ---
+  duration_ms: 1339.278608
+  ...
+# Subtest: live service preview: Operator active names its available channel
+ok 7 - live service preview: Operator active names its available channel
+  ---
+  duration_ms: 894.486244
+  ...
+# Subtest: live service preview: Operator trialing names its available channel
+ok 8 - live service preview: Operator trialing names its available channel
+  ---
+  duration_ms: 863.155153
+  ...
+# Subtest: live service preview: QuoteDone active names its available channel
+ok 9 - live service preview: QuoteDone active names its available channel
+  ---
+  duration_ms: 910.907714
+  ...
+# Subtest: live service preview: QuoteDone trialing names its available channel
+ok 10 - live service preview: QuoteDone trialing names its available channel
+  ---
+  duration_ms: 876.810432
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12060.360504
