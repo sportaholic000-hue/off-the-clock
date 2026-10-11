@@ -1,0 +1,57 @@
+TAP version 13
+# Subtest: lock database backup: listing excludes retention, daily and continuous mutexes
+ok 1 - lock database backup: listing excludes retention, daily and continuous mutexes
+  ---
+  duration_ms: 271.838524
+  type: 'test'
+  ...
+# Subtest: lock database backup: pruning removes an expired snapshot but preserves every mutex
+ok 2 - lock database backup: pruning removes an expired snapshot but preserves every mutex
+  ---
+  duration_ms: 137.328008
+  type: 'test'
+  ...
+# Subtest: lock database backup: snapshot inventory excludes all mutexes and sidecars
+ok 3 - lock database backup: snapshot inventory excludes all mutexes and sidecars
+  ---
+  duration_ms: 117.008448
+  type: 'test'
+  ...
+# Subtest: lock database backup: fake daily and continuous uploads contain no mutex database
+ok 4 - lock database backup: fake daily and continuous uploads contain no mutex database
+  ---
+  duration_ms: 334.300107
+  type: 'test'
+  ...
+# Subtest: lock database backup: day-90 erasure preserves usable mutexes and the second business
+not ok 5 - lock database backup: day-90 erasure preserves usable mutexes and the second business
+  ---
+  duration_ms: 466.6929
+  type: 'test'
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock/test/lockDatabaseBackup20261011.spec.mjs:100:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(local.length>=2)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock/test/lockDatabaseBackup20261011.spec.mjs:111:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1610.965735

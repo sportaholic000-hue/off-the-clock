@@ -88,6 +88,7 @@ jobs:
         run: |
           for spec in \
             test/lockRecoveryRace20261011.spec.mjs \
+            test/lockDatabaseBackup20261011.spec.mjs \
             test/retentionHardening*.spec.mjs \
             test/day90*.spec.mjs \
             test/tenantRetention20261010.spec.mjs \
@@ -139,6 +140,9 @@ jobs:
       - name: Candidate j Railway restart, redeploy, SIGTERM and restore smoke
         if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
         run: node verification/railway/docker-smoke.mjs otc-receptionist:synthetic
+      - name: Candidate j production-user lock database proof
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
+        run: node verification/railway/lock-database-smoke.mjs otc-receptionist:synthetic
 
   tag-candidate-h:
     if: github.event_name == 'push' && github.ref == 'refs/heads/claude/release-candidate-20261011h'

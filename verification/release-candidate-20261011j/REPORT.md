@@ -1,6 +1,38 @@
-NOT DONE — the Railway Docker smoke job exits 1 during synthetic-directory cleanup. No `rc-20261011j` tag is created.
+NOT DONE — authorized cleanup follow-up implemented; new hosted CI and production-user Docker proof are pending. No `rc-20261011j` tag is created.
 
 **Release candidate j — 2026-10-11**
+
+**Authorized follow-up on `001b85dba56770549526beff9bc7b40a36a580c6`**
+
+The input matches `git ls-remote`; the release tag is absent. The only change
+to `verification/railway/docker-smoke.mjs:97` adds `/cleanup/backups` to the
+existing temporary cleanup container. Every original assertion is unchanged.
+No application source, permissions, specs or public pages changed.
+
+Expectations were recorded before execution in [FOLLOWUP_EXPECTED.md](FOLLOWUP_EXPECTED.md).
+`test/lockDatabaseBackup20261011.spec.mjs` passes **5/5**, zero failures, skips,
+cancellations or TODOs. It checks all three persistent mutexes through listing,
+expired-snapshot pruning, complete snapshot inventories, decrypted daily and
+continuous fake-S3 uploads, and actual day-90 lifecycle erasure while preserving
+business B. All mutex inodes, bytes and 0600 modes survive and can still exclude
+another connection. [Passing TAP](followup-backup.tap).
+
+The first run was 4/5 because the new fixture assumed continuous uploads retain
+their temporary local snapshot. Production deliberately removes that staging
+copy. The fixture now creates a retained continuous bundle before erasure;
+the assertion requiring two checked local bundles is unchanged.
+[Initial TAP](followup-backup-initial.tap). This was not a product defect.
+
+`verification/railway/lock-database-smoke.mjs` adds an independent production
+Docker proof using the default image user, actual server and restore CLI,
+network disabled, synthetic volume only. It checks restart, fresh-container
+redeploy, restore exclusion/success, restored-root startup, UID/GID, 0700/0600
+permissions and stable inode. Docker is unavailable locally; this proof is
+wired into `voice-docker-startup` and its outcome is pending hosted execution.
+The five backup tests also run independently in candidate-j CI.
+
+The record below describes the previous task and failed CI unchanged. Its
+stop decision is superseded only by this owner's explicit cleanup follow-up.
 
 The lock repair, ledger migration and merge are complete. Hosted tests and every standalone file pass. Docker's smoke assertions print success, but cleanup throws `EACCES`; the job is a failure, not a pass. Per the instruction to stop on failed release checks, the smoke harness is unchanged and the release is not tagged.
 

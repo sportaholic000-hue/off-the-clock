@@ -94,6 +94,6 @@ finally {
  fs.writeFileSync('verification/railway/results/docker-proof.json',JSON.stringify(outcome,null,2));
  // The app deliberately creates private root-owned storage. Clean only this
  // proof's bind-mounted synthetic directories from a temporary root container.
- try{docker('run','--rm','--entrypoint','node','--mount','type=bind,source='+volume+',target=/cleanup',image,'-e',"const fs=require('fs');for(const p of ['/cleanup/app','/cleanup/restores'])fs.rmSync(p,{recursive:true,force:true});");}catch{}
+ try{docker('run','--rm','--entrypoint','node','--mount','type=bind,source='+volume+',target=/cleanup',image,'-e',"const fs=require('fs');for(const p of ['/cleanup/app','/cleanup/restores','/cleanup/backups'])fs.rmSync(p,{recursive:true,force:true});");}catch{}
  fs.rmSync(work,{recursive:true,force:true});
 }
