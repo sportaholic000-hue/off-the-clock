@@ -233,3 +233,16 @@ test('scan destructuring 20261011: multiple methods and nested defaults are coun
  scratchExtraction('multiple-methods','.js','const {exec:run,prepare:statement}=database',2);
  scratchExtraction('nested-default-once','.js','let run; ({nested:{exec:run}=database}={})',1);
 });
+
+// A destructured local key must not inherit an unrelated outer constant value.
+for(const [form,scope] of [
+ ['shorthand parameter',body=>`function work({key}){${body}} work({key:"exec"})`],
+ ['renamed default parameter',body=>`function work({method:key="exec"}={}){${body}} work()`],
+ ['nested catch binding',body=>`try{throw {nested:{method:"exec"}}}catch({nested:{method:key}}){${body}}`],
+ ['nested variable binding',body=>`{const {nested:{method:key}}={nested:{method:"exec"}}; ${body}}`],
+])for(const [target,body] of [
+ ['declaration','const {[key]:run}=database; run.call(database,"DELETE FROM customers")'],
+ ['assignment','let run; ({[key]:run}=database); run.apply(database,["DELETE FROM customers"])'],
+])test(`scan destructuring 20261011: shadowed key ${form} ${target}`,()=>{
+ scratchExtraction('shadowed-destructured-key','.js','const key="close"; '+scope(body),1);
+});

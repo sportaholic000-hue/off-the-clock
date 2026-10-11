@@ -110,7 +110,7 @@ export function prepareInventory(root) {
         else immutableNames.add(node.name.text);
         if(node.initializer){declarations.set(node.name.text,node.initializer);if(ts.isNewExpression(node.initializer)&&/Database|Sqlite/i.test(node.initializer.expression.getText(tree)))databaseNames.add(node.name.text);}
       }
-      if(ts.isParameter(node)&&ts.isIdentifier(node.name))ambiguousNames.add(node.name.text);
+      if((ts.isParameter(node)||ts.isBindingElement(node))&&ts.isIdentifier(node.name))ambiguousNames.add(node.name.text);
       if(ts.isPropertyAccessExpression(node)&&node.name.text==='prepare'&&ts.isIdentifier(node.expression))databaseNames.add(node.expression.text);
     });
     for(let changed=true;changed;){changed=false;for(const [name,initial] of declarations)if(!databaseNames.has(name)&&isDatabase(initial)){databaseNames.add(name);changed=true;}}
