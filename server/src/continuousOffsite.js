@@ -6,6 +6,7 @@ import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
 import {assertBackupRetentionIdle} from './backupRetentionLock.js';
+import {recordOffsiteUpload} from './offsiteHistory.js';
 
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const dayAt=at=>new Date(at).toISOString().slice(0,10);
@@ -137,12 +138,14 @@ export function createContinuousOffsiteService(database,deployment,{env=process.
       const record=validateRecord(state.pending,config,state.pending.checkpointId);
       if(await fileChecksum(pendingFile)!==record.sha256)throw Error('OFFSITE_LOCAL_CHECKSUM_MISMATCH');
       const marker=record.key+'.json',existing=await store.record(marker);
+      recordOffsiteUpload(deployment,config,now());
       if(existing){
         validateRecord(existing,config,record.checkpointId);
         if(JSON.stringify(existing)!==JSON.stringify(record))throw Error('OFFSITE_RECORD_CONFLICT');
       }else try{await store.putFile(record.key,pendingFile,record.sha256);}catch(e){if(!isConflict(e))throw e;}
       const check=path.join(directory,'verify-'+randomUUID());
       try{await checkedDownload(store,record,check);}finally{fs.rmSync(check,{force:true});}
+      recordOffsiteUpload(deployment,config,now(),{confirmed:true});
       if(!existing){try{await store.putRecord(marker,record);}catch(e){if(!isConflict(e))throw e;}
         const published=validateRecord(await store.record(marker),config,record.checkpointId);
         if(JSON.stringify(published)!==JSON.stringify(record))throw Error('OFFSITE_RECORD_CONFLICT');}
