@@ -11,6 +11,7 @@ import {createCalendarRetentionRevoker} from '../server/src/calendarRetentionRev
 import {eraseTenantPricebookFiles} from '../server/src/billingTenantErasure.js';
 import {createOffsiteBackupService} from '../server/src/offsiteBackups.js';
 import {createSnapshot,startBackupScheduler} from '../server/src/backups.js';
+import {withBackupRetentionLock} from '../server/src/backupRetentionLock.js';
 
 const SID='PN'+'d'.repeat(32);
 async function setup(t){
@@ -87,4 +88,14 @@ test('retention hardening: staging cleanup never removes another live process sn
   try{await assert.rejects(offsite.cleanupRetryCopies(),/OFFSITE_BUSY/);}
   finally{child.send('FINISH');await once(child,'close');}
   await offsite.cleanupRetryCopies();
+});
+test('retention hardening: startup retries partial cleanup after a live restore releases its lock',async t=>{
+  const f=await setup(t);t.mock.timers.enable({apis:['setTimeout']});
+  let release,entered;const enteredLock=new Promise(resolve=>{entered=resolve;});
+  const held=withBackupRetentionLock(f.deployment,async()=>{entered();await new Promise(resolve=>{release=resolve;});});await enteredLock;
+  let partialAtBackup,started;const startedBackup=new Promise(resolve=>{started=resolve;});
+  const worker=startBackupScheduler(f.db,{...f.deployment,backupIntervalMs:3600000},{now:()=>f.clock().getTime(),onError:()=>{},takeSnapshot:async()=>{partialAtBackup=fs.existsSync(f.partial);started();}});
+  await assert.rejects(worker.ready,/OFFSITE_BUSY/);release();await held;
+  t.mock.timers.tick(60000);await startedBackup;await worker.stop();
+  assert.equal(partialAtBackup,false,'Startup retry skipped abandoned snapshot cleanup');
 });

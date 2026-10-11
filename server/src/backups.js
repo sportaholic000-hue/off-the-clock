@@ -211,7 +211,7 @@ export function startBackupScheduler(database,config,{takeSnapshot=()=>createSna
   const tick=()=>{
     if(stopped)return;
     let succeeded=false;
-    active=Promise.resolve().then(takeSnapshot).then(()=>{lastSuccess=now();succeeded=true;},()=>{onError('BACKUP_FAILED');}).finally(()=>{
+    active=cleanupAbandonedSnapshots(config).then(takeSnapshot).then(()=>{lastSuccess=now();succeeded=true;},()=>{onError('BACKUP_FAILED');}).finally(()=>{
       active=null;
       if(!stopped){timer=setTimeout(tick,succeeded ? config.backupIntervalMs : Math.min(config.backupIntervalMs,60000));timer.unref?.();}
     });

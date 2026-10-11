@@ -13,8 +13,8 @@ const instanceIdentity='instance:'+randomUUID();
 const processStartedAt=Date.now()-process.uptime()*1000;
 function processIdentity(pid){
   // Linux's boot ID + process birth tick survives neither a reboot nor PID
-  // reuse (including PID 1 after a container replacement). Never use mtime or
-  // an expiring lease: a slow but live restore must retain exclusive access.
+  // reuse (including PID 1 after a container replacement). New locks need no
+  // age timeout: a slow but live restore must retain exclusive access.
   try{
     const stat=fs.readFileSync('/proc/'+pid+'/stat','utf8');
     const start=stat.slice(stat.lastIndexOf(')')+2).split(' ')[19];
