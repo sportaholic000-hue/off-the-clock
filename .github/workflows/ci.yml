@@ -82,6 +82,27 @@ jobs:
       - name: Candidate i confirms required test names in the full-suite log
         if: github.ref == 'refs/heads/claude/release-candidate-20261011i'
         run: node verification/release-candidate-20261011i/check-required-test-names.mjs test-results.tap
+      - name: Candidate j standalone regressions (each file independently)
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
+        shell: bash
+        run: |
+          for spec in \
+            test/lockRecoveryRace20261011.spec.mjs \
+            test/retentionHardening*.spec.mjs \
+            test/day90*.spec.mjs \
+            test/tenantRetention20261010.spec.mjs \
+            test/continuousOffsite20261007.spec.mjs \
+            test/backups.spec.mjs \
+            test/offsiteBackups20261007.spec.mjs \
+            test/backupRestoreRehearsal.spec.mjs \
+            test/ownerQueryCoverage20261009.spec.mjs \
+            test/tenantIsolationRoutes.spec.mjs; do
+            echo "Standalone: $spec"
+            node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap "$spec"
+          done
+      - name: Candidate j confirms required test names in the full-suite log
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
+        run: node verification/release-candidate-20261011j/check-required-test-names.mjs test-results.tap
       - name: No failures beyond the known list
         run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
         shell: bash
@@ -114,6 +135,9 @@ jobs:
         run: node verification/railway/docker-smoke.mjs otc-receptionist:synthetic
       - name: Candidate i Railway restart, redeploy, SIGTERM and restore smoke
         if: github.ref == 'refs/heads/claude/release-candidate-20261011i'
+        run: node verification/railway/docker-smoke.mjs otc-receptionist:synthetic
+      - name: Candidate j Railway restart, redeploy, SIGTERM and restore smoke
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
         run: node verification/railway/docker-smoke.mjs otc-receptionist:synthetic
 
   tag-candidate-h:
@@ -169,3 +193,30 @@ jobs:
           git tag -a rc-20261011i "$GITHUB_SHA" -m "Release candidate i; final report commit $GITHUB_SHA; required checks passed in CI run $GITHUB_RUN_ID."
           git push origin refs/tags/rc-20261011i
           git ls-remote origin refs/heads/claude/release-candidate-20261011i refs/tags/rc-20261011i 'refs/tags/rc-20261011i^{}'
+
+  tag-candidate-j:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/release-candidate-20261011j'
+    needs: [test, voice-docker-startup]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Tag only the final reviewed report commit, never replace a tag
+        shell: bash
+        run: |
+          gate=verification/release-candidate-20261011j/RELEASE_GATE.json
+          if [ ! -f "$gate" ]; then
+            echo 'Checkpoint only: no release tag requested.'
+            exit 0
+          fi
+          node verification/release-candidate-20261011j/check-release-gate.mjs
+          test "$(git ls-remote origin refs/heads/claude/release-candidate-20261011j | cut -f1)" = "$GITHUB_SHA"
+          test -z "$(git ls-remote origin refs/tags/rc-20261011j)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a rc-20261011j "$GITHUB_SHA" -m "Release candidate j; final report commit $GITHUB_SHA; required checks passed in CI run $GITHUB_RUN_ID."
+          git push origin refs/tags/rc-20261011j
+          git ls-remote origin refs/heads/claude/release-candidate-20261011j refs/tags/rc-20261011j 'refs/tags/rc-20261011j^{}'
