@@ -1,0 +1,10 @@
+{
+  "inventory": 289,
+  "listedSqlExceptions": 246,
+  "listedNonQueryUses": 30,
+  "safeRegexExec": 13,
+  "unlisted": 0,
+  "unusedExceptions": 0,
+  "unusedNonQueryUses": 0,
+  "forbidden": 0
+}

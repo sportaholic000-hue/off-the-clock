@@ -1,0 +1,1742 @@
+TAP version 13
+# Subtest: every direct database prepare or exec in server is an exact listed exception
+ok 1 - every direct database prepare or exec in server is an exact listed exception
+  ---
+  duration_ms: 1439.407669
+  type: 'test'
+  ...
+# Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+ok 2 - scan rejects bracketed database['prepare'] in .js: 1 finding
+  ---
+  duration_ms: 3.021832
+  type: 'test'
+  ...
+# Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+ok 3 - scan rejects double quoted and template computed prepare in .js: 1 each
+  ---
+  duration_ms: 1.319198
+  type: 'test'
+  ...
+# Subtest: scan rejects dynamic key spelling in .js: 1 finding
+ok 4 - scan rejects dynamic key spelling in .js: 1 finding
+  ---
+  duration_ms: 0.771621
+  type: 'test'
+  ...
+# Subtest: scan rejects database.prepare.bind alias in .js: 1 finding
+ok 5 - scan rejects database.prepare.bind alias in .js: 1 finding
+  ---
+  duration_ms: 0.805066
+  type: 'test'
+  ...
+# Subtest: scan rejects const p = database.prepare alias in .js: 1 finding
+ok 6 - scan rejects const p = database.prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.843329
+  type: 'test'
+  ...
+# Subtest: scan rejects destructured prepare alias in .js: 1 finding
+ok 7 - scan rejects destructured prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.761908
+  type: 'test'
+  ...
+# Subtest: scan covers .mjs and .cjs: 1 finding in each
+ok 8 - scan covers .mjs and .cjs: 1 finding in each
+  ---
+  duration_ms: 2.015306
+  type: 'test'
+  ...
+# Subtest: scan permits an ownerQuery control and ignores commented prepares: 0 findings
+ok 9 - scan permits an ownerQuery control and ignores commented prepares: 0 findings
+  ---
+  duration_ms: 0.979032
+  type: 'test'
+  ...
+# Subtest: scan does not mistake a slash inside a regex literal for a comment: 1 finding
+ok 10 - scan does not mistake a slash inside a regex literal for a comment: 1 finding
+  ---
+  duration_ms: 1.11785
+  type: 'test'
+  ...
+# Subtest: owner-row predicate preserves owner and staff parent lookup results
+ok 11 - owner-row predicate preserves owner and staff parent lookup results
+  ---
+  duration_ms: 4.309551
+  type: 'test'
+  ...
+# Subtest: voice idempotency receipts persist tenant owner and replay legacy scope records
+ok 12 - voice idempotency receipts persist tenant owner and replay legacy scope records
+  ---
+  duration_ms: 7.862418
+  type: 'test'
+  ...
+# Subtest: scan inventories database.exec tenant deletion: 1 finding
+ok 13 - scan inventories database.exec tenant deletion: 1 finding
+  ---
+  duration_ms: 0.789943
+  type: 'test'
+  ...
+# Subtest: scan detects concatenated database prepare and exec properties: 1 finding each
+ok 14 - scan detects concatenated database prepare and exec properties: 1 finding each
+  ---
+  duration_ms: 1.136113
+  type: 'test'
+  ...
+# Subtest: scan detects bracketed exec and unknown computed database keys: 1 finding each
+ok 15 - scan detects bracketed exec and unknown computed database keys: 1 finding each
+  ---
+  duration_ms: 1.608869
+  type: 'test'
+  ...
+# Subtest: computed access cannot be permitted by an exception or non-query entry
+ok 16 - computed access cannot be permitted by an exception or non-query entry
+  ---
+  duration_ms: 1.104342
+  type: 'test'
+  ...
+# Subtest: scan detects optional, escaped, aliased and destructured computed methods
+ok 17 - scan detects optional, escaped, aliased and destructured computed methods
+  ---
+  duration_ms: 2.313583
+  type: 'test'
+  ...
+# Subtest: RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+ok 18 - RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+  ---
+  duration_ms: 1.612516
+  type: 'test'
+  ...
+# Subtest: mutable regex-shaped receivers cannot hide a later database exec: 1 finding
+ok 19 - mutable regex-shaped receivers cannot hide a later database exec: 1 finding
+  ---
+  duration_ms: 0.685892
+  type: 'test'
+  ...
+# Subtest: mutable or shadowed computed keys on database objects remain forbidden
+ok 20 - mutable or shadowed computed keys on database objects remain forbidden
+  ---
+  duration_ms: 3.586337
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: auditor renamed exec through call
+not ok 21 - scan destructuring 20261011: auditor renamed exec through call
+  ---
+  duration_ms: 1.845701
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:158:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    auditor-renamed-exec should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:159:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: auditor shorthand exec
+not ok 22 - scan destructuring 20261011: auditor shorthand exec
+  ---
+  duration_ms: 1.024841
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:161:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    auditor-shorthand-exec should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:162:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec declaration shorthand
+not ok 23 - scan destructuring 20261011: exec declaration shorthand
+  ---
+  duration_ms: 0.911343
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-0 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec declaration renamed
+not ok 24 - scan destructuring 20261011: exec declaration renamed
+  ---
+  duration_ms: 0.795994
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-1 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec declaration shorthand default
+not ok 25 - scan destructuring 20261011: exec declaration shorthand default
+  ---
+  duration_ms: 1.047877
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-2 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec declaration renamed default
+not ok 26 - scan destructuring 20261011: exec declaration renamed default
+  ---
+  duration_ms: 0.706379
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-3 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec declaration quoted key
+not ok 27 - scan destructuring 20261011: exec declaration quoted key
+  ---
+  duration_ms: 1.03616
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-4 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec declaration computed key
+ok 28 - scan destructuring 20261011: exec declaration computed key
+  ---
+  duration_ms: 0.67323
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested object
+not ok 29 - scan destructuring 20261011: exec declaration nested object
+  ---
+  duration_ms: 1.01526
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-6 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested array
+not ok 30 - scan destructuring 20261011: exec declaration nested array
+  ---
+  duration_ms: 0.927715
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-7 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested default
+not ok 31 - scan destructuring 20261011: exec declaration nested default
+  ---
+  duration_ms: 1.942844
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-8 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec parameter nested default
+not ok 32 - scan destructuring 20261011: exec parameter nested default
+  ---
+  duration_ms: 0.947548
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-9 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec arrow shorthand parameter
+not ok 33 - scan destructuring 20261011: exec arrow shorthand parameter
+  ---
+  duration_ms: 0.762496
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-10 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec catch binding
+not ok 34 - scan destructuring 20261011: exec catch binding
+  ---
+  duration_ms: 0.666476
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-11 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec for-of declaration
+not ok 35 - scan destructuring 20261011: exec for-of declaration
+  ---
+  duration_ms: 0.901256
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-12 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment shorthand
+not ok 36 - scan destructuring 20261011: exec assignment shorthand
+  ---
+  duration_ms: 0.76126
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-13 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment renamed
+not ok 37 - scan destructuring 20261011: exec assignment renamed
+  ---
+  duration_ms: 0.819603
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-14 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment shorthand default
+not ok 38 - scan destructuring 20261011: exec assignment shorthand default
+  ---
+  duration_ms: 0.781851
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-15 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment renamed default
+not ok 39 - scan destructuring 20261011: exec assignment renamed default
+  ---
+  duration_ms: 0.696386
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-16 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment quoted key
+not ok 40 - scan destructuring 20261011: exec assignment quoted key
+  ---
+  duration_ms: 0.768313
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-17 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment computed key
+not ok 41 - scan destructuring 20261011: exec assignment computed key
+  ---
+  duration_ms: 0.681982
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-18 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested object
+not ok 42 - scan destructuring 20261011: exec assignment nested object
+  ---
+  duration_ms: 0.695169
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-19 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested array
+not ok 43 - scan destructuring 20261011: exec assignment nested array
+  ---
+  duration_ms: 0.910753
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-20 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested default
+not ok 44 - scan destructuring 20261011: exec assignment nested default
+  ---
+  duration_ms: 1.025239
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-21 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: exec assignment for-of
+not ok 45 - scan destructuring 20261011: exec assignment for-of
+  ---
+  duration_ms: 1.08493
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-22 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration shorthand
+not ok 46 - scan destructuring 20261011: prepare declaration shorthand
+  ---
+  duration_ms: 0.7154
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-0 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration renamed
+not ok 47 - scan destructuring 20261011: prepare declaration renamed
+  ---
+  duration_ms: 0.654052
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-1 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration shorthand default
+not ok 48 - scan destructuring 20261011: prepare declaration shorthand default
+  ---
+  duration_ms: 0.733261
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-2 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration renamed default
+not ok 49 - scan destructuring 20261011: prepare declaration renamed default
+  ---
+  duration_ms: 0.605842
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-3 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration quoted key
+not ok 50 - scan destructuring 20261011: prepare declaration quoted key
+  ---
+  duration_ms: 0.766783
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-4 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration computed key
+ok 51 - scan destructuring 20261011: prepare declaration computed key
+  ---
+  duration_ms: 0.534916
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested object
+not ok 52 - scan destructuring 20261011: prepare declaration nested object
+  ---
+  duration_ms: 0.618035
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-6 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested array
+not ok 53 - scan destructuring 20261011: prepare declaration nested array
+  ---
+  duration_ms: 0.61832
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-7 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested default
+not ok 54 - scan destructuring 20261011: prepare declaration nested default
+  ---
+  duration_ms: 0.62012
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-8 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare parameter nested default
+not ok 55 - scan destructuring 20261011: prepare parameter nested default
+  ---
+  duration_ms: 0.754866
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-9 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare arrow shorthand parameter
+not ok 56 - scan destructuring 20261011: prepare arrow shorthand parameter
+  ---
+  duration_ms: 0.681144
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-10 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare catch binding
+not ok 57 - scan destructuring 20261011: prepare catch binding
+  ---
+  duration_ms: 0.715704
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-11 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare for-of declaration
+not ok 58 - scan destructuring 20261011: prepare for-of declaration
+  ---
+  duration_ms: 0.593631
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-12 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment shorthand
+not ok 59 - scan destructuring 20261011: prepare assignment shorthand
+  ---
+  duration_ms: 0.782312
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-13 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment renamed
+not ok 60 - scan destructuring 20261011: prepare assignment renamed
+  ---
+  duration_ms: 1.042014
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-14 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment shorthand default
+not ok 61 - scan destructuring 20261011: prepare assignment shorthand default
+  ---
+  duration_ms: 1.003572
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-15 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment renamed default
+not ok 62 - scan destructuring 20261011: prepare assignment renamed default
+  ---
+  duration_ms: 0.770932
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-16 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment quoted key
+not ok 63 - scan destructuring 20261011: prepare assignment quoted key
+  ---
+  duration_ms: 0.730922
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-17 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment computed key
+not ok 64 - scan destructuring 20261011: prepare assignment computed key
+  ---
+  duration_ms: 0.647217
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-18 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested object
+not ok 65 - scan destructuring 20261011: prepare assignment nested object
+  ---
+  duration_ms: 0.747345
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-19 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested array
+not ok 66 - scan destructuring 20261011: prepare assignment nested array
+  ---
+  duration_ms: 0.782843
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-20 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested default
+not ok 67 - scan destructuring 20261011: prepare assignment nested default
+  ---
+  duration_ms: 0.693257
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-21 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment for-of
+not ok 68 - scan destructuring 20261011: prepare assignment for-of
+  ---
+  duration_ms: 0.94188
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructuring-22 should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:192:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation direct
+not ok 69 - scan destructuring 20261011: extracted exec invocation direct
+  ---
+  duration_ms: 0.811005
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:200:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructured-invocation should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:201:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation call
+not ok 70 - scan destructuring 20261011: extracted exec invocation call
+  ---
+  duration_ms: 0.768266
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:200:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructured-invocation should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:201:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation apply
+not ok 71 - scan destructuring 20261011: extracted exec invocation apply
+  ---
+  duration_ms: 0.899504
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:200:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructured-invocation should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:201:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation bind
+not ok 72 - scan destructuring 20261011: extracted exec invocation bind
+  ---
+  duration_ms: 0.667316
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:200:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructured-invocation should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:201:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation direct
+not ok 73 - scan destructuring 20261011: extracted prepare invocation direct
+  ---
+  duration_ms: 0.603951
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:200:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructured-invocation should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:201:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation call
+not ok 74 - scan destructuring 20261011: extracted prepare invocation call
+  ---
+  duration_ms: 1.077421
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:200:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructured-invocation should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:201:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation apply
+not ok 75 - scan destructuring 20261011: extracted prepare invocation apply
+  ---
+  duration_ms: 0.658401
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:200:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructured-invocation should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:201:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation bind
+not ok 76 - scan destructuring 20261011: extracted prepare invocation bind
+  ---
+  duration_ms: 0.8511
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:200:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    destructured-invocation should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:201:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: nested dynamic database keys are forbidden
+not ok 77 - scan destructuring 20261011: nested dynamic database keys are forbidden
+  ---
+  duration_ms: 0.891578
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:204:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    binding-dynamic should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:205:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: extracted methods cannot be allowlisted
+not ok 78 - scan destructuring 20261011: extracted methods cannot be allowlisted
+  ---
+  duration_ms: 0.623925
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:210:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    const {exec:run}=database
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:220:11)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scan destructuring 20261011: metadata, defaults and safe patterns are not extractions
+ok 79 - scan destructuring 20261011: metadata, defaults and safe patterns are not extractions
+  ---
+  duration_ms: 2.003102
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: multiple methods and nested defaults are counted once
+not ok 80 - scan destructuring 20261011: multiple methods and nested defaults are counted once
+  ---
+  duration_ms: 1.04545
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:232:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    multiple-methods should yield exactly 2 unlisted occurrences
+    
+    0 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:39:10)
+    scratchExtraction (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:154:36)
+    TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/ownerQueryCoverage20261009.spec.mjs:233:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..80
+# tests 80
+# suites 0
+# pass 23
+# fail 57
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2086.306887
