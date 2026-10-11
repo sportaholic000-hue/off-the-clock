@@ -40,3 +40,9 @@ local snapshot. `continuousOffsite.js:131` deliberately removes it. Seed an
 additional retained continuous bundle before erasure, keeping the assertion
 that at least two local bundles are checked. No product change or assertion
 relaxation is needed. Preserve the first TAP log as evidence.
+
+Additional concurrency check, written before execution: if staging cleanup
+examines a live child process's partial snapshot, cleanup must return
+OFFSITE_BUSY and leave that writer alone. When the writer completes, the
+published bundle must still contain only the manifest-listed application
+database and books, with no `.snapshot-owner.json.sqlite` mutex left inside it.

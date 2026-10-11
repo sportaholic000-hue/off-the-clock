@@ -81,6 +81,12 @@ export function acquireProcessLock(file){
 export function removeStaleProcessLock(file){
   const release=acquireProcessLock(file);release();
 }
+// A partial snapshot's marker is immutable ownership evidence, not a worker
+// mutex. Fence its inspection with the volume mutex instead of creating a
+// second SQLite file inside a directory that may soon become a backup bundle.
+export function removeStaleSnapshotOwner(deployment,file){
+  return withBackupRetentionLockSync(deployment,()=>removeLegacyLockWhileFenced(file));
+}
 export function assertBackupRetentionIdle(deployment){
   assertRealContainment(lockRoot(deployment),retentionLockFile(deployment));
   removeStaleProcessLock(retentionLockFile(deployment));

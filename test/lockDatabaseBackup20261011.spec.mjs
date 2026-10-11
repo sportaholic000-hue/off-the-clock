@@ -2,11 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import {spawn} from 'node:child_process';
+import {once} from 'node:events';
 import Database from 'better-sqlite3';
 import {A,B,DEADLINE,KEY,retentionFixture,businessRows,assertErased} from './helpers/tenantRetentionFixture.mjs';
 import {fakeS3} from './helpers/offsiteFakeS3.mjs';
 import {acquireProcessLock,retentionLockFile} from '../server/src/backupRetentionLock.js';
-import {createSnapshot,listSnapshots,pruneSnapshots,verifyBackup} from '../server/src/backups.js';
+import {createSnapshot,listSnapshots,pruneSnapshots,verifyBackup,cleanupAbandonedSnapshots} from '../server/src/backups.js';
 import {createS3BackupStore} from '../server/src/offsiteStore.js';
 import {createOffsiteBackupService} from '../server/src/offsiteBackups.js';
 import {decryptBundle} from '../server/src/offsiteArchive.js';
@@ -89,6 +91,21 @@ test('lock database backup: pruning removes an expired snapshot but preserves ev
 test('lock database backup: snapshot inventory excludes all mutexes and sidecars',async t=>{
   const f=retentionFixture(t),records=locks(f);
   bundleInventory(await createSnapshot(f.db,f.deployment));preserved(records);
+});
+
+test('lock database backup: live staging cleanup cannot add a mutex to a published snapshot',async t=>{
+  const f=retentionFixture(t);
+  const script=`import Database from 'better-sqlite3';import {createSnapshot} from './server/src/backups.js';
+    const original=Database.prototype.backup;Database.prototype.backup=async function(file){await original.call(this,file);
+      await new Promise(resolve=>{process.once('message',resolve);process.send('WRITTEN');});};
+    const db=new Database(process.argv[1]);try{const bundle=await createSnapshot(db,JSON.parse(process.argv[2]));process.send({bundle});}finally{db.close();process.disconnect();}`;
+  const child=spawn(process.execPath,['--input-type=module','-e',script,f.db.name,JSON.stringify(f.deployment)],{stdio:['ignore','ignore','pipe','ipc']});
+  t.after(()=>child.kill());let error='';child.stderr.on('data',bytes=>{error+=bytes;});
+  assert.equal((await once(child,'message'))[0],'WRITTEN');
+  await assert.rejects(cleanupAbandonedSnapshots(f.deployment),/OFFSITE_BUSY/);
+  const published=once(child,'message'),closed=once(child,'close');child.send('FINISH');
+  const [{bundle}]=await published;const [code]=await closed;assert.equal(code,0,error);
+  bundleInventory(bundle);
 });
 
 test('lock database backup: fake daily and continuous uploads contain no mutex database',async t=>{

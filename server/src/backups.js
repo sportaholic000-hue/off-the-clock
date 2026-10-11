@@ -3,7 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import Database from 'better-sqlite3';
 import {inside,assertRealContainment} from './deploymentConfig.js';
-import {assertBackupRetentionIdle,withBackupRetentionLock,withBackupRetentionLockSync,removeStaleProcessLock,processLockOwner} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock,withBackupRetentionLockSync,removeStaleProcessLock,removeStaleSnapshotOwner,processLockOwner} from './backupRetentionLock.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 const activeSnapshots=new Set();
@@ -23,7 +23,7 @@ export async function cleanupAbandonedSnapshots(config){
       assertRealContainment(config.root,directory);if(!fs.existsSync(directory))continue;
       for(const name of fs.readdirSync(directory))if(/^\.partial-snapshot-\d{13}-[a-f0-9-]{36}$/.test(name)){
         const stage=path.join(directory,name),holder=path.join(stage,'.snapshot-owner.json');
-        assertRealContainment(config.root,holder);removeStaleProcessLock(holder);removeOwnedDirectory(directory,stage);
+        assertRealContainment(config.root,holder);removeStaleSnapshotOwner(config,holder);removeOwnedDirectory(directory,stage);
       }
     }
   });

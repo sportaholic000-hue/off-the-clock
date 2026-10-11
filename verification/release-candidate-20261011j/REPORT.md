@@ -1,6 +1,21 @@
-CHECKPOINT PASSED — final release is gated on this report commit’s own successful CI and annotated tag.
+NOT DONE — an additional concurrent snapshot check reproduced a product defect; release gate withdrawn pending repair verification.
 
 # Release candidate j — cleanup and lock-database follow-up
+
+**Additional product finding after the first checkpoint:** when staging cleanup
+inspects a live child process's partial snapshot, `removeStaleProcessLock`
+creates `.snapshot-owner.json.sqlite` in that staging directory before correctly
+returning `OFFSITE_BUSY`. If the writer then publishes, that extra SQLite file
+survives inside the finished bundle. The new controlled child-process regression
+fails on unchanged product source, showing the unexpected file in the complete
+inventory. [Reproduction](live-staging-base.tap).
+
+The repair checks the immutable snapshot owner marker under the existing
+volume-wide SQLite retention lock (`removeStaleSnapshotOwner`), without creating
+a per-marker database inside the bundle. Worker and retention mutex acquisition
+is unchanged. The six-case backup file and existing retention gates must pass
+before a replacement release gate is committed. Earlier five-case checkpoint
+results below are historical and do not include this new interleaving.
 
 The pinned input `001b85dba56770549526beff9bc7b40a36a580c6` matched
 `git ls-remote origin refs/heads/claude/release-candidate-20261011j` before work.
