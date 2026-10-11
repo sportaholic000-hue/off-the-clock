@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope success
+ok 1 - day-90 complete tenant inventory, Google legacy full-scope success
+  ---
+  duration_ms: 181.137909
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope http-error
+ok 2 - day-90 complete tenant inventory, Google legacy full-scope http-error
+  ---
+  duration_ms: 151.325656
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope network-error
+ok 3 - day-90 complete tenant inventory, Google legacy full-scope network-error
+  ---
+  duration_ms: 143.35601
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope timeout
+ok 4 - day-90 complete tenant inventory, Google legacy full-scope timeout
+  ---
+  duration_ms: 183.983718
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed success
+ok 5 - day-90 complete tenant inventory, Google narrowed success
+  ---
+  duration_ms: 147.502702
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed http-error
+ok 6 - day-90 complete tenant inventory, Google narrowed http-error
+  ---
+  duration_ms: 145.07271
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed network-error
+ok 7 - day-90 complete tenant inventory, Google narrowed network-error
+  ---
+  duration_ms: 152.493263
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed timeout
+ok 8 - day-90 complete tenant inventory, Google narrowed timeout
+  ---
+  duration_ms: 186.168432
+  type: 'test'
+  ...
+# Subtest: filesystem failure disables sign-in immediately and retries completion after restart
+ok 9 - filesystem failure disables sign-in immediately and retries completion after restart
+  ---
+  duration_ms: 148.196588
+  type: 'test'
+  ...
+# Subtest: legacy partial erasures receive expanded cleanup and retry even with an old completion timestamp
+ok 10 - legacy partial erasures receive expanded cleanup and retry even with an old completion timestamp
+  ---
+  duration_ms: 150.481565
+  type: 'test'
+  ...
+# Subtest: local, daily and continuous backups erase A while preserving B; failed remote replacement retries
+ok 11 - local, daily and continuous backups erase A while preserving B; failed remote replacement retries
+  ---
+  duration_ms: 1006.722841
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: unpublished encrypted retries are redacted before backup workers resume
+ok 12 - unpublished encrypted retries are redacted before backup workers resume
+  ---
+  duration_ms: 523.566282
+  type: 'test'
+  ...
+# Subtest: backups captured between database erasure and file deletion still erase the owned pricebook
+ok 13 - backups captured between database erasure and file deletion still erase the owned pricebook
+  ---
+  duration_ms: 666.046229
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4142.100728

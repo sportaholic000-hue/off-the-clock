@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: day90 a deployment that never uploaded off-site can complete local-only backup erasure
+ok 1 - day90 a deployment that never uploaded off-site can complete local-only backup erasure
+  ---
+  duration_ms: 187.550244
+  type: 'test'
+  ...
+# Subtest: day90 removes abandoned download, decrypt and restore staging copies
+ok 2 - day90 removes abandoned download, decrypt and restore staging copies
+  ---
+  duration_ms: 815.074284
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight daily restore
+ok 3 - day90 serializes erasure with an in-flight daily restore
+  ---
+  duration_ms: 591.905782
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight continuous restore
+ok 4 - day90 serializes erasure with an in-flight continuous restore
+  ---
+  duration_ms: 541.68299
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — volume
+ok 5 - day90 local restore cannot race a held erasure lock — volume
+  ---
+  duration_ms: 313.394333
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — nested
+ok 6 - day90 local restore cannot race a held erasure lock — nested
+  ---
+  duration_ms: 286.846979
+  type: 'test'
+  ...
+# Subtest: day90 complete cleanup is idempotent across live, local, daily and continuous copies
+ok 7 - day90 complete cleanup is idempotent across live, local, daily and continuous copies
+  ---
+  duration_ms: 674.595547
+  type: 'test'
+  ...
+# Subtest: day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+ok 8 - day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+  ---
+  duration_ms: 438.32269
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — recovered
+ok 9 - day90 admin health is authenticated and secret-free — recovered
+  ---
+  duration_ms: 213.829142
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — permanent
+ok 10 - day90 admin health is authenticated and secret-free — permanent
+  ---
+  duration_ms: 178.267147
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4549.095761

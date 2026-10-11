@@ -1,0 +1,33 @@
+{
+  "tag": "rc-20261011h",
+  "base": "8973f429df487c58f3ad7a49bfdb35ebbb9a274a",
+  "verifiedSourceCommit": "1b8b25ab7a1027b68de3338e75e796a5e890820b",
+  "localNonBrowserFailures": 0,
+  "localStandaloneFailures": 0,
+  "ownerQueryUnlisted": 0,
+  "ownerQueryUnusedExceptions": 0,
+  "checkpointHostedConclusion": "success",
+  "checkpointRun": 38113522264,
+  "checkpointRailwayDockerSmoke": "pass",
+  "finalReportApprovedForTag": true,
+  "localRawTotals": {
+    "npm_test": {
+      "tests": 4826,
+      "pass": 4766,
+      "fail": 60,
+      "skipped": 0
+    },
+    "test_quote": {
+      "tests": 4117,
+      "pass": 4055,
+      "fail": 62,
+      "skipped": 0
+    }
+  },
+  "localCatalogRerun": {
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "availableCpus": 9
+  }
+}

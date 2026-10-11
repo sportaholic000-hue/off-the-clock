@@ -1,0 +1,106 @@
+TAP version 13
+# Subtest: owner wording: Starter active dashboard fallback cards
+ok 1 - owner wording: Starter active dashboard fallback cards
+  ---
+  duration_ms: 385.010483
+  type: 'test'
+  ...
+# Subtest: owner wording: Starter active setup answering note
+ok 2 - owner wording: Starter active setup answering note
+  ---
+  duration_ms: 68.069717
+  type: 'test'
+  ...
+# Subtest: owner wording: Starter trialing dashboard fallback cards
+ok 3 - owner wording: Starter trialing dashboard fallback cards
+  ---
+  duration_ms: 52.518335
+  type: 'test'
+  ...
+# Subtest: owner wording: Starter trialing setup answering note
+ok 4 - owner wording: Starter trialing setup answering note
+  ---
+  duration_ms: 27.513081
+  type: 'test'
+  ...
+# Subtest: owner wording: Operator active dashboard fallback cards
+ok 5 - owner wording: Operator active dashboard fallback cards
+  ---
+  duration_ms: 39.037334
+  type: 'test'
+  ...
+# Subtest: owner wording: Operator active setup answering note
+ok 6 - owner wording: Operator active setup answering note
+  ---
+  duration_ms: 25.1447
+  type: 'test'
+  ...
+# Subtest: owner wording: Operator trialing dashboard fallback cards
+ok 7 - owner wording: Operator trialing dashboard fallback cards
+  ---
+  duration_ms: 42.883141
+  type: 'test'
+  ...
+# Subtest: owner wording: Operator trialing setup answering note
+ok 8 - owner wording: Operator trialing setup answering note
+  ---
+  duration_ms: 24.871743
+  type: 'test'
+  ...
+# Subtest: owner wording: QuoteDone active dashboard fallback cards
+ok 9 - owner wording: QuoteDone active dashboard fallback cards
+  ---
+  duration_ms: 52.173482
+  type: 'test'
+  ...
+# Subtest: owner wording: QuoteDone active setup answering note
+ok 10 - owner wording: QuoteDone active setup answering note
+  ---
+  duration_ms: 24.026774
+  type: 'test'
+  ...
+# Subtest: owner wording: QuoteDone trialing dashboard fallback cards
+ok 11 - owner wording: QuoteDone trialing dashboard fallback cards
+  ---
+  duration_ms: 35.692291
+  type: 'test'
+  ...
+# Subtest: owner wording: QuoteDone trialing setup answering note
+ok 12 - owner wording: QuoteDone trialing setup answering note
+  ---
+  duration_ms: 24.070914
+  type: 'test'
+  ...
+# Subtest: owner wording: Scale active dashboard fallback cards
+ok 13 - owner wording: Scale active dashboard fallback cards
+  ---
+  duration_ms: 47.087067
+  type: 'test'
+  ...
+# Subtest: owner wording: Scale active setup answering note
+ok 14 - owner wording: Scale active setup answering note
+  ---
+  duration_ms: 21.938127
+  type: 'test'
+  ...
+# Subtest: owner wording: Scale trialing dashboard fallback cards
+ok 15 - owner wording: Scale trialing dashboard fallback cards
+  ---
+  duration_ms: 41.680981
+  type: 'test'
+  ...
+# Subtest: owner wording: Scale trialing setup answering note
+ok 16 - owner wording: Scale trialing setup answering note
+  ---
+  duration_ms: 22.615722
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1383.077439

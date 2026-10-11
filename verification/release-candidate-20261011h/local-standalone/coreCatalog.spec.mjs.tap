@@ -1,0 +1,49 @@
+TAP version 13
+# {"path":"full","products":320,"elapsedMs":532.084154,"timerDelayMs":535.301469,"rows":320}
+# Subtest: core 9: 320 missing-share products via full
+ok 1 - core 9: 320 missing-share products via full
+  ---
+  duration_ms: 547.427261
+  type: 'test'
+  ...
+# {"path":"quick","products":320,"elapsedMs":422.70836699999995,"timerDelayMs":425.1906389999999,"rows":320}
+# Subtest: core 9: 320 missing-share products via quick
+ok 2 - core 9: 320 missing-share products via quick
+  ---
+  duration_ms: 432.536519
+  type: 'test'
+  ...
+# {"path":"public","products":320,"elapsedMs":598.5843670000002,"timerDelayMs":599.423331,"rows":320}
+# Subtest: core 9: 320 missing-share products via public
+ok 3 - core 9: 320 missing-share products via public
+  ---
+  duration_ms: 620.696554
+  type: 'test'
+  ...
+# Subtest: core 9: complete share sibling 0 still quotes $1711
+ok 4 - core 9: complete share sibling 0 still quotes $1711
+  ---
+  duration_ms: 681.389071
+  type: 'test'
+  ...
+# Subtest: core 9: complete share sibling 319 still quotes $1711
+ok 5 - core 9: complete share sibling 319 still quotes $1711
+  ---
+  duration_ms: 614.815082
+  type: 'test'
+  ...
+# Subtest: core 7/9: missing shared disposal choice is pruned using the real roof replacement rules
+ok 6 - core 7/9: missing shared disposal choice is pruned using the real roof replacement rules
+  ---
+  duration_ms: 124.999607
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3266.515642

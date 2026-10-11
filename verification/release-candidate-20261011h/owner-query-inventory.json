@@ -1,0 +1,12 @@
+{
+  "sourceCommit": "1b8b25ab7a1027b68de3338e75e796a5e890820b",
+  "inventory": 289,
+  "listedPrepare": 119,
+  "listedExec": 127,
+  "nonQueryUses": 30,
+  "regularExpressionExec": 13,
+  "unlisted": [],
+  "unusedExceptions": [],
+  "duplicateExceptions": 0,
+  "unusedNonQueries": []
+}

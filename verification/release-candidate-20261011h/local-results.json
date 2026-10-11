@@ -1,0 +1,650 @@
+{
+  "npm_test": {
+    "exit": 1,
+    "tests": 4826,
+    "pass": 4766,
+    "fail": 60,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "failures": [
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "location": "test/astraQuoteScope.browser.spec.mjs:26:34",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "location": "test/astraQuoteScope.browser.spec.mjs:26:34",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "location": "test/astraQuoteScope.browser.spec.mjs:33:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+        "location": "test/billingCustomerLifecycle20261007.browser.spec.mjs:27:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+        "location": "test/billingCustomerLifecycle20261007.browser.spec.mjs:31:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "expired export window disables all CSV buttons and no longer offers setup/service",
+        "location": "test/billingCustomerLifecycle20261007.browser.spec.mjs:35:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+        "location": "test/bookingCalendar20261006.browser.spec.mjs:7:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "scope editor groups entries of the same kind and names them by their matching facts",
+        "location": "test/claudeScopeEditorOrder.browser.spec.mjs:32:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "location": "test/interviewControls.browser.spec.mjs:28:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "location": "test/interviewControls.browser.spec.mjs:38:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "F13 browser legacy flat and two-level controls use the same exact parser",
+        "location": "test/interviewControls.browser.spec.mjs:50:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+        "location": "test/leadCaptureRepair20261006.browser.spec.mjs:8:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "Operator: service-area city entry, validation, save and reopening in Chromium",
+        "location": "test/leadsServiceArea20261010.browser.spec.mjs:19:44",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "QuoteDone: service-area city entry, validation, save and reopening in Chromium",
+        "location": "test/leadsServiceArea20261010.browser.spec.mjs:19:44",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "Calendar exposes missing booking requirements and links to service-area setup in Chromium",
+        "location": "test/leadsServiceArea20261010.browser.spec.mjs:31:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+        "location": "test/namedReviewContact20261006.browser.spec.mjs:24:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+        "location": "test/namedReviewContact20261006.browser.spec.mjs:35:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+        "location": "test/overageDashboard20261006.browser.spec.mjs:32:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+        "location": "test/overageDashboard20261006.browser.spec.mjs:38:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "unverified period and pending historical charge are visible without an invented zero balance",
+        "location": "test/overageDashboard20261006.browser.spec.mjs:42:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+        "location": "test/ownerAlertRepair20261006.browser.spec.mjs:7:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+        "location": "test/ownerAlertsDelivery20261006.browser.spec.mjs:9:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+        "location": "test/ownerDashboard20261007.browser.spec.mjs:7:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "location": "test/priceBookEditor.browser.spec.mjs:192:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "location": "test/priceBookEditor.browser.spec.mjs:192:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "location": "test/priceBookEditor.browser.spec.mjs:192:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "location": "test/priceBookEditor.browser.spec.mjs:192:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "location": "test/priceBookEditor.browser.spec.mjs:215:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "location": "test/priceBookEditor.browser.spec.mjs:227:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "location": "test/priceBookEditor.browser.spec.mjs:249:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "location": "test/priceBookEditor.browser.spec.mjs:273:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "location": "test/priceBookEditor.browser.spec.mjs:273:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "location": "test/priceBookEditor.browser.spec.mjs:273:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "location": "test/priceBookEditor.browser.spec.mjs:294:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "location": "test/priceBookEditor.browser.spec.mjs:310:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "location": "test/priceBookEditor.browser.spec.mjs:336:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "location": "test/priceBookEditor.browser.spec.mjs:351:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "location": "test/priceBookEditor.browser.spec.mjs:366:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "pending manual save preserves a newer numeric edit and its question",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:64:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "pending manual save preserves a newer structured price-map edit",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:76:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "pending manual save prevents duplicate confirmation and premature review",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:85:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "unchanged confirmed value saves once and advances normally",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:92:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "failed manual save keeps the confirmed value available for retry",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:99:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:106:36",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:106:36",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "late 200 response cannot replace a new service preview",
+        "location": "test/pricebookPreviewFreshness.browser.spec.mjs:62:34",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "late 400 response cannot replace a new service preview",
+        "location": "test/pricebookPreviewFreshness.browser.spec.mjs:62:34",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "old completion cannot clear current loading and invalid input cannot retain old ready",
+        "location": "test/pricebookPreviewFreshness.browser.spec.mjs:68:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "location": "test/pricebookPreviewFreshness.browser.spec.mjs:75:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "interview owner can add separate demolition entries and explicitly choose up-to access",
+        "location": "test/quoteConfigurationInterview.browser.spec.mjs:20:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "location": "test/quoteConfigurationInterview.browser.spec.mjs:34:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "interview accepts ordinary floor names and retains invalid drafts for correction",
+        "location": "test/quoteConfigurationInterview.browser.spec.mjs:43:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+        "location": "test/quoteDisplay20261006.browser.spec.mjs:36:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+        "location": "test/quoteDisplay20261006.browser.spec.mjs:53:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "display browser: actual dashboard and owner preview show production missing-price labels",
+        "location": "test/quoteDisplay20261006.browser.spec.mjs:86:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+        "location": "test/quoteDisplay20261006.browser.spec.mjs:96:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "location": "test/quotePreviewTier20261005.browser.spec.mjs:10:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+        "location": "test/quoteReauditEditor20261006.browser.spec.mjs:27:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "location": "test/websitePriceDraft.browser.spec.mjs:24:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "website owner screen says no prices found and preserves the current prices",
+        "location": "test/websitePriceDraft.browser.spec.mjs:34:1",
+        "kind": "browser_launch"
+      }
+    ]
+  },
+  "test_quote": {
+    "exit": 1,
+    "tests": 4117,
+    "pass": 4055,
+    "fail": 62,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "failures": [
+      {
+        "name": "core 9: 320 missing-share products via full",
+        "location": "server/quote-engine-vnext/tests/coreCatalog.spec.mjs:10:45",
+        "kind": "catalog_timing"
+      },
+      {
+        "name": "core 9: 320 missing-share products via quick",
+        "location": "server/quote-engine-vnext/tests/coreCatalog.spec.mjs:10:45",
+        "kind": "catalog_timing"
+      },
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "location": "test/astraQuoteScope.browser.spec.mjs:26:34",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "location": "test/astraQuoteScope.browser.spec.mjs:26:34",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "location": "test/astraQuoteScope.browser.spec.mjs:33:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+        "location": "test/billingCustomerLifecycle20261007.browser.spec.mjs:27:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+        "location": "test/billingCustomerLifecycle20261007.browser.spec.mjs:31:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "expired export window disables all CSV buttons and no longer offers setup/service",
+        "location": "test/billingCustomerLifecycle20261007.browser.spec.mjs:35:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+        "location": "test/bookingCalendar20261006.browser.spec.mjs:7:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "scope editor groups entries of the same kind and names them by their matching facts",
+        "location": "test/claudeScopeEditorOrder.browser.spec.mjs:32:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "location": "test/interviewControls.browser.spec.mjs:28:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "location": "test/interviewControls.browser.spec.mjs:38:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "F13 browser legacy flat and two-level controls use the same exact parser",
+        "location": "test/interviewControls.browser.spec.mjs:50:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+        "location": "test/leadCaptureRepair20261006.browser.spec.mjs:8:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "Operator: service-area city entry, validation, save and reopening in Chromium",
+        "location": "test/leadsServiceArea20261010.browser.spec.mjs:19:44",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "QuoteDone: service-area city entry, validation, save and reopening in Chromium",
+        "location": "test/leadsServiceArea20261010.browser.spec.mjs:19:44",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "Calendar exposes missing booking requirements and links to service-area setup in Chromium",
+        "location": "test/leadsServiceArea20261010.browser.spec.mjs:31:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+        "location": "test/namedReviewContact20261006.browser.spec.mjs:24:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+        "location": "test/namedReviewContact20261006.browser.spec.mjs:35:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+        "location": "test/overageDashboard20261006.browser.spec.mjs:32:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+        "location": "test/overageDashboard20261006.browser.spec.mjs:38:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "unverified period and pending historical charge are visible without an invented zero balance",
+        "location": "test/overageDashboard20261006.browser.spec.mjs:42:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+        "location": "test/ownerAlertRepair20261006.browser.spec.mjs:7:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+        "location": "test/ownerAlertsDelivery20261006.browser.spec.mjs:9:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+        "location": "test/ownerDashboard20261007.browser.spec.mjs:7:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "location": "test/priceBookEditor.browser.spec.mjs:192:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "location": "test/priceBookEditor.browser.spec.mjs:192:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "location": "test/priceBookEditor.browser.spec.mjs:192:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "location": "test/priceBookEditor.browser.spec.mjs:192:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "location": "test/priceBookEditor.browser.spec.mjs:215:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "location": "test/priceBookEditor.browser.spec.mjs:227:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "location": "test/priceBookEditor.browser.spec.mjs:249:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "location": "test/priceBookEditor.browser.spec.mjs:273:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "location": "test/priceBookEditor.browser.spec.mjs:273:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "location": "test/priceBookEditor.browser.spec.mjs:273:3",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "location": "test/priceBookEditor.browser.spec.mjs:294:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "location": "test/priceBookEditor.browser.spec.mjs:310:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "location": "test/priceBookEditor.browser.spec.mjs:336:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "location": "test/priceBookEditor.browser.spec.mjs:351:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "location": "test/priceBookEditor.browser.spec.mjs:366:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "pending manual save preserves a newer numeric edit and its question",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:64:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "pending manual save preserves a newer structured price-map edit",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:76:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "pending manual save prevents duplicate confirmation and premature review",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:85:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "unchanged confirmed value saves once and advances normally",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:92:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "failed manual save keeps the confirmed value available for retry",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:99:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:106:36",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+        "location": "test/pricebookInterviewSave.browser.spec.mjs:106:36",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "late 200 response cannot replace a new service preview",
+        "location": "test/pricebookPreviewFreshness.browser.spec.mjs:62:34",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "late 400 response cannot replace a new service preview",
+        "location": "test/pricebookPreviewFreshness.browser.spec.mjs:62:34",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "old completion cannot clear current loading and invalid input cannot retain old ready",
+        "location": "test/pricebookPreviewFreshness.browser.spec.mjs:68:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "location": "test/pricebookPreviewFreshness.browser.spec.mjs:75:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "interview owner can add separate demolition entries and explicitly choose up-to access",
+        "location": "test/quoteConfigurationInterview.browser.spec.mjs:20:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "location": "test/quoteConfigurationInterview.browser.spec.mjs:34:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "interview accepts ordinary floor names and retains invalid drafts for correction",
+        "location": "test/quoteConfigurationInterview.browser.spec.mjs:43:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+        "location": "test/quoteDisplay20261006.browser.spec.mjs:36:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+        "location": "test/quoteDisplay20261006.browser.spec.mjs:53:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "display browser: actual dashboard and owner preview show production missing-price labels",
+        "location": "test/quoteDisplay20261006.browser.spec.mjs:86:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+        "location": "test/quoteDisplay20261006.browser.spec.mjs:96:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "location": "test/quotePreviewTier20261005.browser.spec.mjs:10:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+        "location": "test/quoteReauditEditor20261006.browser.spec.mjs:27:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "location": "test/websitePriceDraft.browser.spec.mjs:24:1",
+        "kind": "browser_launch"
+      },
+      {
+        "name": "website owner screen says no prices found and preserves the current prices",
+        "location": "test/websitePriceDraft.browser.spec.mjs:34:1",
+        "kind": "browser_launch"
+      }
+    ]
+  },
+  "node": "22.23.3",
+  "available_cpus": 9,
+  "build_exit": 0,
+  "catalog_rerun": {
+    "file": "server/quote-engine-vnext/tests/coreCatalog.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test server/quote-engine-vnext/tests/coreCatalog.spec.mjs",
+    "exit": 0,
+    "available_cpus": 9,
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "remaining_non_browser_failures": 0
+}
