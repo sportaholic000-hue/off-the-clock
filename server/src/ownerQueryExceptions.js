@@ -2038,14 +2038,14 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/backups.js",
-    "function": "checkSqlite",
-    "reason": "Schema-only check for the bounded retry-secret table in a copied backup database.",
+    "function": "removeRetrySecrets",
+    "reason": "Schema-only check for the bounded retry-secret table in a in-memory backup database.",
     "signature": "967adc41b741548ff44fca6a1f7e4c964d855e5872d4b14282522b9e2c809b74",
     "occurrence": 1
   },
   {
     "file": "server/src/backups.js",
-    "function": "checkSqlite",
+    "function": "removeRetrySecrets",
     "reason": "Administrative backup inventory of retry-secret owners only; each copied secret is then deleted through usageOwnerQuery with its owner ID.",
     "signature": "f3740c6af6b4647a68dfd294f9cec92a79eff8e117ff6aaab898494592a456bd",
     "occurrence": 1
@@ -2061,7 +2061,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/billingRetentionSteps.js",
     "function": "retentionStatus",
     "reason": "Authenticated admin health inventory of billing cancellation outcomes; returns only billing owner IDs, step status and timestamps, never retry secrets.",
-    "signature": "1c19099b0b04923d942a9c25da20d724225627bbe89b309ff2b52b93606254a8",
+    "signature": "ee67bce7b26e35cc7e4c8e251dfb315a9d7189532f09346e4917ccf374365d6f",
     "occurrence": 1
   },
   {

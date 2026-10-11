@@ -53,18 +53,18 @@ test('backup cannot discard an unconfirmed save marker and resume quoting after 
 });
 test('backup refuses a price book created while the online database snapshot is in progress',async t=>{
   const {config,db}=fixture(t);recordCreatedBook(db);
-  const racing={async backup(file){
+  const racing={serialize(){
     fs.writeFileSync(path.join(config.pricebookPath,'b.json'),JSON.stringify({ownerId:'b',price:119}));
-    recordCreatedBook(db,'b');return db.backup(file);
+    recordCreatedBook(db,'b');return db.serialize();
   }};
   await assert.rejects(()=>createSnapshot(racing,config,{now:()=>AT}),/PRICEBOOK_MISSING|PRICEBOOK_CHANGED/);
   assert.equal(listSnapshots(config.backupPath).length,0);
 });
 test('backup refuses a pause marker that appears during the online database snapshot',async t=>{
   const {config,db}=fixture(t);recordCreatedBook(db);
-  const racing={async backup(file){
+  const racing={serialize(){
     fs.writeFileSync(path.join(config.pricebookPath,'a.unconfirmed'),'synthetic uncertain replacement');
-    return db.backup(file);
+    return db.serialize();
   }};
   await assert.rejects(()=>createSnapshot(racing,config,{now:()=>AT}),/PRICEBOOK_UNCONFIRMED/);
   assert.equal(listSnapshots(config.backupPath).length,0);

@@ -6,7 +6,7 @@ import {eraseTenantRows,eraseTenantPricebookFiles} from './billingTenantErasure.
 import {verifyBackup,drainSnapshots} from './backups.js';
 import {encryptBundle,decryptBundle,fileChecksum} from './offsiteArchive.js';
 import {assertRealContainment} from './deploymentConfig.js';
-import {withBackupRetentionLock} from './backupRetentionLock.js';
+import {withBackupRetentionLock,removeStaleProcessLock} from './backupRetentionLock.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {requireOffsiteErasureInventory,rememberBackupErasure} from './offsiteHistory.js';
 
@@ -73,10 +73,7 @@ function removeAbandonedCopies(root,pattern){
   }
 }
 function assertNoWorker(directory){
-  const file=path.join(directory,'run.lock');if(!fs.existsSync(file))return;
-  const saved=JSON.parse(fs.readFileSync(file,'utf8')),pid=typeof saved==='number'?saved:saved.pid;
-  if(!Number.isInteger(pid)||pid<1)throw Error('OFFSITE_LOCK_INVALID');
-  try{process.kill(pid,0);throw Error('OFFSITE_BUSY');}catch(error){if(error.code!=='ESRCH')throw error;}
+  removeStaleProcessLock(path.join(directory,'run.lock'));
 }
 const validKey=(key,config)=>key.startsWith(config.prefix+'/')&&/^(?:daily\/\d{4}-\d{2}-\d{2}|continuous\/\d{13}-[a-f0-9-]{36})\.enc$/.test(key.slice(config.prefix.length+1));
 

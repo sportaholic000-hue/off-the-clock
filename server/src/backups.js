@@ -3,11 +3,38 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import Database from 'better-sqlite3';
 import {inside,assertRealContainment} from './deploymentConfig.js';
-import {assertBackupRetentionIdle,withBackupRetentionLockSync} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock,withBackupRetentionLockSync,removeStaleProcessLock} from './backupRetentionLock.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 const activeSnapshots=new Set();
 export async function drainSnapshots(){await Promise.allSettled([...activeSnapshots]);}
+
+// Legacy snapshots could crash after copying the retry table. Remove those
+// unpublished copies at startup and before declaring provider cleanup terminal,
+// even if this owner's full backup-erasure step already succeeded.
+export async function cleanupAbandonedSnapshots(config){
+  if(!config.backupPath)return;
+  return withBackupRetentionLock(config,async()=>{
+    await drainSnapshots();
+    for(const name of ['.offsite','.offsite-continuous']){
+      const file=path.join(config.backupPath,name,'run.lock');assertRealContainment(config.root,file);removeStaleProcessLock(file);
+    }
+    for(const directory of [config.backupPath,path.join(config.backupPath,'.offsite-continuous','snapshots')]){
+      assertRealContainment(config.root,directory);if(!fs.existsSync(directory))continue;
+      for(const name of fs.readdirSync(directory))if(/^\.partial-snapshot-\d{13}-[a-f0-9-]{36}$/.test(name))removeOwnedDirectory(directory,path.join(directory,name));
+    }
+  });
+}
+
+function removeRetrySecrets(db){
+  // Work only in an in-memory copy. secure_delete plus VACUUM also removes
+  // discarded values from its free pages before any backup file is opened.
+  if(db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='billingRetentionSecrets'").get()){
+    db.pragma('temp_store = MEMORY');db.pragma('secure_delete = ON');
+    for(const {ownerId} of db.prepare('SELECT ownerId FROM billingRetentionSecrets').all())usageOwnerQuery(db)('DELETE FROM billingRetentionSecrets WHERE ownerId=?').run(ownerId);
+    db.exec('VACUUM');
+  }
+}
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const bookName = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}\.json$/;
@@ -24,13 +51,6 @@ function checkSqlite(file,{normalize=false,files}={}) {
   try {
     if(normalize){
       db.pragma('journal_mode = DELETE');
-      // A restore may retain cleanup outcomes, but must never extend the life
-      // of credentials/SIDs kept solely for a bounded provider retry.
-      if(db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='billingRetentionSecrets'").get()){
-        db.pragma('secure_delete = ON');
-        for(const {ownerId} of db.prepare('SELECT ownerId FROM billingRetentionSecrets').all())usageOwnerQuery(db)('DELETE FROM billingRetentionSecrets WHERE ownerId=?').run(ownerId);
-        db.exec('VACUUM');
-      }
     }
     const rows = db.pragma('integrity_check');
     if(rows.length !== 1 || Object.values(rows[0])[0] !== 'ok' || db.pragma('foreign_key_check').length) throw new Error('BACKUP_DATABASE_INVALID');
@@ -117,10 +137,15 @@ async function writeSnapshot(database,config,{now,sourceCommit}){
   fs.mkdirSync(stage,{mode:0o700});
   try {
     const books = readSourceBooks(root,config.pricebookPath);
-    // Online SQLite backup includes committed WAL pages. Never copy the live
-    // main database file; that can omit recent commits or capture half a write.
+    // SQLite serialization captures committed pages (including WAL) in memory.
+    // Never put the live retry table into a staging directory, even briefly.
     const sqliteFile=path.join(stage,'off-the-clock.sqlite');
-    await database.backup(sqliteFile);
+    const serialized=database.serialize();let snapshot;
+    // sqlite3_deserialize requires rollback-mode header bytes even when the
+    // serialized pages came from WAL: https://sqlite.org/c3ref/deserialize.html
+    serialized[18]=1;serialized[19]=1;
+    try{snapshot=new Database(serialized);}finally{serialized.fill(0);}
+    try{removeRetrySecrets(snapshot);await snapshot.backup(sqliteFile);}finally{snapshot.close();}
     assertBackupRetentionIdle(config);
     // The online copy yields. A concurrent save may have added a book or a
     // pause marker in the meantime. Never publish a mixed inventory silently.
@@ -186,7 +211,10 @@ export function startBackupScheduler(database,config,{takeSnapshot=()=>createSna
       if(!stopped){timer=setTimeout(tick,succeeded ? config.backupIntervalMs : Math.min(config.backupIntervalMs,60000));timer.unref?.();}
     });
   };
-  const wait=Math.max(0,lastSuccess+config.backupIntervalMs-now());
-  timer=setTimeout(tick,wait);timer.unref?.();
-  return {stop:()=>{stopped=true;clearTimeout(timer);return active||Promise.resolve();},lastSuccess:()=>lastSuccess};
+  const ready=cleanupAbandonedSnapshots(config);
+  ready.then(()=>{
+    if(stopped)return;
+    const wait=Math.max(0,lastSuccess+config.backupIntervalMs-now());timer=setTimeout(tick,wait);timer.unref?.();
+  },()=>{onError('BACKUP_STAGING_PENDING');if(!stopped){timer=setTimeout(tick,60000);timer.unref?.();}});
+  return {ready,stop:async()=>{stopped=true;clearTimeout(timer);await ready.catch(()=>{});await active;},lastSuccess:()=>lastSuccess};
 }

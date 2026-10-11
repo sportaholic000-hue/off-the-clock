@@ -47,3 +47,12 @@ test('retention hardening: a live holder excludes workers and a competing erasur
   await assert.rejects(withBackupRetentionLock(f.deployment,async()=>{}),/OFFSITE_BUSY/);
   child.kill();await once(child,'close');assertBackupRetentionIdle(f.deployment);
 });
+test('retention hardening: legacy PID 1 lock predating this process is recoverable',t=>{
+  const f=retentionFixture(t),file=writeLock(f.deployment,{pid:1,token:'SYNTHETIC-legacy-container'});
+  fs.utimesSync(file,new Date(0),new Date(0));
+  const script=`import {assertBackupRetentionIdle} from './server/src/backupRetentionLock.js';
+    Object.defineProperty(process,'pid',{value:1});process.kill=()=>true;
+    assertBackupRetentionIdle(JSON.parse(process.argv[1]));`;
+  const result=spawnSync(process.execPath,['--input-type=module','-e',script,JSON.stringify(f.deployment)],{encoding:'utf8'});
+  assert.equal(result.status,0,result.stderr);
+});

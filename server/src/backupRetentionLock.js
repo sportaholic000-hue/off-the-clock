@@ -10,6 +10,7 @@ const lockRoot=deployment=>deployment.volume||deployment.root||path.dirname(depl
 export const retentionLockFile=deployment=>path.join(lockRoot(deployment),'backups','.tenant-erasure.lock');
 const heldLocks=new AsyncLocalStorage();
 const instanceIdentity='instance:'+randomUUID();
+const processStartedAt=Date.now()-process.uptime()*1000;
 function processIdentity(pid){
   // Linux's boot ID + process birth tick survives neither a reboot nor PID
   // reuse (including PID 1 after a container replacement). Never use mtime or
@@ -24,17 +25,22 @@ function processIdentity(pid){
   // For another live PID whose birth identity is unavailable, fail closed.
   return pid===process.pid?instanceIdentity:null;
 }
-function removeStaleLock(file){
+export const processLockOwner=()=>({pid:process.pid,processIdentity:processIdentity(process.pid)});
+export function removeStaleProcessLock(file){
   if(!fs.existsSync(file))return;
-  const bytes=fs.readFileSync(file,'utf8'),prior=JSON.parse(bytes);
-  if(!Number.isInteger(prior.pid)||prior.pid<1)throw Error('OFFSITE_LOCK_INVALID');
+  const bytes=fs.readFileSync(file,'utf8');let parsed;
+  try{parsed=JSON.parse(bytes);}catch{throw Error('OFFSITE_LOCK_INVALID');}
+  const prior=typeof parsed==='number'?{pid:parsed}:parsed;
+  if(!Number.isInteger(prior?.pid)||prior.pid<1)throw Error('OFFSITE_LOCK_INVALID');
   let gone=false;
   try{process.kill(prior.pid,0);}catch(error){if(error.code==='ESRCH')gone=true;else throw error;}
   if(!gone){
     const current=processIdentity(prior.pid);
     if(prior.processIdentity&&current&&prior.processIdentity!==current)gone=true;
-    // A legacy lock cannot have been acquired by this version of this process.
-    else if(!prior.processIdentity&&prior.pid===process.pid)gone=true;
+    // Upgrade recovery for an old PID-only lock: this process cannot have
+    // written it before it was born. Fresh legacy locks remain excluded.
+    // The margin tolerates clock precision; this is not a lock-age timeout.
+    else if(!prior.processIdentity&&prior.pid===process.pid&&fs.statSync(file).mtimeMs<processStartedAt-1000)gone=true;
   }
   if(!gone)throw Error('OFFSITE_BUSY');
   // Recheck ownership before removing a stale holder; never unlink a lock
@@ -44,7 +50,7 @@ function removeStaleLock(file){
 }
 export function assertBackupRetentionIdle(deployment){
   assertRealContainment(lockRoot(deployment),retentionLockFile(deployment));
-  removeStaleLock(retentionLockFile(deployment));
+  removeStaleProcessLock(retentionLockFile(deployment));
 }
 function acquire(deployment){
   const file=retentionLockFile(deployment),token=randomUUID();
@@ -52,8 +58,8 @@ function acquire(deployment){
   const held=heldLocks.getStore();
   if(held?.file===file&&fs.existsSync(file)&&JSON.parse(fs.readFileSync(file,'utf8')).token===held.token)return {held,release:()=>{}};
   fs.mkdirSync(path.dirname(file),{recursive:true,mode:0o700});
-  removeStaleLock(file);
-  fs.writeFileSync(file,JSON.stringify({pid:process.pid,processIdentity:processIdentity(process.pid),token}),{flag:'wx',mode:0o600,flush:true});
+  removeStaleProcessLock(file);
+  fs.writeFileSync(file,JSON.stringify({...processLockOwner(),token}),{flag:'wx',mode:0o600,flush:true});
   return {held:{file,token},release:()=>{
     if(fs.existsSync(file)&&JSON.parse(fs.readFileSync(file,'utf8')).token===token)fs.unlinkSync(file);
   }};

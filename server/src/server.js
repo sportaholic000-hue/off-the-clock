@@ -331,6 +331,7 @@ const customerLifecycle=createBillingCustomerLifecycle({database:db,ownerQuery,
   enabled:providerWritesEnabled,releaseNumber:releaseTwilioNumber,
   revokeCalendar:createCalendarRetentionRevoker({enabled:providerWritesEnabled}),
   eraseBackupCopies:ownerId=>offsiteBackups.eraseOwner(ownerId),
+  cleanupRetryCopies:()=>offsiteBackups.cleanupRetryCopies(),
   dashboardUrl:billingConfig?.portalReturnUrl});
 installBillingCustomerLifecycleRoutes(app,{service:customerLifecycle,requireAuth,
   requireProviderWrites:requireProviderOperationsEnabled,asyncHandler});

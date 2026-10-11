@@ -1,0 +1,244 @@
+TAP version 13
+# Subtest: backup refuses a missing book recorded in the durable creation ledger
+ok 1 - backup refuses a missing book recorded in the durable creation ledger
+  ---
+  duration_ms: 20.733358
+  type: 'test'
+  ...
+# Subtest: restore refuses a checksum-valid legacy bundle whose database records an omitted price book
+ok 2 - restore refuses a checksum-valid legacy bundle whose database records an omitted price book
+  ---
+  duration_ms: 28.704862
+  type: 'test'
+  ...
+# Subtest: backup cannot discard an unconfirmed save marker and resume quoting after restore
+ok 3 - backup cannot discard an unconfirmed save marker and resume quoting after restore
+  ---
+  duration_ms: 7.957712
+  type: 'test'
+  ...
+# Subtest: backup refuses a price book created while the online database snapshot is in progress
+ok 4 - backup refuses a price book created while the online database snapshot is in progress
+  ---
+  duration_ms: 7.815802
+  type: 'test'
+  ...
+# Subtest: backup refuses a pause marker that appears during the online database snapshot
+ok 5 - backup refuses a pause marker that appears during the online database snapshot
+  ---
+  duration_ms: 3.950457
+  type: 'test'
+  ...
+# Subtest: online backup includes committed WAL rows and price books; restore publishes a verified new directory
+ok 6 - online backup includes committed WAL rows and price books; restore publishes a verified new directory
+  ---
+  duration_ms: 10.080083
+  type: 'test'
+  ...
+# Subtest: a transaction during an online backup never appears half committed
+ok 7 - a transaction during an online backup never appears half committed
+  ---
+  duration_ms: 36.865367
+  type: 'test'
+  ...
+# Subtest: corruption refuses restore before publishing and leaves the current database intact
+ok 8 - corruption refuses restore before publishing and leaves the current database intact
+  ---
+  duration_ms: 8.524241
+  type: 'test'
+  ...
+# Subtest: traversal, symlinks and targets outside the restore directory cannot write files
+ok 9 - traversal, symlinks and targets outside the restore directory cannot write files
+  ---
+  duration_ms: 41.46755
+  type: 'test'
+  ...
+# Subtest: a failed snapshot leaves the last accepted backup and no partial bundle
+ok 10 - a failed snapshot leaves the last accepted backup and no partial bundle
+  ---
+  duration_ms: 6.531104
+  type: 'test'
+  ...
+# Subtest: retention removes only expired completed snapshots and preserves other directories
+ok 11 - retention removes only expired completed snapshots and preserves other directories
+  ---
+  duration_ms: 8.105604
+  type: 'test'
+  ...
+# Subtest: scheduler retries failure, avoids overlapping jobs and waits for its active job when stopped
+ok 12 - scheduler retries failure, avoids overlapping jobs and waits for its active job when stopped
+  ---
+  duration_ms: 151.610417
+  type: 'test'
+  ...
+# Subtest: day90 a deployment that never uploaded off-site can complete local-only backup erasure
+ok 13 - day90 a deployment that never uploaded off-site can complete local-only backup erasure
+  ---
+  duration_ms: 304.890678
+  type: 'test'
+  ...
+# Subtest: day90 removes abandoned download, decrypt and restore staging copies
+ok 14 - day90 removes abandoned download, decrypt and restore staging copies
+  ---
+  duration_ms: 1109.519237
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight daily restore
+ok 15 - day90 serializes erasure with an in-flight daily restore
+  ---
+  duration_ms: 686.083352
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight continuous restore
+ok 16 - day90 serializes erasure with an in-flight continuous restore
+  ---
+  duration_ms: 593.694768
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — volume
+ok 17 - day90 local restore cannot race a held erasure lock — volume
+  ---
+  duration_ms: 331.633382
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — nested
+ok 18 - day90 local restore cannot race a held erasure lock — nested
+  ---
+  duration_ms: 330.25477
+  type: 'test'
+  ...
+# Subtest: day90 complete cleanup is idempotent across live, local, daily and continuous copies
+ok 19 - day90 complete cleanup is idempotent across live, local, daily and continuous copies
+  ---
+  duration_ms: 807.258966
+  type: 'test'
+  ...
+# Subtest: day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+ok 20 - day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+  ---
+  duration_ms: 442.000698
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — recovered
+ok 21 - day90 admin health is authenticated and secret-free — recovered
+  ---
+  duration_ms: 202.859067
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — permanent
+ok 22 - day90 admin health is authenticated and secret-free — permanent
+  ---
+  duration_ms: 193.843614
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after 503 survives local deletion and restart
+ok 23 - day90 Google retry after 503 survives local deletion and restart
+  ---
+  duration_ms: 195.332398
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after 429 survives local deletion and restart
+ok 24 - day90 Google retry after 429 survives local deletion and restart
+  ---
+  duration_ms: 208.999492
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after network survives local deletion and restart
+ok 25 - day90 Google retry after network survives local deletion and restart
+  ---
+  duration_ms: 154.193517
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after timeout survives local deletion and restart
+ok 26 - day90 Google retry after timeout survives local deletion and restart
+  ---
+  duration_ms: 206.122246
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after 400 survives local deletion and restart
+ok 27 - day90 Google retry after 400 survives local deletion and restart
+  ---
+  duration_ms: 229.530086
+  type: 'test'
+  ...
+# Subtest: day90 phone retry retains the original SID and never invents release after profile erasure
+ok 28 - day90 phone retry retains the original SID and never invents release after profile erasure
+  ---
+  duration_ms: 164.913481
+  type: 'test'
+  ...
+# Subtest: day90 provider writes disabled retains both retry values without postponing local or off-site deletion
+ok 29 - day90 provider writes disabled retains both retry values without postponing local or off-site deletion
+  ---
+  duration_ms: 154.851939
+  type: 'test'
+  ...
+# Subtest: day90 Google refresh-token invalid_token and number 404 are completed outcomes
+ok 30 - day90 Google refresh-token invalid_token and number 404 are completed outcomes
+  ---
+  duration_ms: 154.619272
+  type: 'test'
+  ...
+# Subtest: day90 retry material expires exactly 30 days after first attempt and permanent failure reaches admin status
+ok 31 - day90 retry material expires exactly 30 days after first attempt and permanent failure reaches admin status
+  ---
+  duration_ms: 155.526015
+  type: 'test'
+  ...
+# Subtest: day90 undecryptable Google token is discarded immediately with a permanent failure, without blocking other steps
+ok 32 - day90 undecryptable Google token is discarded immediately with a permanent failure, without blocking other steps
+  ---
+  duration_ms: 143.926959
+  type: 'test'
+  ...
+# Subtest: day90 provider success removes retry material from the main database and WAL immediately
+ok 33 - day90 provider success removes retry material from the main database and WAL immediately
+  ---
+  duration_ms: 147.562941
+  type: 'test'
+  ...
+# Subtest: day90 sweep deletes every due owner locally before waiting for a slow provider
+ok 34 - day90 sweep deletes every due owner locally before waiting for a slow provider
+  ---
+  duration_ms: 164.523805
+  type: 'test'
+  ...
+# Subtest: retention hardening: interrupted snapshot secrets disappear before provider success
+ok 35 - retention hardening: interrupted snapshot secrets disappear before provider success
+  ---
+  duration_ms: 325.174455
+  type: 'test'
+  ...
+# Subtest: retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+ok 36 - retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+  ---
+  duration_ms: 261.455097
+  type: 'test'
+  ...
+# Subtest: retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+ok 37 - retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+  ---
+  duration_ms: 257.352113
+  type: 'test'
+  ...
+# Subtest: retention hardening: startup removes abandoned snapshots even when the next backup is not due
+ok 38 - retention hardening: startup removes abandoned snapshots even when the next backup is not due
+  ---
+  duration_ms: 297.795128
+  type: 'test'
+  ...
+# Subtest: retention hardening: retry secrets never reach the first snapshot disk write
+ok 39 - retention hardening: retry secrets never reach the first snapshot disk write
+  ---
+  duration_ms: 277.312117
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6320.470876

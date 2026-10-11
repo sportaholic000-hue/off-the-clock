@@ -108,11 +108,11 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
 }
 
 export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},stripeClient,emailProvider,
-  releaseNumber,revokeCalendar,erasePricebookFiles=eraseTenantPricebookFiles,eraseBackupCopies,
+  releaseNumber,revokeCalendar,erasePricebookFiles=eraseTenantPricebookFiles,eraseBackupCopies,cleanupRetryCopies,
   enabled=()=>false,clock=()=>new Date(),dashboardUrl}={}){
   const query=usageOwnerQuery(database,ownerQuery),now=()=>clock().toISOString();
   const emails=createOwnerEmailDelivery({database,ownerQuery,provider:emailProvider,enabled,clock});
-  const retention=createBillingRetentionSteps({database,ownerQuery,clock,enabled,revokeCalendar,releaseNumber,eraseLocal:erase,eraseBackups:eraseBackupCopies});
+  const retention=createBillingRetentionSteps({database,ownerQuery,clock,enabled,revokeCalendar,releaseNumber,eraseLocal:erase,eraseBackups:eraseBackupCopies,cleanupRetryCopies});
   const owner=ownerId=>query(`SELECT u.*,b.stripeCustomerId,b.stripeSubscriptionId,b.stripePriceId,b.currentPeriodEndAt,b.cancelAtPeriodEnd,b.graceEndsAt
     FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id WHERE u.id=@ownerId AND u.role='owner'`).get({ownerId});
   const cancellation=ownerId=>query('SELECT * FROM billingCancellations WHERE ownerId=?').get(ownerId);
