@@ -1,0 +1,236 @@
+{
+  "run": 38177523648,
+  "sha": "64ab13aa57e0996fbdff71bfb8bd24cc634421e4",
+  "conclusion": "failure",
+  "reason": "Branch advanced to repaired source before the tag job; exact branch-HEAD guard refused the superseded report commit.",
+  "jobs": [
+    {
+      "id": 114582945349,
+      "name": "voice-docker-startup",
+      "conclusion": "success"
+    },
+    {
+      "id": 114582945541,
+      "name": "test",
+      "conclusion": "success"
+    },
+    {
+      "id": 114586410888,
+      "name": "tag-candidate-j",
+      "conclusion": "failure"
+    },
+    {
+      "id": 114586411913,
+      "name": "tag-candidate-h",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 114586412313,
+      "name": "tag-candidate-i",
+      "conclusion": "skipped"
+    }
+  ],
+  "summaries": [
+    {
+      "command": "node --test test/ownerAlertsDelivery20261006.browser.spec.mjs test/ownerDashboard20261007.browser.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "npm run test:quote",
+      "tests": 4230,
+      "suites": 0,
+      "pass": 4230,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "npm test",
+      "tests": 4961,
+      "suites": 0,
+      "pass": 4961,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/lockRecoveryRace20261011.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/lockDatabaseBackup20261011.spec.mjs",
+      "tests": 5,
+      "suites": 0,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/retentionHardeningHealth20261011.spec.mjs",
+      "tests": 3,
+      "suites": 0,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/retentionHardeningLocks20261011.spec.mjs",
+      "tests": 6,
+      "suites": 0,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/retentionHardeningSecrets20261011.spec.mjs",
+      "tests": 8,
+      "suites": 0,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/retentionHardeningVersions20261011.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/day90Backups20261011.spec.mjs",
+      "tests": 4,
+      "suites": 0,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/day90Cancellation20261011.spec.mjs",
+      "tests": 4,
+      "suites": 0,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/day90Guarantees20261011.spec.mjs",
+      "tests": 10,
+      "suites": 0,
+      "pass": 10,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/day90Providers20261011.spec.mjs",
+      "tests": 12,
+      "suites": 0,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/tenantRetention20261010.spec.mjs",
+      "tests": 13,
+      "suites": 0,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/continuousOffsite20261007.spec.mjs",
+      "tests": 16,
+      "suites": 0,
+      "pass": 16,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/backups.spec.mjs",
+      "tests": 12,
+      "suites": 0,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/offsiteBackups20261007.spec.mjs",
+      "tests": 23,
+      "suites": 0,
+      "pass": 23,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/backupRestoreRehearsal.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/ownerQueryCoverage20261009.spec.mjs",
+      "tests": 88,
+      "suites": 0,
+      "pass": 88,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/tenantIsolationRoutes.spec.mjs",
+      "tests": 264,
+      "suites": 0,
+      "pass": 264,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  ],
+  "tagGuardLog": "##[group]Run gate=verification/release-candidate-20261011j/RELEASE_GATE.json\ngate=verification/release-candidate-20261011j/RELEASE_GATE.json\nif [ ! -f \"$gate\" ]; then\n  echo 'Checkpoint only: no release tag requested.'\n  exit 0\nfi\nnode verification/release-candidate-20261011j/check-release-gate.mjs\ntest \"$(git ls-remote origin refs/heads/claude/release-candidate-20261011j | cut -f1)\" = \"$GITHUB_SHA\"\ntest -z \"$(git ls-remote origin refs/tags/rc-20261011j)\"\ngit config user.name 'github-actions[bot]'\ngit config user.email '41898282+github-actions[bot]@users.noreply.github.com'\ngit tag -a rc-20261011j \"$GITHUB_SHA\" -m \"Release candidate j; final report commit $GITHUB_SHA; required checks passed in CI run $GITHUB_RUN_ID.\"\ngit push origin refs/tags/rc-20261011j\ngit ls-remote origin refs/heads/claude/release-candidate-20261011j refs/tags/rc-20261011j 'refs/tags/rc-20261011j^{}'\nshell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}\n##[endgroup]\nFinal report gate verified; final test and both Docker proofs already succeeded.\n##[error]Process completed with exit code 1.\n"
+}

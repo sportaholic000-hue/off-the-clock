@@ -1,0 +1,359 @@
+[
+  {
+    "file": "test/lockDatabaseBackup20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/lockDatabaseBackup20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/lockDatabaseBackup20261011.spec.mjs.tap",
+    "sha256": "e5c85afc9e4eb8a16b3f0b4f65678a4d9de9437212f8c740af5161180c6cbf54"
+  },
+  {
+    "file": "test/lockRecoveryRace20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/lockRecoveryRace20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/lockRecoveryRace20261011.spec.mjs.tap",
+    "sha256": "07479ceb4774f608658d19d1311df07f9062ebc594886423eec51dfa293ac1e1"
+  },
+  {
+    "file": "test/retentionHardeningHealth20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionHardeningHealth20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/retentionHardeningHealth20261011.spec.mjs.tap",
+    "sha256": "8457b7029123fe20f0877c4fbc5d2915b33112f7085176b09991150aa80b9379"
+  },
+  {
+    "file": "test/retentionHardeningLocks20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionHardeningLocks20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/retentionHardeningLocks20261011.spec.mjs.tap",
+    "sha256": "d331de17afccd7fc2d926fe938eea5a1553941aad8efbe2eec68557a7e0f55f8"
+  },
+  {
+    "file": "test/retentionHardeningSecrets20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionHardeningSecrets20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/retentionHardeningSecrets20261011.spec.mjs.tap",
+    "sha256": "f8aba97d1a0d39b3f6c8196b5fefdf3fd065c318de785eea592b1689d0ba8b9e"
+  },
+  {
+    "file": "test/retentionHardeningVersions20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionHardeningVersions20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/retentionHardeningVersions20261011.spec.mjs.tap",
+    "sha256": "311ce497eb460c53d2e455c1102cf4b0eff0c84092979673dcaf4626f66be17e"
+  },
+  {
+    "file": "test/day90Backups20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/day90Backups20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/day90Backups20261011.spec.mjs.tap",
+    "sha256": "5890780e331a1b4b0267e7f3e2de0ae57f5e6b067b8022ec4c6f3addee2bb7dc"
+  },
+  {
+    "file": "test/day90Cancellation20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/day90Cancellation20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/day90Cancellation20261011.spec.mjs.tap",
+    "sha256": "30b7edc2c646a0b6260438c8e02389244ec25ee65e3155aa87a12fd7487783d7"
+  },
+  {
+    "file": "test/day90Guarantees20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/day90Guarantees20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/day90Guarantees20261011.spec.mjs.tap",
+    "sha256": "1d7a38c513a9be840ffd40f635f49d5af32e54deb29a089d208a0c5730d453f7"
+  },
+  {
+    "file": "test/day90Providers20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/day90Providers20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/day90Providers20261011.spec.mjs.tap",
+    "sha256": "a80881eeaa92b63700f24caa9c1237e06a4dd9cef7ebbd0eecb50094699f70b1"
+  },
+  {
+    "file": "test/tenantRetention20261010.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/tenantRetention20261010.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/tenantRetention20261010.spec.mjs.tap",
+    "sha256": "31c77eedd617ae662b37d4cbfbb29fd36cdba5ddefcc88ec2ddf75324aa6985b"
+  },
+  {
+    "file": "test/continuousOffsite20261007.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/continuousOffsite20261007.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 16,
+    "pass": 16,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/continuousOffsite20261007.spec.mjs.tap",
+    "sha256": "8fa796b000b28eded49ddff8f2f4b33d6d787b045be70c60be3a311e4989d84f"
+  },
+  {
+    "file": "test/backups.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/backups.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/backups.spec.mjs.tap",
+    "sha256": "1e3b2e085d08109455ffdefa4004f8ce68ebc99acf74afecf962e025730e6b23"
+  },
+  {
+    "file": "test/offsiteBackups20261007.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/offsiteBackups20261007.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 23,
+    "pass": 23,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/offsiteBackups20261007.spec.mjs.tap",
+    "sha256": "0ccabb28c1027f2209011a799d4311f9d310b396ae80b5e13a69fd024121cd0c"
+  },
+  {
+    "file": "test/backupRestoreRehearsal.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/backupRestoreRehearsal.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/backupRestoreRehearsal.spec.mjs.tap",
+    "sha256": "70fcadee26091b692140ac54dcc6f2a2495bdd408f7f60ffa50eb3ff85496fb2"
+  },
+  {
+    "file": "test/ownerQueryCoverage20261009.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/ownerQueryCoverage20261009.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 88,
+    "pass": 88,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/ownerQueryCoverage20261009.spec.mjs.tap",
+    "sha256": "25c0553acfbb9d6af76565cf772f024301c3bd069dc505ed83b2a3ea7e5fa68a"
+  },
+  {
+    "file": "test/tenantIsolationRoutes.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/tenantIsolationRoutes.spec.mjs"
+    ],
+    "exit": 0,
+    "tests": 264,
+    "pass": 264,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "localLog": "verification/release-candidate-20261011j/product-fix-standalone/tenantIsolationRoutes.spec.mjs.tap",
+    "sha256": "91ef390fb6c8f5b17db15e43477733570ccb74973cead5186cdabb8ec8c57e3b"
+  }
+]

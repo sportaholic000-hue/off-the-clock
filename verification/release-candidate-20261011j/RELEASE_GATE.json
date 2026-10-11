@@ -1,0 +1,18 @@
+{
+  "tag": "rc-20261011j",
+  "base": "a7effaf39ae382eadb0513979bf077ba236ea88f",
+  "fix": "4051dbf28a27f37d5953083ad62512cc80ce152c",
+  "mergeCommit": "06726a1fb4f3c13b82140f3d16f4a0db0edd9a52",
+  "verifiedSourceCommit": "952f32f68c34b2ebd06653340831c7ebb85ed8b4",
+  "checkpointRun": 38178045098,
+  "checkpointHostedConclusion": "success",
+  "checkpointRailwayDockerSmoke": "pass",
+  "checkpointProductionUserLockProof": "pass",
+  "localNonBrowserFailures": 0,
+  "localStandaloneFailures": 0,
+  "ownerQueryUnlisted": 0,
+  "ownerQueryUnusedExceptions": 0,
+  "ownerQueryForbiddenExtractions": 0,
+  "routeSourceMismatches": 0,
+  "finalReportApprovedForTag": true
+}

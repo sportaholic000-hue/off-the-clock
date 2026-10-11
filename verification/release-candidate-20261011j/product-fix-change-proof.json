@@ -1,0 +1,11 @@
+{
+  "base": "001b85dba56770549526beff9bc7b40a36a580c6",
+  "sourceCheckpoint": "952f32f68c34b2ebd06653340831c7ebb85ed8b4",
+  "productFilesChanged": [
+    "server/src/backupRetentionLock.js",
+    "server/src/backups.js"
+  ],
+  "originalSmokeOnlyAddsBackupCleanup": true,
+  "DockerfileDependenciesClientSpecsUnchanged": true,
+  "routeSourceFilesChanged": []
+}

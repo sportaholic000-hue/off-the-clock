@@ -1,0 +1,12 @@
+{
+  "node": "v22.23.3",
+  "cpus": 9,
+  "inventory": {
+    "entries": 291,
+    "unlisted": 0,
+    "unusedExceptions": 0,
+    "duplicateExceptions": 0,
+    "forbiddenExtractions": 0
+  },
+  "routeSourceMismatches": 0
+}
