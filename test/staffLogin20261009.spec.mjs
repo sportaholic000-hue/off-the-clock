@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import Database from 'better-sqlite3';
 import jwt from 'jsonwebtoken';
 import {CREATE_TABLE_STATEMENTS,CREATE_TRIGGER_STATEMENTS} from '../server/src/schema.js';
-import {installAuthTokenSchema,createAuthTokenService,AUTH_TOKEN_PURPOSES} from '../server/src/authTokenService.js';
+import {installAuthTokenSchema,createAuthTokenService,AUTH_TOKEN_PURPOSES,isAuthToken} from '../server/src/authTokenService.js';
 import {installAuthSessionSchema,createAuthSessionService} from '../server/src/authSessionService.js';
 import {installAuthLimitSchema,createAuthRateLimiter} from '../server/src/authRateLimitService.js';
 import {createAuthHandlers} from '../server/src/auth.js';
@@ -296,12 +296,13 @@ test(`staff acceptance preflight: ${kind} token performs zero password hashes`,a
  const f=fixture(t),owner=f.addOwner('owner-a');
  const invited=await f.staff.invite(owner.id,{name:'[PLACEHOLDER] Staff',email:'staff@example.invalid'});
  let token=mailToken(f.mail[0]);
- if(kind==='unknown')token='x'.repeat(43);
+ if(kind==='unknown')token=Buffer.alloc(32,1).toString('base64url');
  if(kind==='expired')f.advance(24*60*60*1000);
  if(kind==='used')f.tokenService.consume({token,purpose:AUTH_TOKEN_PURPOSES.STAFF_INVITE});
  if(kind==='wrong-purpose')token=f.tokenService.issue({userId:invited.staff[0].id,purpose:AUTH_TOKEN_PURPOSES.RESET_PASSWORD}).token;
  if(kind==='non-staff')token=f.tokenService.issue({userId:owner.id,purpose:AUTH_TOKEN_PURPOSES.STAFF_INVITE}).token;
  if(kind==='changed-invite')f.database.prepare("UPDATE staffInvitations SET email='changed@example.invalid' WHERE staffId=?").run(invited.staff[0].id);
+ assert.equal(isAuthToken(token),true,'preflight cases must pass token syntax validation');
  await assert.rejects(f.staff.accept({token,password:'[PLACEHOLDER] password'}),e=>e.status===400);
  assert.equal(f.hashCalls.length,0,kind+' must not hash');
 });
@@ -325,11 +326,11 @@ for(const race of ['expires','consumed','invitation-changed'])test('staff accept
 });
 test('staff invite public route shares recovery rate limits: ten per IP per fifteen minutes',async t=>{
  const f=fixture(t),routes=[],app={};for(const method of ['get','post','delete'])app[method]=(path,...handlers)=>routes.push({path,method,handlers});
- installStaffRoutes(app,{rateLimiter:createAuthRateLimiter(f.database,{secret:SECRET,clock:f.now}),service:f.staff,ownerQuery:f.query,requireAuth:()=>()=>{},asyncHandler:fn=>fn,environment:env,
+ installStaffRoutes(app,{service:f.staff,ownerQuery:f.query,requireAuth:()=>()=>{},asyncHandler:fn=>fn,environment:env,
   rateLimiter:createAuthRateLimiter(f.database,{secret:SECRET,clock:f.now})});
  const handlers=routes.find(r=>r.path==='/api/auth/staff-invite/accept').handlers;
  async function request(ip='[PLACEHOLDER] IP'){
-  const req={method:'POST',ip,headers:{origin:env.CLIENT_URL},body:{token:'x'.repeat(43),password:'[PLACEHOLDER] password'}};
+  const req={method:'POST',ip,headers:{origin:env.CLIENT_URL},body:{token:Buffer.alloc(32,1).toString('base64url'),password:'[PLACEHOLDER] password'}};
   return new Promise((resolve,reject)=>{const res={statusCode:200,setHeader(){},status(code){this.statusCode=code;return this;},json(body){resolve({status:this.statusCode,body});return this;}};let i=0;const next=e=>{if(e)return reject(e);try{Promise.resolve(handlers[i++](req,res,next)).catch(reject);}catch(e){reject(e);}};next();});
  }
  for(let i=0;i<10;i++)assert.equal((await request()).status,400);

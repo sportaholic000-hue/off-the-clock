@@ -4,7 +4,7 @@ The scanner inventories method, argument signature and occurrence. Computed acce
 
 125 database exec calls: 81 migrations, 35 admin database-control statements, 9 authentication transaction boundaries. No additional tenant read/write bypass was found: ordinary tenant DML remains through ownerQuery. Admin here means literal BEGIN/COMMIT/ROLLBACK, secure-delete PRAGMA, or VACUUM; these do not select or alter application rows. Twenty non-query exec uses are regular-expression parsing (13) or dependency-shape checks (7).
 
-Part 2 also adds one authentication prepare exception in `staffService.js:121`: token hash/purpose/expiry/consumption lookup establishes the staff user before ownerQuery can bind the business. The existing user-to-owner lookup now lives in pendingInvitation.
+Part 2 also adds one authentication prepare exception in `staffService.js:117`: token hash/purpose/expiry/consumption lookup establishes the staff user before ownerQuery can bind the business. The existing user-to-owner lookup now lives in pendingInvitation.
 
 | Source | Category | Reason |
 |---|---|---|
