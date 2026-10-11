@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {AsyncLocalStorage} from 'node:async_hooks';
+import Database from 'better-sqlite3';
 import {assertRealContainment} from './deploymentConfig.js';
 
 // Restores always publish under volume/restores. Use that same volume-wide
@@ -26,7 +27,7 @@ function processIdentity(pid){
   return pid===process.pid?instanceIdentity:null;
 }
 export const processLockOwner=()=>({pid:process.pid,processIdentity:processIdentity(process.pid)});
-export function removeStaleProcessLock(file){
+function removeLegacyLockWhileFenced(file){
   if(!fs.existsSync(file))return;
   const bytes=fs.readFileSync(file,'utf8');let parsed;
   try{parsed=JSON.parse(bytes);}catch{throw Error('OFFSITE_LOCK_INVALID');}
@@ -48,21 +49,50 @@ export function removeStaleProcessLock(file){
   if(fs.existsSync(file)&&fs.readFileSync(file,'utf8')===bytes)fs.unlinkSync(file);
   if(fs.existsSync(file))throw Error('OFFSITE_BUSY');
 }
+// The SQLite inode is permanent: never unlink, rename or replace it. SQLite's
+// BEGIN EXCLUSIVE atomically arbitrates contenders; the OS releases its locks
+// on close or process death, including a restart that reuses PID 1. No PID or
+// age inference is used for any new holder. timeout:0 preserves OFFSITE_BUSY.
+// Old PID records are upgrade evidence only. Their inspection/removal is fenced
+// by this same transaction, so another upgraded worker cannot acquire between
+// the final legacy read and unlink. A live legacy holder remains fail-closed.
+export function acquireProcessLock(file){
+  fs.mkdirSync(path.dirname(file),{recursive:true,mode:0o700});
+  assertRealContainment(path.dirname(file),file);
+  const databaseFile=file+'.sqlite';
+  for(const suffix of ['', '-journal', '-wal', '-shm'])assertRealContainment(path.dirname(file),databaseFile+suffix);
+  let database;
+  try{
+    database=new Database(databaseFile,{timeout:0});
+    fs.chmodSync(databaseFile,0o600);
+    database.exec('BEGIN EXCLUSIVE');
+    removeLegacyLockWhileFenced(file);
+    let released=false;
+    return ()=>{
+      if(released)return;released=true;
+      try{database.exec('ROLLBACK');}finally{database.close();}
+    };
+  }catch(error){
+    if(database?.open)database.close();
+    if(error.code==='SQLITE_BUSY'||error.code==='SQLITE_LOCKED')throw Error('OFFSITE_BUSY');
+    throw error;
+  }
+}
+export function removeStaleProcessLock(file){
+  const release=acquireProcessLock(file);release();
+}
 export function assertBackupRetentionIdle(deployment){
   assertRealContainment(lockRoot(deployment),retentionLockFile(deployment));
   removeStaleProcessLock(retentionLockFile(deployment));
 }
 function acquire(deployment){
-  const file=retentionLockFile(deployment),token=randomUUID();
+  const file=path.resolve(retentionLockFile(deployment));
   assertRealContainment(lockRoot(deployment),file);
-  const held=heldLocks.getStore();
-  if(held?.file===file&&fs.existsSync(file)&&JSON.parse(fs.readFileSync(file,'utf8')).token===held.token)return {held,release:()=>{}};
-  fs.mkdirSync(path.dirname(file),{recursive:true,mode:0o700});
-  removeStaleProcessLock(file);
-  fs.writeFileSync(file,JSON.stringify({...processLockOwner(),token}),{flag:'wx',mode:0o600,flush:true});
-  return {held:{file,token},release:()=>{
-    if(fs.existsSync(file)&&JSON.parse(fs.readFileSync(file,'utf8')).token===token)fs.unlinkSync(file);
-  }};
+  const previous=heldLocks.getStore(),held=previous?.get(file);
+  if(held?.active)return {held:previous,release:()=>{}};
+  const unlock=acquireProcessLock(file),entry={active:true};
+  const next=new Map(previous);next.set(file,entry);
+  return {held:next,release:()=>{entry.active=false;unlock();}};
 }
 export async function withBackupRetentionLock(deployment,work){
   const lock=acquire(deployment);

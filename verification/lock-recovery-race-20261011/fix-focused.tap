@@ -1,0 +1,1023 @@
+TAP version 13
+# Subtest: same-day database and book changes recover without waiting for the next nightly backup
+ok 1 - same-day database and book changes recover without waiting for the next nightly backup
+  ---
+  duration_ms: 162.7807
+  type: 'test'
+  ...
+# Subtest: same-day restart captures another SQLite connection’s WAL commit, not yesterday’s snapshot
+ok 2 - same-day restart captures another SQLite connection’s WAL commit, not yesterday’s snapshot
+  ---
+  duration_ms: 86.511078
+  type: 'test'
+  ...
+# Subtest: production scheduler automatically replicates commits and book-only replacements within the same day
+ok 3 - production scheduler automatically replicates commits and book-only replacements within the same day
+  ---
+  duration_ms: 118.267129
+  type: 'test'
+  ...
+# Subtest: unchanged state does not create duplicate checkpoints and uploaded archives contain no plaintext
+ok 4 - unchanged state does not create duplicate checkpoints and uploaded archives contain no plaintext
+  ---
+  duration_ms: 48.061852
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: failed publication is visible, retains immutable retry bytes, and catches up after restart
+ok 5 - failed publication is visible, retains immutable retry bytes, and catches up after restart
+  ---
+  duration_ms: 92.696111
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: lost continuous upload response does not overwrite accepted data on restart
+ok 6 - lost continuous upload response does not overwrite accepted data on restart
+  ---
+  duration_ms: 69.279771
+  type: 'test'
+  ...
+# Subtest: changes committed during an upload trigger a subsequent automatic checkpoint
+ok 7 - changes committed during an upload trigger a subsequent automatic checkpoint
+  ---
+  duration_ms: 113.4219
+  type: 'test'
+  ...
+# Subtest: continuous restore rejects checksum corruption and the wrong key without publishing plaintext
+ok 8 - continuous restore rejects checksum corruption and the wrong key without publishing plaintext
+  ---
+  duration_ms: 67.433848
+  type: 'test'
+  ...
+# Subtest: continuous checkpoint restore CLI preserves committed data after a total synthetic volume wipe
+not ok 9 - continuous checkpoint restore CLI preserves committed data after a total synthetic volume wipe
+  ---
+  duration_ms: 237.951078
+  type: 'test'
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock/test/continuousOffsite20261007.spec.mjs:122:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    OFFSITE_RESTORE_FAILED: use --day YYYY-MM-DD or --checkpoint <checkpoint-id>, then --target <new-volume-restores-directory>. Check configuration/key/checksum; existing data is never overwritten.
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock/test/continuousOffsite20261007.spec.mjs:127:110)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: thirty-day continuous retention preserves its exact boundary and unrelated objects
+ok 10 - thirty-day continuous retention preserves its exact boundary and unrelated objects
+  ---
+  duration_ms: 99.81818
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: failed uploads cannot prune the last recoverable checkpoint
+ok 11 - failed uploads cannot prune the last recoverable checkpoint
+  ---
+  duration_ms: 61.053647
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: pending destination changes and invalid state fail closed without replacing evidence
+ok 12 - pending destination changes and invalid state fail closed without replacing evidence
+  ---
+  duration_ms: 53.807921
+  type: 'test'
+  ...
+# Subtest: a live or malformed continuous lock preserves durable state; a dead holder is recoverable
+ok 13 - a live or malformed continuous lock preserves durable state; a dead holder is recoverable
+  ---
+  duration_ms: 61.70239
+  type: 'test'
+  ...
+# Subtest: interrupted continuous retention retries without losing its newest complete copy
+ok 14 - interrupted continuous retention retries without losing its newest complete copy
+  ---
+  duration_ms: 185.057918
+  type: 'test'
+  ...
+# Subtest: large retained history requires only one marker and HEAD read for the newest complete copy
+ok 15 - large retained history requires only one marker and HEAD read for the newest complete copy
+  ---
+  duration_ms: 0.753322
+  type: 'test'
+  ...
+# Subtest: actual production server starts continuous replication and gates health through the admin route
+not ok 16 - actual production server starts continuous replication and gates health through the admin route
+  ---
+  duration_ms: 572.228848
+  type: 'test'
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock/test/continuousOffsite20261007.spec.mjs:173:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    file:///workspace/scratch/1180b13f1fcb/off-the-clock/server/src/deploymentConfig.js:11
+    const fail = message => { throw new Error(message); };
+                                    ^
+    
+    Error: Production owner/widget bundles are missing; build before starting.
+        at fail (file:///workspace/scratch/1180b13f1fcb/off-the-clock/server/src/deploymentConfig.js:11:33)
+        at prepareDeploymentEnvironment (file:///workspace/scratch/1180b13f1fcb/off-the-clock/server/src/deploymentConfig.js:102:119)
+        at file:///workspace/scratch/1180b13f1fcb/off-the-clock/server/src/deploymentEnvironment.js:6:33
+        at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+        at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+        at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+    
+    Node.js v22.23.3
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    fail (file:///workspace/scratch/1180b13f1fcb/off-the-clock/server/src/deploymentConfig.js:11:33)
+    prepareDeploymentEnvironment (file:///workspace/scratch/1180b13f1fcb/off-the-clock/server/src/deploymentConfig.js:102:119)
+    file:///workspace/scratch/1180b13f1fcb/off-the-clock/server/src/deploymentEnvironment.js:6:33
+    ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+    ChildProcess.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock/test/continuousOffsite20261007.spec.mjs:180:208)
+    Object.onceWrapper (node:events:634:26)
+    ChildProcess.emit (node:events:519:28)
+    ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    Process.callbackTrampoline (node:internal/async_hooks:130:17)
+  ...
+# Subtest: day90 a deployment that never uploaded off-site can complete local-only backup erasure
+ok 17 - day90 a deployment that never uploaded off-site can complete local-only backup erasure
+  ---
+  duration_ms: 147.130536
+  type: 'test'
+  ...
+# Subtest: day90 removes abandoned download, decrypt and restore staging copies
+ok 18 - day90 removes abandoned download, decrypt and restore staging copies
+  ---
+  duration_ms: 561.801262
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight daily restore
+ok 19 - day90 serializes erasure with an in-flight daily restore
+  ---
+  duration_ms: 388.230806
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight continuous restore
+ok 20 - day90 serializes erasure with an in-flight continuous restore
+  ---
+  duration_ms: 393.994201
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — volume
+ok 21 - day90 local restore cannot race a held erasure lock — volume
+  ---
+  duration_ms: 216.178125
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — nested
+ok 22 - day90 local restore cannot race a held erasure lock — nested
+  ---
+  duration_ms: 239.023621
+  type: 'test'
+  ...
+# Subtest: day90 complete cleanup is idempotent across live, local, daily and continuous copies
+ok 23 - day90 complete cleanup is idempotent across live, local, daily and continuous copies
+  ---
+  duration_ms: 557.038469
+  type: 'test'
+  ...
+# Subtest: day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+ok 24 - day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+  ---
+  duration_ms: 339.452734
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — recovered
+ok 25 - day90 admin health is authenticated and secret-free — recovered
+  ---
+  duration_ms: 154.050581
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — permanent
+ok 26 - day90 admin health is authenticated and secret-free — permanent
+  ---
+  duration_ms: 124.769975
+  type: 'test'
+  ...
+# Subtest: lock race: two child recoverers never enter protected callbacks together
+ok 27 - lock race: two child recoverers never enter protected callbacks together
+  ---
+  duration_ms: 232.301982
+  type: 'test'
+  ...
+# Subtest: lock race: stale recovery cannot lose a replacement holder erasure ledger entry
+ok 28 - lock race: stale recovery cannot lose a replacement holder erasure ledger entry
+  ---
+  duration_ms: 219.964207
+  type: 'test'
+  ...
+# Subtest: lock race: overlapping ledger publications preserve both owners without a retention lock
+ok 29 - lock race: overlapping ledger publications preserve both owners without a retention lock
+  ---
+  duration_ms: 3.163909
+  type: 'test'
+  ...
+# Subtest: lock race: legacy ledger migration is complete, repeatable and immutable
+ok 30 - lock race: legacy ledger migration is complete, repeatable and immutable
+  ---
+  duration_ms: 2.719463
+  type: 'test'
+  ...
+# Subtest: lock race: interrupted migration resumes without losing any legacy entry
+ok 31 - lock race: interrupted migration resumes without losing any legacy entry
+  ---
+  duration_ms: 2.146027
+  type: 'test'
+  ...
+# Subtest: lock race: malformed legacy ledger fails closed without deleting the evidence
+ok 32 - lock race: malformed legacy ledger fails closed without deleting the evidence
+  ---
+  duration_ms: 0.869002
+  type: 'test'
+  ...
+# Subtest: lock race: SQLite releases a SIGKILL holder without deleting its lock database
+ok 33 - lock race: SQLite releases a SIGKILL holder without deleting its lock database
+  ---
+  duration_ms: 101.544292
+  type: 'test'
+  ...
+# Subtest: lock race: nested sync and async acquisitions release after an exception
+ok 34 - lock race: nested sync and async acquisitions release after an exception
+  ---
+  duration_ms: 2.701557
+  type: 'test'
+  ...
+# Subtest: full encrypted fake-S3 round trip through actual restore CLI after total synthetic volume loss
+not ok 35 - full encrypted fake-S3 round trip through actual restore CLI after total synthetic volume loss
+  ---
+  duration_ms: 283.135223
+  type: 'test'
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock/test/offsiteBackups20261007.spec.mjs:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    OFFSITE_RESTORE_FAILED: use --day YYYY-MM-DD or --checkpoint <checkpoint-id>, then --target <new-volume-restores-directory>. Check configuration/key/checksum; existing data is never overwritten.
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock/test/offsiteBackups20261007.spec.mjs:57:99)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: wrong encryption key fails cleanly through CLI without publishing or overwriting data
+not ok 36 - wrong encryption key fails cleanly through CLI without publishing or overwriting data
+  ---
+  duration_ms: 213.699557
+  type: 'test'
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock/test/offsiteBackups20261007.spec.mjs:63:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /OFFSITE_DECRYPTION_FAILED/. Input:
+    
+    'OFFSITE_RESTORE_FAILED: use --day YYYY-MM-DD or --checkpoint <checkpoint-id>, then --target <new-volume-restores-directory>. Check configuration/key/checksum; existing data is never overwritten.\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    OFFSITE_RESTORE_FAILED: use --day YYYY-MM-DD or --checkpoint <checkpoint-id>, then --target <new-volume-restores-directory>. Check configuration/key/checksum; existing data is never overwritten.
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock/test/offsiteBackups20261007.spec.mjs:66:35)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: corrupted ciphertext is rejected by checksum before decryption and leaves no plaintext
+ok 37 - corrupted ciphertext is rejected by checksum before decryption and leaves no plaintext
+  ---
+  duration_ms: 37.713602
+  type: 'test'
+  ...
+# Subtest: authenticated encryption rejects corruption even if the stored external checksum is replaced
+ok 38 - authenticated encryption rejects corruption even if the stored external checksum is replaced
+  ---
+  duration_ms: 10.814007
+  type: 'test'
+  ...
+# Subtest: one completed backup per UTC day; concurrent calls and same-day restart do not upload duplicates
+ok 39 - one completed backup per UTC day; concurrent calls and same-day restart do not upload duplicates
+  ---
+  duration_ms: 63.037621
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: provider failures are durable and operator-visible; retry and restart reuse identical ciphertext
+ok 40 - provider failures are durable and operator-visible; retry and restart reuse identical ciphertext
+  ---
+  duration_ms: 34.430707
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: lost upload response is retried without overwriting an accepted encrypted object
+ok 41 - lost upload response is retried without overwriting an accepted encrypted object
+  ---
+  duration_ms: 34.868403
+  type: 'test'
+  ...
+# Subtest: restored volume with no local upload state recognizes the existing completed daily backup
+ok 42 - restored volume with no local upload state recognizes the existing completed daily backup
+  ---
+  duration_ms: 36.727967
+  type: 'test'
+  ...
+# Subtest: retention keeps exactly thirty daily backups, paginates, and preserves unrelated objects
+ok 43 - retention keeps exactly thirty daily backups, paginates, and preserves unrelated objects
+  ---
+  duration_ms: 2083.279231
+  type: 'test'
+  ...
+# Subtest: incomplete or missing encrypted copies never count toward the thirty retained backups
+ok 44 - incomplete or missing encrypted copies never count toward the thirty retained backups
+  ---
+  duration_ms: 1599.441496
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: failed uploads cannot prune accepted backups
+ok 45 - failed uploads cannot prune accepted backups
+  ---
+  duration_ms: 31.658773
+  type: 'test'
+  ...
+# Subtest: missing and invalid production config warn clearly and never expose credentials
+ok 46 - missing and invalid production config warn clearly and never expose credentials
+  ---
+  duration_ms: 0.279101
+  type: 'test'
+  ...
+# Subtest: strict configuration accepts canonical keys and rejects malformed key, insecure remote endpoint and unsafe prefix
+ok 47 - strict configuration accepts canonical keys and rejects malformed key, insecure remote endpoint and unsafe prefix
+  ---
+  duration_ms: 2.473568
+  type: 'test'
+  ...
+# Subtest: scheduler stops without overlapping and waits for active upload
+ok 48 - scheduler stops without overlapping and waits for active upload
+  ---
+  duration_ms: 49.792068
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: operator HTTP status requires actual database-backed admin authorization and exposes durable failure only
+ok 49 - operator HTTP status requires actual database-backed admin authorization and exposes durable failure only
+  ---
+  duration_ms: 47.77623
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: upload retry delays are bounded and persisted without exposing provider errors
+ok 50 - upload retry delays are bounded and persisted without exposing provider errors
+  ---
+  duration_ms: 55.32578
+  type: 'test'
+  ...
+# Subtest: interrupted pruning is discoverable and finishes safely on restart
+ok 51 - interrupted pruning is discoverable and finishes safely on restart
+  ---
+  duration_ms: 1904.293743
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: bad local state and destination/key changes fail closed while preserving pending recovery evidence
+ok 52 - bad local state and destination/key changes fail closed while preserving pending recovery evidence
+  ---
+  duration_ms: 14.738718
+  type: 'test'
+  ...
+# Subtest: stale process lock is recovered; a live process lock never allows another upload
+ok 53 - stale process lock is recovered; a live process lock never allows another upload
+  ---
+  duration_ms: 25.003022
+  type: 'test'
+  ...
+# Subtest: corrupted daily remote object remains a failure after local state loss and is never silently replaced
+ok 54 - corrupted daily remote object remains a failure after local state loss and is never silently replaced
+  ---
+  duration_ms: 23.507991
+  type: 'test'
+  ...
+# Subtest: a competing local worker cannot erase another worker's pending upload state
+ok 55 - a competing local worker cannot erase another worker's pending upload state
+  ---
+  duration_ms: 22.606422
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: worker constructed before a failed response reuses the first worker artifact after acquiring its lock
+ok 56 - worker constructed before a failed response reuses the first worker artifact after acquiring its lock
+  ---
+  duration_ms: 31.354203
+  type: 'test'
+  ...
+# Subtest: production backup settings cannot break a development server that has no production volume paths
+ok 57 - production backup settings cannot break a development server that has no production volume paths
+  ---
+  duration_ms: 2.082922
+  type: 'test'
+  ...
+# (node:136) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: every direct database prepare or exec in server is an exact listed exception
+ok 58 - every direct database prepare or exec in server is an exact listed exception
+  ---
+  duration_ms: 1182.379509
+  type: 'test'
+  ...
+# Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+ok 59 - scan rejects bracketed database['prepare'] in .js: 1 finding
+  ---
+  duration_ms: 1.359827
+  type: 'test'
+  ...
+# Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+ok 60 - scan rejects double quoted and template computed prepare in .js: 1 each
+  ---
+  duration_ms: 1.840596
+  type: 'test'
+  ...
+# Subtest: scan rejects dynamic key spelling in .js: 1 finding
+ok 61 - scan rejects dynamic key spelling in .js: 1 finding
+  ---
+  duration_ms: 0.591563
+  type: 'test'
+  ...
+# Subtest: scan rejects database.prepare.bind alias in .js: 1 finding
+ok 62 - scan rejects database.prepare.bind alias in .js: 1 finding
+  ---
+  duration_ms: 0.682126
+  type: 'test'
+  ...
+# Subtest: scan rejects const p = database.prepare alias in .js: 1 finding
+ok 63 - scan rejects const p = database.prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.573506
+  type: 'test'
+  ...
+# Subtest: scan rejects destructured prepare alias in .js: 1 finding
+ok 64 - scan rejects destructured prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.590822
+  type: 'test'
+  ...
+# Subtest: scan covers .mjs and .cjs: 1 finding in each
+ok 65 - scan covers .mjs and .cjs: 1 finding in each
+  ---
+  duration_ms: 1.265348
+  type: 'test'
+  ...
+# Subtest: scan permits an ownerQuery control and ignores commented prepares: 0 findings
+ok 66 - scan permits an ownerQuery control and ignores commented prepares: 0 findings
+  ---
+  duration_ms: 0.706062
+  type: 'test'
+  ...
+# Subtest: scan does not mistake a slash inside a regex literal for a comment: 1 finding
+ok 67 - scan does not mistake a slash inside a regex literal for a comment: 1 finding
+  ---
+  duration_ms: 0.992044
+  type: 'test'
+  ...
+# Subtest: owner-row predicate preserves owner and staff parent lookup results
+ok 68 - owner-row predicate preserves owner and staff parent lookup results
+  ---
+  duration_ms: 3.112613
+  type: 'test'
+  ...
+# Subtest: voice idempotency receipts persist tenant owner and replay legacy scope records
+ok 69 - voice idempotency receipts persist tenant owner and replay legacy scope records
+  ---
+  duration_ms: 5.377045
+  type: 'test'
+  ...
+# Subtest: scan inventories database.exec tenant deletion: 1 finding
+ok 70 - scan inventories database.exec tenant deletion: 1 finding
+  ---
+  duration_ms: 0.646614
+  type: 'test'
+  ...
+# Subtest: scan detects concatenated database prepare and exec properties: 1 finding each
+ok 71 - scan detects concatenated database prepare and exec properties: 1 finding each
+  ---
+  duration_ms: 1.236925
+  type: 'test'
+  ...
+# Subtest: scan detects bracketed exec and unknown computed database keys: 1 finding each
+ok 72 - scan detects bracketed exec and unknown computed database keys: 1 finding each
+  ---
+  duration_ms: 1.349331
+  type: 'test'
+  ...
+# Subtest: computed access cannot be permitted by an exception or non-query entry
+ok 73 - computed access cannot be permitted by an exception or non-query entry
+  ---
+  duration_ms: 0.607516
+  type: 'test'
+  ...
+# Subtest: scan detects optional, escaped, aliased and destructured computed methods
+ok 74 - scan detects optional, escaped, aliased and destructured computed methods
+  ---
+  duration_ms: 1.955215
+  type: 'test'
+  ...
+# Subtest: RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+ok 75 - RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+  ---
+  duration_ms: 1.413736
+  type: 'test'
+  ...
+# Subtest: mutable regex-shaped receivers cannot hide a later database exec: 1 finding
+ok 76 - mutable regex-shaped receivers cannot hide a later database exec: 1 finding
+  ---
+  duration_ms: 0.544053
+  type: 'test'
+  ...
+# Subtest: mutable or shadowed computed keys on database objects remain forbidden
+ok 77 - mutable or shadowed computed keys on database objects remain forbidden
+  ---
+  duration_ms: 1.007186
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: auditor renamed exec through call
+ok 78 - scan destructuring 20261011: auditor renamed exec through call
+  ---
+  duration_ms: 0.518726
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: auditor shorthand exec
+ok 79 - scan destructuring 20261011: auditor shorthand exec
+  ---
+  duration_ms: 0.498115
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration shorthand
+ok 80 - scan destructuring 20261011: exec declaration shorthand
+  ---
+  duration_ms: 0.493989
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration renamed
+ok 81 - scan destructuring 20261011: exec declaration renamed
+  ---
+  duration_ms: 0.582369
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration shorthand default
+ok 82 - scan destructuring 20261011: exec declaration shorthand default
+  ---
+  duration_ms: 0.537323
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration renamed default
+ok 83 - scan destructuring 20261011: exec declaration renamed default
+  ---
+  duration_ms: 0.477274
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration quoted key
+ok 84 - scan destructuring 20261011: exec declaration quoted key
+  ---
+  duration_ms: 0.502041
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration computed key
+ok 85 - scan destructuring 20261011: exec declaration computed key
+  ---
+  duration_ms: 0.532786
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested object
+ok 86 - scan destructuring 20261011: exec declaration nested object
+  ---
+  duration_ms: 0.542049
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested array
+ok 87 - scan destructuring 20261011: exec declaration nested array
+  ---
+  duration_ms: 0.511776
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested default
+ok 88 - scan destructuring 20261011: exec declaration nested default
+  ---
+  duration_ms: 0.512065
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec parameter nested default
+ok 89 - scan destructuring 20261011: exec parameter nested default
+  ---
+  duration_ms: 0.486928
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec arrow shorthand parameter
+ok 90 - scan destructuring 20261011: exec arrow shorthand parameter
+  ---
+  duration_ms: 0.516732
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec catch binding
+ok 91 - scan destructuring 20261011: exec catch binding
+  ---
+  duration_ms: 0.83328
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec for-of declaration
+ok 92 - scan destructuring 20261011: exec for-of declaration
+  ---
+  duration_ms: 0.628657
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment shorthand
+ok 93 - scan destructuring 20261011: exec assignment shorthand
+  ---
+  duration_ms: 0.560978
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment renamed
+ok 94 - scan destructuring 20261011: exec assignment renamed
+  ---
+  duration_ms: 0.50098
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment shorthand default
+ok 95 - scan destructuring 20261011: exec assignment shorthand default
+  ---
+  duration_ms: 0.674795
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment renamed default
+ok 96 - scan destructuring 20261011: exec assignment renamed default
+  ---
+  duration_ms: 0.576341
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment quoted key
+ok 97 - scan destructuring 20261011: exec assignment quoted key
+  ---
+  duration_ms: 0.60322
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment computed key
+ok 98 - scan destructuring 20261011: exec assignment computed key
+  ---
+  duration_ms: 0.638782
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested object
+ok 99 - scan destructuring 20261011: exec assignment nested object
+  ---
+  duration_ms: 0.540398
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested array
+ok 100 - scan destructuring 20261011: exec assignment nested array
+  ---
+  duration_ms: 0.568929
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested default
+ok 101 - scan destructuring 20261011: exec assignment nested default
+  ---
+  duration_ms: 0.73201
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment for-of
+ok 102 - scan destructuring 20261011: exec assignment for-of
+  ---
+  duration_ms: 0.532275
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration shorthand
+ok 103 - scan destructuring 20261011: prepare declaration shorthand
+  ---
+  duration_ms: 0.571944
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration renamed
+ok 104 - scan destructuring 20261011: prepare declaration renamed
+  ---
+  duration_ms: 0.546156
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration shorthand default
+ok 105 - scan destructuring 20261011: prepare declaration shorthand default
+  ---
+  duration_ms: 0.514699
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration renamed default
+ok 106 - scan destructuring 20261011: prepare declaration renamed default
+  ---
+  duration_ms: 0.497234
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration quoted key
+ok 107 - scan destructuring 20261011: prepare declaration quoted key
+  ---
+  duration_ms: 0.456644
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration computed key
+ok 108 - scan destructuring 20261011: prepare declaration computed key
+  ---
+  duration_ms: 0.485977
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested object
+ok 109 - scan destructuring 20261011: prepare declaration nested object
+  ---
+  duration_ms: 0.464355
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested array
+ok 110 - scan destructuring 20261011: prepare declaration nested array
+  ---
+  duration_ms: 0.48824
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested default
+ok 111 - scan destructuring 20261011: prepare declaration nested default
+  ---
+  duration_ms: 0.462352
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare parameter nested default
+ok 112 - scan destructuring 20261011: prepare parameter nested default
+  ---
+  duration_ms: 0.491245
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare arrow shorthand parameter
+ok 113 - scan destructuring 20261011: prepare arrow shorthand parameter
+  ---
+  duration_ms: 0.829735
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare catch binding
+ok 114 - scan destructuring 20261011: prepare catch binding
+  ---
+  duration_ms: 0.485336
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare for-of declaration
+ok 115 - scan destructuring 20261011: prepare for-of declaration
+  ---
+  duration_ms: 0.557833
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment shorthand
+ok 116 - scan destructuring 20261011: prepare assignment shorthand
+  ---
+  duration_ms: 0.519516
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment renamed
+ok 117 - scan destructuring 20261011: prepare assignment renamed
+  ---
+  duration_ms: 0.761434
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment shorthand default
+ok 118 - scan destructuring 20261011: prepare assignment shorthand default
+  ---
+  duration_ms: 0.612183
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment renamed default
+ok 119 - scan destructuring 20261011: prepare assignment renamed default
+  ---
+  duration_ms: 0.535881
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment quoted key
+ok 120 - scan destructuring 20261011: prepare assignment quoted key
+  ---
+  duration_ms: 0.547137
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment computed key
+ok 121 - scan destructuring 20261011: prepare assignment computed key
+  ---
+  duration_ms: 0.525796
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested object
+ok 122 - scan destructuring 20261011: prepare assignment nested object
+  ---
+  duration_ms: 0.516733
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested array
+ok 123 - scan destructuring 20261011: prepare assignment nested array
+  ---
+  duration_ms: 0.572354
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested default
+ok 124 - scan destructuring 20261011: prepare assignment nested default
+  ---
+  duration_ms: 0.562019
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment for-of
+ok 125 - scan destructuring 20261011: prepare assignment for-of
+  ---
+  duration_ms: 0.464966
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation direct
+ok 126 - scan destructuring 20261011: extracted exec invocation direct
+  ---
+  duration_ms: 0.518154
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation call
+ok 127 - scan destructuring 20261011: extracted exec invocation call
+  ---
+  duration_ms: 0.458536
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation apply
+ok 128 - scan destructuring 20261011: extracted exec invocation apply
+  ---
+  duration_ms: 0.488771
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation bind
+ok 129 - scan destructuring 20261011: extracted exec invocation bind
+  ---
+  duration_ms: 0.473158
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation direct
+ok 130 - scan destructuring 20261011: extracted prepare invocation direct
+  ---
+  duration_ms: 0.594807
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation call
+ok 131 - scan destructuring 20261011: extracted prepare invocation call
+  ---
+  duration_ms: 0.446019
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation apply
+ok 132 - scan destructuring 20261011: extracted prepare invocation apply
+  ---
+  duration_ms: 0.686253
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation bind
+ok 133 - scan destructuring 20261011: extracted prepare invocation bind
+  ---
+  duration_ms: 0.495441
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: nested dynamic database keys are forbidden
+ok 134 - scan destructuring 20261011: nested dynamic database keys are forbidden
+  ---
+  duration_ms: 1.527834
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted methods cannot be allowlisted
+ok 135 - scan destructuring 20261011: extracted methods cannot be allowlisted
+  ---
+  duration_ms: 2.030456
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: metadata, defaults and safe patterns are not extractions
+ok 136 - scan destructuring 20261011: metadata, defaults and safe patterns are not extractions
+  ---
+  duration_ms: 1.885172
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: multiple methods and nested defaults are counted once
+ok 137 - scan destructuring 20261011: multiple methods and nested defaults are counted once
+  ---
+  duration_ms: 1.30123
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key shorthand parameter declaration
+ok 138 - scan destructuring 20261011: shadowed key shorthand parameter declaration
+  ---
+  duration_ms: 0.612775
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key shorthand parameter assignment
+ok 139 - scan destructuring 20261011: shadowed key shorthand parameter assignment
+  ---
+  duration_ms: 0.534609
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key renamed default parameter declaration
+ok 140 - scan destructuring 20261011: shadowed key renamed default parameter declaration
+  ---
+  duration_ms: 0.490233
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key renamed default parameter assignment
+ok 141 - scan destructuring 20261011: shadowed key renamed default parameter assignment
+  ---
+  duration_ms: 0.526507
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested catch binding declaration
+ok 142 - scan destructuring 20261011: shadowed key nested catch binding declaration
+  ---
+  duration_ms: 0.505656
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested catch binding assignment
+ok 143 - scan destructuring 20261011: shadowed key nested catch binding assignment
+  ---
+  duration_ms: 0.537673
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested variable binding declaration
+ok 144 - scan destructuring 20261011: shadowed key nested variable binding declaration
+  ---
+  duration_ms: 0.608298
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested variable binding assignment
+ok 145 - scan destructuring 20261011: shadowed key nested variable binding assignment
+  ---
+  duration_ms: 0.549371
+  type: 'test'
+  ...
+# Subtest: retention hardening: ordinary snapshot recovers a dead child retention lock
+ok 146 - retention hardening: ordinary snapshot recovers a dead child retention lock
+  ---
+  duration_ms: 169.061064
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers a dead child retention lock
+ok 147 - retention hardening: acquire recovers a dead child retention lock
+  ---
+  duration_ms: 113.479305
+  type: 'test'
+  ...
+# Subtest: retention hardening: worker recovers PID 1 from a previous process instance
+ok 148 - retention hardening: worker recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 190.909384
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers PID 1 from a previous process instance
+ok 149 - retention hardening: acquire recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 193.491024
+  type: 'test'
+  ...
+# Subtest: retention hardening: a live holder excludes workers and a competing erasure
+ok 150 - retention hardening: a live holder excludes workers and a competing erasure
+  ---
+  duration_ms: 194.24376
+  type: 'test'
+  ...
+# Subtest: retention hardening: legacy PID 1 lock predating this process is recoverable
+ok 151 - retention hardening: legacy PID 1 lock predating this process is recoverable
+  ---
+  duration_ms: 204.164349
+  type: 'test'
+  ...
+1..151
+# tests 151
+# suites 0
+# pass 147
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16121.680128

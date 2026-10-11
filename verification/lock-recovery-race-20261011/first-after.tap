@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: lock race: two child recoverers never enter protected callbacks together
+ok 1 - lock race: two child recoverers never enter protected callbacks together
+  ---
+  duration_ms: 212.329033
+  type: 'test'
+  ...
+# Subtest: lock race: stale recovery cannot lose a replacement holder erasure ledger entry
+ok 2 - lock race: stale recovery cannot lose a replacement holder erasure ledger entry
+  ---
+  duration_ms: 230.945427
+  type: 'test'
+  ...
+# Subtest: lock race: overlapping ledger publications preserve both owners without a retention lock
+ok 3 - lock race: overlapping ledger publications preserve both owners without a retention lock
+  ---
+  duration_ms: 2.153628
+  type: 'test'
+  ...
+# Subtest: retention hardening: ordinary snapshot recovers a dead child retention lock
+ok 4 - retention hardening: ordinary snapshot recovers a dead child retention lock
+  ---
+  duration_ms: 151.646759
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers a dead child retention lock
+ok 5 - retention hardening: acquire recovers a dead child retention lock
+  ---
+  duration_ms: 131.61791
+  type: 'test'
+  ...
+# Subtest: retention hardening: worker recovers PID 1 from a previous process instance
+ok 6 - retention hardening: worker recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 185.227747
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers PID 1 from a previous process instance
+ok 7 - retention hardening: acquire recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 171.701404
+  type: 'test'
+  ...
+# Subtest: retention hardening: a live holder excludes workers and a competing erasure
+ok 8 - retention hardening: a live holder excludes workers and a competing erasure
+  ---
+  duration_ms: 174.862781
+  type: 'test'
+  ...
+# Subtest: retention hardening: legacy PID 1 lock predating this process is recoverable
+ok 9 - retention hardening: legacy PID 1 lock predating this process is recoverable
+  ---
+  duration_ms: 176.464755
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1125.917776
