@@ -3,7 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import Database from 'better-sqlite3';
 import {inside,assertRealContainment} from './deploymentConfig.js';
-import {assertBackupRetentionIdle} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLockSync} from './backupRetentionLock.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 const activeSnapshots=new Set();
@@ -150,6 +150,7 @@ async function writeSnapshot(database,config,{now,sourceCommit}){
 export function restoreBackup(bundle, target, {volume} = {}) {
   const source=path.resolve(bundle), destination=path.resolve(target);
   if(!volume || !path.isAbsolute(volume) || path.dirname(destination) !== path.join(path.resolve(volume),'restores') || !/^[A-Za-z0-9][A-Za-z0-9_.-]{0,80}$/.test(path.basename(destination))) throw new Error('RESTORE_TARGET_OUTSIDE_VOLUME');
+  return withBackupRetentionLockSync({root:volume,backupPath:path.join(volume,'backups')},()=>{
   assertRealContainment(volume,destination);
   if(fs.existsSync(destination)) throw new Error('RESTORE_REQUIRES_NEW_DIRECTORY');
   const manifest=verifyBackup(source);
@@ -169,6 +170,7 @@ export function restoreBackup(bundle, target, {volume} = {}) {
     fs.renameSync(stage,destination);
     return {destination,createdAt:manifest.createdAt,sourceCommit:manifest.sourceCommit};
   } catch(error) {if(fs.existsSync(stage))removeOwnedDirectory(parent,stage);throw error;}
+  });
 }
 
 export function startBackupScheduler(database,config,{takeSnapshot=()=>createSnapshot(database,config),now=Date.now,onError=()=>console.error('[backup] BACKUP_FAILED')}={}) {

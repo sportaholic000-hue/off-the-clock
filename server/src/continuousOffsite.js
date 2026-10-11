@@ -5,7 +5,7 @@ import {createSnapshot,restoreBackup} from './backups.js';
 import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
-import {assertBackupRetentionIdle} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock} from './backupRetentionLock.js';
 import {recordOffsiteUpload} from './offsiteHistory.js';
 
 const hash=value=>createHash('sha256').update(value).digest('hex');
@@ -50,6 +50,7 @@ export async function pruneContinuousBackups(store,config,{now=Date.now()}={}){
 }
 export async function restoreContinuousBackup({store,config,checkpoint,target,volume}){
   if(!config.enabled||!idValid(checkpoint))throw Error('OFFSITE_RESTORE_CONFIG_INVALID');
+  return withBackupRetentionLock({root:volume,backupPath:path.join(volume,'backups')},async()=>{
   const parent=path.join(volume,'restores');assertRealContainment(volume,parent);fs.mkdirSync(parent,{recursive:true,mode:0o700});
   const stage=fs.mkdtempSync(path.join(parent,'.continuous-'));fs.chmodSync(stage,0o700);
   try{
@@ -58,6 +59,7 @@ export async function restoreContinuousBackup({store,config,checkpoint,target,vo
     const bundle=path.join(stage,'bundle');await decryptBundle(file,bundle,config.key);
     return restoreBackup(bundle,target,{volume});
   }finally{fs.rmSync(stage,{recursive:true,force:true});}
+  });
 }
 
 // Continuously publish complete, online SQLite recovery copies. A local commit

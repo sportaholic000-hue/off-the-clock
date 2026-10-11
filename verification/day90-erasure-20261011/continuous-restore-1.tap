@@ -1,0 +1,111 @@
+TAP version 13
+# Subtest: same-day database and book changes recover without waiting for the next nightly backup
+ok 1 - same-day database and book changes recover without waiting for the next nightly backup
+  ---
+  duration_ms: 221.546883
+  type: 'test'
+  ...
+# Subtest: same-day restart captures another SQLite connection’s WAL commit, not yesterday’s snapshot
+ok 2 - same-day restart captures another SQLite connection’s WAL commit, not yesterday’s snapshot
+  ---
+  duration_ms: 116.414404
+  type: 'test'
+  ...
+# Subtest: production scheduler automatically replicates commits and book-only replacements within the same day
+ok 3 - production scheduler automatically replicates commits and book-only replacements within the same day
+  ---
+  duration_ms: 163.859561
+  type: 'test'
+  ...
+# Subtest: unchanged state does not create duplicate checkpoints and uploaded archives contain no plaintext
+ok 4 - unchanged state does not create duplicate checkpoints and uploaded archives contain no plaintext
+  ---
+  duration_ms: 67.458328
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: failed publication is visible, retains immutable retry bytes, and catches up after restart
+ok 5 - failed publication is visible, retains immutable retry bytes, and catches up after restart
+  ---
+  duration_ms: 140.579467
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: lost continuous upload response does not overwrite accepted data on restart
+ok 6 - lost continuous upload response does not overwrite accepted data on restart
+  ---
+  duration_ms: 96.301286
+  type: 'test'
+  ...
+# Subtest: changes committed during an upload trigger a subsequent automatic checkpoint
+ok 7 - changes committed during an upload trigger a subsequent automatic checkpoint
+  ---
+  duration_ms: 153.087505
+  type: 'test'
+  ...
+# Subtest: continuous restore rejects checksum corruption and the wrong key without publishing plaintext
+ok 8 - continuous restore rejects checksum corruption and the wrong key without publishing plaintext
+  ---
+  duration_ms: 82.458064
+  type: 'test'
+  ...
+# Subtest: continuous checkpoint restore CLI preserves committed data after a total synthetic volume wipe
+ok 9 - continuous checkpoint restore CLI preserves committed data after a total synthetic volume wipe
+  ---
+  duration_ms: 393.925822
+  type: 'test'
+  ...
+# Subtest: thirty-day continuous retention preserves its exact boundary and unrelated objects
+ok 10 - thirty-day continuous retention preserves its exact boundary and unrelated objects
+  ---
+  duration_ms: 143.600689
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: failed uploads cannot prune the last recoverable checkpoint
+ok 11 - failed uploads cannot prune the last recoverable checkpoint
+  ---
+  duration_ms: 91.79649
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: pending destination changes and invalid state fail closed without replacing evidence
+ok 12 - pending destination changes and invalid state fail closed without replacing evidence
+  ---
+  duration_ms: 84.70873
+  type: 'test'
+  ...
+# Subtest: a live or malformed continuous lock preserves durable state; a dead holder is recoverable
+ok 13 - a live or malformed continuous lock preserves durable state; a dead holder is recoverable
+  ---
+  duration_ms: 92.618036
+  type: 'test'
+  ...
+# Subtest: interrupted continuous retention retries without losing its newest complete copy
+ok 14 - interrupted continuous retention retries without losing its newest complete copy
+  ---
+  duration_ms: 327.030164
+  type: 'test'
+  ...
+# Subtest: large retained history requires only one marker and HEAD read for the newest complete copy
+ok 15 - large retained history requires only one marker and HEAD read for the newest complete copy
+  ---
+  duration_ms: 1.332148
+  type: 'test'
+  ...
+# Subtest: actual production server starts continuous replication and gates health through the admin route
+ok 16 - actual production server starts continuous replication and gates health through the admin route
+  ---
+  duration_ms: 1413.054332
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3893.668505

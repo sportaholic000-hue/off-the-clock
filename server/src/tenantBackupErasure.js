@@ -64,6 +64,14 @@ function localBundles(root,ownerId,at){
     if(fs.existsSync(path.join(directory,'off-the-clock.sqlite')))scrubBundle(directory,ownerId,at);
   }
 }
+function removeAbandonedCopies(root,pattern){
+  if(!fs.existsSync(root))return;
+  for(const entry of fs.readdirSync(root,{withFileTypes:true}))if(pattern.test(entry.name)){
+    const file=path.join(root,entry.name);assertRealContainment(root,file);
+    if(entry.isSymbolicLink())throw Error('BACKUP_UNSAFE_DIRECTORY');
+    fs.rmSync(file,{recursive:entry.isDirectory(),force:true});
+  }
+}
 function assertNoWorker(directory){
   const file=path.join(directory,'run.lock');if(!fs.existsSync(file))return;
   const saved=JSON.parse(fs.readFileSync(file,'utf8')),pid=typeof saved==='number'?saved:saved.pid;
@@ -84,6 +92,15 @@ export async function eraseTenantBackupCopies(ownerId,deployment,{config={enable
     const daily=path.join(deployment.backupPath,'.offsite'),continuous=path.join(deployment.backupPath,'.offsite-continuous');
     for(const directory of [daily,continuous,path.join(continuous,'snapshots')])assertRealContainment(deployment.root,directory);
     assertNoWorker(daily);assertNoWorker(continuous);
+    // Workers are drained and restores share this lock. These are unpublished,
+    // redundant staging copies left by a crash, not recovery points. Removing
+    // them does not remove another business from any verified backup.
+    for(const directory of [daily,continuous])removeAbandonedCopies(directory,/^verify-[a-f0-9-]{36}$/);
+    for(const directory of [deployment.backupPath,path.join(continuous,'snapshots')])removeAbandonedCopies(directory,/^\.partial-snapshot-\d{13}-[a-f0-9-]{36}$/);
+    if(deployment.volume){
+      const restores=path.join(deployment.volume,'restores');assertRealContainment(deployment.volume,restores);
+      removeAbandonedCopies(restores,/^\.(?:(?:offsite|continuous)-[A-Za-z0-9]{6}|restore-[a-f0-9-]{36})$/);
+    }
     // Serialized with publication. An intent is monotonic even when its first
     // attempt fails: every later replacement must honor every recorded owner.
     const owners=rememberBackupErasure(deployment,ownerId,at);

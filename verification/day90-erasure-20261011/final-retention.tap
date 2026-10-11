@@ -1,0 +1,270 @@
+TAP version 13
+# Subtest: day90 missing settings: prior uploads stay pending — OFFSITE_NOT_CONFIGURED
+ok 1 - day90 missing settings: prior uploads stay pending — OFFSITE_NOT_CONFIGURED
+  ---
+  duration_ms: 2038.846055
+  type: 'test'
+  ...
+# Subtest: day90 missing settings: prior uploads stay pending — OFFSITE_CONFIG_INVALID
+ok 2 - day90 missing settings: prior uploads stay pending — OFFSITE_CONFIG_INVALID
+  ---
+  duration_ms: 843.84791
+  type: 'test'
+  ...
+# Subtest: day90 stale replacement: A fails, B completes, A retries — daily
+ok 3 - day90 stale replacement: A fails, B completes, A retries — daily
+  ---
+  duration_ms: 1433.601682
+  type: 'test'
+  ...
+# Subtest: day90 stale replacement: A fails, B completes, A retries — continuous
+ok 4 - day90 stale replacement: A fails, B completes, A retries — continuous
+  ---
+  duration_ms: 1444.995142
+  type: 'test'
+  ...
+# Subtest: day90 clock: stored canceledAt survives a nine-day processing delay
+ok 5 - day90 clock: stored canceledAt survives a nine-day processing delay
+  ---
+  duration_ms: 133.061533
+  type: 'test'
+  ...
+# Subtest: day90 clock: delayed subscription deletion — ended_at wins over the earlier cancellation request
+ok 6 - day90 clock: delayed subscription deletion — ended_at wins over the earlier cancellation request
+  ---
+  duration_ms: 86.646695
+  type: 'test'
+  ...
+# Subtest: day90 clock: delayed subscription deletion — canceled_at is used when ended_at is absent
+ok 7 - day90 clock: delayed subscription deletion — canceled_at is used when ended_at is absent
+  ---
+  duration_ms: 97.676198
+  type: 'test'
+  ...
+# Subtest: day90 clock: delayed subscription deletion — legacy terminal event time is retained when provider fields are absent
+ok 8 - day90 clock: delayed subscription deletion — legacy terminal event time is retained when provider fields are absent
+  ---
+  duration_ms: 58.753203
+  type: 'test'
+  ...
+# Subtest: day90 a deployment that never uploaded off-site can complete local-only backup erasure
+ok 9 - day90 a deployment that never uploaded off-site can complete local-only backup erasure
+  ---
+  duration_ms: 339.558041
+  type: 'test'
+  ...
+# Subtest: day90 removes abandoned download, decrypt and restore staging copies
+ok 10 - day90 removes abandoned download, decrypt and restore staging copies
+  ---
+  duration_ms: 1876.82479
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight daily restore
+ok 11 - day90 serializes erasure with an in-flight daily restore
+  ---
+  duration_ms: 1023.086706
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight continuous restore
+ok 12 - day90 serializes erasure with an in-flight continuous restore
+  ---
+  duration_ms: 1094.740361
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — volume
+ok 13 - day90 local restore cannot race a held erasure lock — volume
+  ---
+  duration_ms: 518.528102
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — nested
+ok 14 - day90 local restore cannot race a held erasure lock — nested
+  ---
+  duration_ms: 523.23831
+  type: 'test'
+  ...
+# Subtest: day90 complete cleanup is idempotent across live, local, daily and continuous copies
+ok 15 - day90 complete cleanup is idempotent across live, local, daily and continuous copies
+  ---
+  duration_ms: 1278.033887
+  type: 'test'
+  ...
+# Subtest: day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+ok 16 - day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+  ---
+  duration_ms: 594.431322
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — recovered
+ok 17 - day90 admin health is authenticated and secret-free — recovered
+  ---
+  duration_ms: 292.406611
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — permanent
+ok 18 - day90 admin health is authenticated and secret-free — permanent
+  ---
+  duration_ms: 335.368427
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after 503 survives local deletion and restart
+ok 19 - day90 Google retry after 503 survives local deletion and restart
+  ---
+  duration_ms: 213.307461
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after 429 survives local deletion and restart
+ok 20 - day90 Google retry after 429 survives local deletion and restart
+  ---
+  duration_ms: 154.326174
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after network survives local deletion and restart
+ok 21 - day90 Google retry after network survives local deletion and restart
+  ---
+  duration_ms: 296.845816
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after timeout survives local deletion and restart
+ok 22 - day90 Google retry after timeout survives local deletion and restart
+  ---
+  duration_ms: 183.800717
+  type: 'test'
+  ...
+# Subtest: day90 Google retry after 400 survives local deletion and restart
+ok 23 - day90 Google retry after 400 survives local deletion and restart
+  ---
+  duration_ms: 169.658477
+  type: 'test'
+  ...
+# Subtest: day90 phone retry retains the original SID and never invents release after profile erasure
+ok 24 - day90 phone retry retains the original SID and never invents release after profile erasure
+  ---
+  duration_ms: 153.966963
+  type: 'test'
+  ...
+# Subtest: day90 provider writes disabled retains both retry values without postponing local or off-site deletion
+ok 25 - day90 provider writes disabled retains both retry values without postponing local or off-site deletion
+  ---
+  duration_ms: 170.306299
+  type: 'test'
+  ...
+# Subtest: day90 Google refresh-token invalid_token and number 404 are completed outcomes
+ok 26 - day90 Google refresh-token invalid_token and number 404 are completed outcomes
+  ---
+  duration_ms: 174.497526
+  type: 'test'
+  ...
+# Subtest: day90 retry material expires exactly 30 days after first attempt and permanent failure reaches admin status
+ok 27 - day90 retry material expires exactly 30 days after first attempt and permanent failure reaches admin status
+  ---
+  duration_ms: 225.283055
+  type: 'test'
+  ...
+# Subtest: day90 undecryptable Google token is discarded immediately with a permanent failure, without blocking other steps
+ok 28 - day90 undecryptable Google token is discarded immediately with a permanent failure, without blocking other steps
+  ---
+  duration_ms: 163.680302
+  type: 'test'
+  ...
+# Subtest: day90 provider success removes retry material from the main database and WAL immediately
+ok 29 - day90 provider success removes retry material from the main database and WAL immediately
+  ---
+  duration_ms: 215.121698
+  type: 'test'
+  ...
+# Subtest: day90 sweep deletes every due owner locally before waiting for a slow provider
+ok 30 - day90 sweep deletes every due owner locally before waiting for a slow provider
+  ---
+  duration_ms: 175.138639
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope success
+ok 31 - day-90 complete tenant inventory, Google legacy full-scope success
+  ---
+  duration_ms: 534.220311
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope http-error
+ok 32 - day-90 complete tenant inventory, Google legacy full-scope http-error
+  ---
+  duration_ms: 424.006211
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope network-error
+ok 33 - day-90 complete tenant inventory, Google legacy full-scope network-error
+  ---
+  duration_ms: 505.572183
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope timeout
+ok 34 - day-90 complete tenant inventory, Google legacy full-scope timeout
+  ---
+  duration_ms: 526.076053
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed success
+ok 35 - day-90 complete tenant inventory, Google narrowed success
+  ---
+  duration_ms: 511.715614
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed http-error
+ok 36 - day-90 complete tenant inventory, Google narrowed http-error
+  ---
+  duration_ms: 402.303126
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed network-error
+ok 37 - day-90 complete tenant inventory, Google narrowed network-error
+  ---
+  duration_ms: 241.549643
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed timeout
+ok 38 - day-90 complete tenant inventory, Google narrowed timeout
+  ---
+  duration_ms: 299.531515
+  type: 'test'
+  ...
+# Subtest: filesystem failure disables sign-in immediately and retries completion after restart
+ok 39 - filesystem failure disables sign-in immediately and retries completion after restart
+  ---
+  duration_ms: 327.722795
+  type: 'test'
+  ...
+# Subtest: legacy partial erasures receive expanded cleanup and retry even with an old completion timestamp
+ok 40 - legacy partial erasures receive expanded cleanup and retry even with an old completion timestamp
+  ---
+  duration_ms: 368.214183
+  type: 'test'
+  ...
+# Subtest: local, daily and continuous backups erase A while preserving B; failed remote replacement retries
+ok 41 - local, daily and continuous backups erase A while preserving B; failed remote replacement retries
+  ---
+  duration_ms: 1691.93669
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: unpublished encrypted retries are redacted before backup workers resume
+ok 42 - unpublished encrypted retries are redacted before backup workers resume
+  ---
+  duration_ms: 1006.890783
+  type: 'test'
+  ...
+# Subtest: backups captured between database erasure and file deletion still erase the owned pricebook
+ok 43 - backups captured between database erasure and file deletion still erase the owned pricebook
+  ---
+  duration_ms: 827.941187
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8497.654823

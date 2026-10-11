@@ -10,6 +10,7 @@ import {createOffsiteBackupService,restoreOffsiteBackup,restoreContinuousBackup}
 import {createBillingCustomerLifecycle} from '../server/src/billingCustomerLifecycle.js';
 import {createCalendarRetentionRevoker} from '../server/src/calendarRetentionRevocation.js';
 import {eraseTenantPricebookFiles} from '../server/src/billingTenantErasure.js';
+import {offsiteUploadHistory} from '../server/src/offsiteHistory.js';
 
 async function setup(t){
   const f=retentionFixture(t),fake=await fakeS3(t);
@@ -37,6 +38,11 @@ for(const reason of ['OFFSITE_NOT_CONFIGURED','OFFSITE_CONFIG_INVALID'])test('da
   const f=await setup(t),beforeB=businessRows(f.db,B);
   for(const directory of ['.offsite','.offsite-continuous'])assert.ok(!fs.existsSync(path.join(f.deployment.backupPath,directory,'pending.enc')));
   assert.ok(!fs.existsSync(path.join(f.deployment.backupPath,'.retention',hash(A))));
+  const history=offsiteUploadHistory(f.deployment);assert.equal(history.length,1);assert.equal(history[0].firstSuccessfulUploadAt,new Date(Date.parse(DEADLINE)-1).toISOString());
+  // The nonrotating upload receipt alone must suffice, even when the rotating
+  // daily/continuous worker state and all pending/journal files are absent.
+  for(const directory of ['.offsite','.offsite-continuous'])fs.rmSync(path.join(f.deployment.backupPath,directory,'state.json'));
+  assert.deepEqual(offsiteUploadHistory(f.deployment),history);
   const unavailable=createOffsiteBackupService(f.db,f.deployment,{config:{enabled:false,reason,missing:[]},warn:()=>{},now:()=>f.clock().getTime()});
   f.setTime(DEADLINE);await f.lifecycle(unavailable).processOwner(A,{localOnly:true}).catch(()=>{});
   assertErased(assert,f.db);assert.ok(!fs.existsSync(path.join(f.deployment.pricebookPath,A+'.json')));

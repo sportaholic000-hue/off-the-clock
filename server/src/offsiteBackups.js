@@ -6,7 +6,7 @@ import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
 import {createContinuousOffsiteService} from './continuousOffsite.js';
-import {assertBackupRetentionIdle} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock} from './backupRetentionLock.js';
 import {eraseTenantBackupCopies} from './tenantBackupErasure.js';
 import {recordOffsiteUpload,backupErasureStatus} from './offsiteHistory.js';
 export {restoreContinuousBackup,pruneContinuousBackups} from './continuousOffsite.js';
@@ -52,6 +52,7 @@ export async function pruneOffsiteBackups(store,config) {
 }
 export async function restoreOffsiteBackup({store,config,day,target,volume}) {
   if(!config.enabled || !dayValid(day))throw Error('OFFSITE_RESTORE_CONFIG_INVALID');
+  return withBackupRetentionLock({root:volume,backupPath:path.join(volume,'backups')},async()=>{
   assertRealContainment(volume,path.join(volume,'restores'));
   const parent=path.join(volume,'restores');fs.mkdirSync(parent,{recursive:true,mode:0o700});
   const stage=fs.mkdtempSync(path.join(parent,'.offsite-'));fs.chmodSync(stage,0o700);
@@ -61,6 +62,7 @@ export async function restoreOffsiteBackup({store,config,day,target,volume}) {
     const bundle=path.join(stage,'bundle');await decryptBundle(file,bundle,config.key);
     return restoreBackup(bundle,target,{volume});
   } finally {fs.rmSync(stage,{recursive:true,force:true});}
+  });
 }
 export function createDailyOffsiteBackupService(database,deployment,{env=process.env,config=deployment.production?readOffsiteConfig(env):{enabled:false,reason:'OFFSITE_PRODUCTION_ONLY',missing:[]},store=config.enabled?createS3BackupStore(config):null,now=Date.now,
   takeSnapshot=()=>createSnapshot(database,deployment),warn=message=>console.warn(message),retryMs=60000,pollMs=60000,closeStore=true}={}) {
