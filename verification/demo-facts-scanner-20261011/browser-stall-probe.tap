@@ -1,0 +1,33 @@
+TAP version 13
+# Subtest: re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price
+not ok 1 - re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price
+  ---
+  duration_ms: 7.298971
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/quoteReauditEditor20261006.browser.spec.mjs:27:1'
+  failureType: 'hookFailed'
+  error: |-
+    browserType.launch: Executable doesn't exist at /workspace/scratch/25507090f1e7/audit-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/quoteReauditEditor20261006.browser.spec.mjs:14:25)
+    /workspace/scratch/25507090f1e7/off-the-clock-platform-audit/test/quoteReauditEditor20261006.browser.spec.mjs:12:1
+    async node:internal/modules/esm/loader:643:26
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 700.568967

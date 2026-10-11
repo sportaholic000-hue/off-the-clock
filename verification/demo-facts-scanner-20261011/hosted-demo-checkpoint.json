@@ -1,0 +1,50 @@
+{
+  "runId": 38121371064,
+  "runName": "CI",
+  "conclusion": "success",
+  "commit": "a6c4581a7f4a40e6707141b3f29cb3d9176e643d",
+  "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38121371064",
+  "testJobId": 114416614444,
+  "results": {
+    "ownerAlertsDashboardBrowser": {
+      "tests": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "quoteGate": {
+      "files": 198,
+      "tests": 4131,
+      "passed": 4131,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "fullSuite": {
+      "tests": 4853,
+      "passed": 4853,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    }
+  },
+  "newDemoTests": [
+    "ok 4123 - demo approved session facts 20261011: nova Starter",
+    "ok 4124 - demo approved session facts 20261011: nova Operator",
+    "ok 4125 - demo approved session facts 20261011: nova QuoteDone",
+    "ok 4126 - demo approved session facts 20261011: nova annual",
+    "ok 4127 - demo approved session facts 20261011: nova trial",
+    "ok 4128 - demo approved session facts 20261011: miles Starter",
+    "ok 4129 - demo approved session facts 20261011: miles Operator",
+    "ok 4130 - demo approved session facts 20261011: miles QuoteDone",
+    "ok 4131 - demo approved session facts 20261011: miles annual",
+    "ok 4132 - demo approved session facts 20261011: miles trial",
+    "ok 4133 - demo approved plan entitlements 20261011: Starter",
+    "ok 4134 - demo approved plan entitlements 20261011: Operator",
+    "ok 4135 - demo approved plan entitlements 20261011: QuoteDone"
+  ]
+}

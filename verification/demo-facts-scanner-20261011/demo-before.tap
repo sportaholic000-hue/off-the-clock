@@ -8,9 +8,9 @@ not ok 1 - demo facts A: generated instructions match the current owner ruling
   failureType: 'testCodeFailure'
   error: |-
     The expression evaluated to a falsy value:
-    
+
       assert.ok(text.includes('To stop answering, the owner turns off call forwarding on their phone. '+noDashboardSwitch))
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: true
@@ -33,9 +33,9 @@ not ok 2 - demo facts B: the token provider receives those same corrected locked
   failureType: 'testCodeFailure'
   error: |-
     The expression evaluated to a falsy value:
-    
+
       assert.ok(text.includes('To stop answering, the owner turns off call forwarding on their phone. '+noDashboardSwitch))
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: true

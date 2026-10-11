@@ -1,0 +1,461 @@
+{
+  "commit": "c722778902bd1132d3c78575c091cc522414f229",
+  "command": "npm test",
+  "exitCode": 1,
+  "summary": {
+    "tests": 4907,
+    "suites": 0,
+    "pass": 4847,
+    "fail": 60,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "browserLaunchFailures": 60,
+  "failures": [
+    {
+      "name": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "expired export window disables all CSV buttons and no longer offers setup/service",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "scope editor groups entries of the same kind and names them by their matching facts",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "F13 browser legacy flat and two-level controls use the same exact parser",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "Operator: service-area city entry, validation, save and reopening in Chromium",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "QuoteDone: service-area city entry, validation, save and reopening in Chromium",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "Calendar exposes missing booking requirements and links to service-area setup in Chromium",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "unverified period and pending historical charge are visible without an invented zero balance",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "pending manual save preserves a newer numeric edit and its question",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "pending manual save preserves a newer structured price-map edit",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "pending manual save prevents duplicate confirmation and premature review",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "unchanged confirmed value saves once and advances normally",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "failed manual save keeps the confirmed value available for retry",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "late 200 response cannot replace a new service preview",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "late 400 response cannot replace a new service preview",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "old completion cannot clear current loading and invalid input cannot retain old ready",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "interview owner can add separate demolition entries and explicitly choose up-to access",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "interview accepts ordinary floor names and retains invalid drafts for correction",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "display browser: actual dashboard and owner preview show production missing-price labels",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    },
+    {
+      "name": "website owner screen says no prices found and preserves the current prices",
+      "chromiumLaunch": true,
+      "verificationStatus": "NOT RUN"
+    }
+  ],
+  "newTestNamesPassed": [
+    "scan destructuring 20261011: auditor renamed exec through call",
+    "scan destructuring 20261011: auditor shorthand exec",
+    "scan destructuring 20261011: exec declaration shorthand",
+    "scan destructuring 20261011: exec declaration renamed",
+    "scan destructuring 20261011: exec declaration shorthand default",
+    "scan destructuring 20261011: exec declaration renamed default",
+    "scan destructuring 20261011: exec declaration quoted key",
+    "scan destructuring 20261011: exec declaration computed key",
+    "scan destructuring 20261011: exec declaration nested object",
+    "scan destructuring 20261011: exec declaration nested array",
+    "scan destructuring 20261011: exec declaration nested default",
+    "scan destructuring 20261011: exec parameter nested default",
+    "scan destructuring 20261011: exec arrow shorthand parameter",
+    "scan destructuring 20261011: exec catch binding",
+    "scan destructuring 20261011: exec for-of declaration",
+    "scan destructuring 20261011: exec assignment shorthand",
+    "scan destructuring 20261011: exec assignment renamed",
+    "scan destructuring 20261011: exec assignment shorthand default",
+    "scan destructuring 20261011: exec assignment renamed default",
+    "scan destructuring 20261011: exec assignment quoted key",
+    "scan destructuring 20261011: exec assignment computed key",
+    "scan destructuring 20261011: exec assignment nested object",
+    "scan destructuring 20261011: exec assignment nested array",
+    "scan destructuring 20261011: exec assignment nested default",
+    "scan destructuring 20261011: exec assignment for-of",
+    "scan destructuring 20261011: prepare declaration shorthand",
+    "scan destructuring 20261011: prepare declaration renamed",
+    "scan destructuring 20261011: prepare declaration shorthand default",
+    "scan destructuring 20261011: prepare declaration renamed default",
+    "scan destructuring 20261011: prepare declaration quoted key",
+    "scan destructuring 20261011: prepare declaration computed key",
+    "scan destructuring 20261011: prepare declaration nested object",
+    "scan destructuring 20261011: prepare declaration nested array",
+    "scan destructuring 20261011: prepare declaration nested default",
+    "scan destructuring 20261011: prepare parameter nested default",
+    "scan destructuring 20261011: prepare arrow shorthand parameter",
+    "scan destructuring 20261011: prepare catch binding",
+    "scan destructuring 20261011: prepare for-of declaration",
+    "scan destructuring 20261011: prepare assignment shorthand",
+    "scan destructuring 20261011: prepare assignment renamed",
+    "scan destructuring 20261011: prepare assignment shorthand default",
+    "scan destructuring 20261011: prepare assignment renamed default",
+    "scan destructuring 20261011: prepare assignment quoted key",
+    "scan destructuring 20261011: prepare assignment computed key",
+    "scan destructuring 20261011: prepare assignment nested object",
+    "scan destructuring 20261011: prepare assignment nested array",
+    "scan destructuring 20261011: prepare assignment nested default",
+    "scan destructuring 20261011: prepare assignment for-of",
+    "scan destructuring 20261011: extracted exec invocation direct",
+    "scan destructuring 20261011: extracted exec invocation call",
+    "scan destructuring 20261011: extracted exec invocation apply",
+    "scan destructuring 20261011: extracted exec invocation bind",
+    "scan destructuring 20261011: extracted prepare invocation direct",
+    "scan destructuring 20261011: extracted prepare invocation call",
+    "scan destructuring 20261011: extracted prepare invocation apply",
+    "scan destructuring 20261011: extracted prepare invocation bind",
+    "scan destructuring 20261011: nested dynamic database keys are forbidden",
+    "scan destructuring 20261011: extracted methods cannot be allowlisted",
+    "scan destructuring 20261011: metadata, defaults and safe patterns are not extractions",
+    "scan destructuring 20261011: multiple methods and nested defaults are counted once",
+    "scan destructuring 20261011: shadowed key shorthand parameter declaration",
+    "scan destructuring 20261011: shadowed key shorthand parameter assignment",
+    "scan destructuring 20261011: shadowed key renamed default parameter declaration",
+    "scan destructuring 20261011: shadowed key renamed default parameter assignment",
+    "scan destructuring 20261011: shadowed key nested catch binding declaration",
+    "scan destructuring 20261011: shadowed key nested catch binding assignment",
+    "scan destructuring 20261011: shadowed key nested variable binding declaration",
+    "scan destructuring 20261011: shadowed key nested variable binding assignment",
+    "demo approved session facts 20261011: nova Starter",
+    "demo approved session facts 20261011: nova Operator",
+    "demo approved session facts 20261011: nova QuoteDone",
+    "demo approved session facts 20261011: nova annual",
+    "demo approved session facts 20261011: nova trial",
+    "demo approved session facts 20261011: miles Starter",
+    "demo approved session facts 20261011: miles Operator",
+    "demo approved session facts 20261011: miles QuoteDone",
+    "demo approved session facts 20261011: miles annual",
+    "demo approved session facts 20261011: miles trial",
+    "demo approved plan entitlements 20261011: Starter",
+    "demo approved plan entitlements 20261011: Operator",
+    "demo approved plan entitlements 20261011: QuoteDone"
+  ],
+  "rawTapSha256": "5347695fc34029b8dc2621067cc03373b24aceb097ac1c45ce439633368e1776",
+  "rawTapLocalFile": "verification/demo-facts-scanner-20261011/full.tap",
+  "unregisteredBrowserSubtests": [
+    {
+      "parent": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+      "name": "owner deep link, browser refresh and Calls Refresh retain saved request and urgency"
+    },
+    {
+      "parent": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+      "name": "staff receives instant callback contact and corrected lead contact with no private pricing evidence"
+    },
+    {
+      "parent": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+      "name": "open dashboard renders a newly persisted call, then its feed link survives production reload"
+    },
+    {
+      "parent": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+      "name": "tenant change discards old in-flight feed data and cleans up previous tenant timers"
+    },
+    {
+      "parent": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+      "name": "dashboard surfaces saved failures and Calls shows caller words through deep link/reload"
+    },
+    {
+      "parent": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+      "name": "owner retries a stored failure, fake provider accepts once, and UI distinguishes acceptance from receipt"
+    },
+    {
+      "parent": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+      "name": "staff reads callback and delivery states without mutation controls or foreign data"
+    },
+    {
+      "parent": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+      "name": "owner/staff read DELIVERED accurately on saved inquiry and refreshed Calls; wrong tenant sees no request"
+    },
+    {
+      "parent": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+      "name": "dashboard reaches oldest failure and retry preserves unsaved editor URL"
+    },
+    {
+      "parent": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+      "name": "search, filters, deep link, stored billing and text transcript download"
+    },
+    {
+      "parent": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+      "name": "owner reviews captured lead and retains customer material qualification"
+    },
+    {
+      "parent": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+      "name": "owner records real progression without caller delivery and saves an exact invoice"
+    },
+    {
+      "parent": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+      "name": "reports expose period, actual value and funnel with an explicit unknown after-hours count"
+    },
+    {
+      "parent": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+      "name": "staff has safe work-area reads but no owner review or reports"
+    }
+  ],
+  "unregisteredBrowserSubtestsStatus": "NOT RUN: parent failed before registering nested browser tests"
+}
