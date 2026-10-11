@@ -29,12 +29,13 @@ test('every direct database prepare or exec in server is an exact listed excepti
  }
 });
 
-function scratchScan(name,extension,source,expected) {
+function scratchScan(name,extension,source,expected,extractionsOnly=false) {
  const directory=mkdtempSync(join(root,'.owner-query-scan-'));
  try {
   mkdirSync(join(directory,'server','src'),{recursive:true});
   writeFileSync(join(directory,'server','src',name+extension),source);
-  const found=unlistedPrepares(directory,[],[]);
+  const all=unlistedPrepares(directory,[],[]);
+  const found=extractionsOnly?all.filter(row=>row.forbidden):all;
   assert.equal(found.length,expected,`${name} should yield exactly ${expected} unlisted occurrences`);
  } finally { rmSync(directory,{recursive:true,force:true}); }
 }
@@ -146,4 +147,102 @@ test('mutable regex-shaped receivers cannot hide a later database exec: 1 findin
 test('mutable or shadowed computed keys on database objects remain forbidden',()=>{
  scratchScan('mutable-key','.js','let key="close"; key="ex"+"ec"; database[key]("DELETE FROM customers")',1);
  scratchScan('shadowed-key','.js','const key="close"; function work(key){database[key]("DELETE FROM customers")}',1);
+});
+
+// The legacy inventory also retains lexical prepare references. Require exactly
+// one forbidden extraction without removing those independently reviewed rows.
+const scratchExtraction=(...args)=>scratchScan(...args,true);
+
+// Expected before implementation: each extraction is one forbidden occurrence,
+// independently of the local alias and how it is eventually invoked.
+test('scan destructuring 20261011: auditor renamed exec through call',()=>{
+ scratchExtraction('auditor-renamed-exec','.js','const {exec: run} = database; run.call(database,"DELETE FROM customers")',1);
+});
+test('scan destructuring 20261011: auditor shorthand exec',()=>{
+ scratchExtraction('auditor-shorthand-exec','.js','const {exec} = database',1);
+});
+
+const destructuringForms=[
+ ['declaration shorthand',(method,call)=>`const {${method}}=database; ${call(method)}`],
+ ['declaration renamed',(method,call)=>`const {${method}:run}=database; ${call('run')}`],
+ ['declaration shorthand default',(method,call)=>`const {${method}=fallback}=database; ${call(method)}`],
+ ['declaration renamed default',(method,call)=>`const {${method}:run=fallback}=database; ${call('run')}`],
+ ['declaration quoted key',(method,call)=>`const {"${method}":run}=database; ${call('run')}`],
+ ['declaration computed key',(method,call)=>`const {["${method.slice(0,2)}"+"${method.slice(2)}"]:run}=database; ${call('run')}`],
+ ['declaration nested object',(method,call)=>`const {connection:{${method}:run}}=holder; ${call('run')}`],
+ ['declaration nested array',(method,call)=>`const [{${method}:run}]=connections; ${call('run')}`],
+ ['declaration nested default',(method,call)=>`const {connection:{${method}:run}=database}={}; ${call('run')}`],
+ ['parameter nested default',(method,call)=>`function work({connection:{${method}:run}=database}={}){${call('run')}}`],
+ ['arrow shorthand parameter',(method,call)=>`const work=({${method}})=>${call(method)}`],
+ ['catch binding',(method,call)=>`try{throw database;}catch({${method}:run}){${call('run')}}`],
+ ['for-of declaration',(method,call)=>`for(const {${method}:run} of [database]){${call('run')}}`],
+ ['assignment shorthand',(method,call)=>`let ${method}; ({${method}}=database); ${call(method)}`],
+ ['assignment renamed',(method,call)=>`let run; ({${method}:run}=database); ${call('run')}`],
+ ['assignment shorthand default',(method,call)=>`let ${method}; ({${method}=fallback}=database); ${call(method)}`],
+ ['assignment renamed default',(method,call)=>`let run; ({${method}:run=fallback}=database); ${call('run')}`],
+ ['assignment quoted key',(method,call)=>`let run; ({"${method}":run}=database); ${call('run')}`],
+ ['assignment computed key',(method,call)=>`let run; ({["${method.slice(0,2)}"+"${method.slice(2)}"]:run}=database); ${call('run')}`],
+ ['assignment nested object',(method,call)=>`let run; ({connection:{${method}:run}}=holder); ${call('run')}`],
+ ['assignment nested array',(method,call)=>`let run; ([{${method}:run}]=connections); ${call('run')}`],
+ ['assignment nested default',(method,call)=>`let run; ({connection:{${method}:run}=database}={}); ${call('run')}`],
+ ['assignment for-of',(method,call)=>`let run; for({${method}:run} of [database]){${call('run')}}`],
+];
+for(const method of ['exec','prepare'])for(const [index,[form,source]] of destructuringForms.entries())
+test(`scan destructuring 20261011: ${method} ${form}`,()=>{
+ scratchExtraction('destructuring-'+index,['.js','.mjs','.cjs'][index%3],source(method,name=>`${name}.call(database,"DELETE FROM customers")`),1);
+});
+
+for(const method of ['exec','prepare'])for(const [invocation,call] of [
+ ['direct',name=>`${name}("DELETE FROM customers")`],
+ ['call',name=>`${name}.call(database,"DELETE FROM customers")`],
+ ['apply',name=>`${name}.apply(database,["DELETE FROM customers"])`],
+ ['bind',name=>`${name}.bind(database)("DELETE FROM customers")`],
+])test(`scan destructuring 20261011: extracted ${method} invocation ${invocation}`,()=>{
+ scratchExtraction('destructured-invocation','.js',`const {${method}:run}=database; ${call('run')}`,1);
+});
+
+test('scan destructuring 20261011: nested dynamic database keys are forbidden',()=>{
+ scratchExtraction('binding-dynamic','.js','const {db:{[method]:run}}=holder; run.call(database,"DELETE FROM customers")',1);
+ scratchExtraction('assignment-dynamic','.js','let run; ({[method]:run}=database); run.apply(database,["DELETE FROM customers"])',1);
+ scratchExtraction('assignment-nested-dynamic','.js','let run; ({db:{[method]:run}}=holder); run.bind(database)("DELETE FROM customers")',1);
+});
+
+test('scan destructuring 20261011: extracted methods cannot be allowlisted',()=>{
+ const directory=mkdtempSync(join(root,'.owner-query-scan-'));
+ try{
+  mkdirSync(join(directory,'server'),{recursive:true});
+  for(const source of [
+   'const {exec:run}=database', 'const {prepare:run}=database',
+   'let run; ({exec:run}=database)', 'let run; ({prepare:run}=database)',
+  ]){
+   writeFileSync(join(directory,'server','bad.js'),source);
+   const all=prepareInventory(directory);
+   assert.equal(all.length,1,source);assert.equal(all[0].forbidden,true,source);
+   assert.equal(unlistedPrepares(directory,all,all).length,1,source);
+  }
+ }finally{rmSync(directory,{recursive:true,force:true});}
+});
+
+test('scan destructuring 20261011: metadata, defaults and safe patterns are not extractions',()=>{
+ scratchScan('metadata-control','.js','const metadata={exec:"documentation"}; const {close}=database; const {execStatus}=metadata',0);
+ scratchScan('default-control','.js','let options; ({options={exec:"documentation"}}={}); const work=({options={exec:"documentation"}}={})=>options',0);
+ scratchScan('assignment-control','.js','let options; options={exec:"documentation"}; const metadata={nested:{exec:"documentation"}}',0);
+});
+
+test('scan destructuring 20261011: multiple methods and nested defaults are counted once',()=>{
+ scratchExtraction('multiple-methods','.js','const {exec:run,prepare:statement}=database',2);
+ scratchExtraction('nested-default-once','.js','let run; ({nested:{exec:run}=database}={})',1);
+});
+
+// A destructured local key must not inherit an unrelated outer constant value.
+for(const [form,scope] of [
+ ['shorthand parameter',body=>`function work({key}){${body}} work({key:"exec"})`],
+ ['renamed default parameter',body=>`function work({method:key="exec"}={}){${body}} work()`],
+ ['nested catch binding',body=>`try{throw {nested:{method:"exec"}}}catch({nested:{method:key}}){${body}}`],
+ ['nested variable binding',body=>`{const {nested:{method:key}}={nested:{method:"exec"}}; ${body}}`],
+])for(const [target,body] of [
+ ['declaration','const {[key]:run}=database; run.call(database,"DELETE FROM customers")'],
+ ['assignment','let run; ({[key]:run}=database); run.apply(database,["DELETE FROM customers"])'],
+])test(`scan destructuring 20261011: shadowed key ${form} ${target}`,()=>{
+ scratchExtraction('shadowed-destructured-key','.js','const key="close"; '+scope(body),1);
 });

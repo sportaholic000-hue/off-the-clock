@@ -99,7 +99,7 @@ export function prepareInventory(root) {
     const file=relative(root,path).replaceAll('\\','/'),source=readFileSync(path,'utf8'),visible=withoutComments(source);
     const tree=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
     if(tree.parseDiagnostics.length)throw Error('Cannot inventory invalid JavaScript: '+file);
-    const rows=legacy.filter(row=>row.file===file),extra=[],hidden=[];
+    const rows=legacy.filter(row=>row.file===file),extra=[],hidden=[],forbiddenNodes=new WeakSet();
     const declarations=new Map(),ambiguousNames=new Set(),immutableNames=new Set(),databaseNames=new Set(['database','db','applicationDb','mutex']);
     const walk=(node,visit)=>{visit(node);ts.forEachChild(node,child=>walk(child,visit));};
     const bare=node=>ts.isParenthesizedExpression(node)?bare(node.expression):node;
@@ -110,7 +110,7 @@ export function prepareInventory(root) {
         else immutableNames.add(node.name.text);
         if(node.initializer){declarations.set(node.name.text,node.initializer);if(ts.isNewExpression(node.initializer)&&/Database|Sqlite/i.test(node.initializer.expression.getText(tree)))databaseNames.add(node.name.text);}
       }
-      if(ts.isParameter(node)&&ts.isIdentifier(node.name))ambiguousNames.add(node.name.text);
+      if((ts.isParameter(node)||ts.isBindingElement(node))&&ts.isIdentifier(node.name))ambiguousNames.add(node.name.text);
       if(ts.isPropertyAccessExpression(node)&&node.name.text==='prepare'&&ts.isIdentifier(node.expression))databaseNames.add(node.expression.text);
     });
     for(let changed=true;changed;){changed=false;for(const [name,initial] of declarations)if(!databaseNames.has(name)&&isDatabase(initial)){databaseNames.add(name);changed=true;}}
@@ -141,19 +141,60 @@ export function prepareInventory(root) {
         signature:hash(direct?sql:snippet),snippet,argument:sql,function:containingFunction(node),nonDatabase:method==='exec'&&ts.isPropertyAccessExpression(node)&&isRegex(node.expression)});
     }
     function forbid(node,key,method){
+      if(forbiddenNodes.has(node))return;
+      forbiddenNodes.add(node);
       hidden.push([node.getStart(tree),node.end]);
       // Hide the legacy lexical finding in a referenced constant; the actual
       // forbidden access is the finding, even if the constant is on another line.
       if(key&&ts.isIdentifier(key)&&declarations.has(key.text)){const declaration=declarations.get(key.text);hidden.push([declaration.getStart(tree),declaration.end]);}
       record(node,method||'computed',false,true);
     }
+    const propertyKey=name=>ts.isComputedPropertyName(name)?constant(name.expression):name.text;
+    function extractedProperty(node,name,database){
+      const method=propertyKey(name),computed=ts.isComputedPropertyName(name);
+      if(method==='prepare'||method==='exec'||(computed&&method===null&&database))
+        forbid(node,computed?name.expression:null,method);
+    }
+    function bindingDatabase(node){
+      for(let parent=node.parent;parent;parent=parent.parent){
+        if(ts.isBindingElement(parent)){
+          if(parent.initializer&&isDatabase(parent.initializer))return true;
+          if(parent.propertyName&&/^(?:db|database)$/.test(propertyKey(parent.propertyName)))return true;
+        }else if(ts.isVariableDeclaration(parent)||ts.isParameter(parent)){
+          return Boolean(parent.initializer&&isDatabase(parent.initializer));
+        }else if(!ts.isObjectBindingPattern(parent)&&!ts.isArrayBindingPattern(parent))return false;
+      }
+      return false;
+    }
+    // Assignment patterns use object/array literal nodes, unlike declarations
+    // and parameters. Visit only their targets: default values and ordinary
+    // object literals are not method extractions. Flag the extraction itself,
+    // so later direct, call, apply and bind invocations cannot hide an alias.
+    function assignmentPattern(node,database=false){
+      node=bare(node);
+      if(ts.isBinaryExpression(node)&&node.operatorToken.kind===ts.SyntaxKind.EqualsToken){
+        assignmentPattern(node.left,database||isDatabase(node.right));
+      }else if(ts.isObjectLiteralExpression(node)){
+        for(const property of node.properties){
+          if(ts.isShorthandPropertyAssignment(property)||ts.isPropertyAssignment(property)){
+            extractedProperty(property,property.name,database);
+            if(ts.isPropertyAssignment(property))assignmentPattern(property.initializer,/^(?:db|database)$/.test(propertyKey(property.name)));
+          }else if(ts.isSpreadAssignment(property))assignmentPattern(property.expression,database);
+        }
+      }else if(ts.isArrayLiteralExpression(node)){
+        for(const element of node.elements)assignmentPattern(ts.isSpreadElement(element)?element.expression:element,database);
+      }
+    }
     walk(tree,node=>{
       if(ts.isElementAccessExpression(node)){
         const name=constant(node.argumentExpression);
         if(name==='prepare'||name==='exec'||(name===null&&isDatabase(node.expression)))forbid(node,node.argumentExpression,name);
-      }else if(ts.isBindingElement(node)&&node.propertyName&&ts.isComputedPropertyName(node.propertyName)){
-        const name=constant(node.propertyName.expression),declaration=node.parent.parent;
-        if(name==='prepare'||name==='exec'||(name===null&&declaration.initializer&&isDatabase(declaration.initializer)))forbid(node,node.propertyName.expression,name);
+      }else if(ts.isBindingElement(node)&&ts.isObjectBindingPattern(node.parent)&&!node.dotDotDotToken){
+        extractedProperty(node,node.propertyName||node.name,bindingDatabase(node));
+      }else if(ts.isBinaryExpression(node)&&node.operatorToken.kind===ts.SyntaxKind.EqualsToken){
+        assignmentPattern(node.left,isDatabase(node.right));
+      }else if((ts.isForOfStatement(node)||ts.isForInStatement(node))&&!ts.isVariableDeclarationList(node.initializer)){
+        assignmentPattern(node.initializer);
       }else if(ts.isPropertyAccessExpression(node)&&['prepare','exec'].includes(node.name.text)){
         const method=node.name.text,direct=ts.isCallExpression(node.parent)&&node.parent.expression===node;
         if(method==='exec'||!rows.some(row=>row.index>=node.name.getStart(tree)&&row.index<node.name.end))record(node,method,direct);

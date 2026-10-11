@@ -1,0 +1,22 @@
+{
+  "onlySixApprovedDemoChanges": true,
+  "otherDemoFilesUnchanged": true,
+  "specsAndPublicPagesUnchanged": true,
+  "ownerQueryExceptionInventoryUnchanged": true,
+  "changedFiles": [
+    ".github/workflows/ci.yml",
+    "server/src/demo/demoInstructions.js",
+    "test/helpers/ownerQueryScan.mjs",
+    "test/ownerQueryCoverage20261009.spec.mjs",
+    "test/voiceLimits20261007.spec.mjs",
+    "verification/demo-facts-scanner-20261011/demo-after.tap",
+    "verification/demo-facts-scanner-20261011/demo-before.tap",
+    "verification/demo-facts-scanner-20261011/scanner-after.tap",
+    "verification/demo-facts-scanner-20261011/scanner-before.tap",
+    "verification/demo-facts-scanner-20261011/scanner-inventory.json",
+    "verification/demo-facts-scanner-20261011/scanner-shadow-before.tap",
+    "verification/owner-wording-approval-20261011-demo.md"
+  ],
+  "sourceCommit": "c722778902bd1132d3c78575c091cc522414f229",
+  "trackedClientDistRestored": true
+}
