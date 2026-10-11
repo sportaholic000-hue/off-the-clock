@@ -81,14 +81,20 @@ export function syncBillingPaidThrough(database,ownerId){
 }
 
 export function syncBillingCancellationEvidence(database,ownerId,at){
-  const query=usageOwnerQuery(database),row=query(`SELECT b.*,u.paidThroughAt,u.trialEndsAt,e.stateJson
+  const query=usageOwnerQuery(database),row=query(`SELECT b.*,u.paidThroughAt,u.trialEndsAt,e.stateJson,e.eventCreatedAt
     FROM billingAccounts b JOIN users u ON u.id=b.ownerId LEFT JOIN billingSubscriptionEvidence e
     ON e.ownerId=b.ownerId AND e.stripeSubscriptionId=b.stripeSubscriptionId WHERE b.ownerId=?`).get(ownerId);
   if(!row?.stateJson)return;
   const f=JSON.parse(row.stateJson),prior=query('SELECT * FROM billingCancellations WHERE ownerId=?').get(ownerId);
   if(prior&&prior.state!=='RESTORED')return;
   if(!f.cancelAtPeriodEnd&&!['canceled','incomplete_expired'].includes(f.status))return;
-  const endAt=row.paidThroughAt||(f.status==='trialing'?row.trialEndsAt:null)||at;
+  const terminal=['canceled','incomplete_expired'].includes(f.status);
+  // Preserve a verified paid term. Otherwise use the provider's actual end,
+  // with its signed terminal event as the legacy fallback, never receipt time.
+  const endAt=row.paidThroughAt||(terminal
+    ?billingIso(f.endedAt)||billingIso(f.canceledAt)||row.canceledAt||billingIso(row.eventCreatedAt)
+    :(f.status==='trialing'?row.trialEndsAt:null)||billingIso(f.periodEnd));
+  if(!endAt)return;
   const profile=query('SELECT operatorEnabled FROM businessProfiles WHERE ownerId=?').get(ownerId);
   query(`INSERT INTO billingCancellations(ownerId,stripeSubscriptionId,operationId,state,endAt,requestedAt,confirmedAt,operatorWasEnabled,updatedAt)
     VALUES(?,?,?,'CONFIRMED',?,?,?,?,?) ON CONFLICT(ownerId) DO UPDATE SET stripeSubscriptionId=excluded.stripeSubscriptionId,

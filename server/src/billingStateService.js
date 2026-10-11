@@ -667,7 +667,7 @@ export function createBillingStateService({
       } else if (f.status==='active') {
         next.planStatus=next.paymentMethodVerifiedAt?'active':'pending_payment'; next.trialEndsAt=null;
       } else if (['canceled','incomplete_expired'].includes(f.status)) {
-        next.planStatus='canceled'; next.canceledAt=eventIso; next.cancelAtPeriodEnd=0; next.trialEndsAt=null;
+        next.planStatus='canceled'; next.canceledAt=unixToIso(f.endedAt)||unixToIso(f.canceledAt)||account.canceledAt||eventIso; next.cancelAtPeriodEnd=0; next.trialEndsAt=null;
       } else if (f.status==='paused') next.planStatus='suspended';
       else if (f.status==='incomplete') next.planStatus='pending_payment';
       else if (['past_due','unpaid'].includes(f.status)) {
@@ -682,7 +682,7 @@ export function createBillingStateService({
     }
     // The deletion itself is terminal, regardless of any concurrent retrieval.
     if (event.type==='customer.subscription.deleted') {
-      next.planStatus='canceled'; next.canceledAt=eventIso; next.cancelAtPeriodEnd=0; next.trialEndsAt=null;
+      next.planStatus='canceled'; next.canceledAt=unixToIso(object.ended_at)||unixToIso(object.canceled_at)||next.canceledAt||eventIso; next.cancelAtPeriodEnd=0; next.trialEndsAt=null;
     }
     const debt=evidence.debt(account.ownerId,event.subscriptionId);
     const hold=usageOwnerQuery(db)('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(account.ownerId,event.subscriptionId);
