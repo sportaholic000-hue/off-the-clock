@@ -79,6 +79,9 @@ jobs:
             echo "Standalone: $spec"
             node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap "$spec"
           done
+      - name: Candidate i confirms required test names in the full-suite log
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011i'
+        run: node verification/release-candidate-20261011i/check-required-test-names.mjs test-results.tap
       - name: No failures beyond the known list
         run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
         shell: bash
