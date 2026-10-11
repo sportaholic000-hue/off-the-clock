@@ -77,14 +77,41 @@ export function backupErasureStatus(deployment){
   }catch{return {ok:false,pendingOwners:null,error:'OFFSITE_RETENTION_STATUS_UNAVAILABLE'};}
 }
 
+const validOwner=row=>row&&typeof row.ownerId==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(row.ownerId)&&Number.isFinite(Date.parse(row.at));
 export function rememberBackupErasure(deployment,ownerId,at){
-  if(typeof ownerId!=='string'||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(ownerId)||!Number.isFinite(Date.parse(at)))throw Error('OFFSITE_RETENTION_OWNER_INVALID');
-  const root=path.join(deployment.backupPath,'.retention'),file=path.join(root,'owners.json');
-  assertRealContainment(deployment.root,file);fs.mkdirSync(root,{recursive:true,mode:0o700});
-  const ledger=fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):{version:1,owners:[]};
-  if(ledger.version!==1||!Array.isArray(ledger.owners)||ledger.owners.some(row=>!row||typeof row.ownerId!=='string'||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(row.ownerId)||!Number.isFinite(Date.parse(row.at))))throw Error('OFFSITE_RETENTION_LEDGER_INVALID');
-  if(!ledger.owners.some(row=>row.ownerId===ownerId)){
-    ledger.owners.push({ownerId,at});saveRetentionJson(file,ledger);
+  if(!validOwner({ownerId,at}))throw Error('OFFSITE_RETENTION_OWNER_INVALID');
+  const root=path.join(deployment.backupPath,'.retention'),legacy=path.join(root,'owners.json'),directory=path.join(root,'erased-owners');
+  for(const file of [legacy,directory])assertRealContainment(deployment.root,file);
+  fs.mkdirSync(directory,{recursive:true,mode:0o700});
+  function publish(row){
+    const file=path.join(directory,hash(row.ownerId)+'.json'),temporary=path.join(root,'.owner-receipt-'+randomUUID());
+    assertRealContainment(deployment.root,file);
+    try{
+      fs.writeFileSync(temporary,JSON.stringify({version:1,...row}),{flag:'wx',mode:0o600,flush:true});
+      // Publish a complete fsynced receipt without replacing any existing inode.
+      // Different owners cannot overwrite each other; the first same-owner
+      // receipt wins. A crash before link has not acknowledged an erasure.
+      try{fs.linkSync(temporary,file);}catch(error){if(error.code!=='EEXIST')throw error;}
+      const saved=JSON.parse(fs.readFileSync(file,'utf8'));
+      if(saved.version!==1||!validOwner(saved)||saved.ownerId!==row.ownerId)throw Error('OFFSITE_RETENTION_LEDGER_INVALID');
+      const fd=fs.openSync(directory,'r');try{fs.fsyncSync(fd);}finally{fs.closeSync(fd);}
+    }finally{fs.rmSync(temporary,{force:true});}
   }
-  return ledger.owners;
+  // Idempotent migration: retain the legacy file as read-only recovery evidence.
+  // Never rewrite or delete it. Interrupted/concurrent migrations can only add
+  // complete receipts, and retries import every legacy owner again safely.
+  if(fs.existsSync(legacy)){
+    const ledger=JSON.parse(fs.readFileSync(legacy,'utf8'));
+    if(ledger.version!==1||!Array.isArray(ledger.owners)||ledger.owners.some(row=>!validOwner(row)))throw Error('OFFSITE_RETENTION_LEDGER_INVALID');
+    for(const row of ledger.owners)publish(row);
+  }
+  publish({ownerId,at});
+  const parent=fs.openSync(root,'r');try{fs.fsyncSync(parent);}finally{fs.closeSync(parent);}
+  return fs.readdirSync(directory).sort().map(name=>{
+    const file=path.join(directory,name);assertRealContainment(deployment.root,file);
+    if(!/^[a-f0-9]{64}\.json$/.test(name))throw Error('OFFSITE_RETENTION_LEDGER_INVALID');
+    const row=JSON.parse(fs.readFileSync(file,'utf8'));
+    if(row.version!==1||!validOwner(row)||name!==hash(row.ownerId)+'.json')throw Error('OFFSITE_RETENTION_LEDGER_INVALID');
+    return {ownerId:row.ownerId,at:row.at};
+  });
 }

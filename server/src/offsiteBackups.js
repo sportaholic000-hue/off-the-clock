@@ -6,7 +6,7 @@ import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
 import {createContinuousOffsiteService} from './continuousOffsite.js';
-import {assertBackupRetentionIdle,withBackupRetentionLock,processLockOwner,removeStaleProcessLock} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock,acquireProcessLock} from './backupRetentionLock.js';
 import {eraseTenantBackupCopies} from './tenantBackupErasure.js';
 import {recordOffsiteUpload,backupErasureStatus} from './offsiteHistory.js';
 export {restoreContinuousBackup,pruneContinuousBackups} from './continuousOffsite.js';
@@ -99,8 +99,7 @@ export function createDailyOffsiteBackupService(database,deployment,{env=process
   async function perform() {
     if(stateInvalid)throw Error('OFFSITE_LOCAL_STATE_INVALID');
     // One writer per persistent volume; a live process's lock is never stolen.
-    removeStaleProcessLock(lockFile);
-    fs.writeFileSync(lockFile,JSON.stringify(processLockOwner()),{flag:'wx',mode:0o600,flush:true});
+    const release=acquireProcessLock(lockFile);
     try {
       // A second worker may have been constructed before the first saved its
       // artifact. Re-read under the lock, preserving that immutable retry.
@@ -135,7 +134,7 @@ export function createDailyOffsiteBackupService(database,deployment,{env=process
       await pruneOffsiteBackups(store,config);
       state.lastSuccessAt=now();state.lastBackupDay=day;state.pending=null;state.phase='SUCCEEDED';state.error=null;state.failures=0;state.nextRetryAt=null;save();fs.rmSync(file,{force:true});
       return status();
-    } finally {fs.rmSync(lockFile,{force:true});}
+    } finally {release();}
   }
   function run() {
     try{assertBackupRetentionIdle(deployment);}catch(error){return Promise.reject(error);}

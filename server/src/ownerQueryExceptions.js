@@ -1,6 +1,24 @@
 // Exact reviewed non-tenant SQL exceptions. Categories are limited by AGENTS.md.
 // Signatures, method and occurrence are checked; computed access is never allowed.
 export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
+{
+  "file": "server/src/backupRetentionLock.js",
+  "function": "acquireProcessLock",
+  "method": "exec",
+  "signature": "9863570d190791c5a1bb7f4081cdecd85cd6bc442835c1570dddbb6d16c1e9be",
+  "occurrence": 1,
+  "category": "admin",
+  "reason": "Administrative OS-backed backup/retention mutex transaction on a dedicated empty SQLite database; contains no tenant rows and cannot query the application database."
+},
+{
+  "file": "server/src/backupRetentionLock.js",
+  "function": "release",
+  "method": "exec",
+  "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+  "occurrence": 1,
+  "category": "admin",
+  "reason": "Administrative OS-backed backup/retention mutex transaction on a dedicated empty SQLite database; contains no tenant rows and cannot query the application database."
+},
   {
     "file": "server/src/staffService.js",
     "function": "accept",

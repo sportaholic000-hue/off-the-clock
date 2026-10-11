@@ -5,7 +5,7 @@ import {createSnapshot,restoreBackup} from './backups.js';
 import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
-import {assertBackupRetentionIdle,withBackupRetentionLock,processLockOwner,removeStaleProcessLock} from './backupRetentionLock.js';
+import {assertBackupRetentionIdle,withBackupRetentionLock,acquireProcessLock} from './backupRetentionLock.js';
 import {recordOffsiteUpload} from './offsiteHistory.js';
 
 const hash=value=>createHash('sha256').update(value).digest('hex');
@@ -113,9 +113,7 @@ export function createContinuousOffsiteService(database,deployment,{env=process.
       consecutiveFailures:state.failures,pendingChanges,pendingCheckpointId:state.pending?.checkpointId||null,error:state.error||sourceError};
   }
   async function perform(){
-    const token=randomUUID();
-    removeStaleProcessLock(lockFile);
-    fs.writeFileSync(lockFile,JSON.stringify({...processLockOwner(),token}),{flag:'wx',mode:0o600,flush:true});
+    const release=acquireProcessLock(lockFile);
     try{
       if(fs.existsSync(stateFile))try{state=readState();}catch{invalid=true;throw Error('OFFSITE_LOCAL_STATE_INVALID');}
       const current=sourceToken();
@@ -149,7 +147,7 @@ export function createContinuousOffsiteService(database,deployment,{env=process.
       if(state.lastPruneDay!==dayAt(now())){await pruneContinuousBackups(store,config,{now:now()});state.lastPruneDay=dayAt(now());}
       state.lastCheckpointId=record.checkpointId;state.lastSourceToken=record.sourceToken;state.lastSuccessAt=now();state.pending=null;state.phase='SUCCEEDED';state.error=null;state.failures=0;state.nextRetryAt=null;save();fs.rmSync(pendingFile,{force:true});
       return status();
-    }finally{if(fs.existsSync(lockFile)&&JSON.parse(fs.readFileSync(lockFile,'utf8')).token===token)fs.unlinkSync(lockFile);}
+    }finally{release();}
   }
   function run({draining=false}={}){
     try{assertBackupRetentionIdle(deployment);}catch(error){return Promise.reject(error);}
