@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: day90 complete cleanup is idempotent across live, local, daily and continuous copies
+ok 1 - day90 complete cleanup is idempotent across live, local, daily and continuous copies
+  ---
+  duration_ms: 1584.170551
+  type: 'test'
+  ...
+# Subtest: day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+ok 2 - day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+  ---
+  duration_ms: 545.558525
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — recovered
+ok 3 - day90 admin health is authenticated and secret-free — recovered
+  ---
+  duration_ms: 308.158283
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — permanent
+ok 4 - day90 admin health is authenticated and secret-free — permanent
+  ---
+  duration_ms: 247.222015
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3330.212753

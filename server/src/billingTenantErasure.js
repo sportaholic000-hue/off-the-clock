@@ -19,10 +19,10 @@ export const ERASED_TENANT_TABLES=Object.freeze([
   'webhookEndpoints','voiceForwardingArrivals','leads','quoteRequests','quotes','calls','customers',
   'calendarOAuthStates','calendarConnections','widgetSettings','quoteAccessKeys',
   'priceBookDrafts','priceBookCreationRecords','phoneProvisioningOperations',
-  'operatorCoverageOperations','businessProfiles','staffInvitations'
+  'operatorCoverageOperations','businessProfiles','staffInvitations','billingRetentionSecrets'
 ]);
 
-export function eraseTenantRows(database,ownerId,at,{ownerQuery}={}){
+export function eraseTenantRows(database,ownerId,at,{ownerQuery,preserveRetrySecrets=false}={}){
   database.exec('PRAGMA secure_delete=ON');
   installTenantErasureGuards(database);
   const query=usageOwnerQuery(database,ownerQuery);
@@ -46,7 +46,7 @@ export function eraseTenantRows(database,ownerId,at,{ownerQuery}={}){
       (SELECT id FROM users WHERE (id=@ownerId AND role='owner') OR (ownerId=@ownerId AND role='staff')))`).run({ownerId});
     for(const table of ['authSessions','authTokens'])query(`DELETE FROM ${table} WHERE userId IN
       (SELECT id FROM users WHERE (id=@ownerId AND role='owner') OR (ownerId=@ownerId AND role='staff'))`).run({ownerId});
-    for(const table of ERASED_TENANT_TABLES)if(tables.has(table))query(`DELETE FROM ${table} WHERE ownerId=?`).run(ownerId);
+    for(const table of ERASED_TENANT_TABLES)if(tables.has(table)&&!(preserveRetrySecrets&&table==='billingRetentionSecrets'))query(`DELETE FROM ${table} WHERE ownerId=?`).run(ownerId);
     query("DELETE FROM users WHERE ownerId=? AND role='staff'").run(ownerId);
     query("DELETE FROM voicePlatformAlerts WHERE json_valid(detailsJson) AND json_extract(detailsJson,'$.ownerId')=?").run(ownerId);
     query(`DELETE FROM ownerEmailDeliveries WHERE ownerId=? AND id NOT IN
@@ -65,7 +65,9 @@ export function eraseTenantRows(database,ownerId,at,{ownerQuery}={}){
 // erasure transaction. Reject those late writes at the storage boundary.
 export function installTenantErasureGuards(database){
   const tables=new Set(database.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(row=>row.name));
-  for(const table of [...ERASED_TENANT_TABLES,'voiceToolIdempotencyReceipts','users'])if(tables.has(table)){
+  // Retention's private retry table is intentionally writable after the account
+  // tombstone; it has no product/API write path and expires within 30 days.
+  for(const table of [...ERASED_TENANT_TABLES,'voiceToolIdempotencyReceipts','users'].filter(table=>table!=='billingRetentionSecrets'))if(tables.has(table)){
     for(const operation of ['INSERT','UPDATE'])database.exec(`CREATE TRIGGER IF NOT EXISTS retention_${table}_${operation}
       BEFORE ${operation} ON ${table} WHEN EXISTS(SELECT 1 FROM users WHERE id=NEW.ownerId AND dataDeletedAt IS NOT NULL)
       BEGIN SELECT RAISE(ABORT,'ACCOUNT_ERASED'); END`);

@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: day90 missing settings: prior uploads stay pending — OFFSITE_NOT_CONFIGURED
+ok 1 - day90 missing settings: prior uploads stay pending — OFFSITE_NOT_CONFIGURED
+  ---
+  duration_ms: 831.719318
+  type: 'test'
+  ...
+# Subtest: day90 missing settings: prior uploads stay pending — OFFSITE_CONFIG_INVALID
+ok 2 - day90 missing settings: prior uploads stay pending — OFFSITE_CONFIG_INVALID
+  ---
+  duration_ms: 650.198715
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1793.206591

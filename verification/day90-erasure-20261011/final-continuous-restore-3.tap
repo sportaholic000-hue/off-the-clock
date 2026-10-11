@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: same-day database and book changes recover without waiting for the next nightly backup
+ok 1 - same-day database and book changes recover without waiting for the next nightly backup
+  ---
+  duration_ms: 333.262717
+  type: 'test'
+  ...
+# Subtest: same-day restart captures another SQLite connection’s WAL commit, not yesterday’s snapshot
+ok 2 - same-day restart captures another SQLite connection’s WAL commit, not yesterday’s snapshot
+  ---
+  duration_ms: 121.609853
+  type: 'test'
+  ...
+# Subtest: production scheduler automatically replicates commits and book-only replacements within the same day
+ok 3 - production scheduler automatically replicates commits and book-only replacements within the same day
+  ---
+  duration_ms: 222.11382
+  type: 'test'
+  ...
+# Subtest: unchanged state does not create duplicate checkpoints and uploaded archives contain no plaintext
+ok 4 - unchanged state does not create duplicate checkpoints and uploaded archives contain no plaintext
+  ---
+  duration_ms: 173.728964
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# Subtest: failed publication is visible, retains immutable retry bytes, and catches up after restart
+ok 5 - failed publication is visible, retains immutable retry bytes, and catches up after restart
+  ---
+  duration_ms: 372.247564
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: lost continuous upload response does not overwrite accepted data on restart
+ok 6 - lost continuous upload response does not overwrite accepted data on restart
+  ---
+  duration_ms: 141.660368
+  type: 'test'
+  ...
+# Subtest: changes committed during an upload trigger a subsequent automatic checkpoint
+ok 7 - changes committed during an upload trigger a subsequent automatic checkpoint
+  ---
+  duration_ms: 194.57958
+  type: 'test'
+  ...

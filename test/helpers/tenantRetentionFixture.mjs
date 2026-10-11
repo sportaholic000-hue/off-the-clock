@@ -8,7 +8,7 @@ import {migrateDatabase,backfillWidgetLeads} from '../../server/src/migrations.j
 import {installTelephonyOperationsSchema} from '../../server/src/telephonyOperationsMigration.js';
 import {createVoiceDurationRecovery} from '../../server/src/voiceDurationRecovery.js';
 import {createAuthSessionService} from '../../server/src/authSessionService.js';
-import {encryptCredentialPayload} from '../../server/src/credentialEncryption.js';
+import {encryptCredentialPayload,decryptCredentialPayload} from '../../server/src/credentialEncryption.js';
 
 export const A='SYNTHETIC-erased-business',B='SYNTHETIC-kept-business';
 export const END='2026-11-20T12:00:00.000Z',DEADLINE='2027-02-18T12:00:00.000Z',START='2026-10-20T12:00:00.000Z';
@@ -30,12 +30,19 @@ export function businessRows(db,ownerId){
     ||(table==='voiceModelFailures'&&callKeys.has(row.callKey))
     ||(table==='voiceToolIdempotencyReceipts'&&scopes.has(row.scopeHash)))]));
 }
-export function assertErased(assert,db){
+export function assertErased(assert,db,{allowRetrySecrets=false}={}){
   assert.deepEqual(db.prepare('PRAGMA table_info(users)').all().map(c=>c.name).sort(),
     ['id','ownerId','email','passwordHash','firstName','businessName','plan','planStatus','trialEndsAt','paymentFailedAt',
       'annualPaidThroughAt','paidThroughAt','serviceEndsAt','emailVerifiedAt','dataDeletedAt','timezone','role','createdAt'].sort());
   for(const [table,rows] of Object.entries(tableRows(db)))for(const row of rows){
     if(!JSON.stringify(row).includes(A))continue;
+    if(table==='billingRetentionSecrets'){
+      assert.ok(allowRetrySecrets,'Unexpected surviving retry material');
+      const state=JSON.parse(db.prepare('SELECT retentionStateJson FROM billingCancellations WHERE ownerId=?').get(A).retentionStateJson);
+      if(row.credentialsCiphertext){assert.equal(state.steps.calendar.status,'PENDING');assert.deepEqual(decryptCredentialPayload(row,{key:KEY}),{refreshToken:'[SYNTHETIC] refresh '+A});}
+      if(row.phoneNumberSid)assert.equal(state.steps.phone.status,'PENDING');
+      continue;
+    }
     assert.ok(BILLING.has(table),'Unexpected surviving tenant row: '+table);
     if(['events','outboxEvents'].includes(table))assert.match(row.eventType,/^billing\./);
     if(table==='ownerEmailDeliveries')assert.match(db.prepare('SELECT eventType FROM outboxEvents WHERE id=?').get(row.id).eventType,/^billing\./);
@@ -98,7 +105,7 @@ export function retentionFixture(t){
     return db.prepare(`SELECT * FROM "${table}" WHERE ownerId=?`).get(ownerId);
   }
   const tables=db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(r=>r.name);
-  for(const table of tables)if(!BILLING.has(table)&&table!=='staffInvitations'&&db.prepare(`PRAGMA table_info("${table}")`).all().some(c=>c.name==='ownerId'))for(const owner of [A,B])seed(table,owner);
+  for(const table of tables)if(!BILLING.has(table)&&!['staffInvitations','billingRetentionSecrets'].includes(table)&&db.prepare(`PRAGMA table_info("${table}")`).all().some(c=>c.name==='ownerId'))for(const owner of [A,B])seed(table,owner);
   // Exercise candidate f's merged records in the same day-90 inventory and
   // pre-erasure backup restore oracle: widget leads, their quote/customer
   // links, confirmed booking links, and leads created by the real backfill.

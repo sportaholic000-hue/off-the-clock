@@ -24,8 +24,11 @@ export function subscriptionFacts(object, priceConfiguration, fail) {
     (recurring?.interval_count===1||recurring?.interval_count===undefined ? ({month:'monthly',year:'annual'}[recurring?.interval]||null):null);
   const billingAnchor=object.billing_cycle_anchor ?? object.trial_end ?? start;
   if(billingAnchor!==null&&!billingIso(billingAnchor))throw fail('INVALID_PERIOD','Subscription anniversary is invalid.');
+  for(const value of [object.ended_at,object.canceled_at])if(value!=null&&!billingIso(value))throw fail('INVALID_PERIOD','Subscription end time is invalid.');
   return {priceId, plan, billingInterval, billingAnchor, status:object.status, trialStart:object.trial_start ?? object.created ?? null,
     trialEnd:object.trial_end ?? null, periodStart:start, periodEnd:end,
+    ...(object.ended_at!=null?{endedAt:object.ended_at}:{}),
+    ...(object.canceled_at!=null?{canceledAt:object.canceled_at}:{}),
     cancelAtPeriodEnd:typeof object.cancel_at_period_end === 'boolean' ? object.cancel_at_period_end : null,
     paymentMethodId:billingReference(object.default_payment_method), latestInvoiceId:billingReference(object.latest_invoice)};
 }

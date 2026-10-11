@@ -1,0 +1,93 @@
+TAP version 13
+# Subtest: day90 removes abandoned download, decrypt and restore staging copies
+not ok 1 - day90 removes abandoned download, decrypt and restore staging copies
+  ---
+  duration_ms: 825.088934
+  type: 'test'
+  location: '/workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Abandoned private copy remains: /workspace/scratch/b90ce13a86ef/tmp/SYNTHETIC-retention-knitTx/backups/.offsite/verify-11111111-1111-4111-8111-111111111111
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:59:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: day90 serializes erasure with an in-flight daily restore
+not ok 2 - day90 serializes erasure with an in-flight daily restore
+  ---
+  duration_ms: 690.699869
+  type: 'test'
+  location: '/workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:68:42'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:75:7)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: day90 serializes erasure with an in-flight continuous restore
+not ok 3 - day90 serializes erasure with an in-flight continuous restore
+  ---
+  duration_ms: 669.821859
+  type: 'test'
+  location: '/workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:68:42'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:75:7)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock
+not ok 4 - day90 local restore cannot race a held erasure lock
+  ---
+  duration_ms: 478.305794
+  type: 'test'
+  location: '/workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    file:///workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:87:12
+    async withBackupRetentionLock (file:///workspace/scratch/b90ce13a86ef/off-the-clock/server/src/backupRetentionLock.js:19:14)
+    async TestContext.<anonymous> (file:///workspace/scratch/b90ce13a86ef/off-the-clock/test/day90Guarantees20261011.spec.mjs:82:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3018.02134

@@ -223,7 +223,7 @@ installOwnerAlertRoutes(app,{service:ownerAlerts,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);
 const offsiteBackups = createOffsiteBackupService(db,deploymentConfig);
-installOffsiteBackupStatusRoute(app,{service:offsiteBackups,requireAuth});
+installOffsiteBackupStatusRoute(app,{service:offsiteBackups,requireAuth,retentionStatus:()=>customerLifecycle.retentionStatus()});
 
 if (process.env.NODE_ENV !== 'production') {
   app.get('/api/schema', (_req, res) => res.json({ createTableStatements: CREATE_TABLE_STATEMENTS }));
@@ -471,7 +471,8 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
 });
 
 app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
-  res.set('Cache-Control','no-store').json({ shell: 'admin', voice:voiceAdmissionStatus(db), sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
+  const retention=customerLifecycle.retentionStatus();
+  res.set('Cache-Control','no-store').status(retention.ok?200:503).json({ shell: 'admin', voice:voiceAdmissionStatus(db), retention, sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
 });
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');

@@ -1,0 +1,168 @@
+TAP version 13
+# Subtest: day90 missing settings: prior uploads stay pending — OFFSITE_NOT_CONFIGURED
+ok 1 - day90 missing settings: prior uploads stay pending — OFFSITE_NOT_CONFIGURED
+  ---
+  duration_ms: 1466.791971
+  type: 'test'
+  ...
+# Subtest: day90 missing settings: prior uploads stay pending — OFFSITE_CONFIG_INVALID
+ok 2 - day90 missing settings: prior uploads stay pending — OFFSITE_CONFIG_INVALID
+  ---
+  duration_ms: 1158.69384
+  type: 'test'
+  ...
+# Subtest: day90 stale replacement: A fails, B completes, A retries — daily
+ok 3 - day90 stale replacement: A fails, B completes, A retries — daily
+  ---
+  duration_ms: 1451.931014
+  type: 'test'
+  ...
+# Subtest: day90 stale replacement: A fails, B completes, A retries — continuous
+ok 4 - day90 stale replacement: A fails, B completes, A retries — continuous
+  ---
+  duration_ms: 2045.132365
+  type: 'test'
+  ...
+# Subtest: day90 removes abandoned download, decrypt and restore staging copies
+ok 5 - day90 removes abandoned download, decrypt and restore staging copies
+  ---
+  duration_ms: 1457.330022
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight daily restore
+ok 6 - day90 serializes erasure with an in-flight daily restore
+  ---
+  duration_ms: 988.809467
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight continuous restore
+ok 7 - day90 serializes erasure with an in-flight continuous restore
+  ---
+  duration_ms: 912.084163
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — volume
+ok 8 - day90 local restore cannot race a held erasure lock — volume
+  ---
+  duration_ms: 455.420783
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — nested
+ok 9 - day90 local restore cannot race a held erasure lock — nested
+  ---
+  duration_ms: 490.35641
+  type: 'test'
+  ...
+# Subtest: day90 complete cleanup is idempotent across live, local, daily and continuous copies
+ok 10 - day90 complete cleanup is idempotent across live, local, daily and continuous copies
+  ---
+  duration_ms: 1347.576201
+  type: 'test'
+  ...
+# Subtest: day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+ok 11 - day90 snapshots and both remote backup streams exclude bounded provider retry secrets
+  ---
+  duration_ms: 784.148751
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — recovered
+ok 12 - day90 admin health is authenticated and secret-free — recovered
+  ---
+  duration_ms: 221.948952
+  type: 'test'
+  ...
+# Subtest: day90 admin health is authenticated and secret-free — permanent
+ok 13 - day90 admin health is authenticated and secret-free — permanent
+  ---
+  duration_ms: 179.489285
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope success
+ok 14 - day-90 complete tenant inventory, Google legacy full-scope success
+  ---
+  duration_ms: 213.207757
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope http-error
+ok 15 - day-90 complete tenant inventory, Google legacy full-scope http-error
+  ---
+  duration_ms: 151.000261
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope network-error
+ok 16 - day-90 complete tenant inventory, Google legacy full-scope network-error
+  ---
+  duration_ms: 166.46597
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google legacy full-scope timeout
+ok 17 - day-90 complete tenant inventory, Google legacy full-scope timeout
+  ---
+  duration_ms: 221.602381
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed success
+ok 18 - day-90 complete tenant inventory, Google narrowed success
+  ---
+  duration_ms: 167.068623
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed http-error
+ok 19 - day-90 complete tenant inventory, Google narrowed http-error
+  ---
+  duration_ms: 182.932486
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed network-error
+ok 20 - day-90 complete tenant inventory, Google narrowed network-error
+  ---
+  duration_ms: 151.834609
+  type: 'test'
+  ...
+# Subtest: day-90 complete tenant inventory, Google narrowed timeout
+ok 21 - day-90 complete tenant inventory, Google narrowed timeout
+  ---
+  duration_ms: 194.397126
+  type: 'test'
+  ...
+# Subtest: filesystem failure disables sign-in immediately and retries completion after restart
+ok 22 - filesystem failure disables sign-in immediately and retries completion after restart
+  ---
+  duration_ms: 153.741199
+  type: 'test'
+  ...
+# Subtest: legacy partial erasures receive expanded cleanup and retry even with an old completion timestamp
+ok 23 - legacy partial erasures receive expanded cleanup and retry even with an old completion timestamp
+  ---
+  duration_ms: 167.361991
+  type: 'test'
+  ...
+# Subtest: local, daily and continuous backups erase A while preserving B; failed remote replacement retries
+ok 24 - local, daily and continuous backups erase A while preserving B; failed remote replacement retries
+  ---
+  duration_ms: 1120.835733
+  type: 'test'
+  ...
+# An error was encountered in a non-retryable streaming request.
+# An error was encountered in a non-retryable streaming request.
+# Subtest: unpublished encrypted retries are redacted before backup workers resume
+ok 25 - unpublished encrypted retries are redacted before backup workers resume
+  ---
+  duration_ms: 558.515314
+  type: 'test'
+  ...
+# Subtest: backups captured between database erasure and file deletion still erase the owned pricebook
+ok 26 - backups captured between database erasure and file deletion still erase the owned pricebook
+  ---
+  duration_ms: 672.751822
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7365.70773

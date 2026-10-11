@@ -8,6 +8,7 @@ import {encryptBundle,decryptBundle,fileChecksum} from './offsiteArchive.js';
 import {assertRealContainment} from './deploymentConfig.js';
 import {withBackupRetentionLock} from './backupRetentionLock.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
+import {requireOffsiteErasureInventory,rememberBackupErasure} from './offsiteHistory.js';
 
 const hash=value=>createHash('sha256').update(value).digest('hex');
 function save(file,value){
@@ -19,7 +20,10 @@ function scrubBundle(bundle,ownerId,at){
   const manifestFile=path.join(bundle,'manifest.json'),hasManifest=fs.existsSync(manifestFile),journal=path.join(bundle,'.erasure-in-progress');
   // An interrupted rewrite has its original manifest plus this durable marker.
   // Otherwise validate the source before modifying any recovery material.
-  if(hasManifest&&!fs.existsSync(journal))verifyBackup(bundle);
+  if(hasManifest&&!fs.existsSync(journal)){
+    const verified=verifyBackup(bundle);
+    if(verified.tenantErasureVersion===2&&verified.erasedOwners?.includes(ownerId)&&!fs.existsSync(path.join(bundle,'pricebooks',ownerId+'.json')))return false;
+  }
   const file=path.join(bundle,'off-the-clock.sqlite');assertRealContainment(bundle,file);
   const db=new Database(file,{fileMustExist:true});let changed=false;
   try{
@@ -41,6 +45,7 @@ function scrubBundle(bundle,ownerId,at){
   }finally{db.close();}
   if(hasManifest&&changed){
     const manifest=JSON.parse(fs.readFileSync(manifestFile,'utf8'));
+    manifest.tenantErasureVersion=2;manifest.erasedOwners=[...new Set([...(manifest.erasedOwners||[]),ownerId])].sort();
     manifest.files=manifest.files.filter(entry=>entry.name!=='pricebooks/'+ownerId+'.json').map(entry=>{
       if(!(entry.name==='off-the-clock.sqlite'||/^pricebooks\/[A-Za-z0-9][A-Za-z0-9_-]{0,127}\.json$/.test(entry.name)))throw Error('BACKUP_MANIFEST_INVALID');
       assertRealContainment(bundle,path.join(bundle,entry.name));
@@ -57,6 +62,14 @@ function localBundles(root,ownerId,at){
     if(!entry.isDirectory())continue;
     const directory=path.join(root,entry.name);
     if(fs.existsSync(path.join(directory,'off-the-clock.sqlite')))scrubBundle(directory,ownerId,at);
+  }
+}
+function removeAbandonedCopies(root,pattern){
+  if(!fs.existsSync(root))return;
+  for(const entry of fs.readdirSync(root,{withFileTypes:true}))if(pattern.test(entry.name)){
+    const file=path.join(root,entry.name);assertRealContainment(root,file);
+    if(entry.isSymbolicLink())throw Error('BACKUP_UNSAFE_DIRECTORY');
+    fs.rmSync(file,{recursive:entry.isDirectory(),force:true});
   }
 }
 function assertNoWorker(directory){
@@ -79,23 +92,57 @@ export async function eraseTenantBackupCopies(ownerId,deployment,{config={enable
     const daily=path.join(deployment.backupPath,'.offsite'),continuous=path.join(deployment.backupPath,'.offsite-continuous');
     for(const directory of [daily,continuous,path.join(continuous,'snapshots')])assertRealContainment(deployment.root,directory);
     assertNoWorker(daily);assertNoWorker(continuous);
-    localBundles(deployment.backupPath,ownerId,at);
-    localBundles(path.join(continuous,'snapshots'),ownerId,at);
-    if(deployment.volume){assertRealContainment(deployment.volume,path.join(deployment.volume,'restores'));localBundles(path.join(deployment.volume,'restores'),ownerId,at);}
+    // Workers are drained and restores share this lock. These are unpublished,
+    // redundant staging copies left by a crash, not recovery points. Removing
+    // them does not remove another business from any verified backup.
+    for(const directory of [daily,continuous])removeAbandonedCopies(directory,/^verify-[a-f0-9-]{36}$/);
+    for(const directory of [deployment.backupPath,path.join(continuous,'snapshots')])removeAbandonedCopies(directory,/^\.partial-snapshot-\d{13}-[a-f0-9-]{36}$/);
+    if(deployment.volume){
+      const restores=path.join(deployment.volume,'restores');assertRealContainment(deployment.volume,restores);
+      removeAbandonedCopies(restores,/^\.(?:(?:offsite|continuous)-[A-Za-z0-9]{6}|restore-[a-f0-9-]{36})$/);
+    }
+    // Serialized with publication. An intent is monotonic even when its first
+    // attempt fails: every later replacement must honor every recorded owner.
+    const owners=rememberBackupErasure(deployment,ownerId,at);
+    for(const owner of owners){
+      localBundles(deployment.backupPath,owner.ownerId,owner.at);
+      localBundles(path.join(continuous,'snapshots'),owner.ownerId,owner.at);
+      if(deployment.volume){assertRealContainment(deployment.volume,path.join(deployment.volume,'restores'));localBundles(path.join(deployment.volume,'restores'),owner.ownerId,owner.at);}
+    }
     const work=path.join(deployment.backupPath,'.retention',hash(ownerId));assertRealContainment(deployment.root,work);
     fs.mkdirSync(work,{recursive:true,mode:0o700});
+    // Local plaintext copies have already been erased. Missing settings cannot
+    // turn a historical or ambiguous upload into proof of no remote copies.
+    requireOffsiteErasureInventory(deployment,config,store);
     async function cleanArchive(source,record,directory){
       const bundle=path.join(directory,'bundle');await decryptBundle(source,bundle,config.key);
-      if(!scrubBundle(bundle,ownerId,at))return null;
+      let changed=false;
+      for(const owner of owners)changed=scrubBundle(bundle,owner.ownerId,owner.at)||changed;
+      if(!changed)return null;
       const clean=path.join(directory,'clean.enc'),metadata=await encryptBundle(bundle,clean,config.key);
       return {...record,...metadata};
     }
-    async function publish(directory,record){
-      if(!validKey(record.key,config)||await fileChecksum(path.join(directory,'clean.enc'))!==record.sha256)throw Error('OFFSITE_RETENTION_JOURNAL_INVALID');
+    function journalArchive(directory,journal){
+      const name=journal.archive||'clean.enc';
+      if(!/^(?:clean|replacement-[a-f0-9]{64})\.enc$/.test(name))throw Error('OFFSITE_RETENTION_JOURNAL_INVALID');
+      const file=path.join(directory,name);assertRealContainment(deployment.root,file);return file;
+    }
+    function saveReplacement(directory,record,source){
+      const archive='replacement-'+record.sha256+'.enc',target=path.join(directory,archive);
+      fs.renameSync(source,target);
+      const journal={version:2,record,archive};save(path.join(directory,'replacement.json'),journal);
+      // The new pair is durable before deleting its predecessor. A crash sees
+      // either journal and a matching immutable archive, never mismatched bytes.
+      for(const name of fs.readdirSync(directory))if(name!==archive&&/^(?:clean|replacement-[a-f0-9]{64})\.enc$/.test(name))fs.rmSync(path.join(directory,name));
+      return journal;
+    }
+    async function publish(directory,journal){
+      const record=journal.record||journal,archive=journalArchive(directory,journal);
+      if(!validKey(record.key,config)||await fileChecksum(archive)!==record.sha256)throw Error('OFFSITE_RETENTION_JOURNAL_INVALID');
       const head=await store.head(record.key);
       if(head?.ContentLength!==record.bytes||head?.Metadata?.sha256!==record.sha256){
         await store.remove(record.key+'.json');await store.remove(record.key);
-        await store.putFile(record.key,path.join(directory,'clean.enc'),record.sha256);
+        await store.putFile(record.key,archive,record.sha256);
       }
       const check=path.join(directory,'check.enc');fs.rmSync(check,{force:true});
       await store.download(record.key,check,record.bytes);
@@ -106,13 +153,36 @@ export async function eraseTenantBackupCopies(ownerId,deployment,{config={enable
       }
       fs.rmSync(directory,{recursive:true,force:true});
     }
-    // Finish any durable clean replacement before discovering remote objects.
-    for(const entry of fs.readdirSync(work,{withFileTypes:true}))if(entry.isDirectory()){
-      const directory=path.join(work,entry.name),journal=path.join(directory,'replacement.json');
-      if(fs.existsSync(journal)){
-        if(!config.enabled||!store)throw Error('OFFSITE_RETENTION_CONFIG_REQUIRED');
-        await publish(directory,JSON.parse(fs.readFileSync(journal,'utf8')));
-      }else fs.rmSync(directory,{recursive:true,force:true});
+    async function rebase(directory,journal){
+      const record=journal.record||journal,archive=journalArchive(directory,journal);
+      if(!validKey(record.key,config)||record.keyId!==hash(config.key)||await fileChecksum(archive)!==record.sha256)throw Error('OFFSITE_RETENTION_JOURNAL_INVALID');
+      const stage=fs.mkdtempSync(path.join(directory,'rebase-'));
+      try{
+        const current=await store.head(record.key),source=path.join(stage,'source.enc');
+        let base=record;
+        if(current){
+          base={...record,bytes:current.ContentLength,sha256:current.Metadata?.sha256};
+          await store.download(record.key,source,base.bytes);
+          if(await fileChecksum(source)!==base.sha256)throw Error('OFFSITE_CHECKSUM_MISMATCH');
+        }else fs.copyFileSync(archive,source);
+        // Rebuild from the CURRENT object. If a failed delete/upload removed it,
+        // the durable recovery copy is usable only after ALL erasures are applied.
+        const clean=await cleanArchive(source,base,stage);
+        return saveReplacement(directory,clean||base,clean?path.join(stage,'clean.enc'):source);
+      }finally{fs.rmSync(stage,{recursive:true,force:true});}
+    }
+    // Another owner's completion must also clean any old local retry copies;
+    // otherwise those copies could reintroduce that owner's data on a replay.
+    const retentionRoot=path.dirname(work);
+    for(const tenant of fs.readdirSync(retentionRoot,{withFileTypes:true}))if(tenant.isDirectory()&&/^[a-f0-9]{64}$/.test(tenant.name)){
+      const tenantWork=path.join(retentionRoot,tenant.name);assertRealContainment(deployment.root,tenantWork);
+      for(const entry of fs.readdirSync(tenantWork,{withFileTypes:true}))if(entry.isDirectory()){
+        const directory=path.join(tenantWork,entry.name),journal=path.join(directory,'replacement.json');assertRealContainment(deployment.root,directory);
+        if(fs.existsSync(journal)){
+          if(!config.enabled||!store)throw Error('OFFSITE_RETENTION_CONFIG_REQUIRED');
+          await publish(directory,await rebase(directory,JSON.parse(fs.readFileSync(journal,'utf8'))));
+        }else fs.rmSync(directory,{recursive:true,force:true});
+      }
     }
     // Unpublished retries must be redacted too; preserve their original key and
     // source token while updating checksums in the persistent worker state.
@@ -154,10 +224,10 @@ export async function eraseTenantBackupCopies(ownerId,deployment,{config={enable
           const encrypted=path.join(directory,'source.enc');await store.download(key,encrypted,sourceRecord.bytes);
           if(await fileChecksum(encrypted)!==sourceRecord.sha256)throw Error('OFFSITE_CHECKSUM_MISMATCH');
           const clean=await cleanArchive(encrypted,sourceRecord,directory);
-          if(!clean)continue;
-          fs.rmSync(encrypted);fs.rmSync(path.join(directory,'bundle'),{recursive:true,force:true});
-          save(path.join(directory,'replacement.json'),clean);durable=true;
-          await publish(directory,clean);
+          if(!clean&&record)continue;
+          const journal=saveReplacement(directory,clean||sourceRecord,clean?path.join(directory,'clean.enc'):encrypted);durable=true;
+          fs.rmSync(encrypted,{force:true});fs.rmSync(path.join(directory,'bundle'),{recursive:true,force:true});
+          await publish(directory,journal);
         }finally{if(!durable)fs.rmSync(directory,{recursive:true,force:true});}
       }
     }

@@ -300,7 +300,8 @@ test('service end does not attempt a carrier shutdown or claim confirmation',asy
 test('phone release failure retains its saved SID and retries only that tenant',async t=>{
   const f=setup(t);f.activate();f.profile();f.setTime('2026-11-01T12:00:00.000Z');await f.lifecycle.cancel(A);f.setTime('2026-12-20T12:00:00.000Z');
   const service=createBillingCustomerLifecycle({database:f.db,clock:f.clock,enabled:()=>true,releaseNumber:async()=>{throw Error('SYNTHETIC timeout');}});
-  await assert.rejects(service.processOwner(A));assert.equal(f.lifecycle.snapshot(A).cancellation.phoneReleasedAt,null);assert.ok(f.db.prepare('SELECT twilioNumberSid FROM businessProfiles WHERE ownerId=?').get(A).twilioNumberSid);
+  await service.processOwner(A);assert.equal(f.lifecycle.snapshot(A).cancellation.phoneReleasedAt,null);assert.ok(f.db.prepare('SELECT twilioNumberSid FROM businessProfiles WHERE ownerId=?').get(A).twilioNumberSid);
+  assert.equal(JSON.parse(f.lifecycle.snapshot(A).cancellation.retentionStateJson).steps.phone.status,'PENDING');
   await f.lifecycle.processOwner(A);assert.equal(f.writes.release.length,1);assert.equal(f.writes.release[0].ownerId,A);
 });
 test('a delayed cleanup worker does not release a phone reactivated within its 30-day window',async t=>{
