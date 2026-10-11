@@ -11,7 +11,7 @@ import {createCalendarRetentionRevoker} from '../server/src/calendarRetentionRev
 import {eraseTenantPricebookFiles} from '../server/src/billingTenantErasure.js';
 import {createOffsiteBackupService} from '../server/src/offsiteBackups.js';
 import {createSnapshot,startBackupScheduler} from '../server/src/backups.js';
-import {withBackupRetentionLock} from '../server/src/backupRetentionLock.js';
+import {withBackupRetentionLock,processLockOwner} from '../server/src/backupRetentionLock.js';
 
 const SID='PN'+'d'.repeat(32);
 async function setup(t){
@@ -98,4 +98,13 @@ test('retention hardening: startup retries partial cleanup after a live restore 
   await assert.rejects(worker.ready,/OFFSITE_BUSY/);release();await held;
   t.mock.timers.tick(60000);await startedBackup;await worker.stop();
   assert.equal(partialAtBackup,false,'Startup retry skipped abandoned snapshot cleanup');
+});
+test('retention hardening: a clean startup does not block scheduled snapshots on active off-site workers',async t=>{
+  const f=retentionFixture(t);t.mock.timers.enable({apis:['setTimeout']});let snapshots=0;
+  const worker=startBackupScheduler(f.db,{...f.deployment,backupIntervalMs:3600000},{now:()=>f.clock().getTime(),onError:()=>{},takeSnapshot:async()=>{snapshots++;}});
+  await worker.ready;
+  const directory=path.join(f.deployment.backupPath,'.offsite');fs.mkdirSync(directory,{recursive:true});
+  fs.writeFileSync(path.join(directory,'run.lock'),JSON.stringify(processLockOwner()));
+  t.mock.timers.tick(0);await new Promise(resolve=>setImmediate(resolve));await worker.stop();
+  assert.equal(snapshots,1,'Ordinary backup acquired an unnecessary cleanup lock and collided with an active off-site worker');
 });

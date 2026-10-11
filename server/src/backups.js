@@ -204,20 +204,24 @@ export function restoreBackup(bundle, target, {volume} = {}) {
 }
 
 export function startBackupScheduler(database,config,{takeSnapshot=()=>createSnapshot(database,config),now=Date.now,onError=()=>console.error('[backup] BACKUP_FAILED')}={}) {
-  let stopped=false,timer,active,lastSuccess=0;
+  let stopped=false,timer,active,lastSuccess=0,cleanupPending=true;
   for(const snapshot of listSnapshots(config.backupPath)) {
     try {verifyBackup(snapshot.bundle);if(snapshot.createdAtMs <= now()+60000){lastSuccess=snapshot.createdAtMs;break;}} catch {}
   }
   const tick=()=>{
     if(stopped)return;
     let succeeded=false;
-    active=cleanupAbandonedSnapshots(config).then(takeSnapshot).then(()=>{lastSuccess=now();succeeded=true;},()=>{onError('BACKUP_FAILED');}).finally(()=>{
+    // A failed startup cleanup must retry, but a clean startup must not take
+    // the erasure mutex again and collide with ordinary off-site publication.
+    const preparing=cleanupPending?cleanupAbandonedSnapshots(config).then(()=>{cleanupPending=false;}):Promise.resolve();
+    active=preparing.then(takeSnapshot).then(()=>{lastSuccess=now();succeeded=true;},()=>{onError('BACKUP_FAILED');}).finally(()=>{
       active=null;
       if(!stopped){timer=setTimeout(tick,succeeded ? config.backupIntervalMs : Math.min(config.backupIntervalMs,60000));timer.unref?.();}
     });
   };
   const ready=cleanupAbandonedSnapshots(config);
   ready.then(()=>{
+    cleanupPending=false;
     if(stopped)return;
     const wait=Math.max(0,lastSuccess+config.backupIntervalMs-now());timer=setTimeout(tick,wait);timer.unref?.();
   },()=>{onError('BACKUP_STAGING_PENDING');if(!stopped){timer=setTimeout(tick,60000);timer.unref?.();}});
