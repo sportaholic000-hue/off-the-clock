@@ -1,0 +1,101 @@
+{
+  "run": 38175997495,
+  "jobId": 114578396797,
+  "conclusion": "success",
+  "sourceCommit": "1c0b772f3f84b0286ee37cf15d51bbc0a2b70aef",
+  "voice": "PASS: production Docker image, no specs, voice enabled, synthetic credentials, network disabled, /api/health 200",
+  "proofs": [
+    {
+      "passed": true,
+      "sourceCommit": "1c0b772f3f84b0286ee37cf15d51bbc0a2b70aef",
+      "imageId": "sha256:6b145056e01979f6f39e2045b96d6da87e316bd10eb59acecd8c184dea35bf06",
+      "checks": [
+        "clean lockfile dependencies and rebuilt bundles; existing demo bytes/routes preserved; private files inaccessible",
+        "real Linux SIGTERM drains HTTP/workers and closes SQLite; same-container restart retains database and price books",
+        "fresh container redeploy retains data; actual restore CLI creates verified new root; fresh production process reads restored data",
+        "startup refuses missing actual mount and Railway development-mode override"
+      ]
+    },
+    {
+      "passed": true,
+      "sourceCommit": "1c0b772f3f84b0286ee37cf15d51bbc0a2b70aef",
+      "imageId": "sha256:6b145056e01979f6f39e2045b96d6da87e316bd10eb59acecd8c184dea35bf06",
+      "network": "none",
+      "checks": [
+        "initial startup: production user acquires existing private mutex; child is excluded; inode unchanged",
+        "normal restart: production user acquires existing private mutex; child is excluded; inode unchanged",
+        "fresh-container redeploy: production user acquires existing private mutex; child is excluded; inode unchanged",
+        "actual restore CLI after release: production user acquires existing private mutex; child is excluded; inode unchanged",
+        "actual restore CLI: blocked while mutex held without creating a target; succeeds after release as unchanged production user",
+        "restored-root startup: production user acquires existing private mutex; child is excluded; inode unchanged"
+      ],
+      "observations": [
+        {
+          "label": "initial startup",
+          "lock": {
+            "uid": 0,
+            "gid": 0,
+            "serverUid": 0,
+            "file": "/data/backups/.tenant-erasure.lock.sqlite",
+            "ino": 4800825,
+            "dev": 2049,
+            "mode": 384,
+            "parentMode": 448
+          }
+        },
+        {
+          "label": "normal restart",
+          "lock": {
+            "uid": 0,
+            "gid": 0,
+            "serverUid": 0,
+            "file": "/data/backups/.tenant-erasure.lock.sqlite",
+            "ino": 4800825,
+            "dev": 2049,
+            "mode": 384,
+            "parentMode": 448
+          }
+        },
+        {
+          "label": "fresh-container redeploy",
+          "lock": {
+            "uid": 0,
+            "gid": 0,
+            "serverUid": 0,
+            "file": "/data/backups/.tenant-erasure.lock.sqlite",
+            "ino": 4800825,
+            "dev": 2049,
+            "mode": 384,
+            "parentMode": 448
+          }
+        },
+        {
+          "label": "actual restore CLI after release",
+          "lock": {
+            "uid": 0,
+            "gid": 0,
+            "serverUid": 0,
+            "file": "/data/backups/.tenant-erasure.lock.sqlite",
+            "ino": 4800825,
+            "dev": 2049,
+            "mode": 384,
+            "parentMode": 448
+          }
+        },
+        {
+          "label": "restored-root startup",
+          "lock": {
+            "uid": 0,
+            "gid": 0,
+            "serverUid": 0,
+            "file": "/data/backups/.tenant-erasure.lock.sqlite",
+            "ino": 4800825,
+            "dev": 2049,
+            "mode": 384,
+            "parentMode": 448
+          }
+        }
+      ]
+    }
+  ]
+}

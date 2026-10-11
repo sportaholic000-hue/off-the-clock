@@ -1,0 +1,269 @@
+{
+  "run": 38175997495,
+  "sourceCommit": "1c0b772f3f84b0286ee37cf15d51bbc0a2b70aef",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 114578396797,
+      "name": "voice-docker-startup",
+      "conclusion": "success"
+    },
+    {
+      "id": 114578397382,
+      "name": "test",
+      "conclusion": "success"
+    },
+    {
+      "id": 114582503784,
+      "name": "tag-candidate-j",
+      "conclusion": "success"
+    },
+    {
+      "id": 114582504191,
+      "name": "tag-candidate-h",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 114582504275,
+      "name": "tag-candidate-i",
+      "conclusion": "skipped"
+    }
+  ],
+  "summaries": [
+    {
+      "command": "node --test test/ownerAlertsDelivery20261006.browser.spec.mjs test/ownerDashboard20261007.browser.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "npm run test:quote",
+      "tests": 4230,
+      "suites": 0,
+      "pass": 4230,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "npm test",
+      "tests": 4961,
+      "suites": 0,
+      "pass": 4961,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/lockRecoveryRace20261011.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/lockDatabaseBackup20261011.spec.mjs",
+      "tests": 5,
+      "suites": 0,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/retentionHardeningHealth20261011.spec.mjs",
+      "tests": 3,
+      "suites": 0,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/retentionHardeningLocks20261011.spec.mjs",
+      "tests": 6,
+      "suites": 0,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/retentionHardeningSecrets20261011.spec.mjs",
+      "tests": 8,
+      "suites": 0,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/retentionHardeningVersions20261011.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/day90Backups20261011.spec.mjs",
+      "tests": 4,
+      "suites": 0,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/day90Cancellation20261011.spec.mjs",
+      "tests": 4,
+      "suites": 0,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/day90Guarantees20261011.spec.mjs",
+      "tests": 10,
+      "suites": 0,
+      "pass": 10,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/day90Providers20261011.spec.mjs",
+      "tests": 12,
+      "suites": 0,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/tenantRetention20261010.spec.mjs",
+      "tests": 13,
+      "suites": 0,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/continuousOffsite20261007.spec.mjs",
+      "tests": 16,
+      "suites": 0,
+      "pass": 16,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/backups.spec.mjs",
+      "tests": 12,
+      "suites": 0,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/offsiteBackups20261007.spec.mjs",
+      "tests": 23,
+      "suites": 0,
+      "pass": 23,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/backupRestoreRehearsal.spec.mjs",
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/ownerQueryCoverage20261009.spec.mjs",
+      "tests": 88,
+      "suites": 0,
+      "pass": 88,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "command": "test/tenantIsolationRoutes.spec.mjs",
+      "tests": 264,
+      "suites": 0,
+      "pass": 264,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  ],
+  "passingLines": [
+    "ok 1499 - lock database backup: listing excludes retention, daily and continuous mutexes",
+    "ok 1500 - lock database backup: pruning removes an expired snapshot but preserves every mutex",
+    "ok 1501 - lock database backup: snapshot inventory excludes all mutexes and sidecars",
+    "ok 1502 - lock database backup: fake daily and continuous uploads contain no mutex database",
+    "ok 1503 - lock database backup: day-90 erasure preserves usable mutexes and the second business",
+    "ok 1764 - lock database backup: listing excludes retention, daily and continuous mutexes",
+    "ok 1765 - lock database backup: pruning removes an expired snapshot but preserves every mutex",
+    "ok 1766 - lock database backup: snapshot inventory excludes all mutexes and sidecars",
+    "ok 1767 - lock database backup: fake daily and continuous uploads contain no mutex database",
+    "ok 1768 - lock database backup: day-90 erasure preserves usable mutexes and the second business",
+    "ok 1769 - lock race: two child recoverers never enter protected callbacks together",
+    "ok 1770 - lock race: stale recovery cannot lose a replacement holder erasure ledger entry",
+    "ok 1771 - lock race: overlapping ledger publications preserve both owners without a retention lock",
+    "ok 1772 - lock race: legacy ledger migration is complete, repeatable and immutable",
+    "ok 1773 - lock race: interrupted migration resumes without losing any legacy entry",
+    "ok 1774 - lock race: malformed legacy ledger fails closed without deleting the evidence",
+    "ok 1775 - lock race: SQLite releases a SIGKILL holder without deleting its lock database",
+    "ok 1776 - lock race: nested sync and async acquisitions release after an exception",
+    "ok 1777 - lock race: independent processes migrate and append every owner without a retention lock",
+    "ok 1 - lock race: two child recoverers never enter protected callbacks together",
+    "ok 2 - lock race: stale recovery cannot lose a replacement holder erasure ledger entry",
+    "ok 3 - lock race: overlapping ledger publications preserve both owners without a retention lock",
+    "ok 4 - lock race: legacy ledger migration is complete, repeatable and immutable",
+    "ok 5 - lock race: interrupted migration resumes without losing any legacy entry",
+    "ok 6 - lock race: malformed legacy ledger fails closed without deleting the evidence",
+    "ok 7 - lock race: SQLite releases a SIGKILL holder without deleting its lock database",
+    "ok 8 - lock race: nested sync and async acquisitions release after an exception",
+    "ok 9 - lock race: independent processes migrate and append every owner without a retention lock",
+    "ok 1 - lock database backup: listing excludes retention, daily and continuous mutexes",
+    "ok 2 - lock database backup: pruning removes an expired snapshot but preserves every mutex",
+    "ok 3 - lock database backup: snapshot inventory excludes all mutexes and sidecars",
+    "ok 4 - lock database backup: fake daily and continuous uploads contain no mutex database",
+    "ok 5 - lock database backup: day-90 erasure preserves usable mutexes and the second business"
+  ]
+}

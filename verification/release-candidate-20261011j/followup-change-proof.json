@@ -1,0 +1,8 @@
+{
+  "base": "001b85dba56770549526beff9bc7b40a36a580c6",
+  "sourceCheckpoint": "1c0b772f3f84b0286ee37cf15d51bbc0a2b70aef",
+  "applicationDockerfileDependenciesSpecsUnchanged": true,
+  "originalRailwaySmokeOnlyAddsBackupCleanup": true,
+  "oldSmokeSha256": "cea43978beac72482157450140e3dd279942cbd39464003d5198915157a3f1ed",
+  "newSmokeSha256": "21e5a93e5cfe82db5f912788398c0f9b56f5675f2f86d2fd7d7d9e9d45e314ac"
+}
