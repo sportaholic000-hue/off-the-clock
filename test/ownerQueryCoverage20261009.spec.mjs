@@ -6,7 +6,7 @@ import {OWNER_QUERY_EXCEPTIONS, OWNER_QUERY_NON_QUERY_USES} from '../server/src/
 import {prepareInventory,unlistedPrepares} from './helpers/ownerQueryScan.mjs';
 
 const root=new URL('..',import.meta.url).pathname;
-test('every direct database prepare in server is an exact listed exception',()=>{
+test('every direct database prepare or exec in server is an exact listed exception',()=>{
  const exceptions=new Map();
  for(const row of OWNER_QUERY_EXCEPTIONS){
   assert.ok(typeof row.file==='string'&&row.file.startsWith('server/'));
@@ -14,17 +14,18 @@ test('every direct database prepare in server is an exact listed exception',()=>
   assert.ok(typeof row.reason==='string'&&row.reason.length>8);
   assert.match(row.signature,/^[a-f0-9]{64}$/);
   assert.ok(Number.isInteger(row.occurrence)&&row.occurrence>0);
-  const key=row.file+'\0'+row.signature+'\0'+row.occurrence;
+  const key=row.file+'\0'+(row.method||'prepare')+'\0'+row.signature+'\0'+row.occurrence;
+  if(row.method==='exec')assert.ok(['authentication','registration','migrations','admin','platform metrics'].includes(row.category),`Disallowed exec category: ${row.file}`);
   assert.ok(!exceptions.has(key),`Duplicate exception: ${row.file} ${row.function}`);
   exceptions.set(key,row);
  }
  const all=prepareInventory(root),unlisted=unlistedPrepares(root,OWNER_QUERY_EXCEPTIONS,OWNER_QUERY_NON_QUERY_USES);
- assert.equal(unlisted.length,0,`${unlisted.length} prepare occurrences are not listed:\n${unlisted.slice(0,20).map(row=>`${row.file}:${row.line} ${row.snippet}`).join('\n')}`);
- for(const row of OWNER_QUERY_EXCEPTIONS)assert.ok(all.some(call=>call.direct&&call.file===row.file&&call.signature===row.signature&&call.occurrence===row.occurrence),`Unused exception: ${row.file} ${row.function}`);
+ assert.equal(unlisted.length,0,`${unlisted.length} prepare/exec occurrences are not listed:\n${unlisted.slice(0,20).map(row=>`${row.file}:${row.line} ${row.snippet}`).join('\n')}`);
+ for(const row of OWNER_QUERY_EXCEPTIONS)assert.ok(all.some(call=>call.direct&&call.file===row.file&&call.method===(row.method||'prepare')&&call.signature===row.signature&&call.occurrence===row.occurrence),`Unused exception: ${row.file} ${row.function}`);
  for(const row of OWNER_QUERY_NON_QUERY_USES){
   assert.ok(row.reason?.length>8,`Missing non-query reason: ${row.file}`);
   assert.ok(Number.isInteger(row.line)&&row.line>0,`Missing line: ${row.file}`);
-  assert.ok(all.some(call=>call.file===row.file&&call.line===row.line&&call.signature===row.signature&&call.occurrence===row.occurrence),`Unused allowed use: ${row.file}:${row.line} ${row.function}`);
+  assert.ok(all.some(call=>call.file===row.file&&call.method===(row.method||'prepare')&&call.line===row.line&&call.signature===row.signature&&call.occurrence===row.occurrence),`Unused allowed use: ${row.file}:${row.line} ${row.function}`);
  }
 });
 
@@ -99,4 +100,34 @@ test('voice idempotency receipts persist tenant owner and replay legacy scope re
   db.prepare("INSERT INTO voiceToolIdempotencyReceipts(scopeHash,idempotencyKey,requestDigest,status,responseJson,leaseExpiresAtUtc,createdAt,updatedAt) VALUES(?,?,?,'COMPLETED','{\"value\":2}',?,?,?)").run(legacy.scope,legacy.key,legacy.digest,'2026-10-09T10:01:00.000Z','2026-10-09T09:00:00.000Z','2026-10-09T09:00:00.000Z');
   assert.deepEqual(await store.run({...legacy,execute:()=>{throw Error('should replay legacy');}}),{status:'replayed',value:{value:2}});
  }finally{db.close();}
+});
+
+// Expected before execution: both auditor bypasses produce inventory findings.
+test('scan inventories database.exec tenant deletion: 1 finding',()=>{
+ scratchScan('exec-delete','.js','database.exec("DELETE FROM customers")',1);
+});
+test('scan detects concatenated database prepare and exec properties: 1 finding each',()=>{
+ scratchScan('concat-prepare','.js','database["pre"+"pare"]("DELETE FROM customers")',1);
+ scratchScan('concat-exec','.mjs','database["ex"+"ec"]("DELETE FROM customers")',1);
+});
+test('scan detects bracketed exec and unknown computed database keys: 1 finding each',()=>{
+ scratchScan('bracket-exec','.js','database["exec"]("DELETE FROM customers")',1);
+ scratchScan('dynamic-exec','.cjs','database[methodFromOutside]("DELETE FROM customers")',1);
+ scratchScan('alias-exec','.js','const connection=database; connection[methodFromOutside]("DELETE FROM customers")',1);
+});
+test('computed access cannot be permitted by an exception or non-query entry',()=>{
+ const directory=mkdtempSync(join(root,'.owner-query-scan-'));
+ try {
+  mkdirSync(join(directory,'server'),{recursive:true});
+  writeFileSync(join(directory,'server','bad.js'),'database["pre"+"pare"]("DELETE FROM customers")');
+  const all=prepareInventory(directory);assert.equal(all.length,1);
+  assert.equal(unlistedPrepares(directory,all,all).length,1);
+ }finally{rmSync(directory,{recursive:true,force:true});}
+});
+
+test('scan detects optional, escaped, aliased and destructured computed methods',()=>{
+ scratchScan('optional','.js','database?.["ex"+"ec"]?.("DELETE FROM customers")',1);
+ scratchScan('escaped','.js',String.raw`database["pr\u0065pare"]("DELETE FROM customers")`,1);
+ scratchScan('constructed','.mjs','const store=new DatabaseSync(":memory:"); store[method]("DELETE FROM customers")',1);
+ scratchScan('destructured-computed','.js','const {["ex"+"ec"]:run}=database; run("DELETE FROM customers")',1);
 });

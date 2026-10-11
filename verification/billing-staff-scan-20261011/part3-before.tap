@@ -1,0 +1,111 @@
+TAP version 13
+# Subtest: scan inventories database.exec tenant deletion: 1 finding
+not ok 1 - scan inventories database.exec tenant deletion: 1 finding
+  ---
+  duration_ms: 5.684822
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:105:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    exec-delete should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:37:10)
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:106:2)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.start (node:internal/test_runner/test:877:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: scan detects concatenated database prepare and exec properties: 1 finding each
+not ok 2 - scan detects concatenated database prepare and exec properties: 1 finding each
+  ---
+  duration_ms: 0.974586
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:108:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    concat-prepare should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:37:10)
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:109:2)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: scan detects bracketed exec and unknown computed database keys: 1 finding each
+not ok 3 - scan detects bracketed exec and unknown computed database keys: 1 finding each
+  ---
+  duration_ms: 4.087344
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:112:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    bracket-exec should yield exactly 1 unlisted occurrences
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    scratchScan (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:37:10)
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:113:2)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: computed access cannot be permitted by an exception or non-query entry
+not ok 4 - computed access cannot be permitted by an exception or non-query entry
+  ---
+  duration_ms: 0.648588
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/ownerQueryCoverage20261009.spec.mjs:122:48)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 97.956598
