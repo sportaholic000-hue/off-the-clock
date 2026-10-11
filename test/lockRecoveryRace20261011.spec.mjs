@@ -77,3 +77,15 @@ test('lock race: nested sync and async acquisitions release after an exception',
   await assert.rejects(withBackupRetentionLock(f.deployment,async()=>{await withBackupRetentionLock(f.deployment,async()=>{assert.equal(withBackupRetentionLockSync(f.deployment,()=>42),42);});throw Error('SYNTHETIC failure');}),/SYNTHETIC failure/);
   assertBackupRetentionIdle(f.deployment);await withBackupRetentionLock(f.deployment,async()=>{});
 });
+test('lock race: independent processes migrate and append every owner without a retention lock',async t=>{
+  const f=fixture(t),root=path.join(f.deployment.backupPath,'.retention');fs.mkdirSync(root);
+  fs.writeFileSync(path.join(root,'owners.json'),JSON.stringify({version:1,owners:[{ownerId:'SYNTHETIC-legacy',at}]}));
+  const script=`import {rememberBackupErasure} from './server/src/offsiteHistory.js';rememberBackupErasure(JSON.parse(process.argv[1]),process.argv[2],process.argv[3]);`;
+  const owners=Array.from({length:8},(_,i)=>'SYNTHETIC-concurrent-'+i);
+  const completed=await Promise.all(owners.map(owner=>new Promise(resolve=>{
+    const child=spawn(process.execPath,['--input-type=module','-e',script,JSON.stringify(f.deployment),owner,at],{stdio:['ignore','pipe','pipe']});
+    t.after(()=>child.kill('SIGKILL'));let error='';child.stderr.on('data',data=>{error+=data;});child.on('close',code=>resolve({code,error}));
+  })));
+  for(const result of completed)assert.equal(result.code,0,result.error);
+  assert.deepEqual(rememberBackupErasure(f.deployment,'SYNTHETIC-legacy',at).map(row=>row.ownerId).sort(),[...owners,'SYNTHETIC-legacy'].sort());
+});
