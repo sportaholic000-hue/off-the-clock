@@ -1,0 +1,449 @@
+TAP version 13
+# Subtest: Operator monthly: trial reminder exactly October 17, once, amount 11900
+ok 1 - Operator monthly: trial reminder exactly October 17, once, amount 11900
+  ---
+  duration_ms: 89.739589
+  type: 'test'
+  ...
+# Subtest: Operator monthly: no paid term before trial end; first charge 11900
+ok 2 - Operator monthly: no paid term before trial end; first charge 11900
+  ---
+  duration_ms: 45.67533
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+ok 3 - QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+  ---
+  duration_ms: 49.040278
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: no paid term before trial end; first charge 27900
+ok 4 - QuoteDone monthly: no paid term before trial end; first charge 27900
+  ---
+  duration_ms: 46.6411
+  type: 'test'
+  ...
+# Subtest: Operator annual: trial reminder exactly October 17, once, amount 119000
+ok 5 - Operator annual: trial reminder exactly October 17, once, amount 119000
+  ---
+  duration_ms: 47.949264
+  type: 'test'
+  ...
+# Subtest: Operator annual: no paid term before trial end; first charge 119000
+ok 6 - Operator annual: no paid term before trial end; first charge 119000
+  ---
+  duration_ms: 50.122098
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+ok 7 - QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+  ---
+  duration_ms: 57.134688
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: no paid term before trial end; first charge 279000
+ok 8 - QuoteDone annual: no paid term before trial end; first charge 279000
+  ---
+  duration_ms: 49.220596
+  type: 'test'
+  ...
+# Subtest: annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+ok 9 - annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+  ---
+  duration_ms: 51.137503
+  type: 'test'
+  ...
+# Subtest: monthly: cancel mid-period, no refund, access ends at paid boundary
+ok 10 - monthly: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 61.401586
+  type: 'test'
+  ...
+# Subtest: monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 11 - monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 72.890741
+  type: 'test'
+  ...
+# Subtest: annual: cancel mid-period, no refund, access ends at paid boundary
+ok 12 - annual: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 62.825569
+  type: 'test'
+  ...
+# Subtest: annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 13 - annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 68.174814
+  type: 'test'
+  ...
+# Subtest: trial cancel is immediate with no invoice and no refund
+ok 14 - trial cancel is immediate with no invoice and no refund
+  ---
+  duration_ms: 61.313326
+  type: 'test'
+  ...
+# Subtest: reactivation before period end reverses scheduled cancel once, keeps records
+ok 15 - reactivation before period end reverses scheduled cancel once, keeps records
+  ---
+  duration_ms: 54.93072
+  type: 'test'
+  ...
+# Subtest: after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+ok 16 - after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+  ---
+  duration_ms: 54.150993
+  type: 'test'
+  ...
+# Subtest: paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+ok 17 - paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+  ---
+  duration_ms: 58.852604
+  type: 'test'
+  ...
+# Subtest: subscription receipt preserves actual charge currency and handwritten amount
+ok 18 - subscription receipt preserves actual charge currency and handwritten amount
+  ---
+  duration_ms: 46.007176
+  type: 'test'
+  ...
+# Subtest: settled invoices suppress stale failure notices in either event order and at dispatch
+    # Subtest: paid-then-older-failed
+    ok 1 - paid-then-older-failed
+      ---
+      duration_ms: 43.564998
+      type: 'test'
+      ...
+    # Subtest: failed-then-paid-before-sync
+    ok 2 - failed-then-paid-before-sync
+      ---
+      duration_ms: 42.779671
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-before-dispatch
+    ok 3 - failed-queued-then-paid-before-dispatch
+      ---
+      duration_ms: 43.330306
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-minute-worker-dispatch
+    ok 4 - failed-queued-then-paid-minute-worker-dispatch
+      ---
+      duration_ms: 48.176004
+      type: 'test'
+      ...
+    # Subtest: paid-only
+    ok 5 - paid-only
+      ---
+      duration_ms: 53.949558
+      type: 'test'
+      ...
+    1..5
+ok 19 - settled invoices suppress stale failure notices in either event order and at dispatch
+  ---
+  duration_ms: 234.042933
+  type: 'test'
+  ...
+# Subtest: overage receipt: ten extra minutes × 35 cents = $3.50, once
+ok 20 - overage receipt: ten extra minutes × 35 cents = $3.50, once
+  ---
+  duration_ms: 60.726953
+  type: 'test'
+  ...
+# Subtest: final overage remainder is charged at the service-end boundary
+ok 21 - final overage remainder is charged at the service-end boundary
+  ---
+  duration_ms: 55.384142
+  type: 'test'
+  ...
+# Subtest: lost email response and restart retain one accepted notice
+ok 22 - lost email response and restart retain one accepted notice
+  ---
+  duration_ms: 93.011848
+  type: 'test'
+  ...
+# Subtest: email ambiguity after retry window does not duplicate delivery
+ok 23 - email ambiguity after retry window does not duplicate delivery
+  ---
+  duration_ms: 75.80293
+  type: 'test'
+  ...
+# Subtest: cancellation lost response recovers by subscription read without repeating mutation
+ok 24 - cancellation lost response recovers by subscription read without repeating mutation
+  ---
+  duration_ms: 41.455785
+  type: 'test'
+  ...
+# Subtest: wrong provider customer cannot cancel or receive access and does not affect tenant B
+ok 25 - wrong provider customer cannot cancel or receive access and does not affect tenant B
+  ---
+  duration_ms: 42.547451
+  type: 'test'
+  ...
+# Subtest: invalid price cannot create a false trial reminder
+ok 26 - invalid price cannot create a false trial reminder
+  ---
+  duration_ms: 34.445125
+  type: 'test'
+  ...
+# Subtest: HTTP owner actions and CSV exports reject owner spoofing, cross-tenant bodies and staff
+ok 27 - HTTP owner actions and CSV exports reject owner spoofing, cross-tenant bodies and staff
+  ---
+  duration_ms: 150.517018
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2026-12-01T12:00:00.000Z: phone released=false, records deleted=false
+ok 28 - verified reactivation 2026-12-01T12:00:00.000Z: phone released=false, records deleted=false
+  ---
+  duration_ms: 65.658036
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2026-12-21T12:00:00.000Z: phone released=true, records deleted=false
+ok 29 - verified reactivation 2026-12-21T12:00:00.000Z: phone released=true, records deleted=false
+  ---
+  duration_ms: 57.723678
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2027-02-19T12:00:00.000Z: phone released=true, records deleted=true
+ok 30 - verified reactivation 2027-02-19T12:00:00.000Z: phone released=true, records deleted=true
+  ---
+  duration_ms: 54.500248
+  type: 'test'
+  ...
+# Subtest: new active/card-only subscription without its paid invoice cannot restore retained service
+ok 31 - new active/card-only subscription without its paid invoice cannot restore retained service
+  ---
+  duration_ms: 52.422765
+  type: 'test'
+  ...
+# Subtest: overage failure uses the existing grace and suspension path; paid callback recovers without duplicates
+ok 32 - overage failure uses the existing grace and suspension path; paid callback recovers without duplicates
+  ---
+  duration_ms: 54.327764
+  type: 'test'
+  ...
+# Subtest: reminder uses invoice preview total with tax, not an invented base amount
+ok 33 - reminder uses invoice preview total with tax, not an invented base amount
+  ---
+  duration_ms: 44.744426
+  type: 'test'
+  ...
+# Subtest: cancelled renewal suppresses the reminder; incorrect preview tenant fails closed
+ok 34 - cancelled renewal suppresses the reminder; incorrect preview tenant fails closed
+  ---
+  duration_ms: 44.290079
+  type: 'test'
+  ...
+# Subtest: 90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts
+ok 35 - 90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts
+  ---
+  duration_ms: 49.955209
+  type: 'test'
+  ...
+# Subtest: merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant
+ok 36 - merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant
+  ---
+  duration_ms: 59.624358
+  type: 'test'
+  ...
+# Subtest: durable notice transaction rolls back both dashboard and email on partial storage failure
+ok 37 - durable notice transaction rolls back both dashboard and email on partial storage failure
+  ---
+  duration_ms: 41.117435
+  type: 'test'
+  ...
+# Subtest: concurrent tenant cancellation requests cause a single provider mutation
+ok 38 - concurrent tenant cancellation requests cause a single provider mutation
+  ---
+  duration_ms: 38.204802
+  type: 'test'
+  ...
+# Subtest: cancellation intent survives DB restart and no pending intent is advertised as confirmed
+ok 39 - cancellation intent survives DB restart and no pending intent is advertised as confirmed
+  ---
+  duration_ms: 87.572638
+  type: 'test'
+  ...
+# Subtest: service end does not attempt a carrier shutdown or claim confirmation
+ok 40 - service end does not attempt a carrier shutdown or claim confirmation
+  ---
+  duration_ms: 59.809489
+  type: 'test'
+  ...
+# Subtest: phone release failure retains its saved SID and retries only that tenant
+ok 41 - phone release failure retains its saved SID and retries only that tenant
+  ---
+  duration_ms: 46.506974
+  type: 'test'
+  ...
+# Subtest: a delayed cleanup worker does not release a phone reactivated within its 30-day window
+ok 42 - a delayed cleanup worker does not release a phone reactivated within its 30-day window
+  ---
+  duration_ms: 60.344217
+  type: 'test'
+  ...
+# Subtest: legacy missing currency is recovered from a bound provider receipt, never guessed
+ok 43 - legacy missing currency is recovered from a bound provider receipt, never guessed
+  ---
+  duration_ms: 43.629393
+  type: 'test'
+  ...
+# Subtest: service end preserves automatic collection on a previously submitted unpaid overage invoice
+ok 44 - service end preserves automatic collection on a previously submitted unpaid overage invoice
+  ---
+  duration_ms: 72.800827
+  type: 'test'
+  ...
+# Subtest: crossing service end while reading an overage period still finalizes accrued overage
+ok 45 - crossing service end while reading an overage period still finalizes accrued overage
+  ---
+  duration_ms: 59.240258
+  type: 'test'
+  ...
+# Subtest: lease loss during phone release cannot clear the saved phone receipt
+ok 46 - lease loss during phone release cannot clear the saved phone receipt
+  ---
+  duration_ms: 47.070883
+  type: 'test'
+  ...
+# Subtest: a slow invoice preview crossing the first-charge time cannot send a stale trial reminder
+ok 47 - a slow invoice preview crossing the first-charge time cannot send a stale trial reminder
+  ---
+  duration_ms: 49.308692
+  type: 'test'
+  ...
+# Subtest: every direct database prepare in server is an exact listed exception
+ok 48 - every direct database prepare in server is an exact listed exception
+  ---
+  duration_ms: 267.041664
+  type: 'test'
+  ...
+# Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+ok 49 - scan rejects bracketed database['prepare'] in .js: 1 finding
+  ---
+  duration_ms: 1.364708
+  type: 'test'
+  ...
+# Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+ok 50 - scan rejects double quoted and template computed prepare in .js: 1 each
+  ---
+  duration_ms: 1.086131
+  type: 'test'
+  ...
+# Subtest: scan rejects dynamic key spelling in .js: 1 finding
+ok 51 - scan rejects dynamic key spelling in .js: 1 finding
+  ---
+  duration_ms: 0.597799
+  type: 'test'
+  ...
+# Subtest: scan rejects database.prepare.bind alias in .js: 1 finding
+ok 52 - scan rejects database.prepare.bind alias in .js: 1 finding
+  ---
+  duration_ms: 0.529166
+  type: 'test'
+  ...
+# Subtest: scan rejects const p = database.prepare alias in .js: 1 finding
+ok 53 - scan rejects const p = database.prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.48036
+  type: 'test'
+  ...
+# Subtest: scan rejects destructured prepare alias in .js: 1 finding
+ok 54 - scan rejects destructured prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.495378
+  type: 'test'
+  ...
+# Subtest: scan covers .mjs and .cjs: 1 finding in each
+ok 55 - scan covers .mjs and .cjs: 1 finding in each
+  ---
+  duration_ms: 1.118015
+  type: 'test'
+  ...
+# Subtest: scan permits an ownerQuery control and ignores commented prepares: 0 findings
+ok 56 - scan permits an ownerQuery control and ignores commented prepares: 0 findings
+  ---
+  duration_ms: 0.508993
+  type: 'test'
+  ...
+# Subtest: scan does not mistake a slash inside a regex literal for a comment: 1 finding
+ok 57 - scan does not mistake a slash inside a regex literal for a comment: 1 finding
+  ---
+  duration_ms: 0.747445
+  type: 'test'
+  ...
+# Subtest: owner-row predicate preserves owner and staff parent lookup results
+ok 58 - owner-row predicate preserves owner and staff parent lookup results
+  ---
+  duration_ms: 4.209178
+  type: 'test'
+  ...
+# Subtest: voice idempotency receipts persist tenant owner and replay legacy scope records
+ok 59 - voice idempotency receipts persist tenant owner and replay legacy scope records
+  ---
+  duration_ms: 7.710971
+  type: 'test'
+  ...
+# Subtest: eight owner-row statements read or update precisely the same owner rows
+ok 60 - eight owner-row statements read or update precisely the same owner rows
+  ---
+  duration_ms: 17.410147
+  type: 'test'
+  ...
+# Subtest: owner-bound evidence preserves the foreign subscription and invoice rejection codes
+ok 61 - owner-bound evidence preserves the foreign subscription and invoice rejection codes
+  ---
+  duration_ms: 21.55858
+  type: 'test'
+  ...
+# Subtest: nonce and CallSid foreign collision decisions keep their original results
+ok 62 - nonce and CallSid foreign collision decisions keep their original results
+  ---
+  duration_ms: 8.267381
+  type: 'test'
+  ...
+# Subtest: foreign opaque handle keeps HANDLE_COLLISION, own handle still resolves
+ok 63 - foreign opaque handle keeps HANDLE_COLLISION, own handle still resolves
+  ---
+  duration_ms: 8.047203
+  type: 'test'
+  ...
+# Subtest: four receipt predicates retain global scope, including ownerId empty legacy rows
+ok 64 - four receipt predicates retain global scope, including ownerId empty legacy rows
+  ---
+  duration_ms: 7.517083
+  type: 'test'
+  ...
+# Subtest: three nonce statements preserve the old selection and update on two-owner snapshots
+ok 65 - three nonce statements preserve the old selection and update on two-owner snapshots
+  ---
+  duration_ms: 8.450904
+  type: 'test'
+  ...
+# Subtest: three opaque-handle statements preserve old owner decisions and mutation
+ok 66 - three opaque-handle statements preserve old owner decisions and mutation
+  ---
+  duration_ms: 9.512535
+  type: 'test'
+  ...
+# Subtest: receipt read, lease, completion and delete SQL change exactly the old rows
+ok 67 - receipt read, lease, completion and delete SQL change exactly the old rows
+  ---
+  duration_ms: 24.3935
+  type: 'test'
+  ...
+# Subtest: receipt owner column and insert parameter preserve legacy projection and global key
+ok 68 - receipt owner column and insert parameter preserve legacy projection and global key
+  ---
+  duration_ms: 8.147594
+  type: 'test'
+  ...
+1..68
+# tests 73
+# suites 0
+# pass 73
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3301.22857

@@ -178,6 +178,9 @@ export function createOffsiteBackupService(database,deployment,options={}){
     async run(){const results=await Promise.allSettled([daily.run(),replica.run()]);for(const result of results)if(result.status==='rejected')throw result.reason;return status();},
     start(){daily.start();replica.start();},stop(){return stopping||(stopping=Promise.all([replica.stop(),daily.stop()]).finally(()=>store.close?.()));}};
 }
-export function installOffsiteBackupStatusRoute(app,{service,requireAuth}) {
-  app.get('/api/admin/backups/offsite',requireAuth(['admin']),(_req,res)=>{const status=service.status();res.set('Cache-Control','no-store').status(status.ok?200:503).json(status);});
+export function installOffsiteBackupStatusRoute(app,{service,requireAuth,retentionStatus}) {
+  app.get('/api/admin/backups/offsite',requireAuth(['admin']),(_req,res)=>{
+    const status=service.status(),erasure=retentionStatus?.();
+    res.set('Cache-Control','no-store').status(status.ok&&erasure?.ok!==false?200:503).json({...status,...(erasure?{erasure}:{})});
+  });
 }

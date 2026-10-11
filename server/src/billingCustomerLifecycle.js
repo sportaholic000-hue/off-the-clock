@@ -4,6 +4,7 @@ import {billingUsageId,billingMoney,MINUTE_PLANS,monthlyAnniversary,usageOwnerQu
 import {withBillingLease,withBillingRetentionLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
 import {eraseTenantRows,eraseTenantPricebookFiles} from './billingTenantErasure.js';
+import {createBillingRetentionSteps} from './billingRetentionSteps.js';
 
 const DAY=86400000;
 const error=(code,statusCode=409)=>Object.assign(new Error(code),{code,statusCode});
@@ -47,9 +48,11 @@ export function installBillingLifecycleSchema(database){
     operatorWasEnabled INTEGER NOT NULL DEFAULT 0,forwardingOffAt TEXT,phoneReleasedAt TEXT,dataDeletedAt TEXT,
     restoredForwardingAt TEXT,lastError TEXT,updatedAt TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS billingRetentionLeases (
-    ownerId TEXT PRIMARY KEY REFERENCES users(id),token TEXT NOT NULL,expiresAt TEXT NOT NULL);`);
+    ownerId TEXT PRIMARY KEY REFERENCES users(id),token TEXT NOT NULL,expiresAt TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS billingRetentionSecrets (
+    ownerId TEXT PRIMARY KEY REFERENCES users(id),credentialsCiphertext TEXT,credentialsIv TEXT,credentialsTag TEXT,keyVersion TEXT,phoneNumberSid TEXT);`);
   if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name==='restoredForwardingAt'))database.exec('ALTER TABLE billingCancellations ADD COLUMN restoredForwardingAt TEXT');
-  for(const [name,type] of [['calendarRevokeAttemptedAt','TEXT'],['calendarRevokeStatus','TEXT'],['dataErasureVersion','INTEGER NOT NULL DEFAULT 0']])if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name===name))database.exec(`ALTER TABLE billingCancellations ADD COLUMN ${name} ${type}`);
+  for(const [name,type] of [['calendarRevokeAttemptedAt','TEXT'],['calendarRevokeStatus','TEXT'],['dataErasureVersion','INTEGER NOT NULL DEFAULT 0'],['retentionStateJson','TEXT']])if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name===name))database.exec(`ALTER TABLE billingCancellations ADD COLUMN ${name} ${type}`);
   // Existing queued notices need the same dispatch condition as new ones.
   usageOwnerQuery(database)(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
     SELECT n.referenceId FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')
@@ -109,6 +112,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   enabled=()=>false,clock=()=>new Date(),dashboardUrl}={}){
   const query=usageOwnerQuery(database,ownerQuery),now=()=>clock().toISOString();
   const emails=createOwnerEmailDelivery({database,ownerQuery,provider:emailProvider,enabled,clock});
+  const retention=createBillingRetentionSteps({database,ownerQuery,clock,enabled,revokeCalendar,releaseNumber,eraseLocal:erase,eraseBackups:eraseBackupCopies});
   const owner=ownerId=>query(`SELECT u.*,b.stripeCustomerId,b.stripeSubscriptionId,b.stripePriceId,b.currentPeriodEndAt,b.cancelAtPeriodEnd,b.graceEndsAt
     FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id WHERE u.id=@ownerId AND u.role='owner'`).get({ownerId});
   const cancellation=ownerId=>query('SELECT * FROM billingCancellations WHERE ownerId=?').get(ownerId);
@@ -248,28 +252,18 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     query("UPDATE users SET serviceEndsAt=NULL WHERE id=@ownerId AND role='owner'").run({ownerId});
     query('UPDATE billingAccounts SET cancelAtPeriodEnd=0 WHERE ownerId=?').run(ownerId);
     query("UPDATE billingCancellations SET state='RESTORED',lastError=NULL,updatedAt=? WHERE ownerId=?").run(now(),ownerId);
+    query('DELETE FROM billingRetentionSecrets WHERE ownerId=?').run(ownerId);
+    query('UPDATE billingCancellations SET retentionStateJson=NULL WHERE ownerId=?').run(ownerId);
     notice(ownerId,'reactivated',row.operationId,`Your retained service and data are reactivated. ${row.phoneReleasedAt?'The previous phone number has already been released; set up a new number.':''} ${row.dataDeletedAt?'The previous records have already been deleted.':''} ${link()}`);
   });}
-  async function erase(ownerId,row,assertLease){
-    const connection=query("SELECT * FROM calendarConnections WHERE ownerId=? AND provider='google'").get(ownerId);
-    if(connection){
-      // Persist before calling Google. A crash can retry while the tokens still
-      // exist; a failed/disabled/timed-out revoke never blocks local erasure.
-      query("UPDATE billingCancellations SET calendarRevokeAttemptedAt=?,calendarRevokeStatus='ATTEMPTING' WHERE ownerId=? AND operationId=?").run(now(),ownerId,row.operationId);
-      let result='UNAVAILABLE';try{if(revokeCalendar)result=await revokeCalendar(connection);}catch{result='FAILED';}
-      assertLease();
-      if(!['REVOKED','FAILED','TIMEOUT','UNREADABLE','PROVIDER_DISABLED'].includes(result))result='UNAVAILABLE';
-      query('UPDATE billingCancellations SET calendarRevokeStatus=? WHERE ownerId=? AND operationId=?').run(result,ownerId,row.operationId);
-    }
-    eraseTenantRows(database,ownerId,now(),{ownerQuery});
+  async function erase(ownerId,assertLease){
+    eraseTenantRows(database,ownerId,now(),{ownerQuery,preserveRetrySecrets:true});
     // A filesystem failure leaves the completion marker unset so cleanup can
     // retry. Local credentials and sign-in have already been irreversibly erased.
     await erasePricebookFiles(ownerId);assertLease();
-    if(eraseBackupCopies){await eraseBackupCopies(ownerId);assertLease();}
     // secure_delete clears freed cells; truncate the WAL so stale token/profile
     // pages do not remain in an application-owned database sidecar.
     if(database.prepare('PRAGMA wal_checkpoint(TRUNCATE)').all().some(row=>row.busy))throw error('RETENTION_DATABASE_BUSY',503);
-    query('UPDATE billingCancellations SET dataDeletedAt=?,dataErasureVersion=1,updatedAt=? WHERE ownerId=? AND operationId=?').run(now(),now(),ownerId,row.operationId);
   }
   async function reconcileEndedUsage(ownerId,assertLease){
     if(!enabled()||!stripeClient)return;
@@ -302,7 +296,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     if(pending)query("UPDATE billingCancellations SET lastError='BILLING_COLLECTION_CONFIRMATION_PENDING',updatedAt=? WHERE ownerId=? AND lastError IS NULL").run(now(),ownerId);
     else query("UPDATE billingCancellations SET lastError=NULL,updatedAt=? WHERE ownerId=? AND lastError='BILLING_COLLECTION_CONFIRMATION_PENDING'").run(now(),ownerId);
   }
-  async function cleanup(ownerId,{deadlineAt=now(),assertLease}={}){
+  async function cleanup(ownerId,{deadlineAt=now(),assertLease,prepareOnly=false}={}){
     let row=cancellation(ownerId);if(!row||!['CONFIRMED','ENDED'].includes(row.state)||deadlineAt<row.endAt)return;
     if(!row.endedAt)usageTransaction(database,()=>{
       query("UPDATE billingCancellations SET state='ENDED',endedAt=?,updatedAt=? WHERE ownerId=?").run(row.endAt,now(),ownerId);
@@ -310,28 +304,10 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Export records before ${addDays(row.endAt,90)}. ${link()}`);
     });
     row=cancellation(ownerId);
-    // Old releases marked DATA_TABLES-only cleanup complete. Version that marker
-    // so an upgrade still erases the account, credentials, files and archives,
-    // and retries them after a failure even when an old timestamp already exists.
-    const erasureDue=(!row.dataDeletedAt||row.dataErasureVersion!==1)&&deadlineAt>=addDays(row.endAt,90);
-    if(enabled()){
-      const profile=query('SELECT * FROM businessProfiles WHERE ownerId=?').get(ownerId);
-      if(!row.phoneReleasedAt&&deadlineAt>=addDays(row.endAt,30)&&releaseNumber){
-        // Release the saved SID, never a number discovered by a broad search.
-        let result;try{result=profile?.twilioNumberSid?await releaseNumber({ownerId,sid:profile.twilioNumberSid}):{released:true};}
-        catch(error){if(!erasureDue)throw error;query("UPDATE billingCancellations SET lastError='PHONE_RELEASE_UNCONFIRMED',updatedAt=? WHERE ownerId=?").run(now(),ownerId);}
-        assertLease();
-        if(result?.released===true)usageTransaction(database,()=>{
-          query("UPDATE businessProfiles SET twilioNumber=NULL,twilioNumberSid=NULL,operatorEnabled=0,phoneProvisioningStatus='not_started' WHERE ownerId=?").run(ownerId);
-          query('DELETE FROM phoneProvisioningOperations WHERE ownerId=?').run(ownerId);
-          query('DELETE FROM operatorCoverageOperations WHERE ownerId=?').run(ownerId);
-          query('UPDATE billingCancellations SET phoneReleasedAt=?,updatedAt=? WHERE ownerId=?').run(now(),now(),ownerId);
-        });
-      }
-    }
-    if(erasureDue)await erase(ownerId,row,assertLease);
+    try{await retention.process(ownerId,row,{deadlineAt,assertLease,prepareOnly});}
+    finally{retention.syncAdminAlert();}
   }
-  async function processOwner(ownerId,{localOnly=false}={}){
+  async function processOwner(ownerId,{localOnly=false,prepareOnly=false}={}){
     let row=cancellation(ownerId);
     if(!localOnly&&row?.state==='PENDING')try{await cancel(ownerId);}catch{/* Durable intent retried; dashboard reports ambiguity. */}
     if(!localOnly&&row?.state==='RESTORING')try{await reactivate(ownerId);}catch{/* Safe current-state read on replay. */}
@@ -339,7 +315,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       syncBillingPaidThrough(database,ownerId);const account=owner(ownerId);row=cancellation(ownerId);
       const restoring=!account.dataDeletedAt&&row&&!row.dataDeletedAt&&['CONFIRMED','ENDED'].includes(row.state)&&account.stripeSubscriptionId!==row.stripeSubscriptionId&&account.planStatus==='active'&&account.paidThroughAt>now();
       const payment=restoring?query("SELECT MIN(paidAt) paidAt FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND amountPaid>0").get(ownerId,account.stripeSubscriptionId):null;
-      await cleanup(ownerId,{deadlineAt:payment?.paidAt!=null?billingIso(payment.paidAt):now(),assertLease});assertLease();row=cancellation(ownerId);
+      await cleanup(ownerId,{deadlineAt:payment?.paidAt!=null?billingIso(payment.paidAt):now(),assertLease,prepareOnly});assertLease();row=cancellation(ownerId);
       if(restoring&&!owner(ownerId).dataDeletedAt){
         restoreLocal(ownerId,row);
       }
@@ -372,13 +348,17 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       // Retention has its own complete, paginated inventory. The financial work
       // remains bounded to 32 owners; a slow provider for that batch must not
       // postpone an overdue cancellation on a later page.
+      // First finish the local pass for EVERY due owner. A slow external step
+      // for A cannot postpone B's local day-90 deletion to a later page.
+      for(const prepareOnly of [true,false]){
       let retentionCursor='';
       while(true){
         const due=usageOwnerQuery(database)(`SELECT u.id FROM users u JOIN billingCancellations c ON c.ownerId=u.id
           WHERE u.role='owner' AND u.id>? AND c.state IN ('CONFIRMED','ENDED','RESTORED') ORDER BY u.id LIMIT 32`).all(retentionCursor);
         if(!due.length)break;
-        for(const {id} of due)try{await processOwner(id,{localOnly:true});}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}
+        for(const {id} of due)try{await processOwner(id,{localOnly:true,prepareOnly});}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}
         retentionCursor=due.at(-1).id;
+      }
       }
     })();try{await retentionRunning;}finally{retentionRunning=null;}
   }
@@ -395,7 +375,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     })();try{await running;}finally{running=null;}
   }
   function start(){void tick();const timer=setInterval(()=>void tick(),60000);timer.unref?.();return async()=>{stopping=true;clearInterval(timer);if(retentionRunning)await retentionRunning;if(running)await running;};}
-  return {notice,syncNotices,reminders,cancel,reactivate,processOwner,snapshot,exportCsv,tick,start,emails};
+  return {notice,syncNotices,reminders,cancel,reactivate,processOwner,snapshot,exportCsv,tick,start,emails,retentionStatus:retention.retentionStatus};
 }
 
 export function installBillingCustomerLifecycleRoutes(app,{service,requireAuth,requireProviderWrites,asyncHandler}){

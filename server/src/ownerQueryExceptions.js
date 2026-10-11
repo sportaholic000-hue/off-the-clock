@@ -2,6 +2,55 @@
 // The scan test validates every signature and rejects unused entries.
 export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   {
+    "file": "server/src/backups.js",
+    "function": "checkSqlite",
+    "reason": "Schema-only check for the bounded retry-secret table in a copied backup database.",
+    "signature": "967adc41b741548ff44fca6a1f7e4c964d855e5872d4b14282522b9e2c809b74",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/backups.js",
+    "function": "checkSqlite",
+    "reason": "Administrative backup inventory of retry-secret owners only; each copied secret is then deleted through usageOwnerQuery with its owner ID.",
+    "signature": "f3740c6af6b4647a68dfd294f9cec92a79eff8e117ff6aaab898494592a456bd",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "flushDeletedSecrets",
+    "reason": "Database-wide WAL checkpoint removes stale secret pages after tenant-bound deletion; reads no business rows.",
+    "signature": "72169fb0b5e93a70ed5564e6e38d92f8b1d8d6625c54244a2c704d3f1af67e39",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "retentionStatus",
+    "reason": "Authenticated admin health inventory of billing cancellation outcomes; returns only billing owner IDs, step status and timestamps, never retry secrets.",
+    "signature": "1c19099b0b04923d942a9c25da20d724225627bbe89b309ff2b52b93606254a8",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "syncAdminAlert",
+    "reason": "Platform metric reads the single aggregate retention alert, containing anonymous counts only.",
+    "signature": "1a60e9dd7711482d03c9793509e7298bb6fbe7c78e22b5daa47d9470180a9f3b",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "syncAdminAlert",
+    "reason": "Platform metric updates the single aggregate retention alert, containing anonymous counts only.",
+    "signature": "e185e38441d33cbfc7dddf078af28ce3130fceeb30cb8b16015aace62b0c0409",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "syncAdminAlert",
+    "reason": "Platform metric resolves only the aggregate retention alert after all recorded failures clear.",
+    "signature": "bf471abfd90498c30247175bf4c95ae9cb327ff18a5d6c6692f493026772f78f",
+    "occurrence": 1
+  },
+  {
     "file": "server/priceBookService.js",
     "function": "assertRetainedAccount",
     "reason": "Schema-only check for standalone file stores; the account read itself uses ownerQuery.",

@@ -4,6 +4,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import Database from 'better-sqlite3';
 import {inside,assertRealContainment} from './deploymentConfig.js';
 import {assertBackupRetentionIdle} from './backupRetentionLock.js';
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 const activeSnapshots=new Set();
 export async function drainSnapshots(){await Promise.allSettled([...activeSnapshots]);}
@@ -21,7 +22,16 @@ function regularFile(root,name) {
 function checkSqlite(file,{normalize=false,files}={}) {
   const db = new Database(file,{readonly:!normalize,fileMustExist:true});
   try {
-    if(normalize) db.pragma('journal_mode = DELETE');
+    if(normalize){
+      db.pragma('journal_mode = DELETE');
+      // A restore may retain cleanup outcomes, but must never extend the life
+      // of credentials/SIDs kept solely for a bounded provider retry.
+      if(db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='billingRetentionSecrets'").get()){
+        db.pragma('secure_delete = ON');
+        for(const {ownerId} of db.prepare('SELECT ownerId FROM billingRetentionSecrets').all())usageOwnerQuery(db)('DELETE FROM billingRetentionSecrets WHERE ownerId=?').run(ownerId);
+        db.exec('VACUUM');
+      }
+    }
     const rows = db.pragma('integrity_check');
     if(rows.length !== 1 || Object.values(rows[0])[0] !== 'ok' || db.pragma('foreign_key_check').length) throw new Error('BACKUP_DATABASE_INVALID');
     // Platform-wide recovery inventory, not a tenant-facing query. Check the

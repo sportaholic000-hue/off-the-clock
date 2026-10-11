@@ -17,18 +17,19 @@ import {backfillWidgetLeads} from '../server/src/migrations.js';
 // 12:00 UTC. One millisecond earlier, BOTH businesses retain their data, files,
 // logins and Google tokens. At the boundary A has zero nonbilling rows, zero
 // staff users/auth secrets/pricebook files; B's rows and bytes are identical.
-// Google is attempted while its encrypted token still exists; HTTP 200, HTTP
-// 400, rejection and timeout all permit local deletion. Only the outcome/time
-// survive. Repeating cleanup changes no B data and never sends a second revoke.
+// Local deletion runs regardless of Google. Only refresh-token HTTP 200 or 400
+// invalid_token completes revocation. Other outcomes retain an encrypted refresh
+// token for retry (at most 30 days). Completed steps never repeat; failed ones do.
 // No invoice arithmetic or prices change. Saved shared backups must restore B
 // unchanged and A as a disabled billing tombstone; failed replacement retries
 // retain a durable CLEAN recovery copy, then converge without data loss.
 function lifecycle(f,options={}){
-  return createBillingCustomerLifecycle({database:f.db,clock:f.clock,enabled:()=>false,
+  return createBillingCustomerLifecycle({database:f.db,clock:f.clock,enabled:()=>true,
+    revokeCalendar:createCalendarRetentionRevoker({enabled:()=>true,key:KEY,fetchImpl:async()=>({status:200})}),releaseNumber:async()=>({released:true}),
     erasePricebookFiles:ownerId=>eraseTenantPricebookFiles(ownerId,{directory:f.deployment.pricebookPath}),...options});
 }
-// Both grant generations must revoke the saved token before deletion, regardless
-// of whether Google succeeds, rejects, disconnects or times out.
+// Both grant generations revoke their refresh token. Local data disappears even
+// when Google rejects, disconnects or times out; provider completion stays pending.
 for(const [grant,scopes] of [
   ['legacy full-scope',['https://www.googleapis.com/auth/calendar']],
   ['narrowed',['https://www.googleapis.com/auth/calendar.events.owned','https://www.googleapis.com/auth/calendar.freebusy']]
@@ -44,31 +45,29 @@ for(const [grant,scopes] of [
   const revoker=createCalendarRetentionRevoker({enabled:()=>true,key:KEY,timeoutMs:20,fetchImpl:async(url,options)=>{
     attempts++;assert.equal(url,'https://oauth2.googleapis.com/revoke');assert.equal(options.method,'POST');
     assert.equal(new URLSearchParams(options.body).get('token'),'[SYNTHETIC] refresh '+A);
-    assert.ok(f.db.prepare('SELECT credentialsCiphertext FROM calendarConnections WHERE ownerId=?').get(A));
+    assert.equal(f.db.prepare('SELECT credentialsCiphertext FROM calendarConnections WHERE ownerId=?').get(A),undefined);
+    assert.ok(f.db.prepare('SELECT credentialsCiphertext FROM billingRetentionSecrets WHERE ownerId=?').get(A));
     const cancellation=f.db.prepare('SELECT * FROM billingCancellations WHERE ownerId=?').get(A);
     assert.equal(cancellation.calendarRevokeStatus,'ATTEMPTING');assert.equal(cancellation.calendarRevokeAttemptedAt,DEADLINE);
     if(outcome==='network-error')throw Error('[SYNTHETIC] rejected');
     if(outcome==='timeout')return new Promise(()=>{});
     return {status:outcome==='success'?200:400};
   }});
-  const service=lifecycle(f,{revokeCalendar:connection=>{
-    assert.deepEqual(JSON.parse(connection.scopesJson),scopes);
-    return revoker(connection);
-  }});
+  const service=lifecycle(f,{revokeCalendar:revoker});
   await service.processOwner(A,{localOnly:true});assert.equal(attempts,0);
   assert.ok(f.db.prepare('SELECT * FROM businessProfiles WHERE ownerId=?').get(A));assert.ok(fs.existsSync(ownedTmp));
   // Sessions are created immediately before the deadline, so rejection below
   // proves erasure, not their normal eight-hour expiration.
   f.setTime(DEADLINE);await service.processOwner(A,{localOnly:true});await service.processOwner(A,{localOnly:true});
   backfillWidgetLeads(f.db); // A restart must not recreate erased widget links.
-  assertErased(assert,f.db);assert.deepEqual(businessRows(f.db,B),beforeB);assert.equal(attempts,1);
+  assertErased(assert,f.db,{allowRetrySecrets:outcome!=='success'});assert.deepEqual(businessRows(f.db,B),beforeB);assert.equal(attempts,outcome==='success'?1:2);
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM authTokens WHERE userId LIKE ?').get(A+'%').n,0);
   const sid='CA'+hash(A).slice(0,32);
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM voiceToolIdempotencyReceipts WHERE scopeHash=?').get(hash(A+'\0'+sid)).n,0);
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM voiceModelFailures WHERE callKey=?').get(hash(sid)).n,0);
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM authRefreshTokens').get().n,2);
   const cancellation=f.db.prepare('SELECT * FROM billingCancellations WHERE ownerId=?').get(A);
-  assert.equal(cancellation.dataDeletedAt,DEADLINE);assert.equal(cancellation.calendarRevokeStatus,outcome==='success'?'REVOKED':outcome==='timeout'?'TIMEOUT':'FAILED');
+  assert.equal(cancellation.dataDeletedAt,outcome==='success'?DEADLINE:null);assert.equal(cancellation.calendarRevokeStatus,outcome==='success'?'REVOKED':outcome==='timeout'?'TIMEOUT':'FAILED');
   for(const name of fs.readdirSync(f.deployment.pricebookPath))assert.ok(!name.startsWith(A+'.'));
   assert.deepEqual(fs.readFileSync(path.join(f.deployment.pricebookPath,B+'.json')),bookB);
   assert.deepEqual(fs.readdirSync(locks),[hash(B)+'.sqlite']);
@@ -104,7 +103,7 @@ test('legacy partial erasures receive expanded cleanup and retry even with an ol
   await assert.rejects(failing.processOwner(A,{localOnly:true}),/file busy/);
   assertErased(assert,f.db);assert.equal(f.db.prepare('SELECT dataErasureVersion FROM billingCancellations WHERE ownerId=?').get(A).dataErasureVersion,0);
   await lifecycle(f).processOwner(A,{localOnly:true});
-  assert.equal(f.db.prepare('SELECT dataErasureVersion FROM billingCancellations WHERE ownerId=?').get(A).dataErasureVersion,1);
+  assert.equal(f.db.prepare('SELECT dataErasureVersion FROM billingCancellations WHERE ownerId=?').get(A).dataErasureVersion,2);
   assert.ok(!fs.existsSync(path.join(f.deployment.pricebookPath,A+'.json')));assert.deepEqual(businessRows(f.db,B),beforeB);
 });
 test('local, daily and continuous backups erase A while preserving B; failed remote replacement retries',async t=>{
