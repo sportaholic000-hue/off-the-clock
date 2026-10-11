@@ -118,7 +118,7 @@ export function prepareInventory(root) {
       node=bare(node);
       if(ts.isStringLiteral(node)||ts.isNoSubstitutionTemplateLiteral(node))return node.text;
       if(ts.isBinaryExpression(node)&&node.operatorToken.kind===ts.SyntaxKind.PlusToken){const a=constant(node.left,seen),b=constant(node.right,seen);return typeof a==='string'&&typeof b==='string'?a+b:null;}
-      if(ts.isIdentifier(node)&&declarations.has(node.text)&&!seen.has(node.text))return constant(declarations.get(node.text),new Set([...seen,node.text]));
+      if(ts.isIdentifier(node)&&immutableNames.has(node.text)&&!ambiguousNames.has(node.text)&&declarations.has(node.text)&&!seen.has(node.text))return constant(declarations.get(node.text),new Set([...seen,node.text]));
       return null;
     }
     function isRegex(node,seen=new Set()){

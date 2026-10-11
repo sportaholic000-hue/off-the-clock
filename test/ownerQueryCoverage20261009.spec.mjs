@@ -141,3 +141,9 @@ test('RegExp exec is not database SQL; shadowed or unknown receivers still need 
 test('mutable regex-shaped receivers cannot hide a later database exec: 1 finding',()=>{
  scratchScan('mutable-regexp','.js','let expression=/x/; expression=database; expression.exec("DELETE FROM customers")',1);
 });
+
+// Expected: an initially harmless key cannot hide a later sensitive method.
+test('mutable or shadowed computed keys on database objects remain forbidden',()=>{
+ scratchScan('mutable-key','.js','let key="close"; key="ex"+"ec"; database[key]("DELETE FROM customers")',1);
+ scratchScan('shadowed-key','.js','const key="close"; function work(key){database[key]("DELETE FROM customers")}',1);
+});
