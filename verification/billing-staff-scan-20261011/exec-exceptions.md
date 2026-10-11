@@ -1,6 +1,6 @@
 # New owner-query exception entries
 
-The scanner inventories method, argument signature and occurrence. Computed access is rejected even when listed. All entries live in `server/src/ownerQueryExceptions.js`; this is the source-location index.
+The scanner inventories method, argument signature and occurrence. Computed access is rejected even when listed. All database exceptions and dependency checks live in `server/src/ownerQueryExceptions.js`; this is the source-location index. The scanner recognizes literal/constant regular-expression receivers structurally, without a database exception. Shadowed or unknown receivers still fail unless explicitly classified.
 
 125 database exec calls: 81 migrations, 35 admin database-control statements, 9 authentication transaction boundaries. No additional tenant read/write bypass was found: ordinary tenant DML remains through ownerQuery. Admin here means literal BEGIN/COMMIT/ROLLBACK, secure-delete PRAGMA, or VACUUM; these do not select or alter application rows. Twenty non-query exec uses are regular-expression parsing (13) or dependency-shape checks (7).
 

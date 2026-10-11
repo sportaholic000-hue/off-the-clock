@@ -1,0 +1,102 @@
+TAP version 13
+# (node:22) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: every direct database prepare or exec in server is an exact listed exception
+ok 1 - every direct database prepare or exec in server is an exact listed exception
+  ---
+  duration_ms: 2102.142911
+  ...
+# Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+ok 2 - scan rejects bracketed database['prepare'] in .js: 1 finding
+  ---
+  duration_ms: 2.075107
+  ...
+# Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+ok 3 - scan rejects double quoted and template computed prepare in .js: 1 each
+  ---
+  duration_ms: 3.267972
+  ...
+# Subtest: scan rejects dynamic key spelling in .js: 1 finding
+ok 4 - scan rejects dynamic key spelling in .js: 1 finding
+  ---
+  duration_ms: 1.324528
+  ...
+# Subtest: scan rejects database.prepare.bind alias in .js: 1 finding
+ok 5 - scan rejects database.prepare.bind alias in .js: 1 finding
+  ---
+  duration_ms: 0.908597
+  ...
+# Subtest: scan rejects const p = database.prepare alias in .js: 1 finding
+ok 6 - scan rejects const p = database.prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.850456
+  ...
+# Subtest: scan rejects destructured prepare alias in .js: 1 finding
+ok 7 - scan rejects destructured prepare alias in .js: 1 finding
+  ---
+  duration_ms: 1.020669
+  ...
+# Subtest: scan covers .mjs and .cjs: 1 finding in each
+ok 8 - scan covers .mjs and .cjs: 1 finding in each
+  ---
+  duration_ms: 2.044071
+  ...
+# Subtest: scan permits an ownerQuery control and ignores commented prepares: 0 findings
+ok 9 - scan permits an ownerQuery control and ignores commented prepares: 0 findings
+  ---
+  duration_ms: 1.920802
+  ...
+# Subtest: scan does not mistake a slash inside a regex literal for a comment: 1 finding
+ok 10 - scan does not mistake a slash inside a regex literal for a comment: 1 finding
+  ---
+  duration_ms: 1.110477
+  ...
+# Subtest: owner-row predicate preserves owner and staff parent lookup results
+ok 11 - owner-row predicate preserves owner and staff parent lookup results
+  ---
+  duration_ms: 24.816616
+  ...
+# Subtest: voice idempotency receipts persist tenant owner and replay legacy scope records
+ok 12 - voice idempotency receipts persist tenant owner and replay legacy scope records
+  ---
+  duration_ms: 18.861257
+  ...
+# Subtest: scan inventories database.exec tenant deletion: 1 finding
+ok 13 - scan inventories database.exec tenant deletion: 1 finding
+  ---
+  duration_ms: 1.926281
+  ...
+# Subtest: scan detects concatenated database prepare and exec properties: 1 finding each
+ok 14 - scan detects concatenated database prepare and exec properties: 1 finding each
+  ---
+  duration_ms: 3.652395
+  ...
+# Subtest: scan detects bracketed exec and unknown computed database keys: 1 finding each
+ok 15 - scan detects bracketed exec and unknown computed database keys: 1 finding each
+  ---
+  duration_ms: 3.345902
+  ...
+# Subtest: computed access cannot be permitted by an exception or non-query entry
+ok 16 - computed access cannot be permitted by an exception or non-query entry
+  ---
+  duration_ms: 1.169049
+  ...
+# Subtest: scan detects optional, escaped, aliased and destructured computed methods
+ok 17 - scan detects optional, escaped, aliased and destructured computed methods
+  ---
+  duration_ms: 3.809701
+  ...
+# Subtest: RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+ok 18 - RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+  ---
+  duration_ms: 3.042349
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2717.584183

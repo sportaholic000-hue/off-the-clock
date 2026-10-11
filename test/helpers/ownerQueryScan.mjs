@@ -100,12 +100,13 @@ export function prepareInventory(root) {
     const tree=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
     if(tree.parseDiagnostics.length)throw Error('Cannot inventory invalid JavaScript: '+file);
     const rows=legacy.filter(row=>row.file===file),extra=[],hidden=[];
-    const declarations=new Map(),databaseNames=new Set(['database','db','applicationDb','mutex']);
+    const declarations=new Map(),ambiguousNames=new Set(),databaseNames=new Set(['database','db','applicationDb','mutex']);
     const walk=(node,visit)=>{visit(node);ts.forEachChild(node,child=>walk(child,visit));};
     const bare=node=>ts.isParenthesizedExpression(node)?bare(node.expression):node;
     function isDatabase(node){node=bare(node);return ts.isIdentifier(node)?databaseNames.has(node.text)||/database|(?:^|_)db$|Db$/.test(node.text):ts.isPropertyAccessExpression(node)&&/^(?:db|database)$/.test(node.name.text);}
     walk(tree,node=>{
-      if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name)&&node.initializer){declarations.set(node.name.text,node.initializer);if(ts.isNewExpression(node.initializer)&&/Database|Sqlite/i.test(node.initializer.expression.getText(tree)))databaseNames.add(node.name.text);}
+      if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name)&&node.initializer){if(declarations.has(node.name.text))ambiguousNames.add(node.name.text);declarations.set(node.name.text,node.initializer);if(ts.isNewExpression(node.initializer)&&/Database|Sqlite/i.test(node.initializer.expression.getText(tree)))databaseNames.add(node.name.text);}
+      if(ts.isParameter(node)&&ts.isIdentifier(node.name))ambiguousNames.add(node.name.text);
       if(ts.isPropertyAccessExpression(node)&&node.name.text==='prepare'&&ts.isIdentifier(node.expression))databaseNames.add(node.expression.text);
     });
     for(let changed=true;changed;){changed=false;for(const [name,initial] of declarations)if(!databaseNames.has(name)&&isDatabase(initial)){databaseNames.add(name);changed=true;}}
@@ -115,6 +116,12 @@ export function prepareInventory(root) {
       if(ts.isBinaryExpression(node)&&node.operatorToken.kind===ts.SyntaxKind.PlusToken){const a=constant(node.left,seen),b=constant(node.right,seen);return typeof a==='string'&&typeof b==='string'?a+b:null;}
       if(ts.isIdentifier(node)&&declarations.has(node.text)&&!seen.has(node.text))return constant(declarations.get(node.text),new Set([...seen,node.text]));
       return null;
+    }
+    function isRegex(node,seen=new Set()){
+      node=bare(node);
+      if(node.kind===ts.SyntaxKind.RegularExpressionLiteral)return true;
+      if(ts.isIdentifier(node)&&!ambiguousNames.has(node.text)&&declarations.has(node.text)&&!seen.has(node.text))return isRegex(declarations.get(node.text),new Set([...seen,node.text]));
+      return false;
     }
     function containingFunction(node){
       for(let current=node.parent;current;current=current.parent){
@@ -127,7 +134,7 @@ export function prepareInventory(root) {
       const snippet=visible.slice(start,end<0?source.length:end).trim();
       const sql=direct?source.slice(node.parent.arguments.pos,node.parent.arguments.end).trim():null;
       extra.push({file,index,line:tree.getLineAndCharacterOfPosition(index).line+1,method,direct,forbidden,
-        signature:hash(direct?sql:snippet),snippet,argument:sql,function:containingFunction(node)});
+        signature:hash(direct?sql:snippet),snippet,argument:sql,function:containingFunction(node),nonDatabase:method==='exec'&&ts.isPropertyAccessExpression(node)&&isRegex(node.expression)});
     }
     function forbid(node,key,method){
       hidden.push([node.getStart(tree),node.end]);
@@ -162,5 +169,5 @@ const entryKey=row=>row.file+'\0'+(row.method||'prepare')+'\0'+row.signature+'\0
 export function unlistedPrepares(root, exceptions, nonQueries = []) {
   const exceptionKeys = new Set(exceptions.map(entryKey));
   const nonQueryKeys = new Set(nonQueries.map(entryKey));
-  return prepareInventory(root).filter(row => row.forbidden||(!exceptionKeys.has(entryKey(row))&&!nonQueryKeys.has(entryKey(row))));
+  return prepareInventory(root).filter(row => row.forbidden||(!row.nonDatabase&&!exceptionKeys.has(entryKey(row))&&!nonQueryKeys.has(entryKey(row))));
 }

@@ -131,3 +131,9 @@ test('scan detects optional, escaped, aliased and destructured computed methods'
  scratchScan('constructed','.mjs','const store=new DatabaseSync(":memory:"); store[method]("DELETE FROM customers")',1);
  scratchScan('destructured-computed','.js','const {["ex"+"ec"]:run}=database; run("DELETE FROM customers")',1);
 });
+
+test('RegExp exec is not database SQL; shadowed or unknown receivers still need inventory',()=>{
+ scratchScan('regexp','.js','const expression=/x/; expression.exec("text"); /y/.exec("text")',0);
+ scratchScan('shadowed-regexp','.js','const expression=/x/; function work(expression){expression.exec("DELETE FROM customers")}',1);
+ scratchScan('unknown-exec','.js','connection.exec("DELETE FROM customers")',1);
+});

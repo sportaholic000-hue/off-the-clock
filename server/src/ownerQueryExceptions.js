@@ -2224,51 +2224,6 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "line": 881
   },
   {
-    "file": "server/priceBookMoney.js",
-    "line": 85,
-    "function": "ownerErrorLocation",
-    "method": "exec",
-    "signature": "a0af9f865bf637e6736817f4ce552e4cdf7b8c36ea75bc254c1d1f0af744b5bf",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in ownerErrorLocation; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/priceBookMoney.js",
-    "line": 87,
-    "function": "ownerErrorLocation",
-    "method": "exec",
-    "signature": "a0af9f865bf637e6736817f4ce552e4cdf7b8c36ea75bc254c1d1f0af744b5bf",
-    "occurrence": 2,
-    "reason": "RegExp.exec parses a string in ownerErrorLocation; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/priceBookMoney.js",
-    "line": 143,
-    "function": "decimal",
-    "method": "exec",
-    "signature": "982d9e3eb996f559e633f4d194def3761d909f5a3b647d1a851fead67c32c9d1",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in decimal; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/priceBookMoney.js",
-    "line": 149,
-    "function": "decimal",
-    "method": "exec",
-    "signature": "cc6b6bad31a0ff4d6dfd4953a6346a1c463d884723898a2af964b998e5499e22",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in decimal; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/quote-engine-vnext/exactMath.js",
-    "line": 36,
-    "function": "decimalTextToRational",
-    "method": "exec",
-    "signature": "982d9e3eb996f559e633f4d194def3761d909f5a3b647d1a851fead67c32c9d1",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in decimalTextToRational; this receiver is a regular expression, not a database."
-  },
-  {
     "file": "server/src/auth.js",
     "line": 92,
     "function": "createAuthHandlers",
@@ -2294,69 +2249,6 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "signature": "e427edc2b62645b776e651900eb8ac341a3f85f916a29c5053efc57b00b7f044",
     "occurrence": 1,
     "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "line": 127,
-    "function": "normalizedUtcInstant",
-    "method": "exec",
-    "signature": "cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in normalizedUtcInstant; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/src/calendarTime.js",
-    "line": 23,
-    "function": "parseLocalDate",
-    "method": "exec",
-    "signature": "cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in parseLocalDate; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/src/calendarTime.js",
-    "line": 31,
-    "function": "parseLocalTime",
-    "method": "exec",
-    "signature": "cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619",
-    "occurrence": 2,
-    "reason": "RegExp.exec parses a string in parseLocalTime; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/src/googleCalendarAdapter.js",
-    "line": 107,
-    "function": "utcInstant",
-    "method": "exec",
-    "signature": "cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in utcInstant; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/src/ownerDate.js",
-    "line": 4,
-    "function": "ownerUtcInstant",
-    "method": "exec",
-    "signature": "cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in ownerUtcInstant; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/src/voice/googleGenAiLiveAdapter.js",
-    "line": 121,
-    "function": "onmessage",
-    "method": "exec",
-    "signature": "47c67321d7951112cf08d09d1e60a0b4b626bea4edc212fa35eb8a58f0d6b21e",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in onmessage; this receiver is a regular expression, not a database."
-  },
-  {
-    "file": "server/src/voice/listedPriceCalculation.js",
-    "line": 30,
-    "function": "calculateSavedListedPrice",
-    "method": "exec",
-    "signature": "821119d79af8b9fcf86d782863d55861708cc4040673f905f9e3b616cfb71199",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in calculateSavedListedPrice; this receiver is a regular expression, not a database."
   },
   {
     "file": "server/src/voice/voicePersistence.js",
@@ -2393,14 +2285,5 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
     "occurrence": 1,
     "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
-  },
-  {
-    "file": "server/src/websitePriceVisibility.js",
-    "line": 80,
-    "function": "applyWebsiteVisibility",
-    "method": "exec",
-    "signature": "36e64f19f57a05c8cd5b6bf7eff72703b4bbab19def7832eb4e686e7fa482eef",
-    "occurrence": 1,
-    "reason": "RegExp.exec parses a string in applyWebsiteVisibility; this receiver is a regular expression, not a database."
   }
 ]);
