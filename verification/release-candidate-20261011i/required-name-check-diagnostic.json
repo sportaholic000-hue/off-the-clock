@@ -1,0 +1,16 @@
+[
+  {
+    "case": "positive",
+    "command": "node verification/release-candidate-20261011i/check-required-test-names.mjs ../rc-i-required-names-positive.tap",
+    "expectedExit": 0,
+    "actualExit": 0,
+    "output": "PASS: retentionHardening 26/26 expected names found in the full-suite log.\nPASS: demoFacts 15/15 expected names found in the full-suite log.\nPASS: scannerDestructuring 68/68 expected names found in the full-suite log.\n"
+  },
+  {
+    "case": "negative",
+    "command": "node verification/release-candidate-20261011i/check-required-test-names.mjs ../rc-i-required-names-negative.tap",
+    "expectedExit": 1,
+    "actualExit": 1,
+    "output": "AssertionError [ERR_ASSERTION]: Required passing test missing from final log: scan destructuring 20261011: auditor renamed exec through call"
+  }
+]

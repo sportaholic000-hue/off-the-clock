@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: core 10 strict gate: passing
+ok 1 - core 10 strict gate: passing
+  ---
+  duration_ms: 244.29183
+  type: 'test'
+  ...
+# Subtest: core 10 strict gate: skipped
+ok 2 - core 10 strict gate: skipped
+  ---
+  duration_ms: 218.040473
+  type: 'test'
+  ...
+# Subtest: core 10 strict gate: nested skipped
+ok 3 - core 10 strict gate: nested skipped
+  ---
+  duration_ms: 222.613797
+  type: 'test'
+  ...
+# Subtest: core 10 strict gate: todo
+ok 4 - core 10 strict gate: todo
+  ---
+  duration_ms: 241.703884
+  type: 'test'
+  ...
+# Subtest: core 10 strict gate: empty file
+ok 5 - core 10 strict gate: empty file
+  ---
+  duration_ms: 247.500655
+  type: 'test'
+  ...
+# Subtest: core 10 strict gate: empty suite
+ok 6 - core 10 strict gate: empty suite
+  ---
+  duration_ms: 309.633941
+  type: 'test'
+  ...
+# Subtest: core 10 strict gate: failing
+ok 7 - core 10 strict gate: failing
+  ---
+  duration_ms: 211.323121
+  type: 'test'
+  ...
+# Subtest: core 10 strict gate: missing imported module
+ok 8 - core 10 strict gate: missing imported module
+  ---
+  duration_ms: 198.06148
+  type: 'test'
+  ...
+# Subtest: core 10 strict gate: zero selected files fails
+ok 9 - core 10 strict gate: zero selected files fails
+  ---
+  duration_ms: 88.069341
+  type: 'test'
+  ...
+# Subtest: core 10 selection: standalone supporting modules and nested specs
+ok 10 - core 10 selection: standalone supporting modules and nested specs
+  ---
+  duration_ms: 6.135814
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2182.280094

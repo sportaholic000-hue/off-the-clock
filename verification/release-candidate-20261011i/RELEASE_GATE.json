@@ -1,0 +1,50 @@
+{
+  "tag": "rc-20261011i",
+  "inputs": [
+    "c5487b1eab00d4944dd3a53a7264898adb758cde",
+    "c3c760345a24d58a303ac989ca8ed518f7cb0134",
+    "01710054c08e0f87924328f0406e3a1b9135e08b"
+  ],
+  "mergeCommits": [
+    "bc85d41daa976c3c6e4773f86897df2ed1de1513",
+    "07050711648e4f7a2cdb6e58e5768e08d569293c"
+  ],
+  "verifiedSourceCommit": "bbe7464ecd582d1c4a7091391339e952bf39ea38",
+  "checkpointHostedRunId": 38151374508,
+  "checkpointHostedConclusion": "success",
+  "checkpointRailwayDockerSmoke": "pass",
+  "checkpointFullTests": {
+    "passed": 4947,
+    "failed": 0
+  },
+  "checkpointQuoteTests": {
+    "passed": 4225,
+    "failed": 0
+  },
+  "checkpointStandaloneTests": {
+    "files": 18,
+    "passed": 565,
+    "failed": 0
+  },
+  "localBuild": "pass",
+  "localFullTests": {
+    "registered": 4933,
+    "passed": 4873,
+    "missingChromiumFailures": 60,
+    "browserAssertions": "NOT RUN"
+  },
+  "localQuoteTests": {
+    "registered": 4211,
+    "passed": 4151,
+    "missingChromiumFailures": 60,
+    "browserAssertions": "NOT RUN"
+  },
+  "localNonBrowserFailures": 0,
+  "localStandaloneFailures": 0,
+  "ownerQueryUnlisted": 0,
+  "ownerQueryUnusedExceptions": 0,
+  "ownerQueryForbiddenExtractions": 0,
+  "routeSourceMismatches": 0,
+  "finalReportApprovedForTag": true,
+  "tagCondition": "Final report commit must pass both CI jobs, including the build, full and quote suites, all standalone files, required-test-name guard, production dependency audit and both Docker smoke proofs."
+}

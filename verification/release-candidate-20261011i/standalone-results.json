@@ -1,0 +1,200 @@
+[
+  {
+    "file": "test/retentionHardeningHealth20261011.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/retentionHardeningHealth20261011.spec.mjs",
+    "exit": 0,
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/retentionHardeningLocks20261011.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/retentionHardeningLocks20261011.spec.mjs",
+    "exit": 0,
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/retentionHardeningSecrets20261011.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/retentionHardeningSecrets20261011.spec.mjs",
+    "exit": 0,
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/retentionHardeningVersions20261011.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/retentionHardeningVersions20261011.spec.mjs",
+    "exit": 0,
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/day90Backups20261011.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/day90Backups20261011.spec.mjs",
+    "exit": 0,
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/day90Cancellation20261011.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/day90Cancellation20261011.spec.mjs",
+    "exit": 0,
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/day90Guarantees20261011.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/day90Guarantees20261011.spec.mjs",
+    "exit": 0,
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/day90Providers20261011.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/day90Providers20261011.spec.mjs",
+    "exit": 0,
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/tenantRetention20261010.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/tenantRetention20261010.spec.mjs",
+    "exit": 0,
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/continuousOffsite20261007.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/continuousOffsite20261007.spec.mjs",
+    "exit": 0,
+    "tests": 16,
+    "pass": 16,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/backups.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/backups.spec.mjs",
+    "exit": 0,
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/offsiteBackups20261007.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/offsiteBackups20261007.spec.mjs",
+    "exit": 0,
+    "tests": 23,
+    "pass": 23,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/ownerQueryCoverage20261009.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/ownerQueryCoverage20261009.spec.mjs",
+    "exit": 0,
+    "tests": 88,
+    "pass": 88,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/voiceLimits20261007.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/voiceLimits20261007.spec.mjs",
+    "exit": 0,
+    "tests": 41,
+    "pass": 41,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/tenantIsolationRoutes.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/tenantIsolationRoutes.spec.mjs",
+    "exit": 0,
+    "tests": 264,
+    "pass": 264,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/billingTrial20261011.dom.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/billingTrial20261011.dom.spec.mjs",
+    "exit": 0,
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/ownerWording20261011.dom.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/ownerWording20261011.dom.spec.mjs",
+    "exit": 0,
+    "tests": 16,
+    "pass": 16,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  {
+    "file": "test/staffLogin20261009.spec.mjs",
+    "command": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/staffLogin20261009.spec.mjs",
+    "exit": 0,
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  }
+]

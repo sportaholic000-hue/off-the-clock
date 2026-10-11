@@ -1,0 +1,678 @@
+{
+  "workflow": "CI",
+  "runId": 38151374508,
+  "commit": "bbe7464ecd582d1c4a7091391339e952bf39ea38",
+  "conclusion": "success",
+  "testJobId": 114505367039,
+  "summaries": [
+    {
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 3911.18579
+    },
+    {
+      "tests": 4225,
+      "suites": 0,
+      "pass": 4225,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 537292.873055
+    },
+    {
+      "tests": 4947,
+      "suites": 0,
+      "pass": 4947,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 586629.199589
+    },
+    {
+      "tests": 3,
+      "suites": 0,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 1602.005043
+    },
+    {
+      "tests": 6,
+      "suites": 0,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 3063.709295
+    },
+    {
+      "tests": 8,
+      "suites": 0,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 3784.056479
+    },
+    {
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 8546.352426
+    },
+    {
+      "tests": 4,
+      "suites": 0,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 4778.548511
+    },
+    {
+      "tests": 4,
+      "suites": 0,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 298.690428
+    },
+    {
+      "tests": 10,
+      "suites": 0,
+      "pass": 10,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 6994.623679
+    },
+    {
+      "tests": 12,
+      "suites": 0,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 5389.77448
+    },
+    {
+      "tests": 13,
+      "suites": 0,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 7545.298612
+    },
+    {
+      "tests": 16,
+      "suites": 0,
+      "pass": 16,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 3575.504663
+    },
+    {
+      "tests": 12,
+      "suites": 0,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 469.082212
+    },
+    {
+      "tests": 23,
+      "suites": 0,
+      "pass": 23,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 8310.230212
+    },
+    {
+      "tests": 88,
+      "suites": 0,
+      "pass": 88,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 2067.172951
+    },
+    {
+      "tests": 41,
+      "suites": 0,
+      "pass": 41,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 2586.347638
+    },
+    {
+      "tests": 264,
+      "suites": 0,
+      "pass": 264,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 15962.861027
+    },
+    {
+      "tests": 12,
+      "suites": 0,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 1788.058371
+    },
+    {
+      "tests": 16,
+      "suites": 0,
+      "pass": 16,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 1300.613453
+    },
+    {
+      "tests": 24,
+      "suites": 0,
+      "pass": 24,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 334.985763
+    }
+  ],
+  "coverage": {
+    "retentionHardening": {
+      "unique": 26,
+      "names": [
+        {
+          "name": "retention hardening: Enabled continuous erasure removes every historic version and marker",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: Enabled daily erasure removes every historic version and marker",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: NeverEnabled versioning permits ordinary off-site erasure",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: Suspended continuous erasure removes every historic version and marker",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: Suspended daily erasure removes every historic version and marker",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: Unsupported versioning permits ordinary off-site erasure",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: a clean startup does not block scheduled snapshots on active off-site workers",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: a live holder excludes workers and a competing erasure",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: acquire recovers PID 1 from a previous process instance",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: acquire recovers a dead child retention lock",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: admin returns 503 for day-90 erasure blocked before initialization",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: interrupted snapshot secrets disappear before provider success",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: legacy PID 1 lock predating this process is recoverable",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: missing due steps count, calendar connected=false",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: missing due steps count, calendar connected=true",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: ordinary snapshot recovers a dead child retention lock",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: provider steps cannot complete while abandoned snapshot removal fails",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: retry secrets never reach the first snapshot disk write",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: staging cleanup never removes another live process snapshot",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: startup removes abandoned snapshots even when the next backup is not due",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: startup retries partial cleanup after a live restore releases its lock",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: version delete ignored keeps erasure pending and admin unhealthy",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: version delete rejected keeps erasure pending and admin unhealthy",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: versioning access denied keeps erasure pending and admin unhealthy",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "retention hardening: worker recovers PID 1 from a previous process instance",
+          "passingOccurrences": 3
+        }
+      ]
+    },
+    "demoFacts": {
+      "unique": 15,
+      "names": [
+        {
+          "name": "demo approved plan entitlements 20261011: Operator",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved plan entitlements 20261011: QuoteDone",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved plan entitlements 20261011: Starter",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: miles Operator",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: miles QuoteDone",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: miles Starter",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: miles annual",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: miles trial",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: nova Operator",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: nova QuoteDone",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: nova Starter",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: nova annual",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo approved session facts 20261011: nova trial",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo facts A: generated instructions match the current owner ruling",
+          "passingOccurrences": 2
+        },
+        {
+          "name": "demo facts B: the token provider receives those same corrected locked instructions",
+          "passingOccurrences": 2
+        }
+      ]
+    },
+    "scannerDestructuring": {
+      "unique": 68,
+      "names": [
+        {
+          "name": "scan destructuring 20261011: auditor renamed exec through call",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: auditor shorthand exec",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec arrow shorthand parameter",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment computed key",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment for-of",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment nested array",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment nested default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment nested object",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment quoted key",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment renamed",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment renamed default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment shorthand",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec assignment shorthand default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec catch binding",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration computed key",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration nested array",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration nested default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration nested object",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration quoted key",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration renamed",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration renamed default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration shorthand",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec declaration shorthand default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec for-of declaration",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: exec parameter nested default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted exec invocation apply",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted exec invocation bind",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted exec invocation call",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted exec invocation direct",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted methods cannot be allowlisted",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted prepare invocation apply",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted prepare invocation bind",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted prepare invocation call",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: extracted prepare invocation direct",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: metadata, defaults and safe patterns are not extractions",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: multiple methods and nested defaults are counted once",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: nested dynamic database keys are forbidden",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare arrow shorthand parameter",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment computed key",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment for-of",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment nested array",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment nested default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment nested object",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment quoted key",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment renamed",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment renamed default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment shorthand",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare assignment shorthand default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare catch binding",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration computed key",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration nested array",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration nested default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration nested object",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration quoted key",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration renamed",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration renamed default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration shorthand",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare declaration shorthand default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare for-of declaration",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: prepare parameter nested default",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: shadowed key nested catch binding assignment",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: shadowed key nested catch binding declaration",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: shadowed key nested variable binding assignment",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: shadowed key nested variable binding declaration",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: shadowed key renamed default parameter assignment",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: shadowed key renamed default parameter declaration",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: shadowed key shorthand parameter assignment",
+          "passingOccurrences": 3
+        },
+        {
+          "name": "scan destructuring 20261011: shadowed key shorthand parameter declaration",
+          "passingOccurrences": 3
+        }
+      ]
+    }
+  },
+  "requiredNameGuard": [
+    "PASS: retentionHardening 26/26 expected names found in the full-suite log.",
+    "PASS: demoFacts 15/15 expected names found in the full-suite log.",
+    "PASS: scannerDestructuring 68/68 expected names found in the full-suite log."
+  ],
+  "checkpointDidNotTag": true
+}

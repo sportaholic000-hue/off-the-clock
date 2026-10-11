@@ -1,0 +1,18 @@
+{
+  "workflow": "CI",
+  "runId": 38151374508,
+  "jobId": 114505366911,
+  "conclusion": "success",
+  "proof": {
+    "passed": true,
+    "sourceCommit": "bbe7464ecd582d1c4a7091391339e952bf39ea38",
+    "imageId": "sha256:c82546dababbade0ac0c40cf28968b110370ebc09d36af9e556b1ca0c90d985c",
+    "checks": [
+      "clean lockfile dependencies and rebuilt bundles; existing demo bytes/routes preserved; private files inaccessible",
+      "real Linux SIGTERM drains HTTP/workers and closes SQLite; same-container restart retains database and price books",
+      "fresh container redeploy retains data; actual restore CLI creates verified new root; fresh production process reads restored data",
+      "startup refuses missing actual mount and Railway development-mode override"
+    ]
+  },
+  "voiceStartupSmoke": "PASS: production Docker image, no specs, voice enabled, synthetic credentials, network disabled, /api/health 200"
+}

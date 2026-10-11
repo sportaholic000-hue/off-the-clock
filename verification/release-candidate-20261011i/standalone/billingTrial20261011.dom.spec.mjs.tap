@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: Billing trial shows end, fourteen days left, 60-minute cap and one unconfirmed call
+ok 1 - Billing trial shows end, fourteen days left, 60-minute cap and one unconfirmed call
+  ---
+  duration_ms: 564.928114
+  type: 'test'
+  ...
+# Subtest: Billing refresh completes the same 125-second trial call as 3 of 60 minutes, never overage
+ok 2 - Billing refresh completes the same 125-second trial call as 3 of 60 minutes, never overage
+  ---
+  duration_ms: 237.567984
+  type: 'test'
+  ...
+# Subtest: Billing paid Operator uses the existing meter: 302 of 300 minutes, $0.70 overage
+ok 3 - Billing paid Operator uses the existing meter: 302 of 300 minutes, $0.70 overage
+  ---
+  duration_ms: 131.277097
+  type: 'test'
+  ...
+# Subtest: Billing monthly choices show all prices and monthly allowances before checkout
+ok 4 - Billing monthly choices show all prices and monthly allowances before checkout
+  ---
+  duration_ms: 147.349101
+  type: 'test'
+  ...
+# Subtest: Billing annual choices show all prices and monthly allowances before checkout
+ok 5 - Billing annual choices show all prices and monthly allowances before checkout
+  ---
+  duration_ms: 102.646961
+  type: 'test'
+  ...
+# Subtest: Billing with Stripe disabled preserves the 404 message and does not request usage
+ok 6 - Billing with Stripe disabled preserves the 404 message and does not request usage
+  ---
+  duration_ms: 105.031895
+  type: 'test'
+  ...
+# Subtest: staff denied Billing status never requests or displays owner minute usage
+ok 7 - staff denied Billing status never requests or displays owner minute usage
+  ---
+  duration_ms: 80.381207
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in UTC
+ok 8 - Billing approved trial date in UTC
+  ---
+  duration_ms: 87.80032
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in America/Los_Angeles
+ok 9 - Billing approved trial date in America/Los_Angeles
+  ---
+  duration_ms: 92.081783
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in Asia/Tokyo
+ok 10 - Billing approved trial date in Asia/Tokyo
+  ---
+  duration_ms: 102.122993
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in invalid-zone
+ok 11 - Billing approved trial date in invalid-zone
+  ---
+  duration_ms: 102.77743
+  type: 'test'
+  ...
+# Subtest: Billing approved trial date in null
+ok 12 - Billing approved trial date in null
+  ---
+  duration_ms: 84.757574
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2469.790111

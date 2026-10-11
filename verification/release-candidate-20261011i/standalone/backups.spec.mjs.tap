@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: backup refuses a missing book recorded in the durable creation ledger
+ok 1 - backup refuses a missing book recorded in the durable creation ledger
+  ---
+  duration_ms: 40.222648
+  type: 'test'
+  ...
+# Subtest: restore refuses a checksum-valid legacy bundle whose database records an omitted price book
+ok 2 - restore refuses a checksum-valid legacy bundle whose database records an omitted price book
+  ---
+  duration_ms: 64.798397
+  type: 'test'
+  ...
+# Subtest: backup cannot discard an unconfirmed save marker and resume quoting after restore
+ok 3 - backup cannot discard an unconfirmed save marker and resume quoting after restore
+  ---
+  duration_ms: 12.546616
+  type: 'test'
+  ...
+# Subtest: backup refuses a price book created while the online database snapshot is in progress
+ok 4 - backup refuses a price book created while the online database snapshot is in progress
+  ---
+  duration_ms: 10.710709
+  type: 'test'
+  ...
+# Subtest: backup refuses a pause marker that appears during the online database snapshot
+ok 5 - backup refuses a pause marker that appears during the online database snapshot
+  ---
+  duration_ms: 5.974433
+  type: 'test'
+  ...
+# Subtest: online backup includes committed WAL rows and price books; restore publishes a verified new directory
+ok 6 - online backup includes committed WAL rows and price books; restore publishes a verified new directory
+  ---
+  duration_ms: 16.176332
+  type: 'test'
+  ...
+# Subtest: a transaction during an online backup never appears half committed
+ok 7 - a transaction during an online backup never appears half committed
+  ---
+  duration_ms: 47.586967
+  type: 'test'
+  ...
+# Subtest: corruption refuses restore before publishing and leaves the current database intact
+ok 8 - corruption refuses restore before publishing and leaves the current database intact
+  ---
+  duration_ms: 12.898389
+  type: 'test'
+  ...
+# Subtest: traversal, symlinks and targets outside the restore directory cannot write files
+ok 9 - traversal, symlinks and targets outside the restore directory cannot write files
+  ---
+  duration_ms: 17.033467
+  type: 'test'
+  ...
+# Subtest: a failed snapshot leaves the last accepted backup and no partial bundle
+ok 10 - a failed snapshot leaves the last accepted backup and no partial bundle
+  ---
+  duration_ms: 14.196305
+  type: 'test'
+  ...
+# Subtest: retention removes only expired completed snapshots and preserves other directories
+ok 11 - retention removes only expired completed snapshots and preserves other directories
+  ---
+  duration_ms: 19.27248
+  type: 'test'
+  ...
+# Subtest: scheduler retries failure, avoids overlapping jobs and waits for its active job when stopped
+ok 12 - scheduler retries failure, avoids overlapping jobs and waits for its active job when stopped
+  ---
+  duration_ms: 152.899447
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 735.539188

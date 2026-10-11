@@ -1,0 +1,18 @@
+{
+  "npm-test": {
+    "status": "INTERRUPTED; no final summary; remaining checks NOT RUN in this attempt",
+    "topLevelPassed": 293,
+    "topLevelFailed": 3,
+    "allObservedFailuresMissingChromium": true,
+    "sha256": "be96ebc222b5cca836be9fbd7bb7bcd3ce743a10a0d47e8ec7b4a2c8a23b0d0e",
+    "rawWorkspaceLog": "/workspace/scratch/5228524b6f21/rc-i-npm-test-interrupted.log"
+  },
+  "quote": {
+    "status": "INTERRUPTED; no final summary; remaining checks NOT RUN in this attempt",
+    "topLevelPassed": 73,
+    "topLevelFailed": 0,
+    "allObservedFailuresMissingChromium": true,
+    "sha256": "487f353fe955ead22ffc282d10daf3800479163b988b0ea3681739dbac0c1b20",
+    "rawWorkspaceLog": "/workspace/scratch/5228524b6f21/rc-i-quote-interrupted.log"
+  }
+}
