@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import {CREATE_TABLE_STATEMENTS,CREATE_TRIGGER_STATEMENTS} from '../server/src/schema.js';
 import {installAuthTokenSchema,createAuthTokenService,AUTH_TOKEN_PURPOSES} from '../server/src/authTokenService.js';
 import {installAuthSessionSchema,createAuthSessionService} from '../server/src/authSessionService.js';
-import {installAuthLimitSchema} from '../server/src/authRateLimitService.js';
+import {installAuthLimitSchema,createAuthRateLimiter} from '../server/src/authRateLimitService.js';
 import {createAuthHandlers} from '../server/src/auth.js';
 import {createStaffService} from '../server/src/staffService.js';
 import {installStaffRoutes} from '../server/src/staffRoutes.js';
@@ -27,10 +27,10 @@ function fixture(t) {
   const query=sql=>{assert.match(sql,/\bownerId\b/);return database.prepare(sql);};
   let instant=Date.parse('2026-10-09T12:00:00.000Z');const now=()=>new Date(instant);
   const tokenService=createAuthTokenService(database,{clock:now}),sessions=createAuthSessionService(database,{environment:env});
-  const mail=[],delivery={fail:false};
+  const mail=[],delivery={fail:false},hashCalls=[],hashControl={before:null};
   const staff=createStaffService({database,ownerQuery:query,tokenService,sessionService:sessions,now,environment:env,
     sendEmail:async message=>{mail.push(message);if(delivery.fail)throw Error('SYNTHETIC provider unavailable');return {accepted:true};},
-    hashPassword:async password=>'hash:'+password});
+    hashPassword:async password=>{hashCalls.push(password);await hashControl.before?.();return 'hash:'+password;}});
   function addOwner(id,plan='Operator') {
     database.prepare(`INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt,emailVerifiedAt)
       VALUES(?,?,'hash:owner-pass','Owner',?,?,'active','UTC','owner',?,?)`).run(
@@ -45,7 +45,7 @@ function fixture(t) {
     await handler({method:'POST',headers:{origin:env.CLIENT_URL},ip:'synthetic-ip',body},res);
     return {status:res.statusCode,body:res.body};
   }
-  return {database,staff,sessions,mail,delivery,auth,invoke,addOwner,tokenService,query,advance:ms=>{instant+=ms;}};
+  return {database,staff,sessions,mail,delivery,auth,invoke,addOwner,tokenService,query,hashCalls,hashControl,now,advance:ms=>{instant+=ms;}};
 }
 
 // Handwritten merged-plan expectations: Starter 0 staff, Operator 1, QuoteDone 1,
@@ -187,7 +187,7 @@ test('tenant-bound staff routes deny staff management and isolate customers',asy
   f.database.prepare(`INSERT INTO customers(id,ownerId,phoneE164,name,createdAt)
     VALUES('customer-a','owner-a','+15550000001','Alice','2026-10-09'),('customer-b','owner-b','+15550000002','Bob','2026-10-09')`).run();
   const routes=[],app={};for(const method of ['get','post','delete'])app[method]=(path,...handlers)=>routes.push({method:method.toUpperCase(),path,handlers});
-  installStaffRoutes(app,{service:f.staff,ownerQuery:f.query,requireAuth:roles=>requireAuth(roles,{database:f.database,
+  installStaffRoutes(app,{rateLimiter:createAuthRateLimiter(f.database,{secret:SECRET,clock:f.now}),service:f.staff,ownerQuery:f.query,requireAuth:roles=>requireAuth(roles,{database:f.database,
     sessionService:f.sessions,verifyToken:token=>jwt.verify(token,SECRET)}),asyncHandler:fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next),environment:env});
   async function request(path,token,method='GET',body) {
     const url=new URL(path,'https://app.example.invalid');
@@ -263,7 +263,7 @@ test('staff queues a saved quote once through the fake email provider, with no c
   const routes=[],app={get:(path,...handlers)=>routes.push({method:'GET',path,handlers}),
     post:(path,...handlers)=>routes.push({method:'POST',path,handlers}),
     delete:(path,...handlers)=>routes.push({method:'DELETE',path,handlers})};
-  installStaffRoutes(app,{service:f.staff,ownerQuery:f.query,quoteEmail,environment:env,
+  installStaffRoutes(app,{rateLimiter:createAuthRateLimiter(f.database,{secret:SECRET,clock:f.now}),service:f.staff,ownerQuery:f.query,quoteEmail,environment:env,
     requireAuth:roles=>requireAuth(roles,{database:f.database,sessionService:f.sessions,verifyToken:token=>jwt.verify(token,SECRET)}),
     requirePriceBookPlan:(_req,_res,next)=>next(),asyncHandler:fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next)});
   async function sendViaRoute(token,quoteId,address) {
@@ -287,4 +287,53 @@ test('staff queues a saved quote once through the fake email provider, with no c
   assert.match(mail[0].text,/Measured mowing only/);assert.doesNotMatch(mail[0].text,/PRIVATE_MUST_NOT_LEAK/);
   assert.equal(f.database.prepare("SELECT COUNT(*) n FROM outboxEvents WHERE ownerId='owner-b'").get().n,0);
   assert.equal(quoteEmail.state(a.id,'saved-quote:quote-a').status,'ACCEPTED');
+});
+
+// Expected before execution: unknown/expired/spent/wrong-purpose/non-staff tokens
+// must perform zero hashes; valid consumption is atomic; request 11 gets 429.
+for(const kind of ['unknown','expired','used','wrong-purpose','non-staff','changed-invite'])
+test(`staff acceptance preflight: ${kind} token performs zero password hashes`,async t=>{
+ const f=fixture(t),owner=f.addOwner('owner-a');
+ const invited=await f.staff.invite(owner.id,{name:'[PLACEHOLDER] Staff',email:'staff@example.invalid'});
+ let token=mailToken(f.mail[0]);
+ if(kind==='unknown')token='x'.repeat(43);
+ if(kind==='expired')f.advance(24*60*60*1000);
+ if(kind==='used')f.tokenService.consume({token,purpose:AUTH_TOKEN_PURPOSES.STAFF_INVITE});
+ if(kind==='wrong-purpose')token=f.tokenService.issue({userId:invited.staff[0].id,purpose:AUTH_TOKEN_PURPOSES.RESET_PASSWORD}).token;
+ if(kind==='non-staff')token=f.tokenService.issue({userId:owner.id,purpose:AUTH_TOKEN_PURPOSES.STAFF_INVITE}).token;
+ if(kind==='changed-invite')f.database.prepare("UPDATE staffInvitations SET email='changed@example.invalid' WHERE staffId=?").run(invited.staff[0].id);
+ await assert.rejects(f.staff.accept({token,password:'[PLACEHOLDER] password'}),e=>e.status===400);
+ assert.equal(f.hashCalls.length,0,kind+' must not hash');
+});
+test('valid staff acceptance hashes exactly once and creates an active login',async t=>{
+ const f=fixture(t),owner=f.addOwner('owner-a');await f.staff.invite(owner.id,{name:'[PLACEHOLDER] Staff',email:'staff@example.invalid'});
+ const token=mailToken(f.mail[0]);assert.deepEqual(await f.staff.accept({token,password:'[PLACEHOLDER] password'}),{ok:true});
+ assert.equal(f.hashCalls.length,1);assert.equal(f.staff.list(owner.id).staff[0].status,'active');
+ await assert.rejects(f.staff.accept({token,password:'[PLACEHOLDER] changed'}),e=>e.status===400);assert.equal(f.hashCalls.length,1);
+});
+for(const race of ['expires','consumed','invitation-changed'])test('staff acceptance rechecks atomically when token '+race+' while hashing',async t=>{
+ const f=fixture(t),owner=f.addOwner('owner-a'),invited=await f.staff.invite(owner.id,{name:'[PLACEHOLDER] Staff',email:'staff@example.invalid'});
+ const token=mailToken(f.mail[0]),oldHash=row(f.database,invited.staff[0].id).passwordHash;
+ f.hashControl.before=()=>{
+  if(race==='expires')f.advance(24*60*60*1000);
+  if(race==='consumed')f.tokenService.consume({token,purpose:AUTH_TOKEN_PURPOSES.STAFF_INVITE});
+  if(race==='invitation-changed')f.database.prepare("UPDATE staffInvitations SET email='changed@example.invalid' WHERE staffId=?").run(invited.staff[0].id);
+ };
+ await assert.rejects(f.staff.accept({token,password:'[PLACEHOLDER] password'}),e=>e.status===400);
+ assert.equal(f.hashCalls.length,1);assert.equal(row(f.database,invited.staff[0].id).passwordHash,oldHash);
+ assert.equal(f.staff.list(owner.id).staff[0].status,'pending');
+});
+test('staff invite public route shares recovery rate limits: ten per IP per fifteen minutes',async t=>{
+ const f=fixture(t),routes=[],app={};for(const method of ['get','post','delete'])app[method]=(path,...handlers)=>routes.push({path,method,handlers});
+ installStaffRoutes(app,{rateLimiter:createAuthRateLimiter(f.database,{secret:SECRET,clock:f.now}),service:f.staff,ownerQuery:f.query,requireAuth:()=>()=>{},asyncHandler:fn=>fn,environment:env,
+  rateLimiter:createAuthRateLimiter(f.database,{secret:SECRET,clock:f.now})});
+ const handlers=routes.find(r=>r.path==='/api/auth/staff-invite/accept').handlers;
+ async function request(ip='[PLACEHOLDER] IP'){
+  const req={method:'POST',ip,headers:{origin:env.CLIENT_URL},body:{token:'x'.repeat(43),password:'[PLACEHOLDER] password'}};
+  return new Promise((resolve,reject)=>{const res={statusCode:200,setHeader(){},status(code){this.statusCode=code;return this;},json(body){resolve({status:this.statusCode,body});return this;}};let i=0;const next=e=>{if(e)return reject(e);try{Promise.resolve(handlers[i++](req,res,next)).catch(reject);}catch(e){reject(e);}};next();});
+ }
+ for(let i=0;i<10;i++)assert.equal((await request()).status,400);
+ assert.equal((await request()).status,429);assert.equal(f.hashCalls.length,0);
+ assert.equal((await request('[PLACEHOLDER] second IP')).status,400);
+ f.advance(15*60*1000);assert.equal((await request()).status,400);
 });

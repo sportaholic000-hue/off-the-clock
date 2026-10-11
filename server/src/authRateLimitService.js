@@ -31,3 +31,14 @@ export function createAuthRateLimiter(database,{secret=process.env.JWT_SECRET,cl
   }
   return Object.freeze({take,release});
 }
+
+// Public recovery/acceptance endpoints share one policy and durable limiter.
+export const AUTH_RECOVERY_LIMIT=10;
+export const AUTH_RATE_WINDOW_MS=15*60*1000;
+export function authRecoveryLimited(limits,req,res,purpose,maximum=AUTH_RECOVERY_LIMIT) {
+  try {
+    if(limits.take(purpose,req.ip||req.socket?.remoteAddress||'unknown',maximum,AUTH_RATE_WINDOW_MS))return false;
+    res.status(429).json({error:'Please try again later.'});
+  }catch(error){if(!(error instanceof AuthLimitError))throw error;res.status(503).json({error:error.message});}
+  return true;
+}

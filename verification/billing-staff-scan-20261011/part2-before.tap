@@ -1,0 +1,242 @@
+TAP version 13
+# Subtest: merged login limits: Starter keeps owner login and 0 staff seats
+ok 1 - merged login limits: Starter keeps owner login and 0 staff seats
+  ---
+  duration_ms: 18.176104
+  ...
+# Subtest: merged login limits: Operator keeps owner login and 1 staff seats
+ok 2 - merged login limits: Operator keeps owner login and 1 staff seats
+  ---
+  duration_ms: 12.878463
+  ...
+# Subtest: merged login limits: QuoteDone keeps owner login and 1 staff seats
+ok 3 - merged login limits: QuoteDone keeps owner login and 1 staff seats
+  ---
+  duration_ms: 20.304516
+  ...
+# Subtest: merged login limits: Scale keeps owner login and unlimited staff seats
+ok 4 - merged login limits: Scale keeps owner login and unlimited staff seats
+  ---
+  duration_ms: 19.290215
+  ...
+# Subtest: Operator invite is pending, has no owner-selected password, accepts once and binds email and business
+ok 5 - Operator invite is pending, has no owner-selected password, accepts once and binds email and business
+  ---
+  duration_ms: 13.603007
+  ...
+# Subtest: the 24-hour deadline, resend and cancellation do not leave a usable old link
+ok 6 - the 24-hour deadline, resend and cancellation do not leave a usable old link
+  ---
+  duration_ms: 8.082238
+  ...
+# Subtest: failed fake email delivery leaves a retryable pending invite and invalidates the failed link
+ok 7 - failed fake email delivery leaves a retryable pending invite and invalidates the failed link
+  ---
+  duration_ms: 10.828088
+  ...
+# Subtest: invite accepted just before expiry; changed email or owner binding cannot accept
+ok 8 - invite accepted just before expiry; changed email or owner binding cannot accept
+  ---
+  duration_ms: 13.905609
+  ...
+# Subtest: Scale excess staff is suspended in stable seat order on Operator and restored on Scale
+ok 9 - Scale excess staff is suspended in stable seat order on Operator and restored on Scale
+  ---
+  duration_ms: 9.922447
+  ...
+# Subtest: plan limits, downgrade suspension, restoration and immediate removal revoke staff sessions
+ok 10 - plan limits, downgrade suspension, restoration and immediate removal revoke staff sessions
+  ---
+  duration_ms: 32.230057
+  ...
+# Subtest: tenant-bound staff routes deny staff management and isolate customers
+ok 11 - tenant-bound staff routes deny staff management and isolate customers
+  ---
+  duration_ms: 56.724018
+  ...
+# Subtest: existing durable account tokens survive a purpose CHECK upgrade, and consumed tokens remain spent
+ok 12 - existing durable account tokens survive a purpose CHECK upgrade, and consumed tokens remain spent
+  ---
+  duration_ms: 5.414233
+  ...
+# Subtest: staff queues a saved quote once through the fake email provider, with no cross-tenant or recipient substitution
+ok 13 - staff queues a saved quote once through the fake email provider, with no cross-tenant or recipient substitution
+  ---
+  duration_ms: 53.786428
+  ...
+# Subtest: staff acceptance preflight: unknown token performs zero password hashes
+ok 14 - staff acceptance preflight: unknown token performs zero password hashes
+  ---
+  duration_ms: 3.327589
+  ...
+# Subtest: staff acceptance preflight: expired token performs zero password hashes
+not ok 15 - staff acceptance preflight: expired token performs zero password hashes
+  ---
+  duration_ms: 9.530193
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:295:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    expired must not hash
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:306:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: staff acceptance preflight: used token performs zero password hashes
+not ok 16 - staff acceptance preflight: used token performs zero password hashes
+  ---
+  duration_ms: 2.904666
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:295:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    used must not hash
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:306:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: staff acceptance preflight: wrong-purpose token performs zero password hashes
+not ok 17 - staff acceptance preflight: wrong-purpose token performs zero password hashes
+  ---
+  duration_ms: 2.318846
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:295:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    wrong-purpose must not hash
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:306:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: staff acceptance preflight: non-staff token performs zero password hashes
+not ok 18 - staff acceptance preflight: non-staff token performs zero password hashes
+  ---
+  duration_ms: 2.056731
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:295:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    non-staff must not hash
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:306:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: staff acceptance preflight: changed-invite token performs zero password hashes
+not ok 19 - staff acceptance preflight: changed-invite token performs zero password hashes
+  ---
+  duration_ms: 2.431384
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:295:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    changed-invite must not hash
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:306:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: valid staff acceptance hashes exactly once and creates an active login
+not ok 20 - valid staff acceptance hashes exactly once and creates an active login
+  ---
+  duration_ms: 2.751449
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:308:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:312:106)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: staff acceptance rechecks atomically when token expires while hashing
+ok 21 - staff acceptance rechecks atomically when token expires while hashing
+  ---
+  duration_ms: 2.19763
+  ...
+# Subtest: staff acceptance rechecks atomically when token consumed while hashing
+ok 22 - staff acceptance rechecks atomically when token consumed while hashing
+  ---
+  duration_ms: 2.014732
+  ...
+# Subtest: staff acceptance rechecks atomically when token invitation-changed while hashing
+ok 23 - staff acceptance rechecks atomically when token invitation-changed while hashing
+  ---
+  duration_ms: 1.826303
+  ...
+# Subtest: staff invite public route shares recovery rate limits: ten per IP per fifteen minutes
+not ok 24 - staff invite public route shares recovery rate limits: ten per IP per fifteen minutes
+  ---
+  duration_ms: 2.497005
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:326:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    400 !== 429
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 429
+  actual: 400
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/staffLogin20261009.spec.mjs:336:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 17
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 929.574835

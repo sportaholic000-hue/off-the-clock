@@ -99,18 +99,29 @@ export function createStaffService({database,ownerQuery,tokenService=createAuthT
     });
     return list(ownerId);
   }
+  function pendingInvitation(userId) {
+    // Token possession binds a user before ownerQuery can be used.
+    const binding=database.prepare("SELECT ownerId FROM users WHERE id=? AND role='staff'").get(userId);
+    if(!binding)throw new AuthTokenError('AUTH_TOKEN_INVALID','This link is invalid or has expired.');
+    const row=ownerQuery(`SELECT u.id,u.email,i.email AS invitedEmail,i.status FROM users u
+      JOIN staffInvitations i ON i.staffId=u.id AND i.ownerId=u.ownerId
+      WHERE u.ownerId=? AND u.id=? AND u.role='staff'`).get(binding.ownerId,userId);
+    if(!row||row.email!==row.invitedEmail||row.status!=='pending')throw new AuthTokenError('AUTH_TOKEN_INVALID','This link is invalid or has expired.');
+    return {binding,row};
+  }
   async function accept({token,password}={}) {
     if(!isAuthToken(token)||!validPassword(password))throw new StaffError(400,'This link is invalid or the password is too short.');
-    const passwordHash=await hashPassword(password,passwordHashCost(environment));
     try {
+      // Reject bogus/expired/spent links and non-staff bindings before bcrypt.
+      // This read is only a preflight: consume below rechecks under its transaction.
+      const receipt=database.prepare(`SELECT userId FROM authTokens
+        WHERE tokenHash=? AND purpose=? AND consumedAt IS NULL AND expiresAt>?`)
+        .get(hashAuthToken(token),AUTH_TOKEN_PURPOSES.STAFF_INVITE,now().toISOString());
+      if(!receipt)throw new AuthTokenError('AUTH_TOKEN_INVALID','This link is invalid or has expired.');
+      pendingInvitation(receipt.userId);
+      const passwordHash=await hashPassword(password,passwordHashCost(environment));
       tokenService.consume({token,purpose:AUTH_TOKEN_PURPOSES.STAFF_INVITE},receipt=>{
-        // Token possession binds a user first; this is the sole pre-binding lookup.
-        const binding=database.prepare("SELECT ownerId FROM users WHERE id=? AND role='staff'").get(receipt.userId);
-        if(!binding)throw new AuthTokenError('AUTH_TOKEN_INVALID','This link is invalid or has expired.');
-        const row=ownerQuery(`SELECT u.id,u.email,i.email AS invitedEmail,i.status FROM users u
-          JOIN staffInvitations i ON i.staffId=u.id AND i.ownerId=u.ownerId
-          WHERE u.ownerId=? AND u.id=? AND u.role='staff'`).get(binding.ownerId,receipt.userId);
-        if(!row||row.email!==row.invitedEmail||row.status!=='pending')throw new AuthTokenError('AUTH_TOKEN_INVALID','This link is invalid or has expired.');
+        const {binding,row}=pendingInvitation(receipt.userId);
         ownerQuery("UPDATE users SET passwordHash=?,emailVerifiedAt=? WHERE ownerId=? AND id=? AND email=? AND role='staff'")
           .run(passwordHash,receipt.consumedAt,binding.ownerId,row.id,row.email);
         ownerQuery("UPDATE staffInvitations SET status='active',acceptedAt=? WHERE ownerId=? AND staffId=? AND email=? AND status='pending'")

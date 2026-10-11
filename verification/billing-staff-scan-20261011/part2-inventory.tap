@@ -1,0 +1,117 @@
+TAP version 13
+# (node:21) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: every direct database prepare in server is an exact listed exception
+ok 1 - every direct database prepare in server is an exact listed exception
+  ---
+  duration_ms: 363.749613
+  ...
+# Subtest: owner-row predicate preserves owner and staff parent lookup results
+ok 2 - owner-row predicate preserves owner and staff parent lookup results
+  ---
+  duration_ms: 15.80625
+  ...
+# Subtest: merged login limits: Starter keeps owner login and 0 staff seats
+ok 3 - merged login limits: Starter keeps owner login and 0 staff seats
+  ---
+  duration_ms: 21.793487
+  ...
+# Subtest: merged login limits: Operator keeps owner login and 1 staff seats
+ok 4 - merged login limits: Operator keeps owner login and 1 staff seats
+  ---
+  duration_ms: 17.878736
+  ...
+# Subtest: merged login limits: QuoteDone keeps owner login and 1 staff seats
+ok 5 - merged login limits: QuoteDone keeps owner login and 1 staff seats
+  ---
+  duration_ms: 11.910916
+  ...
+# Subtest: merged login limits: Scale keeps owner login and unlimited staff seats
+ok 6 - merged login limits: Scale keeps owner login and unlimited staff seats
+  ---
+  duration_ms: 16.737551
+  ...
+# Subtest: Scale excess staff is suspended in stable seat order on Operator and restored on Scale
+ok 7 - Scale excess staff is suspended in stable seat order on Operator and restored on Scale
+  ---
+  duration_ms: 11.499401
+  ...
+# Subtest: plan limits, downgrade suspension, restoration and immediate removal revoke staff sessions
+ok 8 - plan limits, downgrade suspension, restoration and immediate removal revoke staff sessions
+  ---
+  duration_ms: 22.142878
+  ...
+# Subtest: tenant-bound staff routes deny staff management and isolate customers
+ok 9 - tenant-bound staff routes deny staff management and isolate customers
+  ---
+  duration_ms: 32.660102
+  ...
+# Subtest: staff queues a saved quote once through the fake email provider, with no cross-tenant or recipient substitution
+ok 10 - staff queues a saved quote once through the fake email provider, with no cross-tenant or recipient substitution
+  ---
+  duration_ms: 44.276404
+  ...
+# Subtest: staff acceptance preflight: unknown token performs zero password hashes
+ok 11 - staff acceptance preflight: unknown token performs zero password hashes
+  ---
+  duration_ms: 2.744135
+  ...
+# Subtest: staff acceptance preflight: expired token performs zero password hashes
+ok 12 - staff acceptance preflight: expired token performs zero password hashes
+  ---
+  duration_ms: 2.284565
+  ...
+# Subtest: staff acceptance preflight: used token performs zero password hashes
+ok 13 - staff acceptance preflight: used token performs zero password hashes
+  ---
+  duration_ms: 2.566263
+  ...
+# Subtest: staff acceptance preflight: wrong-purpose token performs zero password hashes
+ok 14 - staff acceptance preflight: wrong-purpose token performs zero password hashes
+  ---
+  duration_ms: 2.435809
+  ...
+# Subtest: staff acceptance preflight: non-staff token performs zero password hashes
+ok 15 - staff acceptance preflight: non-staff token performs zero password hashes
+  ---
+  duration_ms: 4.727076
+  ...
+# Subtest: staff acceptance preflight: changed-invite token performs zero password hashes
+ok 16 - staff acceptance preflight: changed-invite token performs zero password hashes
+  ---
+  duration_ms: 3.647718
+  ...
+# Subtest: valid staff acceptance hashes exactly once and creates an active login
+ok 17 - valid staff acceptance hashes exactly once and creates an active login
+  ---
+  duration_ms: 4.085769
+  ...
+# Subtest: staff acceptance rechecks atomically when token expires while hashing
+ok 18 - staff acceptance rechecks atomically when token expires while hashing
+  ---
+  duration_ms: 3.124473
+  ...
+# Subtest: staff acceptance rechecks atomically when token consumed while hashing
+ok 19 - staff acceptance rechecks atomically when token consumed while hashing
+  ---
+  duration_ms: 2.697355
+  ...
+# Subtest: staff acceptance rechecks atomically when token invitation-changed while hashing
+ok 20 - staff acceptance rechecks atomically when token invitation-changed while hashing
+  ---
+  duration_ms: 2.38219
+  ...
+# Subtest: staff invite public route shares recovery rate limits: ten per IP per fifteen minutes
+ok 21 - staff invite public route shares recovery rate limits: ten per IP per fifteen minutes
+  ---
+  duration_ms: 4.496136
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 536.702374

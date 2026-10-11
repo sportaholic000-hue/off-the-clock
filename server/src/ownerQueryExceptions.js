@@ -2,6 +2,14 @@
 // The scan test validates every signature and rejects unused entries.
 export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   {
+    "file": "server/src/staffService.js",
+    "function": "accept",
+    "category": "authentication",
+    "reason": "Validates possession of a live, unused staff-invite token before password hashing and tenant binding.",
+    "signature": "7990078465aab7faa723334598ba438b84980402d20540c40e859f36428b46e4",
+    "occurrence": 1
+  },
+  {
     "file": "server/priceBookService.js",
     "function": "assertRetainedAccount",
     "reason": "Schema-only check for standalone file stores; the account read itself uses ownerQuery.",
@@ -626,7 +634,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/staffService.js",
-    "function": "accept",
+    "function": "pendingInvitation",
     "reason": "Invite token identifies its staff account before the owner is known; reads only ownerId.",
     "signature": "b2cbe55225cdfe3de0f6853a0da85ce6540ade643d928ece872bf67824db790a",
     "occurrence": 1
