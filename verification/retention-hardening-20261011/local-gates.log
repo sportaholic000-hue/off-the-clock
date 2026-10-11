@@ -1,0 +1,207 @@
+Final source commit: 77ce537a859c7989772059692a10cd3d77995f32
+Node v24.19.0. Build completed before both gates.
+Local browser assertions NOT RUN: Chromium executable unavailable. The runners report these as 60 failures each; none counted as passed.
+Native-wrapper retention preload and writable TMPDIR described in REPORT.md.
+
+npm test (exit 1, CPU affinity 0,1,2,3)
+Raw log (workspace only): /workspace/scratch/5228524b6f21/hardening-final-npm-test.log
+SHA256: 1fa88daab8cfa422ede68d51e5caa5b3b74dad1d43d5effb96609785a21926cb
+# tests 4852
+# suites 0
+# pass 4792
+# fail 60
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 650594.460256
+All 60 unsuccessful blocks report missing Chromium.
+New regression results:
+ok 3889 - retention hardening: admin returns 503 for day-90 erasure blocked before initialization
+ok 3890 - retention hardening: missing due steps count, calendar connected=true
+ok 3891 - retention hardening: missing due steps count, calendar connected=false
+ok 3892 - retention hardening: ordinary snapshot recovers a dead child retention lock
+ok 3893 - retention hardening: acquire recovers a dead child retention lock
+ok 3894 - retention hardening: worker recovers PID 1 from a previous process instance
+ok 3895 - retention hardening: acquire recovers PID 1 from a previous process instance
+ok 3896 - retention hardening: a live holder excludes workers and a competing erasure
+ok 3897 - retention hardening: legacy PID 1 lock predating this process is recoverable
+ok 3898 - retention hardening: interrupted snapshot secrets disappear before provider success
+ok 3899 - retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+ok 3900 - retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+ok 3901 - retention hardening: startup removes abandoned snapshots even when the next backup is not due
+ok 3902 - retention hardening: retry secrets never reach the first snapshot disk write
+ok 3903 - retention hardening: staging cleanup never removes another live process snapshot
+ok 3904 - retention hardening: startup retries partial cleanup after a live restore releases its lock
+ok 3905 - retention hardening: a clean startup does not block scheduled snapshots on active off-site workers
+ok 3906 - retention hardening: Enabled daily erasure removes every historic version and marker
+ok 3907 - retention hardening: Enabled continuous erasure removes every historic version and marker
+ok 3908 - retention hardening: Suspended daily erasure removes every historic version and marker
+ok 3909 - retention hardening: Suspended continuous erasure removes every historic version and marker
+ok 3910 - retention hardening: Unsupported versioning permits ordinary off-site erasure
+ok 3911 - retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+ok 3912 - retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+ok 3913 - retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+ok 3914 - retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+Browser cases whose assertions did not run:
+not ok 189 - Astra 2 browser: tier-only confirmation can be answered in measurement form
+not ok 190 - Astra 2 browser: tier-only confirmation can be answered in customer wizard
+not ok 191 - Astra 4 browser: product change shows its own confirmation and clears the old Yes
+not ok 910 - billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation
+not ok 911 - reactivation refreshes dashboard from persisted backend state and permits CSV download
+not ok 912 - expired export window disables all CSV buttons and no longer offers setup/service
+not ok 1051 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
+not ok 1267 - scope editor groups entries of the same kind and names them by their matching facts
+not ok 1656 - F11 browser boolean leaves preserve No, unanswered and the exact key
+not ok 1657 - F11/F13 browser depth-three values retain zero, fractional rates and rejected text
+not ok 1658 - F13 browser legacy flat and two-level controls use the same exact parser
+not ok 1708 - lead capture repairs: production owner app navigation, stored contacts and live feed
+not ok 1739 - Operator: service-area city entry, validation, save and reopening in Chromium
+not ok 1740 - QuoteDone: service-area city entry, validation, save and reopening in Chromium
+not ok 1741 - Calendar exposes missing booking requirements and links to service-area setup in Chromium
+not ok 1819 - named review contact signup prefill remains unconfirmed until save and survives reopening
+not ok 1820 - named review contact AI draft, empty edit and rejected save preserve the confirmed person
+not ok 1935 - real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus
+not ok 1936 - QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge
+not ok 1937 - unverified period and pending historical charge are visible without an invented zero balance
+not ok 2001 - owner alert repairs: production dashboard, Calls, retry and staff visibility
+not ok 2032 - D19/D20: production browser shows saved quote email status and browses/retries older failures
+not ok 2065 - owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries
+not ok 2340 - editor D1: root factor survives no-edit blur save reopen and same-type switches
+not ok 2341 - editor D1: nested factor survives no-edit blur save reopen and same-type switches
+not ok 2342 - editor D1: flat factor survives no-edit blur save reopen and same-type switches
+not ok 2343 - editor D1: equal factor survives no-edit blur save reopen and same-type switches
+not ok 2344 - editor D1: a genuine absent default is displayed without being written by focus or blur
+not ok 2345 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
+not ok 2346 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
+not ok 2347 - editor locked rate: 0.0049 types blurs saves and reopens exactly
+not ok 2348 - editor locked rate: 0.0050 types blurs saves and reopens exactly
+not ok 2349 - editor locked rate: 0.0051 types blurs saves and reopens exactly
+not ok 2350 - editor locked invalid text: lossless rejection survives blur same-type switch and save
+not ok 2351 - editor locked maps tiers and explicit enablement stay separate for two same-type records
+not ok 2352 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
+not ok 2353 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
+not ok 2354 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
+not ok 2461 - pending manual save preserves a newer numeric edit and its question
+not ok 2462 - pending manual save preserves a newer structured price-map edit
+not ok 2463 - pending manual save prevents duplicate confirmation and premature review
+not ok 2464 - unchanged confirmed value saves once and advances normally
+not ok 2465 - failed manual save keeps the confirmed value available for retry
+not ok 2466 - stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer
+not ok 2467 - stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer
+not ok 2486 - late 200 response cannot replace a new service preview
+not ok 2487 - late 400 response cannot replace a new service preview
+not ok 2488 - old completion cannot clear current loading and invalid input cannot retain old ready
+not ok 2489 - invalid replacement rejects an old delayed success and unchanged focus blur does not request again
+not ok 2772 - interview owner can add separate demolition entries and explicitly choose up-to access
+not ok 2773 - interview rate controls accept 3.5 cents per foot and reject fractional-cent gates
+not ok 2774 - interview accepts ordinary floor names and retains invalid drafts for correction
+not ok 2803 - display browser: changing mulch quantity method requires a fresh quantity in its new unit
+not ok 2804 - display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520
+not ok 2805 - display browser: actual dashboard and owner preview show production missing-price labels
+not ok 2806 - display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse
+not ok 3322 - QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960
+not ok 3568 - re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price
+not ok 4356 - website owner screen shows an unsaved draft, literal prices and source; saves only on review
+not ok 4357 - website owner screen says no prices found and preserves the current prices
+
+npm run test:quote (exit 1, CPU affinity 4,5,6,7)
+Raw log (workspace only): /workspace/scratch/5228524b6f21/hardening-final-quote.log
+SHA256: f87af2ae8540f4493af4a0eb901dc72e01b6cede88607d02c21c8b62ec9707ba
+# tests 4143
+# suites 0
+# pass 4083
+# fail 60
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 579307.591237
+All 60 unsuccessful blocks report missing Chromium.
+New regression results:
+ok 3513 - retention hardening: admin returns 503 for day-90 erasure blocked before initialization
+ok 3514 - retention hardening: missing due steps count, calendar connected=true
+ok 3515 - retention hardening: missing due steps count, calendar connected=false
+ok 3516 - retention hardening: ordinary snapshot recovers a dead child retention lock
+ok 3517 - retention hardening: acquire recovers a dead child retention lock
+ok 3518 - retention hardening: worker recovers PID 1 from a previous process instance
+ok 3519 - retention hardening: acquire recovers PID 1 from a previous process instance
+ok 3520 - retention hardening: a live holder excludes workers and a competing erasure
+ok 3521 - retention hardening: legacy PID 1 lock predating this process is recoverable
+ok 3522 - retention hardening: interrupted snapshot secrets disappear before provider success
+ok 3523 - retention hardening: interrupted snapshot secrets disappear before 30-day permanent failure
+ok 3524 - retention hardening: provider steps cannot complete while abandoned snapshot removal fails
+ok 3525 - retention hardening: startup removes abandoned snapshots even when the next backup is not due
+ok 3526 - retention hardening: retry secrets never reach the first snapshot disk write
+ok 3527 - retention hardening: staging cleanup never removes another live process snapshot
+ok 3528 - retention hardening: startup retries partial cleanup after a live restore releases its lock
+ok 3529 - retention hardening: a clean startup does not block scheduled snapshots on active off-site workers
+ok 3530 - retention hardening: Enabled daily erasure removes every historic version and marker
+ok 3531 - retention hardening: Enabled continuous erasure removes every historic version and marker
+ok 3532 - retention hardening: Suspended daily erasure removes every historic version and marker
+ok 3533 - retention hardening: Suspended continuous erasure removes every historic version and marker
+ok 3534 - retention hardening: Unsupported versioning permits ordinary off-site erasure
+ok 3535 - retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+ok 3536 - retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+ok 3537 - retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+ok 3538 - retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+Browser cases whose assertions did not run:
+not ok 189 - Astra 2 browser: tier-only confirmation can be answered in measurement form
+not ok 190 - Astra 2 browser: tier-only confirmation can be answered in customer wizard
+not ok 191 - Astra 4 browser: product change shows its own confirmation and clears the old Yes
+not ok 864 - billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation
+not ok 865 - reactivation refreshes dashboard from persisted backend state and permits CSV download
+not ok 866 - expired export window disables all CSV buttons and no longer offers setup/service
+not ok 1003 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
+not ok 1144 - scope editor groups entries of the same kind and names them by their matching facts
+not ok 1452 - F11 browser boolean leaves preserve No, unanswered and the exact key
+not ok 1453 - F11/F13 browser depth-three values retain zero, fractional rates and rejected text
+not ok 1454 - F13 browser legacy flat and two-level controls use the same exact parser
+not ok 1466 - lead capture repairs: production owner app navigation, stored contacts and live feed
+not ok 1492 - Operator: service-area city entry, validation, save and reopening in Chromium
+not ok 1493 - QuoteDone: service-area city entry, validation, save and reopening in Chromium
+not ok 1494 - Calendar exposes missing booking requirements and links to service-area setup in Chromium
+not ok 1554 - named review contact signup prefill remains unconfirmed until save and survives reopening
+not ok 1555 - named review contact AI draft, empty edit and rejected save preserve the confirmed person
+not ok 1636 - real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus
+not ok 1637 - QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge
+not ok 1638 - unverified period and pending historical charge are visible without an invented zero balance
+not ok 1702 - owner alert repairs: production dashboard, Calls, retry and staff visibility
+not ok 1733 - D19/D20: production browser shows saved quote email status and browses/retries older failures
+not ok 1766 - owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries
+not ok 2019 - editor D1: root factor survives no-edit blur save reopen and same-type switches
+not ok 2020 - editor D1: nested factor survives no-edit blur save reopen and same-type switches
+not ok 2021 - editor D1: flat factor survives no-edit blur save reopen and same-type switches
+not ok 2022 - editor D1: equal factor survives no-edit blur save reopen and same-type switches
+not ok 2023 - editor D1: a genuine absent default is displayed without being written by focus or blur
+not ok 2024 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
+not ok 2025 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
+not ok 2026 - editor locked rate: 0.0049 types blurs saves and reopens exactly
+not ok 2027 - editor locked rate: 0.0050 types blurs saves and reopens exactly
+not ok 2028 - editor locked rate: 0.0051 types blurs saves and reopens exactly
+not ok 2029 - editor locked invalid text: lossless rejection survives blur same-type switch and save
+not ok 2030 - editor locked maps tiers and explicit enablement stay separate for two same-type records
+not ok 2031 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
+not ok 2032 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
+not ok 2033 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
+not ok 2140 - pending manual save preserves a newer numeric edit and its question
+not ok 2141 - pending manual save preserves a newer structured price-map edit
+not ok 2142 - pending manual save prevents duplicate confirmation and premature review
+not ok 2143 - unchanged confirmed value saves once and advances normally
+not ok 2144 - failed manual save keeps the confirmed value available for retry
+not ok 2145 - stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer
+not ok 2146 - stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer
+not ok 2165 - late 200 response cannot replace a new service preview
+not ok 2166 - late 400 response cannot replace a new service preview
+not ok 2167 - old completion cannot clear current loading and invalid input cannot retain old ready
+not ok 2168 - invalid replacement rejects an old delayed success and unchanged focus blur does not request again
+not ok 2451 - interview owner can add separate demolition entries and explicitly choose up-to access
+not ok 2452 - interview rate controls accept 3.5 cents per foot and reject fractional-cent gates
+not ok 2453 - interview accepts ordinary floor names and retains invalid drafts for correction
+not ok 2482 - display browser: changing mulch quantity method requires a fresh quantity in its new unit
+not ok 2483 - display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520
+not ok 2484 - display browser: actual dashboard and owner preview show production missing-price labels
+not ok 2485 - display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse
+not ok 3001 - QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960
+not ok 3247 - re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price
+not ok 3704 - website owner screen shows an unsaved draft, literal prices and source; saves only on review
+not ok 3705 - website owner screen says no prices found and preserves the current prices
+
