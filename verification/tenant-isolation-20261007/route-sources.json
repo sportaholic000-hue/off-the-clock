@@ -77,11 +77,11 @@
   },
   {
     "file": "src/server.js",
-    "sha256": "dd3776eeb847a79319862c266ec040e6bc402259b836e3a99aa1021488355fbc"
+    "sha256": "bbea024a983128ddc61d8cdb2186870987b3346b27cfbf39a868992b75fe5d59"
   },
   {
     "file": "src/staffRoutes.js",
-    "sha256": "d6114497fc95126190d9b6e53c14be7a9573de047e58e78fe96af12ecfc0da4e"
+    "sha256": "09a4b526a3dc2cea40c672a328ad28c4fe9ce7d68e8415b4d851e1fce5a8a849"
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",

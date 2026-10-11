@@ -1,0 +1,167 @@
+(node:16) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:23) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:23) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: every direct database prepare or exec in server is an exact listed exception
+ok 1 - every direct database prepare or exec in server is an exact listed exception
+  ---
+  duration_ms: 1619.722392
+  type: 'test'
+  ...
+# Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+ok 2 - scan rejects bracketed database['prepare'] in .js: 1 finding
+  ---
+  duration_ms: 2.011444
+  type: 'test'
+  ...
+# Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+ok 3 - scan rejects double quoted and template computed prepare in .js: 1 each
+  ---
+  duration_ms: 1.626045
+  type: 'test'
+  ...
+# Subtest: scan rejects dynamic key spelling in .js: 1 finding
+ok 4 - scan rejects dynamic key spelling in .js: 1 finding
+  ---
+  duration_ms: 0.838293
+  type: 'test'
+  ...
+# Subtest: scan rejects database.prepare.bind alias in .js: 1 finding
+ok 5 - scan rejects database.prepare.bind alias in .js: 1 finding
+  ---
+  duration_ms: 0.970189
+  type: 'test'
+  ...
+# Subtest: scan rejects const p = database.prepare alias in .js: 1 finding
+ok 6 - scan rejects const p = database.prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.712671
+  type: 'test'
+  ...
+# Subtest: scan rejects destructured prepare alias in .js: 1 finding
+ok 7 - scan rejects destructured prepare alias in .js: 1 finding
+  ---
+  duration_ms: 1.184135
+  type: 'test'
+  ...
+# Subtest: scan covers .mjs and .cjs: 1 finding in each
+ok 8 - scan covers .mjs and .cjs: 1 finding in each
+  ---
+  duration_ms: 1.444254
+  type: 'test'
+  ...
+# Subtest: scan permits an ownerQuery control and ignores commented prepares: 0 findings
+ok 9 - scan permits an ownerQuery control and ignores commented prepares: 0 findings
+  ---
+  duration_ms: 1.097951
+  type: 'test'
+  ...
+# Subtest: scan does not mistake a slash inside a regex literal for a comment: 1 finding
+ok 10 - scan does not mistake a slash inside a regex literal for a comment: 1 finding
+  ---
+  duration_ms: 1.570886
+  type: 'test'
+  ...
+# Subtest: owner-row predicate preserves owner and staff parent lookup results
+ok 11 - owner-row predicate preserves owner and staff parent lookup results
+  ---
+  duration_ms: 4.366823
+  type: 'test'
+  ...
+# Subtest: voice idempotency receipts persist tenant owner and replay legacy scope records
+ok 12 - voice idempotency receipts persist tenant owner and replay legacy scope records
+  ---
+  duration_ms: 10.179663
+  type: 'test'
+  ...
+# Subtest: scan inventories database.exec tenant deletion: 1 finding
+ok 13 - scan inventories database.exec tenant deletion: 1 finding
+  ---
+  duration_ms: 0.747552
+  type: 'test'
+  ...
+# Subtest: scan detects concatenated database prepare and exec properties: 1 finding each
+ok 14 - scan detects concatenated database prepare and exec properties: 1 finding each
+  ---
+  duration_ms: 1.819394
+  type: 'test'
+  ...
+# Subtest: scan detects bracketed exec and unknown computed database keys: 1 finding each
+ok 15 - scan detects bracketed exec and unknown computed database keys: 1 finding each
+  ---
+  duration_ms: 2.407884
+  type: 'test'
+  ...
+# Subtest: computed access cannot be permitted by an exception or non-query entry
+ok 16 - computed access cannot be permitted by an exception or non-query entry
+  ---
+  duration_ms: 3.055051
+  type: 'test'
+  ...
+# Subtest: scan detects optional, escaped, aliased and destructured computed methods
+ok 17 - scan detects optional, escaped, aliased and destructured computed methods
+  ---
+  duration_ms: 4.563093
+  type: 'test'
+  ...
+# Subtest: RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+ok 18 - RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+  ---
+  duration_ms: 3.505399
+  type: 'test'
+  ...
+# (node:24) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: architecture guard accepts a pinned engine version without a module path
+ok 19 - architecture guard accepts a pinned engine version without a module path
+  ---
+  duration_ms: 101.03386
+  type: 'test'
+  ...
+# Subtest: architecture guard rejects import {ENGINE_VERSION} from '../quote-engine-vnext/engine.js';
+ok 20 - architecture guard rejects import {ENGINE_VERSION} from '../quote-engine-vnext/engine.js';
+  ---
+  duration_ms: 92.735965
+  type: 'test'
+  ...
+# Subtest: architecture guard rejects export {ENGINE_VERSION} from '../quote-engine-vnext/engine.js';
+ok 21 - architecture guard rejects export {ENGINE_VERSION} from '../quote-engine-vnext/engine.js';
+  ---
+  duration_ms: 109.580107
+  type: 'test'
+  ...
+# Subtest: architecture guard rejects await import('../quote-engine-vnext/engine.js');
+ok 22 - architecture guard rejects await import('../quote-engine-vnext/engine.js');
+  ---
+  duration_ms: 108.010325
+  type: 'test'
+  ...
+# Subtest: architecture guard rejects require('../quote-engine-vnext/engine.js');
+ok 23 - architecture guard rejects require('../quote-engine-vnext/engine.js');
+  ---
+  duration_ms: 73.803434
+  type: 'test'
+  ...
+# Subtest: architecture guard rejects generateQuoteVNext({});
+ok 24 - architecture guard rejects generateQuoteVNext({});
+  ---
+  duration_ms: 111.743075
+  type: 'test'
+  ...
+# Subtest: architecture guard rejects import legacy from '../quoteEngine.js';
+ok 25 - architecture guard rejects import legacy from '../quoteEngine.js';
+  ---
+  duration_ms: 77.043726
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2300.285549

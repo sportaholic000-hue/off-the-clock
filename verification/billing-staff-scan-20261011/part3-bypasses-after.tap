@@ -1,0 +1,75 @@
+TAP version 13
+# Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+ok 1 - scan rejects bracketed database['prepare'] in .js: 1 finding
+  ---
+  duration_ms: 11.927754
+  ...
+# Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+ok 2 - scan rejects double quoted and template computed prepare in .js: 1 each
+  ---
+  duration_ms: 5.403336
+  ...
+# Subtest: scan rejects dynamic key spelling in .js: 1 finding
+ok 3 - scan rejects dynamic key spelling in .js: 1 finding
+  ---
+  duration_ms: 3.231269
+  ...
+# Subtest: scan rejects database.prepare.bind alias in .js: 1 finding
+ok 4 - scan rejects database.prepare.bind alias in .js: 1 finding
+  ---
+  duration_ms: 1.746239
+  ...
+# Subtest: scan rejects const p = database.prepare alias in .js: 1 finding
+ok 5 - scan rejects const p = database.prepare alias in .js: 1 finding
+  ---
+  duration_ms: 1.061287
+  ...
+# Subtest: scan rejects destructured prepare alias in .js: 1 finding
+ok 6 - scan rejects destructured prepare alias in .js: 1 finding
+  ---
+  duration_ms: 1.251546
+  ...
+# Subtest: scan covers .mjs and .cjs: 1 finding in each
+ok 7 - scan covers .mjs and .cjs: 1 finding in each
+  ---
+  duration_ms: 2.86598
+  ...
+# Subtest: scan permits an ownerQuery control and ignores commented prepares: 0 findings
+ok 8 - scan permits an ownerQuery control and ignores commented prepares: 0 findings
+  ---
+  duration_ms: 1.461727
+  ...
+# Subtest: scan does not mistake a slash inside a regex literal for a comment: 1 finding
+ok 9 - scan does not mistake a slash inside a regex literal for a comment: 1 finding
+  ---
+  duration_ms: 1.936779
+  ...
+# Subtest: scan inventories database.exec tenant deletion: 1 finding
+ok 10 - scan inventories database.exec tenant deletion: 1 finding
+  ---
+  duration_ms: 0.966282
+  ...
+# Subtest: scan detects concatenated database prepare and exec properties: 1 finding each
+ok 11 - scan detects concatenated database prepare and exec properties: 1 finding each
+  ---
+  duration_ms: 2.51673
+  ...
+# Subtest: scan detects bracketed exec and unknown computed database keys: 1 finding each
+ok 12 - scan detects bracketed exec and unknown computed database keys: 1 finding each
+  ---
+  duration_ms: 2.942826
+  ...
+# Subtest: computed access cannot be permitted by an exception or non-query entry
+ok 13 - computed access cannot be permitted by an exception or non-query entry
+  ---
+  duration_ms: 1.41642
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 639.170635

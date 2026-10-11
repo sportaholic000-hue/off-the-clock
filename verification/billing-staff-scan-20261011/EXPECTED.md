@@ -1,0 +1,10 @@
+# Expected results, written before execution — 2026-10-11
+
+Base: `8973f429df487c58f3ad7a49bfdb35ebbb9a274a`. Synthetic fixtures only.
+
+- Part 0: an approved CUSTOM fixed $100 service remains $100. Operator active and trial accounts see “This service can issue quotes on your website widget.” QuoteDone active and trial accounts retain “This service can issue quotes on a live call.” No engine calculation changes.
+- Part 1 (§8, §12.5, §12.11): a selected-plan 14-day trial shows its end date and days remaining, 0 of 60 minutes used, 60 remaining and one call still being confirmed. Completing that call with 125 seconds means ceil(125 / 60) = 3 billable minutes: 3 used, 57 remaining, no trial overage. Refresh must fetch fresh status and the existing minute snapshot. A paid Operator with 302 used has 300 included, 2 overage minutes, $0.70 accrued, $0 charged and $0.70 uncharged. Monthly/annual plan choices show Starter $69/$690 and 150 minutes/month, Operator $119/$1,190 and 300, QuoteDone $279/$2,790 and 1,200; overage $0.35/min charged at $25. Stripe disabled remains 404 / “Billing is not configured yet.” Staff Billing access remains denied.
+- Part 2: before the fix, a syntactically valid unknown token calls the injected hasher once, demonstrating the defect. After the fix unknown, expired, used, wrong-purpose and non-staff tokens call it zero times. Valid acceptance calls it once and consumes atomically. Expiration or consumption while hashing still rejects. The existing public recovery-route rate limiter allows 10 attempts per IP per 15 minutes; attempt 11 returns 429 and never hashes.
+- Part 3: unlisted database.prepare and database.exec calls are inventory violations. Computed/bracket access (including concatenated property names and dynamic keys) fails even if someone tries to whitelist it. Existing exec statements are classified; tenant SQL cannot bypass ownerQuery. Full source inventory has no unexplained entries.
+
+Focused regressions are run before and after their changes. Final npm test and npm run test:quote are reported separately; environment browser-launch failures are separate from product failures.

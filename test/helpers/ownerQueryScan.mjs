@@ -1,6 +1,7 @@
 import {createHash} from 'node:crypto';
 import {readdirSync, readFileSync} from 'node:fs';
 import {join, relative} from 'node:path';
+import ts from 'typescript';
 
 const hash = text => createHash('sha256').update(text).digest('hex');
 
@@ -65,7 +66,7 @@ function argument(source, start) {
   return source.slice(start, i-1).trim();
 }
 
-export function prepareInventory(root) {
+function legacyPrepareInventory(root) {
   const result = [], callOrdinals = new Map(), otherOrdinals = new Map();
   for (const path of files(join(root, 'server'))) {
     const file = relative(root, path).replaceAll('\\', '/');
@@ -83,17 +84,94 @@ export function prepareInventory(root) {
       const key = file+'\0'+signature;
       const occurrence = (ordinals.get(key)||0)+1;
       ordinals.set(key, occurrence);
-      result.push({file, line:source.slice(0,index).split('\n').length, signature, occurrence, direct, snippet});
+      result.push({index,method:'prepare',file, line:source.slice(0,index).split('\n').length, signature, occurrence, direct, snippet});
     }
   }
   return result;
 }
 
+// Parse property access as JavaScript: spelling scans cannot see "pre"+"pare",
+// unicode escapes, dynamic keys or database aliases. Retain the existing prepare
+// signatures so adding exec coverage does not silently replace reviewed entries.
+export function prepareInventory(root) {
+  const legacy=legacyPrepareInventory(root),result=[];
+  for(const path of files(join(root,'server'))) {
+    const file=relative(root,path).replaceAll('\\','/'),source=readFileSync(path,'utf8'),visible=withoutComments(source);
+    const tree=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
+    if(tree.parseDiagnostics.length)throw Error('Cannot inventory invalid JavaScript: '+file);
+    const rows=legacy.filter(row=>row.file===file),extra=[],hidden=[];
+    const declarations=new Map(),ambiguousNames=new Set(),immutableNames=new Set(),databaseNames=new Set(['database','db','applicationDb','mutex']);
+    const walk=(node,visit)=>{visit(node);ts.forEachChild(node,child=>walk(child,visit));};
+    const bare=node=>ts.isParenthesizedExpression(node)?bare(node.expression):node;
+    function isDatabase(node){node=bare(node);return ts.isIdentifier(node)?databaseNames.has(node.text)||/database|(?:^|_)db$|Db$/.test(node.text):ts.isPropertyAccessExpression(node)&&/^(?:db|database)$/.test(node.name.text);}
+    walk(tree,node=>{
+      if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name)){
+        if(declarations.has(node.name.text)||!node.initializer||!(node.parent.flags&ts.NodeFlags.Const))ambiguousNames.add(node.name.text);
+        else immutableNames.add(node.name.text);
+        if(node.initializer){declarations.set(node.name.text,node.initializer);if(ts.isNewExpression(node.initializer)&&/Database|Sqlite/i.test(node.initializer.expression.getText(tree)))databaseNames.add(node.name.text);}
+      }
+      if(ts.isParameter(node)&&ts.isIdentifier(node.name))ambiguousNames.add(node.name.text);
+      if(ts.isPropertyAccessExpression(node)&&node.name.text==='prepare'&&ts.isIdentifier(node.expression))databaseNames.add(node.expression.text);
+    });
+    for(let changed=true;changed;){changed=false;for(const [name,initial] of declarations)if(!databaseNames.has(name)&&isDatabase(initial)){databaseNames.add(name);changed=true;}}
+    function constant(node,seen=new Set()){
+      node=bare(node);
+      if(ts.isStringLiteral(node)||ts.isNoSubstitutionTemplateLiteral(node))return node.text;
+      if(ts.isBinaryExpression(node)&&node.operatorToken.kind===ts.SyntaxKind.PlusToken){const a=constant(node.left,seen),b=constant(node.right,seen);return typeof a==='string'&&typeof b==='string'?a+b:null;}
+      if(ts.isIdentifier(node)&&immutableNames.has(node.text)&&!ambiguousNames.has(node.text)&&declarations.has(node.text)&&!seen.has(node.text))return constant(declarations.get(node.text),new Set([...seen,node.text]));
+      return null;
+    }
+    function isRegex(node,seen=new Set()){
+      node=bare(node);
+      if(node.kind===ts.SyntaxKind.RegularExpressionLiteral)return true;
+      if(ts.isIdentifier(node)&&immutableNames.has(node.text)&&!ambiguousNames.has(node.text)&&declarations.has(node.text)&&!seen.has(node.text))return isRegex(declarations.get(node.text),new Set([...seen,node.text]));
+      return false;
+    }
+    function containingFunction(node){
+      for(let current=node.parent;current;current=current.parent){
+        if(ts.isFunctionLike(current))return current.name?.getText(tree)||((ts.isVariableDeclaration(current.parent)||ts.isPropertyAssignment(current.parent))?current.parent.name.getText(tree):'<anonymous>');
+      }
+      return '<module>';
+    }
+    function record(node,method,direct,forbidden=false){
+      const index=node.getStart(tree),start=source.lastIndexOf('\n',index-1)+1,end=source.indexOf('\n',index);
+      const snippet=visible.slice(start,end<0?source.length:end).trim();
+      const sql=direct?source.slice(node.parent.arguments.pos,node.parent.arguments.end).trim():null;
+      extra.push({file,index,line:tree.getLineAndCharacterOfPosition(index).line+1,method,direct,forbidden,
+        signature:hash(direct?sql:snippet),snippet,argument:sql,function:containingFunction(node),nonDatabase:method==='exec'&&ts.isPropertyAccessExpression(node)&&isRegex(node.expression)});
+    }
+    function forbid(node,key,method){
+      hidden.push([node.getStart(tree),node.end]);
+      // Hide the legacy lexical finding in a referenced constant; the actual
+      // forbidden access is the finding, even if the constant is on another line.
+      if(key&&ts.isIdentifier(key)&&declarations.has(key.text)){const declaration=declarations.get(key.text);hidden.push([declaration.getStart(tree),declaration.end]);}
+      record(node,method||'computed',false,true);
+    }
+    walk(tree,node=>{
+      if(ts.isElementAccessExpression(node)){
+        const name=constant(node.argumentExpression);
+        if(name==='prepare'||name==='exec'||(name===null&&isDatabase(node.expression)))forbid(node,node.argumentExpression,name);
+      }else if(ts.isBindingElement(node)&&node.propertyName&&ts.isComputedPropertyName(node.propertyName)){
+        const name=constant(node.propertyName.expression),declaration=node.parent.parent;
+        if(name==='prepare'||name==='exec'||(name===null&&declaration.initializer&&isDatabase(declaration.initializer)))forbid(node,node.propertyName.expression,name);
+      }else if(ts.isPropertyAccessExpression(node)&&['prepare','exec'].includes(node.name.text)){
+        const method=node.name.text,direct=ts.isCallExpression(node.parent)&&node.parent.expression===node;
+        if(method==='exec'||!rows.some(row=>row.index>=node.name.getStart(tree)&&row.index<node.name.end))record(node,method,direct);
+      }
+    });
+    result.push(...rows.filter(row=>!hidden.some(([start,end])=>row.index>=start&&row.index<end)),...extra);
+  }
+  const ordinals=new Map();
+  for(const row of result.sort((a,b)=>a.file.localeCompare(b.file)||a.index-b.index)){
+    const key=row.file+'\0'+row.method+'\0'+row.direct+'\0'+row.signature;
+    row.occurrence=(ordinals.get(key)||0)+1;ordinals.set(key,row.occurrence);
+  }
+  return result;
+}
+
+const entryKey=row=>row.file+'\0'+(row.method||'prepare')+'\0'+row.signature+'\0'+row.occurrence;
 export function unlistedPrepares(root, exceptions, nonQueries = []) {
-  const exceptionKeys = new Set(exceptions.map(row => row.file+'\0'+row.signature+'\0'+row.occurrence));
-  const nonQueryKeys = new Set(nonQueries.map(row => row.file+'\0'+row.signature+'\0'+row.occurrence));
-  return prepareInventory(root).filter(row => {
-    const key = row.file+'\0'+row.signature+'\0'+row.occurrence;
-    return !exceptionKeys.has(key) && !nonQueryKeys.has(key);
-  });
+  const exceptionKeys = new Set(exceptions.map(entryKey));
+  const nonQueryKeys = new Set(nonQueries.map(entryKey));
+  return prepareInventory(root).filter(row => row.forbidden||(!row.nonDatabase&&!exceptionKeys.has(entryKey(row))&&!nonQueryKeys.has(entryKey(row))));
 }

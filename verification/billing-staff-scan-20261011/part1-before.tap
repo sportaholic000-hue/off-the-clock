@@ -1,0 +1,125 @@
+TAP version 13
+# (node:11) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Billing trial shows end, fourteen days left, 60-minute cap and one unconfirmed call
+not ok 1 - Billing trial shows end, fourteen days left, 60-minute cap and one unconfirmed call
+  ---
+  duration_ms: 838.483067
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:45:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - '2026-10-20'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '2026-10-20'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:47:49)
+    runNextTicks (node:internal/process/task_queues:65:5)
+    process.processTimers (node:internal/timers:526:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Billing refresh completes the same 125-second trial call as 3 of 60 minutes, never overage
+not ok 2 - Billing refresh completes the same 125-second trial call as 3 of 60 minutes, never overage
+  ---
+  duration_ms: 245.489482
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:51:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    undefined !== '0'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '0'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:53:9)
+    runNextTicks (node:internal/process/task_queues:65:5)
+    process.processTimers (node:internal/timers:526:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: Billing paid Operator uses the existing meter: 302 of 300 minutes, $0.70 overage
+not ok 3 - Billing paid Operator uses the existing meter: 302 of 300 minutes, $0.70 overage
+  ---
+  duration_ms: 195.60085
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:60:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Minutes this billing month/. Input:
+    
+    'Off The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outOff The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outSettingsBillingChoose a subscription or manage your existing billing.Your accountCalendarVoice & greetingCurrent subscriptionPlanOperatorStatusActiveBilling intervalMonthlyContinue setupPlan featuresStarter: $69/month or $690/year. 150 included minutes each billing month. Your receptionist answers 24/7 on your number, answers from your business information and listed prices, and captures caller requests with transcripts and summaries. Owner email alerts, spam filtering, one number and one owner login. No calendar booking, live transfer, price book, website widget or phone price-book quoting.Operator: $119/month or $1,190/year. 300 included minutes each billing month. Everything in Starter, plus calendar booking, live transfer, the price book with AI setup, and the website quote widget. Phone price-book quoting is not included.QuoteDone: $279/month or $2,790/year. 1,200 included minutes each billing month. Everything in Operator, plus price-book quoting on the phone.Changing to Starter turns off the price book, website widget, calendar booking and live transfer. Your price book, widget settings, calendar connection and existing bookings are kept. Existing appointments are not canceled. Changing from QuoteDone to Operator turns off phone price-book quoting; the website widget, price book, calendar booking and live transfer stay available. Features switch when your confirmed plan changes. Upgrading restores access to saved settings.Manage subscriptionManage payment details or change your plan in the billing portal.Manage billingPlan lifecycleCancel planExport leads (CSV)Export quotes (CSV)Export calls (CSV)Billing noticesNo billing notices yet.Refresh billing status'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'Off The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outOff The Clock AIDashboardCallsReportsLeadsQuotesCustomersPrice BookOnboardingCalendarTeamSettingsSign outSettingsBillingChoose a subscription or manage your existing billing.Your accountCalendarVoice & greetingCurrent subscriptionPlanOperatorStatusActiveBilling intervalMonthlyContinue setupPlan featuresStarter: $69/month or $690/year. 150 included minutes each billing month. Your receptionist answers 24/7 on your number, answers from your business information and listed prices, and captures caller requests with transcripts and summaries. Owner email alerts, spam filtering, one number and one owner login. No calendar booking, live transfer, price book, website widget or phone price-book quoting.Operator: $119/month or $1,190/year. 300 included minutes each billing month. Everything in Starter, plus calendar booking, live transfer, the price book with AI setup, and the website quote widget. Phone price-book quoting is not included.QuoteDone: $279/month or $2,790/year. 1,200 included minutes each billing month. Everything in Operator, plus price-book quoting on the phone.Changing to Starter turns off the price book, website widget, calendar booking and live transfer. Your price book, widget settings, calendar connection and existing bookings are kept. Existing appointments are not canceled. Changing from QuoteDone to Operator turns off phone price-book quoting; the website widget, price book, calendar booking and live transfer stay available. Features switch when your confirmed plan changes. Upgrading restores access to saved settings.Manage subscriptionManage payment details or change your plan in the billing portal.Manage billingPlan lifecycleCancel planExport leads (CSV)Export quotes (CSV)Export calls (CSV)Billing noticesNo billing notices yet.Refresh billing status'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:62:9)
+    runNextTicks (node:internal/process/task_queues:65:5)
+    process.processTimers (node:internal/timers:526:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: Billing monthly choices show all prices and monthly allowances before checkout
+not ok 4 - Billing monthly choices show all prices and monthly allowances before checkout
+  ---
+  duration_ms: 254.735126
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:67:44'
+  failureType: 'testCodeFailure'
+  error: '$69/month or $690/year. 150 included minutes each billing month.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:70:238)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: Billing annual choices show all prices and monthly allowances before checkout
+not ok 5 - Billing annual choices show all prices and monthly allowances before checkout
+  ---
+  duration_ms: 219.713853
+  location: '/workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:67:44'
+  failureType: 'testCodeFailure'
+  error: '$69/month or $690/year. 150 included minutes each billing month.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/1180b13f1fcb/off-the-clock-fix/test/billingTrial20261011.dom.spec.mjs:70:238)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: Billing with Stripe disabled preserves the 404 message and does not request usage
+ok 6 - Billing with Stripe disabled preserves the 404 message and does not request usage
+  ---
+  duration_ms: 204.480152
+  ...
+# Subtest: staff denied Billing status never requests or displays owner minute usage
+ok 7 - staff denied Billing status never requests or displays owner minute usage
+  ---
+  duration_ms: 199.171356
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 2
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3067.890036

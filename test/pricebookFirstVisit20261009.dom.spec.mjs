@@ -58,8 +58,9 @@ function rawKeys(node){
  const words=text.replace(/https?:\/\/\S+|\S+@\S+|\bQuoteDone\b/g,'');
  return [...new Set(words.match(/\b[A-Za-z]\w*(?:\.[A-Za-z_]\w*)+\b|\b[a-z]+[A-Z][A-Za-z0-9]*\b/g)||[])];
 }
-async function setup(t,{owner='[SYNTHETIC]-first-visit-'+randomUUID(),prepared=false,intercept}={}){
+async function setup(t,{owner='[SYNTHETIC]-first-visit-'+randomUUID(),prepared=false,live=false,plan='QuoteDone',planStatus='active',intercept}={}){
  if(prepared)bridge.saveApplicationBook(owner,{...bridge.readApplicationBook(owner),defaults,services:[custom()]});
+ if(live){const book=bridge.readApplicationBook(owner);bridge.approveApplicationService(owner,book.services[0].id,{revision:book.revision,confirmConfiguration:true,confirmLegacySettings:true});}
  const calls=[],errors=[],dom=new JSDOM('<!DOCTYPE html><div id="root"></div>',{url:'http://synthetic.invalid/pricebook',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:new VirtualConsole().on('jsdomError',e=>errors.push(String(e)))});
  const window=dom.window,document=window.document;window.__errors=[];
  window.eval('window.structuredClone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));');window.crypto.randomUUID=randomUUID;
@@ -67,7 +68,7 @@ async function setup(t,{owner='[SYNTHETIC]-first-visit-'+randomUUID(),prepared=f
  window.HTMLDialogElement.prototype.showModal=function(){this.open=true;};window.HTMLDialogElement.prototype.close=function(){this.open=false;};
  function execute(path,body){
   if(path==='/api/dashboard')return {ownerId:owner,operator:{}};
-  if(path==='/api/onboarding/state')return {account:{plan:'QuoteDone'},profile:{businessTypes:prepared?['CUSTOM']:types}};
+  if(path==='/api/onboarding/state')return {account:{plan,planStatus},profile:{businessTypes:prepared?['CUSTOM']:types}};
   if(path==='/api/pricebook/meta')return bridge.applicationMetadata();
   if(path==='/api/pricebook/'+owner)return bridge.readApplicationBook(owner);
   if(path==='/api/pricebook/validate')return bridge.validateApplicationDraft(owner,body);
@@ -170,4 +171,16 @@ test('first visit: two actual editor tabs retain the exact conflict recovery flo
  assert.equal(loadPricebook(first.owner).services[0].pricing.price,11000);
  assert.match(first.document.querySelector('dialog').textContent,/Recover your unsaved changes/);
  assert.deepEqual(rawKeys(first.document.querySelector('dialog')),[]);
+});
+
+// Expected before execution: Operator (active/trial) names the widget;
+// QuoteDone (active/trial) names live calls. This changes no quoted amounts.
+for(const plan of ['Operator','QuoteDone'])for(const planStatus of ['active','trialing'])
+test(`live service preview: ${plan} ${planStatus} names its available channel`,async t=>{
+ const h=await setup(t,{prepared:true,live:true,plan,planStatus});await settled(h);
+ await changeDraft(h,book=>{book.services[0].validationInputs={service:'[SYNTHETIC] Visit',serviceConfirmed:true,unit:'flat'};});
+ await waitFor(()=>h.document.body.textContent.includes('This service can issue quotes'),'live readiness');
+ const expected=plan==='Operator'?'This service can issue quotes on your website widget.':'This service can issue quotes on a live call.';
+ assert.ok(h.document.body.textContent.includes(expected),expected);
+ assert.ok(!h.document.body.textContent.includes(plan==='Operator'?'This service can issue quotes on a live call.':'This service can issue quotes on your website widget.'));
 });

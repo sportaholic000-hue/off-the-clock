@@ -1,53 +1,12 @@
-// Allowed non-tenant query categories. Regenerated from the merged source inventory.
-// The scan test validates every signature and rejects unused entries.
+// Exact reviewed non-tenant SQL exceptions. Categories are limited by AGENTS.md.
+// Signatures, method and occurrence are checked; computed access is never allowed.
 export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   {
-    "file": "server/src/backups.js",
-    "function": "checkSqlite",
-    "reason": "Schema-only check for the bounded retry-secret table in a copied backup database.",
-    "signature": "967adc41b741548ff44fca6a1f7e4c964d855e5872d4b14282522b9e2c809b74",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/backups.js",
-    "function": "checkSqlite",
-    "reason": "Administrative backup inventory of retry-secret owners only; each copied secret is then deleted through usageOwnerQuery with its owner ID.",
-    "signature": "f3740c6af6b4647a68dfd294f9cec92a79eff8e117ff6aaab898494592a456bd",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingRetentionSteps.js",
-    "function": "flushDeletedSecrets",
-    "reason": "Database-wide WAL checkpoint removes stale secret pages after tenant-bound deletion; reads no business rows.",
-    "signature": "72169fb0b5e93a70ed5564e6e38d92f8b1d8d6625c54244a2c704d3f1af67e39",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingRetentionSteps.js",
-    "function": "retentionStatus",
-    "reason": "Authenticated admin health inventory of billing cancellation outcomes; returns only billing owner IDs, step status and timestamps, never retry secrets.",
-    "signature": "1c19099b0b04923d942a9c25da20d724225627bbe89b309ff2b52b93606254a8",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingRetentionSteps.js",
-    "function": "syncAdminAlert",
-    "reason": "Platform metric reads the single aggregate retention alert, containing anonymous counts only.",
-    "signature": "1a60e9dd7711482d03c9793509e7298bb6fbe7c78e22b5daa47d9470180a9f3b",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingRetentionSteps.js",
-    "function": "syncAdminAlert",
-    "reason": "Platform metric updates the single aggregate retention alert, containing anonymous counts only.",
-    "signature": "e185e38441d33cbfc7dddf078af28ce3130fceeb30cb8b16015aace62b0c0409",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingRetentionSteps.js",
-    "function": "syncAdminAlert",
-    "reason": "Platform metric resolves only the aggregate retention alert after all recorded failures clear.",
-    "signature": "bf471abfd90498c30247175bf4c95ae9cb327ff18a5d6c6692f493026772f78f",
+    "file": "server/src/staffService.js",
+    "function": "accept",
+    "category": "authentication",
+    "reason": "Validates possession of a live, unused staff-invite token before password hashing and tenant binding.",
+    "signature": "7990078465aab7faa723334598ba438b84980402d20540c40e859f36428b46e4",
     "occurrence": 1
   },
   {
@@ -675,7 +634,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/staffService.js",
-    "function": "accept",
+    "function": "pendingInvitation",
     "reason": "Invite token identifies its staff account before the owner is known; reads only ownerId.",
     "signature": "b2cbe55225cdfe3de0f6853a0da85ce6540ade643d928ece872bf67824db790a",
     "occurrence": 1
@@ -826,10 +785,1328 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Migration schema inspection.",
     "signature": "17c7a2c551ac55fe6d7d2531fb73fad4ac4d17483939ff9b559971a9805780ac",
     "occurrence": 1
+  },
+  {
+    "file": "server/priceBookService.js",
+    "line": 38,
+    "function": "ensureCreationRecords",
+    "method": "exec",
+    "signature": "e803a4a411b6be6e598279c509b6ad34a1803d63c9e58c27a1c3e49b67627a3e",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Creates the price-book creation ledger during schema setup; subsequent owner records use ownerQuery."
+  },
+  {
+    "file": "server/priceBookService.js",
+    "line": 164,
+    "function": "withPricebookLock",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/appointmentChangeSchema.js",
+    "line": 2,
+    "function": "installAppointmentChangeSchema",
+    "method": "exec",
+    "signature": "599d6759cfb702aac7dcf9cf44aefc7752e5da6a66ef16a460d547f991562834",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs appointment change/cancellation ledger and indexes."
+  },
+  {
+    "file": "server/src/auth.js",
+    "line": 40,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/auth.js",
+    "line": 43,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/auth.js",
+    "line": 46,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "line": 5,
+    "function": "installAuthLimitSchema",
+    "method": "exec",
+    "signature": "93cf6a2a56936062de3d5c20f317c5e031f4fb21dda2d2e4a10d647cac32c9e6",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs the public authentication rate-limit schema."
+  },
+  {
+    "file": "server/src/authSessionService.js",
+    "line": 10,
+    "function": "installAuthSessionSchema",
+    "method": "exec",
+    "signature": "6ec326f084ea25dc2b2b42f3cc59c08b9e46c83a0005af73f6b629323f5c3a12",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs authentication session and refresh-token tables/indexes."
+  },
+  {
+    "file": "server/src/authSessionService.js",
+    "line": 39,
+    "function": "authImmediate",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/authSessionService.js",
+    "line": 40,
+    "function": "authImmediate",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/authSessionService.js",
+    "line": 40,
+    "function": "authImmediate",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "line": 188,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "line": 191,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "line": 194,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "authentication",
+    "reason": "Authentication transaction boundary only; token/session state changes are separately inventoried."
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "line": 213,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "519d173ba319404671ba733260a774baa1dbbb5e0c817ce80da97d5a9221fb2d",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs/upgrades durable authentication-token tables, indexes and immutable triggers while preserving existing tokens."
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "line": 228,
+    "function": "installAuthTokenSchema",
+    "method": "exec",
+    "signature": "6316a739742dad931751d99b20c96139516ff9b91ffa63ed6e2c5c229fc5d474",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs/upgrades durable authentication-token tables, indexes and immutable triggers while preserving existing tokens."
+  },
+  {
+    "file": "server/src/billingCoreMigration.js",
+    "line": 9,
+    "function": "work",
+    "method": "exec",
+    "signature": "f7ee269ace7b78c71d16b0506c96dbfbe15d7c7f5164066cdd874a4f286f5a8d",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migrates checkout recovery constraints with a transactional table copy and rename."
+  },
+  {
+    "file": "server/src/billingCoreMigration.js",
+    "line": 10,
+    "function": "work",
+    "method": "exec",
+    "signature": "a8dd245ed3ab2638fc4b2b2c0d05e91ea1f96eeede8ccf99f058240d957592a4",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migrates checkout recovery constraints with a transactional table copy and rename."
+  },
+  {
+    "file": "server/src/billingCoreMigration.js",
+    "line": 11,
+    "function": "work",
+    "method": "exec",
+    "signature": "ca30d57e820b890fbdc535166dfbda1073c67832bf9b83e499a5c9a31bbed138",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migrates checkout recovery constraints with a transactional table copy and rename."
+  },
+  {
+    "file": "server/src/billingCoreMigration.js",
+    "line": 12,
+    "function": "work",
+    "method": "exec",
+    "signature": "f9397fdc28ba431ea60615c3fadeb83e8b8a9942d43e3b74c09fb6b8d281021c",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migrates checkout recovery constraints with a transactional table copy and rename."
+  },
+  {
+    "file": "server/src/billingCoreMigration.js",
+    "line": 16,
+    "function": "migrateBillingCheckoutRecovery",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migrates checkout recovery constraints with a transactional table copy and rename."
+  },
+  {
+    "file": "server/src/billingCoreMigration.js",
+    "line": 17,
+    "function": "migrateBillingCheckoutRecovery",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migrates checkout recovery constraints with a transactional table copy and rename."
+  },
+  {
+    "file": "server/src/billingCoreMigration.js",
+    "line": 17,
+    "function": "migrateBillingCheckoutRecovery",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migrates checkout recovery constraints with a transactional table copy and rename."
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "line": 40,
+    "function": "installBillingLifecycleSchema",
+    "method": "exec",
+    "signature": "94533983e45ce53b33d761acfe5e3297d76081c8a61441cc85a58a918b86f92f",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs lifecycle notice/cancellation schema and additive retention evidence columns. Re-reviewed merge includes billingRetentionLeases and billingRetentionSecrets schema; no tenant row access."
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "line": 51,
+    "function": "installBillingLifecycleSchema",
+    "method": "exec",
+    "signature": "f9db03f32a49cc6ae9ea1e3d38cd5724ec14cf3ac45224c1b020f6834bbe02a2",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs lifecycle notice/cancellation schema and additive retention evidence columns."
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "line": 52,
+    "function": "installBillingLifecycleSchema",
+    "method": "exec",
+    "signature": "ece41b5eb5cdd92ea3164537845946ffd7dc49565f459cefcf9a1cfc62ca5b31",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs lifecycle notice/cancellation schema and additive retention evidence columns."
+  },
+  {
+    "file": "server/src/billingRoutes.js",
+    "line": 137,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingRoutes.js",
+    "line": 140,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingRoutes.js",
+    "line": 143,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "line": 207,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "line": 210,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "line": 213,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "line": 26,
+    "function": "eraseTenantRows",
+    "method": "exec",
+    "signature": "8505da64b619df35330a963265a42cd3f66fb94d4dc943821e703863680844c3",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration enables secure page deletion before ownerQuery erases one tenant."
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "line": 69,
+    "function": "installTenantErasureGuards",
+    "method": "exec",
+    "signature": "baf726fcb5257a358ab07a99e05d955609a70ba314fd98152405a9fe50eeaa35",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs retention guards; trigger predicates bind NEW.ownerId or erased-account identities."
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "line": 73,
+    "function": "installTenantErasureGuards",
+    "method": "exec",
+    "signature": "b27908f3a259c1537f86f91de5bd15cc6bb768e288104c70b71d937339147897",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs retention guards; trigger predicates bind NEW.ownerId or erased-account identities."
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "line": 77,
+    "function": "installTenantErasureGuards",
+    "method": "exec",
+    "signature": "825400974bf03b85cdd8e3bd1063a3d095fc38c8b7e036d875fa6d1de40dc731",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs retention guards; trigger predicates bind NEW.ownerId or erased-account identities."
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "line": 98,
+    "function": "eraseTenantPricebookFiles",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "line": 109,
+    "function": "eraseTenantPricebookFiles",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "line": 65,
+    "function": "usageTransaction",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "line": 66,
+    "function": "usageTransaction",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "line": 66,
+    "function": "usageTransaction",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 2,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "5783561f3f32358fd7c2a5ef336323ad76faa359ea87fdf17224769d24db9d51",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 36,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "ea15906981e4f6e9d18e95f1a2b047225a2daa65ebd06e4411dc6c320ed49633",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 40,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "88d78b40e3b374ffeaa2acaad228e49858ae3f2111b77d59aa293682956429ba",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 41,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "e4b897410c04341e91e8600025e94f534c459ca06b1aab343b953daa940587d7",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 56,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "27c8b614bd745dc539bfa82879efdebe47c654c3789887080b5d5aa1d01033b8",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 58,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "82edef6c0956efe666e7696dcbe171e2ea2802a350d977ad670bab70f6aa6e2a",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 60,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "35dd107421e895b84f5aade7da6e5454ac7ab33c14f760e3a77f146f263c2b83",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 64,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "822fb7c96cd1122d4b7ba31549fccdf282b699e6e87a7b8515689e3971a84f5a",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingUsageSchema.js",
+    "line": 65,
+    "function": "installBillingUsageSchema",
+    "method": "exec",
+    "signature": "060f2d7d732d5432a2af0721899b2dc907fed739d34ad948922fc64961d53725",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs billing usage/annual/trial schemas or migrates installment constraints atomically."
+  },
+  {
+    "file": "server/src/billingVoiceUsage.js",
+    "line": 9,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingVoiceUsage.js",
+    "line": 9,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/billingVoiceUsage.js",
+    "line": 9,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/callSummaryService.js",
+    "line": 43,
+    "function": "completeVoiceCall",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/callSummaryService.js",
+    "line": 44,
+    "function": "completeVoiceCall",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/callSummaryService.js",
+    "line": 44,
+    "function": "completeVoiceCall",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/demo/liveDemo.js",
+    "line": 64,
+    "function": "installLiveDemoRoutes",
+    "method": "exec",
+    "signature": "b4a88d6bb1dc90f1a8cfec7ce43eb711ae454cd2b2ccc79283f9a681911614f7",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs platform demo-session accounting tables and indexes; no owner data is accessed."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 92,
+    "function": "addMissingColumns",
+    "method": "exec",
+    "signature": "ebce4527b3e7920d3b55c45f6ee94fd31afe9e9a16c862b036482d4905f5f6e4",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 158,
+    "function": "setPragma",
+    "method": "exec",
+    "signature": "ad264d6d9c4463fbb126119b2a8d7c7a6970f7804376a2dfcdb162d4ea08074e",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 163,
+    "function": "runTransaction",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 166,
+    "function": "runTransaction",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 169,
+    "function": "runTransaction",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 224,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "b676b148e41bbee3da5b7ef052f5adcc33549447f254d1e08e930561e62d07a5",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 225,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "9c51898226db6c39af9e1c31e8078ce556d34c2479afd6e6e600ec0c98111884",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 230,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "e47f6b02196dbf9c8a40738758b03dc07eb4f32ee631b966a611e3e38ef13081",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 231,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "b779f753f3d97f2c5c5d8733d624c716d0420716b992ca52cae62528af5f901f",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 253,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "e8b5771890789eb777ecbf9a85408631b47a0307bdb720231b3610c55387d344",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 254,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "7ebf267c0c485adfa1b195d5d0fa4e95b5ca798300a0634259bcc39e66f94ce5",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 255,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "5114432b54b7f798d67a93768b929f8a6bb3d3a8d7ec95bc412f078597bac5e9",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 256,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "6b5e4cd6f53086a545a2a758b0fe526363cdfe2395d7d80d4d320ec90fec60b3",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 257,
+    "function": "<anonymous>",
+    "method": "exec",
+    "signature": "0aebc60940dc33ba80690d33a84919e081579620a6be2703f87632b47b24e099",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 292,
+    "function": "migrateDatabase",
+    "method": "exec",
+    "signature": "b111c6e1d318f203063e5c16bab43c108326af0aa2f7b65760c95547a43dbe52",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 316,
+    "function": "migrateDatabase",
+    "method": "exec",
+    "signature": "b111c6e1d318f203063e5c16bab43c108326af0aa2f7b65760c95547a43dbe52",
+    "occurrence": 2,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/migrations.js",
+    "line": 319,
+    "function": "migrateDatabase",
+    "method": "exec",
+    "signature": "b111c6e1d318f203063e5c16bab43c108326af0aa2f7b65760c95547a43dbe52",
+    "occurrence": 3,
+    "category": "migrations",
+    "reason": "Schema migration infrastructure: table/column/trigger installation, transactional rebuilds or migration PRAGMA configuration."
+  },
+  {
+    "file": "server/src/notificationHistorySchema.js",
+    "line": 2,
+    "function": "installNotificationHistorySchema",
+    "method": "exec",
+    "signature": "b06b9c0adba50c3d6411cfeffd4a103a99c2d85f44dda420d9d5e4c6c909d74f",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migration-only installation/repair of historical notification state and cancellation of the removed text channel; never sends messages."
+  },
+  {
+    "file": "server/src/notificationHistorySchema.js",
+    "line": 31,
+    "function": "installNotificationHistorySchema",
+    "method": "exec",
+    "signature": "2e474363f8a91bf509ff59df3de816c69ede1d5adad7d1a834630a868d484abd",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migration-only installation/repair of historical notification state and cancellation of the removed text channel; never sends messages."
+  },
+  {
+    "file": "server/src/notificationHistorySchema.js",
+    "line": 34,
+    "function": "installNotificationHistorySchema",
+    "method": "exec",
+    "signature": "bab6f07a342d18ad52392175810260fcdff28e4c01d10ec5f8ba8a93faea94c5",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Migration-only installation/repair of historical notification state and cancellation of the removed text channel; never sends messages."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 43,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "3582e57cdd3aa0a2e75c57faf759e6455642a7eee953d82bfbfd641a6af1dccd",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 57,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "a3b08f656fff43f3f9eb544217470bda4ce89d92101779837454d146fbb09663",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 76,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "97cc0d1dfb85cefce3e0e29138c5249aafc378d98b4bb54be74d10a47d58e8db",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 77,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "0ac3eddd2db6c3560f95fb55744013c891e859980b4c05cd682ec466d516eecd",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 78,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "b87bbbfdac2b96445b5c015424ffa7b47851011ca0a5487cd7d789f40d9f5bd2",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 79,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "cbb99b5a0b919d6e1f917cc946f3b71d7460b74236784b93c157e2c336e9a33b",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 80,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "0e669def25196d76a1dbb8214c94f9be636a34e722c0b9d81bd77021150e7c79",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 81,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "8b8e49f388dbb53203d70510ed7f2524defa67871432cdd78a1daeee98564823",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 84,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "9e8e5ff8cae00a1ccd059b36cc6e868ea7196dedf0e104fc08ed9461231bed91",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 86,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "d37dd28639a8d4f18feb0735fa7fe70c098e187d643506b63c4928b657f5b347",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 87,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "060f44d8a10a0a8035113a95ade2329f2ecae5c6e803ad62ab5443d6530b81ad",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 88,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "bcc97754b042a9d613edce1175ff6f7f93702984caea70587961962b8571bfa8",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 90,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "e0ffb16fe61ba0a02f5a53f4bd40fae02888754f2d8d7f8b8227de07f92dd7af",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 90,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "bcc97754b042a9d613edce1175ff6f7f93702984caea70587961962b8571bfa8",
+    "occurrence": 2,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 92,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "f870db53a6447fcf020fe392dfad587c6caf0b8a866c73bea8ee96cd40f8bab3",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 93,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "ce150ba2534de854ca1b5c57ce624725d7fcf87e57784b0a2bb6b459d10cd61d",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 96,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "caef3b30eee5155da14c9e1d26a170ab6d76efd664ad2aae5a0c9c5b10b103a1",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 103,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "2bd1c1d69fb8e02a8b6f21e4029f6317b05cb64925f35e2350ac6a483f69d301",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookService.js",
+    "line": 14,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/outboundWebhookService.js",
+    "line": 15,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/outboundWebhookService.js",
+    "line": 16,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 6,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "ec28a0527780759cbb79ee9ee29fe715c9211c759e4c11afd333cde5595b6cee",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 28,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "61aa10c718ff5f7acbcb113326d9d0a5b7b79292add5d572c0fe6a4fb30777ce",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 37,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "6e14af57b94f781449493216b12f8ed2143902d761726d6272afcd3c739b7718",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 45,
+    "function": "trigger",
+    "method": "exec",
+    "signature": "0387fff49cd9582b520c44539e434b2506217b83e6c9c22ebbfef03a670edb13",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 50,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "de87e5b3f06ada1220e48498adc366a952ef64b62f80eb1f317b3490406495a4",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 62,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "bd99b4834393f663e3f432840b19f671c30b350cdd84df173eeda7106ed1dbc2",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 67,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "8aab9f245a9c0f5abf107beff5c21531c51ed5820866a5fd9436f47db6d0a8ae",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 72,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "f8b3598d0b30c6c1088180a8fdccd839f5b5895e92f80ef20a3c6b6407d0f949",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 83,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "fcdacd66533257729ae7c466485aa4b0a15fd4b3fc133ddcfa2855db44d080ce",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerDashboardSchema.js",
+    "line": 3,
+    "function": "installOwnerDashboardSchema",
+    "method": "exec",
+    "signature": "f28a15639a218d2336e7de45b35ff45b7f3afdbcc94aa883df1a41565e9bb3cf",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner workflow/history tables and tenant indexes."
+  },
+  {
+    "file": "server/src/platformIntegrations.js",
+    "line": 344,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/platformIntegrations.js",
+    "line": 345,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/platformIntegrations.js",
+    "line": 346,
+    "function": "transaction",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/quoteEmailSchema.js",
+    "line": 2,
+    "function": "installQuoteEmailSchema",
+    "method": "exec",
+    "signature": "a1b0ab25f60f8fa6e0d703bc478bcd98f3b784e40483ccdbf87da0b94aa64312",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs owner-bound quote narration, email confirmation and delivery tables/indexes."
+  },
+  {
+    "file": "server/src/telephonyOperationsMigration.js",
+    "line": 4,
+    "function": "installTelephonyOperationsSchema",
+    "method": "exec",
+    "signature": "634e77e09fe6ccba559fd18d8f10d3849aff972a80c95a59a159f140f5238ef2",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs telephony operation and forwarding-check tables/indexes."
+  },
+  {
+    "file": "server/src/tenantBackupErasure.js",
+    "line": 28,
+    "function": "scrubBundle",
+    "method": "exec",
+    "signature": "791884f30097ad42866a8b2c5210a68fb1a017f9c13fcd926215f33365c7fd5e",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Adds the erased-account marker column to a temporary recovery database before tenant-bound deletion."
+  },
+  {
+    "file": "server/src/tenantBackupErasure.js",
+    "line": 38,
+    "function": "scrubBundle",
+    "method": "exec",
+    "signature": "3fe30ebba361fbd124a5e5e5e9959db5b7668b76ce6d7eb04f3fd381b9d240d6",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration compacts a scrubbed temporary recovery database after ownerQuery erasure; reads no application records."
+  },
+  {
+    "file": "server/src/voice/voiceAdmission.js",
+    "line": 20,
+    "function": "atomic",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voice/voiceAdmission.js",
+    "line": 21,
+    "function": "atomic",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voice/voiceAdmission.js",
+    "line": 22,
+    "function": "atomic",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "line": 32,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "line": 35,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "line": 38,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voice/voiceToolRuntime.js",
+    "line": 127,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voice/voiceToolRuntime.js",
+    "line": 130,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voice/voiceToolRuntime.js",
+    "line": 133,
+    "function": "immediate",
+    "method": "exec",
+    "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Database administration: fixed transaction/lock boundary only; reads or writes no tenant rows. Statements inside the callback still require ownerQuery or their own explicit exception."
+  },
+  {
+    "file": "server/src/voiceDurationRecovery.js",
+    "line": 11,
+    "function": "createVoiceDurationRecovery",
+    "method": "exec",
+    "signature": "743228855d94991e2ad28f89c1fd7f84d92e41abee341b87be75853a8d33d828",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs the duration-confirmation recovery table and due-work index before processing owner-bound calls."
+  },
+  {
+    "file": "server/src/backups.js",
+    "function": "checkSqlite",
+    "reason": "Schema-only check for the bounded retry-secret table in a copied backup database.",
+    "signature": "967adc41b741548ff44fca6a1f7e4c964d855e5872d4b14282522b9e2c809b74",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/backups.js",
+    "function": "checkSqlite",
+    "reason": "Administrative backup inventory of retry-secret owners only; each copied secret is then deleted through usageOwnerQuery with its owner ID.",
+    "signature": "f3740c6af6b4647a68dfd294f9cec92a79eff8e117ff6aaab898494592a456bd",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "flushDeletedSecrets",
+    "reason": "Database-wide WAL checkpoint removes stale secret pages after tenant-bound deletion; reads no business rows.",
+    "signature": "72169fb0b5e93a70ed5564e6e38d92f8b1d8d6625c54244a2c704d3f1af67e39",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "retentionStatus",
+    "reason": "Authenticated admin health inventory of billing cancellation outcomes; returns only billing owner IDs, step status and timestamps, never retry secrets.",
+    "signature": "1c19099b0b04923d942a9c25da20d724225627bbe89b309ff2b52b93606254a8",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "syncAdminAlert",
+    "reason": "Platform metric reads the single aggregate retention alert, containing anonymous counts only.",
+    "signature": "1a60e9dd7711482d03c9793509e7298bb6fbe7c78e22b5daa47d9470180a9f3b",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "syncAdminAlert",
+    "reason": "Platform metric updates the single aggregate retention alert, containing anonymous counts only.",
+    "signature": "e185e38441d33cbfc7dddf078af28ce3130fceeb30cb8b16015aace62b0c0409",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "function": "syncAdminAlert",
+    "reason": "Platform metric resolves only the aggregate retention alert after all recorded failures clear.",
+    "signature": "bf471abfd90498c30247175bf4c95ae9cb327ff18a5d6c6692f493026772f78f",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/backups.js",
+    "line": 32,
+    "function": "checkSqlite",
+    "method": "exec",
+    "signature": "3fe30ebba361fbd124a5e5e5e9959db5b7668b76ce6d7eb04f3fd381b9d240d6",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Administrative VACUUM of a copied backup database after tenant-bound removal of bounded retry secrets; no tenant row query."
+  },
+  {
+    "file": "server/src/billingRetentionSteps.js",
+    "line": 29,
+    "function": "process",
+    "method": "exec",
+    "signature": "8505da64b619df35330a963265a42cd3f66fb94d4dc943821e703863680844c3",
+    "occurrence": 1,
+    "category": "admin",
+    "reason": "Administrative SQLite secure_delete setting before tenant-bound erasure; changes page-clearing behavior, not tenant rows."
   }
 ]);
 
-// Query-wrapper plumbing and non-query uses, pinned to their merged source.
 export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
   {
     "file": "server/quote-engine-vnext\u002ftests/dateContext.spec.mjs",
@@ -1014,5 +2291,68 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "signature": "0c112520591da856d9dc308d78760862a25fac545ecaf3d9eef03a1a230bc444",
     "occurrence": 1,
     "line": 881
+  },
+  {
+    "file": "server/src/auth.js",
+    "line": 92,
+    "function": "createAuthHandlers",
+    "method": "exec",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 1,
+    "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "line": 201,
+    "function": "assertDatabase",
+    "method": "exec",
+    "signature": "e5ac8ea24d193fdee2095f6e68333587c4a21e90974fa0cb2c117421e8e6474e",
+    "occurrence": 1,
+    "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "line": 250,
+    "function": "createBillingStateService",
+    "method": "exec",
+    "signature": "e427edc2b62645b776e651900eb8ac341a3f85f916a29c5053efc57b00b7f044",
+    "occurrence": 1,
+    "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "line": 58,
+    "function": "createVoiceNonceRepository",
+    "method": "exec",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 1,
+    "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "line": 128,
+    "function": "createVoiceSessionStore",
+    "method": "exec",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 2,
+    "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "line": 406,
+    "function": "requirePersistenceDatabase",
+    "method": "exec",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 3,
+    "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
+  },
+  {
+    "file": "server/src/voice/voiceToolRuntime.js",
+    "line": 221,
+    "function": "createVoiceToolRuntime",
+    "method": "exec",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 1,
+    "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
   }
 ]);

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 import { db } from './db.js';
 import {createAuthSessionService, AuthSessionError} from './authSessionService.js';
-import {createAuthRateLimiter, AuthLimitError} from './authRateLimitService.js';
+import {createAuthRateLimiter, AuthLimitError, authRecoveryLimited, AUTH_RATE_WINDOW_MS} from './authRateLimitService.js';
 import {createSessionHttp} from './authSessionHttp.js';
 import { sendTransactionalEmail } from './email.js';
 import { accountEmailOrigin, accountEmailLink } from './authLinks.js';
@@ -20,7 +20,7 @@ import {
 
 const ALLOWED_REQUESTED_PLANS = new Set(['Starter', 'Operator', 'QuoteDone']);
 const SAFE_TOKEN_ERROR = 'This link is invalid or has expired.';
-const WINDOW_MS = 15 * 60 * 1000;
+const WINDOW_MS = AUTH_RATE_WINDOW_MS;
 const MAX_FAILED_ATTEMPTS = 5;
 
 export function signToken(user) {
@@ -109,12 +109,8 @@ export function createAuthHandlers({
     ...(issueSessionToken||issueAdminToken?{signAccess:(claims,user)=>user.role==='admin'&&issueAdminToken?issueAdminToken(user.email):issueSessionToken?issueSessionToken(user):jwt.sign(claims,environment.JWT_SECRET,{algorithm:'HS256'})}:{})});
   const limits=rateLimiter??createAuthRateLimiter(database,{secret:environment.JWT_SECRET,clock:now});
   const http=createSessionHttp(environment);
-  function recoveryLimited(req,res,purpose,maximum=10) {
-    try {
-      if(limits.take(purpose,req.ip||req.socket?.remoteAddress||'unknown',maximum,WINDOW_MS))return false;
-      res.status(429).json({error:'Please try again later.'});
-    }catch(error){if(!(error instanceof AuthLimitError))throw error;res.status(503).json({error:error.message});}
-    return true;
+  function recoveryLimited(req,res,purpose,maximum) {
+    return authRecoveryLimited(limits,req,res,purpose,maximum);
   }
   function reserveLogin(req,res) {
     try {

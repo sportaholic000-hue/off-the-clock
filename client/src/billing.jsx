@@ -1,4 +1,5 @@
 import {PLAN_DESCRIPTIONS,DOWNGRADE_EXPLANATION} from './planDescriptions.js';
+import MinuteUsage from './minuteUsage.jsx';
 import React, {useEffect, useRef, useState} from 'react';
 import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
@@ -11,7 +12,7 @@ export default function Billing() {
   const [session] = useState(getToken);
   const [state,setState] = useState(null),[storageKey,setStorageKey] = useState(null);
   const [jobs,setJobs] = useState({}),[plan,setPlan] = useState(''),[interval,setInterval] = useState('');
-  const [lifecycle,setLifecycle]=useState(null);
+  const [lifecycle,setLifecycle]=useState(null),[minuteUsage,setMinuteUsage]=useState(null);
   const [busy,setBusy] = useState('status'),[error,setError] = useState('');
   const currentJobs = useRef({}), inFlight = useRef(false), mounted = useRef(true);
   const sameSession = () => mounted.current && getSessionKey() === getSessionKey(session);
@@ -29,14 +30,17 @@ export default function Billing() {
       const [response,key,events] = await Promise.all([api('/api/billing/status'),billingStorageKey(session),api('/api/billing/lifecycle')]);
       if (!sameSession()) return;
       const next=billingState(response),saved=readBillingJobs(sessionStorage,key);
+      // Use the same authoritative snapshot as Dashboard; never meter in the client.
+      const usage=next.billingEnabled?(await api('/api/dashboard')).minuteUsage:null;
+      if (!sameSession()) return;
       // Returning from a portal is not evidence of any subscription change.
       // Its acknowledged request can finish; account state comes from the GET.
       if (saved.portal?.state === 'opened') delete saved.portal;
       if (saved.checkout && (next.checkoutState === 'EXPIRED' || (next.checkoutState === 'NONE' && canContinueSetup(next) && !next.canCheckout))) delete saved.checkout;
-      setStorageKey(key);saveJobs(saved,key);setState(next);setLifecycle(events);
+      setStorageKey(key);saveJobs(saved,key);setState(next);setLifecycle(events);setMinuteUsage(usage);
       if (saved.checkout) {setPlan(saved.checkout.body.plan);setInterval(saved.checkout.body.billingInterval);}
       else {setPlan(PLANS.includes(next.plan)?next.plan:'');setInterval(next.billingInterval||'monthly');}
-    } catch (err) {if(sameSession()){setState(null);setError(err.status?billingFailure(err):'Billing status could not be loaded. Please refresh it.');}}
+    } catch (err) {if(sameSession()){setState(null);setMinuteUsage(null);setError(err.status?billingFailure(err):'Billing status could not be loaded. Please refresh it.');}}
     finally {inFlight.current=false;if(sameSession())setBusy('');}
   }
 
@@ -85,6 +89,7 @@ export default function Billing() {
   }
   const deepAction=new URLSearchParams(window.location.search).get('billingAction');
   const checkout=jobs.checkout,portal=jobs.portal;
+  const trialEnd=state?.billingEnabled&&state.planStatus==='trialing'?Date.parse(state.trialEndsAt):NaN;
   return <AppShell activePath="/settings">
     <main className="billing-page">
       <PageHeader eyebrow="Settings" title="Billing" description="Choose a subscription or manage your existing billing." />
@@ -99,13 +104,15 @@ export default function Billing() {
         <section className="billing-panel" aria-label="Current subscription">
           <h2>Current subscription</h2>
           <dl><dt>Plan</dt><dd>{state.plan}</dd><dt>Status</dt><dd>{STATUS_LABELS[state.planStatus]||'Status unavailable'}</dd>
-            {state.billingInterval?<><dt>Billing interval</dt><dd>{state.billingInterval==='annual'?'Annual':'Monthly'}</dd></>:null}</dl>
+            {state.billingInterval?<><dt>Billing interval</dt><dd>{state.billingInterval==='annual'?'Annual':'Monthly'}</dd></>:null}
+            {Number.isFinite(trialEnd)?<><dt>Trial ends</dt><dd>{new Date(trialEnd).toISOString().slice(0,10)}</dd><dt>Days left</dt><dd>{Math.max(0,Math.ceil((trialEnd-Date.now())/86400000))}</dd></>:null}</dl>
           {state.serviceEndsAt?<p>Service ends {state.serviceEndsAt}. No partial refunds.</p>:null}
           {state.cancelAtPeriodEnd?<p>Cancellation is scheduled for the end of the current billing period.</p>:null}
           {state.annualPaidThroughAt?<p>Annual service is paid through {state.annualPaidThroughAt.slice(0,10)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>:null}
           {billingRecoveryMessage(state)?<Notice tone="error">{billingRecoveryMessage(state)}</Notice>:null}
           {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:billingRecoveryMessage(state)?null:<p>Complete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.</p>}
         </section>
+        {state.billingEnabled?<MinuteUsage usage={minuteUsage}/>:null}
         {!state.billingEnabled?<Notice>Billing is not configured yet.</Notice>:!state.providerAvailable?<Notice>Billing is temporarily unavailable. Your account status is shown above.</Notice>:null}
         {state.billingEnabled&&(state.canCheckout||checkout)?<section className="billing-panel" aria-label="Start subscription">
           <h2>{checkout?'Continue checkout':'Start subscription'}</h2>
@@ -114,7 +121,9 @@ export default function Billing() {
               <Field label="Plan"><Select aria-label="Plan" value={plan} onChange={event=>setPlan(event.target.value)} required><option value="">Choose a plan</option>{PLANS.map(item=><option key={item} value={item}>{item}</option>)}</Select></Field>
               <Field label="Billing interval"><Select aria-label="Billing interval" value={interval} onChange={event=>setInterval(event.target.value)} required><option value="">Choose an interval</option><option value="monthly">Monthly</option><option value="annual">Annual</option></Select></Field>
             </fieldset>
-            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end: Starter $69 monthly or $690 for 12 months; Operator $119 monthly or $1,190 for 12 months; QuoteDone $279 monthly or $2,790 for 12 months. Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
+            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end:</p>
+            {PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}
+            <p>Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
             {checkout?<p>Your {checkout.body.plan} {checkout.body.billingInterval} request is saved. Retry uses the same request.</p>:null}
             <Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>
           </form>

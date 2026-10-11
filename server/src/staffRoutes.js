@@ -1,7 +1,8 @@
+import {authRecoveryLimited} from './authRateLimitService.js';
 import {StaffError} from './staffService.js';
 import {createSessionHttp} from './authSessionHttp.js';
 
-export function installStaffRoutes(app,{service,ownerQuery,quoteEmail,requireAuth,requirePriceBookPlan,asyncHandler,environment=process.env}) {
+export function installStaffRoutes(app,{service,ownerQuery,quoteEmail,rateLimiter,requireAuth,requirePriceBookPlan,asyncHandler,environment=process.env}) {
   const owner=requireAuth(['owner']),team=requireAuth(['owner','staff']);
   const http=createSessionHttp(environment);
   const handle=fn=>asyncHandler(async(req,res)=>{
@@ -18,7 +19,8 @@ export function installStaffRoutes(app,{service,ownerQuery,quoteEmail,requireAut
   app.delete('/api/team/staff/:id',owner,handle(req=>service.remove(req.tenantOwnerId,req.params.id)));
   app.post('/api/auth/staff-invite/accept',(req,res,next)=>{
     if(!http.originAllowed(req))return res.status(403).json({error:'This request origin is not allowed.'});
-    res.setHeader('Cache-Control','no-store');next();
+    res.setHeader('Cache-Control','no-store');
+    if(!authRecoveryLimited(rateLimiter,req,res,'staff-invite-accept'))next();
   },handle(req=>service.accept(req.body)));
   app.get('/api/customers',team,(req,res)=>res.json({customers:ownerQuery(
     'SELECT id,name,phoneE164,address,createdAt FROM customers WHERE ownerId=? ORDER BY createdAt DESC LIMIT 200'
