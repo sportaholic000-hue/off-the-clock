@@ -1,0 +1,75 @@
+(node:298) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:305) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings
+    # Subtest: 1. production startup passes the release engine guard on a temporary volume
+    ok 1 - 1. production startup passes the release engine guard on a temporary volume
+      ---
+      duration_ms: 26.413258
+      type: 'test'
+      ...
+    # Subtest: 2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP
+    ok 2 - 2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP
+      ---
+      duration_ms: 1265.330906
+      type: 'test'
+      ...
+    # Subtest: 3. graceful production restart preserves exact book, approval, rows and replay receipts
+    ok 3 - 3. graceful production restart preserves exact book, approval, rows and replay receipts
+      ---
+      duration_ms: 651.122078
+      type: 'test'
+      ...
+    # Subtest: 4. real backup CLI includes the SQLite database and every saved price book
+    ok 4 - 4. real backup CLI includes the SQLite database and every saved price book
+      ---
+      duration_ms: 151.127804
+      type: 'test'
+      ...
+    # Subtest: 5. wipe entire fake volume, restore CLI from independent archive, restart, and replay identical receipts without duplicates
+    ok 5 - 5. wipe entire fake volume, restore CLI from independent archive, restart, and replay identical receipts without duplicates
+      ---
+      duration_ms: 742.465064
+      type: 'test'
+      ...
+    # Subtest: 6. invalid JSON after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    ok 6 - 6. invalid JSON after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 735.21489
+      type: 'test'
+      ...
+    # restore-cleanup {"corruption":"invalid JSON","restored":{"at":"2026-10-12T21:45:07.823Z","path":"/workspace/scratch/7877037ce74a/restore-diagnostics-runtime/tmp/otc-synthetic-restore-dZoT8w/volume/restores/synthetic-drill/pricebooks/d58b464c-a499-4d55-9f98-04ad811a163e.json","exists":true,"sha256":"814ba4487ab94c397f72bd1bcd23b6b5c0b13787fa3980117f1c29220c2cb3fd","bytes":3140,"mtimeMs":1791841507817.992},"failed":false,"cleanupError":null}
+    # Subtest: 6. invalid structure after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    ok 7 - 6. invalid structure after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 561.522436
+      type: 'test'
+      ...
+    # restore-cleanup {"corruption":"invalid structure","restored":{"at":"2026-10-12T21:45:08.384Z","path":"/workspace/scratch/7877037ce74a/restore-diagnostics-runtime/tmp/otc-synthetic-restore-dZoT8w/volume/restores/synthetic-drill/pricebooks/d58b464c-a499-4d55-9f98-04ad811a163e.json","exists":true,"sha256":"814ba4487ab94c397f72bd1bcd23b6b5c0b13787fa3980117f1c29220c2cb3fd","bytes":3140,"mtimeMs":1791841508381.986},"failed":false,"cleanupError":null}
+    # Subtest: 6. missing after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    ok 8 - 6. missing after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 588.307377
+      type: 'test'
+      ...
+    # restore-cleanup {"corruption":"missing","restored":{"at":"2026-10-12T21:45:08.973Z","path":"/workspace/scratch/7877037ce74a/restore-diagnostics-runtime/tmp/otc-synthetic-restore-dZoT8w/volume/restores/synthetic-drill/pricebooks/d58b464c-a499-4d55-9f98-04ad811a163e.json","exists":true,"sha256":"814ba4487ab94c397f72bd1bcd23b6b5c0b13787fa3980117f1c29220c2cb3fd","bytes":3140,"mtimeMs":1791841508969.9802},"failed":false,"cleanupError":null}
+    1..8
+ok 1 - production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings
+  ---
+  duration_ms: 5313.555667
+  type: 'test'
+  ...
+# Synthetic approved book sha256=814ba4487ab94c397f72bd1bcd23b6b5c0b13787fa3980117f1c29220c2cb3fd; quote=$100.00; quotes=1; leads=2; appointments=1; submissions=2.
+# Verified bundle: 3 files; both owner books and SQLite integrity/foreign keys/checksums pass.
+# Whole-volume loss simulated; exact book bytes, approval, persisted rows, quote/lead receipts and booking confirmation survived.
+1..1
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5473.635485

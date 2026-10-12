@@ -1,0 +1,34 @@
+[
+  {
+    "mode": "assertion",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "/workspace/scratch/7877037ce74a/restore-diagnostics-20261012/verification/restore-diagnostics-20261012/disposable-0PSEOc/assertion.mjs"
+    ],
+    "exit": 1,
+    "signal": null,
+    "verified": true,
+    "assertions": "expected failure retained; five HTTP observations; exact restoration; next two cases pass; no credential values"
+  },
+  {
+    "mode": "assertion-and-cleanup",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "/workspace/scratch/7877037ce74a/restore-diagnostics-20261012/verification/restore-diagnostics-20261012/disposable-0PSEOc/assertion-and-cleanup.mjs"
+    ],
+    "exit": 1,
+    "signal": null,
+    "verified": true,
+    "assertions": "expected failure retained; five HTTP observations; exact restoration; next two cases pass; no credential values"
+  }
+]
