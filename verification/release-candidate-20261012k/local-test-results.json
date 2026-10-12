@@ -1,0 +1,131 @@
+{
+  "runtime": "Node 22.23.3",
+  "node_options": "unset; no SQLite-lifetime preload",
+  "test_cpus": "0-3",
+  "install": {
+    "command": "npm ci",
+    "environment": {
+      "npm_config_build_from_source": "true",
+      "npm_config_nodedir": "/workspace/scratch/25507090f1e7/repair-k-tools/node22/node_modules/node/node_modules/node-linux-x64"
+    },
+    "result": "success; 328 packages installed"
+  },
+  "build": {
+    "command": "npm run build",
+    "result": "success"
+  },
+  "focused": [
+    {"file": "test/backupCoordination20261012.spec.mjs", "exit": 0, "seconds": 1.76, "counts": {"tests": 6, "pass": 6, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/lockRecoveryRace20261011.spec.mjs", "exit": 0, "seconds": 2.48, "counts": {"tests": 9, "pass": 9, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/lockDatabaseBackup20261011.spec.mjs", "exit": 0, "seconds": 2.96, "counts": {"tests": 6, "pass": 6, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/day90Backups20261011.spec.mjs", "exit": 0, "seconds": 3.59, "counts": {"tests": 4, "pass": 4, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/day90Cancellation20261011.spec.mjs", "exit": 0, "seconds": 0.35, "counts": {"tests": 4, "pass": 4, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/day90Guarantees20261011.spec.mjs", "exit": 0, "seconds": 3.48, "counts": {"tests": 10, "pass": 10, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/day90Providers20261011.spec.mjs", "exit": 0, "seconds": 1.58, "counts": {"tests": 12, "pass": 12, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/retentionHardeningHealth20261011.spec.mjs", "exit": 0, "seconds": 0.71, "counts": {"tests": 3, "pass": 3, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/retentionHardeningLocks20261011.spec.mjs", "exit": 0, "seconds": 1.48, "counts": {"tests": 6, "pass": 6, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/retentionHardeningSecrets20261011.spec.mjs", "exit": 0, "seconds": 1.44, "counts": {"tests": 8, "pass": 8, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/retentionHardeningVersions20261011.spec.mjs", "exit": 0, "seconds": 4.96, "counts": {"tests": 9, "pass": 9, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/tenantRetention20261010.spec.mjs", "exit": 0, "seconds": 3.3, "counts": {"tests": 13, "pass": 13, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/continuousOffsite20261007.spec.mjs", "exit": 0, "seconds": 3.01, "counts": {"tests": 16, "pass": 16, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/backups.spec.mjs", "exit": 0, "seconds": 0.48, "counts": {"tests": 12, "pass": 12, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/offsiteBackups20261007.spec.mjs", "exit": 0, "seconds": 8.42, "counts": {"tests": 23, "pass": 23, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/backupRestoreRehearsal.spec.mjs", "exit": 0, "seconds": 6.05, "counts": {"tests": 9, "pass": 9, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/ownerQueryCoverage20261009.spec.mjs", "exit": 0, "seconds": 1.97, "counts": {"tests": 88, "pass": 88, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/ownerQueryReview20261009.spec.mjs", "exit": 0, "seconds": 0.21, "counts": {"tests": 9, "pass": 9, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}},
+    {"file": "test/tenantIsolationRoutes.spec.mjs", "exit": 0, "seconds": 16.31, "counts": {"tests": 264, "pass": 264, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}}
+  ],
+  "full": [
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "0-3",
+        "npm",
+        "test"
+      ],
+      "exit": 1,
+      "seconds": 453.05,
+      "counts": {
+        "tests": 4954,
+        "pass": 4894,
+        "fail": 60,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failure_classification": "60 Chromium-launch prerequisite failures; browser assertions NOT RUN locally",
+      "tap_sha256": "42ffcb35926643251b2d4a850c09bb93cee25d37904367a1cf64edc250e99e71"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "0-3",
+        "npm",
+        "run",
+        "test"
+      ],
+      "exit": 1,
+      "seconds": 481.54,
+      "counts": {
+        "tests": 4954,
+        "pass": 4894,
+        "fail": 60,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failure_classification": "60 Chromium-launch prerequisite failures; browser assertions NOT RUN locally",
+      "tap_sha256": "cdbf9097e198857a29ba21e9af102ed2ab42c0e13158990d60dab094b264290b"
+    }
+  ],
+  "incomplete_attempt": {
+    "command": "npm run test (second command in initial batch)",
+    "result": "Stopped producing output after top-level test 1351; no final TAP summary; not counted as completed",
+    "tap_sha256": "2194a8dbac23a6b64da8e47f7be45b90c1b152797735aa0d5865fb5a5a6322cf"
+  },
+  "isolated_diagnostic": {
+    "command": "taskset -c 0-3 node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/customerExplanation.spec.mjs",
+    "exit": 0,
+    "counts": {
+      "tests": 24,
+      "pass": 24,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "pending": [
+    "Independent delayed-publication verification",
+    "Astra and Sol clean reports for both audit scopes on final tagged commit"
+  ],
+  "tested_source_sha256": {
+    "server/src/offsiteBackups.js": "32de221b21f11149bac23639e2fb1419f6028e28ef1d21b82f275bfc092dc8c1",
+    "server/src/continuousOffsite.js": "81c7a55805331a431ea4a555f4f5d1b8f01cb600c124963ffac35173515f4249",
+    "test/backupCoordination20261012.spec.mjs": "e89823c70b2377de09a2075de777fb866f93f5a17151a26beb4094988150477f",
+    ".github/workflows/ci.yml": "2a8ed1e43e92b3ccc336e73b165f9c9ef53addee61e190a6c8dae6afd9476cfa",
+    "verification/tenant-isolation-20261007/route-sources.json": "5cfd0f778f1f3ae20b6c1b3ec5bf3cc6b96659720a3dda05f5497e8930a82cb4"
+  },
+  "focused_command": [
+    "taskset",
+    "-c",
+    "0-3",
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "<file>"
+  ],
+  "focused_totals": {
+    "tests": 511,
+    "pass": 511,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  }
+}

@@ -101,6 +101,10 @@ export function createDailyOffsiteBackupService(database,deployment,{env=process
     // One writer per persistent volume; a live process's lock is never stolen.
     const release=acquireProcessLock(lockFile);
     try {
+      // Validate admission while this worker mutex is held through publication.
+      // Erasure holds retention while checking workers: either side excludes
+      // the other, including a worker that passed run()'s earlier idle probe.
+      assertBackupRetentionIdle(deployment);
       // A second worker may have been constructed before the first saved its
       // artifact. Re-read under the lock, preserving that immutable retry.
       if(fs.existsSync(stateFile)){try{state=readState();}catch{stateInvalid=true;throw Error('OFFSITE_LOCAL_STATE_INVALID');}}

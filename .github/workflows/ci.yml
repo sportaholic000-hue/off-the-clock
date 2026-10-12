@@ -82,8 +82,11 @@ jobs:
       - name: Candidate i confirms required test names in the full-suite log
         if: github.ref == 'refs/heads/claude/release-candidate-20261011i'
         run: node verification/release-candidate-20261011i/check-required-test-names.mjs test-results.tap
-      - name: Candidate j standalone regressions (each file independently)
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
+      - name: Candidate k backup coordination regressions
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012k'
+        run: node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/backupCoordination20261012.spec.mjs
+      - name: Candidate j and k standalone regressions (each file independently)
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k'
         shell: bash
         run: |
           for spec in \
@@ -101,9 +104,12 @@ jobs:
             echo "Standalone: $spec"
             node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap "$spec"
           done
-      - name: Candidate j confirms required test names in the full-suite log
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
+      - name: Candidate j and k confirm required lock test names in the full-suite log
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k'
         run: node verification/release-candidate-20261011j/check-required-test-names.mjs test-results.tap
+      - name: Candidate k confirms coordination test names in the full-suite log
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012k'
+        run: node verification/release-candidate-20261012k/check-required-test-names.mjs test-results.tap
       - name: No failures beyond the known list
         run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
         shell: bash
@@ -137,11 +143,11 @@ jobs:
       - name: Candidate i Railway restart, redeploy, SIGTERM and restore smoke
         if: github.ref == 'refs/heads/claude/release-candidate-20261011i'
         run: node verification/railway/docker-smoke.mjs otc-receptionist:synthetic
-      - name: Candidate j Railway restart, redeploy, SIGTERM and restore smoke
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
+      - name: Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k'
         run: node verification/railway/docker-smoke.mjs otc-receptionist:synthetic
-      - name: Candidate j production-user lock database proof
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011j'
+      - name: Candidate j and k production-user lock database proof
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k'
         run: node verification/railway/lock-database-smoke.mjs otc-receptionist:synthetic
 
   tag-candidate-h:
@@ -224,3 +230,23 @@ jobs:
           git tag -a rc-20261011j "$GITHUB_SHA" -m "Release candidate j; final report commit $GITHUB_SHA; required checks passed in CI run $GITHUB_RUN_ID."
           git push origin refs/tags/rc-20261011j
           git ls-remote origin refs/heads/claude/release-candidate-20261011j refs/tags/rc-20261011j 'refs/tags/rc-20261011j^{}'
+
+  tag-candidate-k:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/release-candidate-20261012k'
+    needs: [test, voice-docker-startup]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Tag the exact tested report commit without replacing an existing tag
+        shell: bash
+        run: |
+          test -f verification/release-candidate-20261012k/REPORT.md
+          test "$(git ls-remote origin refs/heads/claude/release-candidate-20261012k | cut -f1)" = "$GITHUB_SHA"
+          test -z "$(git ls-remote origin refs/tags/rc-20261012k)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a rc-20261012k "$GITHUB_SHA" -m "Repair candidate k; report commit $GITHUB_SHA; required checks passed in CI run $GITHUB_RUN_ID; independent verification remains pending."
+          git push origin refs/tags/rc-20261012k
+          git ls-remote origin refs/heads/claude/release-candidate-20261012k refs/tags/rc-20261012k 'refs/tags/rc-20261012k^{}'

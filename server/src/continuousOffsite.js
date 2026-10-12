@@ -115,6 +115,10 @@ export function createContinuousOffsiteService(database,deployment,{env=process.
   async function perform(){
     const release=acquireProcessLock(lockFile);
     try{
+      // Validate admission while this worker mutex is held through publication.
+      // Erasure holds retention while checking workers: either side excludes
+      // the other, including a worker that passed run()'s earlier idle probe.
+      assertBackupRetentionIdle(deployment);
       if(fs.existsSync(stateFile))try{state=readState();}catch{invalid=true;throw Error('OFFSITE_LOCAL_STATE_INVALID');}
       const current=sourceToken();
       if(!state.pending&&state.phase==='SUCCEEDED'&&state.lastSourceToken===current){

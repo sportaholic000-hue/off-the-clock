@@ -1,0 +1,74 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: backup coordination: daily rejects late admission without changing its pending retry
+not ok 1 - backup coordination: daily rejects late admission without changing its pending retry
+  ---
+  duration_ms: 267.371224
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-repair-k/test/backupCoordination20261012.spec.mjs:39:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-repair-k/test/backupCoordination20261012.spec.mjs:60:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: backup coordination: daily holds worker exclusion through verification and publication
+ok 2 - backup coordination: daily holds worker exclusion through verification and publication
+  ---
+  duration_ms: 166.508649
+  type: 'test'
+  ...
+# Subtest: backup coordination: daily snapshot contention drains and shuts down without deadlock
+ok 3 - backup coordination: daily snapshot contention drains and shuts down without deadlock
+  ---
+  duration_ms: 144.154287
+  type: 'test'
+  ...
+# Subtest: backup coordination: continuous rejects late admission without changing its pending retry
+not ok 4 - backup coordination: continuous rejects late admission without changing its pending retry
+  ---
+  duration_ms: 160.513138
+  type: 'test'
+  location: '/workspace/scratch/25507090f1e7/off-the-clock-repair-k/test/backupCoordination20261012.spec.mjs:39:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/25507090f1e7/off-the-clock-repair-k/test/backupCoordination20261012.spec.mjs:60:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: backup coordination: continuous holds worker exclusion through verification and publication
+ok 5 - backup coordination: continuous holds worker exclusion through verification and publication
+  ---
+  duration_ms: 158.024452
+  type: 'test'
+  ...
+# Subtest: backup coordination: continuous snapshot contention drains and shuts down without deadlock
+ok 6 - backup coordination: continuous snapshot contention drains and shuts down without deadlock
+  ---
+  duration_ms: 129.087972
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1282.755009
