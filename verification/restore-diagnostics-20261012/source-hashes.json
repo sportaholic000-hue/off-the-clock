@@ -1,0 +1,10 @@
+{
+  "test/backupRestoreRehearsal.spec.mjs": {
+    "starting_sha256": "53fcff13f8217b01440827338c037602934eab4b5797cf4930c664521b23b28b",
+    "validated_sha256": "a3be06ce0499d88b8cb3798ec28dcd7df1ceb21debf87a1af85a40323e1309e0"
+  },
+  "test/helpers/backupRestoreProcess.mjs": {
+    "starting_sha256": "d049ee60e6b66d942ce6a3657d1717c88e1cb93f9e7e909cd14af42391241247",
+    "validated_sha256": "f2696cf4ee6ea4aa1ac6fe3d364f8d9f88252a66f69efc659aed436f5b020f2f"
+  }
+}
