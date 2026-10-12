@@ -1,0 +1,29 @@
+(node:536) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:543) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: retention hardening: ordinary snapshot recovers a dead child retention lock
+ok 1 - retention hardening: ordinary snapshot recovers a dead child retention lock
+  ---
+  duration_ms: 197.725493
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers a dead child retention lock
+ok 2 - retention hardening: acquire recovers a dead child retention lock
+  ---
+  duration_ms: 141.188267
+  type: 'test'
+  ...
+# Subtest: retention hardening: worker recovers PID 1 from a previous process instance
+ok 3 - retention hardening: worker recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 201.853859
+  type: 'test'
+  ...
+# Subtest: retention hardening: acquire recovers PID 1 from a previous process instance
+ok 4 - retention hardening: acquire recovers PID 1 from a previous process instance
+  ---
+  duration_ms: 204.930198
+  type: 'test'
+  ...

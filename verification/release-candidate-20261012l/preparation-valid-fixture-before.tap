@@ -1,0 +1,39 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: retention expiry: preparation cannot reactivate away unfinished physical cleanup
+not ok 1 - retention expiry: preparation cannot reactivate away unfinished physical cleanup
+  ---
+  duration_ms: 128.986999
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/candidate-l-20261012/test/retentionExpiry20261012.spec.mjs:172:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Reactivation discarded unfinished physical cleanup
+    + actual - expected
+    
+    + 'RESTORED'
+    - 'ENDED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ENDED'
+  actual: 'RESTORED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/candidate-l-20261012/test/retentionExpiry20261012.spec.mjs:181:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# {"before":{"planStatus":"active","paidThroughAt":"2027-02-08T12:00:00.000Z","dataDeletedAt":null},"state":"ENDED","endAt":"2026-11-20T12:00:00.000Z","time":"2027-01-19T12:00:00.000Z"}
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 356.289795

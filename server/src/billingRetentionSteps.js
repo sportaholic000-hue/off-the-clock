@@ -49,12 +49,27 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
       steps[kind]={...steps[kind],status:'PERMANENT_FAILURE',outcome:reason,failedAt:now()};
       state.flushPending=true;
       usageTransaction(database,()=>{
+        // The retry deadline governs live material independently of access to
+        // abandoned copies. Persist their non-secret cleanup obligation in the
+        // same transaction as deletion, before any external lock can block us.
+        if(state.retryCopies?.status!=='PENDING')state.retryCopies={status:'PENDING',firstAttemptAt:now(),outcome:'RETENTION_STAGING_PENDING'};
         clearSecret(ownerId,kind);
         if(kind==='calendar')query("UPDATE billingCancellations SET calendarRevokeStatus='PERMANENT_FAILURE' WHERE ownerId=? AND operationId=?").run(ownerId,row.operationId);
         else clearPhoneSource(ownerId);
         save();
       });
       if(database.inTransaction!==true&&database.isTransaction!==true)flushDeletedSecrets();
+    }
+    async function cleanupPendingCopies(){
+      if(state.retryCopies?.status!=='PENDING')return;
+      try{
+        await cleanupRetryCopies();assertLease();
+        state.retryCopies={...state.retryCopies,status:'DONE',outcome:'ERASED',completedAt:now()};
+      }catch(error){
+        assertLease();state.retryCopies.outcome=failureCode(error,'RETENTION_STAGING_PENDING');
+        state.retryCopies.lastAttemptAt=now();errors.push(error);
+      }
+      save();
     }
     // Capture both retry values before deleting any profile/connection. No
     // provider request is made here, so a provider outage cannot delay erasure.
@@ -105,7 +120,22 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
       }catch(error){assertLease();steps.local.outcome=failureCode(error,'RETENTION_LOCAL_PENDING');errors.push(error);}
       save();
     }
-    if(prepareOnly){if(errors.length)throw errors[0];return;}
+    // Expiry is local work, including during the sweep's preparation pass.
+    // Do not wait behind off-site erasure or abandoned-copy lock acquisition.
+    for(const kind of ['calendar','phone']){
+      const step=steps[kind];
+      if(step&&!terminal(step)){
+        if(step.discardReason)permanentlyFail(kind,step.discardReason);
+        else if(clock().getTime()>=Date.parse(step.firstAttemptAt)+30*DAY)permanentlyFail(kind,'RETRY_WINDOW_EXPIRED');
+      }
+    }
+    if(prepareOnly){
+      if(errors.length)throw errors[0];
+      // processOwner may reactivate retained data after this call. Keep that
+      // transition from clearing our ledger before the external pass runs.
+      if(state.retryCopies?.status==='PENDING')throw Error('RETENTION_STAGING_PENDING');
+      return;
+    }
     async function backupStep(){
       if(!due90||finished(steps.backups))return;
       try{if(eraseBackups)await eraseBackups(ownerId);assertLease();steps.backups={...steps.backups,status:'DONE',outcome:'ERASED',completedAt:now()};}
@@ -118,7 +148,7 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
         try{await cleanupRetryCopies();assertLease();return true;}
         catch(error){assertLease();step.outcome=failureCode(error,'RETENTION_STAGING_PENDING');errors.push(error);save();return false;}
       }
-      async function discard(reason){if(await copiesCleared())permanentlyFail(kind,reason);}
+      function discard(reason){permanentlyFail(kind,reason);}
       if(step.discardReason){await discard(step.discardReason);return;}
       if(clock().getTime()>=Date.parse(step.firstAttemptAt)+30*DAY){await discard('RETRY_WINDOW_EXPIRED');return;}
       const kept=secrets(ownerId);
@@ -159,9 +189,13 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
     // The backup and terminal-provider barriers use the same volume lock.
     // Finish each before starting the next; never recursively wait on a peer.
     await backupStep();await providerStep('calendar');await providerStep('phone');
-    if(due90&&!state.flushPending&&['local','backups','calendar','phone'].every(kind=>finished(steps[kind]))){
+    // This is deliberately outside providerStep's terminal early return. It
+    // must survive reconstruction and run after retries have permanently ended.
+    await cleanupPendingCopies();
+    const copiesPending=state.retryCopies?.status==='PENDING';
+    if(due90&&!state.flushPending&&!copiesPending&&['local','backups','calendar','phone'].every(kind=>finished(steps[kind]))){
       query('UPDATE billingCancellations SET dataDeletedAt=?,dataErasureVersion=?,lastError=NULL,updatedAt=? WHERE ownerId=? AND operationId=?').run(now(),VERSION,now(),ownerId,row.operationId);
-    }else if(state.flushPending||Object.values(steps).some(step=>!finished(step))){
+    }else if(state.flushPending||copiesPending||Object.values(steps).some(step=>!finished(step))){
       query('UPDATE billingCancellations SET lastError=?,updatedAt=? WHERE ownerId=? AND operationId=?')
         .run(Object.values(steps).some(step=>step.status==='PERMANENT_FAILURE')?'RETENTION_MANUAL_ACTION_REQUIRED':'RETENTION_PENDING',now(),ownerId,row.operationId);
     }
@@ -177,6 +211,7 @@ export function createBillingRetentionSteps({database,ownerQuery,clock=()=>new D
       let state;try{state=JSON.parse(row.retentionStateJson||'null');}catch{}
       const steps=state?.steps||{},unresolved=Object.entries(steps).filter(([,step])=>!finished(step));
       if(state?.flushPending)unresolved.push(['storage',{status:'PENDING',outcome:'RETENTION_DATABASE_BUSY'}]);
+      if(state?.retryCopies?.status==='PENDING')unresolved.push(['retryCopies',state.retryCopies]);
       // A lease or a stopped sweep must not hide overdue work. Deadlines are
       // derived from the provider's service end, not from step initialization.
       const age=clock().getTime()-Date.parse(row.endAt),due=[];

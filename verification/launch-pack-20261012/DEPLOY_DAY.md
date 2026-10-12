@@ -1,6 +1,6 @@
 # Deploy-day checklist — October 20, 2026 target
 
-Prepared October 12 against `rc-20261012k` / `ead53fa174d577b280506b67573a29d6b0358237`. Every checkbox below is **NOT RUN**. This is an owner-executable plan, not authorization to merge, deploy, configure providers, purchase resources, create keys or change DNS. Obtain separate owner authorization for execution and any charges. This pack does not satisfy the release audit gate.
+Prepared October 12 from the pinned candidate-k base and reconciled for candidate l. Use only the final validated SHA and tag from [candidate l’s report and handoff](../release-candidate-20261012l/REPORT.md); no tag or deployment approval is assumed here. Every checkbox below is **NOT RUN**. This is an owner-executable plan, not authorization to merge, deploy, configure providers, purchase resources, create keys or change DNS. Obtain separate owner authorization for execution and any charges. This pack does not satisfy the release audit gate.
 
 Historical owner report only: Railway project `brilliant-nature`, service `off-the-clock`; `main` auto-deploys; no configured variables, volume or domain; US West/sfo; Railpack; last reported deployment failed July 20. None of that account state was checked during this task. Intended replacement: US East application hosting, root Dockerfile, `/data` persistent volume, complete runtime configuration and a private Railway backup bucket.
 
@@ -12,16 +12,18 @@ Historical owner report only: Railway project `brilliant-nature`, service `off-t
 - [ ] From an operator checkout, run the read-only identity checks:
 
 ```bash
-git ls-remote https://github.com/sportaholic000-hue/off-the-clock.git 'refs/tags/rc-20261012k*'
+git ls-remote https://github.com/sportaholic000-hue/off-the-clock.git 'refs/tags/rc-20261012l*'
 git rev-parse HEAD
 ```
 
-Expected tag evidence:
+Required tag evidence, with placeholders filled from the final validated candidate-l handoff (not fabricated values):
 
 ```text
-4959515817dc94dd81c393746845fc1ab68742cf refs/tags/rc-20261012k
-ead53fa174d577b280506b67573a29d6b0358237 refs/tags/rc-20261012k^{}
+<ACTUAL_ANNOTATED_TAG_OBJECT_SHA> refs/tags/rc-20261012l
+<FINAL_VALIDATED_CANDIDATE_L_SHA> refs/tags/rc-20261012l^{}
 ```
+
+Stop if the tag is absent, its peeled SHA differs from the reviewed final candidate, or required independent Astra + Sol clean audits for both scopes do not cover that same commit. An untagged work checkpoint is not a release.
 
 Keep a private recovery inventory of signing keys, credential-encryption key/version and backup-encryption key outside `/data`. Do not paste those values into evidence. Assign someone to watch authenticated backup/retention health after launch; there is no automatic backup-alert email/SMS in this implementation.
 
@@ -145,6 +147,6 @@ npm run restore:offsite -- --checkpoint "$OTC_CHECKPOINT_ID" --target /data/rest
 - [ ] Recheck final SHA, complete runtime values, TLS, application health, protected admin health, provider receipts and restore evidence. Record all unrun/failed checks; do not convert them to passes.
 - [ ] Confirm privacy wording was reviewed against the complete current policy and public pages were published by their authorized owner, outside this task. Confirm OAuth production approval/exception and actual provider readiness.
 - [ ] Owner decides whether to reopen signup/forwarding and whether to re-enable `main` autodeploy. Record that choice. If Wait for CI is used, verify the actual workflow trigger on `main`; it does not replace manual review of required jobs or the release audit.
-- [ ] Assign daily review of authenticated backup/retention health, account balances, email capacity, errors and available volume/memory. Overdue deletion or permanent provider failure returns unhealthy; preserve failure evidence and act, rather than resetting markers. No new monitoring feature is added by this pack.
+- [ ] Assign daily review of authenticated backup/retention health, account balances, email capacity, errors and available volume/memory. Overdue deletion, pending historical-copy cleanup, pending database-history flushing or permanent provider failure returns unhealthy; preserve failure evidence and act, rather than resetting markers. At an expired operation’s next writable cleanup pass, candidate l removes live retry material even if a retention lock blocks historical-copy cleanup. That pending work survives restart and still needs successful cleanup; an empty live retry table alone is not proof of complete erasure. No new monitoring feature is added by this pack.
 
 **Launch decision:** GO only with the owner's independent release authorization and completed evidence. Otherwise HOLD, with owner-phone forwarding off and customer admission withheld. October 20 is a target, not permission to waive OAuth, payment, restore or privacy prerequisites.

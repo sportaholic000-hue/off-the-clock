@@ -1,0 +1,193 @@
+(node:140) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:147) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Operator monthly: trial reminder exactly October 17, once, amount 11900
+ok 1 - Operator monthly: trial reminder exactly October 17, once, amount 11900
+  ---
+  duration_ms: 54.585785
+  type: 'test'
+  ...
+# Subtest: Operator monthly: no paid term before trial end; first charge 11900
+ok 2 - Operator monthly: no paid term before trial end; first charge 11900
+  ---
+  duration_ms: 29.885676
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+ok 3 - QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+  ---
+  duration_ms: 28.327736
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: no paid term before trial end; first charge 27900
+ok 4 - QuoteDone monthly: no paid term before trial end; first charge 27900
+  ---
+  duration_ms: 27.592872
+  type: 'test'
+  ...
+# Subtest: Operator annual: trial reminder exactly October 17, once, amount 119000
+ok 5 - Operator annual: trial reminder exactly October 17, once, amount 119000
+  ---
+  duration_ms: 29.784145
+  type: 'test'
+  ...
+# Subtest: Operator annual: no paid term before trial end; first charge 119000
+ok 6 - Operator annual: no paid term before trial end; first charge 119000
+  ---
+  duration_ms: 28.372401
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+ok 7 - QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+  ---
+  duration_ms: 29.512177
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: no paid term before trial end; first charge 279000
+ok 8 - QuoteDone annual: no paid term before trial end; first charge 279000
+  ---
+  duration_ms: 32.161686
+  type: 'test'
+  ...
+# Subtest: annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+ok 9 - annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+  ---
+  duration_ms: 34.088058
+  type: 'test'
+  ...
+# Subtest: monthly: cancel mid-period, no refund, access ends at paid boundary
+ok 10 - monthly: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 34.381783
+  type: 'test'
+  ...
+# Subtest: monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 11 - monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 43.692701
+  type: 'test'
+  ...
+# Subtest: annual: cancel mid-period, no refund, access ends at paid boundary
+ok 12 - annual: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 32.88568
+  type: 'test'
+  ...
+# Subtest: annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 13 - annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 40.696306
+  type: 'test'
+  ...
+# Subtest: trial cancel is immediate with no invoice and no refund
+ok 14 - trial cancel is immediate with no invoice and no refund
+  ---
+  duration_ms: 26.92224
+  type: 'test'
+  ...
+# Subtest: reactivation before period end reverses scheduled cancel once, keeps records
+ok 15 - reactivation before period end reverses scheduled cancel once, keeps records
+  ---
+  duration_ms: 31.175702
+  type: 'test'
+  ...
+# Subtest: after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+ok 16 - after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+  ---
+  duration_ms: 31.999504
+  type: 'test'
+  ...
+# Subtest: paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+ok 17 - paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+  ---
+  duration_ms: 38.366255
+  type: 'test'
+  ...
+# Subtest: subscription receipt preserves actual charge currency and handwritten amount
+ok 18 - subscription receipt preserves actual charge currency and handwritten amount
+  ---
+  duration_ms: 28.04746
+  type: 'test'
+  ...
+# Subtest: settled invoices suppress stale failure notices in either event order and at dispatch
+    # Subtest: paid-then-older-failed
+    ok 1 - paid-then-older-failed
+      ---
+      duration_ms: 29.707901
+      type: 'test'
+      ...
+    # Subtest: failed-then-paid-before-sync
+    ok 2 - failed-then-paid-before-sync
+      ---
+      duration_ms: 30.548642
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-before-dispatch
+    ok 3 - failed-queued-then-paid-before-dispatch
+      ---
+      duration_ms: 32.669608
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-minute-worker-dispatch
+    ok 4 - failed-queued-then-paid-minute-worker-dispatch
+      ---
+      duration_ms: 29.864773
+      type: 'test'
+      ...
+    # Subtest: paid-only
+    ok 5 - paid-only
+      ---
+      duration_ms: 28.899095
+      type: 'test'
+      ...
+    1..5
+ok 19 - settled invoices suppress stale failure notices in either event order and at dispatch
+  ---
+  duration_ms: 152.435677
+  type: 'test'
+  ...
+# Subtest: overage receipt: ten extra minutes × 35 cents = $3.50, once
+ok 20 - overage receipt: ten extra minutes × 35 cents = $3.50, once
+  ---
+  duration_ms: 40.033291
+  type: 'test'
+  ...
+# Subtest: final overage remainder is charged at the service-end boundary
+ok 21 - final overage remainder is charged at the service-end boundary
+  ---
+  duration_ms: 31.687483
+  type: 'test'
+  ...
+# Subtest: lost email response and restart retain one accepted notice
+ok 22 - lost email response and restart retain one accepted notice
+  ---
+  duration_ms: 57.201272
+  type: 'test'
+  ...
+# Subtest: email ambiguity after retry window does not duplicate delivery
+ok 23 - email ambiguity after retry window does not duplicate delivery
+  ---
+  duration_ms: 28.965789
+  type: 'test'
+  ...
+# Subtest: cancellation lost response recovers by subscription read without repeating mutation
+ok 24 - cancellation lost response recovers by subscription read without repeating mutation
+  ---
+  duration_ms: 29.739994
+  type: 'test'
+  ...
+# Subtest: wrong provider customer cannot cancel or receive access and does not affect tenant B
+ok 25 - wrong provider customer cannot cancel or receive access and does not affect tenant B
+  ---
+  duration_ms: 28.070352
+  type: 'test'
+  ...
+# Subtest: invalid price cannot create a false trial reminder
+ok 26 - invalid price cannot create a false trial reminder
+  ---
+  duration_ms: 24.833146
+  type: 'test'
+  ...

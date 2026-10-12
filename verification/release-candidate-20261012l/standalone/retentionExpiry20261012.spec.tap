@@ -1,0 +1,65 @@
+(node:502) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:509) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: retention expiry: deadline and restart remove live secrets despite injected staging failure
+ok 1 - retention expiry: deadline and restart remove live secrets despite injected staging failure
+  ---
+  duration_ms: 179.262278
+  type: 'test'
+  ...
+# [{"day":30,"liveRetryRows":0,"calendar":"PERMANENT_FAILURE","phone":"PERMANENT_FAILURE","retryCopies":"PENDING","flushPending":false,"erasureComplete":false,"healthy":false,"providerCalls":{"calendar":2,"phone":2},"partialExists":true},{"day":31,"liveRetryRows":0,"calendar":"PERMANENT_FAILURE","phone":"PERMANENT_FAILURE","retryCopies":"PENDING","flushPending":false,"erasureComplete":false,"healthy":false,"providerCalls":{"calendar":2,"phone":2},"partialExists":true}]
+# Subtest: retention expiry: deadline and restart remove live secrets despite held SQLite retention lock
+ok 2 - retention expiry: deadline and restart remove live secrets despite held SQLite retention lock
+  ---
+  duration_ms: 144.496883
+  type: 'test'
+  ...
+# [{"day":30,"liveRetryRows":0,"calendar":"PERMANENT_FAILURE","phone":"PERMANENT_FAILURE","retryCopies":"PENDING","flushPending":false,"erasureComplete":false,"healthy":false,"providerCalls":{"calendar":2,"phone":2},"partialExists":true},{"day":31,"liveRetryRows":0,"calendar":"PERMANENT_FAILURE","phone":"PERMANENT_FAILURE","retryCopies":"PENDING","flushPending":false,"erasureComplete":false,"healthy":false,"providerCalls":{"calendar":2,"phone":2},"partialExists":true}]
+# Subtest: retention expiry: disabled providers do not extend either retry deadline
+ok 3 - retention expiry: disabled providers do not extend either retry deadline
+  ---
+  duration_ms: 125.380462
+  type: 'test'
+  ...
+# Subtest: retention expiry: phone day-30 origin expires at day 60 without advancing calendar or data erasure
+ok 4 - retention expiry: phone day-30 origin expires at day 60 without advancing calendar or data erasure
+  ---
+  duration_ms: 111.462351
+  type: 'test'
+  ...
+# Subtest: retention expiry: WAL reader leaves durable flush work after live deletion and terminal provider failure
+ok 5 - retention expiry: WAL reader leaves durable flush work after live deletion and terminal provider failure
+  ---
+  duration_ms: 123.318093
+  type: 'test'
+  ...
+# Subtest: retention expiry: local preparation discards expired values before external cleanup and resumes after restart
+ok 6 - retention expiry: local preparation discards expired values before external cleanup and resumes after restart
+  ---
+  duration_ms: 118.955176
+  type: 'test'
+  ...
+# Subtest: retention expiry: unusable calendar material is discarded without expiring the still-valid phone retry
+ok 7 - retention expiry: unusable calendar material is discarded without expiring the still-valid phone retry
+  ---
+  duration_ms: 116.739738
+  type: 'test'
+  ...
+# Subtest: retention expiry: preparation cannot reactivate away unfinished physical cleanup
+ok 8 - retention expiry: preparation cannot reactivate away unfinished physical cleanup
+  ---
+  duration_ms: 105.150372
+  type: 'test'
+  ...
+# {"before":{"planStatus":"active","paidThroughAt":"2027-02-08T12:00:00.000Z","dataDeletedAt":null},"state":"ENDED","endAt":"2026-11-20T12:00:00.000Z","time":"2027-01-19T12:00:00.000Z"}
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1262.229692

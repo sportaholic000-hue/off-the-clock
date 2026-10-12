@@ -1,0 +1,47 @@
+(node:232) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:239) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: day90 a deployment that never uploaded off-site can complete local-only backup erasure
+ok 1 - day90 a deployment that never uploaded off-site can complete local-only backup erasure
+  ---
+  duration_ms: 132.691129
+  type: 'test'
+  ...
+# Subtest: day90 removes abandoned download, decrypt and restore staging copies
+ok 2 - day90 removes abandoned download, decrypt and restore staging copies
+  ---
+  duration_ms: 565.500123
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight daily restore
+ok 3 - day90 serializes erasure with an in-flight daily restore
+  ---
+  duration_ms: 405.538427
+  type: 'test'
+  ...
+# Subtest: day90 serializes erasure with an in-flight continuous restore
+ok 4 - day90 serializes erasure with an in-flight continuous restore
+  ---
+  duration_ms: 408.885394
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — volume
+ok 5 - day90 local restore cannot race a held erasure lock — volume
+  ---
+  duration_ms: 238.233306
+  type: 'test'
+  ...
+# Subtest: day90 local restore cannot race a held erasure lock — nested
+ok 6 - day90 local restore cannot race a held erasure lock — nested
+  ---
+  duration_ms: 218.074671
+  type: 'test'
+  ...
+# Subtest: day90 complete cleanup is idempotent across live, local, daily and continuous copies
+ok 7 - day90 complete cleanup is idempotent across live, local, daily and continuous copies
+  ---
+  duration_ms: 484.702036
+  type: 'test'
+  ...

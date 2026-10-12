@@ -1,6 +1,6 @@
 # Launch configuration worksheet — owner review
 
-Prepared October 12, 2026 for the October 20, 2026 target. Source: `rc-20261012k`, peeled commit `ead53fa174d577b280506b67573a29d6b0358237`. These are proposed settings, not a readback of any account. No credentials were obtained or created. Replace every angle-bracket placeholder privately; do not paste this document as an environment file.
+Prepared October 12, 2026 for the October 20, 2026 target. Configuration source remains `rc-20261012k` / `ead53fa174d577b280506b67573a29d6b0358237`; candidate l preserves these names and values. The retention repair and final candidate validation are recorded in [candidate l’s report](../release-candidate-20261012l/REPORT.md). This worksheet remains unapproved and undeployed. These are proposed settings, not a readback of any account. No credentials were obtained or created. Replace every angle-bracket placeholder privately; do not paste this document as an environment file.
 
 ## Configuration order and dependencies
 

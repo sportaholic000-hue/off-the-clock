@@ -1,0 +1,36 @@
+{
+  "preserved_all_existing_job_settings_and_run_bodies": true,
+  "extended_conditions": [
+    {
+      "job": "test",
+      "step": "Candidate i confirms required test names in the full-suite log"
+    },
+    {
+      "job": "test",
+      "step": "Candidate k backup coordination regressions"
+    },
+    {
+      "job": "test",
+      "step": "Candidate j and k standalone regressions (each file independently)"
+    },
+    {
+      "job": "test",
+      "step": "Candidate j and k confirm required lock test names in the full-suite log"
+    },
+    {
+      "job": "test",
+      "step": "Candidate k confirms coordination test names in the full-suite log"
+    },
+    {
+      "job": "voice-docker-startup",
+      "step": "Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke"
+    },
+    {
+      "job": "voice-docker-startup",
+      "step": "Candidate j and k production-user lock database proof"
+    }
+  ],
+  "new_steps": 1,
+  "restore_input_unchanged": true,
+  "specs_manifests_lockfiles_unchanged": true
+}

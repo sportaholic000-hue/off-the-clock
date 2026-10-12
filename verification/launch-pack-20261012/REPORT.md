@@ -1,3 +1,13 @@
+# Candidate-l reconciliation — still unapproved and undeployed
+
+The original launch-pack report below records the separate documentation task at `4417e7b749a71fbee6207315ebcd75425fa25036`; its historical inspection and NOT RUN statements are not candidate-l test results. The exact commit was integrated into candidate l. These five drafts are now reconciled with the verified live-expiry repair, without publishing policy or changing configuration.
+
+Current behavior: the next writable cleanup pass discards expired live material without depending on abandoned-copy cleanup, stops provider retries, and durably tracks remaining copy removal and database-history flushing. That work resumes after restart and terminal provider failure; unresolved cleanup keeps health unhealthy and erasure incomplete. The local preparation pass cannot reactivate away this obligation. The former description of longer live retention was a confirmed defect, not an owner-approved exception. Stopped workers and inaccessible historical storage still cannot be represented as completed physical deletion.
+
+See [candidate l’s report](../release-candidate-20261012l/REPORT.md) for before/after evidence, final source and CI status. The restore diagnostics’ historical missing-book discrepancy remains **NOT REPRODUCED / cause unknown**; no quote-engine repair is claimed. Deployment, provider acceptance, full-policy review and both-scope Astra + Sol clean audits remain separate prerequisites. The original evidence follows unchanged as history.
+
+---
+
 # Launch-pack report — documentation complete; live acceptance not run
 
 Prepared October 12, 2026 for the October 20 launch target. This pack is ready for owner review, not a deployment authorization or a release-audit pass. Provider/account readiness, policy approval and live upload/restore evidence remain outstanding.

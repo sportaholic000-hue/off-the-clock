@@ -1,0 +1,39 @@
+(node:217) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:224) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:224) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: day90 clock: stored canceledAt survives a nine-day processing delay
+ok 1 - day90 clock: stored canceledAt survives a nine-day processing delay
+  ---
+  duration_ms: 33.928755
+  type: 'test'
+  ...
+# Subtest: day90 clock: delayed subscription deletion — ended_at wins over the earlier cancellation request
+ok 2 - day90 clock: delayed subscription deletion — ended_at wins over the earlier cancellation request
+  ---
+  duration_ms: 29.240127
+  type: 'test'
+  ...
+# Subtest: day90 clock: delayed subscription deletion — canceled_at is used when ended_at is absent
+ok 3 - day90 clock: delayed subscription deletion — canceled_at is used when ended_at is absent
+  ---
+  duration_ms: 27.65255
+  type: 'test'
+  ...
+# Subtest: day90 clock: delayed subscription deletion — legacy terminal event time is retained when provider fields are absent
+ok 4 - day90 clock: delayed subscription deletion — legacy terminal event time is retained when provider fields are absent
+  ---
+  duration_ms: 26.568063
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 293.694526

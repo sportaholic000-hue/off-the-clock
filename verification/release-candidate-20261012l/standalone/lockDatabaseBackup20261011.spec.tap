@@ -1,0 +1,50 @@
+(node:282) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:289) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lock database backup: listing excludes retention, daily and continuous mutexes
+ok 1 - lock database backup: listing excludes retention, daily and continuous mutexes
+  ---
+  duration_ms: 149.978414
+  type: 'test'
+  ...
+# Subtest: lock database backup: pruning removes an expired snapshot but preserves every mutex
+ok 2 - lock database backup: pruning removes an expired snapshot but preserves every mutex
+  ---
+  duration_ms: 139.388293
+  type: 'test'
+  ...
+# Subtest: lock database backup: snapshot inventory excludes all mutexes and sidecars
+ok 3 - lock database backup: snapshot inventory excludes all mutexes and sidecars
+  ---
+  duration_ms: 116.254777
+  type: 'test'
+  ...
+# Subtest: lock database backup: live staging cleanup cannot add a mutex to a published snapshot
+ok 4 - lock database backup: live staging cleanup cannot add a mutex to a published snapshot
+  ---
+  duration_ms: 252.423319
+  type: 'test'
+  ...
+# Subtest: lock database backup: fake daily and continuous uploads contain no mutex database
+ok 5 - lock database backup: fake daily and continuous uploads contain no mutex database
+  ---
+  duration_ms: 313.056727
+  type: 'test'
+  ...
+# Subtest: lock database backup: day-90 erasure preserves usable mutexes and the second business
+ok 6 - lock database backup: day-90 erasure preserves usable mutexes and the second business
+  ---
+  duration_ms: 541.288718
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1745.073181

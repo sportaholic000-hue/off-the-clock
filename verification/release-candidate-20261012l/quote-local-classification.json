@@ -1,0 +1,17 @@
+{
+  "exit": 130,
+  "result": "INCOMPLETE: manually interrupted after 282.6 seconds with no new output",
+  "completed_summary": false,
+  "root_entries": 1109,
+  "root_pass": 1102,
+  "root_fail": 7,
+  "last_test": "Google Calendar authorization requests exactly the booking scopes",
+  "next_file_diagnostic": {
+    "file": "test/callerHistoryFollowup20261006.spec.mjs",
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "exit": 0
+  },
+  "cause": "Unknown; no full-gate retry was used to hide this incomplete result."
+}

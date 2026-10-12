@@ -1,0 +1,442 @@
+[
+  {
+    "file": "test/backupCoordination20261012.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/backupCoordination20261012.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/backupRestoreRehearsal.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/backupRestoreRehearsal.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/backups.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/backups.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/billingCustomerLifecycle20261007.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/billingCustomerLifecycle20261007.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 52,
+      "pass": 52,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/continuousOffsite20261007.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/continuousOffsite20261007.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/day90Backups20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/day90Backups20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/day90Cancellation20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/day90Cancellation20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/day90Guarantees20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/day90Guarantees20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/day90Providers20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/day90Providers20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/lockDatabaseBackup20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/lockDatabaseBackup20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/lockRecoveryRace20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/lockRecoveryRace20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/offsiteBackups20261007.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/offsiteBackups20261007.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 23,
+      "pass": 23,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/ownerQueryCoverage20261009.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/ownerQueryCoverage20261009.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 88,
+      "pass": 88,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/retentionExpiry20261012.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionExpiry20261012.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/retentionHardeningHealth20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionHardeningHealth20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/retentionHardeningLocks20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionHardeningLocks20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/retentionHardeningSecrets20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionHardeningSecrets20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/retentionHardeningVersions20261011.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/retentionHardeningVersions20261011.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/tenantIsolationRoutes.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/tenantIsolationRoutes.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 264,
+      "pass": 264,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "file": "test/tenantRetention20261010.spec.mjs",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/tenantRetention20261010.spec.mjs"
+    ],
+    "exit": 0,
+    "complete_pass": true,
+    "counts": {
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  }
+]

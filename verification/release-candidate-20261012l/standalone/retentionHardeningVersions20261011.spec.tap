@@ -1,0 +1,68 @@
+(node:634) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:641) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: retention hardening: Enabled daily erasure removes every historic version and marker
+ok 1 - retention hardening: Enabled daily erasure removes every historic version and marker
+  ---
+  duration_ms: 710.895481
+  type: 'test'
+  ...
+# Subtest: retention hardening: Enabled continuous erasure removes every historic version and marker
+ok 2 - retention hardening: Enabled continuous erasure removes every historic version and marker
+  ---
+  duration_ms: 567.327227
+  type: 'test'
+  ...
+# Subtest: retention hardening: Suspended daily erasure removes every historic version and marker
+ok 3 - retention hardening: Suspended daily erasure removes every historic version and marker
+  ---
+  duration_ms: 530.15437
+  type: 'test'
+  ...
+# Subtest: retention hardening: Suspended continuous erasure removes every historic version and marker
+ok 4 - retention hardening: Suspended continuous erasure removes every historic version and marker
+  ---
+  duration_ms: 542.270899
+  type: 'test'
+  ...
+# Subtest: retention hardening: Unsupported versioning permits ordinary off-site erasure
+ok 5 - retention hardening: Unsupported versioning permits ordinary off-site erasure
+  ---
+  duration_ms: 422.503525
+  type: 'test'
+  ...
+# Subtest: retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+ok 6 - retention hardening: NeverEnabled versioning permits ordinary off-site erasure
+  ---
+  duration_ms: 414.058936
+  type: 'test'
+  ...
+# Subtest: retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+ok 7 - retention hardening: version delete rejected keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 566.969292
+  type: 'test'
+  ...
+# Subtest: retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+ok 8 - retention hardening: version delete ignored keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 595.358604
+  type: 'test'
+  ...
+# Subtest: retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+ok 9 - retention hardening: versioning access denied keeps erasure pending and admin unhealthy
+  ---
+  duration_ms: 533.519876
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5138.444423

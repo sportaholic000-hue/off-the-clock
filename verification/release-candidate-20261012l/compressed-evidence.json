@@ -1,0 +1,23 @@
+[
+  {
+    "path": "full-local.tap.gz",
+    "original_bytes": 1511153,
+    "original_sha256": "cc70c4b3f626b10fc364832893986f7ccf00e7b30be5ed42dff031da6966c991",
+    "compressed_bytes": 198281,
+    "compressed_sha256": "1e7b9c18e87182fca927bce46e2f3cc683bd2aa571bc61bc21ed6c0c51bc7aa9"
+  },
+  {
+    "path": "full-local.log.gz",
+    "original_bytes": 1518903,
+    "original_sha256": "d3dbe65823c81d91d7576d6ce7390cc33d1def2511fcda4745a0e227a7eeeaf6",
+    "compressed_bytes": 200518,
+    "compressed_sha256": "1a47bb9801835d97537b4c3f1358083dbc9a776785738ce699c855df352bc34b"
+  },
+  {
+    "path": "quote-local.log.gz",
+    "original_bytes": 287974,
+    "original_sha256": "d8e145c744fb24098c454e1434c1b193df66582bbc0601cede96a0939ada9c1b",
+    "compressed_bytes": 41640,
+    "compressed_sha256": "a58a0093503262aee0bc6ab8e3918ed13e9115fd0f22ac9dc773b7029ac84b7b"
+  }
+]

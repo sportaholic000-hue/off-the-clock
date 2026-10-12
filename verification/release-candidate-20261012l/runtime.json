@@ -1,0 +1,26 @@
+{
+  "node": "v22.23.3",
+  "cpus": 9,
+  "versions": {
+    "@aws-sdk/client-s3": {
+      "locked": "3.1147.0",
+      "installed": "3.1147.0"
+    },
+    "better-sqlite3": {
+      "locked": "11.10.0",
+      "installed": "11.10.0"
+    },
+    "vite": {
+      "locked": "6.4.3",
+      "installed": "6.4.3"
+    },
+    "react": {
+      "locked": "19.2.7",
+      "installed": "19.2.7"
+    },
+    "playwright": {
+      "locked": null,
+      "installed": "1.56.0"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+(node:198) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:205) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: day90 missing settings: prior uploads stay pending — OFFSITE_NOT_CONFIGURED
+ok 1 - day90 missing settings: prior uploads stay pending — OFFSITE_NOT_CONFIGURED
+  ---
+  duration_ms: 598.416256
+  type: 'test'
+  ...
+# Subtest: day90 missing settings: prior uploads stay pending — OFFSITE_CONFIG_INVALID
+ok 2 - day90 missing settings: prior uploads stay pending — OFFSITE_CONFIG_INVALID
+  ---
+  duration_ms: 474.177769
+  type: 'test'
+  ...

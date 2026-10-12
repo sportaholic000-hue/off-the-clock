@@ -1,0 +1,1600 @@
+(node:653) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:660) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: synthetic full server tenant matrix (development/preview)
+    # Subtest: every runtime registered route is covered; new and removed routes fail
+    ok 1 - every runtime registered route is covered; new and removed routes fail
+      ---
+      duration_ms: 18.133579
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/bookings/:bookingIntentId/holds/:holdId [team]
+    ok 2 - DELETE /api/bookings/:bookingIntentId/holds/:holdId [team]
+      ---
+      duration_ms: 142.060156
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/call-blocklist [owner]
+    ok 3 - DELETE /api/call-blocklist [owner]
+      ---
+      duration_ms: 74.73973
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/integrations/webhook [owner]
+    ok 4 - DELETE /api/integrations/webhook [owner]
+      ---
+      duration_ms: 75.275632
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/public/bookings/:bookingToken/holds/:holdId [booking-capability]
+    ok 5 - DELETE /api/public/bookings/:bookingToken/holds/:holdId [booking-capability]
+      ---
+      duration_ms: 20.595971
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/team/staff/:id [owner]
+    ok 6 - DELETE /api/team/staff/:id [owner]
+      ---
+      duration_ms: 92.855435
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/team/staff/:id/invite [owner]
+    ok 7 - DELETE /api/team/staff/:id/invite [owner]
+      ---
+      duration_ms: 77.086277
+      type: 'test'
+      ...
+    # Subtest: GET /api/admin [admin]
+    ok 8 - GET /api/admin [admin]
+      ---
+      duration_ms: 36.65231
+      type: 'test'
+      ...
+    # Subtest: GET /api/admin/backups/offsite [admin]
+    ok 9 - GET /api/admin/backups/offsite [admin]
+      ---
+      duration_ms: 62.975295
+      type: 'test'
+      ...
+    # Subtest: GET /api/auth/account [team]
+    ok 10 - GET /api/auth/account [team]
+      ---
+      duration_ms: 34.666911
+      type: 'test'
+      ...
+    # Subtest: GET /api/auth/verify-email [auth]
+    ok 11 - GET /api/auth/verify-email [auth]
+      ---
+      duration_ms: 10.481613
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/export/:kind [owner]
+    ok 12 - GET /api/billing/export/:kind [owner]
+      ---
+      duration_ms: 44.526752
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/lifecycle [owner]
+    ok 13 - GET /api/billing/lifecycle [owner]
+      ---
+      duration_ms: 35.80025
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/status [owner]
+    ok 14 - GET /api/billing/status [owner]
+      ---
+      duration_ms: 34.532732
+      type: 'test'
+      ...
+    # Subtest: GET /api/booking/configuration [owner]
+    ok 15 - GET /api/booking/configuration [owner]
+      ---
+      duration_ms: 55.256663
+      type: 'test'
+      ...
+    # Subtest: GET /api/booking/readiness [owner]
+    ok 16 - GET /api/booking/readiness [owner]
+      ---
+      duration_ms: 37.148234
+      type: 'test'
+      ...
+    # Subtest: GET /api/calendar/busy [team]
+    ok 17 - GET /api/calendar/busy [team]
+      ---
+      duration_ms: 42.110291
+      type: 'test'
+      ...
+    # Subtest: GET /api/calendar/schedule [team]
+    ok 18 - GET /api/calendar/schedule [team]
+      ---
+      duration_ms: 41.582026
+      type: 'test'
+      ...
+    # Subtest: GET /api/call-blocklist [owner]
+    ok 19 - GET /api/call-blocklist [owner]
+      ---
+      duration_ms: 34.45129
+      type: 'test'
+      ...
+    # Subtest: GET /api/calls [team]
+    ok 20 - GET /api/calls [team]
+      ---
+      duration_ms: 33.674195
+      type: 'test'
+      ...
+    # Subtest: GET /api/calls/:id [team]
+    ok 21 - GET /api/calls/:id [team]
+      ---
+      duration_ms: 42.919284
+      type: 'test'
+      ...
+    # Subtest: GET /api/customers [team]
+    ok 22 - GET /api/customers [team]
+      ---
+      duration_ms: 41.231942
+      type: 'test'
+      ...
+    # Subtest: GET /api/dashboard [team]
+    ok 23 - GET /api/dashboard [team]
+      ---
+      duration_ms: 36.709702
+      type: 'test'
+      ...
+    # Subtest: GET /api/exports/:kind [owner]
+    ok 24 - GET /api/exports/:kind [owner]
+      ---
+      duration_ms: 38.470657
+      type: 'test'
+      ...
+    # Subtest: GET /api/health [platform]
+    ok 25 - GET /api/health [platform]
+      ---
+      duration_ms: 9.420645
+      type: 'test'
+      ...
+    # Subtest: GET /api/integrations/webhook [owner]
+    ok 26 - GET /api/integrations/webhook [owner]
+      ---
+      duration_ms: 32.667051
+      type: 'test'
+      ...
+    # Subtest: GET /api/integrations/webhook/deliveries [owner]
+    ok 27 - GET /api/integrations/webhook/deliveries [owner]
+      ---
+      duration_ms: 34.245375
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads [team]
+    ok 28 - GET /api/leads [team]
+      ---
+      duration_ms: 33.262046
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads/:id [team]
+    ok 29 - GET /api/leads/:id [team]
+      ---
+      duration_ms: 37.809646
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads/activity [team]
+    ok 30 - GET /api/leads/activity [team]
+      ---
+      duration_ms: 42.596878
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/calendar/google/callback [oauth-capability]
+    ok 31 - GET /api/onboarding/calendar/google/callback [oauth-capability]
+      ---
+      duration_ms: 10.499572
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/calendar/google/start [owner]
+    ok 32 - GET /api/onboarding/calendar/google/start [owner]
+      ---
+      duration_ms: 38.144594
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/phone/forwarding-check [owner]
+    ok 33 - GET /api/onboarding/phone/forwarding-check [owner]
+      ---
+      duration_ms: 33.934733
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/state [owner]
+    ok 34 - GET /api/onboarding/state [owner]
+      ---
+      duration_ms: 32.574774
+      type: 'test'
+      ...
+    # Subtest: GET /api/owner-alerts [team]
+    ok 35 - GET /api/owner-alerts [team]
+      ---
+      duration_ms: 31.79903
+      type: 'test'
+      ...
+    # Subtest: GET /api/owner-records/:kind/:id [team]
+    ok 36 - GET /api/owner-records/:kind/:id [team]
+      ---
+      duration_ms: 41.691409
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/:ownerId [owner]
+    ok 37 - GET /api/pricebook/:ownerId [owner]
+      ---
+      duration_ms: 51.138644
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview [owner]
+    ok 38 - GET /api/pricebook/interview [owner]
+      ---
+      duration_ms: 33.47987
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview/:draftId [owner]
+    ok 39 - GET /api/pricebook/interview/:draftId [owner]
+      ---
+      duration_ms: 42.051915
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview/:draftId/review [owner]
+    ok 40 - GET /api/pricebook/interview/:draftId/review [owner]
+      ---
+      duration_ms: 39.033665
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/meta [owner]
+    ok 41 - GET /api/pricebook/meta [owner]
+      ---
+      duration_ms: 49.802517
+      type: 'test'
+      ...
+    # Subtest: GET /api/public/bookings/:bookingToken/confirmations/:confirmationId [booking-capability]
+    ok 42 - GET /api/public/bookings/:bookingToken/confirmations/:confirmationId [booking-capability]
+      ---
+      duration_ms: 14.287958
+      type: 'test'
+      ...
+    # Subtest: GET /api/public/quote/:publicKey [widget]
+    ok 43 - GET /api/public/quote/:publicKey [widget]
+      ---
+      duration_ms: 13.227572
+      type: 'test'
+      ...
+    # Subtest: GET /api/quotedone/access [owner]
+    ok 44 - GET /api/quotedone/access [owner]
+      ---
+      duration_ms: 31.582827
+      type: 'test'
+      ...
+    # Subtest: GET /api/quotes [team]
+    ok 45 - GET /api/quotes [team]
+      ---
+      duration_ms: 32.774531
+      type: 'test'
+      ...
+    # Subtest: GET /api/reports [owner]
+    ok 46 - GET /api/reports [owner]
+      ---
+      duration_ms: 35.609107
+      type: 'test'
+      ...
+    # Subtest: GET /api/schema [platform]
+    ok 47 - GET /api/schema [platform]
+      ---
+      duration_ms: 8.823582
+      type: 'test'
+      ...
+    # Subtest: GET /api/team/staff [owner]
+    ok 48 - GET /api/team/staff [owner]
+      ---
+      duration_ms: 39.990679
+      type: 'test'
+      ...
+    # Subtest: GET /demo/otc-live-demo.js [platform]
+    ok 49 - GET /demo/otc-live-demo.js [platform]
+      ---
+      duration_ms: 9.951416
+      type: 'test'
+      ...
+    # Subtest: GET /quote-copy/:ownerId/:token [quote-copy]
+    ok 50 - GET /quote-copy/:ownerId/:token [quote-copy]
+      ---
+      duration_ms: 10.267703
+      type: 'test'
+      ...
+    # Subtest: OPTIONS /api/demo/session [platform]
+    ok 51 - OPTIONS /api/demo/session [platform]
+      ---
+      duration_ms: 9.297226
+      type: 'test'
+      ...
+    # Subtest: PATCH /api/leads/:id [team]
+    ok 52 - PATCH /api/leads/:id [team]
+      ---
+      duration_ms: 73.652354
+      type: 'test'
+      ...
+    # Subtest: POST /api/admin/login [auth]
+    ok 53 - POST /api/admin/login [auth]
+      ---
+      duration_ms: 9.799098
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/account/resend-verification [team]
+    ok 54 - POST /api/auth/account/resend-verification [team]
+      ---
+      duration_ms: 54.190777
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/forgot-password [auth]
+    ok 55 - POST /api/auth/forgot-password [auth]
+      ---
+      duration_ms: 10.652462
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/login [auth]
+    ok 56 - POST /api/auth/login [auth]
+      ---
+      duration_ms: 245.956157
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/logout [auth]
+    ok 57 - POST /api/auth/logout [auth]
+      ---
+      duration_ms: 10.082578
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/refresh [auth]
+    ok 58 - POST /api/auth/refresh [auth]
+      ---
+      duration_ms: 11.571409
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/register [auth]
+    ok 59 - POST /api/auth/register [auth]
+      ---
+      duration_ms: 489.95711
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/resend-verification [auth]
+    ok 60 - POST /api/auth/resend-verification [auth]
+      ---
+      duration_ms: 9.784531
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/reset-password [auth]
+    ok 61 - POST /api/auth/reset-password [auth]
+      ---
+      duration_ms: 12.985655
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/staff-invite/accept [auth]
+    ok 62 - POST /api/auth/staff-invite/accept [auth]
+      ---
+      duration_ms: 10.177057
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/verify-email [auth]
+    ok 63 - POST /api/auth/verify-email [auth]
+      ---
+      duration_ms: 27.303004
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/cancel [owner]
+    ok 64 - POST /api/billing/cancel [owner]
+      ---
+      duration_ms: 65.140295
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/checkout [owner]
+    ok 65 - POST /api/billing/checkout [owner]
+      ---
+      duration_ms: 55.132606
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/portal [owner]
+    ok 66 - POST /api/billing/portal [owner]
+      ---
+      duration_ms: 53.024713
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/reactivate [owner]
+    ok 67 - POST /api/billing/reactivate [owner]
+      ---
+      duration_ms: 59.675748
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/availability [team]
+    ok 68 - POST /api/bookings/:bookingIntentId/availability [team]
+      ---
+      duration_ms: 61.237561
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/confirm [team]
+    ok 69 - POST /api/bookings/:bookingIntentId/confirm [team]
+      ---
+      duration_ms: 69.543985
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/holds [team]
+    ok 70 - POST /api/bookings/:bookingIntentId/holds [team]
+      ---
+      duration_ms: 68.448554
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/preference [team]
+    ok 71 - POST /api/bookings/:bookingIntentId/preference [team]
+      ---
+      duration_ms: 60.2694
+      type: 'test'
+      ...
+    # Subtest: POST /api/business/jurisdiction [owner]
+    ok 72 - POST /api/business/jurisdiction [owner]
+      ---
+      duration_ms: 54.904504
+      type: 'test'
+      ...
+    # Subtest: POST /api/call-blocklist [owner]
+    ok 73 - POST /api/call-blocklist [owner]
+      ---
+      duration_ms: 65.100846
+      type: 'test'
+      ...
+    # Subtest: POST /api/calls/:id/spam [owner]
+    ok 74 - POST /api/calls/:id/spam [owner]
+      ---
+      duration_ms: 60.978776
+      type: 'test'
+      ...
+    # Subtest: POST /api/demo/session [platform]
+    ok 75 - POST /api/demo/session [platform]
+      ---
+      duration_ms: 8.966118
+      type: 'test'
+      ...
+    # Subtest: POST /api/dev/preview/telephony [owner]
+    ok 76 - POST /api/dev/preview/telephony [owner]
+      ---
+      duration_ms: 52.808831
+      type: 'test'
+      ...
+    # Subtest: POST /api/integrations/webhook/deliveries/:id/retry [owner]
+    ok 77 - POST /api/integrations/webhook/deliveries/:id/retry [owner]
+      ---
+      duration_ms: 67.167958
+      type: 'test'
+      ...
+    # Subtest: POST /api/integrations/webhook/rotate-secret [owner]
+    ok 78 - POST /api/integrations/webhook/rotate-secret [owner]
+      ---
+      duration_ms: 59.423707
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/account [owner]
+    ok 79 - POST /api/onboarding/account [owner]
+      ---
+      duration_ms: 54.646222
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/business-types [owner]
+    ok 80 - POST /api/onboarding/business-types [owner]
+      ---
+      duration_ms: 50.33746
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/calendar [owner]
+    ok 81 - POST /api/onboarding/calendar [owner]
+      ---
+      duration_ms: 67.560571
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/knowledge-base [owner]
+    ok 82 - POST /api/onboarding/knowledge-base [owner]
+      ---
+      duration_ms: 50.383207
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/knowledge-base/draft [owner]
+    ok 83 - POST /api/onboarding/knowledge-base/draft [owner]
+      ---
+      duration_ms: 55.985393
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/phone/provision [owner]
+    ok 84 - POST /api/onboarding/phone/provision [owner]
+      ---
+      duration_ms: 54.439366
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/voice [owner]
+    ok 85 - POST /api/onboarding/voice [owner]
+      ---
+      duration_ms: 56.894205
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-alerts/:id/retry [owner]
+    ok 86 - POST /api/owner-alerts/:id/retry [owner]
+      ---
+      duration_ms: 55.879057
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-alerts/:id/seen [owner]
+    ok 87 - POST /api/owner-alerts/:id/seen [owner]
+      ---
+      duration_ms: 55.949876
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-records/:kind/:id/actions [team]
+    ok 88 - POST /api/owner-records/:kind/:id/actions [team]
+      ---
+      duration_ms: 67.477362
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/interview [owner]
+    ok 89 - POST /api/pricebook/interview [owner]
+      ---
+      duration_ms: 50.464705
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/interview/:draftId/assist [owner]
+    ok 90 - POST /api/pricebook/interview/:draftId/assist [owner]
+      ---
+      duration_ms: 56.881933
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/preview [owner]
+    ok 91 - POST /api/pricebook/preview [owner]
+      ---
+      duration_ms: 56.06173
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/save [owner]
+    ok 92 - POST /api/pricebook/save [owner]
+      ---
+      duration_ms: 66.121033
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/services/:serviceId/approve [owner]
+    ok 93 - POST /api/pricebook/services/:serviceId/approve [owner]
+      ---
+      duration_ms: 57.314285
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/suggest [owner]
+    ok 94 - POST /api/pricebook/suggest [owner]
+      ---
+      duration_ms: 51.373452
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/validate [owner]
+    ok 95 - POST /api/pricebook/validate [owner]
+      ---
+      duration_ms: 55.664081
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/availability [booking-capability]
+    ok 96 - POST /api/public/bookings/:bookingToken/availability [booking-capability]
+      ---
+      duration_ms: 12.88203
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/confirm [booking-capability]
+    ok 97 - POST /api/public/bookings/:bookingToken/confirm [booking-capability]
+      ---
+      duration_ms: 13.411713
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/holds [booking-capability]
+    ok 98 - POST /api/public/bookings/:bookingToken/holds [booking-capability]
+      ---
+      duration_ms: 12.308383
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/preference [booking-capability]
+    ok 99 - POST /api/public/bookings/:bookingToken/preference [booking-capability]
+      ---
+      duration_ms: 14.110562
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/quote/:publicKey [widget]
+    ok 100 - POST /api/public/quote/:publicKey [widget]
+      ---
+      duration_ms: 20.456628
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/quote/:publicKey/prepare [widget]
+    ok 101 - POST /api/public/quote/:publicKey/prepare [widget]
+      ---
+      duration_ms: 29.161518
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/calculate [team]
+    ok 102 - POST /api/quote/calculate [team]
+      ---
+      duration_ms: 106.111251
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/prepare [team]
+    ok 103 - POST /api/quote/prepare [team]
+      ---
+      duration_ms: 56.334343
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/test [owner]
+    ok 104 - POST /api/quote/test [owner]
+      ---
+      duration_ms: 48.755778
+      type: 'test'
+      ...
+    # Subtest: POST /api/quotedone/access [owner]
+    ok 105 - POST /api/quotedone/access [owner]
+      ---
+      duration_ms: 50.405383
+      type: 'test'
+      ...
+    # Subtest: POST /api/quotes/:id/email [team]
+    ok 106 - POST /api/quotes/:id/email [team]
+      ---
+      duration_ms: 62.566417
+      type: 'test'
+      ...
+    # Subtest: POST /api/stripe/webhook [stripe]
+    ok 107 - POST /api/stripe/webhook [stripe]
+      ---
+      duration_ms: 23.321725
+      type: 'test'
+      ...
+    # Subtest: POST /api/team/staff/:id/resend [owner]
+    ok 108 - POST /api/team/staff/:id/resend [owner]
+      ---
+      duration_ms: 66.265713
+      type: 'test'
+      ...
+    # Subtest: POST /api/team/staff/invite [owner]
+    ok 109 - POST /api/team/staff/invite [owner]
+      ---
+      duration_ms: 49.323024
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture [voice]
+    ok 110 - POST /api/twilio/voice/capture [voice]
+      ---
+      duration_ms: 11.903252
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture/again [voice]
+    ok 111 - POST /api/twilio/voice/capture/again [voice]
+      ---
+      duration_ms: 10.553955
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture/partial [voice]
+    ok 112 - POST /api/twilio/voice/capture/partial [voice]
+      ---
+      duration_ms: 10.131497
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/fallback/:nonce [voice]
+    ok 113 - POST /api/twilio/voice/fallback/:nonce [voice]
+      ---
+      duration_ms: 10.634597
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/incoming [voice]
+    ok 114 - POST /api/twilio/voice/incoming [voice]
+      ---
+      duration_ms: 13.509764
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/status [voice]
+    ok 115 - POST /api/twilio/voice/status [voice]
+      ---
+      duration_ms: 10.36534
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/transfer/:id/accept [voice]
+    ok 116 - POST /api/twilio/voice/transfer/:id/accept [voice]
+      ---
+      duration_ms: 10.99837
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/transfer/:id/result [voice]
+    ok 117 - POST /api/twilio/voice/transfer/:id/result [voice]
+      ---
+      duration_ms: 38.910078
+      type: 'test'
+      ...
+    # Subtest: PUT /api/booking/policies/:serviceId [owner]
+    ok 118 - PUT /api/booking/policies/:serviceId [owner]
+      ---
+      duration_ms: 61.305058
+      type: 'test'
+      ...
+    # Subtest: PUT /api/booking/settings [owner]
+    ok 119 - PUT /api/booking/settings [owner]
+      ---
+      duration_ms: 53.683297
+      type: 'test'
+      ...
+    # Subtest: PUT /api/integrations/webhook [owner]
+    ok 120 - PUT /api/integrations/webhook [owner]
+      ---
+      duration_ms: 48.750136
+      type: 'test'
+      ...
+    # Subtest: PUT /api/pricebook/interview/:draftId [owner]
+    ok 121 - PUT /api/pricebook/interview/:draftId [owner]
+      ---
+      duration_ms: 55.961867
+      type: 'test'
+      ...
+    # Subtest: PUT /api/reports/hours [owner]
+    ok 122 - PUT /api/reports/hours [owner]
+      ---
+      duration_ms: 61.98975
+      type: 'test'
+      ...
+    # Subtest: PUT /api/widget/settings [owner]
+    ok 123 - PUT /api/widget/settings [owner]
+      ---
+      duration_ms: 52.283585
+      type: 'test'
+      ...
+    # Subtest: USE /api/demo/session [platform]
+    ok 124 - USE /api/demo/session [platform]
+      ---
+      duration_ms: 9.790504
+      type: 'test'
+      ...
+    # Subtest: WS /api/twilio/voice/stream/:nonce [voice]
+    ok 125 - WS /api/twilio/voice/stream/:nonce [voice]
+      ---
+      duration_ms: 14.944611
+      type: 'test'
+      ...
+    # Subtest: staff role can use calls, leads, quotes, calendar and customers but not owner controls
+    ok 126 - staff role can use calls, leads, quotes, calendar and customers but not owner controls
+      ---
+      duration_ms: 25.249141
+      type: 'test'
+      ...
+    # Subtest: own reads work; counts do not include newly added B rows
+    ok 127 - own reads work; counts do not include newly added B rows
+      ---
+      duration_ms: 89.193784
+      type: 'test'
+      ...
+    # Subtest: merged billing reads and exports remain tenant-scoped; only admin can read backup status
+    ok 128 - merged billing reads and exports remain tenant-scoped; only admin can read backup status
+      ---
+      duration_ms: 264.055277
+      type: 'test'
+      ...
+    # Subtest: attacks never reached an external provider
+    ok 129 - attacks never reached an external provider
+      ---
+      duration_ms: 0.632247
+      type: 'test'
+      ...
+    # Subtest: coverage guard fails for an added route and an anonymously mounted router
+    ok 130 - coverage guard fails for an added route and an anonymously mounted router
+      ---
+      duration_ms: 4.233429
+      type: 'test'
+      ...
+    1..130
+ok 1 - synthetic full server tenant matrix (development/preview)
+  ---
+  duration_ms: 7702.772195
+  type: 'test'
+  ...
+# Subtest: synthetic full server tenant matrix (production)
+    # Subtest: every runtime registered route is covered; new and removed routes fail
+    ok 1 - every runtime registered route is covered; new and removed routes fail
+      ---
+      duration_ms: 10.912264
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/bookings/:bookingIntentId/holds/:holdId [team]
+    ok 2 - DELETE /api/bookings/:bookingIntentId/holds/:holdId [team]
+      ---
+      duration_ms: 101.295271
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/call-blocklist [owner]
+    ok 3 - DELETE /api/call-blocklist [owner]
+      ---
+      duration_ms: 65.781541
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/integrations/webhook [owner]
+    ok 4 - DELETE /api/integrations/webhook [owner]
+      ---
+      duration_ms: 66.356977
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/public/bookings/:bookingToken/holds/:holdId [booking-capability]
+    ok 5 - DELETE /api/public/bookings/:bookingToken/holds/:holdId [booking-capability]
+      ---
+      duration_ms: 14.720947
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/team/staff/:id [owner]
+    ok 6 - DELETE /api/team/staff/:id [owner]
+      ---
+      duration_ms: 70.406578
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/team/staff/:id/invite [owner]
+    ok 7 - DELETE /api/team/staff/:id/invite [owner]
+      ---
+      duration_ms: 86.398005
+      type: 'test'
+      ...
+    # Subtest: GET * [platform]
+    ok 8 - GET * [platform]
+      ---
+      duration_ms: 10.571331
+      type: 'test'
+      ...
+    # Subtest: GET /api/admin [admin]
+    ok 9 - GET /api/admin [admin]
+      ---
+      duration_ms: 30.892416
+      type: 'test'
+      ...
+    # Subtest: GET /api/admin/backups/offsite [admin]
+    ok 10 - GET /api/admin/backups/offsite [admin]
+      ---
+      duration_ms: 29.377606
+      type: 'test'
+      ...
+    # Subtest: GET /api/auth/account [team]
+    ok 11 - GET /api/auth/account [team]
+      ---
+      duration_ms: 29.849079
+      type: 'test'
+      ...
+    # Subtest: GET /api/auth/verify-email [auth]
+    ok 12 - GET /api/auth/verify-email [auth]
+      ---
+      duration_ms: 9.036488
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/export/:kind [owner]
+    ok 13 - GET /api/billing/export/:kind [owner]
+      ---
+      duration_ms: 32.534707
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/lifecycle [owner]
+    ok 14 - GET /api/billing/lifecycle [owner]
+      ---
+      duration_ms: 42.037433
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/status [owner]
+    ok 15 - GET /api/billing/status [owner]
+      ---
+      duration_ms: 30.420903
+      type: 'test'
+      ...
+    # Subtest: GET /api/booking/configuration [owner]
+    ok 16 - GET /api/booking/configuration [owner]
+      ---
+      duration_ms: 52.14459
+      type: 'test'
+      ...
+    # Subtest: GET /api/booking/readiness [owner]
+    ok 17 - GET /api/booking/readiness [owner]
+      ---
+      duration_ms: 32.428837
+      type: 'test'
+      ...
+    # Subtest: GET /api/calendar/busy [team]
+    ok 18 - GET /api/calendar/busy [team]
+      ---
+      duration_ms: 34.870725
+      type: 'test'
+      ...
+    # Subtest: GET /api/calendar/schedule [team]
+    ok 19 - GET /api/calendar/schedule [team]
+      ---
+      duration_ms: 32.261789
+      type: 'test'
+      ...
+    # Subtest: GET /api/call-blocklist [owner]
+    ok 20 - GET /api/call-blocklist [owner]
+      ---
+      duration_ms: 30.635553
+      type: 'test'
+      ...
+    # Subtest: GET /api/calls [team]
+    ok 21 - GET /api/calls [team]
+      ---
+      duration_ms: 30.887654
+      type: 'test'
+      ...
+    # Subtest: GET /api/calls/:id [team]
+    ok 22 - GET /api/calls/:id [team]
+      ---
+      duration_ms: 43.088799
+      type: 'test'
+      ...
+    # Subtest: GET /api/customers [team]
+    ok 23 - GET /api/customers [team]
+      ---
+      duration_ms: 36.74706
+      type: 'test'
+      ...
+    # Subtest: GET /api/dashboard [team]
+    ok 24 - GET /api/dashboard [team]
+      ---
+      duration_ms: 44.043967
+      type: 'test'
+      ...
+    # Subtest: GET /api/exports/:kind [owner]
+    ok 25 - GET /api/exports/:kind [owner]
+      ---
+      duration_ms: 34.033544
+      type: 'test'
+      ...
+    # Subtest: GET /api/health [platform]
+    ok 26 - GET /api/health [platform]
+      ---
+      duration_ms: 7.589609
+      type: 'test'
+      ...
+    # Subtest: GET /api/integrations/webhook [owner]
+    ok 27 - GET /api/integrations/webhook [owner]
+      ---
+      duration_ms: 29.728585
+      type: 'test'
+      ...
+    # Subtest: GET /api/integrations/webhook/deliveries [owner]
+    ok 28 - GET /api/integrations/webhook/deliveries [owner]
+      ---
+      duration_ms: 36.212569
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads [team]
+    ok 29 - GET /api/leads [team]
+      ---
+      duration_ms: 31.133333
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads/:id [team]
+    ok 30 - GET /api/leads/:id [team]
+      ---
+      duration_ms: 35.747713
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads/activity [team]
+    ok 31 - GET /api/leads/activity [team]
+      ---
+      duration_ms: 44.717137
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/calendar/google/callback [oauth-capability]
+    ok 32 - GET /api/onboarding/calendar/google/callback [oauth-capability]
+      ---
+      duration_ms: 10.416758
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/calendar/google/start [owner]
+    ok 33 - GET /api/onboarding/calendar/google/start [owner]
+      ---
+      duration_ms: 29.38744
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/phone/forwarding-check [owner]
+    ok 34 - GET /api/onboarding/phone/forwarding-check [owner]
+      ---
+      duration_ms: 30.304239
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/state [owner]
+    ok 35 - GET /api/onboarding/state [owner]
+      ---
+      duration_ms: 32.340943
+      type: 'test'
+      ...
+    # Subtest: GET /api/owner-alerts [team]
+    ok 36 - GET /api/owner-alerts [team]
+      ---
+      duration_ms: 30.356885
+      type: 'test'
+      ...
+    # Subtest: GET /api/owner-records/:kind/:id [team]
+    ok 37 - GET /api/owner-records/:kind/:id [team]
+      ---
+      duration_ms: 38.052737
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/:ownerId [owner]
+    ok 38 - GET /api/pricebook/:ownerId [owner]
+      ---
+      duration_ms: 47.179566
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview [owner]
+    ok 39 - GET /api/pricebook/interview [owner]
+      ---
+      duration_ms: 37.806153
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview/:draftId [owner]
+    ok 40 - GET /api/pricebook/interview/:draftId [owner]
+      ---
+      duration_ms: 35.127057
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview/:draftId/review [owner]
+    ok 41 - GET /api/pricebook/interview/:draftId/review [owner]
+      ---
+      duration_ms: 38.892258
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/meta [owner]
+    ok 42 - GET /api/pricebook/meta [owner]
+      ---
+      duration_ms: 55.540417
+      type: 'test'
+      ...
+    # Subtest: GET /api/public/bookings/:bookingToken/confirmations/:confirmationId [booking-capability]
+    ok 43 - GET /api/public/bookings/:bookingToken/confirmations/:confirmationId [booking-capability]
+      ---
+      duration_ms: 12.921285
+      type: 'test'
+      ...
+    # Subtest: GET /api/public/quote/:publicKey [widget]
+    ok 44 - GET /api/public/quote/:publicKey [widget]
+      ---
+      duration_ms: 14.547197
+      type: 'test'
+      ...
+    # Subtest: GET /api/quotedone/access [owner]
+    ok 45 - GET /api/quotedone/access [owner]
+      ---
+      duration_ms: 28.566356
+      type: 'test'
+      ...
+    # Subtest: GET /api/quotes [team]
+    ok 46 - GET /api/quotes [team]
+      ---
+      duration_ms: 30.665349
+      type: 'test'
+      ...
+    # Subtest: GET /api/reports [owner]
+    ok 47 - GET /api/reports [owner]
+      ---
+      duration_ms: 39.923634
+      type: 'test'
+      ...
+    # Subtest: GET /api/team/staff [owner]
+    ok 48 - GET /api/team/staff [owner]
+      ---
+      duration_ms: 29.048919
+      type: 'test'
+      ...
+    # Subtest: GET /demo/otc-live-demo.js [platform]
+    ok 49 - GET /demo/otc-live-demo.js [platform]
+      ---
+      duration_ms: 8.104031
+      type: 'test'
+      ...
+    # Subtest: GET /quote-copy/:ownerId/:token [quote-copy]
+    ok 50 - GET /quote-copy/:ownerId/:token [quote-copy]
+      ---
+      duration_ms: 9.020103
+      type: 'test'
+      ...
+    # Subtest: GET /widget-app.js [platform]
+    ok 51 - GET /widget-app.js [platform]
+      ---
+      duration_ms: 11.980154
+      type: 'test'
+      ...
+    # Subtest: GET /widget.js [platform]
+    ok 52 - GET /widget.js [platform]
+      ---
+      duration_ms: 8.741802
+      type: 'test'
+      ...
+    # Subtest: OPTIONS /api/demo/session [platform]
+    ok 53 - OPTIONS /api/demo/session [platform]
+      ---
+      duration_ms: 8.412223
+      type: 'test'
+      ...
+    # Subtest: PATCH /api/leads/:id [team]
+    ok 54 - PATCH /api/leads/:id [team]
+      ---
+      duration_ms: 71.09971
+      type: 'test'
+      ...
+    # Subtest: POST /api/admin/login [auth]
+    ok 55 - POST /api/admin/login [auth]
+      ---
+      duration_ms: 8.684751
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/account/resend-verification [team]
+    ok 56 - POST /api/auth/account/resend-verification [team]
+      ---
+      duration_ms: 51.131339
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/forgot-password [auth]
+    ok 57 - POST /api/auth/forgot-password [auth]
+      ---
+      duration_ms: 15.465218
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/login [auth]
+    ok 58 - POST /api/auth/login [auth]
+      ---
+      duration_ms: 248.304275
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/logout [auth]
+    ok 59 - POST /api/auth/logout [auth]
+      ---
+      duration_ms: 9.254658
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/refresh [auth]
+    ok 60 - POST /api/auth/refresh [auth]
+      ---
+      duration_ms: 15.664172
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/register [auth]
+    ok 61 - POST /api/auth/register [auth]
+      ---
+      duration_ms: 497.977576
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/resend-verification [auth]
+    ok 62 - POST /api/auth/resend-verification [auth]
+      ---
+      duration_ms: 9.156337
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/reset-password [auth]
+    ok 63 - POST /api/auth/reset-password [auth]
+      ---
+      duration_ms: 8.564744
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/staff-invite/accept [auth]
+    ok 64 - POST /api/auth/staff-invite/accept [auth]
+      ---
+      duration_ms: 8.69314
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/verify-email [auth]
+    ok 65 - POST /api/auth/verify-email [auth]
+      ---
+      duration_ms: 8.214071
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/cancel [owner]
+    ok 66 - POST /api/billing/cancel [owner]
+      ---
+      duration_ms: 66.146361
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/checkout [owner]
+    ok 67 - POST /api/billing/checkout [owner]
+      ---
+      duration_ms: 52.239288
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/portal [owner]
+    ok 68 - POST /api/billing/portal [owner]
+      ---
+      duration_ms: 60.711376
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/reactivate [owner]
+    ok 69 - POST /api/billing/reactivate [owner]
+      ---
+      duration_ms: 53.336699
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/availability [team]
+    ok 70 - POST /api/bookings/:bookingIntentId/availability [team]
+      ---
+      duration_ms: 58.350062
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/confirm [team]
+    ok 71 - POST /api/bookings/:bookingIntentId/confirm [team]
+      ---
+      duration_ms: 67.95201
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/holds [team]
+    ok 72 - POST /api/bookings/:bookingIntentId/holds [team]
+      ---
+      duration_ms: 66.212015
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/preference [team]
+    ok 73 - POST /api/bookings/:bookingIntentId/preference [team]
+      ---
+      duration_ms: 59.195224
+      type: 'test'
+      ...
+    # Subtest: POST /api/business/jurisdiction [owner]
+    ok 74 - POST /api/business/jurisdiction [owner]
+      ---
+      duration_ms: 54.914145
+      type: 'test'
+      ...
+    # Subtest: POST /api/call-blocklist [owner]
+    ok 75 - POST /api/call-blocklist [owner]
+      ---
+      duration_ms: 56.335968
+      type: 'test'
+      ...
+    # Subtest: POST /api/calls/:id/spam [owner]
+    ok 76 - POST /api/calls/:id/spam [owner]
+      ---
+      duration_ms: 55.359262
+      type: 'test'
+      ...
+    # Subtest: POST /api/demo/session [platform]
+    ok 77 - POST /api/demo/session [platform]
+      ---
+      duration_ms: 8.574289
+      type: 'test'
+      ...
+    # Subtest: POST /api/integrations/webhook/deliveries/:id/retry [owner]
+    ok 78 - POST /api/integrations/webhook/deliveries/:id/retry [owner]
+      ---
+      duration_ms: 58.878889
+      type: 'test'
+      ...
+    # Subtest: POST /api/integrations/webhook/rotate-secret [owner]
+    ok 79 - POST /api/integrations/webhook/rotate-secret [owner]
+      ---
+      duration_ms: 57.561167
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/account [owner]
+    ok 80 - POST /api/onboarding/account [owner]
+      ---
+      duration_ms: 59.615299
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/business-types [owner]
+    ok 81 - POST /api/onboarding/business-types [owner]
+      ---
+      duration_ms: 52.527498
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/calendar [owner]
+    ok 82 - POST /api/onboarding/calendar [owner]
+      ---
+      duration_ms: 49.639199
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/knowledge-base [owner]
+    ok 83 - POST /api/onboarding/knowledge-base [owner]
+      ---
+      duration_ms: 56.306925
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/knowledge-base/draft [owner]
+    ok 84 - POST /api/onboarding/knowledge-base/draft [owner]
+      ---
+      duration_ms: 47.928333
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/phone/provision [owner]
+    ok 85 - POST /api/onboarding/phone/provision [owner]
+      ---
+      duration_ms: 54.30218
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/voice [owner]
+    ok 86 - POST /api/onboarding/voice [owner]
+      ---
+      duration_ms: 54.77754
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-alerts/:id/retry [owner]
+    ok 87 - POST /api/owner-alerts/:id/retry [owner]
+      ---
+      duration_ms: 53.804305
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-alerts/:id/seen [owner]
+    ok 88 - POST /api/owner-alerts/:id/seen [owner]
+      ---
+      duration_ms: 53.913205
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-records/:kind/:id/actions [team]
+    ok 89 - POST /api/owner-records/:kind/:id/actions [team]
+      ---
+      duration_ms: 58.001415
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/interview [owner]
+    ok 90 - POST /api/pricebook/interview [owner]
+      ---
+      duration_ms: 56.643852
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/interview/:draftId/assist [owner]
+    ok 91 - POST /api/pricebook/interview/:draftId/assist [owner]
+      ---
+      duration_ms: 53.515854
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/preview [owner]
+    ok 92 - POST /api/pricebook/preview [owner]
+      ---
+      duration_ms: 47.697391
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/save [owner]
+    ok 93 - POST /api/pricebook/save [owner]
+      ---
+      duration_ms: 53.964115
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/services/:serviceId/approve [owner]
+    ok 94 - POST /api/pricebook/services/:serviceId/approve [owner]
+      ---
+      duration_ms: 63.975169
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/suggest [owner]
+    ok 95 - POST /api/pricebook/suggest [owner]
+      ---
+      duration_ms: 46.622008
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/validate [owner]
+    ok 96 - POST /api/pricebook/validate [owner]
+      ---
+      duration_ms: 48.867041
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/availability [booking-capability]
+    ok 97 - POST /api/public/bookings/:bookingToken/availability [booking-capability]
+      ---
+      duration_ms: 14.903854
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/confirm [booking-capability]
+    ok 98 - POST /api/public/bookings/:bookingToken/confirm [booking-capability]
+      ---
+      duration_ms: 12.066938
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/holds [booking-capability]
+    ok 99 - POST /api/public/bookings/:bookingToken/holds [booking-capability]
+      ---
+      duration_ms: 12.343352
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/preference [booking-capability]
+    ok 100 - POST /api/public/bookings/:bookingToken/preference [booking-capability]
+      ---
+      duration_ms: 19.200351
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/quote/:publicKey [widget]
+    ok 101 - POST /api/public/quote/:publicKey [widget]
+      ---
+      duration_ms: 34.546348
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/quote/:publicKey/prepare [widget]
+    ok 102 - POST /api/public/quote/:publicKey/prepare [widget]
+      ---
+      duration_ms: 26.538048
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/calculate [team]
+    ok 103 - POST /api/quote/calculate [team]
+      ---
+      duration_ms: 103.443019
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/prepare [team]
+    ok 104 - POST /api/quote/prepare [team]
+      ---
+      duration_ms: 47.856723
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/test [owner]
+    ok 105 - POST /api/quote/test [owner]
+      ---
+      duration_ms: 45.996828
+      type: 'test'
+      ...
+    # Subtest: POST /api/quotedone/access [owner]
+    ok 106 - POST /api/quotedone/access [owner]
+      ---
+      duration_ms: 55.824928
+      type: 'test'
+      ...
+    # Subtest: POST /api/quotes/:id/email [team]
+    ok 107 - POST /api/quotes/:id/email [team]
+      ---
+      duration_ms: 55.672238
+      type: 'test'
+      ...
+    # Subtest: POST /api/stripe/webhook [stripe]
+    ok 108 - POST /api/stripe/webhook [stripe]
+      ---
+      duration_ms: 13.638408
+      type: 'test'
+      ...
+    # Subtest: POST /api/team/staff/:id/resend [owner]
+    ok 109 - POST /api/team/staff/:id/resend [owner]
+      ---
+      duration_ms: 51.594834
+      type: 'test'
+      ...
+    # Subtest: POST /api/team/staff/invite [owner]
+    ok 110 - POST /api/team/staff/invite [owner]
+      ---
+      duration_ms: 51.965381
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture [voice]
+    ok 111 - POST /api/twilio/voice/capture [voice]
+      ---
+      duration_ms: 11.066527
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture/again [voice]
+    ok 112 - POST /api/twilio/voice/capture/again [voice]
+      ---
+      duration_ms: 10.022477
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture/partial [voice]
+    ok 113 - POST /api/twilio/voice/capture/partial [voice]
+      ---
+      duration_ms: 9.508361
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/fallback/:nonce [voice]
+    ok 114 - POST /api/twilio/voice/fallback/:nonce [voice]
+      ---
+      duration_ms: 11.004958
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/incoming [voice]
+    ok 115 - POST /api/twilio/voice/incoming [voice]
+      ---
+      duration_ms: 11.366034
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/status [voice]
+    ok 116 - POST /api/twilio/voice/status [voice]
+      ---
+      duration_ms: 9.658764
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/transfer/:id/accept [voice]
+    ok 117 - POST /api/twilio/voice/transfer/:id/accept [voice]
+      ---
+      duration_ms: 9.530379
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/transfer/:id/result [voice]
+    ok 118 - POST /api/twilio/voice/transfer/:id/result [voice]
+      ---
+      duration_ms: 20.32616
+      type: 'test'
+      ...
+    # Subtest: PUT /api/booking/policies/:serviceId [owner]
+    ok 119 - PUT /api/booking/policies/:serviceId [owner]
+      ---
+      duration_ms: 55.478136
+      type: 'test'
+      ...
+    # Subtest: PUT /api/booking/settings [owner]
+    ok 120 - PUT /api/booking/settings [owner]
+      ---
+      duration_ms: 48.177895
+      type: 'test'
+      ...
+    # Subtest: PUT /api/integrations/webhook [owner]
+    ok 121 - PUT /api/integrations/webhook [owner]
+      ---
+      duration_ms: 53.587029
+      type: 'test'
+      ...
+    # Subtest: PUT /api/pricebook/interview/:draftId [owner]
+    ok 122 - PUT /api/pricebook/interview/:draftId [owner]
+      ---
+      duration_ms: 52.382804
+      type: 'test'
+      ...
+    # Subtest: PUT /api/reports/hours [owner]
+    ok 123 - PUT /api/reports/hours [owner]
+      ---
+      duration_ms: 55.979311
+      type: 'test'
+      ...
+    # Subtest: PUT /api/widget/settings [owner]
+    ok 124 - PUT /api/widget/settings [owner]
+      ---
+      duration_ms: 53.033825
+      type: 'test'
+      ...
+    # Subtest: USE /api/demo/session [platform]
+    ok 125 - USE /api/demo/session [platform]
+      ---
+      duration_ms: 8.259135
+      type: 'test'
+      ...
+    # Subtest: USE /assets/* [platform]
+    ok 126 - USE /assets/* [platform]
+      ---
+      duration_ms: 8.938624
+      type: 'test'
+      ...
+    # Subtest: WS /api/twilio/voice/stream/:nonce [voice]
+    ok 127 - WS /api/twilio/voice/stream/:nonce [voice]
+      ---
+      duration_ms: 11.649347
+      type: 'test'
+      ...
+    # Subtest: staff role can use calls, leads, quotes, calendar and customers but not owner controls
+    ok 128 - staff role can use calls, leads, quotes, calendar and customers but not owner controls
+      ---
+      duration_ms: 21.904702
+      type: 'test'
+      ...
+    # Subtest: own reads work; counts do not include newly added B rows
+    ok 129 - own reads work; counts do not include newly added B rows
+      ---
+      duration_ms: 107.078877
+      type: 'test'
+      ...
+    # Subtest: merged billing reads and exports remain tenant-scoped; only admin can read backup status
+    ok 130 - merged billing reads and exports remain tenant-scoped; only admin can read backup status
+      ---
+      duration_ms: 266.337578
+      type: 'test'
+      ...
+    # Subtest: attacks never reached an external provider
+    ok 131 - attacks never reached an external provider
+      ---
+      duration_ms: 0.592346
+      type: 'test'
+      ...
+    # Subtest: coverage guard fails for an added route and an anonymously mounted router
+    ok 132 - coverage guard fails for an added route and an anonymously mounted router
+      ---
+      duration_ms: 2.5706
+      type: 'test'
+      ...
+    1..132
+ok 2 - synthetic full server tenant matrix (production)
+  ---
+  duration_ms: 7323.626841
+  type: 'test'
+  ...
+1..2
+# tests 264
+# suites 0
+# pass 264
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15298.230917

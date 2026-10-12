@@ -1,0 +1,86 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D14 caller filter precedes limit with tenant and malformed-record controls
+ok 1 - D14 caller filter precedes limit with tenant and malformed-record controls
+  ---
+  duration_ms: 50.314214
+  type: 'test'
+  ...
+# Subtest: D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+ok 2 - D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+  ---
+  duration_ms: 31.111668
+  type: 'test'
+  ...
+# Subtest: D16 handle credential rotation preserves one owner-phone customer and historical references
+ok 3 - D16 handle credential rotation preserves one owner-phone customer and historical references
+  ---
+  duration_ms: 25.127939
+  type: 'test'
+  ...
+# Subtest: D21 unresolved preferences survive calendar range changes until resolved
+ok 4 - D21 unresolved preferences survive calendar range changes until resolved
+  ---
+  duration_ms: 45.063904
+  type: 'test'
+  ...
+# Subtest: D14 legacy duplicate IDs preserve caller bookings; contradictory and foreign customer links are rejected
+ok 5 - D14 legacy duplicate IDs preserve caller bookings; contradictory and foreign customer links are rejected
+  ---
+  duration_ms: 26.283319
+  type: 'test'
+  ...
+# Subtest: D14 normalized appointment phone and per-caller limit do not mix callers
+ok 6 - D14 normalized appointment phone and per-caller limit do not mix callers
+  ---
+  duration_ms: 26.774891
+  type: 'test'
+  ...
+# Subtest: D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely
+ok 7 - D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely
+  ---
+  duration_ms: 25.278099
+  type: 'test'
+  ...
+# Subtest: D15 quote and request joins reject foreign-call and foreign-submission links
+ok 8 - D15 quote and request joins reject foreign-call and foreign-submission links
+  ---
+  duration_ms: 24.417464
+  type: 'test'
+  ...
+# Subtest: D16 same names and emails do not join different phones or different tenants
+ok 9 - D16 same names and emails do not join different phones or different tenants
+  ---
+  duration_ms: 28.014336
+  type: 'test'
+  ...
+# Subtest: D16 legacy formatted phone reuses identity and preserves omitted contact fields
+ok 10 - D16 legacy formatted phone reuses identity and preserves omitted contact fields
+  ---
+  duration_ms: 24.046841
+  type: 'test'
+  ...
+# Subtest: D16 customer write rolls back with inquiry failure and retries create one identity
+ok 11 - D16 customer write rolls back with inquiry failure and retries create one identity
+  ---
+  duration_ms: 27.816328
+  type: 'test'
+  ...
+# Subtest: D15 malformed optional quote entries cannot hide valid saved ranges or other caller history
+ok 12 - D15 malformed optional quote entries cannot hide valid saved ranges or other caller history
+  ---
+  duration_ms: 26.943272
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 599.483768

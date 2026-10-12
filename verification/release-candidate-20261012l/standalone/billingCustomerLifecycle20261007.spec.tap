@@ -1,0 +1,328 @@
+(node:140) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:147) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Operator monthly: trial reminder exactly October 17, once, amount 11900
+ok 1 - Operator monthly: trial reminder exactly October 17, once, amount 11900
+  ---
+  duration_ms: 55.590022
+  type: 'test'
+  ...
+# Subtest: Operator monthly: no paid term before trial end; first charge 11900
+ok 2 - Operator monthly: no paid term before trial end; first charge 11900
+  ---
+  duration_ms: 30.730561
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+ok 3 - QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+  ---
+  duration_ms: 30.307556
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: no paid term before trial end; first charge 27900
+ok 4 - QuoteDone monthly: no paid term before trial end; first charge 27900
+  ---
+  duration_ms: 27.913715
+  type: 'test'
+  ...
+# Subtest: Operator annual: trial reminder exactly October 17, once, amount 119000
+ok 5 - Operator annual: trial reminder exactly October 17, once, amount 119000
+  ---
+  duration_ms: 31.027568
+  type: 'test'
+  ...
+# Subtest: Operator annual: no paid term before trial end; first charge 119000
+ok 6 - Operator annual: no paid term before trial end; first charge 119000
+  ---
+  duration_ms: 31.152243
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+ok 7 - QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+  ---
+  duration_ms: 27.734629
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: no paid term before trial end; first charge 279000
+ok 8 - QuoteDone annual: no paid term before trial end; first charge 279000
+  ---
+  duration_ms: 29.779591
+  type: 'test'
+  ...
+# Subtest: annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+ok 9 - annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+  ---
+  duration_ms: 32.396957
+  type: 'test'
+  ...
+# Subtest: monthly: cancel mid-period, no refund, access ends at paid boundary
+ok 10 - monthly: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 33.86602
+  type: 'test'
+  ...
+# Subtest: monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 11 - monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 44.882262
+  type: 'test'
+  ...
+# Subtest: annual: cancel mid-period, no refund, access ends at paid boundary
+ok 12 - annual: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 32.19774
+  type: 'test'
+  ...
+# Subtest: annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 13 - annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 42.438268
+  type: 'test'
+  ...
+# Subtest: trial cancel is immediate with no invoice and no refund
+ok 14 - trial cancel is immediate with no invoice and no refund
+  ---
+  duration_ms: 26.58173
+  type: 'test'
+  ...
+# Subtest: reactivation before period end reverses scheduled cancel once, keeps records
+ok 15 - reactivation before period end reverses scheduled cancel once, keeps records
+  ---
+  duration_ms: 31.717138
+  type: 'test'
+  ...
+# Subtest: after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+ok 16 - after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+  ---
+  duration_ms: 32.562672
+  type: 'test'
+  ...
+# Subtest: paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+ok 17 - paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+  ---
+  duration_ms: 39.577077
+  type: 'test'
+  ...
+# Subtest: subscription receipt preserves actual charge currency and handwritten amount
+ok 18 - subscription receipt preserves actual charge currency and handwritten amount
+  ---
+  duration_ms: 29.986561
+  type: 'test'
+  ...
+# Subtest: settled invoices suppress stale failure notices in either event order and at dispatch
+    # Subtest: paid-then-older-failed
+    ok 1 - paid-then-older-failed
+      ---
+      duration_ms: 30.038383
+      type: 'test'
+      ...
+    # Subtest: failed-then-paid-before-sync
+    ok 2 - failed-then-paid-before-sync
+      ---
+      duration_ms: 32.378312
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-before-dispatch
+    ok 3 - failed-queued-then-paid-before-dispatch
+      ---
+      duration_ms: 30.32255
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-minute-worker-dispatch
+    ok 4 - failed-queued-then-paid-minute-worker-dispatch
+      ---
+      duration_ms: 31.429236
+      type: 'test'
+      ...
+    # Subtest: paid-only
+    ok 5 - paid-only
+      ---
+      duration_ms: 29.137011
+      type: 'test'
+      ...
+    1..5
+ok 19 - settled invoices suppress stale failure notices in either event order and at dispatch
+  ---
+  duration_ms: 154.061583
+  type: 'test'
+  ...
+# Subtest: overage receipt: ten extra minutes × 35 cents = $3.50, once
+ok 20 - overage receipt: ten extra minutes × 35 cents = $3.50, once
+  ---
+  duration_ms: 42.40827
+  type: 'test'
+  ...
+# Subtest: final overage remainder is charged at the service-end boundary
+ok 21 - final overage remainder is charged at the service-end boundary
+  ---
+  duration_ms: 38.600184
+  type: 'test'
+  ...
+# Subtest: lost email response and restart retain one accepted notice
+ok 22 - lost email response and restart retain one accepted notice
+  ---
+  duration_ms: 62.863377
+  type: 'test'
+  ...
+# Subtest: email ambiguity after retry window does not duplicate delivery
+ok 23 - email ambiguity after retry window does not duplicate delivery
+  ---
+  duration_ms: 29.031321
+  type: 'test'
+  ...
+# Subtest: cancellation lost response recovers by subscription read without repeating mutation
+ok 24 - cancellation lost response recovers by subscription read without repeating mutation
+  ---
+  duration_ms: 29.652316
+  type: 'test'
+  ...
+# Subtest: wrong provider customer cannot cancel or receive access and does not affect tenant B
+ok 25 - wrong provider customer cannot cancel or receive access and does not affect tenant B
+  ---
+  duration_ms: 28.088049
+  type: 'test'
+  ...
+# Subtest: invalid price cannot create a false trial reminder
+ok 26 - invalid price cannot create a false trial reminder
+  ---
+  duration_ms: 24.876704
+  type: 'test'
+  ...
+# Subtest: HTTP owner actions and CSV exports reject owner spoofing, cross-tenant bodies and staff
+ok 27 - HTTP owner actions and CSV exports reject owner spoofing, cross-tenant bodies and staff
+  ---
+  duration_ms: 80.693302
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2026-12-01T12:00:00.000Z: phone released=false, records deleted=false
+ok 28 - verified reactivation 2026-12-01T12:00:00.000Z: phone released=false, records deleted=false
+  ---
+  duration_ms: 38.30332
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2026-12-21T12:00:00.000Z: phone released=true, records deleted=false
+ok 29 - verified reactivation 2026-12-21T12:00:00.000Z: phone released=true, records deleted=false
+  ---
+  duration_ms: 38.414491
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2027-02-19T12:00:00.000Z: phone released=true, records deleted=true
+ok 30 - verified reactivation 2027-02-19T12:00:00.000Z: phone released=true, records deleted=true
+  ---
+  duration_ms: 38.865237
+  type: 'test'
+  ...
+# Subtest: new active/card-only subscription without its paid invoice cannot restore retained service
+ok 31 - new active/card-only subscription without its paid invoice cannot restore retained service
+  ---
+  duration_ms: 31.092815
+  type: 'test'
+  ...
+# Subtest: overage failure uses the existing grace and suspension path; paid callback recovers without duplicates
+ok 32 - overage failure uses the existing grace and suspension path; paid callback recovers without duplicates
+  ---
+  duration_ms: 35.712888
+  type: 'test'
+  ...
+# Subtest: reminder uses invoice preview total with tax, not an invented base amount
+ok 33 - reminder uses invoice preview total with tax, not an invented base amount
+  ---
+  duration_ms: 25.784987
+  type: 'test'
+  ...
+# Subtest: cancelled renewal suppresses the reminder; incorrect preview tenant fails closed
+ok 34 - cancelled renewal suppresses the reminder; incorrect preview tenant fails closed
+  ---
+  duration_ms: 30.860678
+  type: 'test'
+  ...
+# Subtest: 90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts
+ok 35 - 90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts
+  ---
+  duration_ms: 35.462822
+  type: 'test'
+  ...
+# Subtest: merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant
+ok 36 - merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant
+  ---
+  duration_ms: 37.256843
+  type: 'test'
+  ...
+# Subtest: durable notice transaction rolls back both dashboard and email on partial storage failure
+ok 37 - durable notice transaction rolls back both dashboard and email on partial storage failure
+  ---
+  duration_ms: 31.576431
+  type: 'test'
+  ...
+# Subtest: concurrent tenant cancellation requests cause a single provider mutation
+ok 38 - concurrent tenant cancellation requests cause a single provider mutation
+  ---
+  duration_ms: 29.565229
+  type: 'test'
+  ...
+# Subtest: cancellation intent survives DB restart and no pending intent is advertised as confirmed
+ok 39 - cancellation intent survives DB restart and no pending intent is advertised as confirmed
+  ---
+  duration_ms: 62.810508
+  type: 'test'
+  ...
+# Subtest: service end does not attempt a carrier shutdown or claim confirmation
+ok 40 - service end does not attempt a carrier shutdown or claim confirmation
+  ---
+  duration_ms: 33.40491
+  type: 'test'
+  ...
+# Subtest: phone release failure retains its saved SID and retries only that tenant
+ok 41 - phone release failure retains its saved SID and retries only that tenant
+  ---
+  duration_ms: 32.86113
+  type: 'test'
+  ...
+# Subtest: a delayed cleanup worker does not release a phone reactivated within its 30-day window
+ok 42 - a delayed cleanup worker does not release a phone reactivated within its 30-day window
+  ---
+  duration_ms: 34.301255
+  type: 'test'
+  ...
+# Subtest: legacy missing currency is recovered from a bound provider receipt, never guessed
+ok 43 - legacy missing currency is recovered from a bound provider receipt, never guessed
+  ---
+  duration_ms: 29.753845
+  type: 'test'
+  ...
+# Subtest: service end preserves automatic collection on a previously submitted unpaid overage invoice
+ok 44 - service end preserves automatic collection on a previously submitted unpaid overage invoice
+  ---
+  duration_ms: 37.60408
+  type: 'test'
+  ...
+# Subtest: crossing service end while reading an overage period still finalizes accrued overage
+ok 45 - crossing service end while reading an overage period still finalizes accrued overage
+  ---
+  duration_ms: 31.739618
+  type: 'test'
+  ...
+# Subtest: lease loss during phone release cannot clear the saved phone receipt
+ok 46 - lease loss during phone release cannot clear the saved phone receipt
+  ---
+  duration_ms: 30.575548
+  type: 'test'
+  ...
+# Subtest: a slow invoice preview crossing the first-charge time cannot send a stale trial reminder
+ok 47 - a slow invoice preview crossing the first-charge time cannot send a stale trial reminder
+  ---
+  duration_ms: 26.37411
+  type: 'test'
+  ...
+1..47
+# tests 52
+# suites 0
+# pass 52
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1967.057413
