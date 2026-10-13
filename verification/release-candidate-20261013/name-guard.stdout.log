@@ -1,0 +1,48 @@
+Confirmed passing: CI runner repair: complete passing TAP is accepted by the actual checker
+Confirmed passing: CI runner repair: truncated summary after positive tests count is rejected
+Confirmed passing: CI runner repair: no-summary control is rejected
+Confirmed passing: CI runner repair: passing TAP followed by real child exit 7 cannot pass
+Confirmed passing: CI runner repair: checker refuses missing tests count
+Confirmed passing: CI runner repair: checker refuses missing suites count
+Confirmed passing: CI runner repair: checker refuses missing pass count
+Confirmed passing: CI runner repair: checker refuses missing fail count
+Confirmed passing: CI runner repair: checker refuses missing cancelled count
+Confirmed passing: CI runner repair: checker refuses missing skipped count
+Confirmed passing: CI runner repair: checker refuses missing todo count
+Confirmed passing: CI runner repair: checker refuses negative count
+Confirmed passing: CI runner repair: checker refuses fraction count
+Confirmed passing: CI runner repair: checker refuses nan count
+Confirmed passing: CI runner repair: checker refuses infinity count
+Confirmed passing: CI runner repair: checker refuses exponent count
+Confirmed passing: CI runner repair: checker refuses empty count
+Confirmed passing: CI runner repair: checker refuses extra-space count
+Confirmed passing: CI runner repair: checker refuses trailing-text count
+Confirmed passing: CI runner repair: checker refuses unsafe-integer count
+Confirmed passing: CI runner repair: checker refuses nonzero fail
+Confirmed passing: CI runner repair: checker refuses nonzero cancelled
+Confirmed passing: CI runner repair: checker refuses nonzero skipped
+Confirmed passing: CI runner repair: checker refuses nonzero todo
+Confirmed passing: CI runner repair: checker refuses zero-tests
+Confirmed passing: CI runner repair: checker refuses mismatched-passes
+Confirmed passing: CI runner repair: checker refuses inconsistent-total
+Confirmed passing: CI runner repair: checker refuses duplicate-count
+Confirmed passing: CI runner repair: checker refuses duplicate-conflicting-count
+Confirmed passing: CI runner repair: checker refuses unfinished-second-report
+Confirmed passing: CI runner repair: checker refuses failed-test-with-passing-counts
+Confirmed passing: CI runner repair: checker refuses nested-failure-with-passing-counts
+Confirmed passing: CI runner repair: checker accepts complete CRLF output
+Confirmed passing: CI runner repair: known failures remain diagnostic and cannot exempt failure
+Confirmed passing: CI runner repair: checker missing report fails
+Confirmed passing: CI runner repair: successful wrapper control preserves selection and reporter flags
+Confirmed passing: CI runner repair: wrapper rejects incomplete TAP even with child exit zero
+Confirmed passing: CI runner repair: wrapper rejects child-signal with useful diagnostics
+Confirmed passing: CI runner repair: wrapper rejects spawn-error with useful diagnostics
+Confirmed passing: CI runner repair: wrapper rejects spawn-throw with useful diagnostics
+Confirmed passing: CI runner repair: wrapper rejects output-open-error with useful diagnostics
+Confirmed passing: CI runner repair: wrapper rejects output-write-error with useful diagnostics
+Confirmed passing: CI runner repair: wrapper rejects output-close-error with useful diagnostics
+Confirmed passing: CI runner repair: wrapper rejects checker-spawn-error with useful diagnostics
+Confirmed passing: CI runner repair: wrapper rejects checker-signal with useful diagnostics
+Confirmed passing: CI runner repair: wrapper preserves unsuccessful checker status
+Confirmed passing: CI runner repair: wrapper preserves original child status when checker also fails
+PASS: all 47 pinned CI-runner regression names ran and passed.

@@ -38,16 +38,16 @@ jobs:
         id: build
         run: npm run build
       - name: Candidate l controlled owner-alert browser reproduction
-        if: github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node --test verification/release-candidate-20261012l/reproduce-owner-alert.browser.mjs
       - name: Owner alerts and dashboard browser regressions
         id: browser
         run: node --test test/ownerAlertRepair20261006.browser.spec.mjs test/ownerAlertsDelivery20261006.browser.spec.mjs test/ownerDashboard20261007.browser.spec.mjs
       - name: Candidate l harness and CI safety regressions
-        if: github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node --test test/ownerAlertScheduling20261012Http.spec.mjs test/ciSummary20261012.spec.mjs test/candidateLTagGate20261012.spec.mjs
       - name: Candidate l shared HTTP fixture consumers and alert worker regressions
-        if: github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: |
           node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test \
             test/callerHistoryFollowup20261006Http.spec.mjs \
@@ -58,6 +58,9 @@ jobs:
             test/ownerIntegrations.spec.mjs \
             test/ownerAlertRepair20261006.spec.mjs
           node --test test/leadCaptureRepair20261006.browser.spec.mjs
+      - name: Candidate m runner and tag qualification regressions
+        if: github.ref == 'refs/heads/claude/release-candidate-20261013m'
+        run: node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/ciRunnerRepair20261013.spec.mjs test/candidateMTagGate20261013.spec.mjs
       - name: Strict quote engine and price book gate
         id: quote_gate
         run: npm run test:quote
@@ -105,13 +108,13 @@ jobs:
             node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap "$spec"
           done
       - name: Candidate i confirms required test names in the full-suite log
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011i' || github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011i' || github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node verification/release-candidate-20261011i/check-required-test-names.mjs test-results.tap
       - name: Candidate k backup coordination regressions
-        if: github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/backupCoordination20261012.spec.mjs
       - name: Candidate j and k standalone regressions (each file independently)
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         shell: bash
         run: |
           for spec in \
@@ -130,19 +133,22 @@ jobs:
             node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap "$spec"
           done
       - name: Candidate j and k confirm required lock test names in the full-suite log
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node verification/release-candidate-20261011j/check-required-test-names.mjs test-results.tap
       - name: Candidate k confirms coordination test names in the full-suite log
-        if: github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node verification/release-candidate-20261012k/check-required-test-names.mjs test-results.tap
       - name: Candidate l expiry regressions and required passing names
-        if: github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: |
           node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/retentionExpiry20261012.spec.mjs
           node verification/release-candidate-20261012l/check-required-test-names.mjs test-results.tap
       - name: Candidate l follow-up required passing names
-        if: github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node verification/release-candidate-20261012l/check-followup-test-names.mjs test-results.tap
+      - name: Candidate m confirms every CI-runner regression passed
+        if: github.ref == 'refs/heads/claude/release-candidate-20261013m'
+        run: node verification/release-candidate-20261013/check-required-test-names.mjs test-results.tap
       - name: No failures beyond the known list
         id: test_checker
         run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
@@ -187,10 +193,10 @@ jobs:
         if: github.ref == 'refs/heads/claude/release-candidate-20261011i'
         run: node verification/railway/docker-smoke.mjs otc-receptionist:synthetic
       - name: Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node verification/railway/docker-smoke.mjs otc-receptionist:synthetic
       - name: Candidate j and k production-user lock database proof
-        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        if: github.ref == 'refs/heads/claude/release-candidate-20261011j' || github.ref == 'refs/heads/claude/release-candidate-20261012k' || github.ref == 'refs/heads/claude/release-candidate-20261012l' || github.ref == 'refs/heads/claude/release-candidate-20261013m'
         run: node verification/railway/lock-database-smoke.mjs otc-receptionist:synthetic
 
   tag-candidate-h:
@@ -325,3 +331,27 @@ jobs:
             exit 0
           fi
           node verification/release-candidate-20261012l/check-release-gate.mjs
+
+  tag-candidate-m:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/release-candidate-20261013m' && needs.test.result == 'success' && needs.voice-docker-startup.result == 'success'
+    needs: [test, voice-docker-startup]
+    permissions:
+      contents: write
+      actions: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Verify every exact-SHA required step and publish immutable candidate-m tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if [ ! -f verification/release-candidate-20261013/FINAL_CANDIDATE.json ]; then
+            echo 'Diagnostic checkpoint: no final-candidate marker; no tag authorized.'
+            exit 0
+          fi
+          node verification/release-candidate-20261013/check-release-gate.mjs

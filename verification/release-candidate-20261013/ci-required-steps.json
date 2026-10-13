@@ -1,0 +1,33 @@
+{
+  "test": [
+    "Install from lockfile (ignores committed node_modules)",
+    "Install Playwright test dependency without changing the lockfile",
+    "Install Chromium for the browser tests",
+    "Verify Chromium can launch; install system libraries if needed",
+    "Build owner app and widget",
+    "Candidate l controlled owner-alert browser reproduction",
+    "Owner alerts and dashboard browser regressions",
+    "Candidate l harness and CI safety regressions",
+    "Candidate l shared HTTP fixture consumers and alert worker regressions",
+    "Strict quote engine and price book gate",
+    "Full test suite",
+    "Candidate i confirms required test names in the full-suite log",
+    "Candidate k backup coordination regressions",
+    "Candidate j and k standalone regressions (each file independently)",
+    "Candidate j and k confirm required lock test names in the full-suite log",
+    "Candidate k confirms coordination test names in the full-suite log",
+    "Candidate l expiry regressions and required passing names",
+    "Candidate l follow-up required passing names",
+    "No failures beyond the known list",
+    "Publish test summary to claude/ci-results (push events only)",
+    "Production dependency audit",
+    "Candidate m runner and tag qualification regressions",
+    "Candidate m confirms every CI-runner regression passed"
+  ],
+  "voice-docker-startup": [
+    "Build production runtime image",
+    "Voice enabled with synthetic credentials and no provider network",
+    "Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke",
+    "Candidate j and k production-user lock database proof"
+  ]
+}

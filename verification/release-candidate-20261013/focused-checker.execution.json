@@ -1,0 +1,19 @@
+{
+  "command": [
+    "node",
+    ".github/scripts/check-test-results.mjs",
+    "verification/release-candidate-20261013/focused.stdout.log"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/candidate-m",
+  "startedAt": "2026-10-13T23:53:10.152Z",
+  "finishedAt": "2026-10-13T23:53:10.199Z",
+  "node": "v22.23.3",
+  "nodeExecutable": "node",
+  "pathPrefix": "/workspace/scratch/5228524b6f21/candidate-m-runtime/toolchain/node_modules/node/bin",
+  "tmpdir": "/workspace/scratch/5228524b6f21/candidate-m-runtime/tmp",
+  "fixtureEvidenceDirectory": null,
+  "pid": 27,
+  "status": 0,
+  "signal": null,
+  "error": null
+}

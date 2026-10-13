@@ -1,0 +1,2 @@
+git ls-remote https://github.com/sportaholic000-hue/off-the-clock.git 'refs/tags/rc-20261012l*' refs/heads/codex/ci-runner-repair-20261013 refs/heads/codex/restore-recheck-20261013 refs/heads/main refs/heads/claude/release-candidate-20261013m 'refs/tags/rc-20261013m*'
+Exit 0. Candidate-m branch and tag absent.

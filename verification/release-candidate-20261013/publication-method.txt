@@ -1,0 +1,1 @@
+CLI dry-run push returned exit 128: fatal: could not read Username for https://github.com: terminal prompts disabled. No ref was created. Authenticated GitHub data API publication will preserve exact tree identities; API-generated commit metadata can differ from local commit metadata. No force push.
