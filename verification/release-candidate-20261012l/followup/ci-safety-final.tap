@@ -1,0 +1,222 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: candidate l tag gate: exact run and all required successful steps allow validation without tag writes
+ok 1 - candidate l tag gate: exact run and all required successful steps allow validation without tag writes
+  ---
+  duration_ms: 2.480126
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing final marker
+ok 2 - candidate l tag gate refuses missing final marker
+  ---
+  duration_ms: 0.65303
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing report
+ok 3 - candidate l tag gate refuses missing report
+  ---
+  duration_ms: 0.206039
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses changed report
+ok 4 - candidate l tag gate refuses changed report
+  ---
+  duration_ms: 0.678675
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses changed manifest
+ok 5 - candidate l tag gate refuses changed manifest
+  ---
+  duration_ms: 0.290635
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses diagnostic marker
+ok 6 - candidate l tag gate refuses diagnostic marker
+  ---
+  duration_ms: 0.178875
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses wrong marker branch
+ok 7 - candidate l tag gate refuses wrong marker branch
+  ---
+  duration_ms: 0.215521
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses pull request
+ok 8 - candidate l tag gate refuses pull request
+  ---
+  duration_ms: 0.239984
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other branch
+ok 9 - candidate l tag gate refuses other branch
+  ---
+  duration_ms: 0.336499
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other repository
+ok 10 - candidate l tag gate refuses other repository
+  ---
+  duration_ms: 0.458309
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other run
+ok 11 - candidate l tag gate refuses other run
+  ---
+  duration_ms: 0.283219
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other attempt
+ok 12 - candidate l tag gate refuses other attempt
+  ---
+  duration_ms: 0.186438
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other SHA
+ok 13 - candidate l tag gate refuses other SHA
+  ---
+  duration_ms: 0.129529
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other workflow
+ok 14 - candidate l tag gate refuses other workflow
+  ---
+  duration_ms: 0.107997
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses completed run
+ok 15 - candidate l tag gate refuses completed run
+  ---
+  duration_ms: 0.09167
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing job
+ok 16 - candidate l tag gate refuses missing job
+  ---
+  duration_ms: 0.357728
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses duplicate job
+ok 17 - candidate l tag gate refuses duplicate job
+  ---
+  duration_ms: 0.131861
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses job from other SHA
+ok 18 - candidate l tag gate refuses job from other SHA
+  ---
+  duration_ms: 0.120129
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses failed job
+ok 19 - candidate l tag gate refuses failed job
+  ---
+  duration_ms: 0.107864
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing steps
+ok 20 - candidate l tag gate refuses missing steps
+  ---
+  duration_ms: 0.091209
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing required step
+ok 21 - candidate l tag gate refuses missing required step
+  ---
+  duration_ms: 0.114546
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses duplicate required step
+ok 22 - candidate l tag gate refuses duplicate required step
+  ---
+  duration_ms: 0.206543
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses required step skipped
+ok 23 - candidate l tag gate refuses required step skipped
+  ---
+  duration_ms: 0.113397
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses required step cancelled
+ok 24 - candidate l tag gate refuses required step cancelled
+  ---
+  duration_ms: 0.080924
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses required step failure
+ok 25 - candidate l tag gate refuses required step failure
+  ---
+  duration_ms: 0.138079
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses required step null
+ok 26 - candidate l tag gate refuses required step null
+  ---
+  duration_ms: 0.083177
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses unfinished required step
+ok 27 - candidate l tag gate refuses unfinished required step
+  ---
+  duration_ms: 0.099371
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses advanced branch and existing tag on another commit
+ok 28 - candidate l tag gate refuses advanced branch and existing tag on another commit
+  ---
+  duration_ms: 0.307152
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses unavailable or incomplete Actions evidence
+ok 29 - candidate l tag gate refuses unavailable or incomplete Actions evidence
+  ---
+  duration_ms: 0.728328
+  type: 'test'
+  ...
+# Subtest: candidate l workflow preserves every starting required step and runs controlled browser checks early
+ok 30 - candidate l workflow preserves every starting required step and runs controlled browser checks early
+  ---
+  duration_ms: 0.374091
+  type: 'test'
+  ...
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CI summary: complete passing inputs
+ok 31 - CI summary: complete passing inputs
+  ---
+  duration_ms: 59.906042
+  type: 'test'
+  ...
+# Subtest: CI summary: failed TAP with checker absent
+ok 32 - CI summary: failed TAP with checker absent
+  ---
+  duration_ms: 56.569886
+  type: 'test'
+  ...
+# Subtest: CI summary: inputs absent after earlier failure
+ok 33 - CI summary: inputs absent after earlier failure
+  ---
+  duration_ms: 51.655345
+  type: 'test'
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: owner alert scheduling: opt-in paused worker preserves PENDING until explicit real-worker dispatch
+ok 34 - owner alert scheduling: opt-in paused worker preserves PENDING until explicit real-worker dispatch
+  ---
+  duration_ms: 702.667063
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 933.012522

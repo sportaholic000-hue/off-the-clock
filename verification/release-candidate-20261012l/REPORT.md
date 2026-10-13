@@ -1,128 +1,94 @@
-# Follow-up diagnostic checkpoint — NOT READY TO TAG
+# Candidate l follow-up — final exact-SHA hosted validation and tag PENDING at authoring
 
-Starting remote branch `36c2c4530643f75bb42755df607c776db9856ab7`; main `ed12dca1253a8790c885b071ab6037e05632bea0`; `rc-20261012l` absent, verified with git ls-remote.
+The final test candidate is prepared. This report is committed **before** its final hosted run: it does not claim that pending checks passed or that the tag already exists. `FINAL_CANDIDATE.json` authorizes only the narrowly gated Actions tag after all 25 required steps succeed on this exact commit. The final handoff must give the exact branch SHA, report readback, hosted counts/steps and remote peeled tag. Four independent clean audits—Astra and Sol for each of the two scopes on the same tagged commit—remain required before merge.
 
-Historical CI run [38322067104](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38322067104) failed: full suite 4974 pass / 2 fail (one retry subtest plus its parent). The actual browser state was not captured; see followup/original-ci-failure.txt. Strict gate and Docker passed but later standalone checks were skipped. This is not release clearance.
+## Starting refs and preserved work
 
-This checkpoint adds opt-in, test-only control of the actual server owner-alert worker. Default HTTP fixture behavior is unchanged. The diagnostic uses the actual compiled UI and HTTP routes, pauses automatic scheduling, then orders the real disabled-provider worker before the refresh GET. It records only a synthetic alert ID, statuses, error code, ordering and fake-provider counts. Hosted browser evidence is pending. The original failing browser test is unchanged at this checkpoint. No final marker or candidate-l tagging job exists.
+`git ls-remote origin refs/heads/claude/release-candidate-20261012l refs/heads/main 'refs/tags/rc-20261012l*'` initially returned:
 
-Local Node 22.23.3 / npm 11.9.0: npm ci, no-save Playwright 1.56.0 setup and fresh build passed. Controlled HTTP regression passed 1/1 after fixing a missing brace in the new preload; the unsuccessful first run is preserved. Local browser validation remains unavailable pending the recorded launch probe. No production or retention implementation changes. Generated client/dist restored. Main and deployment untouched.
-
-The previous report follows as historical evidence; its publication-time pending checks are not represented as passed.
-
----
-
-# Candidate l — repair verified locally; final hosted gates and tag pending
-
-This report is authored before publication of the final candidate commit. Hosted checks on that exact commit are **PENDING**, and `rc-20261012l` has **not** been created. The final handoff must record the remote SHA, report readback, actual hosted step/log results and tag decision. No candidate-k or restore-branch CI result is substituted for this commit. Independent Astra + Sol clean audits for both scopes on the same tagged commit remain required.
-
-## Starting refs and integration
-
-All refs were read with `git ls-remote`; the complete result is retained in [starting-refs.txt](starting-refs.txt).
-
-| Input | Exact observed SHA |
-|---|---|
-| `rc-20261012k` annotated tag | `4959515817dc94dd81c393746845fc1ab68742cf` |
-| `rc-20261012k^{}` | `ead53fa174d577b280506b67573a29d6b0358237` |
-| `codex/restore-diagnostics-20261012` | `d52fb4003c21ba7f300af2073b1d329eb6d2cc99` |
-| `codex/launch-pack-20261012` | `4417e7b749a71fbee6207315ebcd75425fa25036` |
-| `main` at verification | `ed12dca1253a8790c885b071ab6037e05632bea0` |
-
-Both integration commits have the pinned base as their sole parent. Candidate l's branch/tag were absent. A separate clone at `/workspace/scratch/5228524b6f21/candidate-l-20261012` was switched to `claude/release-candidate-20261012l` from the exact base. No branch tip was substituted.
-
-Executed `git cherry-pick -x d52fb4003c21ba7f300af2073b1d329eb6d2cc99 4417e7b749a71fbee6207315ebcd75425fa25036`, in that order, without conflicts. Local cherry-picks were `2e1885a07a1798d423facc0a057a38694316db75` and `38eab476c7391092f08de04f4cdbf29eafad0906`. GitHub connector publication preserves their messages, `cherry picked from` references and exact trees, with GitHub-generated commit metadata: `7b869934331bdba61ce109eb20f8b52dbaddae9e`, followed by `91108abfe49aa9ddfd51637e17add552023ed708`. [integration.json](integration.json) records source, parent and tree identities. The restore diagnostics files are byte-for-byte unchanged from their pinned input; the five launch drafts receive only the authorized candidate/retention reconciliation.
-
-Read AGENTS.md, BUILD_STATUS.md, the relevant platform security/backup and billing-lifecycle retention requirements, and all four specified owner rulings/wording approvals. Current owner instructions govern. Nothing in `specs/` was edited.
-
-## Confirmed defect and before/after evidence
-
-The base's `billingRetentionSteps.js` made `discard()` conditional on successful abandoned-copy cleanup. At expiry, a writable live database retained both retry values whenever that cleanup failed, despite provider retries already having stopped.
-
-The new synthetic regression was written and run against the untouched pinned production code before any production edit. It reuses `tenantRetentionFixture`, the existing off-site service and stub Google/phone providers. It preserves an abandoned partial snapshot containing synthetic retry material and separately blocks cleanup with `BACKUP_STAGING_BUSY` and with `acquireProcessLock(retentionLockFile(deployment))` outside the reentrant context.
-
-| Scenario | Before repair | After repair |
-|---|---|---|
-| Injected cleanup blocker, first attempt +30 and +31 days, reopening SQLite between runs | Live retry row remains at both times; Calendar/phone PENDING; abandoned copy remains; health unhealthy | Live retry row absent at both times; both provider steps PERMANENT_FAILURE; `retryCopies` PENDING; abandoned copy remains; health unhealthy |
-| Actual held SQLite retention lock, same deadlines and restart | Same retained live row and PENDING providers; `OFFSITE_BUSY` | Live values removed despite `OFFSITE_BUSY`; original holder still excludes acquisition; residual cleanup persists |
-| One millisecond before expiry | Live row retained; both stubs called a second time | Same permitted behavior; original first-attempt times unchanged |
-| At/after expiry | No further provider attempts, but live values survive blockers | No further provider attempts; live values removed; no fabricated Calendar success or number release |
-| Release blocker and reopen again | Original defect clears only once copy cleanup is possible | Already-deleted live values stay absent; terminal-provider processing still removes the partial copy and marks `retryCopies` DONE; permanent provider failure remains unhealthy/incomplete |
-| Reader pins old SQLite history | Existing flush-pending behavior already passed | Live row removed; WAL/main-history cleanup stays pending/unhealthy until reader release; then physical bytes disappear and flush marker clears |
-
-[expiry-before.tap](expiry-before.tap) contains **7 tests: 1 pass / 6 fail**, exit 1. Its safe diagnostic records show `liveRetryRows:1` on days 30 and 31 for both blockers. The existing provider and snapshot suites still passed **20/20** in [existing-before.tap](existing-before.tap), confirming the missing combination in their coverage. [expiry-after.tap](expiry-after.tap) records the initial **7/7** repair result. [expiry-final.tap](expiry-final.tap) and the final locked standalone run record **8/8** after the additional continuation safeguard below. These are overlapping executions, not additive coverage counts.
-
-Additional continuation check: the preparation pass can be followed by reactivation before day 90, and `restoreLocal()` clears cancellation retention state. An expired phone operation must not lose its newly recorded pending-copy obligation through that path. [preparation-valid-fixture-before.tap](preparation-valid-fixture-before.tap) reproduced `RESTORED` instead of required `ENDED` before the safeguard. The final test proves preparation stays blocked, live material is already gone, restart retains the obligation, and reactivation can proceed after real copy cleanup. No change to `billingCustomerLifecycle.js` was needed.
-
-Three earlier preparation probe logs (`preparation-before`, `preparation-diagnostic`, `preparation-confirmed-before`) are retained but **are not accepted product reproductions**: the initial fixture lacked payment-method verification and correctly stayed `pending_payment`. Correcting that synthetic prerequisite produced the actual `RESTORED` failure above. No production assertion or billing gate was weakened.
-
-## Repair and allowed changes
-
-- `server/src/billingRetentionSteps.js:48–72`: permanent failure atomically removes the live retry values and records a non-secret `retryCopies` obligation. Existing secure deletion and WAL flushing remain. Historical-copy cleanup has its own durable status, safe error code and timestamps.
-- `server/src/billingRetentionSteps.js:123–151`: deadline/unusable-material handling runs in the local preparation pass before external backup work. The original first-attempt clock, 30-day number schedule and 90-day data/Calendar schedule remain. Preparation reports pending physical cleanup so subsequent reactivation cannot erase the obligation.
-- `server/src/billingRetentionSteps.js:189–214`: residual cleanup runs outside the terminal-provider early return, including after database/service reconstruction. Pending copies and pending database-history flushing independently block completion and appear in unhealthy admin retention status. Successful physical cleanup never converts failed provider revocation/release into success.
-- `test/retentionExpiry20261012.spec.mjs`: eight regressions cover the boundary, both values, injected and actual lock blockers, restart, disabled providers, phone-only day-60 expiry, WAL contention, unusable material, preparation/reactivation, idempotence, business B and financial evidence. No existing test was weakened.
-- `.github/workflows/ci.yml`: seven existing candidate conditions now also include candidate l. All old conditions, run bodies, ordinary gates and tag-job restrictions are preserved. A new candidate-l step runs the expiry file independently and checks all eight names in the full-suite TAP. No candidate-l automatic tagging job was added.
-- `verification/release-candidate-20261012l/**`: this report, raw before/after/diagnostic evidence, validation records and fixed-name guard. The guard accepts only passing TAP entries for all eight tests.
-- The five Markdown files under `verification/launch-pack-20261012/`: distinguish demonstrated live expiry from unresolved historical-copy/WAL cleanup; update deploy-source review to the eventual candidate-l handoff; preserve full wording alternatives and “current text not supplied.” Still OWNER REVIEW ONLY and undeployed. The original launch report remains explicitly labeled historical evidence. Extended live retention is not presented as an approved exception.
-
-Beyond the two exact cherry-picks, no other production file, route inventory/hash, quote arithmetic, Price Book implementation, plan gate, price, UI/public wording, specification, dependency manifest or lockfile changed. Starter's `calculateListedPrice` and Quotes delivered counter are untouched. Build-generated `client/dist` changes are restored before committing. No live lock or snapshot is removed to force completion.
-
-## Runtime and local validation
-
-Node **v22.23.3**, npm **11.9.0**, nine available CPUs reported locally. [runtime.json](runtime.json) records final installed/locked versions. Tests use temporary synthetic storage, fake S3 and provider stubs only.
-
-```sh
-export PATH=/workspace/scratch/5228524b6f21/node22-toolchain/node_modules/node/bin:$PATH
-export TMPDIR=/workspace/scratch/5228524b6f21/candidate-l-runtime/tmp
-export PLAYWRIGHT_BROWSERS_PATH=/workspace/scratch/5228524b6f21/playwright-l
-npm ci
-npm install --no-save --no-audit --no-fund playwright@1.56.0
-npx playwright install chromium
-npm run build
-node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/retentionExpiry20261012.spec.mjs
-# Each file in standalone-locked/results.json is also run independently with those Node flags.
-TEST_RESULTS_FILE=verification/release-candidate-20261012l/full-local.tap npm test
-npm run test:quote
+```
+36c2c4530643f75bb42755df607c776db9856ab7 refs/heads/claude/release-candidate-20261012l
+ed12dca1253a8790c885b071ab6037e05632bea0 refs/heads/main
 ```
 
-Install/build logs and exit codes are retained. Large logs are losslessly gzip-compressed; [compressed-evidence.json](compressed-evidence.json) records original and compressed hashes and sizes. No recorded output was omitted. No dependency installation overlapped tests. The first temporary Playwright installation used `--package-lock=false`, which ignored pinned transitive versions (observed React 19.3.0/Vite 6.4.4 versus locked 19.2.7/6.4.3). It did not change manifests or the lockfile. This was corrected with a fresh `npm ci` and CI's exact `--no-save` installation command, adding only Playwright's two packages. The final build returns to the locked outputs.
+No candidate-l tag existed. Work continued from that exact branch in the existing separate clone. No reset or unrelated branch overwrite. The prior base `ead53fa174d577b280506b67573a29d6b0358237`, integrated restore commit `d52fb4003c21ba7f300af2073b1d329eb6d2cc99`, launch commit `4417e7b749a71fbee6207315ebcd75425fa25036`, retention repair and all previous evidence are preserved. The previous report is retained verbatim in [followup/report-before-final-followup.md](followup/report-before-final-followup.md), including its historical pending checks and limitations; this current report supersedes its statement that candidate-l Actions tagging is unavailable.
 
-The earlier combined [focused.tap](focused.tap) ended after 205 passing entries without a final TAP summary despite exit 0. The first standalone run had 19 complete passing files (558 tests) and an incomplete day90Backups log after two passing entries; that aggregate is **not a passing run**. The incomplete termination cause is not established. Both logs/results are retained; a standalone lock diagnostic passed 6/6. The qualifying runs below use the corrected locked environment, rather than treating those early exits as passes.
+Read AGENTS.md, BUILD_STATUS.md, this candidate's report and required-step manifest, and owner-alert EXPECTED.md. Read the fixture, production worker/email service, server scheduling, retry routes and compiled UI source flow. No specs, production/client source, owner wording, public pages, manifests, lockfiles, restore diagnostics or launch drafts changed in this follow-up. Generated client/dist restored.
 
-| Check | Result / evidence |
+## Historical failure and controlled reproduction
+
+[Original run 38322067104](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38322067104), SHA `36c2c4530643f75bb42755df607c776db9856ab7`: full suite **4976 total / 4974 pass / 2 fail**. The retry POST returned 200/PENDING, then the browser timed out at test line 22 waiting for visible PENDING. The two failures were the nested retry test and its parent. The actual rendered state and alert ID were not captured; they remain **unknown**. The strict gate passed 4245/4245 and Docker passed, but subsequent standalone checks were skipped. The always-running summary publication also failed when its missing checker file made `cat` terminate bash -e. See [original-ci-failure.txt](followup/original-ci-failure.txt). No unchanged failure was rerun merely to obtain green.
+
+Before changing the original failing browser file, diagnostic checkpoint **`cf041d55e1b179c3fee791d4af3e01416c4fb4a3`** added only opt-in worker scheduling control and a separate reproduction. [Hosted run 38328411221](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38328411221), test job 115072362118, reports the controlled browser reproduction **success**. The original browser file was unchanged at that checkpoint. [diagnostic-hosted-observation.json](followup/diagnostic-hosted-observation.json) preserves the inspected step states; long suites were still in progress at this report's authoring and are not counted as passes.
+
+The controlled reproduction uses the actual server, actual retry and call routes and actual compiled UI. It selects one synthetic callback alert, binds the POST URL, GET notification and database lookup to its exact ID, and binds the rendered row through the unique event type of that same GET object. Its bounded JSON diagnostics contain only synthetic alert ID, HTTP/status/error/attempt counts, worker ordering and acceptance counts—no auth headers, tokens, contacts, notes or message bodies.
+
+| Ordered action | Verified controlled result |
 |---|---|
-| `npm ci`; CI-equivalent Playwright setup | PASS; `npm-ci-reset.*`, `playwright-ci-install.*`; no manifests/lockfile changed |
-| `npm run build` in locked environment | PASS; `build-locked.log`, exit 0; existing chunk-size warning only |
-| Chromium launch probe | FAILED with SIGTRAP; actual browser checks **NOT RUN locally**, not passed; `chromium-probe.*` |
-| Final focused standalone files | **562/562 pass across 20 files**, zero failures/cancellations/skips/TODOs; [standalone-locked/results.json](standalone-locked/results.json) and per-file TAP |
-| Integrated restore rehearsal | **9/9 pass**, included in the focused count; original missing-book discrepancy remains NOT REPRODUCED / cause unknown |
-| `npm test` | **4,902 pass / 60 failed browser launches / 4,962 total**, exit 1; zero cancelled/skipped/TODO. All 60 failures contain `browserType.launch` and SIGTRAP; those browser checks are **NOT RUN locally**. Losslessly compressed raw `full-local.tap.gz`, `full-local.log.gz`; complete classification in [full-local-classification.json](full-local-classification.json). No other failure and no catalog timing failure occurred. |
-| `npm run test:quote` | **INCOMPLETE**, interrupted (exit 130) after 282.6 seconds without new output: 1109 root entries, 1102 passing and 7 browser launch failures, **no final counts/summary**. Architecture check passed. Remaining cases **NOT RUN locally**. Raw `quote-local.log.gz`; [quote-local-classification.json](quote-local-classification.json). |
-| Docker smokes locally | **NOT RUN** — Docker executable unavailable; exact-SHA hosted steps are required |
+| Pause automatic owner-alert scheduling; retry the selected FAILED alert through UI | POST 200, PENDING |
+| Intercept its refresh GET, run the actual disabled-provider worker, then release GET | Same alert DB BLOCKED / EMAIL_NOT_CONFIGURED, attemptCount 0; dispatch processed 0 |
+| Actual call GET and compiled UI render | Same alert BLOCKED; row has zero PENDING labels. The old PENDING predicate is false. |
+| Run ready fake worker, refresh actual call route/UI | Same alert ACCEPTED, exactly one fake-provider call and one unique acceptance |
+| Dispatch fake worker again | Still one call/acceptance, no resend |
+| Staff/foreign-owner checks | Staff retry 403 and no UI mutation button; foreign retry/call 404; callback text retained |
 
-The strict quote gate stalled after the Calendar-scope case, before caller-history output. The next selected file, `test/callerHistoryFollowup20261006.spec.mjs`, was diagnosed alone with `timeout 60s node --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap`: **12/12 passed**, exit 0 (`quote-stall-diagnostic.*`). This does not establish why the parent runner stalled. The incomplete run and seven Chromium launch failures are preserved; the gate was not rerun to erase that evidence. Its exact-SHA hosted execution is mandatory. No catalog timing assertion failed.
+This establishes a genuine harness scheduling flaw and a controlled failure mechanism. It **does not retroactively prove** what the original failed CI browser rendered. No production/UI defect was demonstrated and none was changed.
 
-The fixed-name guard passed against the full-suite TAP (all eight expiry cases passed) and correctly rejected the baseline failure log; `name-guard-positive.*` and `name-guard-negative.*` preserve both results.
+## Repair
 
-The 20 standalone files and counts are recorded individually in the JSON. They include backup coordination 6, restore rehearsal 9, backups 12, billing lifecycle 52, continuous off-site 16, day90 backups/cancellation/guarantees/providers 4/4/10/12, lock database/race 6/9, off-site 23, owner-query coverage 88, new expiry 8, hardening health/locks/secrets/versions 3/6/8/9, route isolation 264 and tenant retention 13. Counts overlap full/strict gates and must not be added to them.
+- `test/leadCaptureRepair20261006HttpFixture.mjs` and `test/helpers/controlledOwnerAlertWorker.mjs`: opt-in `controlledOwnerAlertWorker` starts the real server with a test-only Node module preload. Only the automatic worker scheduler is paused. IPC dispatch calls the unmodified production dispatch method. The preload requires NODE_ENV=test, disabled provider writes and IPC. Default shared-fixture behavior is unchanged. No sleeps, increased timeouts or repeated attempts were added to hide the race.
+- `test/helpers/ownerAlertControlledScenario.mjs` and `test/ownerAlertRepair20261006.browser.spec.mjs`: two explicit orderings. With no worker consumption, the same alert must render PENDING. With worker consumption before refresh, it must render BLOCKED/EMAIL_NOT_CONFIGURED with zero attempts. Both retain dashboard/deep-link/reload/callback, one acceptance, no resend, acceptance-versus-delivery wording, staff permissions and tenant-isolation assertions. These are exact expected statuses, not an arbitrary allowed-status list.
+- `test/ownerAlertScheduling20261012Http.spec.mjs`: direct route regression proves the opt-in pause and explicit real-worker transition. Existing default-fixture consumers remain exercised.
+- `.github/workflows/ci.yml`: puts the previously failing browser file in the early dedicated browser command; retains its full-suite inclusion. Adds controlled reproduction, focused harness/CI tests, shared-fixture consumers and a passing-name guard. All starting required checks remain. `ci-required-steps.json` has 21 test-job and four Docker-job requirements, including summary publication.
+- `render-test-summary.mjs` and `test/ciSummary20261012.spec.mjs`: explicitly handle absent checker/TAP files; show earlier gate and suite/checker outcomes, retain nested and parent TAP failures and available counts, and never infer pass from absent evidence. Summary publication no longer suppresses commit/push failure with `|| true`; it reports completion only after successful push. Original test gate outcomes are unchanged.
+- `check-release-gate.mjs`, `test/candidateLTagGate20261012.spec.mjs`, workflow tag job and `FINAL_CANDIDATE.json`: candidate-l push only, dependent on successful test and voice-docker-startup jobs. Requires committed report and explicit marker bound to report/manifest hashes. Reads the current Actions run and paginated current-attempt job evidence; checks repo, workflow, event, branch, run, attempt and exact SHA; every required step must be completed/success. Missing, duplicated, skipped, failed, cancelled or unavailable evidence refuses tagging. Rechecks remote branch and tag before non-forced publication and verifies annotated peeled SHA afterward. Existing conflicting/lightweight tags are hard stops; an existing matching annotated tag is verified without mutation. Permissions are only contents:write and actions:read for this job; Docker inherits contents:read, test retains write solely for existing summary publication. No remote test tags are created by refusal tests.
 
-## Exact-SHA hosted requirements
+## Local commands and results
 
-Hosted status at report authoring: **PENDING final publication/run**. The restore branch's run `38313191411` and all candidate-k runs do not validate this commit.
+Node **22.23.3**, npm **11.9.0**. All fixtures synthetic; no provider writes. Dependency setup completed before any tests.
 
-[ci-required-steps.json](ci-required-steps.json) lists the required named steps to inspect on the final SHA. Required evidence includes cold install/build, working Chromium, owner browser regressions, strict quote gate, full suite, dependency audit, six coordination cases, all existing standalone retention/lock/backup/restore files, previous candidate-i/j/k name guards, eight new expiry tests and their full-suite name guard, network-isolated production voice Docker smoke, Railway restart/redeploy/SIGTERM/restore Docker smoke and production-user lock-database smoke. A green job with a required step skipped is insufficient. Historical candidate-h/i/j/k tag jobs are intentionally not eligible for candidate l.
+```sh
+npm ci
+npm install --no-save --no-audit --no-fund playwright@1.56.0
+npm run build
+node --test test/ownerAlertScheduling20261012Http.spec.mjs
+node --test test/candidateLTagGate20261012.spec.mjs test/ciSummary20261012.spec.mjs test/ownerAlertScheduling20261012Http.spec.mjs
+node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test \
+  test/callerHistoryFollowup20261006Http.spec.mjs \
+  test/leadCaptureRepair20261006Http.spec.mjs \
+  test/ownerAlertRepair20261006Http.spec.mjs \
+  test/ownerAlertsDelivery20261006Http.spec.mjs \
+  test/ownerDashboard20261007TenantHttp.spec.mjs \
+  test/ownerIntegrations.spec.mjs \
+  test/ownerAlertRepair20261006.spec.mjs
+git diff --check
+```
 
-Command-line Git write authentication is unavailable (`git push --dry-run` returned “could not read Username … terminal prompts disabled”). Publication uses the connected GitHub Git-data tools, followed by exact tree comparison and remote readback. Those tools currently provide branch writes but no tag-creation operation; a tag is not assumed available or created.
+| Local check | Actual result |
+|---|---|
+| Fresh npm ci, no-save Playwright setup, fresh build | PASS, exit 0; logs in followup/; existing build chunk-size warning |
+| Controlled HTTP | 1/1 PASS; included again in safety aggregate |
+| Summary cases | 3/3 PASS: complete passing inputs; failed TAP/checker missing; both inputs absent after earlier failure. Real helper CLI runs under bash -e. Included in safety aggregate. |
+| Final CI safety aggregate | **34/34 PASS**, zero fail/cancel/skip/TODO; [ci-safety-final.tap](followup/ci-safety-final.tap). Includes 30 tag/workflow/refusal checks, three summary cases and one HTTP case. |
+| Existing shared-fixture HTTP and worker regressions | **93/93 PASS**, zero fail/cancel/skip/TODO; [shared-fixture-worker.tap](followup/shared-fixture-worker.tap) |
+| Chromium launch probe | FAILED SIGTRAP; browser tests **NOT RUN locally**. First probe also lacked a usable /tmp, then retried with the correct existing writable TMPDIR and crashed; both logs preserved. Hosted Chromium required. |
+| Initial new preload test | 0 pass / 1 fail due missing brace in new test-only preload; corrected, preserved in controlled-http-preload-syntax-failure.tap. Not a product reproduction. |
+| npm test / npm run test:quote in this follow-up locally | **NOT RUN** because Chromium cannot launch. Earlier task's failed/incomplete local runs remain in historical report/evidence, not relabeled passes. Exact-final-SHA hosted execution mandatory. |
+| Local Docker | **NOT RUN**, executable unavailable. Hosted voice, Railway restart/redeploy/SIGTERM/restore and production-user lock proof mandatory. |
+| Scope/generated-artifact/whitespace checks | PASS; no production/client/spec/dependency change from starting follow-up SHA |
 
-The final branch must be confirmed by `git ls-remote`, and the report fetched back from that exact SHA. Only after every required hosted step has actually passed may the immutable candidate-l tag be created on that same commit. No subsequent commit can be represented as covered by that tag.
+Counts overlap and must not be summed as unique coverage. No dependency install occurred during tests. No timing failure was observed in these focused runs.
 
-## SHARE / SKIP and limits
+## Final publication contract and remaining decisions
 
-- **SHARE — confirmed expired live-material retention:** fixed by the transaction/independent cleanup record, reproduced before production edits and verified afterward. Pending-copy and WAL barriers still prevent false complete/healthy status. Requires independent review; no audit waiver.
-- **SHARE — loss of pending physical cleanup through preparation/reactivation:** fixed by preventing preparation from completing while the independent obligation remains. The existing reactivation path resumes after successful cleanup, without editing its production file.
-- **SHARE — final release qualification:** open at authoring. Exact-SHA hosted results and the final publication/tag decision are not yet known. Do not treat this report's local passes or earlier branch CI as release authorization.
-- **SKIP — historical restore discrepancy:** NOT REPRODUCED / cause unknown. The imported diagnostics improve evidence and failure cleanup; they do not establish the historical cause or a quote-engine repair.
-- **SKIP — preliminary local runner/dependency limitations:** early incomplete runs are preserved and not counted as passing; their exact termination cause is unknown. Final locked standalone runs completed. Local Chromium is unavailable and Docker is absent. The local quote gate also stalled without a summary, for an unknown reason; it is incomplete, not passed. Exact-SHA hosted evidence is mandatory.
-- **SKIP — physical impossibility during outages:** live deletion requires a running worker and writable live database; physical removal of inaccessible old copies or pinned database history cannot be declared complete. The repair removes the unnecessary copy-cleanup dependency without extending the maximum retry window or changing policy. Permanent provider failure stays visible even after physical cleanup finishes.
+At authoring, only the diagnostic checkpoint is confirmed remotely. Final repaired browser coverage, full/strict gates, all standalone files/guards, dependency audit and final Docker jobs are **PENDING on the final commit**. The authoritative checklist is [ci-required-steps.json](ci-required-steps.json); no skipped required step is accepted. The final report handoff must inspect actual logs/counts and every named step, not just a green job. Diagnostic runs never authorize a tag without the explicit final marker. Earlier candidate/restore results do not clear this commit.
 
-No main merge, deployment, Railway/DNS/account/provider configuration, real data, charges, messages, emails, calls or SMS. No subagents. The five launch drafts remain unapproved/unpublished. This task produces a candidate for independent review, not the required Astra + Sol clean audits for both scopes on the same tagged commit.
+Publication uses the available GitHub connector with the existing branch SHA as a lease, and exact Git tree comparison; no personal credentials requested. Native git fetch/ls-remote independently verify the resulting branch. The committed report is fetched back at the exact SHA. Actions' existing repository authentication performs the narrowly authorized immutable tag only after all checks pass. There is no report-only commit after tagging.
+
+- **SHARE — final exact-SHA qualification:** pending at report authoring. Any required check failing, skipped or unavailable blocks the tag. Final handoff must resolve this with the actual run, or report the blocker untagged.
+- **Resolved harness/summary findings:** controlled browser ordering fixes the test assumption without changing product behavior; summary handling preserves available failure evidence even when later checker input is absent.
+- **SKIP — original CI render uncertainty:** the controlled transition is proved, but the historical failed run did not record its rendered status/alert ID; no invented historical diagnosis.
+- **SKIP — historical restore discrepancy:** NOT REPRODUCED / cause unknown. Preserved diagnostics do not prove its cause or a quote-engine repair.
+- **SKIP — local execution limitations:** Chromium crashes and Docker is unavailable; local browser/Docker checks are NOT RUN and must be replaced by actual hosted evidence on the final SHA.
+
+Main remains `ed12dca1253a8790c885b071ab6037e05632bea0`. No main merge, deploy, Railway/account/provider configuration, real data, charges, messages, email, calls or SMS; no subagents. Launch drafts remain unapproved and undeployed. Independent audit requirements are unchanged.

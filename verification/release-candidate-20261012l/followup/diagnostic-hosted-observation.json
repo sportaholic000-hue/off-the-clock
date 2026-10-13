@@ -1,0 +1,208 @@
+{
+  "run": 38328411221,
+  "sha": "cf041d55e1b179c3fee791d4af3e01416c4fb4a3",
+  "note": "Observed before final publication. In-progress or skipped steps are not passes. Bounded synthetic browser trace remains in this run's job log.",
+  "jobs": [
+    {
+      "id": 115072362118,
+      "name": "test",
+      "status": "in_progress",
+      "conclusion": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install from lockfile (ignores committed node_modules)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install Playwright test dependency without changing the lockfile",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install Chromium for the browser tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify Chromium can launch; install system libraries if needed",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build owner app and widget",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Candidate l controlled owner-alert browser reproduction",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Owner alerts and dashboard browser regressions",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Strict quote engine and price book gate",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "name": "Full test suite",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Candidate h standalone regressions (each file independently)",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Candidate i standalone regressions (each file independently)",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Candidate i confirms required test names in the full-suite log",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Candidate k backup coordination regressions",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Candidate j and k standalone regressions (each file independently)",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Candidate j and k confirm required lock test names in the full-suite log",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Candidate k confirms coordination test names in the full-suite log",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Candidate l expiry regressions and required passing names",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "No failures beyond the known list",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Publish test summary to claude/ci-results (push events only)",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Production dependency audit",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "pending",
+          "conclusion": null
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "pending",
+          "conclusion": null
+        }
+      ]
+    },
+    {
+      "id": 115072362338,
+      "name": "voice-docker-startup",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build production runtime image",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Voice enabled with synthetic credentials and no provider network",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Candidate h Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Candidate i Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Candidate j and k production-user lock database proof",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

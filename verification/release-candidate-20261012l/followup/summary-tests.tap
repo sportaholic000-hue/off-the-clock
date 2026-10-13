@@ -1,0 +1,32 @@
+(node:7) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CI summary: complete passing inputs
+ok 1 - CI summary: complete passing inputs
+  ---
+  duration_ms: 58.551755
+  type: 'test'
+  ...
+# Subtest: CI summary: failed TAP with checker absent
+ok 2 - CI summary: failed TAP with checker absent
+  ---
+  duration_ms: 56.393368
+  type: 'test'
+  ...
+# Subtest: CI summary: inputs absent after earlier failure
+ok 3 - CI summary: inputs absent after earlier failure
+  ---
+  duration_ms: 52.405144
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 245.467133
