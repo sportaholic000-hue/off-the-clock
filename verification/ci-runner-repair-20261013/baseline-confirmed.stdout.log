@@ -1,0 +1,99 @@
+TAP version 13
+# (node:19) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CI runner repair: complete passing TAP is accepted by the actual checker
+ok 1 - CI runner repair: complete passing TAP is accepted by the actual checker
+  ---
+  duration_ms: 52.372326
+  type: 'test'
+  ...
+# Subtest: CI runner repair: truncated summary after positive tests count is rejected
+not ok 2 - CI runner repair: truncated summary after positive tests count is rejected
+  ---
+  duration_ms: 51.034966
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/ci-runner-repair-20261013/test/ciRunnerRepair20261013.spec.mjs:8:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Summary: {"tests":"1"}
+    Known failures still failing: 0/0
+    (node:35) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/ci-runner-repair-20261013/test/ciRunnerRepair20261013.spec.mjs:10:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: CI runner repair: no-summary control is rejected
+ok 3 - CI runner repair: no-summary control is rejected
+  ---
+  duration_ms: 48.260856
+  type: 'test'
+  ...
+# Subtest: CI runner repair: passing TAP followed by real child exit 7 cannot pass
+not ok 4 - CI runner repair: passing TAP followed by real child exit 7 cannot pass
+  ---
+  duration_ms: 166.775918
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/ci-runner-repair-20261013/test/ciRunnerRepair20261013.spec.mjs:15:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    TAP version 13
+    # Subtest: SYNTHETIC runner control
+    ok 1 - SYNTHETIC runner control
+    1..1
+    # tests 1
+    # suites 0
+    # pass 1
+    # fail 0
+    # cancelled 0
+    # skipped 0
+    # todo 0
+    # duration_ms 1
+    Summary: {"tests":"1","pass":"1","fail":"0","cancelled":"0","skipped":"0","todo":"0"}
+    Known failures still failing: 0/0
+    (node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    (node:71) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 0
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/ci-runner-repair-20261013/test/ciRunnerRepair20261013.spec.mjs:18:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 401.15186

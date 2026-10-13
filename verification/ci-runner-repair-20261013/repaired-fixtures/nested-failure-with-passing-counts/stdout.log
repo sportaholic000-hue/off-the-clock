@@ -1,0 +1,4 @@
+Summary: {"tests":1,"suites":0,"pass":1,"fail":0,"cancelled":0,"skipped":0,"todo":0}
+Known failures still failing: 0/0
+::error::New test failure: SYNTHETIC runner control
+::error::The full suite requires matching passes and zero failures, skips, cancellations and TODOs

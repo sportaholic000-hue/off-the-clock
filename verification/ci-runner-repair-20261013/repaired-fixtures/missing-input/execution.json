@@ -1,0 +1,17 @@
+{
+  "name": "missing-input",
+  "kind": "checker",
+  "mode": "missing-input",
+  "childExit": 0,
+  "command": [
+    "node",
+    ".github/scripts/check-test-results.mjs",
+    "input.tap"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/ci-runner-runtime/tmp/SYNTHETIC-ci-runner-NIr0dx",
+  "node": "v22.23.3",
+  "status": 1,
+  "signal": null,
+  "error": null,
+  "selected": null
+}

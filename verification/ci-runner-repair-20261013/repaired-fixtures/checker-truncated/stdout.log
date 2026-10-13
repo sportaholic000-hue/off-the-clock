@@ -1,0 +1,8 @@
+Summary: {"tests":1}
+Known failures still failing: 0/0
+::error::Missing final summary count: suites
+::error::Missing final summary count: pass
+::error::Missing final summary count: fail
+::error::Missing final summary count: cancelled
+::error::Missing final summary count: skipped
+::error::Missing final summary count: todo

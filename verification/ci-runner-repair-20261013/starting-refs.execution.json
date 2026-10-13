@@ -1,0 +1,21 @@
+{
+  "command": [
+    "git",
+    "ls-remote",
+    "https://github.com/sportaholic000-hue/off-the-clock.git",
+    "refs/tags/rc-20261012l*",
+    "refs/heads/codex/ci-runner-repair-20261013"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/ci-runner-repair-20261013",
+  "startedAt": "2026-10-13T22:42:42.658Z",
+  "finishedAt": "2026-10-13T22:42:46.894Z",
+  "node": "v22.23.3",
+  "nodeExecutable": "node",
+  "pathPrefix": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/toolchain/node_modules/node/bin",
+  "tmpdir": "/workspace/scratch/5228524b6f21/ci-runner-runtime/tmp",
+  "fixtureEvidenceDirectory": null,
+  "pid": 26,
+  "status": 0,
+  "signal": null,
+  "error": null
+}

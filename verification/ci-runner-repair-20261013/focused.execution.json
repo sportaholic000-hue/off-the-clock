@@ -1,0 +1,27 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "test/ciRunnerRepair20261013.spec.mjs",
+    "test/testFullScheduling.spec.mjs",
+    "test/ciSummary20261012.spec.mjs",
+    "test/candidateLTagGate20261012.spec.mjs",
+    "test/auditFixes20261003.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/ci-runner-repair-20261013",
+  "startedAt": "2026-10-13T22:46:30.452Z",
+  "finishedAt": "2026-10-13T22:46:40.808Z",
+  "node": "v22.23.3",
+  "nodeExecutable": "node",
+  "pathPrefix": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/toolchain/node_modules/node/bin",
+  "tmpdir": "/workspace/scratch/5228524b6f21/ci-runner-runtime/tmp",
+  "fixtureEvidenceDirectory": "/workspace/scratch/5228524b6f21/ci-runner-repair-20261013/verification/ci-runner-repair-20261013/repaired-fixtures",
+  "pid": 12,
+  "status": 0,
+  "signal": null,
+  "error": null
+}

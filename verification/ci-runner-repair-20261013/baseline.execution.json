@@ -1,0 +1,20 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "test/ciRunnerRepair20261013.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/ci-runner-repair-20261013",
+  "startedAt": "2026-10-13T22:43:27.880Z",
+  "finishedAt": "2026-10-13T22:43:28.338Z",
+  "node": "v22.23.3",
+  "nodeExecutable": "node",
+  "pathPrefix": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/toolchain/node_modules/node/bin",
+  "tmpdir": "/workspace/scratch/5228524b6f21/ci-runner-runtime/tmp",
+  "fixtureEvidenceDirectory": "/workspace/scratch/5228524b6f21/ci-runner-repair-20261013/verification/ci-runner-repair-20261013/baseline-fixtures",
+  "pid": 16,
+  "status": 1,
+  "signal": null,
+  "error": null
+}

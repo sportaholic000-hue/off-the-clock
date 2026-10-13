@@ -1,0 +1,6 @@
+(node:534) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[npm test] Test child spawn failure (Error): SYNTHETIC_SYNCHRONOUS_SPAWN_FAILURE
+[npm test] Test child exited with code null
+(node:546) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

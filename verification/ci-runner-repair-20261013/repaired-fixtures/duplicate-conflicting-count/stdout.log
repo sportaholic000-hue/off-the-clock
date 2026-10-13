@@ -1,0 +1,3 @@
+Summary: {"tests":1,"suites":0,"pass":1,"fail":2,"cancelled":0,"skipped":0,"todo":0}
+Known failures still failing: 0/0
+::error::Duplicate final summary count: fail

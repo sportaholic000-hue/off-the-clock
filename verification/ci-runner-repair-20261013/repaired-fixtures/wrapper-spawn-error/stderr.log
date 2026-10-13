@@ -1,0 +1,6 @@
+(node:513) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[npm test] Test child spawn failure (ENOENT): spawn ./SYNTHETIC_MISSING_EXECUTABLE ENOENT
+[npm test] Test child exited with code -2
+(node:526) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

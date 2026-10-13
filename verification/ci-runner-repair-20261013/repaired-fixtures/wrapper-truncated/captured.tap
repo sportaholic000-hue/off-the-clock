@@ -1,0 +1,7 @@
+(node:469) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# Subtest: SYNTHETIC runner control
+ok 1 - SYNTHETIC runner control
+1..1
+# tests 1

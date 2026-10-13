@@ -1,0 +1,17 @@
+{
+  "name": "zero-tests",
+  "kind": "checker",
+  "mode": "normal",
+  "childExit": 0,
+  "command": [
+    "node",
+    ".github/scripts/check-test-results.mjs",
+    "input.tap"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/ci-runner-runtime/tmp/SYNTHETIC-ci-runner-MvdIL2",
+  "node": "v22.23.3",
+  "status": 1,
+  "signal": null,
+  "error": null,
+  "selected": null
+}
