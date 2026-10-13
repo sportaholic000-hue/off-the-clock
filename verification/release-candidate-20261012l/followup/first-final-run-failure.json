@@ -1,0 +1,183 @@
+{
+  "run": 38329063902,
+  "sha": "8b1b2999713bc661de9a84fcf77fafe5c8026d98",
+  "job": 115074392401,
+  "strictGate": {
+    "tests": 4245,
+    "pass": 4244,
+    "fail": 1
+  },
+  "cause": "Added id: full_suite between name and run violated the existing audit source-pattern assertion. Correction reorders YAML keys; the assertion and command remain unchanged.",
+  "failureExcerpt": [
+    "2026-10-13T00:49:49.2157688Z # Subtest: Audit 2 \\#4 and \\#5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers",
+    "2026-10-13T00:49:49.2159202Z not ok 206 - Audit 2 \\#4 and \\#5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers",
+    "2026-10-13T00:49:49.2160096Z   ---",
+    "2026-10-13T00:49:49.2160461Z   duration_ms: 1.590993",
+    "2026-10-13T00:49:49.2160873Z   type: 'test'",
+    "2026-10-13T00:49:49.2161609Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/auditFixes20261003.spec.mjs:253:1'",
+    "2026-10-13T00:49:49.2162441Z   failureType: 'testCodeFailure'",
+    "2026-10-13T00:49:49.2162929Z   error: |-",
+    "2026-10-13T00:49:49.2163637Z     The input did not match the regular expression /name: Full test suite\\s+run: npm test/. Input:",
+    "2026-10-13T00:49:49.2164386Z     ",
+    "2026-10-13T00:49:49.2164746Z     'name: CI\\n' +",
+    "2026-10-13T00:49:49.2165132Z       'on:\\n' +",
+    "2026-10-13T00:49:49.2165514Z       '  push:\\n' +",
+    "2026-10-13T00:49:49.2170059Z       \"    branches: ['fix/lock-recovery-race-20261011', 'fix/retention-hardening-20261011', 'fix/billing-staff-scan-20261011', 'fix/day90-erasure-20261011', 'main', 'claude/**', 'codex/**', 'fix/voice-quote-path-v2-20261006', 'feat/website-price-import-20261006', 'feat/no-sms-email-quotes', 'fix/quote-display-defects-20261006', 'feat/overage-and-minute-alerts-20261006', 'fix/voice-lifecycle-20261006', 'fix/caller-history-followup-20261006', 'fix/booking-calendar-20261006', 'verify/backup-restore-rehearsal-20261006', 'feat/billing-lifecycle-20261007', 'fix/tenant-isolation-20261007', 'fix/engine-leftovers', 'fix/voice-core', 'fix/voice-limits', 'fix/owner-dashboard', 'fix/billing-backup-leftovers', 'fix/receptionist-20261008', 'fix/demo-facts-scanner-20261011']\\n\" +",
+    "2026-10-13T00:49:49.2174197Z       '  pull_request:\\n' +"
+  ],
+  "browserEvidence": [
+    "2026-10-13T00:49:08.3875681Z # {\"syntheticOnly\":true,\"alertId\":\"14c7b247774af1cd099ea61a715f80ff\",\"ordering\":[\"refresh-intercepted\",\"real-disabled-worker-completed\",\"refresh-released\"],\"retry\":{\"http\":200,\"status\":\"PENDING\"},\"get\":{\"http\":200,\"id\":\"14c7b247774af1cd099ea61a715f80ff\",\"status\":\"BLOCKED\"},\"database\":{\"id\":\"14c7b247774af1cd099ea61a715f80ff\",\"status\":\"BLOCKED\",\"lastErrorCode\":\"EMAIL_NOT_CONFIGURED\",\"attemptCount\":0},\"rendered\":\"BLOCKED\",\"originalPendingAssertionWouldPass\":false,\"providerAttempts\":0}",
+    "2026-10-13T00:49:08.3879573Z # {\"syntheticOnly\":true,\"alertId\":\"14c7b247774af1cd099ea61a715f80ff\",\"finalStatus\":\"ACCEPTED\",\"attemptCount\":1,\"fakeProviderCalls\":1,\"uniqueAcceptances\":1,\"noResend\":true,\"staffRetry\":403,\"foreignRetry\":404,\"foreignCall\":404}",
+    "2026-10-13T00:49:12.9868228Z     # {\"syntheticOnly\":true,\"alertId\":\"71dc128c623b85d9fc3c5c5ff6297356\",\"ordering\":[\"refresh-intercepted\",\"refresh-released\"],\"retry\":{\"http\":200,\"status\":\"PENDING\"},\"get\":{\"http\":200,\"id\":\"71dc128c623b85d9fc3c5c5ff6297356\",\"status\":\"PENDING\"},\"database\":{\"id\":\"71dc128c623b85d9fc3c5c5ff6297356\",\"status\":\"PENDING\",\"lastErrorCode\":\"SYNTHETIC_PROVIDER_OUTAGE\",\"attemptCount\":0},\"rendered\":\"PENDING\",\"originalPendingAssertionWouldPass\":true,\"providerAttempts\":0}",
+    "2026-10-13T00:49:12.9871837Z     # {\"syntheticOnly\":true,\"alertId\":\"71dc128c623b85d9fc3c5c5ff6297356\",\"finalStatus\":\"ACCEPTED\",\"attemptCount\":1,\"fakeProviderCalls\":1,\"uniqueAcceptances\":1,\"noResend\":true,\"staffRetry\":403,\"foreignRetry\":404,\"foreignCall\":404}",
+    "2026-10-13T00:49:16.3876837Z     # {\"syntheticOnly\":true,\"alertId\":\"6b8c52c7a175f5e709d78c9290148327\",\"ordering\":[\"refresh-intercepted\",\"real-disabled-worker-completed\",\"refresh-released\"],\"retry\":{\"http\":200,\"status\":\"PENDING\"},\"get\":{\"http\":200,\"id\":\"6b8c52c7a175f5e709d78c9290148327\",\"status\":\"BLOCKED\"},\"database\":{\"id\":\"6b8c52c7a175f5e709d78c9290148327\",\"status\":\"BLOCKED\",\"lastErrorCode\":\"EMAIL_NOT_CONFIGURED\",\"attemptCount\":0},\"rendered\":\"BLOCKED\",\"originalPendingAssertionWouldPass\":false,\"providerAttempts\":0}",
+    "2026-10-13T00:49:16.3880257Z     # {\"syntheticOnly\":true,\"alertId\":\"6b8c52c7a175f5e709d78c9290148327\",\"finalStatus\":\"ACCEPTED\",\"attemptCount\":1,\"fakeProviderCalls\":1,\"uniqueAcceptances\":1,\"noResend\":true,\"staffRetry\":403,\"foreignRetry\":404,\"foreignCall\":404}"
+  ],
+  "requiredSteps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Install from lockfile (ignores committed node_modules)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Install Playwright test dependency without changing the lockfile",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Install Chromium for the browser tests",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Verify Chromium can launch; install system libraries if needed",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build owner app and widget",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Candidate l controlled owner-alert browser reproduction",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Owner alerts and dashboard browser regressions",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Candidate l harness and CI safety regressions",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Candidate l shared HTTP fixture consumers and alert worker regressions",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Strict quote engine and price book gate",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Full test suite",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate h standalone regressions (each file independently)",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate i standalone regressions (each file independently)",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate i confirms required test names in the full-suite log",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate k backup coordination regressions",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate j and k standalone regressions (each file independently)",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate j and k confirm required lock test names in the full-suite log",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate k confirms coordination test names in the full-suite log",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate l expiry regressions and required passing names",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Candidate l follow-up required passing names",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "No failures beyond the known list",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Publish test summary to claude/ci-results (push events only)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Production dependency audit",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}

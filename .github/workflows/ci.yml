@@ -62,8 +62,8 @@ jobs:
         id: quote_gate
         run: npm run test:quote
       - name: Full test suite
-        id: full_suite
         run: npm test
+        id: full_suite
       - name: Candidate h standalone regressions (each file independently)
         if: github.ref == 'refs/heads/claude/release-candidate-20261011h'
         shell: bash
