@@ -1,0 +1,83 @@
+diff --git a/verification/restore-diagnostics-20261012/run-intentional-probes.mjs b/verification/restore-recheck-20261013/run-intentional-probes.mjs
+index d7e41aa2..4b6327c9 100644
+--- a/verification/restore-diagnostics-20261012/run-intentional-probes.mjs
++++ b/verification/restore-recheck-20261013/run-intentional-probes.mjs
+@@ -4,11 +4,21 @@ import path from 'node:path';
+ import assert from 'node:assert/strict';
+ import {fileURLToPath} from 'node:url';
+ import {spawnSync} from 'node:child_process';
++import {createHash} from 'node:crypto';
+ 
+ const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../..');
+ const original=fs.readFileSync(path.join(root,'test/backupRestoreRehearsal.spec.mjs'),'utf8');
+ const disposable=fs.mkdtempSync(path.join(here,'disposable-'));
+ const results=[];
++// Evidence-only additions. Keep injections and verifier assertions unchanged.
++const digest=value=>createHash('sha256').update(value).digest('hex');
++const generated=path.join(here,'generated');fs.mkdirSync(generated,{recursive:true});
++const lifecycle=[];
++function recordLifecycle(event,details={}) {
++  lifecycle.push({event,at:new Date().toISOString(),...details});
++  fs.writeFileSync(path.join(here,'probe-cleanup-order.json'),JSON.stringify(lifecycle,null,2)+'\n');
++}
++recordLifecycle('disposable directory created',{path:disposable,pid:process.pid});
+ function replaceOnce(source,needle,replacement) {
+   assert.equal(source.split(needle).length,2,'probe must target exactly one known statement');
+   return source.replace(needle,replacement);
+@@ -25,13 +35,44 @@ try {
+     if(mode==='assertion-and-cleanup')source=replaceOnce(source,'        evidence.restored=bookObservation(filename);',
+       "        evidence.restored=bookObservation(filename);\n        if(corruption==='invalid JSON')throw Object.assign(Error('INTENTIONAL_CLEANUP_FAILURE: after actual restoration'),{code:'INTENTIONAL_CLEANUP_FAILURE'});");
+     const filename=path.join(disposable,mode+'.mjs');fs.writeFileSync(filename,source);
++    // Save source and exact patch before execution. The published source copy
++    // masks only two existing public synthetic fixture password literals.
++    const publishedSource=source.replaceAll('Synthetic!Restore2026-Only','[REDACTED_SYNTHETIC_OWNER_PASSWORD]')
++      .replaceAll('Synthetic!Second2026-Only','[REDACTED_SYNTHETIC_SECOND_PASSWORD]');
++    fs.writeFileSync(path.join(generated,mode+'.mjs'),publishedSource,{flag:'wx'});
++    const diff=spawnSync('git',['diff','--no-index','--','test/backupRestoreRehearsal.spec.mjs',filename],
++      {cwd:root,encoding:'utf8'});
++    fs.writeFileSync(path.join(generated,mode+'.diff'),diff.stdout||'',{flag:'wx'});
++    fs.writeFileSync(path.join(generated,mode+'.diff.stderr.log'),diff.stderr||'',{flag:'wx'});
++    if(diff.status!==1||diff.error)throw Error('Could not preserve generated probe diff');
++    const sourceRecord={mode,savedBeforeExecutionAt:new Date().toISOString(),executedPath:filename,
++      executedSha256:digest(source),executedBytes:Buffer.byteLength(source),
++      publishedSha256:digest(publishedSource),taggedRehearsalSha256:digest(original),
++      redactions:['Two pre-existing synthetic test password literals masked in the published source copy only; executed source and exact patch unchanged.'],
++      diffCommand:['git','diff','--no-index','--','test/backupRestoreRehearsal.spec.mjs',filename],
++      diffExit:diff.status,diffSignal:diff.signal};
++    fs.writeFileSync(path.join(generated,mode+'.source.json'),JSON.stringify(sourceRecord,null,2)+'\n',{flag:'wx'});
++    recordLifecycle('probe source and exact diff preserved',{mode,executedPath:filename,sha256:digest(source)});
++    const executionStartedAt=new Date().toISOString();
+     const args=['--experimental-test-module-mocks','--import','./test/pricebookTestEnv.mjs','--test','--test-reporter=tap',filename];
+     const execution=spawnSync(process.execPath,args,{cwd:root,env:process.env,encoding:'utf8',timeout:180000,maxBuffer:1024*1024});
++    const executionFinishedAt=new Date().toISOString();
++    fs.writeFileSync(path.join(here,'intentional-'+mode+'.stdout.log'),execution.stdout||'',{flag:'wx'});
++    fs.writeFileSync(path.join(here,'intentional-'+mode+'.stderr.log'),execution.stderr||'',{flag:'wx'});
++    recordLifecycle('probe process exited; separate output preserved',{mode,pid:execution.pid,
++      exit:execution.status,signal:execution.signal,startedAt:executionStartedAt,finishedAt:executionFinishedAt});
+     const output=(execution.stdout||'')+(execution.stderr||'');
++    const diagnostics=[];
++    for(const match of output.matchAll(/^\s*# restore-(cleanup|recovery) (.+)$/gm)) {
++      try {diagnostics.push({type:match[1],observation:JSON.parse(match[2])});}
++      catch {diagnostics.push({type:match[1],parseError:true,raw:match[2]});}
++    }
++    fs.writeFileSync(path.join(here,'intentional-'+mode+'.diagnostics.json'),JSON.stringify(diagnostics,null,2)+'\n',{flag:'wx'});
++
+     fs.writeFileSync(path.join(here,'intentional-'+mode+'.tap'),output);
+     fs.writeFileSync(path.join(here,'intentional-'+mode+'.exit'),String(execution.status)+'\n');
+     // Save the result before checking it, including an unexpected probe failure.
+-    const result={mode,command:[process.execPath,...args],exit:execution.status,signal:execution.signal,
++    const result={mode,command:[process.execPath,...args],cwd:root,startedAt:executionStartedAt,finishedAt:executionFinishedAt,pid:execution.pid,sourceSha256:digest(source),exit:execution.status,signal:execution.signal,
+       ...(execution.error?{runnerError:execution.error.code}:{}),verified:false};
+     results.push(result);fs.writeFileSync(path.join(here,'intentional-results.json'),JSON.stringify(results,null,2)+'\n');
+     assert.equal(execution.status,1,'the induced assertion must remain a failing test');
+@@ -62,4 +103,9 @@ try {
+     fs.writeFileSync(path.join(here,'intentional-results.json'),JSON.stringify(results,null,2)+'\n');
+     console.log('Verified intentional '+mode+' failure (not a product defect).');
+   }
+-} finally {fs.rmSync(disposable,{recursive:true,force:true});}
++} finally {
++  recordLifecycle('before disposable source cleanup',{path:disposable,exists:fs.existsSync(disposable)});
++  fs.rmSync(disposable,{recursive:true,force:true});
++  recordLifecycle('after disposable source cleanup',{path:disposable,exists:fs.existsSync(disposable)});
++}
++

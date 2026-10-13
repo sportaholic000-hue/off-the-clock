@@ -1,0 +1,26 @@
+{
+  "label": "build",
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/restore-recheck-20261013",
+  "startedAt": "2026-10-13T20:18:24.419Z",
+  "finishedAt": "2026-10-13T20:18:29.438Z",
+  "recorderPid": 2,
+  "childPid": 14,
+  "node": "v22.23.3",
+  "nodeExecutable": "node",
+  "platform": "linux",
+  "arch": "x64",
+  "environmentOverrides": {
+    "TMPDIR": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp",
+    "nodePathPrefix": "."
+  },
+  "exitStatus": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "build.stdout.log",
+  "stderr": "build.stderr.log"
+}

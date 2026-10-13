@@ -1,0 +1,29 @@
+{
+  "label": "starting-refs",
+  "command": [
+    "git",
+    "ls-remote",
+    "https://github.com/sportaholic000-hue/off-the-clock.git",
+    "refs/tags/rc-20261012l*",
+    "refs/heads/claude/release-candidate-20261012l",
+    "refs/heads/codex/restore-recheck-20261013"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/restore-recheck-20261013",
+  "startedAt": "2026-10-13T20:17:10.695Z",
+  "finishedAt": "2026-10-13T20:17:15.941Z",
+  "recorderPid": 25,
+  "childPid": 33,
+  "node": "v22.23.3",
+  "nodeExecutable": "node",
+  "platform": "linux",
+  "arch": "x64",
+  "environmentOverrides": {
+    "TMPDIR": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp",
+    "nodePathPrefix": "."
+  },
+  "exitStatus": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "starting-refs.stdout.log",
+  "stderr": "starting-refs.stderr.log"
+}

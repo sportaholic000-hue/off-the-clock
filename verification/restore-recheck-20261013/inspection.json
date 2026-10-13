@@ -1,0 +1,654 @@
+{
+  "kind": "Post-execution inspection of preserved evidence only; no rehearsal rerun",
+  "inspectedAt": "2026-10-13T20:20:19.761278+00:00",
+  "counts": [
+    {
+      "execution": "normal",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "execution": "intentional-assertion",
+      "tests": 9,
+      "pass": 7,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "execution": "intentional-assertion-and-cleanup",
+      "tests": 9,
+      "pass": 7,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  ],
+  "observations": [
+    {
+      "mode": "assertion",
+      "child": {
+        "pid": 90,
+        "instanceId": "5221e8b2-06c9-4f49-8e3c-966797503af8",
+        "startedAt": "2026-10-13T20:19:01.141Z",
+        "readyAt": "2026-10-13T20:19:01.716Z",
+        "port": 41453,
+        "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite",
+        "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks"
+      },
+      "bookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json",
+      "corruptBytes": 7,
+      "corruptSha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+      "originalSha256": "fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859",
+      "restoredSha256": "fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859",
+      "httpStatuses": [
+        503,
+        503,
+        200,
+        409,
+        200
+      ],
+      "submissions": 2,
+      "shutdown": {
+        "pid": 90,
+        "exitCode": 0,
+        "signalCode": null,
+        "at": "2026-10-13T20:19:01.768Z"
+      },
+      "restoredAt": "2026-10-13T20:19:01.768Z",
+      "temporaryDirectoryRemoved": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX"
+    },
+    {
+      "mode": "assertion-and-cleanup",
+      "child": {
+        "pid": 188,
+        "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+        "startedAt": "2026-10-13T20:19:06.923Z",
+        "readyAt": "2026-10-13T20:19:07.431Z",
+        "port": 41341,
+        "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+        "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks"
+      },
+      "bookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+      "corruptBytes": 7,
+      "corruptSha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+      "originalSha256": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+      "restoredSha256": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+      "httpStatuses": [
+        503,
+        503,
+        200,
+        409,
+        200
+      ],
+      "submissions": 2,
+      "shutdown": {
+        "pid": 188,
+        "exitCode": 0,
+        "signalCode": null,
+        "at": "2026-10-13T20:19:07.480Z"
+      },
+      "restoredAt": "2026-10-13T20:19:07.480Z",
+      "temporaryDirectoryRemoved": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm"
+    }
+  ],
+  "checks": [
+    {
+      "check": "rehearsal source equals pinned commit",
+      "pass": true
+    },
+    {
+      "check": "child helper equals pinned commit",
+      "pass": true
+    },
+    {
+      "check": "all original verifier assertions identical",
+      "pass": true
+    },
+    {
+      "check": "normal expected TAP totals",
+      "pass": true
+    },
+    {
+      "check": "normal later corruption cases pass",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion expected TAP totals",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion later corruption cases pass",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion primary error retained",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion combined output matches separate streams",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion-and-cleanup expected TAP totals",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion-and-cleanup later corruption cases pass",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion-and-cleanup primary error retained",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion-and-cleanup combined output matches separate streams",
+      "pass": true
+    },
+    {
+      "check": "assertion no diagnostic truncation",
+      "pass": true
+    },
+    {
+      "check": "assertion six active child observations",
+      "pass": true
+    },
+    {
+      "check": "assertion corrupt bytes at 2026-10-13T20:19:01.090Z",
+      "pass": true
+    },
+    {
+      "check": "assertion corrupt bytes at 2026-10-13T20:19:01.754Z",
+      "pass": true
+    },
+    {
+      "check": "assertion corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json",
+      "pass": true
+    },
+    {
+      "check": "assertion corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json",
+      "pass": true
+    },
+    {
+      "check": "assertion corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json",
+      "pass": true
+    },
+    {
+      "check": "assertion corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json",
+      "pass": true
+    },
+    {
+      "check": "assertion corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json",
+      "pass": true
+    },
+    {
+      "check": "assertion corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json",
+      "pass": true
+    },
+    {
+      "check": "assertion actual DB paths match",
+      "pass": true
+    },
+    {
+      "check": "assertion actual Price Book paths match",
+      "pass": true
+    },
+    {
+      "check": "assertion no duplicate submission",
+      "pass": true
+    },
+    {
+      "check": "assertion same child handles five requests",
+      "pass": true
+    },
+    {
+      "check": "assertion HTTP statuses",
+      "pass": true
+    },
+    {
+      "check": "assertion owner error",
+      "pass": true
+    },
+    {
+      "check": "assertion fresh quote has no dollar fields",
+      "pass": true
+    },
+    {
+      "check": "assertion unchanged replay and healthy service",
+      "pass": true
+    },
+    {
+      "check": "assertion clean child shutdown",
+      "pass": true
+    },
+    {
+      "check": "assertion shutdown recorded before restoration",
+      "pass": true
+    },
+    {
+      "check": "assertion original bytes restored",
+      "pass": true
+    },
+    {
+      "check": "assertion expected cleanup error only",
+      "pass": true
+    },
+    {
+      "check": "assertion synthetic temp volume removed",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion saved exact patch reproduces executed source hash",
+      "pass": true
+    },
+    {
+      "check": "assertion published source has exactly declared redactions",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup no diagnostic truncation",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup six active child observations",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup corrupt bytes at 2026-10-13T20:19:06.872Z",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup corrupt bytes at 2026-10-13T20:19:07.465Z",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup corrupt bytes at /workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup actual DB paths match",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup actual Price Book paths match",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup no duplicate submission",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup same child handles five requests",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup HTTP statuses",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup owner error",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup fresh quote has no dollar fields",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup unchanged replay and healthy service",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup clean child shutdown",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup shutdown recorded before restoration",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup original bytes restored",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup expected cleanup error only",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup synthetic temp volume removed",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch deletion matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup patch context matches",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup saved exact patch reproduces executed source hash",
+      "pass": true
+    },
+    {
+      "check": "assertion-and-cleanup published source has exactly declared redactions",
+      "pass": true
+    },
+    {
+      "check": "npm-ci.stdout.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "starting-refs.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "starting-refs.stdout.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "normal.execution.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-verifier.stdout.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion-and-cleanup.stdout.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "npm-ci.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion.diagnostics.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "runtime.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "starting-refs.execution.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-verifier.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "build.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "normal.stdout.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "probe-cleanup-order.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion-and-cleanup.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-results.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion.stdout.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion-and-cleanup.tap no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "normal.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "npm-ci.execution.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "build.stdout.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-verifier.execution.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion-and-cleanup.diagnostics.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "build.execution.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "intentional-assertion.tap no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "generated/assertion-and-cleanup.diff.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "generated/assertion.source.json no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "generated/assertion.diff.stderr.log no emitted credentials",
+      "pass": true
+    },
+    {
+      "check": "generated/assertion-and-cleanup.source.json no emitted credentials",
+      "pass": true
+    }
+  ],
+  "allPassed": true,
+  "rehearsalSha256": "a3be06ce0499d88b8cb3798ec28dcd7df1ceb21debf87a1af85a40323e1309e0",
+  "childHelperSha256": "f2696cf4ee6ea4aa1ac6fe3d364f8d9f88252a66f69efc659aed436f5b020f2f"
+}

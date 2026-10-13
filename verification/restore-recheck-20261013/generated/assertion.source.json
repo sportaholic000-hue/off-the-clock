@@ -1,0 +1,22 @@
+{
+  "mode": "assertion",
+  "savedBeforeExecutionAt": "2026-10-13T20:18:57.039Z",
+  "executedPath": "/workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion.mjs",
+  "executedSha256": "7e319fb2e864f8fb5d9c2951fa33ff253a9481e2929e316d25e3cc3575ced6fc",
+  "executedBytes": 26260,
+  "publishedSha256": "45e2fe8d025315209cea7c0ea11920747ffa3c3a0c164f90b5372a98f4fe066e",
+  "taggedRehearsalSha256": "a3be06ce0499d88b8cb3798ec28dcd7df1ceb21debf87a1af85a40323e1309e0",
+  "redactions": [
+    "Two pre-existing synthetic test password literals masked in the published source copy only; executed source and exact patch unchanged."
+  ],
+  "diffCommand": [
+    "git",
+    "diff",
+    "--no-index",
+    "--",
+    "test/backupRestoreRehearsal.spec.mjs",
+    "/workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion.mjs"
+  ],
+  "diffExit": 1,
+  "diffSignal": null
+}
