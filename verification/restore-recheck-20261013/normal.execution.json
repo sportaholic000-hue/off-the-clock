@@ -1,0 +1,30 @@
+{
+  "label": "normal",
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "test/backupRestoreRehearsal.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/restore-recheck-20261013",
+  "startedAt": "2026-10-13T20:18:44.633Z",
+  "finishedAt": "2026-10-13T20:18:50.174Z",
+  "recorderPid": 2,
+  "childPid": 11,
+  "node": "v22.23.3",
+  "nodeExecutable": "node",
+  "platform": "linux",
+  "arch": "x64",
+  "environmentOverrides": {
+    "TMPDIR": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp",
+    "nodePathPrefix": "."
+  },
+  "exitStatus": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "normal.stdout.log",
+  "stderr": "normal.stderr.log"
+}

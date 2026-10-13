@@ -1,0 +1,25 @@
+{
+  "label": "npm-ci",
+  "command": [
+    "npm",
+    "ci"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/restore-recheck-20261013",
+  "startedAt": "2026-10-13T20:17:15.996Z",
+  "finishedAt": "2026-10-13T20:17:32.513Z",
+  "recorderPid": 2,
+  "childPid": 43,
+  "node": "v22.23.3",
+  "nodeExecutable": "node",
+  "platform": "linux",
+  "arch": "x64",
+  "environmentOverrides": {
+    "TMPDIR": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp",
+    "nodePathPrefix": "."
+  },
+  "exitStatus": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "npm-ci.stdout.log",
+  "stderr": "npm-ci.stderr.log"
+}

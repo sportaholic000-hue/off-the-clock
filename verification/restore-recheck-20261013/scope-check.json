@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-10-13T20:22:30.969326+00:00",
+  "base": "d38781b35d126f21fed6074844e07d4e9de7c944",
+  "existingTrackedFilesChanged": [],
+  "newFilesAllowedPrefix": "verification/restore-recheck-20261013/",
+  "buildGeneratedTrackedFilesRestored": [
+    "client/dist/index.html"
+  ]
+}

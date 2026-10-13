@@ -1,0 +1,44 @@
+[
+  {
+    "mode": "assertion",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "/workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion.mjs"
+    ],
+    "cwd": "/workspace/scratch/5228524b6f21/restore-recheck-20261013",
+    "startedAt": "2026-10-13T20:18:57.040Z",
+    "finishedAt": "2026-10-13T20:19:03.063Z",
+    "pid": 20,
+    "sourceSha256": "7e319fb2e864f8fb5d9c2951fa33ff253a9481e2929e316d25e3cc3575ced6fc",
+    "exit": 1,
+    "signal": null,
+    "verified": true,
+    "assertions": "expected failure retained; five HTTP observations; exact restoration; next two cases pass; no credential values"
+  },
+  {
+    "mode": "assertion-and-cleanup",
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "/workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion-and-cleanup.mjs"
+    ],
+    "cwd": "/workspace/scratch/5228524b6f21/restore-recheck-20261013",
+    "startedAt": "2026-10-13T20:19:03.071Z",
+    "finishedAt": "2026-10-13T20:19:08.797Z",
+    "pid": 118,
+    "sourceSha256": "5ecc50625fcdf04837f163a3660b639437c9593bc109e0b116d117e6b61f322c",
+    "exit": 1,
+    "signal": null,
+    "verified": true,
+    "assertions": "expected failure retained; five HTTP observations; exact restoration; next two cases pass; no credential values"
+  }
+]

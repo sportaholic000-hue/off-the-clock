@@ -1,0 +1,39 @@
+diff --git a/test/backupRestoreRehearsal.spec.mjs b/workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion-and-cleanup.mjs
+index 924e2c69..3d483f52 100644
+--- a/test/backupRestoreRehearsal.spec.mjs
++++ b/workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion-and-cleanup.mjs
+@@ -10,13 +10,13 @@ import {fileURLToPath} from 'node:url';
+ import {randomUUID,createHash} from 'node:crypto';
+ import {isDeepStrictEqual} from 'node:util';
+ import Database from 'better-sqlite3';
+-import {productionEnv} from './helpers/railwayEnv.mjs';
+-import {mowing} from '../verification/engine-independent/fixtures.mjs';
+-import {verifyBackup} from '../server/src/backups.js';
+-import {convertPricebookMoney} from '../server/priceBookMoney.js';
++import {productionEnv} from '../../../test/helpers/railwayEnv.mjs';
++import {mowing} from '../../engine-independent/fixtures.mjs';
++import {verifyBackup} from '../../../server/src/backups.js';
++import {convertPricebookMoney} from '../../../server/priceBookMoney.js';
+ 
+ // Handwritten expectations precede execution: verification/backup-restore-20261006/EXPECTED.md.
+-const project = path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
++const project = path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
+ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+ const origin = 'https://synthetic-rehearsal.example.invalid';
+ const timestamp = () => new Date().toISOString();
+@@ -290,6 +290,7 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
+       evidence.replayUnchanged=isDeepStrictEqual(replay.body,receipt);
+       evidence.afterRequests=bookObservation(filename);
+       evidence.submissions=database(root,db=>db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(ownerId).n);
++      if(corruption==='invalid JSON')assert.fail('INTENTIONAL_OWNER_READ_FAILURE: disposable harness probe only');
+       assert.equal(ownerRead.status,corruption==='missing'?409:503);
+       assert.ok(ownerRead.body?.code==='PRICEBOOK_UNREADABLE','owner read returns PRICEBOOK_UNREADABLE');
+       assert.ok([409,503].includes(fresh.status),'fresh quote is blocked');
+@@ -317,6 +318,7 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
+         fs.writeFileSync(filename,bookBytes);
+         assert.ok(fs.readFileSync(filename).equals(bookBytes),'finally restored exact original book bytes');
+         evidence.restored=bookObservation(filename);
++        if(corruption==='invalid JSON')throw Object.assign(Error('INTENTIONAL_CLEANUP_FAILURE: after actual restoration'),{code:'INTENTIONAL_CLEANUP_FAILURE'});
+       } catch(error) {cleanupFailure??=error;evidence.restoreError=errorIdentity(error);}
+       evidence.finishedAt=timestamp();
+       caseTest.diagnostic('restore-cleanup '+JSON.stringify({corruption,restored:evidence.restored,

@@ -1,0 +1,91 @@
+TAP version 13
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings
+    # Subtest: 1. production startup passes the release engine guard on a temporary volume
+    ok 1 - 1. production startup passes the release engine guard on a temporary volume
+      ---
+      duration_ms: 26.075562
+      type: 'test'
+      ...
+    # Subtest: 2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP
+    ok 2 - 2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP
+      ---
+      duration_ms: 1248.885517
+      type: 'test'
+      ...
+    # Subtest: 3. graceful production restart preserves exact book, approval, rows and replay receipts
+    ok 3 - 3. graceful production restart preserves exact book, approval, rows and replay receipts
+      ---
+      duration_ms: 811.71916
+      type: 'test'
+      ...
+    # Subtest: 4. real backup CLI includes the SQLite database and every saved price book
+    ok 4 - 4. real backup CLI includes the SQLite database and every saved price book
+      ---
+      duration_ms: 168.794718
+      type: 'test'
+      ...
+    # Subtest: 5. wipe entire fake volume, restore CLI from independent archive, restart, and replay identical receipts without duplicates
+    ok 5 - 5. wipe entire fake volume, restore CLI from independent archive, restart, and replay identical receipts without duplicates
+      ---
+      duration_ms: 892.295626
+      type: 'test'
+      ...
+    # Subtest: 6. invalid JSON after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    not ok 6 - 6. invalid JSON after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 694.006809
+      type: 'test'
+      location: '/workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion.mjs:248:82'
+      failureType: 'testCodeFailure'
+      error: 'INTENTIONAL_OWNER_READ_FAILURE: disposable harness probe only'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion.mjs:293:45)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion.mjs:248:74)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # restore-cleanup {"corruption":"invalid JSON","restored":{"at":"2026-10-13T20:19:01.768Z","path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859","bytes":3140,"mtimeMs":1791922741763.252},"failed":true,"cleanupError":null}
+    # restore-recovery {"corruption":"invalid JSON","startedAt":"2026-10-13T20:19:01.075Z","expectedBookHash":"fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859","expectedDatabasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","previousChild":{"pid":77,"instanceId":"6eba832f-d998-4d6b-9448-ed519a7d4b83","startedAt":"2026-10-13T20:19:00.393Z","readyAt":"2026-10-13T20:19:00.994Z","port":42839,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks"},"beforeCase":{"at":"2026-10-13T20:19:01.075Z","path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859","bytes":3140,"mtimeMs":1791922740323.816},"requests":[{"label":"owner read","startedAt":"2026-10-13T20:19:01.717Z","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","port":41453,"status":503,"bytes":252,"bodySha256":"0c2307e596cbdf1407c883f03789a51bd5b4a3f84cad375e99b755e332ee9be8","body":{"fields":["error","code","retryable"],"code":"PRICEBOOK_UNREADABLE","retryable":false,"error":"The saved price book cannot be used. Quoting is paused until it is restored. Restore the saved price-book file from backup or email support@offtheclockai.com; do not create a replacement book."},"finishedAt":"2026-10-13T20:19:01.733Z"},{"label":"fresh quote","startedAt":"2026-10-13T20:19:01.734Z","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","port":41453,"status":503,"bytes":81,"bodySha256":"0f966cef7c33a06fc1f6b5c836e7261bd040f91a876978b85e9534a54536109e","body":{"fields":["error","code","retryable"],"code":"PRICEBOOK_UNREADABLE","retryable":false,"error":"Internal server error"},"finishedAt":"2026-10-13T20:19:01.745Z"},{"label":"historical replay","startedAt":"2026-10-13T20:19:01.745Z","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","port":41453,"status":200,"bytes":2267,"bodySha256":"f6837b28738a57bbf7272e5ace8962ae274c1c316f2d852b6464c4fb4f28f6ce","body":{"fields":["resultType","lowEstimate","midEstimate","highEstimate","priceDrivers","disclaimer","quoteId","priceUnit","taxTreatment","currency","options","pricedScope","submittedDetails","scopeNotice","fullJobTotal","bookingCapability","bookingTokenExpiresAt","bookingToken"],"resultType":"INSTANT_ESTIMATE_READY","lowEstimate":100,"midEstimate":100,"highEstimate":100},"finishedAt":"2026-10-13T20:19:01.749Z"},{"label":"changed binding","startedAt":"2026-10-13T20:19:01.749Z","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","port":41453,"status":409,"bytes":75,"bodySha256":"45b871dec9df08d7182a26198f42fbf26901a7454e76624ddab17b30eec5055d","body":{"fields":["error"],"error":{"sha256":"ddf5c6d8e4da39f38d6f88c2ef9cc632b94f9459d15e042aabfb3889da00a113","length":63,"quotingPaused":false,"restoreBackup":false}},"finishedAt":"2026-10-13T20:19:01.751Z"},{"label":"health","startedAt":"2026-10-13T20:19:01.752Z","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","port":41453,"status":200,"bytes":11,"bodySha256":"4062edaf750fb8074e7e83e0c9028c94e32468a8b6f1614774328ef045150f93","body":{"fields":["ok"],"ok":true},"finishedAt":"2026-10-13T20:19:01.753Z"}],"states":[{"label":"before previous child stop","pid":77,"instanceId":"6eba832f-d998-4d6b-9448-ed519a7d4b83","startedAt":"2026-10-13T20:19:00.393Z","readyAt":"2026-10-13T20:19:00.994Z","port":42839,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks","observedAt":"2026-10-13T20:19:01.076Z","uptimeMs":737,"listening":true,"book":{"path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859","bytes":3140,"mtimeMs":1791922740323.816},"creationRecorded":true,"submissions":2},{"label":"before recovery requests","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","startedAt":"2026-10-13T20:19:01.141Z","readyAt":"2026-10-13T20:19:01.716Z","port":41453,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks","observedAt":"2026-10-13T20:19:01.717Z","uptimeMs":623,"listening":true,"book":{"path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73","bytes":7,"mtimeMs":1791922741087.2363},"creationRecorded":true,"submissions":2},{"label":"after owner read","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","startedAt":"2026-10-13T20:19:01.141Z","readyAt":"2026-10-13T20:19:01.716Z","port":41453,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks","observedAt":"2026-10-13T20:19:01.734Z","uptimeMs":640,"listening":true,"book":{"path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73","bytes":7,"mtimeMs":1791922741087.2363},"creationRecorded":true,"submissions":2},{"label":"after fresh quote","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","startedAt":"2026-10-13T20:19:01.141Z","readyAt":"2026-10-13T20:19:01.716Z","port":41453,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks","observedAt":"2026-10-13T20:19:01.745Z","uptimeMs":651,"listening":true,"book":{"path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73","bytes":7,"mtimeMs":1791922741087.2363},"creationRecorded":true,"submissions":2},{"label":"after historical replay","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","startedAt":"2026-10-13T20:19:01.141Z","readyAt":"2026-10-13T20:19:01.716Z","port":41453,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks","observedAt":"2026-10-13T20:19:01.749Z","uptimeMs":655,"listening":true,"book":{"path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73","bytes":7,"mtimeMs":1791922741087.2363},"creationRecorded":true,"submissions":2},{"label":"after changed binding","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","startedAt":"2026-10-13T20:19:01.141Z","readyAt":"2026-10-13T20:19:01.716Z","port":41453,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks","observedAt":"2026-10-13T20:19:01.752Z","uptimeMs":658,"listening":true,"book":{"path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73","bytes":7,"mtimeMs":1791922741087.2363},"creationRecorded":true,"submissions":2},{"label":"after health","pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","startedAt":"2026-10-13T20:19:01.141Z","readyAt":"2026-10-13T20:19:01.716Z","port":41453,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks","observedAt":"2026-10-13T20:19:01.753Z","uptimeMs":659,"listening":true,"book":{"path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73","bytes":7,"mtimeMs":1791922741087.2363},"creationRecorded":true,"submissions":2}],"previousChildExit":{"pid":77,"exitCode":0,"signalCode":null,"at":"2026-10-13T20:19:01.090Z"},"afterCorruption":{"at":"2026-10-13T20:19:01.090Z","path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73","bytes":7,"mtimeMs":1791922741087.2363},"child":{"pid":90,"instanceId":"5221e8b2-06c9-4f49-8e3c-966797503af8","startedAt":"2026-10-13T20:19:01.141Z","readyAt":"2026-10-13T20:19:01.716Z","port":41453,"databasePath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/off-the-clock.sqlite","pricebookPath":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks"},"replayUnchanged":true,"afterRequests":{"at":"2026-10-13T20:19:01.754Z","path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73","bytes":7,"mtimeMs":1791922741087.2363},"submissions":2,"finalChild":{"pid":90,"exitCode":0,"signalCode":null,"at":"2026-10-13T20:19:01.768Z"},"restored":{"at":"2026-10-13T20:19:01.768Z","path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859","bytes":3140,"mtimeMs":1791922741763.252},"finishedAt":"2026-10-13T20:19:01.768Z"}
+    # Subtest: 6. invalid structure after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    ok 7 - 6. invalid structure after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 646.688849
+      type: 'test'
+      ...
+    # restore-cleanup {"corruption":"invalid structure","restored":{"at":"2026-10-13T20:19:02.415Z","path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859","bytes":3140,"mtimeMs":1791922742411.267},"failed":false,"cleanupError":null}
+    # Subtest: 6. missing after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    ok 8 - 6. missing after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 614.917605
+      type: 'test'
+      ...
+    # restore-cleanup {"corruption":"missing","restored":{"at":"2026-10-13T20:19:03.030Z","path":"/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-ddHJJX/volume/restores/synthetic-drill/pricebooks/d4c23193-58d6-4cb3-9201-69f8e483122a.json","exists":true,"sha256":"fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859","bytes":3140,"mtimeMs":1791922743027.2815},"failed":false,"cleanupError":null}
+    1..8
+not ok 1 - production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings
+  ---
+  duration_ms: 5779.077965
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/restore-recheck-20261013/verification/restore-recheck-20261013/disposable-eA8UVj/assertion.mjs:140:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Synthetic approved book sha256=fdaedd57e83ee5ca330c3cfba63a9fccea5e4d83c9e5a1cdb736b652d0333859; quote=$100.00; quotes=1; leads=2; appointments=1; submissions=2.
+# Verified bundle: 3 files; both owner books and SQLite integrity/foreign keys/checksums pass.
+# Whole-volume loss simulated; exact book bytes, approval, persisted rows, quote/lead receipts and booking confirmation survived.
+1..1
+# tests 9
+# suites 0
+# pass 7
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5963.174882

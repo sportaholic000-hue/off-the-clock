@@ -1,0 +1,407 @@
+[
+  {
+    "type": "cleanup",
+    "observation": {
+      "corruption": "invalid JSON",
+      "restored": {
+        "at": "2026-10-13T20:19:07.480Z",
+        "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+        "exists": true,
+        "sha256": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+        "bytes": 3140,
+        "mtimeMs": 1791922747475.385
+      },
+      "failed": true,
+      "cleanupError": {
+        "name": "Error",
+        "code": "INTENTIONAL_CLEANUP_FAILURE"
+      }
+    }
+  },
+  {
+    "type": "recovery",
+    "observation": {
+      "corruption": "invalid JSON",
+      "startedAt": "2026-10-13T20:19:06.857Z",
+      "expectedBookHash": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+      "expectedDatabasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+      "previousChild": {
+        "pid": 175,
+        "instanceId": "164160a5-04ab-4bc4-a22a-a1387d594267",
+        "startedAt": "2026-10-13T20:19:06.259Z",
+        "readyAt": "2026-10-13T20:19:06.766Z",
+        "port": 45835,
+        "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+        "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks"
+      },
+      "beforeCase": {
+        "at": "2026-10-13T20:19:06.857Z",
+        "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+        "exists": true,
+        "sha256": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+        "bytes": 3140,
+        "mtimeMs": 1791922746205.9126
+      },
+      "requests": [
+        {
+          "label": "owner read",
+          "startedAt": "2026-10-13T20:19:07.433Z",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "port": 41341,
+          "status": 503,
+          "bytes": 252,
+          "bodySha256": "0c2307e596cbdf1407c883f03789a51bd5b4a3f84cad375e99b755e332ee9be8",
+          "body": {
+            "fields": [
+              "error",
+              "code",
+              "retryable"
+            ],
+            "code": "PRICEBOOK_UNREADABLE",
+            "retryable": false,
+            "error": "The saved price book cannot be used. Quoting is paused until it is restored. Restore the saved price-book file from backup or email support@offtheclockai.com; do not create a replacement book."
+          },
+          "finishedAt": "2026-10-13T20:19:07.447Z"
+        },
+        {
+          "label": "fresh quote",
+          "startedAt": "2026-10-13T20:19:07.448Z",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "port": 41341,
+          "status": 503,
+          "bytes": 81,
+          "bodySha256": "0f966cef7c33a06fc1f6b5c836e7261bd040f91a876978b85e9534a54536109e",
+          "body": {
+            "fields": [
+              "error",
+              "code",
+              "retryable"
+            ],
+            "code": "PRICEBOOK_UNREADABLE",
+            "retryable": false,
+            "error": "Internal server error"
+          },
+          "finishedAt": "2026-10-13T20:19:07.457Z"
+        },
+        {
+          "label": "historical replay",
+          "startedAt": "2026-10-13T20:19:07.457Z",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "port": 41341,
+          "status": 200,
+          "bytes": 2267,
+          "bodySha256": "0e847707b9eaf1ed3efd5ad4ee1c9ece9f21423397257f0b8de2e1fcaecd9614",
+          "body": {
+            "fields": [
+              "resultType",
+              "lowEstimate",
+              "midEstimate",
+              "highEstimate",
+              "priceDrivers",
+              "disclaimer",
+              "quoteId",
+              "priceUnit",
+              "taxTreatment",
+              "currency",
+              "options",
+              "pricedScope",
+              "submittedDetails",
+              "scopeNotice",
+              "fullJobTotal",
+              "bookingCapability",
+              "bookingTokenExpiresAt",
+              "bookingToken"
+            ],
+            "resultType": "INSTANT_ESTIMATE_READY",
+            "lowEstimate": 100,
+            "midEstimate": 100,
+            "highEstimate": 100
+          },
+          "finishedAt": "2026-10-13T20:19:07.460Z"
+        },
+        {
+          "label": "changed binding",
+          "startedAt": "2026-10-13T20:19:07.461Z",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "port": 41341,
+          "status": 409,
+          "bytes": 75,
+          "bodySha256": "45b871dec9df08d7182a26198f42fbf26901a7454e76624ddab17b30eec5055d",
+          "body": {
+            "fields": [
+              "error"
+            ],
+            "error": {
+              "sha256": "ddf5c6d8e4da39f38d6f88c2ef9cc632b94f9459d15e042aabfb3889da00a113",
+              "length": 63,
+              "quotingPaused": false,
+              "restoreBackup": false
+            }
+          },
+          "finishedAt": "2026-10-13T20:19:07.463Z"
+        },
+        {
+          "label": "health",
+          "startedAt": "2026-10-13T20:19:07.463Z",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "port": 41341,
+          "status": 200,
+          "bytes": 11,
+          "bodySha256": "4062edaf750fb8074e7e83e0c9028c94e32468a8b6f1614774328ef045150f93",
+          "body": {
+            "fields": [
+              "ok"
+            ],
+            "ok": true
+          },
+          "finishedAt": "2026-10-13T20:19:07.464Z"
+        }
+      ],
+      "states": [
+        {
+          "label": "before previous child stop",
+          "pid": 175,
+          "instanceId": "164160a5-04ab-4bc4-a22a-a1387d594267",
+          "startedAt": "2026-10-13T20:19:06.259Z",
+          "readyAt": "2026-10-13T20:19:06.766Z",
+          "port": 45835,
+          "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+          "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks",
+          "observedAt": "2026-10-13T20:19:06.858Z",
+          "uptimeMs": 640,
+          "listening": true,
+          "book": {
+            "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+            "exists": true,
+            "sha256": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+            "bytes": 3140,
+            "mtimeMs": 1791922746205.9126
+          },
+          "creationRecorded": true,
+          "submissions": 2
+        },
+        {
+          "label": "before recovery requests",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "startedAt": "2026-10-13T20:19:06.923Z",
+          "readyAt": "2026-10-13T20:19:07.431Z",
+          "port": 41341,
+          "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+          "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks",
+          "observedAt": "2026-10-13T20:19:07.432Z",
+          "uptimeMs": 556,
+          "listening": true,
+          "book": {
+            "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+            "exists": true,
+            "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+            "bytes": 7,
+            "mtimeMs": 1791922746867.3708
+          },
+          "creationRecorded": true,
+          "submissions": 2
+        },
+        {
+          "label": "after owner read",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "startedAt": "2026-10-13T20:19:06.923Z",
+          "readyAt": "2026-10-13T20:19:07.431Z",
+          "port": 41341,
+          "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+          "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks",
+          "observedAt": "2026-10-13T20:19:07.447Z",
+          "uptimeMs": 571,
+          "listening": true,
+          "book": {
+            "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+            "exists": true,
+            "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+            "bytes": 7,
+            "mtimeMs": 1791922746867.3708
+          },
+          "creationRecorded": true,
+          "submissions": 2
+        },
+        {
+          "label": "after fresh quote",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "startedAt": "2026-10-13T20:19:06.923Z",
+          "readyAt": "2026-10-13T20:19:07.431Z",
+          "port": 41341,
+          "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+          "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks",
+          "observedAt": "2026-10-13T20:19:07.457Z",
+          "uptimeMs": 581,
+          "listening": true,
+          "book": {
+            "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+            "exists": true,
+            "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+            "bytes": 7,
+            "mtimeMs": 1791922746867.3708
+          },
+          "creationRecorded": true,
+          "submissions": 2
+        },
+        {
+          "label": "after historical replay",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "startedAt": "2026-10-13T20:19:06.923Z",
+          "readyAt": "2026-10-13T20:19:07.431Z",
+          "port": 41341,
+          "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+          "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks",
+          "observedAt": "2026-10-13T20:19:07.461Z",
+          "uptimeMs": 584,
+          "listening": true,
+          "book": {
+            "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+            "exists": true,
+            "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+            "bytes": 7,
+            "mtimeMs": 1791922746867.3708
+          },
+          "creationRecorded": true,
+          "submissions": 2
+        },
+        {
+          "label": "after changed binding",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "startedAt": "2026-10-13T20:19:06.923Z",
+          "readyAt": "2026-10-13T20:19:07.431Z",
+          "port": 41341,
+          "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+          "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks",
+          "observedAt": "2026-10-13T20:19:07.463Z",
+          "uptimeMs": 586,
+          "listening": true,
+          "book": {
+            "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+            "exists": true,
+            "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+            "bytes": 7,
+            "mtimeMs": 1791922746867.3708
+          },
+          "creationRecorded": true,
+          "submissions": 2
+        },
+        {
+          "label": "after health",
+          "pid": 188,
+          "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+          "startedAt": "2026-10-13T20:19:06.923Z",
+          "readyAt": "2026-10-13T20:19:07.431Z",
+          "port": 41341,
+          "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+          "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks",
+          "observedAt": "2026-10-13T20:19:07.464Z",
+          "uptimeMs": 588,
+          "listening": true,
+          "book": {
+            "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+            "exists": true,
+            "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+            "bytes": 7,
+            "mtimeMs": 1791922746867.3708
+          },
+          "creationRecorded": true,
+          "submissions": 2
+        }
+      ],
+      "previousChildExit": {
+        "pid": 175,
+        "exitCode": 0,
+        "signalCode": null,
+        "at": "2026-10-13T20:19:06.872Z"
+      },
+      "afterCorruption": {
+        "at": "2026-10-13T20:19:06.872Z",
+        "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+        "exists": true,
+        "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+        "bytes": 7,
+        "mtimeMs": 1791922746867.3708
+      },
+      "child": {
+        "pid": 188,
+        "instanceId": "f35f7fa1-8d49-4f42-a854-e2b037d49f71",
+        "startedAt": "2026-10-13T20:19:06.923Z",
+        "readyAt": "2026-10-13T20:19:07.431Z",
+        "port": 41341,
+        "databasePath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/off-the-clock.sqlite",
+        "pricebookPath": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks"
+      },
+      "replayUnchanged": true,
+      "afterRequests": {
+        "at": "2026-10-13T20:19:07.465Z",
+        "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+        "exists": true,
+        "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73",
+        "bytes": 7,
+        "mtimeMs": 1791922746867.3708
+      },
+      "submissions": 2,
+      "finalChild": {
+        "pid": 188,
+        "exitCode": 0,
+        "signalCode": null,
+        "at": "2026-10-13T20:19:07.480Z"
+      },
+      "restored": {
+        "at": "2026-10-13T20:19:07.480Z",
+        "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+        "exists": true,
+        "sha256": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+        "bytes": 3140,
+        "mtimeMs": 1791922747475.385
+      },
+      "restoreError": {
+        "name": "Error",
+        "code": "INTENTIONAL_CLEANUP_FAILURE"
+      },
+      "finishedAt": "2026-10-13T20:19:07.480Z"
+    }
+  },
+  {
+    "type": "cleanup",
+    "observation": {
+      "corruption": "invalid structure",
+      "restored": {
+        "at": "2026-10-13T20:19:08.073Z",
+        "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+        "exists": true,
+        "sha256": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+        "bytes": 3140,
+        "mtimeMs": 1791922748067.3987
+      },
+      "failed": false,
+      "cleanupError": null
+    }
+  },
+  {
+    "type": "cleanup",
+    "observation": {
+      "corruption": "missing",
+      "restored": {
+        "at": "2026-10-13T20:19:08.775Z",
+        "path": "/workspace/scratch/5228524b6f21/restore-recheck-runtime/tmp/otc-synthetic-restore-tHj9Nm/volume/restores/synthetic-drill/pricebooks/cf18f9c2-d980-4ba3-97dd-5fa0a757bc60.json",
+        "exists": true,
+        "sha256": "9194c57f621fb7a8abc7421f3c24d6e505826ef5f1b62547b33eb228ba68d347",
+        "bytes": 3140,
+        "mtimeMs": 1791922748771.415
+      },
+      "failed": false,
+      "cleanupError": null
+    }
+  }
+]
