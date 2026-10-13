@@ -1,0 +1,20 @@
+(node:7) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: owner alert scheduling: opt-in paused worker preserves PENDING until explicit real-worker dispatch
+ok 1 - owner alert scheduling: opt-in paused worker preserves PENDING until explicit real-worker dispatch
+  ---
+  duration_ms: 695.823766
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 916.066711

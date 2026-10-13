@@ -1,0 +1,40 @@
+Run 38322067104; SHA 36c2c4530643f75bb42755df607c776db9856ab7; test job 115052214365.
+Full suite: 4976 tests / 4974 pass / 2 fail. The two failures are nested test and parent.
+Actual rendered state and alert ID were NOT recorded by this failed test.
+2026-10-12T23:36:50.4034132Z       duration_ms: 269.481963
+2026-10-12T23:36:50.4034334Z       type: 'test'
+2026-10-12T23:36:50.4034496Z       ...
+2026-10-12T23:37:21.0404820Z     # Subtest: owner retries a stored failure, fake provider accepts once, and UI distinguishes acceptance from receipt
+2026-10-12T23:37:21.0406184Z     not ok 2 - owner retries a stored failure, fake provider accepts once, and UI distinguishes acceptance from receipt
+2026-10-12T23:37:21.0406769Z       ---
+2026-10-12T23:37:21.0407103Z       duration_ms: 30637.126477
+2026-10-12T23:37:21.0407402Z       type: 'test'
+2026-10-12T23:37:21.0408116Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/ownerAlertRepair20261006.browser.spec.mjs:16:11'
+2026-10-12T23:37:21.0409058Z       failureType: 'testCodeFailure'
+2026-10-12T23:37:21.0409401Z       error: |-
+2026-10-12T23:37:21.0409771Z         locator.waitFor: Timeout 30000ms exceeded.
+2026-10-12T23:37:21.0410142Z         Call log:
+2026-10-12T23:37:21.0410814Z           - waiting for locator('[aria-label="Owner notification status"]').getByText('PENDING', { exact: true }) to be visible
+2026-10-12T23:37:21.0411220Z         
+2026-10-12T23:37:21.0411400Z       code: 'ERR_TEST_FAILURE'
+2026-10-12T23:37:21.0411606Z       name: 'TimeoutError'
+2026-10-12T23:37:21.0411934Z       stack: |-
+2026-10-12T23:37:21.0412532Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/ownerAlertRepair20261006.browser.spec.mjs:22:99)
+2026-10-12T23:37:21.0413565Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/ownerAlertRepair20261006.browser.spec.mjs:16:3)
+2026-10-12T23:37:21.0414019Z       ...
+2026-10-12T23:37:21.0863276Z     # Subtest: staff reads callback and delivery states without mutation controls or foreign data
+2026-10-12T23:37:21.0863946Z     ok 3 - staff reads callback and delivery states without mutation controls or foreign data
+2026-10-12T23:37:21.0864759Z       ---
+2026-10-12T23:37:21.0865432Z       duration_ms: 46.305228
+2026-10-12T23:37:21.0866094Z       type: 'test'
+2026-10-12T23:37:21.0866516Z       ...
+2026-10-12T23:37:21.1215555Z     1..3
+2026-10-12T23:37:21.1216286Z not ok 2022 - owner alert repairs: production dashboard, Calls, retry and staff visibility
+2026-10-12T23:37:21.1216767Z   ---
+2026-10-12T23:37:21.1217052Z   duration_ms: 32088.265478
+2026-10-12T23:37:21.1217393Z   type: 'test'
+2026-10-12T23:37:21.1218334Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/ownerAlertRepair20261006.browser.spec.mjs:7:1'
+2026-10-12T23:37:21.1218902Z   failureType: 'subtestsFailed'
+2026-10-12T23:37:21.1219276Z   error: '1 subtest failed'
+2026-10-12T23:37:21.1219641Z   code: 'ERR_TEST_FAILURE'
+2026-10-12T23:37:21.1219994Z   ...

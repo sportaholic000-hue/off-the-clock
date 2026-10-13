@@ -1,3 +1,17 @@
+# Follow-up diagnostic checkpoint — NOT READY TO TAG
+
+Starting remote branch `36c2c4530643f75bb42755df607c776db9856ab7`; main `ed12dca1253a8790c885b071ab6037e05632bea0`; `rc-20261012l` absent, verified with git ls-remote.
+
+Historical CI run [38322067104](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38322067104) failed: full suite 4974 pass / 2 fail (one retry subtest plus its parent). The actual browser state was not captured; see followup/original-ci-failure.txt. Strict gate and Docker passed but later standalone checks were skipped. This is not release clearance.
+
+This checkpoint adds opt-in, test-only control of the actual server owner-alert worker. Default HTTP fixture behavior is unchanged. The diagnostic uses the actual compiled UI and HTTP routes, pauses automatic scheduling, then orders the real disabled-provider worker before the refresh GET. It records only a synthetic alert ID, statuses, error code, ordering and fake-provider counts. Hosted browser evidence is pending. The original failing browser test is unchanged at this checkpoint. No final marker or candidate-l tagging job exists.
+
+Local Node 22.23.3 / npm 11.9.0: npm ci, no-save Playwright 1.56.0 setup and fresh build passed. Controlled HTTP regression passed 1/1 after fixing a missing brace in the new preload; the unsuccessful first run is preserved. Local browser validation remains unavailable pending the recorded launch probe. No production or retention implementation changes. Generated client/dist restored. Main and deployment untouched.
+
+The previous report follows as historical evidence; its publication-time pending checks are not represented as passed.
+
+---
+
 # Candidate l — repair verified locally; final hosted gates and tag pending
 
 This report is authored before publication of the final candidate commit. Hosted checks on that exact commit are **PENDING**, and `rc-20261012l` has **not** been created. The final handoff must record the remote SHA, report readback, actual hosted step/log results and tag decision. No candidate-k or restore-branch CI result is substituted for this commit. Independent Astra + Sol clean audits for both scopes on the same tagged commit remain required.

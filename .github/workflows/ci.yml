@@ -33,6 +33,9 @@ jobs:
           fi
       - name: Build owner app and widget
         run: npm run build
+      - name: Candidate l controlled owner-alert browser reproduction
+        if: github.ref == 'refs/heads/claude/release-candidate-20261012l'
+        run: node --test verification/release-candidate-20261012l/reproduce-owner-alert.browser.mjs
       - name: Owner alerts and dashboard browser regressions
         run: node --test test/ownerAlertsDelivery20261006.browser.spec.mjs test/ownerDashboard20261007.browser.spec.mjs
       - name: Strict quote engine and price book gate

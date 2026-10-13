@@ -9,14 +9,25 @@ import {fixture,address,at} from './leadCaptureRepair20261006Fixture.mjs';
 import {createAuthSessionService} from '../server/src/authSessionService.js';
 import {installOwnerAssets} from '../server/src/productionAssets.js';
 
-export async function httpFixture(t){
+export async function httpFixture(t,{controlledOwnerAlertWorker=false}={}){
   const root=path.resolve(new URL('..',import.meta.url).pathname),directory=mkdtempSync(path.join(tmpdir(),'SYNTHETIC-capture-http-'));
   t.after(()=>rmSync(directory,{recursive:true,force:true}));
   const filename=path.join(directory,'synthetic.sqlite'),f=fixture(t,filename),secret='SYNTHETIC_CAPTURE_HTTP_SESSION_ONLY'.padEnd(64,'x');
   const sessions=createAuthSessionService(f.db,{environment:{JWT_SECRET:secret}}),tokens={};
   for(const id of ['synthetic-a','synthetic-b','synthetic-staff'])tokens[id]=sessions.create(f.db.prepare('SELECT * FROM users WHERE id=?').get(id)).token;
   const probe=createServer();probe.listen(0,'127.0.0.1');await once(probe,'listening');const port=probe.address().port;await new Promise(resolve=>probe.close(resolve));
-  const child=spawn(process.execPath,['server/src/server.js'],{cwd:root,env:{...process.env,NODE_ENV:'test',PORT:String(port),DATABASE_PATH:filename,PRICEBOOK_PATH:path.join(directory,'pricebooks'),APP_DATA_DIR:directory,JWT_SECRET:secret,LOCAL_PREVIEW_MODE:'false',ALLOW_PROVIDER_WRITES:'false',VOICE_RUNTIME_ENABLED:'false',STRIPE_BILLING_ENABLED:'false',TWILIO_AUTH_TOKEN:'',TWILIO_ACCOUNT_SID:'',TWILIO_API_KEY_SID:'',TWILIO_API_KEY_SECRET:'',GEMINI_API_KEY:'',STRIPE_SECRET_KEY:''},stdio:['ignore','pipe','pipe']});
+  const workerArgs=controlledOwnerAlertWorker?['--experimental-test-module-mocks','--import','./test/helpers/controlledOwnerAlertWorker.mjs']:[];
+  const child=spawn(process.execPath,[...workerArgs,'server/src/server.js'],{cwd:root,env:{...process.env,NODE_ENV:'test',PORT:String(port),DATABASE_PATH:filename,PRICEBOOK_PATH:path.join(directory,'pricebooks'),APP_DATA_DIR:directory,JWT_SECRET:secret,LOCAL_PREVIEW_MODE:'false',ALLOW_PROVIDER_WRITES:'false',VOICE_RUNTIME_ENABLED:'false',STRIPE_BILLING_ENABLED:'false',TWILIO_AUTH_TOKEN:'',TWILIO_ACCOUNT_SID:'',TWILIO_API_KEY_SID:'',TWILIO_API_KEY_SECRET:'',GEMINI_API_KEY:'',STRIPE_SECRET_KEY:''},stdio:controlledOwnerAlertWorker?['ignore','pipe','pipe','ipc']:['ignore','pipe','pipe']});
+  let dispatchId=0;
+  const dispatchOwnerAlerts=()=>new Promise((resolve,reject)=>{
+    if(!controlledOwnerAlertWorker)return reject(Error('Controlled worker was not requested'));
+    const id=++dispatchId;
+    const finish=(error,result)=>{clearTimeout(timer);child.off('message',receive);child.off('exit',exited);error?reject(error):resolve(result);};
+    const receive=message=>{if(message?.type==='synthetic-owner-alert-result'&&message.id===id)finish(message.error?Error(message.error):null,{processed:message.processed});};
+    const exited=()=>finish(Error('Synthetic server exited before dispatch completed'));
+    const timer=setTimeout(()=>finish(Error('Synthetic dispatch IPC timed out')),10000);
+    child.on('message',receive);child.once('exit',exited);child.send({type:'synthetic-owner-alert-dispatch',id});
+  });
   let output='';for(const stream of [child.stdout,child.stderr])stream.on('data',chunk=>output+=chunk);
   t.after(async()=>{if(child.exitCode===null){child.kill('SIGTERM');let timer;try{await Promise.race([once(child,'exit'),new Promise(resolve=>{timer=setTimeout(()=>{child.kill('SIGKILL');resolve();},5000);})]);}finally{clearTimeout(timer);}}});
   const deadline=Date.now()+20000;while(!output.includes('Off The Clock AI server listening')){assertReady();await new Promise(resolve=>setTimeout(resolve,25));}
@@ -33,7 +44,7 @@ export async function httpFixture(t){
   }catch(error){next(error);}});
   installOwnerAssets(app,path.join(root,'client/dist'));const server=app.listen(0,'127.0.0.1');await once(server,'listening');
   t.after(()=>new Promise(resolve=>{server.close(resolve);server.closeAllConnections();}));
-  return {...f,tokens,request,base:'http://127.0.0.1:'+server.address().port,feedRequests,setFeedHook:hook=>{feedHook=hook;}};
+  return {...f,tokens,request,base:'http://127.0.0.1:'+server.address().port,feedRequests,setFeedHook:hook=>{feedHook=hook;},dispatchOwnerAlerts};
 }
 
 export async function seedViews(f){
