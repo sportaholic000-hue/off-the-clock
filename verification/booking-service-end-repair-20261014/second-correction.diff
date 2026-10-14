@@ -1,0 +1,21 @@
+--- second-regression-source.mjs
++++ test/bookingServiceEnd20261014.spec.mjs
+@@ -9,6 +9,7 @@
+ import {migrateDatabase} from '../server/src/migrations.js';
+ import {createBookingService} from '../server/src/bookingService.js';
+ import {installBookingRoutes} from '../server/src/bookingRoutes.js';
++import {hasOperatorAccess} from '../server/src/planAccess.js';
+ 
+ const OWNER = 'SYNTHETIC-booking-A', OTHER = 'SYNTHETIC-booking-B';
+ const ORIGIN = 'https://synthetic.example.invalid';
+@@ -39,6 +40,10 @@
+   for (const owner of [OWNER, OTHER]) {
+     db.prepare(`INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,role,createdAt)
+       VALUES(?,?,'SYNTHETIC','[SYNTHETIC]','[SYNTHETIC]','Operator','active','owner',?)`).run(owner,owner+'@example.invalid',clock().toISOString());
++    db.prepare(`INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt)
++      VALUES(?,?,?,?,?)`).run(owner,'cus_'+owner,clock().toISOString(),clock().toISOString(),clock().toISOString());
++    db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(owner);
++    assert.equal(hasOperatorAccess(db.prepare('SELECT * FROM users WHERE id=?').get(owner),{now:clock()}),true);
+     db.prepare('INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,updatedAt) VALUES(?,?,?)')
+       .run(owner,JSON.stringify({serviceArea:{mode:'all',cities:[]}}),clock().toISOString());
+     const weekly = Object.fromEntries(['sun','mon','tue','wed','thu','fri','sat'].map(day=>[day,[{start:'09:00',end:'17:00'}]]));

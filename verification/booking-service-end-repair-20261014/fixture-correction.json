@@ -1,0 +1,5 @@
+{
+  "beforeRerunUTC": "2026-10-14T07:56:40.751295+00:00",
+  "reason": "Invalid audit fixture: APPOINTMENT_REQUEST requires voice-appointment. The original 17 failures were setup rejection before exercising the repair. Two service-ID literals corrected; no assertion weakened.",
+  "correctedSourceSha256": "d2851a0ccd897636dcccbe227703b90a7cf6d922b4516327d1ec9c27c61ea672"
+}

@@ -1,0 +1,38 @@
+{"baselineEntitledOwner":{"plan":"Operator","planStatus":"active","trialEndsAt":null,"paymentFailedAt":null,"paidThroughAt":null,"annualPaidThroughAt":null,"serviceEndsAt":null},"paymentMethodVerified":true}
+{
+  "observedUTC": "2026-10-14T07:59:55.665Z",
+  "pid": 4,
+  "fixture": "FK-valid migrated SQLite, real registered public HTTP route, synthetic calendar; second service instance models recovery of durable pending write, no process restart claimed",
+  "account": {
+    "plan": "Operator",
+    "planStatus": "canceled",
+    "serviceEndsAt": "2026-10-14T07:59:54.514Z"
+  },
+  "before": {
+    "id": "f928e0d1-e42e-4e71-94f2-2f9cbc7efdc7",
+    "status": "PENDING_PROVIDER",
+    "providerEventStatus": "PENDING_PROVIDER"
+  },
+  "postAvailability": {
+    "status": 403,
+    "body": {
+      "error": "This business is currently unavailable.",
+      "code": "BOOKING_UNAVAILABLE"
+    }
+  },
+  "getStatus": {
+    "status": 403,
+    "body": {
+      "error": "This business is currently unavailable.",
+      "code": "BOOKING_UNAVAILABLE"
+    }
+  },
+  "providerCalls": [],
+  "after": {
+    "id": "f928e0d1-e42e-4e71-94f2-2f9cbc7efdc7",
+    "status": "PENDING_PROVIDER",
+    "providerEventStatus": "PENDING_PROVIDER"
+  },
+  "sameEventId": false,
+  "outboxCount": 0
+}

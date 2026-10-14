@@ -1,0 +1,239 @@
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking service end: public polling and direct recovery deny service-ended
+ok 1 - booking service end: public polling and direct recovery deny service-ended
+  ---
+  duration_ms: 140.855156
+  type: 'test'
+  ...
+# Subtest: booking service end: public polling and direct recovery deny expired-trial
+ok 2 - booking service end: public polling and direct recovery deny expired-trial
+  ---
+  duration_ms: 81.180084
+  type: 'test'
+  ...
+# Subtest: booking service end: public polling and direct recovery deny lost-booking-plan
+ok 3 - booking service end: public polling and direct recovery deny lost-booking-plan
+  ---
+  duration_ms: 85.482792
+  type: 'test'
+  ...
+# Subtest: booking service end: public recovery at deadline offset -1ms
+not ok 4 - booking service end: public recovery at deadline offset -1ms
+  ---
+  duration_ms: 63.398093
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:124:30'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    403 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 403
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: public recovery at deadline offset 0ms
+ok 5 - booking service end: public recovery at deadline offset 0ms
+  ---
+  duration_ms: 68.186964
+  type: 'test'
+  ...
+# Subtest: booking service end: deadline during awaited getEvent prevents recovery write
+not ok 6 - booking service end: deadline during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 10005.072758
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:135:3'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 10000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: booking service end: plan-change during awaited getEvent prevents recovery write
+not ok 7 - booking service end: plan-change during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 10010.476254
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:135:3'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 10000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: booking service end: deadline during awaited listBusy prevents recovery write
+not ok 8 - booking service end: deadline during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 10005.03238
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:135:3'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 10000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: booking service end: plan-change during awaited listBusy prevents recovery write
+not ok 9 - booking service end: plan-change during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 10008.494348
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:135:3'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 10000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: booking service end: active recovery reuses saved event, preserves receipt and confirms once
+not ok 10 - booking service end: active recovery reuses saved event, preserves receipt and confirms once
+  ---
+  duration_ms: 79.323834
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:149:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(results.some(r=>r.body.status==='CONFIRMED'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:152:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: existing provider event reconciles without creation or duplicate notification
+not ok 11 - booking service end: existing provider event reconciles without creation or duplicate notification
+  ---
+  duration_ms: 82.848108
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:162:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'CONFIRMED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'CONFIRMED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:164:44)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: lookup error stays uncertain and retains pending receipt/slot
+not ok 12 - booking service end: lookup error stays uncertain and retains pending receipt/slot
+  ---
+  duration_ms: 80.724782
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:170:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    403 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 403
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:173:44)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: database reopen/service reconstruction blocks expired recovery
+ok 13 - booking service end: database reopen/service reconstruction blocks expired recovery
+  ---
+  duration_ms: 78.539352
+  type: 'test'
+  ...
+# Subtest: booking service end: database reopen/service reconstruction allows entitled recovery
+not ok 14 - booking service end: database reopen/service reconstruction allows entitled recovery
+  ---
+  duration_ms: 72.083823
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:177:38'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'PENDING_CONFIRMATION'
+    - 'CONFIRMED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'CONFIRMED'
+  actual: 'PENDING_CONFIRMATION'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:181:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: already-dispatched original write can settle after deadline
+ok 15 - booking service end: already-dispatched original write can settle after deadline
+  ---
+  duration_ms: 70.543116
+  type: 'test'
+  ...
+# Subtest: booking service end: already-dispatched recovery write can settle after deadline
+not ok 16 - booking service end: already-dispatched recovery write can settle after deadline
+  ---
+  duration_ms: 10004.511271
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:187:51'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 10000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+not ok 17 - booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+  ---
+  duration_ms: 137.759965
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:202:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    403 !== 404
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 404
+  actual: 403
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:210:13)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 6
+# fail 6
+# cancelled 5
+# skipped 0
+# todo 0
+# duration_ms 51328.94338

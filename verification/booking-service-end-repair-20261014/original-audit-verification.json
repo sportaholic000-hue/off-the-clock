@@ -1,0 +1,7 @@
+{
+  "path": "/workspace/scratch/998ee29c5e28/platform-audit-20261014/NOT-CLEAN-personal-platform-rc-20261013m-20261014.zip",
+  "sha256": "39b0a1597a1814b372ff558b8cb4a1baeb90ff60fd5f6870961aff80bcc05ced",
+  "verified": true,
+  "inspection": "ZIP CRC and baseline probe source/output/metadata inspected; archive unchanged and not included in this repair evidence bundle.",
+  "correction": "Its initial active-user insert is downgraded by the billing-evidence trigger; baseline-entitled.mjs adds verified synthetic evidence and checks actual entitlement. Original archive bytes were not rewritten."
+}

@@ -1,0 +1,3047 @@
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Operator monthly: trial reminder exactly October 17, once, amount 11900
+ok 1 - Operator monthly: trial reminder exactly October 17, once, amount 11900
+  ---
+  duration_ms: 81.528831
+  type: 'test'
+  ...
+# Subtest: Operator monthly: no paid term before trial end; first charge 11900
+ok 2 - Operator monthly: no paid term before trial end; first charge 11900
+  ---
+  duration_ms: 37.837045
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+ok 3 - QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+  ---
+  duration_ms: 41.17144
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: no paid term before trial end; first charge 27900
+ok 4 - QuoteDone monthly: no paid term before trial end; first charge 27900
+  ---
+  duration_ms: 39.431623
+  type: 'test'
+  ...
+# Subtest: Operator annual: trial reminder exactly October 17, once, amount 119000
+ok 5 - Operator annual: trial reminder exactly October 17, once, amount 119000
+  ---
+  duration_ms: 52.538886
+  type: 'test'
+  ...
+# Subtest: Operator annual: no paid term before trial end; first charge 119000
+ok 6 - Operator annual: no paid term before trial end; first charge 119000
+  ---
+  duration_ms: 41.062376
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+ok 7 - QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+  ---
+  duration_ms: 55.560387
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: no paid term before trial end; first charge 279000
+ok 8 - QuoteDone annual: no paid term before trial end; first charge 279000
+  ---
+  duration_ms: 61.373606
+  type: 'test'
+  ...
+# Subtest: annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+ok 9 - annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+  ---
+  duration_ms: 64.357542
+  type: 'test'
+  ...
+# Subtest: monthly: cancel mid-period, no refund, access ends at paid boundary
+ok 10 - monthly: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 69.777637
+  type: 'test'
+  ...
+# Subtest: monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 11 - monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 102.117541
+  type: 'test'
+  ...
+# Subtest: annual: cancel mid-period, no refund, access ends at paid boundary
+ok 12 - annual: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 61.209569
+  type: 'test'
+  ...
+# Subtest: annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 13 - annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 74.981405
+  type: 'test'
+  ...
+# Subtest: trial cancel is immediate with no invoice and no refund
+ok 14 - trial cancel is immediate with no invoice and no refund
+  ---
+  duration_ms: 45.832248
+  type: 'test'
+  ...
+# Subtest: reactivation before period end reverses scheduled cancel once, keeps records
+ok 15 - reactivation before period end reverses scheduled cancel once, keeps records
+  ---
+  duration_ms: 49.7474
+  type: 'test'
+  ...
+# Subtest: after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+ok 16 - after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+  ---
+  duration_ms: 74.243199
+  type: 'test'
+  ...
+# Subtest: paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+ok 17 - paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+  ---
+  duration_ms: 120.052023
+  type: 'test'
+  ...
+# Subtest: subscription receipt preserves actual charge currency and handwritten amount
+ok 18 - subscription receipt preserves actual charge currency and handwritten amount
+  ---
+  duration_ms: 82.65365
+  type: 'test'
+  ...
+# Subtest: settled invoices suppress stale failure notices in either event order and at dispatch
+    # Subtest: paid-then-older-failed
+    ok 1 - paid-then-older-failed
+      ---
+      duration_ms: 84.566428
+      type: 'test'
+      ...
+    # Subtest: failed-then-paid-before-sync
+    ok 2 - failed-then-paid-before-sync
+      ---
+      duration_ms: 67.046873
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-before-dispatch
+    ok 3 - failed-queued-then-paid-before-dispatch
+      ---
+      duration_ms: 54.602867
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-minute-worker-dispatch
+    ok 4 - failed-queued-then-paid-minute-worker-dispatch
+      ---
+      duration_ms: 72.779795
+      type: 'test'
+      ...
+    # Subtest: paid-only
+    ok 5 - paid-only
+      ---
+      duration_ms: 76.092242
+      type: 'test'
+      ...
+    1..5
+ok 19 - settled invoices suppress stale failure notices in either event order and at dispatch
+  ---
+  duration_ms: 356.959671
+  type: 'test'
+  ...
+# Subtest: overage receipt: ten extra minutes × 35 cents = $3.50, once
+ok 20 - overage receipt: ten extra minutes × 35 cents = $3.50, once
+  ---
+  duration_ms: 101.939301
+  type: 'test'
+  ...
+# Subtest: final overage remainder is charged at the service-end boundary
+ok 21 - final overage remainder is charged at the service-end boundary
+  ---
+  duration_ms: 40.459374
+  type: 'test'
+  ...
+# Subtest: lost email response and restart retain one accepted notice
+ok 22 - lost email response and restart retain one accepted notice
+  ---
+  duration_ms: 112.071302
+  type: 'test'
+  ...
+# Subtest: email ambiguity after retry window does not duplicate delivery
+ok 23 - email ambiguity after retry window does not duplicate delivery
+  ---
+  duration_ms: 45.777064
+  type: 'test'
+  ...
+# Subtest: cancellation lost response recovers by subscription read without repeating mutation
+ok 24 - cancellation lost response recovers by subscription read without repeating mutation
+  ---
+  duration_ms: 33.216458
+  type: 'test'
+  ...
+# Subtest: wrong provider customer cannot cancel or receive access and does not affect tenant B
+ok 25 - wrong provider customer cannot cancel or receive access and does not affect tenant B
+  ---
+  duration_ms: 48.375178
+  type: 'test'
+  ...
+# Subtest: invalid price cannot create a false trial reminder
+ok 26 - invalid price cannot create a false trial reminder
+  ---
+  duration_ms: 49.066082
+  type: 'test'
+  ...
+# Subtest: HTTP owner actions and CSV exports reject owner spoofing, cross-tenant bodies and staff
+ok 27 - HTTP owner actions and CSV exports reject owner spoofing, cross-tenant bodies and staff
+  ---
+  duration_ms: 172.764686
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2026-12-01T12:00:00.000Z: phone released=false, records deleted=false
+ok 28 - verified reactivation 2026-12-01T12:00:00.000Z: phone released=false, records deleted=false
+  ---
+  duration_ms: 79.248895
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2026-12-21T12:00:00.000Z: phone released=true, records deleted=false
+ok 29 - verified reactivation 2026-12-21T12:00:00.000Z: phone released=true, records deleted=false
+  ---
+  duration_ms: 57.670674
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2027-02-19T12:00:00.000Z: phone released=true, records deleted=true
+ok 30 - verified reactivation 2027-02-19T12:00:00.000Z: phone released=true, records deleted=true
+  ---
+  duration_ms: 58.066343
+  type: 'test'
+  ...
+# Subtest: new active/card-only subscription without its paid invoice cannot restore retained service
+ok 31 - new active/card-only subscription without its paid invoice cannot restore retained service
+  ---
+  duration_ms: 64.763253
+  type: 'test'
+  ...
+# Subtest: overage failure uses the existing grace and suspension path; paid callback recovers without duplicates
+ok 32 - overage failure uses the existing grace and suspension path; paid callback recovers without duplicates
+  ---
+  duration_ms: 59.371405
+  type: 'test'
+  ...
+# Subtest: reminder uses invoice preview total with tax, not an invented base amount
+ok 33 - reminder uses invoice preview total with tax, not an invented base amount
+  ---
+  duration_ms: 40.075009
+  type: 'test'
+  ...
+# Subtest: cancelled renewal suppresses the reminder; incorrect preview tenant fails closed
+ok 34 - cancelled renewal suppresses the reminder; incorrect preview tenant fails closed
+  ---
+  duration_ms: 48.337672
+  type: 'test'
+  ...
+# Subtest: 90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts
+ok 35 - 90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts
+  ---
+  duration_ms: 57.84292
+  type: 'test'
+  ...
+# Subtest: merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant
+ok 36 - merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant
+  ---
+  duration_ms: 48.413177
+  type: 'test'
+  ...
+# Subtest: durable notice transaction rolls back both dashboard and email on partial storage failure
+ok 37 - durable notice transaction rolls back both dashboard and email on partial storage failure
+  ---
+  duration_ms: 39.43286
+  type: 'test'
+  ...
+# Subtest: concurrent tenant cancellation requests cause a single provider mutation
+ok 38 - concurrent tenant cancellation requests cause a single provider mutation
+  ---
+  duration_ms: 37.64247
+  type: 'test'
+  ...
+# Subtest: cancellation intent survives DB restart and no pending intent is advertised as confirmed
+ok 39 - cancellation intent survives DB restart and no pending intent is advertised as confirmed
+  ---
+  duration_ms: 93.523961
+  type: 'test'
+  ...
+# Subtest: service end does not attempt a carrier shutdown or claim confirmation
+ok 40 - service end does not attempt a carrier shutdown or claim confirmation
+  ---
+  duration_ms: 39.449084
+  type: 'test'
+  ...
+# Subtest: phone release failure retains its saved SID and retries only that tenant
+ok 41 - phone release failure retains its saved SID and retries only that tenant
+  ---
+  duration_ms: 46.675835
+  type: 'test'
+  ...
+# Subtest: a delayed cleanup worker does not release a phone reactivated within its 30-day window
+ok 42 - a delayed cleanup worker does not release a phone reactivated within its 30-day window
+  ---
+  duration_ms: 60.001696
+  type: 'test'
+  ...
+# Subtest: legacy missing currency is recovered from a bound provider receipt, never guessed
+ok 43 - legacy missing currency is recovered from a bound provider receipt, never guessed
+  ---
+  duration_ms: 40.720352
+  type: 'test'
+  ...
+# Subtest: service end preserves automatic collection on a previously submitted unpaid overage invoice
+ok 44 - service end preserves automatic collection on a previously submitted unpaid overage invoice
+  ---
+  duration_ms: 58.524423
+  type: 'test'
+  ...
+# Subtest: crossing service end while reading an overage period still finalizes accrued overage
+ok 45 - crossing service end while reading an overage period still finalizes accrued overage
+  ---
+  duration_ms: 50.19206
+  type: 'test'
+  ...
+# Subtest: lease loss during phone release cannot clear the saved phone receipt
+ok 46 - lease loss during phone release cannot clear the saved phone receipt
+  ---
+  duration_ms: 44.715598
+  type: 'test'
+  ...
+# Subtest: a slow invoice preview crossing the first-charge time cannot send a stale trial reminder
+ok 47 - a slow invoice preview crossing the first-charge time cannot send a stale trial reminder
+  ---
+  duration_ms: 44.333262
+  type: 'test'
+  ...
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: actual production routes enforce cancelled service and tenant-scoped exports without enabling any providers
+ok 48 - actual production routes enforce cancelled service and tenant-scoped exports without enabling any providers
+  ---
+  duration_ms: 965.080706
+  type: 'test'
+  ...
+# Subtest: signed production incoming call after service end starts no AI and forwards no call
+ok 49 - signed production incoming call after service end starts no AI and forwards no call
+  ---
+  duration_ms: 603.415913
+  type: 'test'
+  ...
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking owner routes expose the complete configuration surface
+ok 50 - booking owner routes expose the complete configuration surface
+  ---
+  duration_ms: 1.828942
+  type: 'test'
+  ...
+# Subtest: route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+ok 51 - route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+  ---
+  duration_ms: 0.756702
+  type: 'test'
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: owner settings and per-service policy become direct-ready only from owner-scoped saved state
+ok 52 - owner settings and per-service policy become direct-ready only from owner-scoped saved state
+  ---
+  duration_ms: 25.978824
+  type: 'test'
+  ...
+# Subtest: narrow grant is direct-ready; a missing grant has the owner reconnect message
+ok 53 - narrow grant is direct-ready; a missing grant has the owner reconnect message
+  ---
+  duration_ms: 4.457782
+  type: 'test'
+  ...
+# Subtest: tenant isolation prevents reading or writing another owner service policy
+ok 54 - tenant isolation prevents reading or writing another owner service policy
+  ---
+  duration_ms: 1.676611
+  type: 'test'
+  ...
+# Subtest: settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+ok 55 - settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+  ---
+  duration_ms: 15.391567
+  type: 'test'
+  ...
+# Subtest: policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+ok 56 - policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+  ---
+  duration_ms: 5.408557
+  type: 'test'
+  ...
+# Subtest: widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+ok 57 - widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+  ---
+  duration_ms: 10.389559
+  type: 'test'
+  ...
+# Subtest: widget settings and access-key creation roll back together on key collision
+ok 58 - widget settings and access-key creation roll back together on key collision
+  ---
+  duration_ms: 1.309037
+  type: 'test'
+  ...
+# Subtest: readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+ok 59 - readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+  ---
+  duration_ms: 9.881792
+  type: 'test'
+  ...
+# Subtest: structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+ok 60 - structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+  ---
+  duration_ms: 4.356068
+  type: 'test'
+  ...
+# (node:25) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking B01 spring-forward duration cannot extend past owner closing time
+ok 61 - booking B01 spring-forward duration cannot extend past owner closing time
+  ---
+  duration_ms: 19.259463
+  type: 'test'
+  ...
+# Subtest: booking B01 fall-back elapsed duration includes the valid extra-hour slot
+ok 62 - booking B01 fall-back elapsed duration includes the valid extra-hour slot
+  ---
+  duration_ms: 5.668379
+  type: 'test'
+  ...
+# Subtest: DST control: a skipped closing wall time does not discard an earlier valid short appointment
+ok 63 - DST control: a skipped closing wall time does not discard an earlier valid short appointment
+  ---
+  duration_ms: 3.486185
+  type: 'test'
+  ...
+# Subtest: DST control: a narrow repeated-hours window cannot span intervening closed clock times
+ok 64 - DST control: a narrow repeated-hours window cannot span intervening closed clock times
+  ---
+  duration_ms: 4.815101
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+ok 65 - booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+  ---
+  duration_ms: 91.530233
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+ok 66 - booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+  ---
+  duration_ms: 72.049126
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+ok 67 - booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+  ---
+  duration_ms: 79.734702
+  type: 'test'
+  ...
+# Subtest: booking B03 confirmation rechecks a slot start that passed during hold
+ok 68 - booking B03 confirmation rechecks a slot start that passed during hold
+  ---
+  duration_ms: 95.251643
+  type: 'test'
+  ...
+# Subtest: booking B03 confirmation rechecks a slot start that passed during provider read
+ok 69 - booking B03 confirmation rechecks a slot start that passed during provider read
+  ---
+  duration_ms: 140.283513
+  type: 'test'
+  ...
+# Subtest: booking B04 changed owner availability during busy read prevents stale provider write
+ok 70 - booking B04 changed owner availability during busy read prevents stale provider write
+  ---
+  duration_ms: 193.975949
+  type: 'test'
+  ...
+# (node:25) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:25) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: two independent SQLite workers racing for one slot yield exactly one hold and one booking
+ok 71 - two independent SQLite workers racing for one slot yield exactly one hold and one booking
+  ---
+  duration_ms: 918.796663
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 299999
+ok 72 - hold expiry releases overlap exactly at five minutes: 299999
+  ---
+  duration_ms: 74.561681
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 300000
+ok 73 - hold expiry releases overlap exactly at five minutes: 300000
+  ---
+  duration_ms: 73.6871
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 300001
+ok 74 - hold expiry releases overlap exactly at five minutes: 300001
+  ---
+  duration_ms: 107.245159
+  type: 'test'
+  ...
+# Subtest: hold and booking receipts survive restart; changed payload and alternate key cannot duplicate
+ok 75 - hold and booking receipts survive restart; changed payload and alternate key cannot duplicate
+  ---
+  duration_ms: 87.771088
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: busy-rejection
+ok 76 - provider/storage failure keeps visible durable outcome: busy-rejection
+  ---
+  duration_ms: 55.044078
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: create-rejection
+ok 77 - provider/storage failure keeps visible durable outcome: create-rejection
+  ---
+  duration_ms: 70.337446
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: lost-response
+ok 78 - provider/storage failure keeps visible durable outcome: lost-response
+  ---
+  duration_ms: 124.110756
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: sqlite-finalization
+ok 79 - provider/storage failure keeps visible durable outcome: sqlite-finalization
+  ---
+  duration_ms: 97.790497
+  type: 'test'
+  ...
+# Subtest: tenant contexts, holds, slots, confirmations, dashboard and provider reads never cross owners
+ok 80 - tenant contexts, holds, slots, confirmations, dashboard and provider reads never cross owners
+  ---
+  duration_ms: 143.360124
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-03-07
+ok 81 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-07
+  ---
+  duration_ms: 197.222779
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-03-08
+ok 82 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-08
+  ---
+  duration_ms: 122.698568
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-11-01
+ok 83 - Moncton booking, owner views and Los Angeles instant agree on 2026-11-01
+  ---
+  duration_ms: 125.685493
+  type: 'test'
+  ...
+# Subtest: Moncton DST gap and repeated times have exact unambiguous instants
+ok 84 - Moncton DST gap and repeated times have exact unambiguous instants
+  ---
+  duration_ms: 3.019174
+  type: 'test'
+  ...
+# (node:31) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production server booking routes, adapter and owner views agree under concurrent HTTP requests
+ok 85 - production server booking routes, adapter and owner views agree under concurrent HTTP requests
+  ---
+  duration_ms: 1945.400712
+  type: 'test'
+  ...
+# Subtest: production provider response loss stays visible and reconciles after lookup recovery
+ok 86 - production provider response loss stays visible and reconciles after lookup recovery
+  ---
+  duration_ms: 1837.942828
+  type: 'test'
+  ...
+# (node:32) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking capability fails closed through explicit, direct, handoff, and preference states
+ok 87 - booking capability fails closed through explicit, direct, handoff, and preference states
+  ---
+  duration_ms: 18.476179
+  type: 'test'
+  ...
+# Subtest: public branding validates every owner-configurable value
+ok 88 - public branding validates every owner-configurable value
+  ---
+  duration_ms: 0.89404
+  type: 'test'
+  ...
+# (node:39) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:39) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: preference request atomically stores a callback request without claiming a booking
+ok 89 - preference request atomically stores a callback request without claiming a booking
+  ---
+  duration_ms: 33.075415
+  type: 'test'
+  ...
+# Subtest: tenant isolation and expired or inactive intent checks happen before writes
+ok 90 - tenant isolation and expired or inactive intent checks happen before writes
+  ---
+  duration_ms: 3.012228
+  type: 'test'
+  ...
+# Subtest: request validation is closed and rejects malformed nested data
+ok 91 - request validation is closed and rejects malformed nested data
+  ---
+  duration_ms: 15.029205
+  type: 'test'
+  ...
+# Subtest: future dates use settings timezone, then a valid owner timezone fallback
+ok 92 - future dates use settings timezone, then a valid owner timezone fallback
+  ---
+  duration_ms: 3.437982
+  type: 'test'
+  ...
+# Subtest: exact retry survives restart and expiry while changed payload conflicts
+ok 93 - exact retry survives restart and expiry while changed payload conflicts
+  ---
+  duration_ms: 2.0261
+  type: 'test'
+  ...
+# Subtest: outbox failure rolls back preference and idempotency receipt atomically
+ok 94 - outbox failure rolls back preference and idempotency receipt atomically
+  ---
+  duration_ms: 1.472934
+  type: 'test'
+  ...
+# (node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: public booking context binds token tenant and exact allowed website origin
+ok 95 - public booking context binds token tenant and exact allowed website origin
+  ---
+  duration_ms: 2.755641
+  type: 'test'
+  ...
+# Subtest: availability requires unchanged scope and a strict post-quote identity envelope
+ok 96 - availability requires unchanged scope and a strict post-quote identity envelope
+  ---
+  duration_ms: 1.332883
+  type: 'test'
+  ...
+# Subtest: hold, release, confirm, and polling forward only server-bound context
+ok 97 - hold, release, confirm, and polling forward only server-bound context
+  ---
+  duration_ms: 1.236968
+  type: 'test'
+  ...
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:81) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: booking tokens resolve tenant context without accepting a body ownerId
+ok 98 - booking tokens resolve tenant context without accepting a body ownerId
+  ---
+  duration_ms: 8.139822
+  type: 'test'
+  ...
+# Subtest: tenant-scoped availability does not reveal another owner intent
+ok 99 - tenant-scoped availability does not reveal another owner intent
+  ---
+  duration_ms: 2.321175
+  type: 'test'
+  ...
+# Subtest: unconfigured and out-of-area requests fall back before any calendar read
+ok 100 - unconfigured and out-of-area requests fall back before any calendar read
+  ---
+  duration_ms: 20.836474
+  type: 'test'
+  ...
+# Subtest: confirmation rechecks current service-area policy before provider work
+ok 101 - confirmation rechecks current service-area policy before provider work
+  ---
+  duration_ms: 38.841883
+  type: 'test'
+  ...
+# Subtest: slot IDs are opaque and tampering is rejected without creating a hold
+ok 102 - slot IDs are opaque and tampering is rejected without creating a hold
+  ---
+  duration_ms: 22.287835
+  type: 'test'
+  ...
+# Subtest: holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+ok 103 - holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+  ---
+  duration_ms: 64.556082
+  type: 'test'
+  ...
+# Subtest: hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+ok 104 - hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+  ---
+  duration_ms: 21.959029
+  type: 'test'
+  ...
+# Subtest: idempotency key reuse with a changed hold payload is rejected
+ok 105 - idempotency key reuse with a changed hold payload is rejected
+  ---
+  duration_ms: 14.303419
+  type: 'test'
+  ...
+# Subtest: a policy revision change invalidates a held slot before provider work
+ok 106 - a policy revision change invalidates a held slot before provider work
+  ---
+  duration_ms: 19.09221
+  type: 'test'
+  ...
+# Subtest: review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+ok 107 - review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+  ---
+  duration_ms: 27.232362
+  type: 'test'
+  ...
+# Subtest: confirmed provider result commits one appointment and one outbox event, with exact retry
+ok 108 - confirmed provider result commits one appointment and one outbox event, with exact retry
+  ---
+  duration_ms: 28.811957
+  type: 'test'
+  ...
+# Subtest: pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+ok 109 - pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+  ---
+  duration_ms: 40.120403
+  type: 'test'
+  ...
+# Subtest: confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+ok 110 - confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+  ---
+  duration_ms: 28.676853
+  type: 'test'
+  ...
+# Subtest: confirmation polling returns an exact customer-safe failure shape
+ok 111 - confirmation polling returns an exact customer-safe failure shape
+  ---
+  duration_ms: 50.288467
+  type: 'test'
+  ...
+# Subtest: a provider conflict discovered after the hold releases it without creating an event
+ok 112 - a provider conflict discovered after the hold releases it without creating an event
+  ---
+  duration_ms: 84.28941
+  type: 'test'
+  ...
+# Subtest: known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+ok 113 - known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+  ---
+  duration_ms: 91.311513
+  type: 'test'
+  ...
+# Subtest: ambiguous provider timeout reconciles by deterministic event lookup
+ok 114 - ambiguous provider timeout reconciles by deterministic event lookup
+  ---
+  duration_ms: 139.159775
+  type: 'test'
+  ...
+# Subtest: calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+ok 115 - calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+  ---
+  duration_ms: 11.286523
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-status never books or emits booked notification
+ok 116 - Provider confirmation create: missing-status never books or emits booked notification
+  ---
+  duration_ms: 128.156251
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: tentative never books or emits booked notification
+ok 117 - Provider confirmation create: tentative never books or emits booked notification
+  ---
+  duration_ms: 173.704019
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: cancelled never books or emits booked notification
+ok 118 - Provider confirmation create: cancelled never books or emits booked notification
+  ---
+  duration_ms: 190.488043
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-id never books or emits booked notification
+ok 119 - Provider confirmation create: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 75.098842
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-day never books or emits booked notification
+ok 120 - Provider confirmation create: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 81.557534
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-duration never books or emits booked notification
+ok 121 - Provider confirmation create: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 141.606911
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-start never books or emits booked notification
+ok 122 - Provider confirmation create: missing-start never books or emits booked notification
+  ---
+  duration_ms: 139.774032
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: numeric-start never books or emits booked notification
+ok 123 - Provider confirmation create: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 99.960354
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-status never books or emits booked notification
+ok 124 - Provider confirmation recovery: missing-status never books or emits booked notification
+  ---
+  duration_ms: 124.668793
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: tentative never books or emits booked notification
+ok 125 - Provider confirmation recovery: tentative never books or emits booked notification
+  ---
+  duration_ms: 89.455732
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: cancelled never books or emits booked notification
+ok 126 - Provider confirmation recovery: cancelled never books or emits booked notification
+  ---
+  duration_ms: 37.862133
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-id never books or emits booked notification
+ok 127 - Provider confirmation recovery: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 26.026751
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-day never books or emits booked notification
+ok 128 - Provider confirmation recovery: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 18.810024
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-duration never books or emits booked notification
+ok 129 - Provider confirmation recovery: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 56.275427
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-start never books or emits booked notification
+ok 130 - Provider confirmation recovery: missing-start never books or emits booked notification
+  ---
+  duration_ms: 36.630507
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: numeric-start never books or emits booked notification
+ok 131 - Provider confirmation recovery: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 86.0482
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-status never books or emits booked notification
+ok 132 - Provider confirmation poll: missing-status never books or emits booked notification
+  ---
+  duration_ms: 66.46176
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: tentative never books or emits booked notification
+ok 133 - Provider confirmation poll: tentative never books or emits booked notification
+  ---
+  duration_ms: 55.701359
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: cancelled never books or emits booked notification
+ok 134 - Provider confirmation poll: cancelled never books or emits booked notification
+  ---
+  duration_ms: 63.132774
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-id never books or emits booked notification
+ok 135 - Provider confirmation poll: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 55.996024
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-day never books or emits booked notification
+ok 136 - Provider confirmation poll: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 67.497543
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-duration never books or emits booked notification
+ok 137 - Provider confirmation poll: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 79.372716
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-start never books or emits booked notification
+ok 138 - Provider confirmation poll: missing-start never books or emits booked notification
+  ---
+  duration_ms: 112.520746
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: numeric-start never books or emits booked notification
+ok 139 - Provider confirmation poll: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 95.507042
+  type: 'test'
+  ...
+# Subtest: Provider confirmation accepts the same exact instants expressed with another timezone offset
+ok 140 - Provider confirmation accepts the same exact instants expressed with another timezone offset
+  ---
+  duration_ms: 25.232141
+  type: 'test'
+  ...
+# Subtest: One intent cannot create another appointment through a different hold or idempotency key
+ok 141 - One intent cannot create another appointment through a different hold or idempotency key
+  ---
+  duration_ms: 22.913973
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler
+ok 142 - Interrupted pre-write preparation releases its slot and fences a late handler
+  ---
+  duration_ms: 41.055503
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+ok 143 - Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+  ---
+  duration_ms: 49.28039
+  type: 'test'
+  ...
+# Subtest: A provider write already started remains pending after restart until its exact event is confirmed
+ok 144 - A provider write already started remains pending after restart until its exact event is confirmed
+  ---
+  duration_ms: 48.042607
+  type: 'test'
+  ...
+# Subtest: Opus booking: missing event after write marker retries the exact saved event and confirms once
+ok 145 - Opus booking: missing event after write marker retries the exact saved event and confirms once
+  ---
+  duration_ms: 19.098788
+  type: 'test'
+  ...
+# Subtest: Opus booking: simultaneous recovery polls create only one retry
+ok 146 - Opus booking: simultaneous recovery polls create only one retry
+  ---
+  duration_ms: 18.088825
+  type: 'test'
+  ...
+# Subtest: Opus booking control: lookup-failed never creates a new event or announces confirmation
+ok 147 - Opus booking control: lookup-failed never creates a new event or announces confirmation
+  ---
+  duration_ms: 42.189999
+  type: 'test'
+  ...
+# Subtest: Opus booking control: busy never creates a new event or announces confirmation
+ok 148 - Opus booking control: busy never creates a new event or announces confirmation
+  ---
+  duration_ms: 34.035618
+  type: 'test'
+  ...
+# Subtest: Opus booking control: policy-changed never creates a new event or announces confirmation
+ok 149 - Opus booking control: policy-changed never creates a new event or announces confirmation
+  ---
+  duration_ms: 32.071116
+  type: 'test'
+  ...
+# Subtest: Opus booking control: calendar-changed never creates a new event or announces confirmation
+ok 150 - Opus booking control: calendar-changed never creates a new event or announces confirmation
+  ---
+  duration_ms: 36.86038
+  type: 'test'
+  ...
+# Subtest: Opus booking control: no-idempotency never creates a new event or announces confirmation
+ok 151 - Opus booking control: no-idempotency never creates a new event or announces confirmation
+  ---
+  duration_ms: 35.510104
+  type: 'test'
+  ...
+# Subtest: Opus booking control: expired-time never creates a new event or announces confirmation
+ok 152 - Opus booking control: expired-time never creates a new event or announces confirmation
+  ---
+  duration_ms: 23.829003
+  type: 'test'
+  ...
+# Subtest: Opus booking: existing event is reconciled without a write
+ok 153 - Opus booking: existing event is reconciled without a write
+  ---
+  duration_ms: 26.098307
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking token receipts round trip without exposing the public token
+ok 154 - booking token receipts round trip without exposing the public token
+  ---
+  duration_ms: 2.94752
+  type: 'test'
+  ...
+# Subtest: booking token receipts reject tampering, wrong keys, and incomplete payloads
+ok 155 - booking token receipts reject tampering, wrong keys, and incomplete payloads
+  ---
+  duration_ms: 0.750904
+  type: 'test'
+  ...
+# (node:98) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: calendar change recovery restores rejected bookings and reconciles ambiguous writes without retrying the requested action
+    # Subtest: cancel: definite HTTP 400 restores the original and releases the replacement
+    ok 1 - cancel: definite HTTP 400 restores the original and releases the replacement
+      ---
+      duration_ms: 150.661798
+      type: 'test'
+      ...
+    # Subtest: cancel: definite HTTP 403 restores the original and releases the replacement
+    ok 2 - cancel: definite HTTP 403 restores the original and releases the replacement
+      ---
+      duration_ms: 314.17276
+      type: 'test'
+      ...
+    # Subtest: reschedule: definite HTTP 400 restores the original and releases the replacement
+    ok 3 - reschedule: definite HTTP 400 restores the original and releases the replacement
+      ---
+      duration_ms: 159.628364
+      type: 'test'
+      ...
+    # Subtest: reschedule: definite HTTP 403 restores the original and releases the replacement
+    ok 4 - reschedule: definite HTTP 403 restores the original and releases the replacement
+      ---
+      duration_ms: 153.203031
+      type: 'test'
+      ...
+    # Subtest: cancel: timeout-delayed, restart and read reconciliation preserve one provider write
+    ok 5 - cancel: timeout-delayed, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 138.72225
+      type: 'test'
+      ...
+    # Subtest: cancel: 503-after, restart and read reconciliation preserve one provider write
+    ok 6 - cancel: 503-after, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 96.252864
+      type: 'test'
+      ...
+    # Subtest: cancel: lost-response-after, restart and read reconciliation preserve one provider write
+    ok 7 - cancel: lost-response-after, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 77.570154
+      type: 'test'
+      ...
+    # Subtest: reschedule: timeout-delayed, restart and read reconciliation preserve one provider write
+    ok 8 - reschedule: timeout-delayed, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 164.495654
+      type: 'test'
+      ...
+    # Subtest: reschedule: 503-after, restart and read reconciliation preserve one provider write
+    ok 9 - reschedule: 503-after, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 140.603165
+      type: 'test'
+      ...
+    # Subtest: reschedule: lost-response-after, restart and read reconciliation preserve one provider write
+    ok 10 - reschedule: lost-response-after, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 97.045622
+      type: 'test'
+      ...
+    # Subtest: cancel: timeout-never safely resolves the original slot and blocks a late write
+    ok 11 - cancel: timeout-never safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 105.579047
+      type: 'test'
+      ...
+    # Subtest: cancel: timeout-success-during-fence safely resolves the original slot and blocks a late write
+    ok 12 - cancel: timeout-success-during-fence safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 137.007802
+      type: 'test'
+      ...
+    # Subtest: cancel: timeout-fence-lost-response safely resolves the original slot and blocks a late write
+    ok 13 - cancel: timeout-fence-lost-response safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 120.115698
+      type: 'test'
+      ...
+    # Subtest: reschedule: timeout-never safely resolves the original slot and blocks a late write
+    ok 14 - reschedule: timeout-never safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 213.074729
+      type: 'test'
+      ...
+    # Subtest: reschedule: timeout-success-during-fence safely resolves the original slot and blocks a late write
+    ok 15 - reschedule: timeout-success-during-fence safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 139.776348
+      type: 'test'
+      ...
+    # Subtest: reschedule: timeout-fence-lost-response safely resolves the original slot and blocks a late write
+    ok 16 - reschedule: timeout-fence-lost-response safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 316.485135
+      type: 'test'
+      ...
+    # Subtest: a failed local restoration retains definite rejection evidence and rolls back both slots atomically
+    ok 17 - a failed local restoration retains definite rejection evidence and rolls back both slots atomically
+      ---
+      duration_ms: 258.922153
+      type: 'test'
+      ...
+    # Subtest: interrupted preparation expires safely and an older worker cannot start a late write
+    ok 18 - interrupted preparation expires safely and an older worker cannot start a late write
+      ---
+      duration_ms: 218.673446
+      type: 'test'
+      ...
+    1..18
+ok 156 - calendar change recovery restores rejected bookings and reconciles ambiguous writes without retrying the requested action
+  ---
+  duration_ms: 3007.322282
+  type: 'test'
+  ...
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: calendar credentials encrypt with authenticated encryption and round trip
+ok 157 - calendar credentials encrypt with authenticated encryption and round trip
+  ---
+  duration_ms: 2.270439
+  type: 'test'
+  ...
+# Subtest: calendar credential tampering and invalid keys fail closed
+ok 158 - calendar credential tampering and invalid keys fail closed
+  ---
+  duration_ms: 0.838617
+  type: 'test'
+  ...
+# Subtest: legacy plaintext Google credentials are encrypted before profile metadata is scrubbed
+ok 159 - legacy plaintext Google credentials are encrypted before profile metadata is scrubbed
+  ---
+  duration_ms: 0.510791
+  type: 'test'
+  ...
+# Subtest: non-secret calendar metadata does not trigger a credential migration
+ok 160 - non-secret calendar metadata does not trigger a credential migration
+  ---
+  duration_ms: 0.194454
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:131) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: issue returns 32-byte base64url entropy and stores only its SHA-256 hash
+ok 161 - issue returns 32-byte base64url entropy and stores only its SHA-256 hash
+  ---
+  duration_ms: 3.638424
+  type: 'test'
+  ...
+# Subtest: consume atomically marks a live state and returns its persisted owner binding
+ok 162 - consume atomically marks a live state and returns its persisted owner binding
+  ---
+  duration_ms: 1.000471
+  type: 'test'
+  ...
+# Subtest: a consumed state is rejected on replay with the generic public message
+ok 163 - a consumed state is rejected on replay with the generic public message
+  ---
+  duration_ms: 1.187883
+  type: 'test'
+  ...
+# Subtest: an expired state fails closed and is not marked consumed
+ok 164 - an expired state fails closed and is not marked consumed
+  ---
+  duration_ms: 0.799998
+  type: 'test'
+  ...
+# Subtest: malformed and unknown state values fail closed without reflecting input
+ok 165 - malformed and unknown state values fail closed without reflecting input
+  ---
+  duration_ms: 0.780709
+  type: 'test'
+  ...
+# Subtest: a digest collision is retried without overwriting the existing owner
+ok 166 - a digest collision is retried without overwriting the existing owner
+  ---
+  duration_ms: 0.819728
+  type: 'test'
+  ...
+# Subtest: collision exhaustion fails safely after a bounded number of attempts
+ok 167 - collision exhaustion fails safely after a bounded number of attempts
+  ---
+  duration_ms: 0.825286
+  type: 'test'
+  ...
+# Subtest: database failures are replaced by stable secret-safe errors
+ok 168 - database failures are replaced by stable secret-safe errors
+  ---
+  duration_ms: 0.776212
+  type: 'test'
+  ...
+# Subtest: a reentrant competing consumer can win, but exactly one consumer succeeds
+ok 169 - a reentrant competing consumer can win, but exactly one consumer succeeds
+  ---
+  duration_ms: 1.289878
+  type: 'test'
+  ...
+# Subtest: state survives a service and database restart until its one successful consume
+ok 170 - state survives a service and database restart until its one successful consume
+  ---
+  duration_ms: 3.116837
+  type: 'test'
+  ...
+# Subtest: owner, TTL, clock, and random-source validation fails before unsafe state use
+ok 171 - owner, TTL, clock, and random-source validation fails before unsafe state use
+  ---
+  duration_ms: 1.190447
+  type: 'test'
+  ...
+# (node:137) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Google Calendar authorization requests exactly the booking scopes
+ok 172 - Google Calendar authorization requests exactly the booking scopes
+  ---
+  duration_ms: 3.144509
+  type: 'test'
+  ...
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: owned-events and freebusy grant allows availability and booking on the connected calendar
+ok 173 - owned-events and freebusy grant allows availability and booking on the connected calendar
+  ---
+  duration_ms: 74.020854
+  type: 'test'
+  ...
+# Subtest: missing booking permission refuses the adapter before any provider request
+ok 174 - missing booking permission refuses the adapter before any provider request
+  ---
+  duration_ms: 1.731564
+  type: 'test'
+  ...
+# Subtest: an existing full Calendar grant remains usable without reconnecting
+ok 175 - an existing full Calendar grant remains usable without reconnecting
+  ---
+  duration_ms: 1.414957
+  type: 'test'
+  ...
+# Subtest: a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials
+ok 176 - a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials
+  ---
+  duration_ms: 4.951547
+  type: 'test'
+  ...
+# Subtest: listBusy is owner scoped and maps the Google freebusy request and response
+ok 177 - listBusy is owner scoped and maps the Google freebusy request and response
+  ---
+  duration_ms: 2.968783
+  type: 'test'
+  ...
+# Subtest: UTC request bounds and freebusy response bounds fail closed before use
+ok 178 - UTC request bounds and freebusy response bounds fail closed before use
+  ---
+  duration_ms: 3.329237
+  type: 'test'
+  ...
+# Subtest: createEvent uses the deterministic BookingService event ID and getEvent validates it
+ok 179 - createEvent uses the deterministic BookingService event ID and getEvent validates it
+  ---
+  duration_ms: 11.319148
+  type: 'test'
+  ...
+# Subtest: getEvent preserves cancelled provider status for BookingService reconciliation
+ok 180 - getEvent preserves cancelled provider status for BookingService reconciliation
+  ---
+  duration_ms: 2.618935
+  type: 'test'
+  ...
+# Subtest: an expired access token is refreshed, persisted with its refresh token, and never returned
+ok 181 - an expired access token is refreshed, persisted with its refresh token, and never returned
+  ---
+  duration_ms: 4.705716
+  type: 'test'
+  ...
+# Subtest: concurrent expired-token requests coalesce one owner-scoped refresh
+ok 182 - concurrent expired-token requests coalesce one owner-scoped refresh
+  ---
+  duration_ms: 35.526677
+  type: 'test'
+  ...
+# Subtest: a 401 refreshes and retries the Calendar request once
+ok 183 - a 401 refreshes and retries the Calendar request once
+  ---
+  duration_ms: 10.200894
+  type: 'test'
+  ...
+# Subtest: a staggered concurrent 401 reloads a token another request already rotated
+ok 184 - a staggered concurrent 401 reloads a token another request already rotated
+  ---
+  duration_ms: 25.005338
+  type: 'test'
+  ...
+# Subtest: a repeated 401 is not retried or refreshed more than once
+ok 185 - a repeated 401 is not retried or refreshed more than once
+  ---
+  duration_ms: 4.008342
+  type: 'test'
+  ...
+# Subtest: create network and timeout failures are ambiguous without exposing underlying errors
+ok 186 - create network and timeout failures are ambiguous without exposing underlying errors
+  ---
+  duration_ms: 4.816333
+  type: 'test'
+  ...
+# Subtest: the request deadline covers a stalled create response body
+ok 187 - the request deadline covers a stalled create response body
+  ---
+  duration_ms: 21.574418
+  type: 'test'
+  ...
+# Subtest: a known Google 4xx write failure is non-ambiguous and sanitized
+ok 188 - a known Google 4xx write failure is non-ambiguous and sanitized
+  ---
+  duration_ms: 1.52962
+  type: 'test'
+  ...
+# Subtest: tenant and credential failures fail closed before a provider call
+ok 189 - tenant and credential failures fail closed before a provider call
+  ---
+  duration_ms: 0.672356
+  type: 'test'
+  ...
+# Subtest: refresh rejection and persistence failures expose no OAuth or credential material
+ok 190 - refresh rejection and persistence failures expose no OAuth or credential material
+  ---
+  duration_ms: 1.330529
+  type: 'test'
+  ...
+# Subtest: malformed Google response shapes fail closed and create parse failures remain ambiguous
+ok 191 - malformed Google response shapes fail closed and create parse failures remain ambiguous
+  ---
+  duration_ms: 4.525694
+  type: 'test'
+  ...
+# Subtest: Owner ruling: cancel suppresses all calendar messages and reminders
+ok 192 - Owner ruling: cancel suppresses all calendar messages and reminders
+  ---
+  duration_ms: 0.789632
+  type: 'test'
+  ...
+# Subtest: Owner ruling: reschedule suppresses all calendar messages and reminders
+ok 193 - Owner ruling: reschedule suppresses all calendar messages and reminders
+  ---
+  duration_ms: 0.485984
+  type: 'test'
+  ...
+# (node:155) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:155) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Calendar uses business date and correct 25-hour fall-back day boundaries
+ok 194 - Calendar uses business date and correct 25-hour fall-back day boundaries
+  ---
+  duration_ms: 25.193443
+  type: 'test'
+  ...
+# Subtest: Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+ok 195 - Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+  ---
+  duration_ms: 4.242176
+  type: 'test'
+  ...
+# Subtest: Calendar rejects unsupported filters, impossible dates and missing owner
+ok 196 - Calendar rejects unsupported filters, impossible dates and missing owner
+  ---
+  duration_ms: 3.174423
+  type: 'test'
+  ...
+# Subtest: Busy-time read is scoped and changing the connection in flight rejects the old response
+ok 197 - Busy-time read is scoped and changing the connection in flight rejects the old response
+  ---
+  duration_ms: 6.71527
+  type: 'test'
+  ...
+# Subtest: Provider failure is an error, never a successful empty calendar
+ok 198 - Provider failure is an error, never a successful empty calendar
+  ---
+  duration_ms: 2.263878
+  type: 'test'
+  ...
+# (node:163) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: active lifecycle grants Operator/provider writes while plan controls QuoteDone
+ok 199 - active lifecycle grants Operator/provider writes while plan controls QuoteDone
+  ---
+  duration_ms: 3.037276
+  type: 'test'
+  ...
+# Subtest: unknown or missing plan/status fails closed
+ok 200 - unknown or missing plan/status fails closed
+  ---
+  duration_ms: 1.330329
+  type: 'test'
+  ...
+# Subtest: trial expiry uses an exclusive exact UTC boundary
+ok 201 - trial expiry uses an exclusive exact UTC boundary
+  ---
+  duration_ms: 0.299933
+  type: 'test'
+  ...
+# Subtest: missing, invalid, non-UTC, and impossible trial end timestamps fail closed
+ok 202 - missing, invalid, non-UTC, and impossible trial end timestamps fail closed
+  ---
+  duration_ms: 0.300705
+  type: 'test'
+  ...
+# Subtest: payment failure keeps full service until, but not at, the seven-day UTC boundary
+ok 203 - payment failure keeps full service until, but not at, the seven-day UTC boundary
+  ---
+  duration_ms: 3.197859
+  type: 'test'
+  ...
+# Subtest: payment failure without a trustworthy failure timestamp fails closed
+ok 204 - payment failure without a trustworthy failure timestamp fails closed
+  ---
+  duration_ms: 0.28484
+  type: 'test'
+  ...
+# Subtest: suspended and cancellation lifecycle states deny all normal/provider access
+ok 205 - suspended and cancellation lifecycle states deny all normal/provider access
+  ---
+  duration_ms: 0.430991
+  type: 'test'
+  ...
+# Subtest: trial voice cap allows minute 59 and sends the next call to fallback at minute 60
+ok 206 - trial voice cap allows minute 59 and sends the next call to fallback at minute 60
+  ---
+  duration_ms: 0.444201
+  type: 'test'
+  ...
+# Subtest: a trial call already in progress finishes after the cap, but the next call cannot start
+ok 207 - a trial call already in progress finishes after the cap, but the next call cannot start
+  ---
+  duration_ms: 0.429748
+  type: 'test'
+  ...
+# Subtest: unavailable or malformed trial usage blocks new calls but never cuts off an existing call
+ok 208 - unavailable or malformed trial usage blocks new calls but never cuts off an existing call
+  ---
+  duration_ms: 1.411051
+  type: 'test'
+  ...
+# Subtest: the trial cap does not limit active paid accounts, while denied lifecycle still blocks voice
+ok 209 - the trial cap does not limit active paid accounts, while denied lifecycle still blocks voice
+  ---
+  duration_ms: 0.731655
+  type: 'test'
+  ...
+# (node:173) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: downgrade preserves data and blocks owner/public booking, widget and price book
+ok 210 - Starter lineup: downgrade preserves data and blocks owner/public booking, widget and price book
+  ---
+  duration_ms: 1865.069381
+  type: 'test'
+  ...
+# (node:185) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: synthetic full server tenant matrix (development/preview)
+    # Subtest: every runtime registered route is covered; new and removed routes fail
+    ok 1 - every runtime registered route is covered; new and removed routes fail
+      ---
+      duration_ms: 22.146777
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/bookings/:bookingIntentId/holds/:holdId [team]
+    ok 2 - DELETE /api/bookings/:bookingIntentId/holds/:holdId [team]
+      ---
+      duration_ms: 172.918503
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/call-blocklist [owner]
+    ok 3 - DELETE /api/call-blocklist [owner]
+      ---
+      duration_ms: 71.972845
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/integrations/webhook [owner]
+    ok 4 - DELETE /api/integrations/webhook [owner]
+      ---
+      duration_ms: 93.215561
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/public/bookings/:bookingToken/holds/:holdId [booking-capability]
+    ok 5 - DELETE /api/public/bookings/:bookingToken/holds/:holdId [booking-capability]
+      ---
+      duration_ms: 19.204625
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/team/staff/:id [owner]
+    ok 6 - DELETE /api/team/staff/:id [owner]
+      ---
+      duration_ms: 81.742481
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/team/staff/:id/invite [owner]
+    ok 7 - DELETE /api/team/staff/:id/invite [owner]
+      ---
+      duration_ms: 86.802578
+      type: 'test'
+      ...
+    # Subtest: GET /api/admin [admin]
+    ok 8 - GET /api/admin [admin]
+      ---
+      duration_ms: 38.124573
+      type: 'test'
+      ...
+    # Subtest: GET /api/admin/backups/offsite [admin]
+    ok 9 - GET /api/admin/backups/offsite [admin]
+      ---
+      duration_ms: 33.240714
+      type: 'test'
+      ...
+    # Subtest: GET /api/auth/account [team]
+    ok 10 - GET /api/auth/account [team]
+      ---
+      duration_ms: 33.186447
+      type: 'test'
+      ...
+    # Subtest: GET /api/auth/verify-email [auth]
+    ok 11 - GET /api/auth/verify-email [auth]
+      ---
+      duration_ms: 10.869633
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/export/:kind [owner]
+    ok 12 - GET /api/billing/export/:kind [owner]
+      ---
+      duration_ms: 37.520586
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/lifecycle [owner]
+    ok 13 - GET /api/billing/lifecycle [owner]
+      ---
+      duration_ms: 34.272387
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/status [owner]
+    ok 14 - GET /api/billing/status [owner]
+      ---
+      duration_ms: 43.56633
+      type: 'test'
+      ...
+    # Subtest: GET /api/booking/configuration [owner]
+    ok 15 - GET /api/booking/configuration [owner]
+      ---
+      duration_ms: 45.345452
+      type: 'test'
+      ...
+    # Subtest: GET /api/booking/readiness [owner]
+    ok 16 - GET /api/booking/readiness [owner]
+      ---
+      duration_ms: 36.150267
+      type: 'test'
+      ...
+    # Subtest: GET /api/calendar/busy [team]
+    ok 17 - GET /api/calendar/busy [team]
+      ---
+      duration_ms: 42.136316
+      type: 'test'
+      ...
+    # Subtest: GET /api/calendar/schedule [team]
+    ok 18 - GET /api/calendar/schedule [team]
+      ---
+      duration_ms: 35.345903
+      type: 'test'
+      ...
+    # Subtest: GET /api/call-blocklist [owner]
+    ok 19 - GET /api/call-blocklist [owner]
+      ---
+      duration_ms: 38.776718
+      type: 'test'
+      ...
+    # Subtest: GET /api/calls [team]
+    ok 20 - GET /api/calls [team]
+      ---
+      duration_ms: 37.469325
+      type: 'test'
+      ...
+    # Subtest: GET /api/calls/:id [team]
+    ok 21 - GET /api/calls/:id [team]
+      ---
+      duration_ms: 44.978187
+      type: 'test'
+      ...
+    # Subtest: GET /api/customers [team]
+    ok 22 - GET /api/customers [team]
+      ---
+      duration_ms: 30.525869
+      type: 'test'
+      ...
+    # Subtest: GET /api/dashboard [team]
+    ok 23 - GET /api/dashboard [team]
+      ---
+      duration_ms: 49.07248
+      type: 'test'
+      ...
+    # Subtest: GET /api/exports/:kind [owner]
+    ok 24 - GET /api/exports/:kind [owner]
+      ---
+      duration_ms: 40.568124
+      type: 'test'
+      ...
+    # Subtest: GET /api/health [platform]
+    ok 25 - GET /api/health [platform]
+      ---
+      duration_ms: 8.61589
+      type: 'test'
+      ...
+    # Subtest: GET /api/integrations/webhook [owner]
+    ok 26 - GET /api/integrations/webhook [owner]
+      ---
+      duration_ms: 29.21791
+      type: 'test'
+      ...
+    # Subtest: GET /api/integrations/webhook/deliveries [owner]
+    ok 27 - GET /api/integrations/webhook/deliveries [owner]
+      ---
+      duration_ms: 30.933314
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads [team]
+    ok 28 - GET /api/leads [team]
+      ---
+      duration_ms: 33.886158
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads/:id [team]
+    ok 29 - GET /api/leads/:id [team]
+      ---
+      duration_ms: 38.255545
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads/activity [team]
+    ok 30 - GET /api/leads/activity [team]
+      ---
+      duration_ms: 33.892468
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/calendar/google/callback [oauth-capability]
+    ok 31 - GET /api/onboarding/calendar/google/callback [oauth-capability]
+      ---
+      duration_ms: 22.950521
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/calendar/google/start [owner]
+    ok 32 - GET /api/onboarding/calendar/google/start [owner]
+      ---
+      duration_ms: 37.157618
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/phone/forwarding-check [owner]
+    ok 33 - GET /api/onboarding/phone/forwarding-check [owner]
+      ---
+      duration_ms: 30.811596
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/state [owner]
+    ok 34 - GET /api/onboarding/state [owner]
+      ---
+      duration_ms: 32.805562
+      type: 'test'
+      ...
+    # Subtest: GET /api/owner-alerts [team]
+    ok 35 - GET /api/owner-alerts [team]
+      ---
+      duration_ms: 28.915262
+      type: 'test'
+      ...
+    # Subtest: GET /api/owner-records/:kind/:id [team]
+    ok 36 - GET /api/owner-records/:kind/:id [team]
+      ---
+      duration_ms: 37.05594
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/:ownerId [owner]
+    ok 37 - GET /api/pricebook/:ownerId [owner]
+      ---
+      duration_ms: 37.811917
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview [owner]
+    ok 38 - GET /api/pricebook/interview [owner]
+      ---
+      duration_ms: 48.475018
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview/:draftId [owner]
+    ok 39 - GET /api/pricebook/interview/:draftId [owner]
+      ---
+      duration_ms: 46.985238
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview/:draftId/review [owner]
+    ok 40 - GET /api/pricebook/interview/:draftId/review [owner]
+      ---
+      duration_ms: 38.371762
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/meta [owner]
+    ok 41 - GET /api/pricebook/meta [owner]
+      ---
+      duration_ms: 48.783103
+      type: 'test'
+      ...
+    # Subtest: GET /api/public/bookings/:bookingToken/confirmations/:confirmationId [booking-capability]
+    ok 42 - GET /api/public/bookings/:bookingToken/confirmations/:confirmationId [booking-capability]
+      ---
+      duration_ms: 14.017476
+      type: 'test'
+      ...
+    # Subtest: GET /api/public/quote/:publicKey [widget]
+    ok 43 - GET /api/public/quote/:publicKey [widget]
+      ---
+      duration_ms: 13.173452
+      type: 'test'
+      ...
+    # Subtest: GET /api/quotedone/access [owner]
+    ok 44 - GET /api/quotedone/access [owner]
+      ---
+      duration_ms: 29.667638
+      type: 'test'
+      ...
+    # Subtest: GET /api/quotes [team]
+    ok 45 - GET /api/quotes [team]
+      ---
+      duration_ms: 30.877746
+      type: 'test'
+      ...
+    # Subtest: GET /api/reports [owner]
+    ok 46 - GET /api/reports [owner]
+      ---
+      duration_ms: 33.195385
+      type: 'test'
+      ...
+    # Subtest: GET /api/schema [platform]
+    ok 47 - GET /api/schema [platform]
+      ---
+      duration_ms: 9.905002
+      type: 'test'
+      ...
+    # Subtest: GET /api/team/staff [owner]
+    ok 48 - GET /api/team/staff [owner]
+      ---
+      duration_ms: 38.921416
+      type: 'test'
+      ...
+    # Subtest: GET /demo/otc-live-demo.js [platform]
+    ok 49 - GET /demo/otc-live-demo.js [platform]
+      ---
+      duration_ms: 8.583722
+      type: 'test'
+      ...
+    # Subtest: GET /quote-copy/:ownerId/:token [quote-copy]
+    ok 50 - GET /quote-copy/:ownerId/:token [quote-copy]
+      ---
+      duration_ms: 9.649932
+      type: 'test'
+      ...
+    # Subtest: OPTIONS /api/demo/session [platform]
+    ok 51 - OPTIONS /api/demo/session [platform]
+      ---
+      duration_ms: 9.210878
+      type: 'test'
+      ...
+    # Subtest: PATCH /api/leads/:id [team]
+    ok 52 - PATCH /api/leads/:id [team]
+      ---
+      duration_ms: 89.879925
+      type: 'test'
+      ...
+    # Subtest: POST /api/admin/login [auth]
+    ok 53 - POST /api/admin/login [auth]
+      ---
+      duration_ms: 10.011978
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/account/resend-verification [team]
+    ok 54 - POST /api/auth/account/resend-verification [team]
+      ---
+      duration_ms: 50.451633
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/forgot-password [auth]
+    ok 55 - POST /api/auth/forgot-password [auth]
+      ---
+      duration_ms: 11.657873
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/login [auth]
+    ok 56 - POST /api/auth/login [auth]
+      ---
+      duration_ms: 238.53776
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/logout [auth]
+    ok 57 - POST /api/auth/logout [auth]
+      ---
+      duration_ms: 10.84371
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/refresh [auth]
+    ok 58 - POST /api/auth/refresh [auth]
+      ---
+      duration_ms: 11.858927
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/register [auth]
+    ok 59 - POST /api/auth/register [auth]
+      ---
+      duration_ms: 455.066756
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/resend-verification [auth]
+    ok 60 - POST /api/auth/resend-verification [auth]
+      ---
+      duration_ms: 12.206613
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/reset-password [auth]
+    ok 61 - POST /api/auth/reset-password [auth]
+      ---
+      duration_ms: 10.372803
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/staff-invite/accept [auth]
+    ok 62 - POST /api/auth/staff-invite/accept [auth]
+      ---
+      duration_ms: 14.313905
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/verify-email [auth]
+    ok 63 - POST /api/auth/verify-email [auth]
+      ---
+      duration_ms: 10.46383
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/cancel [owner]
+    ok 64 - POST /api/billing/cancel [owner]
+      ---
+      duration_ms: 83.285051
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/checkout [owner]
+    ok 65 - POST /api/billing/checkout [owner]
+      ---
+      duration_ms: 52.448026
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/portal [owner]
+    ok 66 - POST /api/billing/portal [owner]
+      ---
+      duration_ms: 62.407511
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/reactivate [owner]
+    ok 67 - POST /api/billing/reactivate [owner]
+      ---
+      duration_ms: 61.383785
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/availability [team]
+    ok 68 - POST /api/bookings/:bookingIntentId/availability [team]
+      ---
+      duration_ms: 59.362964
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/confirm [team]
+    ok 69 - POST /api/bookings/:bookingIntentId/confirm [team]
+      ---
+      duration_ms: 77.650472
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/holds [team]
+    ok 70 - POST /api/bookings/:bookingIntentId/holds [team]
+      ---
+      duration_ms: 62.413314
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/preference [team]
+    ok 71 - POST /api/bookings/:bookingIntentId/preference [team]
+      ---
+      duration_ms: 69.342669
+      type: 'test'
+      ...
+    # Subtest: POST /api/business/jurisdiction [owner]
+    ok 72 - POST /api/business/jurisdiction [owner]
+      ---
+      duration_ms: 57.122886
+      type: 'test'
+      ...
+    # Subtest: POST /api/call-blocklist [owner]
+    ok 73 - POST /api/call-blocklist [owner]
+      ---
+      duration_ms: 71.962158
+      type: 'test'
+      ...
+    # Subtest: POST /api/calls/:id/spam [owner]
+    ok 74 - POST /api/calls/:id/spam [owner]
+      ---
+      duration_ms: 52.937206
+      type: 'test'
+      ...
+    # Subtest: POST /api/demo/session [platform]
+    ok 75 - POST /api/demo/session [platform]
+      ---
+      duration_ms: 9.006775
+      type: 'test'
+      ...
+    # Subtest: POST /api/dev/preview/telephony [owner]
+    ok 76 - POST /api/dev/preview/telephony [owner]
+      ---
+      duration_ms: 66.003071
+      type: 'test'
+      ...
+    # Subtest: POST /api/integrations/webhook/deliveries/:id/retry [owner]
+    ok 77 - POST /api/integrations/webhook/deliveries/:id/retry [owner]
+      ---
+      duration_ms: 72.120933
+      type: 'test'
+      ...
+    # Subtest: POST /api/integrations/webhook/rotate-secret [owner]
+    ok 78 - POST /api/integrations/webhook/rotate-secret [owner]
+      ---
+      duration_ms: 61.467041
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/account [owner]
+    ok 79 - POST /api/onboarding/account [owner]
+      ---
+      duration_ms: 55.701435
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/business-types [owner]
+    ok 80 - POST /api/onboarding/business-types [owner]
+      ---
+      duration_ms: 49.300013
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/calendar [owner]
+    ok 81 - POST /api/onboarding/calendar [owner]
+      ---
+      duration_ms: 68.201455
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/knowledge-base [owner]
+    ok 82 - POST /api/onboarding/knowledge-base [owner]
+      ---
+      duration_ms: 44.038999
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/knowledge-base/draft [owner]
+    ok 83 - POST /api/onboarding/knowledge-base/draft [owner]
+      ---
+      duration_ms: 55.214966
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/phone/provision [owner]
+    ok 84 - POST /api/onboarding/phone/provision [owner]
+      ---
+      duration_ms: 51.910044
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/voice [owner]
+    ok 85 - POST /api/onboarding/voice [owner]
+      ---
+      duration_ms: 57.47048
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-alerts/:id/retry [owner]
+    ok 86 - POST /api/owner-alerts/:id/retry [owner]
+      ---
+      duration_ms: 52.03592
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-alerts/:id/seen [owner]
+    ok 87 - POST /api/owner-alerts/:id/seen [owner]
+      ---
+      duration_ms: 60.786108
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-records/:kind/:id/actions [team]
+    ok 88 - POST /api/owner-records/:kind/:id/actions [team]
+      ---
+      duration_ms: 56.201169
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/interview [owner]
+    ok 89 - POST /api/pricebook/interview [owner]
+      ---
+      duration_ms: 44.168215
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/interview/:draftId/assist [owner]
+    ok 90 - POST /api/pricebook/interview/:draftId/assist [owner]
+      ---
+      duration_ms: 52.308996
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/preview [owner]
+    ok 91 - POST /api/pricebook/preview [owner]
+      ---
+      duration_ms: 55.18129
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/save [owner]
+    ok 92 - POST /api/pricebook/save [owner]
+      ---
+      duration_ms: 68.996165
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/services/:serviceId/approve [owner]
+    ok 93 - POST /api/pricebook/services/:serviceId/approve [owner]
+      ---
+      duration_ms: 70.072219
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/suggest [owner]
+    ok 94 - POST /api/pricebook/suggest [owner]
+      ---
+      duration_ms: 45.886875
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/validate [owner]
+    ok 95 - POST /api/pricebook/validate [owner]
+      ---
+      duration_ms: 47.055484
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/availability [booking-capability]
+    ok 96 - POST /api/public/bookings/:bookingToken/availability [booking-capability]
+      ---
+      duration_ms: 11.64904
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/confirm [booking-capability]
+    ok 97 - POST /api/public/bookings/:bookingToken/confirm [booking-capability]
+      ---
+      duration_ms: 22.002073
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/holds [booking-capability]
+    ok 98 - POST /api/public/bookings/:bookingToken/holds [booking-capability]
+      ---
+      duration_ms: 12.425483
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/preference [booking-capability]
+    ok 99 - POST /api/public/bookings/:bookingToken/preference [booking-capability]
+      ---
+      duration_ms: 24.032369
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/quote/:publicKey [widget]
+    ok 100 - POST /api/public/quote/:publicKey [widget]
+      ---
+      duration_ms: 20.60947
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/quote/:publicKey/prepare [widget]
+    ok 101 - POST /api/public/quote/:publicKey/prepare [widget]
+      ---
+      duration_ms: 18.994738
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/calculate [team]
+    ok 102 - POST /api/quote/calculate [team]
+      ---
+      duration_ms: 99.434011
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/prepare [team]
+    ok 103 - POST /api/quote/prepare [team]
+      ---
+      duration_ms: 52.897335
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/test [owner]
+    ok 104 - POST /api/quote/test [owner]
+      ---
+      duration_ms: 47.568719
+      type: 'test'
+      ...
+    # Subtest: POST /api/quotedone/access [owner]
+    ok 105 - POST /api/quotedone/access [owner]
+      ---
+      duration_ms: 62.091966
+      type: 'test'
+      ...
+    # Subtest: POST /api/quotes/:id/email [team]
+    ok 106 - POST /api/quotes/:id/email [team]
+      ---
+      duration_ms: 71.159596
+      type: 'test'
+      ...
+    # Subtest: POST /api/stripe/webhook [stripe]
+    ok 107 - POST /api/stripe/webhook [stripe]
+      ---
+      duration_ms: 23.960121
+      type: 'test'
+      ...
+    # Subtest: POST /api/team/staff/:id/resend [owner]
+    ok 108 - POST /api/team/staff/:id/resend [owner]
+      ---
+      duration_ms: 56.958248
+      type: 'test'
+      ...
+    # Subtest: POST /api/team/staff/invite [owner]
+    ok 109 - POST /api/team/staff/invite [owner]
+      ---
+      duration_ms: 50.035514
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture [voice]
+    ok 110 - POST /api/twilio/voice/capture [voice]
+      ---
+      duration_ms: 13.07248
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture/again [voice]
+    ok 111 - POST /api/twilio/voice/capture/again [voice]
+      ---
+      duration_ms: 11.148464
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture/partial [voice]
+    ok 112 - POST /api/twilio/voice/capture/partial [voice]
+      ---
+      duration_ms: 11.897175
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/fallback/:nonce [voice]
+    ok 113 - POST /api/twilio/voice/fallback/:nonce [voice]
+      ---
+      duration_ms: 14.016104
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/incoming [voice]
+    ok 114 - POST /api/twilio/voice/incoming [voice]
+      ---
+      duration_ms: 27.842803
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/status [voice]
+    ok 115 - POST /api/twilio/voice/status [voice]
+      ---
+      duration_ms: 13.644092
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/transfer/:id/accept [voice]
+    ok 116 - POST /api/twilio/voice/transfer/:id/accept [voice]
+      ---
+      duration_ms: 12.510882
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/transfer/:id/result [voice]
+    ok 117 - POST /api/twilio/voice/transfer/:id/result [voice]
+      ---
+      duration_ms: 12.444811
+      type: 'test'
+      ...
+    # Subtest: PUT /api/booking/policies/:serviceId [owner]
+    ok 118 - PUT /api/booking/policies/:serviceId [owner]
+      ---
+      duration_ms: 79.957822
+      type: 'test'
+      ...
+    # Subtest: PUT /api/booking/settings [owner]
+    ok 119 - PUT /api/booking/settings [owner]
+      ---
+      duration_ms: 52.427315
+      type: 'test'
+      ...
+    # Subtest: PUT /api/integrations/webhook [owner]
+    ok 120 - PUT /api/integrations/webhook [owner]
+      ---
+      duration_ms: 51.372434
+      type: 'test'
+      ...
+    # Subtest: PUT /api/pricebook/interview/:draftId [owner]
+    ok 121 - PUT /api/pricebook/interview/:draftId [owner]
+      ---
+      duration_ms: 75.646802
+      type: 'test'
+      ...
+    # Subtest: PUT /api/reports/hours [owner]
+    ok 122 - PUT /api/reports/hours [owner]
+      ---
+      duration_ms: 48.040962
+      type: 'test'
+      ...
+    # Subtest: PUT /api/widget/settings [owner]
+    ok 123 - PUT /api/widget/settings [owner]
+      ---
+      duration_ms: 50.291295
+      type: 'test'
+      ...
+    # Subtest: USE /api/demo/session [platform]
+    ok 124 - USE /api/demo/session [platform]
+      ---
+      duration_ms: 11.197013
+      type: 'test'
+      ...
+    # Subtest: WS /api/twilio/voice/stream/:nonce [voice]
+    ok 125 - WS /api/twilio/voice/stream/:nonce [voice]
+      ---
+      duration_ms: 19.972007
+      type: 'test'
+      ...
+    # Subtest: staff role can use calls, leads, quotes, calendar and customers but not owner controls
+    ok 126 - staff role can use calls, leads, quotes, calendar and customers but not owner controls
+      ---
+      duration_ms: 26.66823
+      type: 'test'
+      ...
+    # Subtest: own reads work; counts do not include newly added B rows
+    ok 127 - own reads work; counts do not include newly added B rows
+      ---
+      duration_ms: 142.540633
+      type: 'test'
+      ...
+    # Subtest: merged billing reads and exports remain tenant-scoped; only admin can read backup status
+    ok 128 - merged billing reads and exports remain tenant-scoped; only admin can read backup status
+      ---
+      duration_ms: 297.277766
+      type: 'test'
+      ...
+    # Subtest: attacks never reached an external provider
+    ok 129 - attacks never reached an external provider
+      ---
+      duration_ms: 0.849974
+      type: 'test'
+      ...
+    # Subtest: coverage guard fails for an added route and an anonymously mounted router
+    ok 130 - coverage guard fails for an added route and an anonymously mounted router
+      ---
+      duration_ms: 3.810679
+      type: 'test'
+      ...
+    1..130
+ok 211 - synthetic full server tenant matrix (development/preview)
+  ---
+  duration_ms: 8591.56605
+  type: 'test'
+  ...
+# Subtest: synthetic full server tenant matrix (production)
+    # Subtest: every runtime registered route is covered; new and removed routes fail
+    ok 1 - every runtime registered route is covered; new and removed routes fail
+      ---
+      duration_ms: 9.712857
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/bookings/:bookingIntentId/holds/:holdId [team]
+    ok 2 - DELETE /api/bookings/:bookingIntentId/holds/:holdId [team]
+      ---
+      duration_ms: 113.421591
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/call-blocklist [owner]
+    ok 3 - DELETE /api/call-blocklist [owner]
+      ---
+      duration_ms: 66.62818
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/integrations/webhook [owner]
+    ok 4 - DELETE /api/integrations/webhook [owner]
+      ---
+      duration_ms: 57.778301
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/public/bookings/:bookingToken/holds/:holdId [booking-capability]
+    ok 5 - DELETE /api/public/bookings/:bookingToken/holds/:holdId [booking-capability]
+      ---
+      duration_ms: 24.280111
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/team/staff/:id [owner]
+    ok 6 - DELETE /api/team/staff/:id [owner]
+      ---
+      duration_ms: 72.169392
+      type: 'test'
+      ...
+    # Subtest: DELETE /api/team/staff/:id/invite [owner]
+    ok 7 - DELETE /api/team/staff/:id/invite [owner]
+      ---
+      duration_ms: 67.753794
+      type: 'test'
+      ...
+    # Subtest: GET * [platform]
+    ok 8 - GET * [platform]
+      ---
+      duration_ms: 9.605705
+      type: 'test'
+      ...
+    # Subtest: GET /api/admin [admin]
+    ok 9 - GET /api/admin [admin]
+      ---
+      duration_ms: 30.414368
+      type: 'test'
+      ...
+    # Subtest: GET /api/admin/backups/offsite [admin]
+    ok 10 - GET /api/admin/backups/offsite [admin]
+      ---
+      duration_ms: 33.12327
+      type: 'test'
+      ...
+    # Subtest: GET /api/auth/account [team]
+    ok 11 - GET /api/auth/account [team]
+      ---
+      duration_ms: 40.006794
+      type: 'test'
+      ...
+    # Subtest: GET /api/auth/verify-email [auth]
+    ok 12 - GET /api/auth/verify-email [auth]
+      ---
+      duration_ms: 9.255427
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/export/:kind [owner]
+    ok 13 - GET /api/billing/export/:kind [owner]
+      ---
+      duration_ms: 38.310152
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/lifecycle [owner]
+    ok 14 - GET /api/billing/lifecycle [owner]
+      ---
+      duration_ms: 36.397203
+      type: 'test'
+      ...
+    # Subtest: GET /api/billing/status [owner]
+    ok 15 - GET /api/billing/status [owner]
+      ---
+      duration_ms: 32.858033
+      type: 'test'
+      ...
+    # Subtest: GET /api/booking/configuration [owner]
+    ok 16 - GET /api/booking/configuration [owner]
+      ---
+      duration_ms: 56.593882
+      type: 'test'
+      ...
+    # Subtest: GET /api/booking/readiness [owner]
+    ok 17 - GET /api/booking/readiness [owner]
+      ---
+      duration_ms: 37.685017
+      type: 'test'
+      ...
+    # Subtest: GET /api/calendar/busy [team]
+    ok 18 - GET /api/calendar/busy [team]
+      ---
+      duration_ms: 33.486568
+      type: 'test'
+      ...
+    # Subtest: GET /api/calendar/schedule [team]
+    ok 19 - GET /api/calendar/schedule [team]
+      ---
+      duration_ms: 32.964739
+      type: 'test'
+      ...
+    # Subtest: GET /api/call-blocklist [owner]
+    ok 20 - GET /api/call-blocklist [owner]
+      ---
+      duration_ms: 30.782564
+      type: 'test'
+      ...
+    # Subtest: GET /api/calls [team]
+    ok 21 - GET /api/calls [team]
+      ---
+      duration_ms: 39.52753
+      type: 'test'
+      ...
+    # Subtest: GET /api/calls/:id [team]
+    ok 22 - GET /api/calls/:id [team]
+      ---
+      duration_ms: 48.120747
+      type: 'test'
+      ...
+    # Subtest: GET /api/customers [team]
+    ok 23 - GET /api/customers [team]
+      ---
+      duration_ms: 43.602544
+      type: 'test'
+      ...
+    # Subtest: GET /api/dashboard [team]
+    ok 24 - GET /api/dashboard [team]
+      ---
+      duration_ms: 35.348524
+      type: 'test'
+      ...
+    # Subtest: GET /api/exports/:kind [owner]
+    ok 25 - GET /api/exports/:kind [owner]
+      ---
+      duration_ms: 36.266401
+      type: 'test'
+      ...
+    # Subtest: GET /api/health [platform]
+    ok 26 - GET /api/health [platform]
+      ---
+      duration_ms: 10.592316
+      type: 'test'
+      ...
+    # Subtest: GET /api/integrations/webhook [owner]
+    ok 27 - GET /api/integrations/webhook [owner]
+      ---
+      duration_ms: 49.746922
+      type: 'test'
+      ...
+    # Subtest: GET /api/integrations/webhook/deliveries [owner]
+    ok 28 - GET /api/integrations/webhook/deliveries [owner]
+      ---
+      duration_ms: 28.354527
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads [team]
+    ok 29 - GET /api/leads [team]
+      ---
+      duration_ms: 37.52721
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads/:id [team]
+    ok 30 - GET /api/leads/:id [team]
+      ---
+      duration_ms: 46.916518
+      type: 'test'
+      ...
+    # Subtest: GET /api/leads/activity [team]
+    ok 31 - GET /api/leads/activity [team]
+      ---
+      duration_ms: 29.003028
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/calendar/google/callback [oauth-capability]
+    ok 32 - GET /api/onboarding/calendar/google/callback [oauth-capability]
+      ---
+      duration_ms: 9.557373
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/calendar/google/start [owner]
+    ok 33 - GET /api/onboarding/calendar/google/start [owner]
+      ---
+      duration_ms: 29.186013
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/phone/forwarding-check [owner]
+    ok 34 - GET /api/onboarding/phone/forwarding-check [owner]
+      ---
+      duration_ms: 32.368269
+      type: 'test'
+      ...
+    # Subtest: GET /api/onboarding/state [owner]
+    ok 35 - GET /api/onboarding/state [owner]
+      ---
+      duration_ms: 31.79537
+      type: 'test'
+      ...
+    # Subtest: GET /api/owner-alerts [team]
+    ok 36 - GET /api/owner-alerts [team]
+      ---
+      duration_ms: 33.438229
+      type: 'test'
+      ...
+    # Subtest: GET /api/owner-records/:kind/:id [team]
+    ok 37 - GET /api/owner-records/:kind/:id [team]
+      ---
+      duration_ms: 39.134967
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/:ownerId [owner]
+    ok 38 - GET /api/pricebook/:ownerId [owner]
+      ---
+      duration_ms: 51.378342
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview [owner]
+    ok 39 - GET /api/pricebook/interview [owner]
+      ---
+      duration_ms: 29.361438
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview/:draftId [owner]
+    ok 40 - GET /api/pricebook/interview/:draftId [owner]
+      ---
+      duration_ms: 32.933723
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/interview/:draftId/review [owner]
+    ok 41 - GET /api/pricebook/interview/:draftId/review [owner]
+      ---
+      duration_ms: 45.007415
+      type: 'test'
+      ...
+    # Subtest: GET /api/pricebook/meta [owner]
+    ok 42 - GET /api/pricebook/meta [owner]
+      ---
+      duration_ms: 41.788625
+      type: 'test'
+      ...
+    # Subtest: GET /api/public/bookings/:bookingToken/confirmations/:confirmationId [booking-capability]
+    ok 43 - GET /api/public/bookings/:bookingToken/confirmations/:confirmationId [booking-capability]
+      ---
+      duration_ms: 12.16496
+      type: 'test'
+      ...
+    # Subtest: GET /api/public/quote/:publicKey [widget]
+    ok 44 - GET /api/public/quote/:publicKey [widget]
+      ---
+      duration_ms: 19.64138
+      type: 'test'
+      ...
+    # Subtest: GET /api/quotedone/access [owner]
+    ok 45 - GET /api/quotedone/access [owner]
+      ---
+      duration_ms: 34.430192
+      type: 'test'
+      ...
+    # Subtest: GET /api/quotes [team]
+    ok 46 - GET /api/quotes [team]
+      ---
+      duration_ms: 28.059402
+      type: 'test'
+      ...
+    # Subtest: GET /api/reports [owner]
+    ok 47 - GET /api/reports [owner]
+      ---
+      duration_ms: 30.666228
+      type: 'test'
+      ...
+    # Subtest: GET /api/team/staff [owner]
+    ok 48 - GET /api/team/staff [owner]
+      ---
+      duration_ms: 28.979242
+      type: 'test'
+      ...
+    # Subtest: GET /demo/otc-live-demo.js [platform]
+    ok 49 - GET /demo/otc-live-demo.js [platform]
+      ---
+      duration_ms: 9.064889
+      type: 'test'
+      ...
+    # Subtest: GET /quote-copy/:ownerId/:token [quote-copy]
+    ok 50 - GET /quote-copy/:ownerId/:token [quote-copy]
+      ---
+      duration_ms: 10.094703
+      type: 'test'
+      ...
+    # Subtest: GET /widget-app.js [platform]
+    ok 51 - GET /widget-app.js [platform]
+      ---
+      duration_ms: 13.613448
+      type: 'test'
+      ...
+    # Subtest: GET /widget.js [platform]
+    ok 52 - GET /widget.js [platform]
+      ---
+      duration_ms: 9.601113
+      type: 'test'
+      ...
+    # Subtest: OPTIONS /api/demo/session [platform]
+    ok 53 - OPTIONS /api/demo/session [platform]
+      ---
+      duration_ms: 8.875834
+      type: 'test'
+      ...
+    # Subtest: PATCH /api/leads/:id [team]
+    ok 54 - PATCH /api/leads/:id [team]
+      ---
+      duration_ms: 75.266709
+      type: 'test'
+      ...
+    # Subtest: POST /api/admin/login [auth]
+    ok 55 - POST /api/admin/login [auth]
+      ---
+      duration_ms: 11.596372
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/account/resend-verification [team]
+    ok 56 - POST /api/auth/account/resend-verification [team]
+      ---
+      duration_ms: 77.251301
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/forgot-password [auth]
+    ok 57 - POST /api/auth/forgot-password [auth]
+      ---
+      duration_ms: 14.341817
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/login [auth]
+    ok 58 - POST /api/auth/login [auth]
+      ---
+      duration_ms: 235.853751
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/logout [auth]
+    ok 59 - POST /api/auth/logout [auth]
+      ---
+      duration_ms: 8.56966
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/refresh [auth]
+    ok 60 - POST /api/auth/refresh [auth]
+      ---
+      duration_ms: 8.560207
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/register [auth]
+    ok 61 - POST /api/auth/register [auth]
+      ---
+      duration_ms: 460.911679
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/resend-verification [auth]
+    ok 62 - POST /api/auth/resend-verification [auth]
+      ---
+      duration_ms: 7.373745
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/reset-password [auth]
+    ok 63 - POST /api/auth/reset-password [auth]
+      ---
+      duration_ms: 7.386925
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/staff-invite/accept [auth]
+    ok 64 - POST /api/auth/staff-invite/accept [auth]
+      ---
+      duration_ms: 8.258802
+      type: 'test'
+      ...
+    # Subtest: POST /api/auth/verify-email [auth]
+    ok 65 - POST /api/auth/verify-email [auth]
+      ---
+      duration_ms: 7.347345
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/cancel [owner]
+    ok 66 - POST /api/billing/cancel [owner]
+      ---
+      duration_ms: 46.812881
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/checkout [owner]
+    ok 67 - POST /api/billing/checkout [owner]
+      ---
+      duration_ms: 65.729642
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/portal [owner]
+    ok 68 - POST /api/billing/portal [owner]
+      ---
+      duration_ms: 43.704888
+      type: 'test'
+      ...
+    # Subtest: POST /api/billing/reactivate [owner]
+    ok 69 - POST /api/billing/reactivate [owner]
+      ---
+      duration_ms: 45.576935
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/availability [team]
+    ok 70 - POST /api/bookings/:bookingIntentId/availability [team]
+      ---
+      duration_ms: 58.684479
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/confirm [team]
+    ok 71 - POST /api/bookings/:bookingIntentId/confirm [team]
+      ---
+      duration_ms: 53.516775
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/holds [team]
+    ok 72 - POST /api/bookings/:bookingIntentId/holds [team]
+      ---
+      duration_ms: 58.308491
+      type: 'test'
+      ...
+    # Subtest: POST /api/bookings/:bookingIntentId/preference [team]
+    ok 73 - POST /api/bookings/:bookingIntentId/preference [team]
+      ---
+      duration_ms: 55.805361
+      type: 'test'
+      ...
+    # Subtest: POST /api/business/jurisdiction [owner]
+    ok 74 - POST /api/business/jurisdiction [owner]
+      ---
+      duration_ms: 72.310235
+      type: 'test'
+      ...
+    # Subtest: POST /api/call-blocklist [owner]
+    ok 75 - POST /api/call-blocklist [owner]
+      ---
+      duration_ms: 42.898971
+      type: 'test'
+      ...
+    # Subtest: POST /api/calls/:id/spam [owner]
+    ok 76 - POST /api/calls/:id/spam [owner]
+      ---
+      duration_ms: 54.847505
+      type: 'test'
+      ...
+    # Subtest: POST /api/demo/session [platform]
+    ok 77 - POST /api/demo/session [platform]
+      ---
+      duration_ms: 7.916104
+      type: 'test'
+      ...
+    # Subtest: POST /api/integrations/webhook/deliveries/:id/retry [owner]
+    ok 78 - POST /api/integrations/webhook/deliveries/:id/retry [owner]
+      ---
+      duration_ms: 48.694173
+      type: 'test'
+      ...
+    # Subtest: POST /api/integrations/webhook/rotate-secret [owner]
+    ok 79 - POST /api/integrations/webhook/rotate-secret [owner]
+      ---
+      duration_ms: 53.072444
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/account [owner]
+    ok 80 - POST /api/onboarding/account [owner]
+      ---
+      duration_ms: 43.344604
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/business-types [owner]
+    ok 81 - POST /api/onboarding/business-types [owner]
+      ---
+      duration_ms: 51.049198
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/calendar [owner]
+    ok 82 - POST /api/onboarding/calendar [owner]
+      ---
+      duration_ms: 47.82455
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/knowledge-base [owner]
+    ok 83 - POST /api/onboarding/knowledge-base [owner]
+      ---
+      duration_ms: 42.436263
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/knowledge-base/draft [owner]
+    ok 84 - POST /api/onboarding/knowledge-base/draft [owner]
+      ---
+      duration_ms: 43.525487
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/phone/provision [owner]
+    ok 85 - POST /api/onboarding/phone/provision [owner]
+      ---
+      duration_ms: 38.081672
+      type: 'test'
+      ...
+    # Subtest: POST /api/onboarding/voice [owner]
+    ok 86 - POST /api/onboarding/voice [owner]
+      ---
+      duration_ms: 49.798531
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-alerts/:id/retry [owner]
+    ok 87 - POST /api/owner-alerts/:id/retry [owner]
+      ---
+      duration_ms: 41.799712
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-alerts/:id/seen [owner]
+    ok 88 - POST /api/owner-alerts/:id/seen [owner]
+      ---
+      duration_ms: 43.953314
+      type: 'test'
+      ...
+    # Subtest: POST /api/owner-records/:kind/:id/actions [team]
+    ok 89 - POST /api/owner-records/:kind/:id/actions [team]
+      ---
+      duration_ms: 51.681449
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/interview [owner]
+    ok 90 - POST /api/pricebook/interview [owner]
+      ---
+      duration_ms: 50.707409
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/interview/:draftId/assist [owner]
+    ok 91 - POST /api/pricebook/interview/:draftId/assist [owner]
+      ---
+      duration_ms: 54.780153
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/preview [owner]
+    ok 92 - POST /api/pricebook/preview [owner]
+      ---
+      duration_ms: 38.489973
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/save [owner]
+    ok 93 - POST /api/pricebook/save [owner]
+      ---
+      duration_ms: 47.137242
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/services/:serviceId/approve [owner]
+    ok 94 - POST /api/pricebook/services/:serviceId/approve [owner]
+      ---
+      duration_ms: 46.958922
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/suggest [owner]
+    ok 95 - POST /api/pricebook/suggest [owner]
+      ---
+      duration_ms: 49.651428
+      type: 'test'
+      ...
+    # Subtest: POST /api/pricebook/validate [owner]
+    ok 96 - POST /api/pricebook/validate [owner]
+      ---
+      duration_ms: 53.149585
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/availability [booking-capability]
+    ok 97 - POST /api/public/bookings/:bookingToken/availability [booking-capability]
+      ---
+      duration_ms: 10.839103
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/confirm [booking-capability]
+    ok 98 - POST /api/public/bookings/:bookingToken/confirm [booking-capability]
+      ---
+      duration_ms: 11.714961
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/holds [booking-capability]
+    ok 99 - POST /api/public/bookings/:bookingToken/holds [booking-capability]
+      ---
+      duration_ms: 11.633283
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/bookings/:bookingToken/preference [booking-capability]
+    ok 100 - POST /api/public/bookings/:bookingToken/preference [booking-capability]
+      ---
+      duration_ms: 11.388638
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/quote/:publicKey [widget]
+    ok 101 - POST /api/public/quote/:publicKey [widget]
+      ---
+      duration_ms: 16.70805
+      type: 'test'
+      ...
+    # Subtest: POST /api/public/quote/:publicKey/prepare [widget]
+    ok 102 - POST /api/public/quote/:publicKey/prepare [widget]
+      ---
+      duration_ms: 15.884963
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/calculate [team]
+    ok 103 - POST /api/quote/calculate [team]
+      ---
+      duration_ms: 95.313532
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/prepare [team]
+    ok 104 - POST /api/quote/prepare [team]
+      ---
+      duration_ms: 50.509729
+      type: 'test'
+      ...
+    # Subtest: POST /api/quote/test [owner]
+    ok 105 - POST /api/quote/test [owner]
+      ---
+      duration_ms: 38.240757
+      type: 'test'
+      ...
+    # Subtest: POST /api/quotedone/access [owner]
+    ok 106 - POST /api/quotedone/access [owner]
+      ---
+      duration_ms: 38.281438
+      type: 'test'
+      ...
+    # Subtest: POST /api/quotes/:id/email [team]
+    ok 107 - POST /api/quotes/:id/email [team]
+      ---
+      duration_ms: 41.479247
+      type: 'test'
+      ...
+    # Subtest: POST /api/stripe/webhook [stripe]
+    ok 108 - POST /api/stripe/webhook [stripe]
+      ---
+      duration_ms: 13.866029
+      type: 'test'
+      ...
+    # Subtest: POST /api/team/staff/:id/resend [owner]
+    ok 109 - POST /api/team/staff/:id/resend [owner]
+      ---
+      duration_ms: 63.865644
+      type: 'test'
+      ...
+    # Subtest: POST /api/team/staff/invite [owner]
+    ok 110 - POST /api/team/staff/invite [owner]
+      ---
+      duration_ms: 39.996293
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture [voice]
+    ok 111 - POST /api/twilio/voice/capture [voice]
+      ---
+      duration_ms: 10.730109
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture/again [voice]
+    ok 112 - POST /api/twilio/voice/capture/again [voice]
+      ---
+      duration_ms: 8.14877
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/capture/partial [voice]
+    ok 113 - POST /api/twilio/voice/capture/partial [voice]
+      ---
+      duration_ms: 8.063171
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/fallback/:nonce [voice]
+    ok 114 - POST /api/twilio/voice/fallback/:nonce [voice]
+      ---
+      duration_ms: 8.826799
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/incoming [voice]
+    ok 115 - POST /api/twilio/voice/incoming [voice]
+      ---
+      duration_ms: 13.446795
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/status [voice]
+    ok 116 - POST /api/twilio/voice/status [voice]
+      ---
+      duration_ms: 9.960812
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/transfer/:id/accept [voice]
+    ok 117 - POST /api/twilio/voice/transfer/:id/accept [voice]
+      ---
+      duration_ms: 8.843775
+      type: 'test'
+      ...
+    # Subtest: POST /api/twilio/voice/transfer/:id/result [voice]
+    ok 118 - POST /api/twilio/voice/transfer/:id/result [voice]
+      ---
+      duration_ms: 9.680338
+      type: 'test'
+      ...
+    # Subtest: PUT /api/booking/policies/:serviceId [owner]
+    ok 119 - PUT /api/booking/policies/:serviceId [owner]
+      ---
+      duration_ms: 70.694335
+      type: 'test'
+      ...
+    # Subtest: PUT /api/booking/settings [owner]
+    ok 120 - PUT /api/booking/settings [owner]
+      ---
+      duration_ms: 48.401801
+      type: 'test'
+      ...
+    # Subtest: PUT /api/integrations/webhook [owner]
+    ok 121 - PUT /api/integrations/webhook [owner]
+      ---
+      duration_ms: 42.800482
+      type: 'test'
+      ...
+    # Subtest: PUT /api/pricebook/interview/:draftId [owner]
+    ok 122 - PUT /api/pricebook/interview/:draftId [owner]
+      ---
+      duration_ms: 46.715274
+      type: 'test'
+      ...
+    # Subtest: PUT /api/reports/hours [owner]
+    ok 123 - PUT /api/reports/hours [owner]
+      ---
+      duration_ms: 49.524216
+      type: 'test'
+      ...
+    # Subtest: PUT /api/widget/settings [owner]
+    ok 124 - PUT /api/widget/settings [owner]
+      ---
+      duration_ms: 42.234578
+      type: 'test'
+      ...
+    # Subtest: USE /api/demo/session [platform]
+    ok 125 - USE /api/demo/session [platform]
+      ---
+      duration_ms: 16.538365
+      type: 'test'
+      ...
+    # Subtest: USE /assets/* [platform]
+    ok 126 - USE /assets/* [platform]
+      ---
+      duration_ms: 8.200584
+      type: 'test'
+      ...
+    # Subtest: WS /api/twilio/voice/stream/:nonce [voice]
+    ok 127 - WS /api/twilio/voice/stream/:nonce [voice]
+      ---
+      duration_ms: 10.474648
+      type: 'test'
+      ...
+    # Subtest: staff role can use calls, leads, quotes, calendar and customers but not owner controls
+    ok 128 - staff role can use calls, leads, quotes, calendar and customers but not owner controls
+      ---
+      duration_ms: 19.724276
+      type: 'test'
+      ...
+    # Subtest: own reads work; counts do not include newly added B rows
+    ok 129 - own reads work; counts do not include newly added B rows
+      ---
+      duration_ms: 89.822198
+      type: 'test'
+      ...
+    # Subtest: merged billing reads and exports remain tenant-scoped; only admin can read backup status
+    ok 130 - merged billing reads and exports remain tenant-scoped; only admin can read backup status
+      ---
+      duration_ms: 245.599689
+      type: 'test'
+      ...
+    # Subtest: attacks never reached an external provider
+    ok 131 - attacks never reached an external provider
+      ---
+      duration_ms: 0.424531
+      type: 'test'
+      ...
+    # Subtest: coverage guard fails for an added route and an anonymously mounted router
+    ok 132 - coverage guard fails for an added route and an anonymously mounted router
+      ---
+      duration_ms: 3.809052
+      type: 'test'
+      ...
+    1..132
+ok 212 - synthetic full server tenant matrix (production)
+  ---
+  duration_ms: 7101.951721
+  type: 'test'
+  ...
+1..212
+# tests 497
+# suites 0
+# pass 497
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17878.85643

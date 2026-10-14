@@ -1,0 +1,61 @@
+{"baselineEntitledOwner":{"plan":"Operator","planStatus":"active","trialEndsAt":null,"paymentFailedAt":null,"paidThroughAt":null,"annualPaidThroughAt":null,"serviceEndsAt":null},"paymentMethodVerified":true}
+{
+  "observedUTC": "2026-10-14T07:58:21.470Z",
+  "pid": 12,
+  "fixture": "FK-valid migrated SQLite, real registered public HTTP route, synthetic calendar; second service instance models recovery of durable pending write, no process restart claimed",
+  "account": {
+    "plan": "Operator",
+    "planStatus": "canceled",
+    "serviceEndsAt": "2026-10-14T07:58:20.309Z"
+  },
+  "before": {
+    "id": "f2b443b9-1c4b-4ee9-bcf2-b596614d888e",
+    "status": "PENDING_PROVIDER",
+    "providerEventStatus": "PENDING_PROVIDER"
+  },
+  "postAvailability": {
+    "status": 403,
+    "body": {
+      "error": "This business is currently unavailable.",
+      "code": "BOOKING_UNAVAILABLE"
+    }
+  },
+  "getStatus": {
+    "status": 200,
+    "body": {
+      "status": "CONFIRMED",
+      "appointmentId": "f2b443b9-1c4b-4ee9-bcf2-b596614d888e",
+      "bookingMode": "site_visit_first",
+      "startUtc": "2026-10-15T09:00:00.000Z",
+      "endUtc": "2026-10-15T09:45:00.000Z",
+      "startLocal": "2026-10-15T09:00:00+00:00",
+      "endLocal": "2026-10-15T09:45:00+00:00",
+      "timezone": "UTC",
+      "provider": "google",
+      "calendarEventStatus": "CONFIRMED"
+    }
+  },
+  "providerCalls": [
+    {
+      "operation": "getEvent",
+      "ownerId": "SYNTHETIC-expired-booking",
+      "eventId": "b57d03190586cd250da360dd6b8ff0bb"
+    },
+    {
+      "operation": "listBusy",
+      "ownerId": "SYNTHETIC-expired-booking"
+    },
+    {
+      "operation": "createEvent",
+      "ownerId": "SYNTHETIC-expired-booking",
+      "eventId": "b57d03190586cd250da360dd6b8ff0bb"
+    }
+  ],
+  "after": {
+    "id": "f2b443b9-1c4b-4ee9-bcf2-b596614d888e",
+    "status": "CONFIRMED",
+    "providerEventStatus": "CONFIRMED"
+  },
+  "sameEventId": true,
+  "outboxCount": 1
+}

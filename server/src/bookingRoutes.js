@@ -231,7 +231,7 @@ export function installBookingRoutes(app, {
     });
     return res.status(result.statusCode).json(result.body);
   }));
-  app.get(`${publicPrefix}/confirmations/:confirmationId`, publicBookingContext, publicRateLimit, asyncHandler(async (req, res) => {
+  app.get(`${publicPrefix}/confirmations/:confirmationId`, publicBookingContext, requireBookingAccess, publicRateLimit, asyncHandler(async (req, res) => {
     const result = await bookingService.getConfirmationStatus({
       bookingToken: req.params.bookingToken,
       confirmationId: req.params.confirmationId

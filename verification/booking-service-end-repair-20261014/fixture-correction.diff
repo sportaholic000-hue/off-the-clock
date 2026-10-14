@@ -1,0 +1,20 @@
+--- first-regression-source.mjs
++++ test/bookingServiceEnd20261014.spec.mjs
+@@ -46,7 +46,7 @@
+       bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt)
+       VALUES(?,'s1','UTC','google','primary',?,'[]',30,0,15,0,0,1,?)`).run(owner,JSON.stringify(weekly),clock().toISOString());
+     db.prepare(`INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt)
+-      VALUES(?,'synthetic-service','p1','site_visit_first',45,1,?)`).run(owner,clock().toISOString());
++      VALUES(?,'voice-appointment','p1','site_visit_first',45,1,?)`).run(owner,clock().toISOString());
+     db.prepare(`INSERT INTO leads(id,ownerId,customerName,callerNumber,type,status,createdAt)
+       VALUES(?,?,'[SYNTHETIC] Caller',?,'voice','NEW',?)`).run(owner+'-lead',owner,CUSTOMER.phone,clock().toISOString());
+     db.prepare('INSERT INTO quoteAccessKeys(ownerId,publicKey,allowedOriginsJson,createdAt) VALUES(?,?,?,?)')
+@@ -58,7 +58,7 @@
+       [table,db.prepare(`SELECT * FROM ${table} WHERE ownerId=? ORDER BY rowid`).all(owner)]));
+   }
+   async function pending(owner=OWNER) {
+-    const intent = booking.createIntent({ownerId:owner,sourceType:'lead',sourceId:owner+'-lead',serviceId:'synthetic-service',
++    const intent = booking.createIntent({ownerId:owner,sourceType:'lead',sourceId:owner+'-lead',serviceId:'voice-appointment',
+       resultType:'APPOINTMENT_REQUEST',expiresAtUtc:'2026-10-20T12:00:00.000Z'});
+     const available = await booking.availability({ownerId:owner,intentId:intent.intentId,filters:{fromDate:'2026-10-15',days:1,location:LOCATION}});
+     const held = booking.hold({ownerId:owner,intentId:intent.intentId,idempotencyKey:randomUUID(),slotId:available.body.slots[0].slotId});

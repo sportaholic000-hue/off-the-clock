@@ -1,4 +1,5 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
+import {hasOperatorAccess} from './planAccess.js';
 import {linkWidgetBookingLead} from './widgetBookingLead.js';
 import crypto from 'node:crypto';
 import { serviceAreaFromKnowledgeBase, serviceAreaDecision } from './serviceArea.js';
@@ -1131,6 +1132,13 @@ export function createBookingService({
 
   const recoveryInFlight = new Set();
 
+  function recoveryAccessAllowed(ownerId) {
+    const owner = usageOwnerQuery(db)(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt,
+      paidThroughAt, annualPaidThroughAt, serviceEndsAt FROM users
+      WHERE id = @ownerId AND role = 'owner'`).get({ownerId});
+    return hasOperatorAccess(owner, { now: nowFrom(clock) });
+  }
+
   async function recoverMissingEvent(appointment) {
     // Retry only a provider that explicitly supports the same caller-supplied
     // event ID. Never choose a new ID or release an ambiguously written slot.
@@ -1138,6 +1146,9 @@ export function createBookingService({
         recoveryInFlight.has(appointment.id) || appointment.providerEventStatus === 'PREPARING') return null;
     recoveryInFlight.add(appointment.id);
     try {
+      // The provider lookup awaited by polling may outlive account access.
+      // Keep its durable pending receipt/slot, but do not dispatch another write.
+      if (!recoveryAccessAllowed(appointment.ownerId)) return null;
       const now = nowFrom(clock), row = context(appointment.ownerId, appointment.bookingIntentId, now);
       const policy = policyConfiguration(row);
       const customer = safeCustomer(parseJson(appointment.customerJson, null));
@@ -1154,6 +1165,9 @@ export function createBookingService({
       const current = usageOwnerQuery(db)('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?')
         .get(appointment.id,appointment.ownerId,appointment.bookingIntentId);
       if (!current || !PENDING_APPOINTMENT_STATUSES.has(current.status)) return null;
+      // Read the persisted owner and clock again after listBusy, immediately
+      // before dispatch. A write already dispatched still settles normally.
+      if (!recoveryAccessAllowed(appointment.ownerId)) return null;
       return await calendar.createEvent({ownerId:appointment.ownerId,provider:appointment.provider,
         calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId,appointmentId:appointment.id,
         startAtUtc:appointment.startAtUtc,endAtUtc:appointment.endAtUtc,timezone:appointment.timezone,

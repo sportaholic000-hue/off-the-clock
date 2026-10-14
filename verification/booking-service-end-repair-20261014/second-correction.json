@@ -1,0 +1,8 @@
+{
+  "beforeRerunUTC": "2026-10-14T07:59:03.214287+00:00",
+  "causes": [
+    "Fixture: migrated users billing-evidence trigger made initial inserts pending_payment; synthetic billing evidence and active-state assertion now required.",
+    "Implementation: usageOwnerQuery requires explicit ownerId token in SQL; named @ownerId now binds the recovery account lookup. No assertion weakened."
+  ],
+  "sourceSha256": "6af90c07e2a2d5b4dd46ae706138510b940259ac3f8914a301021662b88eb0db"
+}

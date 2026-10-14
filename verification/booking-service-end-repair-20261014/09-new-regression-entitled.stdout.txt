@@ -1,0 +1,114 @@
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking service end: public polling and direct recovery deny service-ended
+ok 1 - booking service end: public polling and direct recovery deny service-ended
+  ---
+  duration_ms: 155.909921
+  type: 'test'
+  ...
+# Subtest: booking service end: public polling and direct recovery deny expired-trial
+ok 2 - booking service end: public polling and direct recovery deny expired-trial
+  ---
+  duration_ms: 107.289207
+  type: 'test'
+  ...
+# Subtest: booking service end: public polling and direct recovery deny lost-booking-plan
+ok 3 - booking service end: public polling and direct recovery deny lost-booking-plan
+  ---
+  duration_ms: 93.49981
+  type: 'test'
+  ...
+# Subtest: booking service end: public recovery at deadline offset -1ms
+ok 4 - booking service end: public recovery at deadline offset -1ms
+  ---
+  duration_ms: 77.081197
+  type: 'test'
+  ...
+# Subtest: booking service end: public recovery at deadline offset 0ms
+ok 5 - booking service end: public recovery at deadline offset 0ms
+  ---
+  duration_ms: 78.567415
+  type: 'test'
+  ...
+# Subtest: booking service end: deadline during awaited getEvent prevents recovery write
+ok 6 - booking service end: deadline during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 78.415031
+  type: 'test'
+  ...
+# Subtest: booking service end: plan-change during awaited getEvent prevents recovery write
+ok 7 - booking service end: plan-change during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 76.382702
+  type: 'test'
+  ...
+# Subtest: booking service end: deadline during awaited listBusy prevents recovery write
+ok 8 - booking service end: deadline during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 74.401019
+  type: 'test'
+  ...
+# Subtest: booking service end: plan-change during awaited listBusy prevents recovery write
+ok 9 - booking service end: plan-change during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 90.345566
+  type: 'test'
+  ...
+# Subtest: booking service end: active recovery reuses saved event, preserves receipt and confirms once
+ok 10 - booking service end: active recovery reuses saved event, preserves receipt and confirms once
+  ---
+  duration_ms: 95.780403
+  type: 'test'
+  ...
+# Subtest: booking service end: existing provider event reconciles without creation or duplicate notification
+ok 11 - booking service end: existing provider event reconciles without creation or duplicate notification
+  ---
+  duration_ms: 82.128368
+  type: 'test'
+  ...
+# Subtest: booking service end: lookup error stays uncertain and retains pending receipt/slot
+ok 12 - booking service end: lookup error stays uncertain and retains pending receipt/slot
+  ---
+  duration_ms: 103.577211
+  type: 'test'
+  ...
+# Subtest: booking service end: database reopen/service reconstruction blocks expired recovery
+ok 13 - booking service end: database reopen/service reconstruction blocks expired recovery
+  ---
+  duration_ms: 75.224132
+  type: 'test'
+  ...
+# Subtest: booking service end: database reopen/service reconstruction allows entitled recovery
+ok 14 - booking service end: database reopen/service reconstruction allows entitled recovery
+  ---
+  duration_ms: 75.861515
+  type: 'test'
+  ...
+# Subtest: booking service end: already-dispatched original write can settle after deadline
+ok 15 - booking service end: already-dispatched original write can settle after deadline
+  ---
+  duration_ms: 69.66652
+  type: 'test'
+  ...
+# Subtest: booking service end: already-dispatched recovery write can settle after deadline
+ok 16 - booking service end: already-dispatched recovery write can settle after deadline
+  ---
+  duration_ms: 72.892251
+  type: 'test'
+  ...
+# Subtest: booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+ok 17 - booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+  ---
+  duration_ms: 121.709708
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1833.425034

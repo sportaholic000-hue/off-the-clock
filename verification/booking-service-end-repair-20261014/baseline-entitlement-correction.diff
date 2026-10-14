@@ -1,0 +1,14 @@
+--- baseline.mjs
++++ baseline-entitled.mjs
+@@ -17,6 +17,11 @@
+ try{
+   migrateDatabase(db);
+   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic','Operator','active','owner',?)").run(owner,owner+'@example.invalid',at.toISOString());
++  db.prepare('INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)').run(owner,'cus_SYNTHETIC_booking',at.toISOString(),at.toISOString(),at.toISOString());
++  db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(owner);
++  const entitledBefore=db.prepare('SELECT plan,planStatus,trialEndsAt,paymentFailedAt,paidThroughAt,annualPaidThroughAt,serviceEndsAt FROM users WHERE id=?').get(owner);
++  assert.equal(hasOperatorAccess(entitledBefore),true,'Baseline begins with verified persisted entitlement');
++  console.log(JSON.stringify({baselineEntitledOwner:entitledBefore,paymentMethodVerified:true}));
+   db.prepare('INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,updatedAt) VALUES(?,?,?)').run(owner,JSON.stringify({serviceArea:{mode:'all',cities:[]}}),at.toISOString());
+   const weekly=Object.fromEntries(['sun','mon','tue','wed','thu','fri','sat'].map(x=>[x,[{start:'09:00',end:'17:00'}]]));
+   db.prepare("INSERT INTO bookingSettings(ownerId,revision,timezone,provider,calendarId,weeklyAvailabilityJson,blackoutsJson,bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt) VALUES(?,'r1','UTC','google','primary',?,'[]',30,0,15,0,0,1,?)").run(owner,JSON.stringify(weekly),at.toISOString());

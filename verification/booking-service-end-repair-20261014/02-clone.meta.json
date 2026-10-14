@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "git",
+    "clone",
+    "--no-checkout",
+    "https://github.com/sportaholic000-hue/off-the-clock.git",
+    "booking-service-end-repair-20261014/repo"
+  ],
+  "cwd": "/workspace/scratch/998ee29c5e28",
+  "startedUTC": "2026-10-14T07:50:54.345144+00:00",
+  "environment": {
+    "PATH": "/root/.codex/tmp/arg0/codex-arg0zSBFLm:/opt/codex/codex-path:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback"
+  },
+  "pid": 4,
+  "exitCode": 0,
+  "signal": null,
+  "finishedUTC": "2026-10-14T07:51:07.695678+00:00"
+}

@@ -1,0 +1,53 @@
+// Independent bounded gap check: status polling after service end must not create a missing event.
+// Existing authorization of a pending write permits reading/reconciliation, but service-end widget access must stop.
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {randomUUID} from 'node:crypto';
+const repo=process.cwd(),load=p=>import(pathToFileURL(repo+'/'+p));
+const {default:Database}=await load('node_modules/better-sqlite3/lib/index.js');
+const {default:express}=await load('node_modules/express/index.js');
+const {migrateDatabase}=await load('server/src/migrations.js');
+const {createBookingService}=await load('server/src/bookingService.js');
+const {installBookingRoutes}=await load('server/src/bookingRoutes.js');
+const {hasOperatorAccess}=await load('server/src/planAccess.js');
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'SYNTHETIC-booking-expiry-')),db=new Database(root+'/fixture.sqlite');
+const at=new Date(),owner='SYNTHETIC-expired-booking',secret='SYNTHETIC-independent-booking-secret-20261014';
+let server,resume,original;
+const timeout=setTimeout(()=>{console.error('PROBE_TIMEOUT');process.exit(2);},15000);
+try{
+  migrateDatabase(db);
+  db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic','Operator','active','owner',?)").run(owner,owner+'@example.invalid',at.toISOString());
+  db.prepare('INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,updatedAt) VALUES(?,?,?)').run(owner,JSON.stringify({serviceArea:{mode:'all',cities:[]}}),at.toISOString());
+  const weekly=Object.fromEntries(['sun','mon','tue','wed','thu','fri','sat'].map(x=>[x,[{start:'09:00',end:'17:00'}]]));
+  db.prepare("INSERT INTO bookingSettings(ownerId,revision,timezone,provider,calendarId,weeklyAvailabilityJson,blackoutsJson,bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt) VALUES(?,'r1','UTC','google','primary',?,'[]',30,0,15,0,0,1,?)").run(owner,JSON.stringify(weekly),at.toISOString());
+  db.prepare("INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt) VALUES(?,'voice-appointment','p1','site_visit_first',45,1,?)").run(owner,at.toISOString());
+  db.prepare("INSERT INTO leads(id,ownerId,customerName,callerNumber,type,status,createdAt) VALUES('SYNTHETIC-lead',?,'Synthetic Caller','+15065550123','voice','NEW',?)").run(owner,at.toISOString());
+  db.prepare('INSERT INTO quoteAccessKeys(ownerId,publicKey,allowedOriginsJson,createdAt) VALUES(?,?,?,?)').run(owner,'SYNTHETIC-key',JSON.stringify(['https://synthetic.example.invalid']),at.toISOString());
+  let reached;const started=new Promise(r=>{reached=r;});let firstInput;
+  const firstCalendar={listBusy:async()=>[],createEvent:async request=>{firstInput=request;reached();return new Promise(r=>{resume=()=>r({status:'PENDING_CONFIRMATION'});});}};
+  const first=createBookingService({db,calendar:firstCalendar,slotTokenSecret:secret,clock:()=>at});
+  const intent=first.createIntent({ownerId:owner,sourceType:'lead',sourceId:'SYNTHETIC-lead',serviceId:'voice-appointment',resultType:'APPOINTMENT_REQUEST',expiresAtUtc:new Date(at.getTime()+7*86400000).toISOString()});
+  const loc={addressLine1:'1 Synthetic St',addressLine2:'',city:'Halifax',region:'NS',postalCode:'B3H 0A1',country:'CA'};
+  const available=await first.availability({ownerId:owner,intentId:intent.intentId,filters:{fromDate:new Date(at.getTime()+86400000).toISOString().slice(0,10),days:1,location:loc}});
+  assert.equal(available.body.status,'AVAILABLE');
+  const held=first.hold({ownerId:owner,intentId:intent.intentId,idempotencyKey:randomUUID(),slotId:available.body.slots[0].slotId});
+  original=first.confirm({ownerId:owner,intentId:intent.intentId,idempotencyKey:randomUUID(),body:{holdId:held.body.holdId,confirmedSlotId:held.body.slot.slotId,explicitConfirmation:true,addressConfirmation:true,customer:{name:'Synthetic Caller',phone:'+15065550123',email:'caller@example.invalid'},location:loc}});
+  await started;
+  const receipt=JSON.parse(db.prepare("SELECT responseJson FROM bookingIdempotency WHERE ownerId=? AND operation='confirm'").get(owner).responseJson);
+  const before=db.prepare('SELECT id,status,providerEventStatus FROM appointments WHERE ownerId=?').get(owner);
+  assert.equal(before.status,'PENDING_PROVIDER');assert.equal(before.providerEventStatus,'PENDING_PROVIDER');
+  db.prepare("UPDATE users SET planStatus='canceled',serviceEndsAt=? WHERE id=?").run(new Date(at.getTime()-1000).toISOString(),owner);
+  const account=db.prepare('SELECT plan,planStatus,serviceEndsAt FROM users WHERE id=?').get(owner);assert.equal(hasOperatorAccess(account),false);
+  const calls=[];const recoveryCalendar={idempotentCreateByEventId:true,listBusy:async r=>{calls.push({operation:'listBusy',ownerId:r.ownerId});return [];},getEvent:async r=>{calls.push({operation:'getEvent',ownerId:r.ownerId,eventId:r.eventId});return null;},createEvent:async r=>{calls.push({operation:'createEvent',ownerId:r.ownerId,eventId:r.eventId});return {status:'CONFIRMED',eventId:r.eventId,startAtUtc:r.startAtUtc,endAtUtc:r.endAtUtc};}};
+  const recovery=createBookingService({db,calendar:recoveryCalendar,slotTokenSecret:secret,clock:()=>at});
+  const app=express();app.use(express.json());installBookingRoutes(app,{bookingService:recovery,database:db,requireAuth:()=>((_q,res)=>res.sendStatus(401)),asyncHandler:fn=>(q,s,n)=>Promise.resolve(fn(q,s,n)).catch(n)});
+  app.use((e,_q,res,_n)=>res.status(e.statusCode||500).json({code:e.code,message:e.message}));
+  server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));const base='http://127.0.0.1:'+server.address().port;
+  const common={headers:{Origin:'https://synthetic.example.invalid','Content-Type':'application/json'}};
+  const denied=await fetch(base+'/api/public/bookings/'+intent.bookingToken+'/availability',{...common,method:'POST',body:'{}'});const denyBody=await denied.json();assert.equal(denied.status,403);
+  const response=await fetch(base+'/api/public/bookings/'+intent.bookingToken+'/confirmations/'+receipt.confirmationId,common);const body=await response.json();
+  const after=db.prepare('SELECT id,status,providerEventStatus FROM appointments WHERE ownerId=?').get(owner);
+  const evidence={observedUTC:new Date().toISOString(),pid:process.pid,fixture:'FK-valid migrated SQLite, real registered public HTTP route, synthetic calendar; second service instance models recovery of durable pending write, no process restart claimed',account,before,postAvailability:{status:denied.status,body:denyBody},getStatus:{status:response.status,body},providerCalls:calls,after,sameEventId:calls.find(x=>x.operation==='createEvent')?.eventId===firstInput.eventId,outboxCount:db.prepare("SELECT COUNT(*) n FROM outboxEvents WHERE ownerId=? AND eventType='appointment.booked'").get(owner).n};
+  console.log(JSON.stringify(evidence,null,2));
+  assert.equal(calls.filter(x=>x.operation==='createEvent').length,0,'Service-ended public status polling must not create a missing calendar event');
+}finally{clearTimeout(timeout);resume?.();if(original)await original.catch(()=>{});if(server){server.closeAllConnections();await new Promise(r=>server.close(r));}db.close();fs.rmSync(root,{recursive:true,force:true});}

@@ -1,0 +1,352 @@
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking service end: public polling and direct recovery deny service-ended
+not ok 1 - booking service end: public polling and direct recovery deny service-ended
+  ---
+  duration_ms: 35.855645
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:108:3'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:109:40)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: booking service end: public polling and direct recovery deny expired-trial
+not ok 2 - booking service end: public polling and direct recovery deny expired-trial
+  ---
+  duration_ms: 26.790198
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:108:3'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:109:40)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: public polling and direct recovery deny lost-booking-plan
+not ok 3 - booking service end: public polling and direct recovery deny lost-booking-plan
+  ---
+  duration_ms: 28.100396
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:108:3'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:109:40)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: public recovery at deadline offset -1ms
+not ok 4 - booking service end: public recovery at deadline offset -1ms
+  ---
+  duration_ms: 26.187208
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:124:30'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:125:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: public recovery at deadline offset 0ms
+not ok 5 - booking service end: public recovery at deadline offset 0ms
+  ---
+  duration_ms: 27.843878
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:124:30'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:125:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: deadline during awaited getEvent prevents recovery write
+not ok 6 - booking service end: deadline during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 28.093396
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:135:3'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:136:40)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: plan-change during awaited getEvent prevents recovery write
+not ok 7 - booking service end: plan-change during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 27.158515
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:135:3'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:136:40)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: deadline during awaited listBusy prevents recovery write
+not ok 8 - booking service end: deadline during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 27.013785
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:135:3'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:136:40)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: plan-change during awaited listBusy prevents recovery write
+not ok 9 - booking service end: plan-change during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 27.45343
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:135:3'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:136:40)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: active recovery reuses saved event, preserves receipt and confirms once
+not ok 10 - booking service end: active recovery reuses saved event, preserves receipt and confirms once
+  ---
+  duration_ms: 26.686522
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:149:1'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:150:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: existing provider event reconciles without creation or duplicate notification
+not ok 11 - booking service end: existing provider event reconciles without creation or duplicate notification
+  ---
+  duration_ms: 28.915987
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:162:1'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:163:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: lookup error stays uncertain and retains pending receipt/slot
+not ok 12 - booking service end: lookup error stays uncertain and retains pending receipt/slot
+  ---
+  duration_ms: 26.847044
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:170:1'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:171:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: database reopen/service reconstruction blocks expired recovery
+not ok 13 - booking service end: database reopen/service reconstruction blocks expired recovery
+  ---
+  duration_ms: 28.342331
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:177:38'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:178:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: database reopen/service reconstruction allows entitled recovery
+not ok 14 - booking service end: database reopen/service reconstruction allows entitled recovery
+  ---
+  duration_ms: 27.529424
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:177:38'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:178:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: already-dispatched original write can settle after deadline
+not ok 15 - booking service end: already-dispatched original write can settle after deadline
+  ---
+  duration_ms: 27.940545
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:187:51'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:188:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: already-dispatched recovery write can settle after deadline
+not ok 16 - booking service end: already-dispatched recovery write can settle after deadline
+  ---
+  duration_ms: 26.549414
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:187:51'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:188:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+not ok 17 - booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+  ---
+  duration_ms: 28.100336
+  type: 'test'
+  location: '/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:202:1'
+  failureType: 'testCodeFailure'
+  error: 'A saved owner-scoped lead is required for an appointment request.'
+  code: 'INVALID_REQUEST'
+  name: 'BookingServiceError'
+  stack: |-
+    bookingError (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:106:10)
+    invalid (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:110:10)
+    Object.createIntent (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/server/src/bookingService.js:503:198)
+    Object.pending (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:61:28)
+    TestContext.<anonymous> (file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo/test/bookingServiceEnd20261014.spec.mjs:203:38)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 0
+# fail 17
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 657.755346

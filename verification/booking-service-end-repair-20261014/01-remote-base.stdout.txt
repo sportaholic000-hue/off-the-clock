@@ -1,0 +1,3 @@
+95e1631f42461ca8ae7d46d859940bffc302d155	refs/heads/claude/release-candidate-20261013m
+7c7e5a9363ed7113ea8969cdd3e400f58b1b538f	refs/tags/rc-20261013m
+95e1631f42461ca8ae7d46d859940bffc302d155	refs/tags/rc-20261013m^{}

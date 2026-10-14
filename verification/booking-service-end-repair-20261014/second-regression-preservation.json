@@ -1,0 +1,30 @@
+{
+  "UTC": "2026-10-14T07:57:59.249788+00:00",
+  "files": [
+    {
+      "path": "second-regression-source.mjs",
+      "sha256": "d2851a0ccd897636dcccbe227703b90a7cf6d922b4516327d1ec9c27c61ea672",
+      "bytes": 15384
+    },
+    {
+      "path": "second-regression-production.diff",
+      "sha256": "72cd9035093ebcd30eae52f9b602c12f22b3b0f58f706b7039372806e6b20d09",
+      "bytes": 6041
+    },
+    {
+      "path": "07-new-regression-corrected.stdout.txt",
+      "sha256": "1d4e73241800696b889ac1934e1cf3dc980de311c3244b82069186c0e853ec6b",
+      "bytes": 10061
+    },
+    {
+      "path": "07-new-regression-corrected.stderr.txt",
+      "sha256": "db12ad97221988bf346c55d06788e21a01bb6a683d69266bf732ed4d6d9763c8",
+      "bytes": 174
+    },
+    {
+      "path": "07-new-regression-corrected.meta.json",
+      "sha256": "4a4513a811ae3bc037f9a047a127ee24517a97436ad8e92ee2bce838432eadb4",
+      "bytes": 1107
+    }
+  ]
+}

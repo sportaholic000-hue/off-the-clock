@@ -1,0 +1,102 @@
+diff --git a/client/dist/index.html b/client/dist/index.html
+index ab2601a3..6333a76d 100644
+--- a/client/dist/index.html
++++ b/client/dist/index.html
+@@ -4,8 +4,8 @@
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Off The Clock AI</title>
+-    <script type="module" crossorigin src="/assets/index-DdcfYsVT.js"></script>
+-    <link rel="stylesheet" crossorigin href="/assets/index-Cwi6Aiz2.css">
++    <script type="module" crossorigin src="/assets/index--26Re0zk.js"></script>
++    <link rel="stylesheet" crossorigin href="/assets/index-RRevNfiB.css">
+   </head>
+   <body>
+     <div id="root"></div>
+diff --git a/server/src/bookingRoutes.js b/server/src/bookingRoutes.js
+index 08fbc759..6f483b10 100644
+--- a/server/src/bookingRoutes.js
++++ b/server/src/bookingRoutes.js
+@@ -231,7 +231,7 @@ export function installBookingRoutes(app, {
+     });
+     return res.status(result.statusCode).json(result.body);
+   }));
+-  app.get(`${publicPrefix}/confirmations/:confirmationId`, publicBookingContext, publicRateLimit, asyncHandler(async (req, res) => {
++  app.get(`${publicPrefix}/confirmations/:confirmationId`, publicBookingContext, requireBookingAccess, publicRateLimit, asyncHandler(async (req, res) => {
+     const result = await bookingService.getConfirmationStatus({
+       bookingToken: req.params.bookingToken,
+       confirmationId: req.params.confirmationId
+diff --git a/server/src/bookingService.js b/server/src/bookingService.js
+index 76a43a53..03ac7012 100644
+--- a/server/src/bookingService.js
++++ b/server/src/bookingService.js
+@@ -1,4 +1,5 @@
+ import {usageOwnerQuery} from './billingUsagePolicy.js';
++import {hasOperatorAccess} from './planAccess.js';
+ import {linkWidgetBookingLead} from './widgetBookingLead.js';
+ import crypto from 'node:crypto';
+ import { serviceAreaFromKnowledgeBase, serviceAreaDecision } from './serviceArea.js';
+@@ -1131,6 +1132,13 @@ export function createBookingService({
+ 
+   const recoveryInFlight = new Set();
+ 
++  function recoveryAccessAllowed(ownerId) {
++    const owner = usageOwnerQuery(db)(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt,
++      paidThroughAt, annualPaidThroughAt, serviceEndsAt FROM users
++      WHERE id = ? AND role = 'owner'`).get(ownerId);
++    return hasOperatorAccess(owner, { now: nowFrom(clock) });
++  }
++
+   async function recoverMissingEvent(appointment) {
+     // Retry only a provider that explicitly supports the same caller-supplied
+     // event ID. Never choose a new ID or release an ambiguously written slot.
+@@ -1138,6 +1146,9 @@ export function createBookingService({
+         recoveryInFlight.has(appointment.id) || appointment.providerEventStatus === 'PREPARING') return null;
+     recoveryInFlight.add(appointment.id);
+     try {
++      // The provider lookup awaited by polling may outlive account access.
++      // Keep its durable pending receipt/slot, but do not dispatch another write.
++      if (!recoveryAccessAllowed(appointment.ownerId)) return null;
+       const now = nowFrom(clock), row = context(appointment.ownerId, appointment.bookingIntentId, now);
+       const policy = policyConfiguration(row);
+       const customer = safeCustomer(parseJson(appointment.customerJson, null));
+@@ -1154,6 +1165,9 @@ export function createBookingService({
+       const current = usageOwnerQuery(db)('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?')
+         .get(appointment.id,appointment.ownerId,appointment.bookingIntentId);
+       if (!current || !PENDING_APPOINTMENT_STATUSES.has(current.status)) return null;
++      // Read the persisted owner and clock again after listBusy, immediately
++      // before dispatch. A write already dispatched still settles normally.
++      if (!recoveryAccessAllowed(appointment.ownerId)) return null;
+       return await calendar.createEvent({ownerId:appointment.ownerId,provider:appointment.provider,
+         calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId,appointmentId:appointment.id,
+         startAtUtc:appointment.startAtUtc,endAtUtc:appointment.endAtUtc,timezone:appointment.timezone,
+diff --git a/test/bookingService.spec.mjs b/test/bookingService.spec.mjs
+index 88663b49..92f3ba25 100644
+--- a/test/bookingService.spec.mjs
++++ b/test/bookingService.spec.mjs
+@@ -988,6 +988,12 @@ test('A provider write already started remains pending after restart until its e
+ // Opus follow-up: an interrupted provider-write marker has no terminal response.
+ async function missingEventRecoveryFixture() {
+  const s=harness({calendarMode:'PENDING_CONFIRMATION'}),available=await slots(s);
++ // Recovery now reads the persisted account just as the HTTP gate does.
++ // Use the production schema and a legitimate entitled owner, not a bypass.
++ s.db.exec(CREATE_TABLE_STATEMENTS.find(sql=>sql.includes('IF NOT EXISTS users (')));
++ s.db.prepare(`INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,role,createdAt)
++   VALUES(?,?,'SYNTHETIC','[SYNTHETIC]','[SYNTHETIC]','Operator','active','owner',?)`)
++   .run(OWNER,'booking-recovery@example.invalid',new Date(START_NOW).toISOString());
+  const held=s.booking.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold1,slotId:available[0].slotId});
+  const request={ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)};
+  const receipt=await s.booking.confirm(request);
+diff --git a/verification/tenant-isolation-20261007/route-sources.json b/verification/tenant-isolation-20261007/route-sources.json
+index 83201645..0cb385f2 100644
+--- a/verification/tenant-isolation-20261007/route-sources.json
++++ b/verification/tenant-isolation-20261007/route-sources.json
+@@ -21,7 +21,7 @@
+   },
+   {
+     "file": "src/bookingRoutes.js",
+-    "sha256": "98290b55a5259dfa934b0f6ad142fbc76833b5d5aed8660cd66e04277003b3c1"
++    "sha256": "5d267515c7cef403a81c6ebd484ad41f4df5e303fe69880fd3b673a3b3300f26"
+   },
+   {
+     "file": "src/clientAddress.js",

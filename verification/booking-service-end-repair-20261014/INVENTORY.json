@@ -1,0 +1,319 @@
+{
+  "createdUTC": "2026-10-14T08:02:19.402517+00:00",
+  "base": "95e1631f42461ca8ae7d46d859940bffc302d155",
+  "files": [
+    {
+      "path": "01-remote-base.meta.json",
+      "sha256": "dd2bd54e8d04259a70d015e06047f2a07651b5c8ffee6f6dbb15d53acc509472",
+      "bytes": 947
+    },
+    {
+      "path": "01-remote-base.stdout.txt",
+      "sha256": "c3113c7131f33402e7bbe7071585d899a2fbab553aa33a093ec587034c8e30c1",
+      "bytes": 218
+    },
+    {
+      "path": "01-remote-base.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "02-clone.meta.json",
+      "sha256": "e3574ba62a7d79490cee7a455aa15a705ee9288aea6b2b465ec8a5388ebe13ed",
+      "bytes": 856
+    },
+    {
+      "path": "02-clone.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "02-clone.stderr.txt",
+      "sha256": "c5b0d2d27b0bd5340508ccf0520820ccda31312a033b7b475b66bacb43afa4db",
+      "bytes": 59
+    },
+    {
+      "path": "03-npm-ci.meta.json",
+      "sha256": "4702819598fed5055b4605bd06248374ba7075715777ad193070c32d994c84ea",
+      "bytes": 938
+    },
+    {
+      "path": "03-npm-ci.stdout.txt",
+      "sha256": "e92c6a54b022a5869b38b8bf1bbee04e70ec34f39792943030db5819ca9e1097",
+      "bytes": 27
+    },
+    {
+      "path": "03-npm-ci.stderr.txt",
+      "sha256": "3f1f0547723b32ef0ce13e6dafafc32277d6fe8029de3724752a541cf935d8fa",
+      "bytes": 923
+    },
+    {
+      "path": "04-build.meta.json",
+      "sha256": "c749de6294ce6af43f13ace725a1e448393a615a26e2ea19460b6a1adefe42e6",
+      "bytes": 951
+    },
+    {
+      "path": "04-build.stdout.txt",
+      "sha256": "3d7bd1946658734f64417f4fe2aa013f18993088d8b28fe7689409f80151a57e",
+      "bytes": 670
+    },
+    {
+      "path": "04-build.stderr.txt",
+      "sha256": "b7537641830258fcd7d68c53a8e4810f8749924ff4e06012aa54076b900e6f75",
+      "bytes": 1229
+    },
+    {
+      "path": "05-baseline.meta.json",
+      "sha256": "3c71dfa1dc9513cbe76984f03797867e876fc86555806ff44e4786b766e054cd",
+      "bytes": 961
+    },
+    {
+      "path": "05-baseline.stdout.txt",
+      "sha256": "56b4b8890fb656cad9b693b725076df28759907ef1de349db72fce75ed2f6eb7",
+      "bytes": 1736
+    },
+    {
+      "path": "05-baseline.stderr.txt",
+      "sha256": "9875ee4c1331f49fa8cdac59776bfcceed2ecc6ed6338d8d75a20ac7a003620e",
+      "bytes": 705
+    },
+    {
+      "path": "06-new-regression.meta.json",
+      "sha256": "a67a1f0427724244805ba1a01d2481379d1f52147a71e18723ca9593181202ae",
+      "bytes": 1107
+    },
+    {
+      "path": "06-new-regression.stdout.txt",
+      "sha256": "687db4662c5a7b8ba8ffc8683cf8bb6810c72f1cf7fbf9df685d9b47b8d5aa16",
+      "bytes": 25377
+    },
+    {
+      "path": "06-new-regression.stderr.txt",
+      "sha256": "b9b30cc4cdcbca10e057e9a766cb2086342ee401e86da1d4e11ecbc2c413c4fe",
+      "bytes": 174
+    },
+    {
+      "path": "07-new-regression-corrected.meta.json",
+      "sha256": "4a4513a811ae3bc037f9a047a127ee24517a97436ad8e92ee2bce838432eadb4",
+      "bytes": 1107
+    },
+    {
+      "path": "07-new-regression-corrected.stdout.txt",
+      "sha256": "1d4e73241800696b889ac1934e1cf3dc980de311c3244b82069186c0e853ec6b",
+      "bytes": 10061
+    },
+    {
+      "path": "07-new-regression-corrected.stderr.txt",
+      "sha256": "db12ad97221988bf346c55d06788e21a01bb6a683d69266bf732ed4d6d9763c8",
+      "bytes": 174
+    },
+    {
+      "path": "08-entitled-base.meta.json",
+      "sha256": "bed92963c3a7be18f2aa640b61b6b12294f30e63caa68cc73ed18819c0ca2cac",
+      "bytes": 974
+    },
+    {
+      "path": "08-entitled-base.stdout.txt",
+      "sha256": "5ecf1ae7c4b3acd54c912397c592eccb5eaaead95a2a61ec9c18af5a25b307dd",
+      "bytes": 1944
+    },
+    {
+      "path": "08-entitled-base.stderr.txt",
+      "sha256": "957ea1f5a362ee099500c49326346ebe0902dda06ec297d380c416c939f56b20",
+      "bytes": 714
+    },
+    {
+      "path": "09-new-regression-entitled.meta.json",
+      "sha256": "ca12defbd92cde28812083df2d2081845d9fc58adb99251266154b65eee9ec85",
+      "bytes": 1107
+    },
+    {
+      "path": "09-new-regression-entitled.stdout.txt",
+      "sha256": "12078fe30b4144806a0c9e04670b1d73f1bd57705e75f329d2bd8c02a67c2487",
+      "bytes": 4242
+    },
+    {
+      "path": "09-new-regression-entitled.stderr.txt",
+      "sha256": "db12ad97221988bf346c55d06788e21a01bb6a683d69266bf732ed4d6d9763c8",
+      "bytes": 174
+    },
+    {
+      "path": "10-entitled-repaired.meta.json",
+      "sha256": "bc416341685cb4633e2420e62d7edff61f738d0274da11613b8dc9273720c6dd",
+      "bytes": 969
+    },
+    {
+      "path": "10-entitled-repaired.stdout.txt",
+      "sha256": "c56b12a173d77c56b091090bfe9332debb5014e29f97b8db182694b87ffc388e",
+      "bytes": 1261
+    },
+    {
+      "path": "10-entitled-repaired.stderr.txt",
+      "sha256": "b9b30cc4cdcbca10e057e9a766cb2086342ee401e86da1d4e11ecbc2c413c4fe",
+      "bytes": 174
+    },
+    {
+      "path": "11-existing-focused.meta.json",
+      "sha256": "4f6fe6db2c6bb3e4f75f8216adab23dfa3ce7735e784016198ef2a8aeae24118",
+      "bytes": 1955
+    },
+    {
+      "path": "11-existing-focused.stdout.txt",
+      "sha256": "28ac1b05a17408ca7acb226c2e770df7859b36bc0b6901f0246d4436503db4a9",
+      "bytes": 105513
+    },
+    {
+      "path": "11-existing-focused.stderr.txt",
+      "sha256": "b9b30cc4cdcbca10e057e9a766cb2086342ee401e86da1d4e11ecbc2c413c4fe",
+      "bytes": 174
+    },
+    {
+      "path": "capture.py",
+      "sha256": "cfc2b40c41e30c54939c261b7e7a5735aaaa53fceaeca80031b04c8cf913e11e",
+      "bytes": 1094
+    },
+    {
+      "path": "base-checkout.json",
+      "sha256": "4e33a104743b4db7a3dcb2839846e878c6355e02a0a5ddafed7cf036c8842690",
+      "bytes": 283
+    },
+    {
+      "path": "runtime.json",
+      "sha256": "76a23f59844cdeff5b3d5ebd2e100b323eada0e8967181cb493b00263a7a1c13",
+      "bytes": 204
+    },
+    {
+      "path": "original-audit-verification.json",
+      "sha256": "51a022e503f8d0e32408b44a4f56a0c69d84cded08429979706ddee1cef846cf",
+      "bytes": 599
+    },
+    {
+      "path": "baseline.mjs",
+      "sha256": "5348588daff1c174f4915ebcce24389d658b4ffdd5028f813c4298c830727193",
+      "bytes": 7470
+    },
+    {
+      "path": "baseline-source-before.json",
+      "sha256": "d5773bc1becc9f4aa2706ef4f415c7c8151f6ac4e115df58ba79548325836ded",
+      "bytes": 523
+    },
+    {
+      "path": "baseline-source.diff",
+      "sha256": "7400964309b9cb2747873c70ba88c77696dfbd920a1cfd7d5512f7ca139c92bc",
+      "bytes": 672
+    },
+    {
+      "path": "baseline-entitled.mjs",
+      "sha256": "28a09a1eeee0e685f26c3ea2678a60cc4e0c7b4a2b6d9c1f7bf79fea3960844c",
+      "bytes": 8143
+    },
+    {
+      "path": "baseline-entitlement-correction.diff",
+      "sha256": "6d4704f9f2c50fba94e5056e4c521e8b1cde4fb31ceb9b5e78003610200276b2",
+      "bytes": 1691
+    },
+    {
+      "path": "baseline-entitlement-correction.json",
+      "sha256": "c1d678a1f2224fef7093b6d447e85a009321b53213ffb7bba2ee030f03300662",
+      "bytes": 604
+    },
+    {
+      "path": "first-regression-source.mjs",
+      "sha256": "f68ea073a4ef25b2bf88d8c001e70432847ac6fa717313266826b6a3d5c21a33",
+      "bytes": 15384
+    },
+    {
+      "path": "first-regression-production.diff",
+      "sha256": "17fdf956a994ef411261ccc75ebbae6dd5ada563ce6ee6938eb84fa3a938ea2f",
+      "bytes": 4168
+    },
+    {
+      "path": "first-regression-preservation.json",
+      "sha256": "a6b6a5544a83f1a49f8a7879fe9d7db1fe7b87f04d948db28d41c3d4257e8321",
+      "bytes": 892
+    },
+    {
+      "path": "fixture-correction.diff",
+      "sha256": "ac14b6b5aa82950e98fb2a556a1d25e01db7eada88bc255c5ee1b11b41596acf",
+      "bytes": 1808
+    },
+    {
+      "path": "fixture-correction.json",
+      "sha256": "7db0c1a5c86237cd7c62620d4f6ae029e6691932dcd7f0b4abc5dee96b9612e3",
+      "bytes": 374
+    },
+    {
+      "path": "second-regression-source.mjs",
+      "sha256": "d2851a0ccd897636dcccbe227703b90a7cf6d922b4516327d1ec9c27c61ea672",
+      "bytes": 15384
+    },
+    {
+      "path": "second-regression-production.diff",
+      "sha256": "72cd9035093ebcd30eae52f9b602c12f22b3b0f58f706b7039372806e6b20d09",
+      "bytes": 6041
+    },
+    {
+      "path": "second-regression-preservation.json",
+      "sha256": "990b531e8eed0eb36a5c8d20507a1fd0ea307dda89b2a9c0395e2e7a0478f5a4",
+      "bytes": 915
+    },
+    {
+      "path": "second-correction.diff",
+      "sha256": "f60acd10e4b3a750f3325b6e6ae32c7645834a2677cedd23ec4cf74e585c1d46",
+      "bytes": 1557
+    },
+    {
+      "path": "second-correction.json",
+      "sha256": "d37aaa0a9be75a5d3523a52aa0853282dc2fb00497da92d09166e314e839e524",
+      "bytes": 481
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "f6c54ade2cdb86b18eccae0f668933506ff8fe87771ed0f0f0e0ce7e80f81d43",
+      "bytes": 7063
+    },
+    {
+      "path": "EXPECTATIONS.md",
+      "sha256": "323df014271ef554fe09ceff04f43f352906fce2766b47fa56889d6395231a1e",
+      "bytes": 1340
+    },
+    {
+      "path": "repair.diff",
+      "sha256": "227a9fbec907f9d9a11745d55ddf335911cc650696a54d48de2de0b62ca45ac2",
+      "bytes": 5700
+    },
+    {
+      "path": "regression-source.mjs",
+      "sha256": "6af90c07e2a2d5b4dd46ae706138510b940259ac3f8914a301021662b88eb0db",
+      "bytes": 15869
+    }
+  ],
+  "changedSource": [
+    {
+      "path": "server/src/bookingRoutes.js",
+      "sha256": "5d267515c7cef403a81c6ebd484ad41f4df5e303fe69880fd3b673a3b3300f26",
+      "bytes": 12395
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "sha256": "872843a8523575b0d8747281a68af24aa405d2921022d2f6ff487a487f449c44",
+      "bytes": 77941
+    },
+    {
+      "path": "test/bookingService.spec.mjs",
+      "sha256": "1aa46091bb9a7dd106935d6dfaa5c0b4c0dcb6590ed22e87d9b25114996bbfbb",
+      "bytes": 45481
+    },
+    {
+      "path": "test/bookingServiceEnd20261014.spec.mjs",
+      "sha256": "6af90c07e2a2d5b4dd46ae706138510b940259ac3f8914a301021662b88eb0db",
+      "bytes": 15869
+    },
+    {
+      "path": "verification/tenant-isolation-20261007/route-sources.json",
+      "sha256": "75431a78f34e1ed924104c946bd73234e65fa42fbd8aed0f8578dff07aaa2131",
+      "bytes": 3389
+    }
+  ],
+  "capture": "Only the explicit filenames listed here were copied; no temporary volumes/database files captured."
+}

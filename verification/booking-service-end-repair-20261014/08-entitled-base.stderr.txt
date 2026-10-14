@@ -1,0 +1,21 @@
+(node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Service-ended public status polling must not create a missing calendar event
+
+1 !== 0
+
+    at file:///workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/evidence/baseline-entitled.mjs:57:10
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.3

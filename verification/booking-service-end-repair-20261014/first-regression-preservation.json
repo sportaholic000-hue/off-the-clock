@@ -1,0 +1,30 @@
+{
+  "preservedUTC": "2026-10-14T07:56:17.229893+00:00",
+  "files": [
+    {
+      "path": "first-regression-source.mjs",
+      "sha256": "f68ea073a4ef25b2bf88d8c001e70432847ac6fa717313266826b6a3d5c21a33",
+      "bytes": 15384
+    },
+    {
+      "path": "first-regression-production.diff",
+      "sha256": "17fdf956a994ef411261ccc75ebbae6dd5ada563ce6ee6938eb84fa3a938ea2f",
+      "bytes": 4168
+    },
+    {
+      "path": "06-new-regression.stdout.txt",
+      "sha256": "687db4662c5a7b8ba8ffc8683cf8bb6810c72f1cf7fbf9df685d9b47b8d5aa16",
+      "bytes": 25377
+    },
+    {
+      "path": "06-new-regression.stderr.txt",
+      "sha256": "b9b30cc4cdcbca10e057e9a766cb2086342ee401e86da1d4e11ecbc2c413c4fe",
+      "bytes": 174
+    },
+    {
+      "path": "06-new-regression.meta.json",
+      "sha256": "a67a1f0427724244805ba1a01d2481379d1f52147a71e18723ca9593181202ae",
+      "bytes": 1107
+    }
+  ]
+}

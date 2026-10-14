@@ -988,6 +988,15 @@ test('A provider write already started remains pending after restart until its e
 // Opus follow-up: an interrupted provider-write marker has no terminal response.
 async function missingEventRecoveryFixture() {
  const s=harness({calendarMode:'PENDING_CONFIRMATION'}),available=await slots(s);
+ // Recovery now reads the persisted account just as the HTTP gate does.
+ // Use the production schema and a legitimate entitled owner, not a bypass.
+ s.db.exec(CREATE_TABLE_STATEMENTS.find(sql=>sql.includes('IF NOT EXISTS users (')));
+ s.db.prepare(`INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,role,createdAt)
+   VALUES(?,?,'SYNTHETIC','[SYNTHETIC]','[SYNTHETIC]','Operator','active','owner',?)`)
+   .run(OWNER,'booking-recovery@example.invalid',new Date(START_NOW).toISOString());
+ s.db.exec(CREATE_TABLE_STATEMENTS.find(sql=>sql.includes('IF NOT EXISTS billingAccounts (')));
+ s.db.prepare(`INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt)
+   VALUES(?,'cus_SYNTHETIC_recovery',?,?,?)`).run(OWNER,...Array(3).fill(new Date(START_NOW).toISOString()));
  const held=s.booking.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold1,slotId:available[0].slotId});
  const request={ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)};
  const receipt=await s.booking.confirm(request);

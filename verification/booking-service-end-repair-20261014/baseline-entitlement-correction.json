@@ -1,0 +1,8 @@
+{
+  "beforeExecutionUTC": "2026-10-14T07:58:20.821523+00:00",
+  "cause": "The migrated-schema billing-evidence trigger changed the initial active insert to pending_payment. Add synthetic verified billing evidence, update active state and assert actual centralized access before preparing the booking.",
+  "baselineHEAD": "95e1631f42461ca8ae7d46d859940bffc302d155",
+  "baselineTrackedDiff": [],
+  "sourceSha256": "28a09a1eeee0e685f26c3ea2678a60cc4e0c7b4a2b6d9c1f7bf79fea3960844c",
+  "dependencies": "Symlink to the repair checkout node_modules installed by captured npm ci; same lockfile, Node 22.23.3"
+}
