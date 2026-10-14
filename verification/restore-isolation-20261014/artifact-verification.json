@@ -1,0 +1,52 @@
+{
+  "verifiedUTC": "2026-10-14T05:10:00.051104+00:00",
+  "runId": 38514792563,
+  "attempt": 1,
+  "jobId": 115691046670,
+  "artifactId": 11871315884,
+  "outerArtifactSha256": "6cd6360be0585ac07a937fadbf01a065443f075ebdd4a8435f24cca856ab71fb",
+  "evidenceZipSha256": "e9ee579a044fa27e98b70963acf2731881f163ea2990180171631fb61114dbe1",
+  "evidenceZipBytes": 4229243,
+  "entries": 180,
+  "inventoryEntriesVerified": 178,
+  "crcPassed": true,
+  "noVolumeOrDatabaseFilesPackaged": true,
+  "downloadedAndReadable": true,
+  "runtimeResults": {
+    "applicationCommit": "95e1631f42461ca8ae7d46d859940bffc302d155",
+    "normal": {
+      "status": "PASS",
+      "summary": {
+        "tests": 9,
+        "pass": 9,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "exitCode": 0,
+      "signal": null,
+      "execution": "normal.execution.json",
+      "observations": "normal.observations.json"
+    },
+    "traced": {
+      "status": "PASS",
+      "summary": {
+        "tests": 9,
+        "pass": 9,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "exitCode": 0,
+      "signal": null,
+      "execution": "traced.execution.json",
+      "observations": "traced.observations.json",
+      "traceFiles": 94
+    },
+    "diagnosticCommit": "671141684fe2bf273a606ff4f569dd2cd89c0a21",
+    "finishedUTC": "2026-10-14T05:06:28.628898+00:00",
+    "targetedStatus": "PASS"
+  }
+}

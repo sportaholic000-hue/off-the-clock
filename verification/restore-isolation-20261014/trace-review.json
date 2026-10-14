@@ -1,0 +1,257 @@
+{
+  "sourceArchiveSha256": "e9ee579a044fa27e98b70963acf2731881f163ea2990180171631fb61114dbe1",
+  "derivedOnly": true,
+  "limitations": "Selected existing raw trace lines; no new rehearsal, control, database capture or global-writer coverage. Raw buffer arguments preserve fd/count but omit contents.",
+  "excerpts": [
+    {
+      "file": "tracer-proof.raw.3770",
+      "line": 859,
+      "raw": "1791954366.386148 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-tracer-proof-ts8_3qwb/synthetic-write\", O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0600) = 3</tmp/restore-isolation-tracer-proof-ts8_3qwb/synthetic-write> <0.000053>"
+    },
+    {
+      "file": "tracer-proof.raw.3770",
+      "line": 860,
+      "raw": "1791954366.386250 write(0x3, 0x7fe623dad2d0, 0x1b) = 0x1b <0.000030>"
+    },
+    {
+      "file": "tracer-proof.raw.3770",
+      "line": 861,
+      "raw": "1791954366.386303 close(3</tmp/restore-isolation-tracer-proof-ts8_3qwb/synthetic-write>) = 0 <0.000021>"
+    },
+    {
+      "file": "tracer-proof.raw.3770",
+      "line": 862,
+      "raw": "1791954366.386374 rename(\"/tmp/restore-isolation-tracer-proof-ts8_3qwb/synthetic-write\", \"/tmp/restore-isolation-tracer-proof-ts8_3qwb/synthetic-write.renamed\") = 0 <0.000036>"
+    },
+    {
+      "file": "tracer-proof.raw.3770",
+      "line": 863,
+      "raw": "1791954366.386450 utimensat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-tracer-proof-ts8_3qwb/synthetic-write.renamed\", [{tv_sec=1700000000, tv_nsec=0} /* 2023-11-14T22:13:20+0000 */, {tv_sec=1700000000, tv_nsec=0} /* 2023-11-14T22:13:20+0000 */], 0) = 0 <0.000025>"
+    },
+    {
+      "file": "tracer-proof.raw.3770",
+      "line": 864,
+      "raw": "1791954366.386515 unlink(\"/tmp/restore-isolation-tracer-proof-ts8_3qwb/synthetic-write.renamed\") = 0 <0.000044>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 5733,
+      "raw": "1791954378.107444 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0666) = 21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json> <0.000192>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 5734,
+      "raw": "1791954378.107684 write(0x15, 0x7ffc50893dd8, 0x7) = 0x7 <0.000025>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 5735,
+      "raw": "1791954378.107736 close(21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>) = 0 <0.000035>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 5736,
+      "raw": "1791954378.107809 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_RDONLY|O_CLOEXEC) = 21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json> <0.000021>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 5737,
+      "raw": "1791954378.107870 statx(21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_blksize=4096, stx_attributes=0, stx_nlink=1, stx_uid=1001, stx_gid=1001, stx_mode=S_IFREG|0600, stx_ino=9457291, stx_size=7, stx_blocks=8, stx_attributes_mask=STATX_ATTR_COMPRESSED|STATX_ATTR_IMMUTABLE|STATX_ATTR_APPEND|STATX_ATTR_NODUMP|STATX_ATTR_ENCRYPTED|STATX_ATTR_AUTOMOUNT|STATX_ATTR_MOUNT_ROOT|STATX_ATTR_VERITY|STATX_ATTR_DAX, stx_atime={tv_sec=1791954377, tv_nsec=874180459} /* 2026-10-14T05:06:17.874180459+0000 */, stx_btime={tv_sec=1791954375, tv_nsec=643180509} /* 2026-10-14T05:06:15.643180509+0000 */, stx_ctime={tv_sec=1791954378, tv_nsec=107695676} /* 2026-10-14T05:06:18.107695676+0000 */, stx_mtime={tv_sec=1791954378, tv_nsec=107695676} /* 2026-10-14T05:06:18.107695676+0000 */, stx_rdev_major=0, stx_rdev_minor=0, stx_dev_major=259, stx_dev_minor=1, stx_mnt_id=0x1b}) = 0 <0.000018>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 5738,
+      "raw": "1791954378.107944 read(0x15, 0x1d8ba318, 0x7) = 0x7 <0.000020>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 5739,
+      "raw": "1791954378.107989 close(21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>) = 0 <0.000018>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 5740,
+      "raw": "1791954378.108047 statx(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_blksize=4096, stx_attributes=0, stx_nlink=1, stx_uid=1001, stx_gid=1001, stx_mode=S_IFREG|0600, stx_ino=9457291, stx_size=7, stx_blocks=8, stx_attributes_mask=STATX_ATTR_COMPRESSED|STATX_ATTR_IMMUTABLE|STATX_ATTR_APPEND|STATX_ATTR_NODUMP|STATX_ATTR_ENCRYPTED|STATX_ATTR_AUTOMOUNT|STATX_ATTR_MOUNT_ROOT|STATX_ATTR_VERITY|STATX_ATTR_DAX, stx_atime={tv_sec=1791954378, tv_nsec=107956192} /* 2026-10-14T05:06:18.107956192+0000 */, stx_btime={tv_sec=1791954375, tv_nsec=643180509} /* 2026-10-14T05:06:15.643180509+0000 */, stx_ctime={tv_sec=1791954378, tv_nsec=107695676} /* 2026-10-14T05:06:18.107695676+0000 */, stx_mtime={tv_sec=1791954378, tv_nsec=107695676} /* 2026-10-14T05:06:18.107695676+0000 */, stx_rdev_major=0, stx_rdev_minor=0, stx_dev_major=259, stx_dev_minor=1, stx_mnt_id=0x1b}) = 0 <0.000019>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6085,
+      "raw": "1791954380.376280 wait4(3846, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], WNOHANG, NULL) = 3846 <0.000060>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6086,
+      "raw": "1791954380.376408 read(0x5, 0x7ffc50894adf, 0x1) = 0x1 <0.000018>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6087,
+      "raw": "1791954380.376509 write(0x6, 0x7ffc50894ca0, 0x1) = 0x1 <0.000017>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6088,
+      "raw": "1791954380.376720 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0666) = 21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json> <0.000197>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6089,
+      "raw": "1791954380.376983 write(0x15, 0x1d527f30, 0xc44) = 0xc44 <0.000027>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6090,
+      "raw": "1791954380.377041 close(21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>) = 0 <0.000034>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6091,
+      "raw": "1791954380.377116 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_RDONLY|O_CLOEXEC) = 21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json> <0.000022>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6092,
+      "raw": "1791954380.377195 statx(21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_blksize=4096, stx_attributes=0, stx_nlink=1, stx_uid=1001, stx_gid=1001, stx_mode=S_IFREG|0600, stx_ino=9457291, stx_size=3140, stx_blocks=8, stx_attributes_mask=STATX_ATTR_COMPRESSED|STATX_ATTR_IMMUTABLE|STATX_ATTR_APPEND|STATX_ATTR_NODUMP|STATX_ATTR_ENCRYPTED|STATX_ATTR_AUTOMOUNT|STATX_ATTR_MOUNT_ROOT|STATX_ATTR_VERITY|STATX_ATTR_DAX, stx_atime={tv_sec=1791954378, tv_nsec=107956192} /* 2026-10-14T05:06:18.107956192+0000 */, stx_btime={tv_sec=1791954375, tv_nsec=643180509} /* 2026-10-14T05:06:15.643180509+0000 */, stx_ctime={tv_sec=1791954380, tv_nsec=376996076} /* 2026-10-14T05:06:20.376996076+0000 */, stx_mtime={tv_sec=1791954380, tv_nsec=376996076} /* 2026-10-14T05:06:20.376996076+0000 */, stx_rdev_major=0, stx_rdev_minor=0, stx_dev_major=259, stx_dev_minor=1, stx_mnt_id=0x1b}) = 0 <0.000021>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6359,
+      "raw": "1791954382.647542 unlink(\"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\") = 0 <0.000179>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6360,
+      "raw": "1791954382.647749 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000017>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6361,
+      "raw": "1791954382.648164 write(0x1, 0x1d60e760, 0x167) = 0x167 <0.000028>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6362,
+      "raw": "1791954382.648309 epoll_ctl(15<anon_inode:[eventpoll]>, EPOLL_CTL_DEL, 21<TCP:[127.0.0.1:36671]>, 0x7ffc508945a4) = -1 ENOENT (No such file or directory) <0.000023>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6363,
+      "raw": "1791954382.651479 close(21<TCP:[127.0.0.1:36671]>) = 0 <0.000027>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6548,
+      "raw": "1791954384.915333 epoll_ctl(15<anon_inode:[eventpoll]>, EPOLL_CTL_DEL, 21<UNIX-STREAM:[18980->18981]>, 0x7ffc50894b34) = 0 <0.000015>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6549,
+      "raw": "1791954384.915376 close(21<UNIX-STREAM:[18980->18981]>) = 0 <0.000019>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6550,
+      "raw": "1791954384.915436 read(0x11, 0x7ffc508954f0, 0x200) = 0x10 <0.000015>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6551,
+      "raw": "1791954384.915475 wait4(3864, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], WNOHANG, NULL) = 3864 <0.000059>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6552,
+      "raw": "1791954384.915594 read(0x5, 0x7ffc50894adf, 0x1) = 0x1 <0.000015>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6553,
+      "raw": "1791954384.915659 write(0x6, 0x7ffc50894ca0, 0x1) = 0x1 <0.000015>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6554,
+      "raw": "1791954384.915834 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0666) = 21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json> <0.000050>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6555,
+      "raw": "1791954384.915935 write(0x15, 0x1d527f30, 0xc44) = 0xc44 <0.000027>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6556,
+      "raw": "1791954384.915988 close(21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>) = 0 <0.000015>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6557,
+      "raw": "1791954384.916036 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_RDONLY|O_CLOEXEC) = 21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json> <0.000017>"
+    },
+    {
+      "file": "rehearsal.raw.3780",
+      "line": 6558,
+      "raw": "1791954384.916088 statx(21</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_blksize=4096, stx_attributes=0, stx_nlink=1, stx_uid=1001, stx_gid=1001, stx_mode=S_IFREG|0644, stx_ino=9457350, stx_size=3140, stx_blocks=8, stx_attributes_mask=STATX_ATTR_COMPRESSED|STATX_ATTR_IMMUTABLE|STATX_ATTR_APPEND|STATX_ATTR_NODUMP|STATX_ATTR_ENCRYPTED|STATX_ATTR_AUTOMOUNT|STATX_ATTR_MOUNT_ROOT|STATX_ATTR_VERITY|STATX_ATTR_DAX, stx_atime={tv_sec=1791954384, tv_nsec=915180263} /* 2026-10-14T05:06:24.915180263+0000 */, stx_btime={tv_sec=1791954384, tv_nsec=915180263} /* 2026-10-14T05:06:24.915180263+0000 */, stx_ctime={tv_sec=1791954384, tv_nsec=915946257} /* 2026-10-14T05:06:24.915946257+0000 */, stx_mtime={tv_sec=1791954384, tv_nsec=915946257} /* 2026-10-14T05:06:24.915946257+0000 */, stx_rdev_major=0, stx_rdev_minor=0, stx_dev_major=259, stx_dev_minor=1, stx_mnt_id=0x1b}) = 0 <0.000016>"
+    },
+    {
+      "file": "rehearsal.raw.3846",
+      "line": 19243,
+      "raw": "1791954380.277121 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_RDONLY|O_CLOEXEC) = 31</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json> <0.000043>"
+    },
+    {
+      "file": "rehearsal.raw.3846",
+      "line": 19244,
+      "raw": "1791954380.277217 statx(31</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_blksize=4096, stx_attributes=0, stx_nlink=1, stx_uid=1001, stx_gid=1001, stx_mode=S_IFREG|0600, stx_ino=9457291, stx_size=7, stx_blocks=8, stx_attributes_mask=STATX_ATTR_COMPRESSED|STATX_ATTR_IMMUTABLE|STATX_ATTR_APPEND|STATX_ATTR_NODUMP|STATX_ATTR_ENCRYPTED|STATX_ATTR_AUTOMOUNT|STATX_ATTR_MOUNT_ROOT|STATX_ATTR_VERITY|STATX_ATTR_DAX, stx_atime={tv_sec=1791954378, tv_nsec=107956192} /* 2026-10-14T05:06:18.107956192+0000 */, stx_btime={tv_sec=1791954375, tv_nsec=643180509} /* 2026-10-14T05:06:15.643180509+0000 */, stx_ctime={tv_sec=1791954378, tv_nsec=107695676} /* 2026-10-14T05:06:18.107695676+0000 */, stx_mtime={tv_sec=1791954378, tv_nsec=107695676} /* 2026-10-14T05:06:18.107695676+0000 */, stx_rdev_major=0, stx_rdev_minor=0, stx_dev_major=259, stx_dev_minor=1, stx_mnt_id=0x1b}) = 0 <0.000018>"
+    },
+    {
+      "file": "rehearsal.raw.3846",
+      "line": 19245,
+      "raw": "1791954380.277295 read(0x1f, 0x15686c60, 0x7) = 0x7 <0.000020>"
+    },
+    {
+      "file": "rehearsal.raw.3846",
+      "line": 19246,
+      "raw": "1791954380.277343 close(31</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>) = 0 <0.000019>"
+    },
+    {
+      "file": "rehearsal.raw.3846",
+      "line": 19553,
+      "raw": "1791954380.336042 statx(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_blksize=4096, stx_attributes=0, stx_nlink=1, stx_uid=1001, stx_gid=1001, stx_mode=S_IFREG|0600, stx_ino=9457291, stx_size=7, stx_blocks=8, stx_attributes_mask=STATX_ATTR_COMPRESSED|STATX_ATTR_IMMUTABLE|STATX_ATTR_APPEND|STATX_ATTR_NODUMP|STATX_ATTR_ENCRYPTED|STATX_ATTR_AUTOMOUNT|STATX_ATTR_MOUNT_ROOT|STATX_ATTR_VERITY|STATX_ATTR_DAX, stx_atime={tv_sec=1791954378, tv_nsec=107956192} /* 2026-10-14T05:06:18.107956192+0000 */, stx_btime={tv_sec=1791954375, tv_nsec=643180509} /* 2026-10-14T05:06:15.643180509+0000 */, stx_ctime={tv_sec=1791954378, tv_nsec=107695676} /* 2026-10-14T05:06:18.107695676+0000 */, stx_mtime={tv_sec=1791954378, tv_nsec=107695676} /* 2026-10-14T05:06:18.107695676+0000 */, stx_rdev_major=0, stx_rdev_minor=0, stx_dev_major=259, stx_dev_minor=1, stx_mnt_id=0x1b}) = 0 <0.000021>"
+    },
+    {
+      "file": "rehearsal.raw.3855",
+      "line": 19391,
+      "raw": "1791954382.556880 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_RDONLY|O_CLOEXEC) = 31</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json> <0.000031>"
+    },
+    {
+      "file": "rehearsal.raw.3855",
+      "line": 19392,
+      "raw": "1791954382.556957 statx(31</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_blksize=4096, stx_attributes=0, stx_nlink=1, stx_uid=1001, stx_gid=1001, stx_mode=S_IFREG|0600, stx_ino=9457291, stx_size=82, stx_blocks=8, stx_attributes_mask=STATX_ATTR_COMPRESSED|STATX_ATTR_IMMUTABLE|STATX_ATTR_APPEND|STATX_ATTR_NODUMP|STATX_ATTR_ENCRYPTED|STATX_ATTR_AUTOMOUNT|STATX_ATTR_MOUNT_ROOT|STATX_ATTR_VERITY|STATX_ATTR_DAX, stx_atime={tv_sec=1791954380, tv_nsec=379301393} /* 2026-10-14T05:06:20.379301393+0000 */, stx_btime={tv_sec=1791954375, tv_nsec=643180509} /* 2026-10-14T05:06:15.643180509+0000 */, stx_ctime={tv_sec=1791954380, tv_nsec=379035069} /* 2026-10-14T05:06:20.379035069+0000 */, stx_mtime={tv_sec=1791954380, tv_nsec=379035069} /* 2026-10-14T05:06:20.379035069+0000 */, stx_rdev_major=0, stx_rdev_minor=0, stx_dev_major=259, stx_dev_minor=1, stx_mnt_id=0x1b}) = 0 <0.000020>"
+    },
+    {
+      "file": "rehearsal.raw.3855",
+      "line": 19393,
+      "raw": "1791954382.557034 read(0x1f, 0x22cafc60, 0x52) = 0x52 <0.000020>"
+    },
+    {
+      "file": "rehearsal.raw.3855",
+      "line": 19394,
+      "raw": "1791954382.557082 close(31</tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json>) = 0 <0.000020>"
+    },
+    {
+      "file": "rehearsal.raw.3855",
+      "line": 19708,
+      "raw": "1791954382.604356 statx(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_blksize=4096, stx_attributes=0, stx_nlink=1, stx_uid=1001, stx_gid=1001, stx_mode=S_IFREG|0600, stx_ino=9457291, stx_size=82, stx_blocks=8, stx_attributes_mask=STATX_ATTR_COMPRESSED|STATX_ATTR_IMMUTABLE|STATX_ATTR_APPEND|STATX_ATTR_NODUMP|STATX_ATTR_ENCRYPTED|STATX_ATTR_AUTOMOUNT|STATX_ATTR_MOUNT_ROOT|STATX_ATTR_VERITY|STATX_ATTR_DAX, stx_atime={tv_sec=1791954380, tv_nsec=379301393} /* 2026-10-14T05:06:20.379301393+0000 */, stx_btime={tv_sec=1791954375, tv_nsec=643180509} /* 2026-10-14T05:06:15.643180509+0000 */, stx_ctime={tv_sec=1791954380, tv_nsec=379035069} /* 2026-10-14T05:06:20.379035069+0000 */, stx_mtime={tv_sec=1791954380, tv_nsec=379035069} /* 2026-10-14T05:06:20.379035069+0000 */, stx_rdev_major=0, stx_rdev_minor=0, stx_dev_major=259, stx_dev_minor=1, stx_mnt_id=0x1b}) = 0 <0.000017>"
+    },
+    {
+      "file": "rehearsal.raw.3864",
+      "line": 19234,
+      "raw": "1791954384.828714 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000030>"
+    },
+    {
+      "file": "rehearsal.raw.3864",
+      "line": 19519,
+      "raw": "1791954384.874966 openat(AT_FDCWD</home/runner/work/off-the-clock/off-the-clock/application>, \"/tmp/restore-isolation-traced-vzlu7gan/otc-synthetic-restore-Qoig2f/volume/restores/synthetic-drill/pricebooks/8b9fb882-6472-4236-9daa-563275076c70.json\", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000025>"
+    }
+  ]
+}

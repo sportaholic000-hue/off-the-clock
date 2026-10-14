@@ -1,0 +1,484 @@
+﻿2026-10-14T05:05:38.6675016Z Current runner version: '2.337.0'
+2026-10-14T05:05:38.6696039Z ##[group]Runner Image Provisioner
+2026-10-14T05:05:38.6696852Z Hosted Compute Agent
+2026-10-14T05:05:38.6697379Z Version: 20261002.596
+2026-10-14T05:05:38.6697935Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-14T05:05:38.6698527Z Build Date: 2026-10-02T22:28:27Z
+2026-10-14T05:05:38.6699156Z Worker ID: {4772348d-6106-4b0d-a6cd-7d14893cca78}
+2026-10-14T05:05:38.6699730Z Region: eastus
+2026-10-14T05:05:38.6700168Z Cloud: Azure
+2026-10-14T05:05:38.6700734Z ##[endgroup]
+2026-10-14T05:05:38.6702481Z ##[group]Operating System
+2026-10-14T05:05:38.6703077Z Ubuntu
+2026-10-14T05:05:38.6703518Z 24.04.5
+2026-10-14T05:05:38.6703914Z LTS
+2026-10-14T05:05:38.6705077Z ##[endgroup]
+2026-10-14T05:05:38.6705549Z ##[group]Runner Image
+2026-10-14T05:05:38.6706071Z Image: ubuntu-24.04
+2026-10-14T05:05:38.6706552Z Version: 20261004.327.1
+2026-10-14T05:05:38.6707710Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-14T05:05:38.6708936Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-14T05:05:38.6709744Z ##[endgroup]
+2026-10-14T05:05:38.6710652Z ##[group]GITHUB_TOKEN Permissions
+2026-10-14T05:05:38.6712608Z Contents: read
+2026-10-14T05:05:38.6713106Z Metadata: read
+2026-10-14T05:05:38.6713658Z ##[endgroup]
+2026-10-14T05:05:38.6715833Z Secret source: Actions
+2026-10-14T05:05:38.6716580Z Cache mode: write
+2026-10-14T05:05:38.6717773Z Prepare workflow directory
+2026-10-14T05:05:38.6975710Z Prepare all required actions
+2026-10-14T05:05:38.7013918Z Getting action download info
+2026-10-14T05:05:38.8979198Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-14T05:05:38.9932041Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-14T05:05:39.1803676Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-14T05:05:39.5206644Z Complete job name: isolated-restore
+2026-10-14T05:05:39.5931455Z ##[group]Run actions/checkout@v4
+2026-10-14T05:05:39.5932542Z with:
+2026-10-14T05:05:39.5933220Z   path: diagnostic
+2026-10-14T05:05:39.5933984Z   persist-credentials: false
+2026-10-14T05:05:39.5935058Z   repository: sportaholic000-hue/off-the-clock
+2026-10-14T05:05:39.5941783Z   token: ***
+2026-10-14T05:05:39.5942499Z   ssh-strict: true
+2026-10-14T05:05:39.5943215Z   ssh-user: git
+2026-10-14T05:05:39.5943914Z   clean: true
+2026-10-14T05:05:39.5944737Z   sparse-checkout-cone-mode: true
+2026-10-14T05:05:39.5945596Z   fetch-depth: 1
+2026-10-14T05:05:39.5946338Z   fetch-tags: false
+2026-10-14T05:05:39.5947071Z   show-progress: true
+2026-10-14T05:05:39.5947830Z   lfs: false
+2026-10-14T05:05:39.5948516Z   submodules: false
+2026-10-14T05:05:39.5949270Z   set-safe-directory: true
+2026-10-14T05:05:39.5950150Z   allow-unsafe-pr-checkout: false
+2026-10-14T05:05:39.5951201Z ##[endgroup]
+2026-10-14T05:05:39.6800012Z Syncing repository: sportaholic000-hue/off-the-clock
+2026-10-14T05:05:39.6803460Z ##[group]Getting Git version info
+2026-10-14T05:05:39.6805888Z Working directory is '/home/runner/work/off-the-clock/off-the-clock/diagnostic'
+2026-10-14T05:05:39.6809112Z [command]/usr/bin/git version
+2026-10-14T05:05:39.6945787Z git version 2.55.0
+2026-10-14T05:05:39.6988817Z ##[endgroup]
+2026-10-14T05:05:39.6996540Z Temporarily overriding HOME='/home/runner/work/_temp/008e6712-0c5f-4d7f-a231-8a3a775dcff3' before making global git config changes
+2026-10-14T05:05:39.7000086Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-14T05:05:39.7026209Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock/diagnostic
+2026-10-14T05:05:39.7058396Z ##[group]Initializing the repository
+2026-10-14T05:05:39.7060857Z [command]/usr/bin/git init /home/runner/work/off-the-clock/off-the-clock/diagnostic
+2026-10-14T05:05:39.7117851Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-14T05:05:39.7121333Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-14T05:05:39.7124987Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-14T05:05:39.7127380Z hint: call:
+2026-10-14T05:05:39.7129547Z hint:
+2026-10-14T05:05:39.7131299Z hint: 	git config --global init.defaultBranch <name>
+2026-10-14T05:05:39.7133146Z hint:
+2026-10-14T05:05:39.7135114Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-14T05:05:39.7137879Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-14T05:05:39.7140068Z hint:
+2026-10-14T05:05:39.7141398Z hint: 	git branch -m <name>
+2026-10-14T05:05:39.7142793Z hint:
+2026-10-14T05:05:39.7144936Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-14T05:05:39.7199864Z Initialized empty Git repository in /home/runner/work/off-the-clock/off-the-clock/diagnostic/.git/
+2026-10-14T05:05:39.7215948Z [command]/usr/bin/git remote add origin https://github.com/sportaholic000-hue/off-the-clock
+2026-10-14T05:05:39.7277048Z ##[endgroup]
+2026-10-14T05:05:39.7285964Z ##[group]Disabling automatic garbage collection
+2026-10-14T05:05:39.7288202Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-14T05:05:39.7320990Z ##[endgroup]
+2026-10-14T05:05:39.7327407Z ##[group]Setting up auth
+2026-10-14T05:05:39.7328869Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T05:05:39.7364627Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T05:05:39.7682392Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T05:05:39.7717355Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T05:05:39.7908041Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T05:05:39.7938510Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T05:05:39.8127043Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-14T05:05:39.8162072Z ##[endgroup]
+2026-10-14T05:05:39.8163373Z ##[group]Fetching the repository
+2026-10-14T05:05:39.8170079Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +671141684fe2bf273a606ff4f569dd2cd89c0a21:refs/remotes/origin/codex/restore-isolation-20261014
+2026-10-14T05:05:41.4901948Z From https://github.com/sportaholic000-hue/off-the-clock
+2026-10-14T05:05:41.4903671Z  * [new ref]         671141684fe2bf273a606ff4f569dd2cd89c0a21 -> origin/codex/restore-isolation-20261014
+2026-10-14T05:05:41.4906404Z ##[endgroup]
+2026-10-14T05:05:41.4907099Z ##[group]Determining the checkout info
+2026-10-14T05:05:41.4908180Z ##[endgroup]
+2026-10-14T05:05:41.4914749Z [command]/usr/bin/git sparse-checkout disable
+2026-10-14T05:05:41.4959316Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-14T05:05:41.4986711Z ##[group]Checking out the ref
+2026-10-14T05:05:41.4990325Z [command]/usr/bin/git checkout --progress --force -B codex/restore-isolation-20261014 refs/remotes/origin/codex/restore-isolation-20261014
+2026-10-14T05:05:41.9604503Z Switched to a new branch 'codex/restore-isolation-20261014'
+2026-10-14T05:05:41.9607791Z branch 'codex/restore-isolation-20261014' set up to track 'origin/codex/restore-isolation-20261014'.
+2026-10-14T05:05:41.9640359Z ##[endgroup]
+2026-10-14T05:05:41.9682374Z [command]/usr/bin/git log -1 --format=%H
+2026-10-14T05:05:41.9707168Z 671141684fe2bf273a606ff4f569dd2cd89c0a21
+2026-10-14T05:05:41.9715165Z ##[group]Removing auth
+2026-10-14T05:05:41.9718638Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T05:05:41.9748139Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T05:05:41.9944334Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T05:05:41.9967995Z http.https://github.com/.extraheader
+2026-10-14T05:05:41.9974059Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-14T05:05:42.0032140Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T05:05:42.0225005Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T05:05:42.0249730Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T05:05:42.0440795Z ##[endgroup]
+2026-10-14T05:05:42.0879349Z ##[group]Run actions/checkout@v4
+2026-10-14T05:05:42.0879596Z with:
+2026-10-14T05:05:42.0879789Z   ref: 95e1631f42461ca8ae7d46d859940bffc302d155
+2026-10-14T05:05:42.0880039Z   path: application
+2026-10-14T05:05:42.0880228Z   fetch-depth: 0
+2026-10-14T05:05:42.0880461Z   persist-credentials: false
+2026-10-14T05:05:42.0880726Z   repository: sportaholic000-hue/off-the-clock
+2026-10-14T05:05:42.0882671Z   token: ***
+2026-10-14T05:05:42.0882848Z   ssh-strict: true
+2026-10-14T05:05:42.0883036Z   ssh-user: git
+2026-10-14T05:05:42.0883202Z   clean: true
+2026-10-14T05:05:42.0883396Z   sparse-checkout-cone-mode: true
+2026-10-14T05:05:42.0883608Z   fetch-tags: false
+2026-10-14T05:05:42.0883787Z   show-progress: true
+2026-10-14T05:05:42.0883961Z   lfs: false
+2026-10-14T05:05:42.0884310Z   submodules: false
+2026-10-14T05:05:42.0884526Z   set-safe-directory: true
+2026-10-14T05:05:42.0884733Z   allow-unsafe-pr-checkout: false
+2026-10-14T05:05:42.0884943Z ##[endgroup]
+2026-10-14T05:05:42.1608461Z Syncing repository: sportaholic000-hue/off-the-clock
+2026-10-14T05:05:42.1609222Z ##[group]Getting Git version info
+2026-10-14T05:05:42.1609747Z Working directory is '/home/runner/work/off-the-clock/off-the-clock/application'
+2026-10-14T05:05:42.1637912Z [command]/usr/bin/git version
+2026-10-14T05:05:42.1672680Z git version 2.55.0
+2026-10-14T05:05:42.1688332Z ##[endgroup]
+2026-10-14T05:05:42.1699951Z Temporarily overriding HOME='/home/runner/work/_temp/7d2ae216-bee7-4d79-9fa1-deb1daa49e4f' before making global git config changes
+2026-10-14T05:05:42.1700964Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-14T05:05:42.1704255Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock/application
+2026-10-14T05:05:42.1902763Z ##[group]Initializing the repository
+2026-10-14T05:05:42.1903390Z [command]/usr/bin/git init /home/runner/work/off-the-clock/off-the-clock/application
+2026-10-14T05:05:42.2021519Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-14T05:05:42.2022490Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-14T05:05:42.2023169Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-14T05:05:42.2023656Z hint: call:
+2026-10-14T05:05:42.2023980Z hint:
+2026-10-14T05:05:42.2024489Z hint: 	git config --global init.defaultBranch <name>
+2026-10-14T05:05:42.2024858Z hint:
+2026-10-14T05:05:42.2025220Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-14T05:05:42.2025871Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-14T05:05:42.2026353Z hint:
+2026-10-14T05:05:42.2026606Z hint: 	git branch -m <name>
+2026-10-14T05:05:42.2026904Z hint:
+2026-10-14T05:05:42.2027569Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-14T05:05:42.2028327Z Initialized empty Git repository in /home/runner/work/off-the-clock/off-the-clock/application/.git/
+2026-10-14T05:05:42.2032788Z [command]/usr/bin/git remote add origin https://github.com/sportaholic000-hue/off-the-clock
+2026-10-14T05:05:42.2158305Z ##[endgroup]
+2026-10-14T05:05:42.2158993Z ##[group]Disabling automatic garbage collection
+2026-10-14T05:05:42.2162216Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-14T05:05:42.2273490Z ##[endgroup]
+2026-10-14T05:05:42.2273912Z ##[group]Setting up auth
+2026-10-14T05:05:42.2280757Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T05:05:42.2315588Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T05:05:42.2536217Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T05:05:42.2571420Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T05:05:42.2772160Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T05:05:42.2801847Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T05:05:42.2998083Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-14T05:05:42.3057490Z ##[endgroup]
+2026-10-14T05:05:42.3057988Z ##[group]Fetching the repository
+2026-10-14T05:05:42.3065277Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-14T05:05:46.0420196Z From https://github.com/sportaholic000-hue/off-the-clock
+2026-10-14T05:05:46.0420722Z  * [new branch]        claude/audit-fixes-2-20261004 -> origin/claude/audit-fixes-2-20261004
+2026-10-14T05:05:46.0421276Z  * [new branch]        claude/audit-fixes-20261003 -> origin/claude/audit-fixes-20261003
+2026-10-14T05:05:46.0421722Z  * [new branch]        claude/audit-fixes-20261005 -> origin/claude/audit-fixes-20261005
+2026-10-14T05:05:46.0422111Z  * [new branch]        claude/ci-results       -> origin/claude/ci-results
+2026-10-14T05:05:46.0422551Z  * [new branch]        claude/demo-annual-pricing-20261005 -> origin/claude/demo-annual-pricing-20261005
+2026-10-14T05:05:46.0423030Z  * [new branch]        claude/demo-test-link   -> origin/claude/demo-test-link
+2026-10-14T05:05:46.0423476Z  * [new branch]        claude/engine-core-fixes-20261005 -> origin/claude/engine-core-fixes-20261005
+2026-10-14T05:05:46.0424009Z  * [new branch]        claude/fixed-prices-knowledge-20261005 -> origin/claude/fixed-prices-knowledge-20261005
+2026-10-14T05:05:46.0424649Z  * [new branch]        claude/gemini-live-probe -> origin/claude/gemini-live-probe
+2026-10-14T05:05:46.0425115Z  * [new branch]        claude/homepage-copy-20261008 -> origin/claude/homepage-copy-20261008
+2026-10-14T05:05:46.0425827Z  * [new branch]        claude/homepage-edits-20261009 -> origin/claude/homepage-edits-20261009
+2026-10-14T05:05:46.0426580Z  * [new branch]        claude/integration-pr3-pr4-20261001 -> origin/claude/integration-pr3-pr4-20261001
+2026-10-14T05:05:46.0427254Z  * [new branch]        claude/live-demo        -> origin/claude/live-demo
+2026-10-14T05:05:46.0427878Z  * [new branch]        claude/phase-2-audit-fixes -> origin/claude/phase-2-audit-fixes
+2026-10-14T05:05:46.0428579Z  * [new branch]        claude/phase-2-blocker-repairs -> origin/claude/phase-2-blocker-repairs
+2026-10-14T05:05:46.0429390Z  * [new branch]        claude/phase-2-customer-quote-safety -> origin/claude/phase-2-customer-quote-safety
+2026-10-14T05:05:46.0430299Z  * [new branch]        claude/phase-2-interview-structured-input -> origin/claude/phase-2-interview-structured-input
+2026-10-14T05:05:46.0431568Z  * [new branch]        claude/pricebook-conflict-recovery-20261008 -> origin/claude/pricebook-conflict-recovery-20261008
+2026-10-14T05:05:46.0432382Z  * [new branch]        claude/probe-results    -> origin/claude/probe-results
+2026-10-14T05:05:46.0433134Z  * [new branch]        claude/quote-engine-readme-20261002 -> origin/claude/quote-engine-readme-20261002
+2026-10-14T05:05:46.0433980Z  * [new branch]        claude/quote-review-fixes-20261003 -> origin/claude/quote-review-fixes-20261003
+2026-10-14T05:05:46.0435082Z  * [new branch]        claude/receptionist-contact-lines-20261008 -> origin/claude/receptionist-contact-lines-20261008
+2026-10-14T05:05:46.0436005Z  * [new branch]        claude/release-candidate-20261008b -> origin/claude/release-candidate-20261008b
+2026-10-14T05:05:46.0436853Z  * [new branch]        claude/release-candidate-20261009 -> origin/claude/release-candidate-20261009
+2026-10-14T05:05:46.0437662Z  * [new branch]        claude/release-candidate-20261009b -> origin/claude/release-candidate-20261009b
+2026-10-14T05:05:46.0438668Z  * [new branch]        claude/release-candidate-20261009c -> origin/claude/release-candidate-20261009c
+2026-10-14T05:05:46.0439437Z  * [new branch]        claude/release-candidate-20261009d -> origin/claude/release-candidate-20261009d
+2026-10-14T05:05:46.0440033Z  * [new branch]        claude/release-candidate-20261010e -> origin/claude/release-candidate-20261010e
+2026-10-14T05:05:46.0440630Z  * [new branch]        claude/release-candidate-20261010f -> origin/claude/release-candidate-20261010f
+2026-10-14T05:05:46.0441153Z  * [new branch]        claude/release-candidate-20261010g -> origin/claude/release-candidate-20261010g
+2026-10-14T05:05:46.0441630Z  * [new branch]        claude/release-candidate-20261011h -> origin/claude/release-candidate-20261011h
+2026-10-14T05:05:46.0442103Z  * [new branch]        claude/release-candidate-20261011i -> origin/claude/release-candidate-20261011i
+2026-10-14T05:05:46.0442586Z  * [new branch]        claude/release-candidate-20261011j -> origin/claude/release-candidate-20261011j
+2026-10-14T05:05:46.0443054Z  * [new branch]        claude/release-candidate-20261012k -> origin/claude/release-candidate-20261012k
+2026-10-14T05:05:46.0443511Z  * [new branch]        claude/release-candidate-20261012l -> origin/claude/release-candidate-20261012l
+2026-10-14T05:05:46.0443980Z  * [new branch]        claude/release-candidate-20261013m -> origin/claude/release-candidate-20261013m
+2026-10-14T05:05:46.0454961Z  * [new branch]        claude/voice-runtime    -> origin/claude/voice-runtime
+2026-10-14T05:05:46.0455786Z  * [new branch]        codex/account-email-readiness-20260930 -> origin/codex/account-email-readiness-20260930
+2026-10-14T05:05:46.0456702Z  * [new branch]        codex/agreed-quote-followup-20261002 -> origin/codex/agreed-quote-followup-20261002
+2026-10-14T05:05:46.0457539Z  * [new branch]        codex/astra-five-repairs-20261004 -> origin/codex/astra-five-repairs-20261004
+2026-10-14T05:05:46.0458363Z  * [new branch]        codex/audit-small-repairs-20261007 -> origin/codex/audit-small-repairs-20261007
+2026-10-14T05:05:46.0459124Z  * [new branch]        codex/auth-ci-proof-20260930 -> origin/codex/auth-ci-proof-20260930
+2026-10-14T05:05:46.0459855Z  * [new branch]        codex/auth-email-recovery-20260929 -> origin/codex/auth-email-recovery-20260929
+2026-10-14T05:05:46.0460544Z  * [new branch]        codex/backend-launch    -> origin/codex/backend-launch
+2026-10-14T05:05:46.0461247Z  * [new branch]        codex/backend-preservation-20260929 -> origin/codex/backend-preservation-20260929
+2026-10-14T05:05:46.0462057Z  * [new branch]        codex/billing-core-repairs-20261006 -> origin/codex/billing-core-repairs-20261006
+2026-10-14T05:05:46.0462941Z  * [new branch]        codex/billing-reliability-audit-20261006 -> origin/codex/billing-reliability-audit-20261006
+2026-10-14T05:05:46.0463780Z  * [new branch]        codex/ci-runner-repair-20261013 -> origin/codex/ci-runner-repair-20261013
+2026-10-14T05:05:46.0464998Z  * [new branch]        codex/comparison-conversion-20261001 -> origin/codex/comparison-conversion-20261001
+2026-10-14T05:05:46.0465875Z  * [new branch]        codex/customer-quote-wording-20261001 -> origin/codex/customer-quote-wording-20261001
+2026-10-14T05:05:46.0466686Z  * [new branch]        codex/engine-launch-fixes-20261005 -> origin/codex/engine-launch-fixes-20261005
+2026-10-14T05:05:46.0467470Z  * [new branch]        codex/full-launch-review-20260930 -> origin/codex/full-launch-review-20260930
+2026-10-14T05:05:46.0468306Z  * [new branch]        codex/independent-quote-booking-20260930 -> origin/codex/independent-quote-booking-20260930
+2026-10-14T05:05:46.0469150Z  * [new branch]        codex/launch-pack-20261012 -> origin/codex/launch-pack-20261012
+2026-10-14T05:05:46.0469911Z  * [new branch]        codex/launch-plan-security-20261001 -> origin/codex/launch-plan-security-20261001
+2026-10-14T05:05:46.0470760Z  * [new branch]        codex/lead-capture-repairs-20261006 -> origin/codex/lead-capture-repairs-20261006
+2026-10-14T05:05:46.0471821Z  * [new branch]        codex/lead-delivery-audit-20261006 -> origin/codex/lead-delivery-audit-20261006
+2026-10-14T05:05:46.0472661Z  * [new branch]        codex/named-review-contact-20261006 -> origin/codex/named-review-contact-20261006
+2026-10-14T05:05:46.0473756Z  * [new branch]        codex/named-review-contact-implementation-20261006 -> origin/codex/named-review-contact-implementation-20261006
+2026-10-14T05:05:46.0475065Z  * [new branch]        codex/operator-exports-webhooks-20261001 -> origin/codex/operator-exports-webhooks-20261001
+2026-10-14T05:05:46.0476048Z  * [new branch]        codex/opus-quote-repairs-20261001 -> origin/codex/opus-quote-repairs-20261001
+2026-10-14T05:05:46.0476967Z  * [new branch]        codex/owner-call-visibility-check-20261006 -> origin/codex/owner-call-visibility-check-20261006
+2026-10-14T05:05:46.0477965Z  * [new branch]        codex/phase-2-onboarding-pricebook -> origin/codex/phase-2-onboarding-pricebook
+2026-10-14T05:05:46.0478908Z  * [new branch]        codex/phase2-verification-0eb254b -> origin/codex/phase2-verification-0eb254b
+2026-10-14T05:05:46.0479803Z  * [new branch]        codex/pr4-independent-audit-20260930 -> origin/codex/pr4-independent-audit-20260930
+2026-10-14T05:05:46.0480615Z  * [new branch]        codex/pricebook-ai-20261001 -> origin/codex/pricebook-ai-20261001
+2026-10-14T05:05:46.0481391Z  * [new branch]        codex/pricebook-editor-repairs-20261002 -> origin/codex/pricebook-editor-repairs-20261002
+2026-10-14T05:05:46.0482254Z  * [new branch]        codex/pricebook-integrity-20260912 -> origin/codex/pricebook-integrity-20260912
+2026-10-14T05:05:46.0483037Z  * [new branch]        codex/quote-audit-ready-20261004 -> origin/codex/quote-audit-ready-20261004
+2026-10-14T05:05:46.0483979Z  * [new branch]        codex/quote-audit-repairs-20261005 -> origin/codex/quote-audit-repairs-20261005
+2026-10-14T05:05:46.0485047Z  * [new branch]        codex/quote-audit-repairs-20261006 -> origin/codex/quote-audit-repairs-20261006
+2026-10-14T05:05:46.0485869Z  * [new branch]        codex/quote-engine-vnext-audit -> origin/codex/quote-engine-vnext-audit
+2026-10-14T05:05:46.0486679Z  * [new branch]        codex/quote-final-repairs-20261004 -> origin/codex/quote-final-repairs-20261004
+2026-10-14T05:05:46.0487468Z  * [new branch]        codex/quote-readiness-20261002 -> origin/codex/quote-readiness-20261002
+2026-10-14T05:05:46.0488240Z  * [new branch]        codex/quote-reaudit-fixes-20261006 -> origin/codex/quote-reaudit-fixes-20261006
+2026-10-14T05:05:46.0489087Z  * [new branch]        codex/quote-reaudit-repairs-20261002 -> origin/codex/quote-reaudit-repairs-20261002
+2026-10-14T05:05:46.0489987Z  * [new branch]        codex/quote-release-candidate-20261006 -> origin/codex/quote-release-candidate-20261006
+2026-10-14T05:05:46.0490894Z  * [new branch]        codex/quote-release-candidate-20261008 -> origin/codex/quote-release-candidate-20261008
+2026-10-14T05:05:46.0492018Z  * [new branch]        codex/quote-server-correctness-20261002 -> origin/codex/quote-server-correctness-20261002
+2026-10-14T05:05:46.0492838Z  * [new branch]        codex/quote-smalls-20261004 -> origin/codex/quote-smalls-20261004
+2026-10-14T05:05:46.0493548Z  * [new branch]        codex/quote-trade-decisions-20261003 -> origin/codex/quote-trade-decisions-20261003
+2026-10-14T05:05:46.0494515Z  * [new branch]        codex/quotedone-application-completion -> origin/codex/quotedone-application-completion
+2026-10-14T05:05:46.0495396Z  * [new branch]        codex/quotedone-audit-repairs-20260927 -> origin/codex/quotedone-audit-repairs-20260927
+2026-10-14T05:05:46.0496210Z  * [new branch]        codex/quotedone-widget-20260929 -> origin/codex/quotedone-widget-20260929
+2026-10-14T05:05:46.0496902Z  * [new branch]        codex/railway-ready-20261001 -> origin/codex/railway-ready-20261001
+2026-10-14T05:05:46.0497722Z  * [new branch]        codex/remove-fence-height-toggle-20261003 -> origin/codex/remove-fence-height-toggle-20261003
+2026-10-14T05:05:46.0498657Z  * [new branch]        codex/repair-batch-handoffs-20261006 -> origin/codex/repair-batch-handoffs-20261006
+2026-10-14T05:05:46.0499709Z  * [new branch]        codex/restore-diagnostics-20261012 -> origin/codex/restore-diagnostics-20261012
+2026-10-14T05:05:46.0500526Z  * [new branch]        codex/restore-isolation-20261014 -> origin/codex/restore-isolation-20261014
+2026-10-14T05:05:46.0501262Z  * [new branch]        codex/restore-recheck-20261013 -> origin/codex/restore-recheck-20261013
+2026-10-14T05:05:46.0501993Z  * [new branch]        codex/tenant-owner-addon-20260719 -> origin/codex/tenant-owner-addon-20260719
+2026-10-14T05:05:46.0503056Z  * [new branch]        codex/trial-entitlement-policy-20261006 -> origin/codex/trial-entitlement-policy-20261006
+2026-10-14T05:05:46.0503855Z  * [new branch]        codex/widget-embed-20261001 -> origin/codex/widget-embed-20261001
+2026-10-14T05:05:46.0504655Z  * [new branch]        demo/website-live-sales -> origin/demo/website-live-sales
+2026-10-14T05:05:46.0505330Z  * [new branch]        docs/railway-config-20261009 -> origin/docs/railway-config-20261009
+2026-10-14T05:05:46.0506131Z  * [new branch]        evidence/railway-readiness-20261001 -> origin/evidence/railway-readiness-20261001
+2026-10-14T05:05:46.0506945Z  * [new branch]        feat/billing-lifecycle-20261007 -> origin/feat/billing-lifecycle-20261007
+2026-10-14T05:05:46.0507639Z  * [new branch]        feat/no-sms-email-quotes -> origin/feat/no-sms-email-quotes
+2026-10-14T05:05:46.0508319Z  * [new branch]        feat/offsite-backups-20261007 -> origin/feat/offsite-backups-20261007
+2026-10-14T05:05:46.0509163Z  * [new branch]        feat/overage-and-minute-alerts-20261006 -> origin/feat/overage-and-minute-alerts-20261006
+2026-10-14T05:05:46.0510053Z  * [new branch]        feat/owner-call-visibility-20261006 -> origin/feat/owner-call-visibility-20261006
+2026-10-14T05:05:46.0510780Z  * [new branch]        feat/staff-login-20261009 -> origin/feat/staff-login-20261009
+2026-10-14T05:05:46.0511434Z  * [new branch]        feat/starter-plan-20261009 -> origin/feat/starter-plan-20261009
+2026-10-14T05:05:46.0512205Z  * [new branch]        feat/website-price-import-20261006 -> origin/feat/website-price-import-20261006
+2026-10-14T05:05:46.0512987Z  * [new branch]        fix/billing-backup-leftovers -> origin/fix/billing-backup-leftovers
+2026-10-14T05:05:46.0513667Z  * [new branch]        fix/billing-calls-20261009 -> origin/fix/billing-calls-20261009
+2026-10-14T05:05:46.0514537Z  * [new branch]        fix/billing-staff-scan-20261011 -> origin/fix/billing-staff-scan-20261011
+2026-10-14T05:05:46.0515270Z  * [new branch]        fix/billing-system-20261008 -> origin/fix/billing-system-20261008
+2026-10-14T05:05:46.0515970Z  * [new branch]        fix/booking-calendar-20261006 -> origin/fix/booking-calendar-20261006
+2026-10-14T05:05:46.0516805Z  * [new branch]        fix/calendar-billing-dashboard-20261008 -> origin/fix/calendar-billing-dashboard-20261008
+2026-10-14T05:05:46.0517844Z  * [new branch]        fix/calendar-scope-20261010b -> origin/fix/calendar-scope-20261010b
+2026-10-14T05:05:46.0518669Z  * [new branch]        fix/caller-history-followup-20261006 -> origin/fix/caller-history-followup-20261006
+2026-10-14T05:05:46.0519410Z  * [new branch]        fix/day90-erasure-20261011 -> origin/fix/day90-erasure-20261011
+2026-10-14T05:05:46.0520118Z  * [new branch]        fix/demo-facts-scanner-20261011 -> origin/fix/demo-facts-scanner-20261011
+2026-10-14T05:05:46.0520916Z  * [new branch]        fix/dependency-advisories-20261006 -> origin/fix/dependency-advisories-20261006
+2026-10-14T05:05:46.0521705Z  * [new branch]        fix/duration-fallback-20261009 -> origin/fix/duration-fallback-20261009
+2026-10-14T05:05:46.0522398Z  * [new branch]        fix/engine-audit-20261008 -> origin/fix/engine-audit-20261008
+2026-10-14T05:05:46.0523019Z  * [new branch]        fix/engine-leftovers    -> origin/fix/engine-leftovers
+2026-10-14T05:05:46.0523675Z  * [new branch]        fix/forwarding-on-off-20261009 -> origin/fix/forwarding-on-off-20261009
+2026-10-14T05:05:46.0524625Z  * [new branch]        fix/leads-service-area-20261010 -> origin/fix/leads-service-area-20261010
+2026-10-14T05:05:46.0525561Z  * [new branch]        fix/lock-recovery-race-20261011 -> origin/fix/lock-recovery-race-20261011
+2026-10-14T05:05:46.0526370Z  * [new branch]        fix/owner-alerts-delivery-20261006 -> origin/fix/owner-alerts-delivery-20261006
+2026-10-14T05:05:46.0527365Z  * [new branch]        fix/owner-call-visibility-base-d176fa4-20261006 -> origin/fix/owner-call-visibility-base-d176fa4-20261006
+2026-10-14T05:05:46.0528190Z  * [new branch]        fix/owner-dashboard     -> origin/fix/owner-dashboard
+2026-10-14T05:05:46.0528771Z  * [new branch]        fix/owner-query-20261009 -> origin/fix/owner-query-20261009
+2026-10-14T05:05:46.0529442Z  * [new branch]        fix/owner-query-review-20261009 -> origin/fix/owner-query-review-20261009
+2026-10-14T05:05:46.0530214Z  * [new branch]        fix/pricebook-first-visit-20261009 -> origin/fix/pricebook-first-visit-20261009
+2026-10-14T05:05:46.0531133Z  * [new branch]        fix/pricebook-persistence-editor-20261005 -> origin/fix/pricebook-persistence-editor-20261005
+2026-10-14T05:05:46.0531807Z  * [new branch]        fix/quote-display-defects-20261006 -> origin/fix/quote-display-defects-20261006
+2026-10-14T05:05:46.0532286Z  * [new branch]        fix/quote-presentation-20261008 -> origin/fix/quote-presentation-20261008
+2026-10-14T05:05:46.0532704Z  * [new branch]        fix/receptionist-20261008 -> origin/fix/receptionist-20261008
+2026-10-14T05:05:46.0533123Z  * [new branch]        fix/receptionist-audit-20261009 -> origin/fix/receptionist-audit-20261009
+2026-10-14T05:05:46.0533574Z  * [new branch]        fix/receptionist-system-20261008 -> origin/fix/receptionist-system-20261008
+2026-10-14T05:05:46.0534069Z  * [new branch]        fix/retention-backups-wording-20261010 -> origin/fix/retention-backups-wording-20261010
+2026-10-14T05:05:46.0534857Z  * [new branch]        fix/retention-hardening-20261011 -> origin/fix/retention-hardening-20261011
+2026-10-14T05:05:46.0535368Z  * [new branch]        fix/telephony-provisioning-20261005 -> origin/fix/telephony-provisioning-20261005
+2026-10-14T05:05:46.0535838Z  * [new branch]        fix/tenant-isolation-20261007 -> origin/fix/tenant-isolation-20261007
+2026-10-14T05:05:46.0536214Z  * [new branch]        fix/voice-core          -> origin/fix/voice-core
+2026-10-14T05:05:46.0536577Z  * [new branch]        fix/voice-lifecycle-20261006 -> origin/fix/voice-lifecycle-20261006
+2026-10-14T05:05:46.0536943Z  * [new branch]        fix/voice-limits        -> origin/fix/voice-limits
+2026-10-14T05:05:46.0537317Z  * [new branch]        fix/voice-quote-path-20261005 -> origin/fix/voice-quote-path-20261005
+2026-10-14T05:05:46.0537750Z  * [new branch]        fix/voice-quote-path-v2-20261006 -> origin/fix/voice-quote-path-v2-20261006
+2026-10-14T05:05:46.0538210Z  * [new branch]        fix/voice-session-memory-20261008 -> origin/fix/voice-session-memory-20261008
+2026-10-14T05:05:46.0538903Z  * [new branch]        fix/workflow-billing-audit-20261009 -> origin/fix/workflow-billing-audit-20261009
+2026-10-14T05:05:46.0539361Z  * [new branch]        growth/public-pages-review -> origin/growth/public-pages-review
+2026-10-14T05:05:46.0539709Z  * [new branch]        main                    -> origin/main
+2026-10-14T05:05:46.0540088Z  * [new branch]        verification/pricebook-ai-20261001 -> origin/verification/pricebook-ai-20261001
+2026-10-14T05:05:46.0540644Z  * [new branch]        verification/pricebook-editor-repairs-20261002 -> origin/verification/pricebook-editor-repairs-20261002
+2026-10-14T05:05:46.0541214Z  * [new branch]        verification/quote-readiness-20261002 -> origin/verification/quote-readiness-20261002
+2026-10-14T05:05:46.0541716Z  * [new branch]        verification/widget-embed-20261001 -> origin/verification/widget-embed-20261001
+2026-10-14T05:05:46.0542238Z  * [new branch]        verify/backup-restore-rehearsal-20261006 -> origin/verify/backup-restore-rehearsal-20261006
+2026-10-14T05:05:46.0542770Z  * [new branch]        verify/billing-review-load-20261009 -> origin/verify/billing-review-load-20261009
+2026-10-14T05:05:46.0543510Z  * [new branch]        verify/billing-trial-20261010g -> origin/verify/billing-trial-20261010g
+2026-10-14T05:05:46.0544064Z  * [new branch]        verify/first-customer-20261009 -> origin/verify/first-customer-20261009
+2026-10-14T05:05:46.0544596Z  * [new branch]        verify/first-customer-20261010f -> origin/verify/first-customer-20261010f
+2026-10-14T05:05:46.0545190Z  * [new branch]        work/call-usage-20261002 -> origin/work/call-usage-20261002
+2026-10-14T05:05:46.0545533Z  * [new tag]           rc-20261011h            -> rc-20261011h
+2026-10-14T05:05:46.0545799Z  * [new tag]           rc-20261011i            -> rc-20261011i
+2026-10-14T05:05:46.0546048Z  * [new tag]           rc-20261011j            -> rc-20261011j
+2026-10-14T05:05:46.0546292Z  * [new tag]           rc-20261012k            -> rc-20261012k
+2026-10-14T05:05:46.0546551Z  * [new tag]           rc-20261012l            -> rc-20261012l
+2026-10-14T05:05:46.0546795Z  * [new tag]           rc-20261013m            -> rc-20261013m
+2026-10-14T05:05:46.0547651Z [command]/usr/bin/git rev-parse --verify --quiet 95e1631f42461ca8ae7d46d859940bffc302d155^{object}
+2026-10-14T05:05:46.0548034Z 95e1631f42461ca8ae7d46d859940bffc302d155
+2026-10-14T05:05:46.0548613Z ##[endgroup]
+2026-10-14T05:05:46.0548908Z ##[group]Determining the checkout info
+2026-10-14T05:05:46.0549220Z ##[endgroup]
+2026-10-14T05:05:46.0549404Z [command]/usr/bin/git sparse-checkout disable
+2026-10-14T05:05:46.0581193Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-14T05:05:46.0711756Z ##[group]Checking out the ref
+2026-10-14T05:05:46.0715617Z [command]/usr/bin/git checkout --progress --force 95e1631f42461ca8ae7d46d859940bffc302d155
+2026-10-14T05:05:46.4768589Z Note: switching to '95e1631f42461ca8ae7d46d859940bffc302d155'.
+2026-10-14T05:05:46.4768951Z 
+2026-10-14T05:05:46.4769169Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-14T05:05:46.4769545Z changes and commit them, and you can discard any commits you make in this
+2026-10-14T05:05:46.4769925Z state without impacting any branches by switching back to a branch.
+2026-10-14T05:05:46.4770134Z 
+2026-10-14T05:05:46.4770276Z If you want to create a new branch to retain commits you create, you may
+2026-10-14T05:05:46.4770621Z do so (now or later) by using -c with the switch command. Example:
+2026-10-14T05:05:46.4770820Z 
+2026-10-14T05:05:46.4770911Z   git switch -c <new-branch-name>
+2026-10-14T05:05:46.4771048Z 
+2026-10-14T05:05:46.4771134Z Or undo this operation with:
+2026-10-14T05:05:46.4771259Z 
+2026-10-14T05:05:46.4771335Z   git switch -
+2026-10-14T05:05:46.4771433Z 
+2026-10-14T05:05:46.4771604Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-14T05:05:46.4771836Z 
+2026-10-14T05:05:46.4772031Z HEAD is now at 95e1631f ci: qualify candidate m with all inherited gates and immutable tagging
+2026-10-14T05:05:46.4794424Z ##[endgroup]
+2026-10-14T05:05:46.4835279Z [command]/usr/bin/git log -1 --format=%H
+2026-10-14T05:05:46.4861219Z 95e1631f42461ca8ae7d46d859940bffc302d155
+2026-10-14T05:05:46.4869911Z ##[group]Removing auth
+2026-10-14T05:05:46.4873293Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T05:05:46.4902537Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T05:05:46.5100963Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T05:05:46.5124455Z http.https://github.com/.extraheader
+2026-10-14T05:05:46.5130860Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-14T05:05:46.6267135Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T05:05:46.6459919Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T05:05:46.6501231Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T05:05:46.6689466Z ##[endgroup]
+2026-10-14T05:05:46.7493667Z ##[group]Run actions/setup-node@v4
+2026-10-14T05:05:46.7493910Z with:
+2026-10-14T05:05:46.7494079Z   node-version: 22
+2026-10-14T05:05:46.7494415Z   always-auth: false
+2026-10-14T05:05:46.7494595Z   check-latest: false
+2026-10-14T05:05:46.7496492Z   token: ***
+2026-10-14T05:05:46.7496663Z ##[endgroup]
+2026-10-14T05:05:46.8637084Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-14T05:05:46.8639782Z (node:2372) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-14T05:05:46.8640344Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-14T05:05:46.8641965Z ##[group]Environment details
+2026-10-14T05:05:47.2143905Z node: v22.23.3
+2026-10-14T05:05:47.2144357Z npm: 10.9.9
+2026-10-14T05:05:47.2144578Z yarn: 1.22.22
+2026-10-14T05:05:47.2145107Z ##[endgroup]
+2026-10-14T05:05:47.2279746Z ##[group]Run python3 diagnostic/verification/restore-isolation-20261014/run.py
+2026-10-14T05:05:47.2280273Z [36;1mpython3 diagnostic/verification/restore-isolation-20261014/run.py[0m
+2026-10-14T05:05:47.2802066Z shell: /usr/bin/bash -e {0}
+2026-10-14T05:05:47.2802314Z env:
+2026-10-14T05:05:47.2802612Z   ISOLATION_APPLICATION: /home/runner/work/off-the-clock/off-the-clock/application
+2026-10-14T05:05:47.2803044Z   ISOLATION_EVIDENCE: /home/runner/work/_temp/restore-isolation-evidence
+2026-10-14T05:05:47.2803410Z   ISOLATION_OUTPUT: /home/runner/work/_temp/restore-isolation-output
+2026-10-14T05:05:47.2803690Z ##[endgroup]
+2026-10-14T05:05:47.3843056Z {"label": "diagnostic-head", "argv": ["git", "rev-parse", "HEAD"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/diagnostic", "startedUTC": "2026-10-14T05:05:47.381744+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2405, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.383335+00:00"}
+2026-10-14T05:05:47.3855410Z {"label": "application-head", "argv": ["git", "rev-parse", "HEAD"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.383613+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2406, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.385107+00:00"}
+2026-10-14T05:05:47.3872336Z {"label": "application-detached", "argv": ["git", "symbolic-ref", "-q", "HEAD"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.385349+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2407, "exitCode": 1, "signal": null, "finishedUTC": "2026-10-14T05:05:47.386817+00:00"}
+2026-10-14T05:05:47.3888537Z {"label": "tag-type", "argv": ["git", "cat-file", "-t", "rc-20261013m"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.387023+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2408, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.388453+00:00"}
+2026-10-14T05:05:47.3905911Z {"label": "tag-object", "argv": ["git", "rev-parse", "rc-20261013m"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.388693+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2409, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.390144+00:00"}
+2026-10-14T05:05:47.3923665Z {"label": "tag-peel", "argv": ["git", "rev-parse", "rc-20261013m^{}"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.390382+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2410, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.391877+00:00"}
+2026-10-14T05:05:47.4002366Z {"label": "node-version", "argv": ["node", "--version"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.392183+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2411, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.399770+00:00"}
+2026-10-14T05:05:47.4645137Z {"label": "npm-version", "argv": ["npm", "--version"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.400035+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2412, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.463870+00:00"}
+2026-10-14T05:05:47.4663413Z {"label": "git-version", "argv": ["git", "--version"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.464293+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2423, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.465922+00:00"}
+2026-10-14T05:05:47.4680016Z {"label": "python-version", "argv": ["/usr/bin/python3", "--version"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.466165+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2424, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.467597+00:00"}
+2026-10-14T05:05:47.4697314Z {"label": "kernel", "argv": ["uname", "-a"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.467835+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2425, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.469307+00:00"}
+2026-10-14T05:05:47.8849706Z {"label": "pre-install-status", "argv": ["git", "status", "--short"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:47.469665+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2426, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:47.884203+00:00"}
+2026-10-14T05:05:54.7638093Z {"label": "npm-ci", "argv": ["npm", "ci"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:48.685046+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 2978, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:54.763024+00:00"}
+2026-10-14T05:05:59.6018247Z {"label": "build", "argv": ["npm", "run", "build"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:54.763506+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 3048, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:59.601191+00:00"}
+2026-10-14T05:05:59.6180503Z {"label": "build-diff", "argv": ["git", "diff", "--binary", "95e1631f42461ca8ae7d46d859940bffc302d155"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:59.601680+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 3113, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:59.617531+00:00"}
+2026-10-14T05:05:59.6359501Z {"label": "build-status", "argv": ["git", "status", "--short"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:05:59.619647+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 3119, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:05:59.635425+00:00"}
+2026-10-14T05:06:06.1617751Z {"label": "normal", "argv": ["node", "--experimental-test-module-mocks", "--import", "./test/pricebookTestEnv.mjs", "--test", "--test-reporter=tap", "test/backupRestoreRehearsal.spec.mjs"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:06:00.431370+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "TZ": "UTC", "TMPDIR": "/tmp/restore-isolation-normal-cre8djn1", "CI": "true"}, "pid": 3671, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:06:06.161038+00:00"}
+2026-10-14T05:06:06.2271516Z {"label": "strace-version", "argv": ["strace", "--version"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:06:06.162361+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 3765, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:06:06.226554+00:00"}
+2026-10-14T05:06:06.4422829Z {"label": "tracer-proof", "argv": ["strace", "-ff", "-ttt", "-T", "-yy", "-v", "-s", "256", "-e", "abbrev=execve,execveat", "-e", "trace=%file,%process,%desc,%memory", "-e", "raw=read,readv,pread64,preadv,preadv2,write,writev,pwrite64,pwritev,pwritev2,sendto,sendmsg,sendmmsg,recvfrom,recvmsg,recvmmsg,getdents,getdents64", "-o", "/home/runner/work/_temp/restore-isolation-evidence/tracer-proof.raw", "--", "/usr/bin/python3", "/home/runner/work/off-the-clock/off-the-clock/diagnostic/verification/restore-isolation-20261014/trace-smoke.py", "/tmp/restore-isolation-tracer-proof-ts8_3qwb/synthetic-write"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:06:06.227003+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "TZ": "UTC", "TMPDIR": "/tmp/restore-isolation-tracer-proof-ts8_3qwb", "CI": "true"}, "pid": 3766, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:06:06.441160+00:00"}
+2026-10-14T05:06:25.0004090Z {"label": "traced", "argv": ["strace", "-ff", "-ttt", "-T", "-yy", "-v", "-s", "256", "-e", "abbrev=execve,execveat", "-e", "trace=%file,%process,%desc,%memory", "-e", "raw=read,readv,pread64,preadv,preadv2,write,writev,pwrite64,pwritev,pwritev2,sendto,sendmsg,sendmmsg,recvfrom,recvmsg,recvmmsg,getdents,getdents64", "-o", "/home/runner/work/_temp/restore-isolation-evidence/rehearsal.raw", "--", "node", "--experimental-test-module-mocks", "--import", "./test/pricebookTestEnv.mjs", "--test", "--test-reporter=tap", "test/backupRestoreRehearsal.spec.mjs"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:06:06.443543+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "TZ": "UTC", "TMPDIR": "/tmp/restore-isolation-traced-vzlu7gan", "CI": "true"}, "pid": 3771, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:06:24.999520+00:00"}
+2026-10-14T05:06:28.6121519Z {"label": "final-application-diff", "argv": ["git", "diff", "--binary", "95e1631f42461ca8ae7d46d859940bffc302d155"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:06:28.595799+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 4421, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:06:28.611457+00:00"}
+2026-10-14T05:06:28.6291249Z {"label": "final-application-status", "argv": ["git", "status", "--short"], "cwd": "/home/runner/work/off-the-clock/off-the-clock/application", "startedUTC": "2026-10-14T05:06:28.612895+00:00", "environment": {"PATH": "/opt/hostedtoolcache/node/22.23.3/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin", "HOME": "/home/runner", "LANG": "C.UTF-8", "CI": "true"}, "pid": 4427, "exitCode": 0, "signal": null, "finishedUTC": "2026-10-14T05:06:28.628666+00:00"}
+2026-10-14T05:06:29.9140279Z {"artifact": "restore-isolation-evidence.zip", "sha256": "e9ee579a044fa27e98b70963acf2731881f163ea2990180171631fb61114dbe1", "bytes": 4229243, "entries": 180, "verified": true}
+2026-10-14T05:06:29.9275656Z ##[group]Run actions/upload-artifact@v4
+2026-10-14T05:06:29.9275895Z with:
+2026-10-14T05:06:29.9276088Z   name: restore-isolation-20261014-38514792563-1
+2026-10-14T05:06:29.9276701Z   path: /home/runner/work/_temp/restore-isolation-output/restore-isolation-evidence.zip
+/home/runner/work/_temp/restore-isolation-output/restore-isolation-evidence.zip.sha256
+
+2026-10-14T05:06:29.9277291Z   if-no-files-found: error
+2026-10-14T05:06:29.9277498Z   retention-days: 30
+2026-10-14T05:06:29.9277679Z   compression-level: 6
+2026-10-14T05:06:29.9278063Z   overwrite: false
+2026-10-14T05:06:29.9278247Z   include-hidden-files: false
+2026-10-14T05:06:29.9278445Z ##[endgroup]
+2026-10-14T05:06:30.0633813Z (node:4433) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-14T05:06:30.0634612Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-14T05:06:30.0675080Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-14T05:06:30.0692755Z The least common ancestor is /home/runner/work/_temp/restore-isolation-output. This will be the root directory of the artifact
+2026-10-14T05:06:30.0693656Z With the provided path, there will be 2 files uploaded
+2026-10-14T05:06:30.0694538Z Artifact name is valid!
+2026-10-14T05:06:30.0694963Z Root directory input is valid!
+2026-10-14T05:06:30.2764704Z Beginning upload of artifact content to blob storage
+2026-10-14T05:06:30.4155877Z (node:4433) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-14T05:06:30.5070978Z Uploaded bytes 4143515
+2026-10-14T05:06:30.5196914Z Finished uploading artifact content to blob storage!
+2026-10-14T05:06:30.5197548Z SHA256 digest of uploaded artifact zip is 6cd6360be0585ac07a937fadbf01a065443f075ebdd4a8435f24cca856ab71fb
+2026-10-14T05:06:30.5199264Z Finalizing artifact upload
+2026-10-14T05:06:30.7424231Z Artifact restore-isolation-20261014-38514792563-1.zip successfully finalized. Artifact ID 11871315884
+2026-10-14T05:06:30.7425556Z Artifact restore-isolation-20261014-38514792563-1 has been successfully uploaded! Final size is 4143515 bytes. Artifact ID is 11871315884
+2026-10-14T05:06:30.7429929Z Artifact download URL: https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38514792563/artifacts/11871315884
+2026-10-14T05:06:30.7586510Z Post job cleanup.
+2026-10-14T05:06:30.8558131Z (node:4446) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-14T05:06:30.8558851Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-14T05:06:30.8735423Z Post job cleanup.
+2026-10-14T05:06:30.9438987Z [command]/usr/bin/git version
+2026-10-14T05:06:30.9477047Z git version 2.55.0
+2026-10-14T05:06:30.9510136Z Temporarily overriding HOME='/home/runner/work/_temp/111038be-eb4d-41b4-8325-fa3f8e66a9e7' before making global git config changes
+2026-10-14T05:06:30.9511222Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-14T05:06:30.9515035Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock/application
+2026-10-14T05:06:30.9548345Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T05:06:30.9575946Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T05:06:30.9800198Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T05:06:30.9828237Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T05:06:31.0045197Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T05:06:31.0075646Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T05:06:31.0417360Z Post job cleanup.
+2026-10-14T05:06:31.1167967Z [command]/usr/bin/git version
+2026-10-14T05:06:31.1209441Z git version 2.55.0
+2026-10-14T05:06:31.1247405Z Temporarily overriding HOME='/home/runner/work/_temp/a3daae15-ba86-466a-9801-b7d5d4047344' before making global git config changes
+2026-10-14T05:06:31.1249064Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-14T05:06:31.1254670Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock/diagnostic
+2026-10-14T05:06:31.1354889Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T05:06:31.1396401Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T05:06:31.1612844Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T05:06:31.1643545Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T05:06:31.1866219Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T05:06:31.1900041Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T05:06:31.2228422Z Cleaning up orphan processes
+2026-10-14T05:06:31.2486487Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
