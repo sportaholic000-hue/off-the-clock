@@ -1,0 +1,16 @@
+{
+  "checkpointCommit": "fa50e3842387adcdc0f2fb70e3bed6f24748108c",
+  "verificationCommand": [
+    "git",
+    "ls-remote",
+    "https://github.com/sportaholic000-hue/off-the-clock.git",
+    "refs/heads/codex/restore-isolation-20261014"
+  ],
+  "cwd": "/workspace/scratch/998ee29c5e28/restore-isolation-control",
+  "startedUTC": "2026-10-14T05:05:11.919193+00:00",
+  "finishedUTC": "2026-10-14T05:05:17.143223+00:00",
+  "stdout": "fa50e3842387adcdc0f2fb70e3bed6f24748108c\trefs/heads/codex/restore-isolation-20261014\n",
+  "stderr": "",
+  "exitCode": 0,
+  "activation": "Exactly one normal rehearsal followed by one kernel-traced rehearsal if the tracer proof succeeds; no reruns."
+}
