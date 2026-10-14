@@ -15,10 +15,13 @@ import {custom} from '../verification/engine-independent/fixtures.mjs';
 // - a legacy file is backfilled once, and a failed backfill never blesses it;
 // - a marker without a book is uncertain storage, never a new empty book;
 // - the real owner save/approval paths retain revision and cross-process locking.
+// - creation confirmation never participates in a caller-owned transaction;
+// - established reads refuse erased accounts using only read queries.
 
 const store = await import('../server/priceBookService.js');
 const bridge = await import('../server/src/quoteDoneBridge.js');
-const {db:applicationDb} = await import('../server/src/db.js');
+const {db:applicationDb,migrate} = await import('../server/src/db.js');
+const {submitQuote} = await import('../server/src/quoteDoneRoutes.js');
 const root = process.env.PRICEBOOK_PATH;
 const serviceUrl = new URL('../server/priceBookService.js', import.meta.url).href;
 const bridgeUrl = new URL('../server/src/quoteDoneBridge.js', import.meta.url).href;
@@ -48,6 +51,32 @@ function savedFixture(prefix='storage') {
   const value = fixtureBook(owner(prefix));
   value.saved = store.savePricebook(value.ownerId,value.book).pricebook;
   return value;
+}
+
+let applicationSchemaReady=false;
+function ensureApplicationSchema() {
+  if(applicationSchemaReady)return;
+  migrate();
+  applicationSchemaReady=true;
+}
+
+function insertApplicationOwner(ownerId) {
+  ensureApplicationSchema();
+  const createdAt='2026-10-14T12:00:00.000Z';
+  applicationDb.prepare(`INSERT INTO users(
+    id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt,emailVerifiedAt
+  ) VALUES(?,?,?,?,?,'QuoteDone','active','UTC','owner',?,?)`).run(
+    ownerId,ownerId+'@example.invalid','[SYNTHETIC]','[SYNTHETIC]','[SYNTHETIC]',createdAt,createdAt
+  );
+}
+
+function approveFixture(value) {
+  const book=store.loadPricebook(value.ownerId),service=book.services[0];
+  bridge.approveApplicationService(value.ownerId,service.id,{
+    revision:bridge.bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true,
+    fields:bridge.applicationStatus(service,book).confirmationFields
+  });
+  return store.loadPricebook(value.ownerId);
 }
 
 function dropUpdateFailure() {
@@ -301,6 +330,146 @@ test('QE-001/QE-002: concurrent application saves preserve revision binding and 
   assert.equal(fs.existsSync(marker(value.ownerId)),false);
   assert.ok(row(value.ownerId));
   assert.equal(applicationDb.prepare('SELECT COUNT(*) AS count FROM priceBookCreationRecords WHERE ownerId=?').get(value.ownerId).count,1);
+});
+
+test('QE-001 follow-up: an outer rollback is refused before first-creation storage mutation',()=>{
+  ensureApplicationSchema();
+  // Establish the ledger table outside the transaction under test.
+  savedFixture('outer-rollback-ledger-seed');
+  const value=fixtureBook(owner('outer-rollback'));
+  insertApplicationOwner(value.ownerId);
+  const surroundingFailure=new Error('QE-001 synthetic surrounding rollback');
+  let observed;
+  applicationDb.exec('BEGIN IMMEDIATE');
+  try {
+    store.savePricebook(value.ownerId,value.book);
+    throw surroundingFailure;
+  } catch(error) {
+    observed=error;
+    assert.equal(applicationDb.inTransaction,true,'the storage service must never commit its caller transaction');
+    applicationDb.exec('ROLLBACK');
+  }
+  const state={
+    code:observed?.code,
+    message:observed?.message,
+    file:fs.existsSync(target(value.ownerId)),
+    paused:fs.existsSync(marker(value.ownerId)),
+    recorded:Boolean(row(value.ownerId))
+  };
+  assert.equal(observed?.code,'PRICEBOOK_CREATION_TRANSACTION_ACTIVE',JSON.stringify(state));
+  assert.equal(observed?.retryable,true);
+  assert.deepEqual(state,{
+    code:'PRICEBOOK_CREATION_TRANSACTION_ACTIVE',message:observed.message,
+    file:false,paused:false,recorded:false
+  });
+});
+
+test('QE-001 follow-up: the caller can commit after refusal and retry confirms creation across restart',async t=>{
+  ensureApplicationSchema();
+  const value=fixtureBook(owner('outer-commit'));
+  insertApplicationOwner(value.ownerId);
+  applicationDb.exec('CREATE TABLE IF NOT EXISTS qe_storage_outer_commits(id TEXT PRIMARY KEY)');
+  t.after(()=>applicationDb.exec('DROP TABLE IF EXISTS qe_storage_outer_commits'));
+  const eventId=randomUUID();
+  let failure;
+  applicationDb.exec('BEGIN IMMEDIATE');
+  applicationDb.prepare('INSERT INTO qe_storage_outer_commits(id) VALUES(?)').run(eventId);
+  try { store.savePricebook(value.ownerId,value.book); }
+  catch(error) { failure=error; }
+  const transactionStillOpen=applicationDb.inTransaction;
+  if(transactionStillOpen)applicationDb.exec('COMMIT');
+  assert.equal(transactionStillOpen,true,'creation refusal must leave the caller transaction open');
+  assert.equal(failure?.code,'PRICEBOOK_CREATION_TRANSACTION_ACTIVE');
+  assert.equal(applicationDb.prepare('SELECT COUNT(*) AS count FROM qe_storage_outer_commits WHERE id=?').get(eventId).count,1,'the caller still owns and can commit its transaction');
+  assert.equal(fs.existsSync(target(value.ownerId)),false);
+  assert.equal(fs.existsSync(marker(value.ownerId)),false);
+  assert.equal(row(value.ownerId),undefined);
+
+  const recovered=store.savePricebook(value.ownerId,value.book);
+  assert.equal(recovered.success,true);
+  assert.ok(row(value.ownerId));
+  assert.equal(fs.existsSync(marker(value.ownerId)),false);
+  const restartScript=`
+    const {db}=await import(${JSON.stringify(dbUrl)});
+    db.pragma('query_only = ON');
+    const store=await import(${JSON.stringify(serviceUrl)});
+    try {
+      const book=store.loadPricebook(process.argv[1]);
+      console.log(JSON.stringify({read:true,recorded:store.pricebookCreationRecorded(process.argv[1]),paused:store.pricebookSaveUnconfirmed(process.argv[1]),updatedAt:book.updatedAt}));
+    } catch(error) { console.log(JSON.stringify({read:false,code:error.code,message:error.message})); }
+  `;
+  const restarted=await runNode(restartScript,[value.ownerId]);
+  assert.equal(restarted.code,0,restarted.stderr);
+  assert.deepEqual(JSON.parse(restarted.stdout.trim().split('\n').pop()),{
+    read:true,recorded:true,paused:false,updatedAt:recovered.pricebook.updatedAt
+  });
+});
+
+test('QE-001 follow-up: submitQuote cannot backfill a legacy ledger inside its rollback transaction',async t=>{
+  const value=fixtureBook(owner('submit-legacy'));
+  insertApplicationOwner(value.ownerId);
+  value.saved=store.savePricebook(value.ownerId,value.book).pricebook;
+  const approved=approveFixture(value),service=approved.services[0];
+  const before=fs.readFileSync(target(value.ownerId),'utf8');
+  applicationDb.prepare('DELETE FROM priceBookCreationRecords WHERE ownerId=?').run(value.ownerId);
+  applicationDb.exec(`CREATE TRIGGER qe_submit_quote_fail BEFORE INSERT ON quoteRequests
+    BEGIN SELECT RAISE(ABORT,'QE-001 synthetic downstream quote failure'); END`);
+  t.after(()=>applicationDb.exec('DROP TRIGGER IF EXISTS qe_submit_quote_fail'));
+  let failure;
+  try {
+    submitQuote(value.ownerId,{
+      requestId:randomUUID(),serviceId:service.id,serviceRequest:'[SYNTHETIC] legacy storage boundary',
+      customerInputs:value.fixture.customerInputs,contact:{email:'synthetic@example.invalid'}
+    });
+  } catch(error) { failure=error; }
+  assert.equal(failure?.code,'PRICEBOOK_CREATION_TRANSACTION_ACTIVE',JSON.stringify({code:failure?.code,message:failure?.message}));
+  assert.equal(applicationDb.inTransaction,false,'submitQuote must roll its transaction back');
+  assert.equal(row(value.ownerId),undefined);
+  assert.equal(fs.existsSync(marker(value.ownerId)),false,'preflight refusal creates no uncertain marker');
+  assert.equal(fs.readFileSync(target(value.ownerId),'utf8'),before,'the approved price book remains byte-for-byte unchanged');
+  assert.equal(applicationDb.prepare('SELECT COUNT(*) AS count FROM quoteRequests WHERE ownerId=?').get(value.ownerId).count,0);
+
+  applicationDb.exec('DROP TRIGGER qe_submit_quote_fail');
+  const restartScript=`
+    const store=await import(${JSON.stringify(serviceUrl)});
+    try {
+      const book=store.loadPricebook(process.argv[1]);
+      console.log(JSON.stringify({read:true,recorded:store.pricebookCreationRecorded(process.argv[1]),paused:store.pricebookSaveUnconfirmed(process.argv[1]),services:book.services.length}));
+    } catch(error) { console.log(JSON.stringify({read:false,code:error.code,message:error.message})); }
+  `;
+  const restarted=await runNode(restartScript,[value.ownerId]);
+  assert.equal(restarted.code,0,restarted.stderr);
+  assert.deepEqual(JSON.parse(restarted.stdout.trim().split('\n').pop()),{
+    read:true,recorded:true,paused:false,services:1
+  });
+  assert.ok(row(value.ownerId),'the deliberate restart recovery is durable');
+});
+
+test('QE-002 follow-up: established erased accounts stay unreadable without database writes after restart',async()=>{
+  const value=fixtureBook(owner('erased-established'));
+  insertApplicationOwner(value.ownerId);
+  value.saved=store.savePricebook(value.ownerId,value.book).pricebook;
+  const approved=approveFixture(value),service=approved.services[0];
+  assert.equal(bridge.applicationStatus(service,approved).status,'QUOTING LIVE');
+  applicationDb.prepare('UPDATE users SET dataDeletedAt=? WHERE id=?').run('2026-10-14T12:30:00.000Z',value.ownerId);
+  const creationBefore=row(value.ownerId);
+  assert.throws(()=>store.loadPricebook(value.ownerId),{code:'ACCOUNT_ERASED',statusCode:410});
+  assert.throws(()=>store.hasPricing(value.ownerId),{code:'ACCOUNT_ERASED',statusCode:410});
+  assert.throws(()=>bridge.readApplicationBook(value.ownerId),{code:'ACCOUNT_ERASED',statusCode:410});
+  assert.deepEqual(row(value.ownerId),creationBefore,'erasure refusal must not update the creation ledger');
+
+  const restartScript=`
+    const {db}=await import(${JSON.stringify(dbUrl)});
+    db.pragma('query_only = ON');
+    const store=await import(${JSON.stringify(serviceUrl)});
+    try { store.loadPricebook(process.argv[1]); console.log(JSON.stringify({read:true})); }
+    catch(error) { console.log(JSON.stringify({read:false,code:error.code,statusCode:error.statusCode,message:error.message})); }
+  `;
+  const restarted=await runNode(restartScript,[value.ownerId]);
+  assert.equal(restarted.code,0,restarted.stderr);
+  const observation=JSON.parse(restarted.stdout.trim().split('\n').pop());
+  assert.deepEqual({read:observation.read,code:observation.code,statusCode:observation.statusCode},{read:false,code:'ACCOUNT_ERASED',statusCode:410});
+  assert.deepEqual(row(value.ownerId),creationBefore);
 });
 
 test.after(()=>{

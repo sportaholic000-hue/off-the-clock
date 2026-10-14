@@ -60,6 +60,7 @@ export function pricebookCreationRecorded(ownerId) {
   }
 }
 function recordPricebookCreation(ownerId, timestamp = new Date().toISOString()) {
+  assertCreationConfirmationBoundary();
   assertRetainedAccount(ownerId);
   ensureCreationRecords();
   ownerQuery(`INSERT INTO priceBookCreationRecords(ownerId,createdAt,updatedAt)
@@ -96,6 +97,10 @@ function blankPricebook(ownerId) {
 }
 
 export function loadPricebook(ownerId) {
+  // Retained-account refusal is part of every application read, including the
+  // steady-state path where creation evidence already exists. Keep this check
+  // read-only so an established book remains usable with SQLite query_only.
+  assertRetainedAccount(ownerId);
   const target = resolve(pricebookDirectory(), `${ownerId}.json`);
   let text;
   try { text = readFileSync(target, 'utf8'); }
@@ -140,12 +145,20 @@ export function pricebookSaveUnconfirmed(ownerId) { return existsSync(unconfirme
 const notDurable = cause => Object.assign(new Error('The price book change could not be confirmed on disk. Quoting is paused for this business until a save is confirmed. Save again.'), { code:'PRICEBOOK_NOT_DURABLE', statusCode:503, retryable:true, cause });
 const pauseNotCleared = cause => Object.assign(new Error('The price book was saved, but quoting could not be resumed. Quoting stays paused for this business until the next successful save.'), { code:'PRICEBOOK_PAUSE_NOT_CLEARED', statusCode:503, retryable:true, cause });
 const creationUnconfirmed = cause => Object.assign(new Error('The price book change reached durable storage, but its creation record could not be confirmed. Quoting stays paused for this business until the next successful save.'), { code:'PRICEBOOK_CREATION_UNCONFIRMED', statusCode:503, retryable:true, cause });
+const creationTransactionActive = () => Object.assign(new Error('Price-book creation cannot be confirmed while another application database transaction is open. Nothing was changed; retry after that transaction finishes.'), { code:'PRICEBOOK_CREATION_TRANSACTION_ACTIVE', statusCode:503, retryable:true });
+function assertCreationConfirmationBoundary() {
+  // The shared application connection cannot prove an INSERT durable until its
+  // caller commits. Never commit that caller-owned transaction, and never start
+  // cross-store mutation when confirmation would participate in it.
+  if (applicationDb.inTransaction === true) throw creationTransactionActive();
+}
 function confirmCreationRecord(ownerId,timestamp) {
   try { recordPricebookCreation(ownerId,timestamp); }
   catch (cause) { if (cause?.code === 'ACCOUNT_ERASED') throw cause; throw creationUnconfirmed(cause); }
 }
 
 function confirmLegacyPricebookCreation(ownerId,timestamp) {
+  assertCreationConfirmationBoundary();
   return withPricebookLock(ownerId,()=>{
     if (pricebookCreationRecorded(ownerId)) return;
     const directory=pricebookDirectory(), marker=unconfirmedMarker(directory,ownerId);
@@ -242,6 +255,7 @@ export function savePricebook(ownerId, data) {
     if (creationRecorded) throw missingCreatedPricebook(ownerId);
     if (pricebookSaveUnconfirmed(ownerId)) throw missingUnconfirmedPricebook(ownerId);
   }
+  if (!creationRecorded) assertCreationConfirmationBoundary();
   mkdirSync(dir, { recursive: true });
   const next = {
     ...data,
