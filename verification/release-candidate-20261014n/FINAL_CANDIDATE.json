@@ -1,0 +1,8 @@
+{
+  "ready": true,
+  "branch": "claude/release-candidate-20261014n",
+  "tag": "rc-20261014n",
+  "reportSha256": "a8dedd5fb9e2367ec31bd386b5e497c3a621ef85e483f5e18b29deb9fa5ae264",
+  "requiredStepsSha256": "5af0703deb3b34bda94bb9a3085dfa12d54aff8c832b158699525e1ad4952271",
+  "meaning": "Eligible only after exact-SHA successful required checks; no independent audit or merge clearance."
+}

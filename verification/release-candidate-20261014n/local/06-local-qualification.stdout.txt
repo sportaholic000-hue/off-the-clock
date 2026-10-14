@@ -1,0 +1,1606 @@
+TAP version 13
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking service end: public polling and direct recovery deny service-ended
+ok 1 - booking service end: public polling and direct recovery deny service-ended
+  ---
+  duration_ms: 146.427937
+  type: 'test'
+  ...
+# Subtest: booking service end: public polling and direct recovery deny expired-trial
+ok 2 - booking service end: public polling and direct recovery deny expired-trial
+  ---
+  duration_ms: 83.887833
+  type: 'test'
+  ...
+# Subtest: booking service end: public polling and direct recovery deny lost-booking-plan
+ok 3 - booking service end: public polling and direct recovery deny lost-booking-plan
+  ---
+  duration_ms: 107.367848
+  type: 'test'
+  ...
+# Subtest: booking service end: public recovery at deadline offset -1ms
+ok 4 - booking service end: public recovery at deadline offset -1ms
+  ---
+  duration_ms: 78.636517
+  type: 'test'
+  ...
+# Subtest: booking service end: public recovery at deadline offset 0ms
+ok 5 - booking service end: public recovery at deadline offset 0ms
+  ---
+  duration_ms: 86.335755
+  type: 'test'
+  ...
+# Subtest: booking service end: deadline during awaited getEvent prevents recovery write
+ok 6 - booking service end: deadline during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 92.115057
+  type: 'test'
+  ...
+# Subtest: booking service end: plan-change during awaited getEvent prevents recovery write
+ok 7 - booking service end: plan-change during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 93.428626
+  type: 'test'
+  ...
+# Subtest: booking service end: deadline during awaited listBusy prevents recovery write
+ok 8 - booking service end: deadline during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 87.888464
+  type: 'test'
+  ...
+# Subtest: booking service end: plan-change during awaited listBusy prevents recovery write
+ok 9 - booking service end: plan-change during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 95.188275
+  type: 'test'
+  ...
+# Subtest: booking service end: active recovery reuses saved event, preserves receipt and confirms once
+ok 10 - booking service end: active recovery reuses saved event, preserves receipt and confirms once
+  ---
+  duration_ms: 86.825074
+  type: 'test'
+  ...
+# Subtest: booking service end: existing provider event reconciles without creation or duplicate notification
+ok 11 - booking service end: existing provider event reconciles without creation or duplicate notification
+  ---
+  duration_ms: 101.901068
+  type: 'test'
+  ...
+# Subtest: booking service end: lookup error stays uncertain and retains pending receipt/slot
+ok 12 - booking service end: lookup error stays uncertain and retains pending receipt/slot
+  ---
+  duration_ms: 98.46943
+  type: 'test'
+  ...
+# Subtest: booking service end: database reopen/service reconstruction blocks expired recovery
+ok 13 - booking service end: database reopen/service reconstruction blocks expired recovery
+  ---
+  duration_ms: 72.466946
+  type: 'test'
+  ...
+# Subtest: booking service end: database reopen/service reconstruction allows entitled recovery
+ok 14 - booking service end: database reopen/service reconstruction allows entitled recovery
+  ---
+  duration_ms: 79.278942
+  type: 'test'
+  ...
+# Subtest: booking service end: already-dispatched original write can settle after deadline
+ok 15 - booking service end: already-dispatched original write can settle after deadline
+  ---
+  duration_ms: 72.949524
+  type: 'test'
+  ...
+# Subtest: booking service end: already-dispatched recovery write can settle after deadline
+ok 16 - booking service end: already-dispatched recovery write can settle after deadline
+  ---
+  duration_ms: 96.304373
+  type: 'test'
+  ...
+# Subtest: booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+ok 17 - booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+  ---
+  duration_ms: 175.720518
+  type: 'test'
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: candidate l tag gate: exact run and all required successful steps allow validation without tag writes
+ok 18 - candidate l tag gate: exact run and all required successful steps allow validation without tag writes
+  ---
+  duration_ms: 3.085654
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing final marker
+ok 19 - candidate l tag gate refuses missing final marker
+  ---
+  duration_ms: 0.736792
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing report
+ok 20 - candidate l tag gate refuses missing report
+  ---
+  duration_ms: 0.170848
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses changed report
+ok 21 - candidate l tag gate refuses changed report
+  ---
+  duration_ms: 0.936302
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses changed manifest
+ok 22 - candidate l tag gate refuses changed manifest
+  ---
+  duration_ms: 0.317388
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses diagnostic marker
+ok 23 - candidate l tag gate refuses diagnostic marker
+  ---
+  duration_ms: 0.187362
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses wrong marker branch
+ok 24 - candidate l tag gate refuses wrong marker branch
+  ---
+  duration_ms: 0.327163
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses pull request
+ok 25 - candidate l tag gate refuses pull request
+  ---
+  duration_ms: 0.226531
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other branch
+ok 26 - candidate l tag gate refuses other branch
+  ---
+  duration_ms: 0.332702
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other repository
+ok 27 - candidate l tag gate refuses other repository
+  ---
+  duration_ms: 0.55015
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other run
+ok 28 - candidate l tag gate refuses other run
+  ---
+  duration_ms: 0.23822
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other attempt
+ok 29 - candidate l tag gate refuses other attempt
+  ---
+  duration_ms: 0.267744
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other SHA
+ok 30 - candidate l tag gate refuses other SHA
+  ---
+  duration_ms: 0.159631
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses other workflow
+ok 31 - candidate l tag gate refuses other workflow
+  ---
+  duration_ms: 0.144387
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses completed run
+ok 32 - candidate l tag gate refuses completed run
+  ---
+  duration_ms: 0.130247
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing job
+ok 33 - candidate l tag gate refuses missing job
+  ---
+  duration_ms: 0.301224
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses duplicate job
+ok 34 - candidate l tag gate refuses duplicate job
+  ---
+  duration_ms: 0.160042
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses job from other SHA
+ok 35 - candidate l tag gate refuses job from other SHA
+  ---
+  duration_ms: 0.153201
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses failed job
+ok 36 - candidate l tag gate refuses failed job
+  ---
+  duration_ms: 0.141763
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing steps
+ok 37 - candidate l tag gate refuses missing steps
+  ---
+  duration_ms: 0.149996
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses missing required step
+ok 38 - candidate l tag gate refuses missing required step
+  ---
+  duration_ms: 0.163506
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses duplicate required step
+ok 39 - candidate l tag gate refuses duplicate required step
+  ---
+  duration_ms: 0.161984
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses required step skipped
+ok 40 - candidate l tag gate refuses required step skipped
+  ---
+  duration_ms: 0.176016
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses required step cancelled
+ok 41 - candidate l tag gate refuses required step cancelled
+  ---
+  duration_ms: 0.111829
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses required step failure
+ok 42 - candidate l tag gate refuses required step failure
+  ---
+  duration_ms: 0.287704
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses required step null
+ok 43 - candidate l tag gate refuses required step null
+  ---
+  duration_ms: 0.114663
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses unfinished required step
+ok 44 - candidate l tag gate refuses unfinished required step
+  ---
+  duration_ms: 0.175455
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses advanced branch and existing tag on another commit
+ok 45 - candidate l tag gate refuses advanced branch and existing tag on another commit
+  ---
+  duration_ms: 0.321935
+  type: 'test'
+  ...
+# Subtest: candidate l tag gate refuses unavailable or incomplete Actions evidence
+ok 46 - candidate l tag gate refuses unavailable or incomplete Actions evidence
+  ---
+  duration_ms: 0.894198
+  type: 'test'
+  ...
+# Subtest: candidate l workflow preserves every starting required step and runs controlled browser checks early
+ok 47 - candidate l workflow preserves every starting required step and runs controlled browser checks early
+  ---
+  duration_ms: 1.4191
+  type: 'test'
+  ...
+# (node:15) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: candidate m tag gate: exact run and all required successful steps allow validation without tag writes
+ok 48 - candidate m tag gate: exact run and all required successful steps allow validation without tag writes
+  ---
+  duration_ms: 3.277513
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses missing final marker
+ok 49 - candidate m tag gate refuses missing final marker
+  ---
+  duration_ms: 0.726055
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses missing report
+ok 50 - candidate m tag gate refuses missing report
+  ---
+  duration_ms: 0.200463
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses changed report
+ok 51 - candidate m tag gate refuses changed report
+  ---
+  duration_ms: 0.686165
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses changed manifest
+ok 52 - candidate m tag gate refuses changed manifest
+  ---
+  duration_ms: 0.302867
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses diagnostic marker
+ok 53 - candidate m tag gate refuses diagnostic marker
+  ---
+  duration_ms: 0.261574
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses wrong marker branch
+ok 54 - candidate m tag gate refuses wrong marker branch
+  ---
+  duration_ms: 0.241044
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses pull request
+ok 55 - candidate m tag gate refuses pull request
+  ---
+  duration_ms: 0.200302
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses other branch
+ok 56 - candidate m tag gate refuses other branch
+  ---
+  duration_ms: 0.493925
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses other repository
+ok 57 - candidate m tag gate refuses other repository
+  ---
+  duration_ms: 0.486824
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses other run
+ok 58 - candidate m tag gate refuses other run
+  ---
+  duration_ms: 0.28502
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses other attempt
+ok 59 - candidate m tag gate refuses other attempt
+  ---
+  duration_ms: 0.219631
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses other SHA
+ok 60 - candidate m tag gate refuses other SHA
+  ---
+  duration_ms: 0.161423
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses other workflow
+ok 61 - candidate m tag gate refuses other workflow
+  ---
+  duration_ms: 0.147602
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses completed run
+ok 62 - candidate m tag gate refuses completed run
+  ---
+  duration_ms: 0.13266
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses missing job
+ok 63 - candidate m tag gate refuses missing job
+  ---
+  duration_ms: 0.396498
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses duplicate job
+ok 64 - candidate m tag gate refuses duplicate job
+  ---
+  duration_ms: 1.171777
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses job from other SHA
+ok 65 - candidate m tag gate refuses job from other SHA
+  ---
+  duration_ms: 0.185089
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses failed job
+ok 66 - candidate m tag gate refuses failed job
+  ---
+  duration_ms: 0.129325
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses missing steps
+ok 67 - candidate m tag gate refuses missing steps
+  ---
+  duration_ms: 0.217328
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses missing required step
+ok 68 - candidate m tag gate refuses missing required step
+  ---
+  duration_ms: 0.159971
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses duplicate required step
+ok 69 - candidate m tag gate refuses duplicate required step
+  ---
+  duration_ms: 0.150547
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses required step skipped
+ok 70 - candidate m tag gate refuses required step skipped
+  ---
+  duration_ms: 0.132399
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses required step cancelled
+ok 71 - candidate m tag gate refuses required step cancelled
+  ---
+  duration_ms: 0.148133
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses required step failure
+ok 72 - candidate m tag gate refuses required step failure
+  ---
+  duration_ms: 0.161364
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses required step null
+ok 73 - candidate m tag gate refuses required step null
+  ---
+  duration_ms: 0.097878
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses unfinished required step
+ok 74 - candidate m tag gate refuses unfinished required step
+  ---
+  duration_ms: 0.117758
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses advanced branch and existing tag on another commit
+ok 75 - candidate m tag gate refuses advanced branch and existing tag on another commit
+  ---
+  duration_ms: 0.290227
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses unavailable or incomplete Actions evidence
+ok 76 - candidate m tag gate refuses unavailable or incomplete Actions evidence
+  ---
+  duration_ms: 0.945416
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Install from lockfile (ignores committed node_modules)
+ok 77 - candidate m tag gate refuses manifest omission: Install from lockfile (ignores committed node_modules)
+  ---
+  duration_ms: 0.502568
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Install Playwright test dependency without changing the lockfile
+ok 78 - candidate m tag gate refuses manifest omission: Install Playwright test dependency without changing the lockfile
+  ---
+  duration_ms: 0.208875
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Install Chromium for the browser tests
+ok 79 - candidate m tag gate refuses manifest omission: Install Chromium for the browser tests
+  ---
+  duration_ms: 0.217758
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Verify Chromium can launch; install system libraries if needed
+ok 80 - candidate m tag gate refuses manifest omission: Verify Chromium can launch; install system libraries if needed
+  ---
+  duration_ms: 0.154373
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Build owner app and widget
+ok 81 - candidate m tag gate refuses manifest omission: Build owner app and widget
+  ---
+  duration_ms: 0.199471
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate l controlled owner-alert browser reproduction
+ok 82 - candidate m tag gate refuses manifest omission: Candidate l controlled owner-alert browser reproduction
+  ---
+  duration_ms: 0.185039
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Owner alerts and dashboard browser regressions
+ok 83 - candidate m tag gate refuses manifest omission: Owner alerts and dashboard browser regressions
+  ---
+  duration_ms: 0.567376
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate l harness and CI safety regressions
+ok 84 - candidate m tag gate refuses manifest omission: Candidate l harness and CI safety regressions
+  ---
+  duration_ms: 0.217638
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate l shared HTTP fixture consumers and alert worker regressions
+ok 85 - candidate m tag gate refuses manifest omission: Candidate l shared HTTP fixture consumers and alert worker regressions
+  ---
+  duration_ms: 0.15907
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Strict quote engine and price book gate
+ok 86 - candidate m tag gate refuses manifest omission: Strict quote engine and price book gate
+  ---
+  duration_ms: 0.148233
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Full test suite
+ok 87 - candidate m tag gate refuses manifest omission: Full test suite
+  ---
+  duration_ms: 0.150437
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate i confirms required test names in the full-suite log
+ok 88 - candidate m tag gate refuses manifest omission: Candidate i confirms required test names in the full-suite log
+  ---
+  duration_ms: 0.152781
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate k backup coordination regressions
+ok 89 - candidate m tag gate refuses manifest omission: Candidate k backup coordination regressions
+  ---
+  duration_ms: 0.246582
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate j and k standalone regressions (each file independently)
+ok 90 - candidate m tag gate refuses manifest omission: Candidate j and k standalone regressions (each file independently)
+  ---
+  duration_ms: 0.173412
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate j and k confirm required lock test names in the full-suite log
+ok 91 - candidate m tag gate refuses manifest omission: Candidate j and k confirm required lock test names in the full-suite log
+  ---
+  duration_ms: 0.147943
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate k confirms coordination test names in the full-suite log
+ok 92 - candidate m tag gate refuses manifest omission: Candidate k confirms coordination test names in the full-suite log
+  ---
+  duration_ms: 0.129355
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate l expiry regressions and required passing names
+ok 93 - candidate m tag gate refuses manifest omission: Candidate l expiry regressions and required passing names
+  ---
+  duration_ms: 0.131067
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate l follow-up required passing names
+ok 94 - candidate m tag gate refuses manifest omission: Candidate l follow-up required passing names
+  ---
+  duration_ms: 0.15892
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: No failures beyond the known list
+ok 95 - candidate m tag gate refuses manifest omission: No failures beyond the known list
+  ---
+  duration_ms: 0.466413
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Publish test summary to claude/ci-results (push events only)
+ok 96 - candidate m tag gate refuses manifest omission: Publish test summary to claude/ci-results (push events only)
+  ---
+  duration_ms: 0.13945
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Production dependency audit
+ok 97 - candidate m tag gate refuses manifest omission: Production dependency audit
+  ---
+  duration_ms: 0.134433
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate m runner and tag qualification regressions
+ok 98 - candidate m tag gate refuses manifest omission: Candidate m runner and tag qualification regressions
+  ---
+  duration_ms: 0.178218
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate m confirms every CI-runner regression passed
+ok 99 - candidate m tag gate refuses manifest omission: Candidate m confirms every CI-runner regression passed
+  ---
+  duration_ms: 0.155684
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Build production runtime image
+ok 100 - candidate m tag gate refuses manifest omission: Build production runtime image
+  ---
+  duration_ms: 0.140252
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Voice enabled with synthetic credentials and no provider network
+ok 101 - candidate m tag gate refuses manifest omission: Voice enabled with synthetic credentials and no provider network
+  ---
+  duration_ms: 1.194402
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke
+ok 102 - candidate m tag gate refuses manifest omission: Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke
+  ---
+  duration_ms: 0.285981
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses manifest omission: Candidate j and k production-user lock database proof
+ok 103 - candidate m tag gate refuses manifest omission: Candidate j and k production-user lock database proof
+  ---
+  duration_ms: 0.180693
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses missing evidence for Candidate m runner and tag qualification regressions
+ok 104 - candidate m tag gate refuses missing evidence for Candidate m runner and tag qualification regressions
+  ---
+  duration_ms: 0.227383
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses failure evidence for Candidate m runner and tag qualification regressions
+ok 105 - candidate m tag gate refuses failure evidence for Candidate m runner and tag qualification regressions
+  ---
+  duration_ms: 0.149786
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses skipped evidence for Candidate m runner and tag qualification regressions
+ok 106 - candidate m tag gate refuses skipped evidence for Candidate m runner and tag qualification regressions
+  ---
+  duration_ms: 0.163356
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses cancelled evidence for Candidate m runner and tag qualification regressions
+ok 107 - candidate m tag gate refuses cancelled evidence for Candidate m runner and tag qualification regressions
+  ---
+  duration_ms: 0.12575
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses null evidence for Candidate m runner and tag qualification regressions
+ok 108 - candidate m tag gate refuses null evidence for Candidate m runner and tag qualification regressions
+  ---
+  duration_ms: 0.122976
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses missing evidence for Candidate m confirms every CI-runner regression passed
+ok 109 - candidate m tag gate refuses missing evidence for Candidate m confirms every CI-runner regression passed
+  ---
+  duration_ms: 0.134022
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses failure evidence for Candidate m confirms every CI-runner regression passed
+ok 110 - candidate m tag gate refuses failure evidence for Candidate m confirms every CI-runner regression passed
+  ---
+  duration_ms: 0.180202
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses skipped evidence for Candidate m confirms every CI-runner regression passed
+ok 111 - candidate m tag gate refuses skipped evidence for Candidate m confirms every CI-runner regression passed
+  ---
+  duration_ms: 0.120762
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses cancelled evidence for Candidate m confirms every CI-runner regression passed
+ok 112 - candidate m tag gate refuses cancelled evidence for Candidate m confirms every CI-runner regression passed
+  ---
+  duration_ms: 0.09932
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate refuses null evidence for Candidate m confirms every CI-runner regression passed
+ok 113 - candidate m tag gate refuses null evidence for Candidate m confirms every CI-runner regression passed
+  ---
+  duration_ms: 0.098839
+  type: 'test'
+  ...
+# Subtest: candidate m tag gate binds workflow name and job run identity
+ok 114 - candidate m tag gate binds workflow name and job run identity
+  ---
+  duration_ms: 0.21262
+  type: 'test'
+  ...
+# Subtest: candidate m manifest preserves all 25 inherited requirements and adds both new checks
+ok 115 - candidate m manifest preserves all 25 inherited requirements and adds both new checks
+  ---
+  duration_ms: 2.031044
+  type: 'test'
+  ...
+# Subtest: candidate m workflow preserves inherited commands and earlier conditions while enabling every requirement
+ok 116 - candidate m workflow preserves inherited commands and earlier conditions while enabling every requirement
+  ---
+  duration_ms: 1.659483
+  type: 'test'
+  ...
+# Subtest: candidate m runner-name guard accepts all 47 unique successful names without imposing a full-suite total
+ok 117 - candidate m runner-name guard accepts all 47 unique successful names without imposing a full-suite total
+  ---
+  duration_ms: 0.49759
+  type: 'test'
+  ...
+# Subtest: candidate m runner-name guard refuses missing regression evidence
+ok 118 - candidate m runner-name guard refuses missing regression evidence
+  ---
+  duration_ms: 0.211999
+  type: 'test'
+  ...
+# Subtest: candidate m runner-name guard refuses failed regression evidence
+ok 119 - candidate m runner-name guard refuses failed regression evidence
+  ---
+  duration_ms: 0.17269
+  type: 'test'
+  ...
+# Subtest: candidate m runner-name guard refuses skipped regression evidence
+ok 120 - candidate m runner-name guard refuses skipped regression evidence
+  ---
+  duration_ms: 0.207133
+  type: 'test'
+  ...
+# Subtest: candidate m runner-name guard refuses TODO regression evidence
+ok 121 - candidate m runner-name guard refuses TODO regression evidence
+  ---
+  duration_ms: 0.167903
+  type: 'test'
+  ...
+# Subtest: candidate m runner-name guard refuses duplicate regression evidence
+ok 122 - candidate m runner-name guard refuses duplicate regression evidence
+  ---
+  duration_ms: 0.150607
+  type: 'test'
+  ...
+# Subtest: candidate m runner-name guard refuses unavailable regression evidence
+ok 123 - candidate m runner-name guard refuses unavailable regression evidence
+  ---
+  duration_ms: 0.109405
+  type: 'test'
+  ...
+# (node:21) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: candidate n tag gate: exact run and all required successful steps allow validation without tag writes
+ok 124 - candidate n tag gate: exact run and all required successful steps allow validation without tag writes
+  ---
+  duration_ms: 6.142475
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses missing final marker
+ok 125 - candidate n tag gate refuses missing final marker
+  ---
+  duration_ms: 1.00156
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses missing report
+ok 126 - candidate n tag gate refuses missing report
+  ---
+  duration_ms: 0.289477
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses changed report
+ok 127 - candidate n tag gate refuses changed report
+  ---
+  duration_ms: 0.847308
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses changed manifest
+ok 128 - candidate n tag gate refuses changed manifest
+  ---
+  duration_ms: 0.482017
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses diagnostic marker
+ok 129 - candidate n tag gate refuses diagnostic marker
+  ---
+  duration_ms: 0.315226
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses wrong marker branch
+ok 130 - candidate n tag gate refuses wrong marker branch
+  ---
+  duration_ms: 0.322957
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses pull request
+ok 131 - candidate n tag gate refuses pull request
+  ---
+  duration_ms: 0.323237
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses other branch
+ok 132 - candidate n tag gate refuses other branch
+  ---
+  duration_ms: 0.492904
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses other repository
+ok 133 - candidate n tag gate refuses other repository
+  ---
+  duration_ms: 0.683811
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses other run
+ok 134 - candidate n tag gate refuses other run
+  ---
+  duration_ms: 0.255876
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses other attempt
+ok 135 - candidate n tag gate refuses other attempt
+  ---
+  duration_ms: 0.217018
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses other SHA
+ok 136 - candidate n tag gate refuses other SHA
+  ---
+  duration_ms: 0.213181
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses other workflow
+ok 137 - candidate n tag gate refuses other workflow
+  ---
+  duration_ms: 1.516478
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses completed run
+ok 138 - candidate n tag gate refuses completed run
+  ---
+  duration_ms: 0.167934
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses missing job
+ok 139 - candidate n tag gate refuses missing job
+  ---
+  duration_ms: 0.46387
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses duplicate job
+ok 140 - candidate n tag gate refuses duplicate job
+  ---
+  duration_ms: 0.323658
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses job from other SHA
+ok 141 - candidate n tag gate refuses job from other SHA
+  ---
+  duration_ms: 0.228204
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses failed job
+ok 142 - candidate n tag gate refuses failed job
+  ---
+  duration_ms: 0.273603
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses missing steps
+ok 143 - candidate n tag gate refuses missing steps
+  ---
+  duration_ms: 0.187082
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses missing required step
+ok 144 - candidate n tag gate refuses missing required step
+  ---
+  duration_ms: 0.308275
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses duplicate required step
+ok 145 - candidate n tag gate refuses duplicate required step
+  ---
+  duration_ms: 0.219781
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses required step skipped
+ok 146 - candidate n tag gate refuses required step skipped
+  ---
+  duration_ms: 0.190027
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses required step cancelled
+ok 147 - candidate n tag gate refuses required step cancelled
+  ---
+  duration_ms: 0.13916
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses required step failure
+ok 148 - candidate n tag gate refuses required step failure
+  ---
+  duration_ms: 0.283047
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses required step null
+ok 149 - candidate n tag gate refuses required step null
+  ---
+  duration_ms: 0.174924
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses unfinished required step
+ok 150 - candidate n tag gate refuses unfinished required step
+  ---
+  duration_ms: 0.199261
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses advanced branch and existing tag on another commit
+ok 151 - candidate n tag gate refuses advanced branch and existing tag on another commit
+  ---
+  duration_ms: 1.015222
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses unavailable or incomplete Actions evidence
+ok 152 - candidate n tag gate refuses unavailable or incomplete Actions evidence
+  ---
+  duration_ms: 1.104416
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Install from lockfile (ignores committed node_modules)
+ok 153 - candidate n tag gate refuses manifest omission: Install from lockfile (ignores committed node_modules)
+  ---
+  duration_ms: 0.705394
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Install Playwright test dependency without changing the lockfile
+ok 154 - candidate n tag gate refuses manifest omission: Install Playwright test dependency without changing the lockfile
+  ---
+  duration_ms: 0.299401
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Install Chromium for the browser tests
+ok 155 - candidate n tag gate refuses manifest omission: Install Chromium for the browser tests
+  ---
+  duration_ms: 0.355496
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Verify Chromium can launch; install system libraries if needed
+ok 156 - candidate n tag gate refuses manifest omission: Verify Chromium can launch; install system libraries if needed
+  ---
+  duration_ms: 0.341765
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Build owner app and widget
+ok 157 - candidate n tag gate refuses manifest omission: Build owner app and widget
+  ---
+  duration_ms: 0.23166
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate l controlled owner-alert browser reproduction
+ok 158 - candidate n tag gate refuses manifest omission: Candidate l controlled owner-alert browser reproduction
+  ---
+  duration_ms: 0.293943
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Owner alerts and dashboard browser regressions
+ok 159 - candidate n tag gate refuses manifest omission: Owner alerts and dashboard browser regressions
+  ---
+  duration_ms: 0.475978
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate l harness and CI safety regressions
+ok 160 - candidate n tag gate refuses manifest omission: Candidate l harness and CI safety regressions
+  ---
+  duration_ms: 0.255134
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate l shared HTTP fixture consumers and alert worker regressions
+ok 161 - candidate n tag gate refuses manifest omission: Candidate l shared HTTP fixture consumers and alert worker regressions
+  ---
+  duration_ms: 0.261424
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Strict quote engine and price book gate
+ok 162 - candidate n tag gate refuses manifest omission: Strict quote engine and price book gate
+  ---
+  duration_ms: 0.286021
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Full test suite
+ok 163 - candidate n tag gate refuses manifest omission: Full test suite
+  ---
+  duration_ms: 1.251919
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate i confirms required test names in the full-suite log
+ok 164 - candidate n tag gate refuses manifest omission: Candidate i confirms required test names in the full-suite log
+  ---
+  duration_ms: 0.23237
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate k backup coordination regressions
+ok 165 - candidate n tag gate refuses manifest omission: Candidate k backup coordination regressions
+  ---
+  duration_ms: 0.279211
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate j and k standalone regressions (each file independently)
+ok 166 - candidate n tag gate refuses manifest omission: Candidate j and k standalone regressions (each file independently)
+  ---
+  duration_ms: 0.261003
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate j and k confirm required lock test names in the full-suite log
+ok 167 - candidate n tag gate refuses manifest omission: Candidate j and k confirm required lock test names in the full-suite log
+  ---
+  duration_ms: 0.228615
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate k confirms coordination test names in the full-suite log
+ok 168 - candidate n tag gate refuses manifest omission: Candidate k confirms coordination test names in the full-suite log
+  ---
+  duration_ms: 0.211679
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate l expiry regressions and required passing names
+ok 169 - candidate n tag gate refuses manifest omission: Candidate l expiry regressions and required passing names
+  ---
+  duration_ms: 0.259021
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate l follow-up required passing names
+ok 170 - candidate n tag gate refuses manifest omission: Candidate l follow-up required passing names
+  ---
+  duration_ms: 0.21866
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: No failures beyond the known list
+ok 171 - candidate n tag gate refuses manifest omission: No failures beyond the known list
+  ---
+  duration_ms: 0.224208
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Publish test summary to claude/ci-results (push events only)
+ok 172 - candidate n tag gate refuses manifest omission: Publish test summary to claude/ci-results (push events only)
+  ---
+  duration_ms: 0.21189
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Production dependency audit
+ok 173 - candidate n tag gate refuses manifest omission: Production dependency audit
+  ---
+  duration_ms: 0.199922
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate m runner and tag qualification regressions
+ok 174 - candidate n tag gate refuses manifest omission: Candidate m runner and tag qualification regressions
+  ---
+  duration_ms: 0.140382
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate m confirms every CI-runner regression passed
+ok 175 - candidate n tag gate refuses manifest omission: Candidate m confirms every CI-runner regression passed
+  ---
+  duration_ms: 0.131919
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate n booking repair and tag qualification regressions
+ok 176 - candidate n tag gate refuses manifest omission: Candidate n booking repair and tag qualification regressions
+  ---
+  duration_ms: 0.137748
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate n confirms every booking service-end regression passed
+ok 177 - candidate n tag gate refuses manifest omission: Candidate n confirms every booking service-end regression passed
+  ---
+  duration_ms: 0.170497
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Build production runtime image
+ok 178 - candidate n tag gate refuses manifest omission: Build production runtime image
+  ---
+  duration_ms: 0.140702
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Voice enabled with synthetic credentials and no provider network
+ok 179 - candidate n tag gate refuses manifest omission: Voice enabled with synthetic credentials and no provider network
+  ---
+  duration_ms: 0.118409
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke
+ok 180 - candidate n tag gate refuses manifest omission: Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke
+  ---
+  duration_ms: 0.118419
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses manifest omission: Candidate j and k production-user lock database proof
+ok 181 - candidate n tag gate refuses manifest omission: Candidate j and k production-user lock database proof
+  ---
+  duration_ms: 0.127413
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses missing evidence for Candidate n booking repair and tag qualification regressions
+ok 182 - candidate n tag gate refuses missing evidence for Candidate n booking repair and tag qualification regressions
+  ---
+  duration_ms: 0.216667
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses failure evidence for Candidate n booking repair and tag qualification regressions
+ok 183 - candidate n tag gate refuses failure evidence for Candidate n booking repair and tag qualification regressions
+  ---
+  duration_ms: 0.231459
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses skipped evidence for Candidate n booking repair and tag qualification regressions
+ok 184 - candidate n tag gate refuses skipped evidence for Candidate n booking repair and tag qualification regressions
+  ---
+  duration_ms: 0.117978
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses cancelled evidence for Candidate n booking repair and tag qualification regressions
+ok 185 - candidate n tag gate refuses cancelled evidence for Candidate n booking repair and tag qualification regressions
+  ---
+  duration_ms: 0.103547
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses null evidence for Candidate n booking repair and tag qualification regressions
+ok 186 - candidate n tag gate refuses null evidence for Candidate n booking repair and tag qualification regressions
+  ---
+  duration_ms: 0.100802
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses missing evidence for Candidate n confirms every booking service-end regression passed
+ok 187 - candidate n tag gate refuses missing evidence for Candidate n confirms every booking service-end regression passed
+  ---
+  duration_ms: 0.099881
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses failure evidence for Candidate n confirms every booking service-end regression passed
+ok 188 - candidate n tag gate refuses failure evidence for Candidate n confirms every booking service-end regression passed
+  ---
+  duration_ms: 0.100331
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses skipped evidence for Candidate n confirms every booking service-end regression passed
+ok 189 - candidate n tag gate refuses skipped evidence for Candidate n confirms every booking service-end regression passed
+  ---
+  duration_ms: 0.099159
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses cancelled evidence for Candidate n confirms every booking service-end regression passed
+ok 190 - candidate n tag gate refuses cancelled evidence for Candidate n confirms every booking service-end regression passed
+  ---
+  duration_ms: 0.100993
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses null evidence for Candidate n confirms every booking service-end regression passed
+ok 191 - candidate n tag gate refuses null evidence for Candidate n confirms every booking service-end regression passed
+  ---
+  duration_ms: 0.159751
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate binds workflow name and job run identity
+ok 192 - candidate n tag gate binds workflow name and job run identity
+  ---
+  duration_ms: 0.380594
+  type: 'test'
+  ...
+# Subtest: candidate n manifest preserves all 27 inherited requirements and adds both new checks
+ok 193 - candidate n manifest preserves all 27 inherited requirements and adds both new checks
+  ---
+  duration_ms: 0.260262
+  type: 'test'
+  ...
+# Subtest: candidate n workflow preserves all 27 complete inherited blocks with only the authorized branch extension
+ok 194 - candidate n workflow preserves all 27 complete inherited blocks with only the authorized branch extension
+  ---
+  duration_ms: 1.306621
+  type: 'test'
+  ...
+# Subtest: candidate n booking-name guard accepts all 17 unique successful names without imposing a full-suite total
+ok 195 - candidate n booking-name guard accepts all 17 unique successful names without imposing a full-suite total
+  ---
+  duration_ms: 0.412182
+  type: 'test'
+  ...
+# Subtest: candidate n booking-name guard refuses missing regression evidence
+ok 196 - candidate n booking-name guard refuses missing regression evidence
+  ---
+  duration_ms: 0.248625
+  type: 'test'
+  ...
+# Subtest: candidate n booking-name guard refuses failed regression evidence
+ok 197 - candidate n booking-name guard refuses failed regression evidence
+  ---
+  duration_ms: 0.240923
+  type: 'test'
+  ...
+# Subtest: candidate n booking-name guard refuses skipped regression evidence
+ok 198 - candidate n booking-name guard refuses skipped regression evidence
+  ---
+  duration_ms: 0.231219
+  type: 'test'
+  ...
+# Subtest: candidate n booking-name guard refuses TODO regression evidence
+ok 199 - candidate n booking-name guard refuses TODO regression evidence
+  ---
+  duration_ms: 0.238129
+  type: 'test'
+  ...
+# Subtest: candidate n booking-name guard refuses duplicate regression evidence
+ok 200 - candidate n booking-name guard refuses duplicate regression evidence
+  ---
+  duration_ms: 0.200322
+  type: 'test'
+  ...
+# Subtest: candidate n booking-name guard refuses unavailable regression evidence
+ok 201 - candidate n booking-name guard refuses unavailable regression evidence
+  ---
+  duration_ms: 0.213321
+  type: 'test'
+  ...
+# Subtest: candidate n keeps the completed booking repair and its 17-case source byte-identical
+ok 202 - candidate n keeps the completed booking repair and its 17-case source byte-identical
+  ---
+  duration_ms: 0.661938
+  type: 'test'
+  ...
+# Subtest: candidate n validates committed final-candidate document hashes
+ok 203 - candidate n validates committed final-candidate document hashes
+  ---
+  duration_ms: 0.316968
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses run repository mismatch
+ok 204 - candidate n tag gate refuses run repository mismatch
+  ---
+  duration_ms: 0.246081
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses run branch mismatch
+ok 205 - candidate n tag gate refuses run branch mismatch
+  ---
+  duration_ms: 0.263748
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses run event mismatch
+ok 206 - candidate n tag gate refuses run event mismatch
+  ---
+  duration_ms: 0.180592
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses run already concluded
+ok 207 - candidate n tag gate refuses run already concluded
+  ---
+  duration_ms: 0.237508
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses invalid commit identity
+ok 208 - candidate n tag gate refuses invalid commit identity
+  ---
+  duration_ms: 0.236296
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses unfinished job
+ok 209 - candidate n tag gate refuses unfinished job
+  ---
+  duration_ms: 0.168695
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses job skipped
+ok 210 - candidate n tag gate refuses job skipped
+  ---
+  duration_ms: 0.132951
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses job cancelled
+ok 211 - candidate n tag gate refuses job cancelled
+  ---
+  duration_ms: 0.10619
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses job null
+ok 212 - candidate n tag gate refuses job null
+  ---
+  duration_ms: 1.919946
+  type: 'test'
+  ...
+# Subtest: candidate n tag gate refuses duplicate or unexpected remote refs
+ok 213 - candidate n tag gate refuses duplicate or unexpected remote refs
+  ---
+  duration_ms: 0.440625
+  type: 'test'
+  ...
+# Subtest: candidate n fetches the requested attempt and complete paginated job inventory
+ok 214 - candidate n fetches the requested attempt and complete paginated job inventory
+  ---
+  duration_ms: 0.574446
+  type: 'test'
+  ...
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CI runner repair: complete passing TAP is accepted by the actual checker
+ok 215 - CI runner repair: complete passing TAP is accepted by the actual checker
+  ---
+  duration_ms: 99.896003
+  type: 'test'
+  ...
+# Subtest: CI runner repair: truncated summary after positive tests count is rejected
+ok 216 - CI runner repair: truncated summary after positive tests count is rejected
+  ---
+  duration_ms: 63.862463
+  type: 'test'
+  ...
+# Subtest: CI runner repair: no-summary control is rejected
+ok 217 - CI runner repair: no-summary control is rejected
+  ---
+  duration_ms: 67.27482
+  type: 'test'
+  ...
+# Subtest: CI runner repair: passing TAP followed by real child exit 7 cannot pass
+ok 218 - CI runner repair: passing TAP followed by real child exit 7 cannot pass
+  ---
+  duration_ms: 162.962717
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses missing tests count
+ok 219 - CI runner repair: checker refuses missing tests count
+  ---
+  duration_ms: 68.103606
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses missing suites count
+ok 220 - CI runner repair: checker refuses missing suites count
+  ---
+  duration_ms: 55.160308
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses missing pass count
+ok 221 - CI runner repair: checker refuses missing pass count
+  ---
+  duration_ms: 58.332602
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses missing fail count
+ok 222 - CI runner repair: checker refuses missing fail count
+  ---
+  duration_ms: 49.111855
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses missing cancelled count
+ok 223 - CI runner repair: checker refuses missing cancelled count
+  ---
+  duration_ms: 52.39674
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses missing skipped count
+ok 224 - CI runner repair: checker refuses missing skipped count
+  ---
+  duration_ms: 55.202863
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses missing todo count
+ok 225 - CI runner repair: checker refuses missing todo count
+  ---
+  duration_ms: 72.639536
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses negative count
+ok 226 - CI runner repair: checker refuses negative count
+  ---
+  duration_ms: 56.008218
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses fraction count
+ok 227 - CI runner repair: checker refuses fraction count
+  ---
+  duration_ms: 59.82485
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses nan count
+ok 228 - CI runner repair: checker refuses nan count
+  ---
+  duration_ms: 53.521867
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses infinity count
+ok 229 - CI runner repair: checker refuses infinity count
+  ---
+  duration_ms: 54.686138
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses exponent count
+ok 230 - CI runner repair: checker refuses exponent count
+  ---
+  duration_ms: 49.776047
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses empty count
+ok 231 - CI runner repair: checker refuses empty count
+  ---
+  duration_ms: 64.41588
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses extra-space count
+ok 232 - CI runner repair: checker refuses extra-space count
+  ---
+  duration_ms: 54.914864
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses trailing-text count
+ok 233 - CI runner repair: checker refuses trailing-text count
+  ---
+  duration_ms: 71.506797
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses unsafe-integer count
+ok 234 - CI runner repair: checker refuses unsafe-integer count
+  ---
+  duration_ms: 64.368529
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses nonzero fail
+ok 235 - CI runner repair: checker refuses nonzero fail
+  ---
+  duration_ms: 54.271323
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses nonzero cancelled
+ok 236 - CI runner repair: checker refuses nonzero cancelled
+  ---
+  duration_ms: 52.03924
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses nonzero skipped
+ok 237 - CI runner repair: checker refuses nonzero skipped
+  ---
+  duration_ms: 51.003003
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses nonzero todo
+ok 238 - CI runner repair: checker refuses nonzero todo
+  ---
+  duration_ms: 73.75256
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses zero-tests
+ok 239 - CI runner repair: checker refuses zero-tests
+  ---
+  duration_ms: 54.994459
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses mismatched-passes
+ok 240 - CI runner repair: checker refuses mismatched-passes
+  ---
+  duration_ms: 75.295833
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses inconsistent-total
+ok 241 - CI runner repair: checker refuses inconsistent-total
+  ---
+  duration_ms: 65.000723
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses duplicate-count
+ok 242 - CI runner repair: checker refuses duplicate-count
+  ---
+  duration_ms: 65.541553
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses duplicate-conflicting-count
+ok 243 - CI runner repair: checker refuses duplicate-conflicting-count
+  ---
+  duration_ms: 69.078495
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses unfinished-second-report
+ok 244 - CI runner repair: checker refuses unfinished-second-report
+  ---
+  duration_ms: 51.656312
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses failed-test-with-passing-counts
+ok 245 - CI runner repair: checker refuses failed-test-with-passing-counts
+  ---
+  duration_ms: 53.95485
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker refuses nested-failure-with-passing-counts
+ok 246 - CI runner repair: checker refuses nested-failure-with-passing-counts
+  ---
+  duration_ms: 58.119814
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker accepts complete CRLF output
+ok 247 - CI runner repair: checker accepts complete CRLF output
+  ---
+  duration_ms: 49.443115
+  type: 'test'
+  ...
+# Subtest: CI runner repair: known failures remain diagnostic and cannot exempt failure
+ok 248 - CI runner repair: known failures remain diagnostic and cannot exempt failure
+  ---
+  duration_ms: 49.265086
+  type: 'test'
+  ...
+# Subtest: CI runner repair: checker missing report fails
+ok 249 - CI runner repair: checker missing report fails
+  ---
+  duration_ms: 47.726119
+  type: 'test'
+  ...
+# Subtest: CI runner repair: successful wrapper control preserves selection and reporter flags
+ok 250 - CI runner repair: successful wrapper control preserves selection and reporter flags
+  ---
+  duration_ms: 167.665231
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects incomplete TAP even with child exit zero
+ok 251 - CI runner repair: wrapper rejects incomplete TAP even with child exit zero
+  ---
+  duration_ms: 183.738433
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects child-signal with useful diagnostics
+ok 252 - CI runner repair: wrapper rejects child-signal with useful diagnostics
+  ---
+  duration_ms: 205.164625
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects spawn-error with useful diagnostics
+ok 253 - CI runner repair: wrapper rejects spawn-error with useful diagnostics
+  ---
+  duration_ms: 119.972962
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects spawn-throw with useful diagnostics
+ok 254 - CI runner repair: wrapper rejects spawn-throw with useful diagnostics
+  ---
+  duration_ms: 123.468846
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects output-open-error with useful diagnostics
+ok 255 - CI runner repair: wrapper rejects output-open-error with useful diagnostics
+  ---
+  duration_ms: 70.977879
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects output-write-error with useful diagnostics
+ok 256 - CI runner repair: wrapper rejects output-write-error with useful diagnostics
+  ---
+  duration_ms: 212.439773
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects output-close-error with useful diagnostics
+ok 257 - CI runner repair: wrapper rejects output-close-error with useful diagnostics
+  ---
+  duration_ms: 205.8291
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects checker-spawn-error with useful diagnostics
+ok 258 - CI runner repair: wrapper rejects checker-spawn-error with useful diagnostics
+  ---
+  duration_ms: 152.383159
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper rejects checker-signal with useful diagnostics
+ok 259 - CI runner repair: wrapper rejects checker-signal with useful diagnostics
+  ---
+  duration_ms: 183.910192
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper preserves unsuccessful checker status
+ok 260 - CI runner repair: wrapper preserves unsuccessful checker status
+  ---
+  duration_ms: 194.629912
+  type: 'test'
+  ...
+# Subtest: CI runner repair: wrapper preserves original child status when checker also fails
+ok 261 - CI runner repair: wrapper preserves original child status when checker also fails
+  ---
+  duration_ms: 208.707623
+  type: 'test'
+  ...
+# (node:33) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CI summary: complete passing inputs
+ok 262 - CI summary: complete passing inputs
+  ---
+  duration_ms: 85.942332
+  type: 'test'
+  ...
+# Subtest: CI summary: failed TAP with checker absent
+ok 263 - CI summary: failed TAP with checker absent
+  ---
+  duration_ms: 62.36246
+  type: 'test'
+  ...
+# Subtest: CI summary: inputs absent after earlier failure
+ok 264 - CI summary: inputs absent after earlier failure
+  ---
+  duration_ms: 64.160172
+  type: 'test'
+  ...
+1..264
+# tests 264
+# suites 0
+# pass 264
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4369.39942

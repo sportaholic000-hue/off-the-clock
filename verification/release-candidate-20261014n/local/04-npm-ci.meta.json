@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "npm",
+    "ci"
+  ],
+  "cwd": "/workspace/scratch/998ee29c5e28/candidate-n-20261014/repo",
+  "startedUTC": "2026-10-14T15:43:08.930003+00:00",
+  "environment": {
+    "PATH": "/workspace/scratch/998ee29c5e28/platform-audit-20261014/runtime/node_modules/node/bin:/root/.codex/tmp/arg0/codex-arg0zSBFLm:/opt/codex/codex-path:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+    "TMPDIR": "/workspace/scratch/998ee29c5e28/candidate-n-20261014/tmp"
+  },
+  "pid": 20,
+  "exitCode": 0,
+  "signal": null,
+  "finishedUTC": "2026-10-14T15:43:44.858205+00:00"
+}

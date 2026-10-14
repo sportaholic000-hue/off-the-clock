@@ -1,0 +1,22 @@
+{
+  "UTC": "2026-10-14T15:42:46.690974+00:00",
+  "head": "64e2229c8ee4819eba7a641c5c5ac04438fc4916",
+  "tagType": "tag",
+  "tagObject": "7c7e5a9363ed7113ea8969cdd3e400f58b1b538f",
+  "tagPeeled": "95e1631f42461ca8ae7d46d859940bffc302d155",
+  "ancestry": {
+    "candidateM": {
+      "ancestorExit": 0,
+      "stdout": "",
+      "stderr": "",
+      "mergeBase": "95e1631f42461ca8ae7d46d859940bffc302d155"
+    },
+    "main": {
+      "ancestorExit": 1,
+      "stdout": "",
+      "stderr": "",
+      "mergeBase": "9ba339de4caeb6f6045b56e0beecc44ff5208e5c"
+    }
+  },
+  "initialCommandObservation": "The chained checkout/tag/ancestry/read command stopped at exit 1 because pinned main is not an ancestor of the repair. No source was modified; AGENTS/spec reads were then performed separately."
+}

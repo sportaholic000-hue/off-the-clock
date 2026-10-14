@@ -1,0 +1,17 @@
+{
+  "booking": 17,
+  "candidate_n": 91,
+  "candidate_m": 76,
+  "candidate_l": 30,
+  "runner": 47,
+  "summary": [
+    "# tests 264",
+    "# suites 0",
+    "# pass 264",
+    "# fail 0",
+    "# cancelled 0",
+    "# skipped 0",
+    "# todo 0",
+    "# duration_ms 4369.39942"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "test/bookingServiceEnd20261014.spec.mjs",
+    "test/candidateNTagGate20261014.spec.mjs",
+    "test/candidateMTagGate20261013.spec.mjs",
+    "test/ciRunnerRepair20261013.spec.mjs",
+    "test/candidateLTagGate20261012.spec.mjs",
+    "test/ciSummary20261012.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/998ee29c5e28/candidate-n-20261014/repo",
+  "startedUTC": "2026-10-14T15:49:15.787004+00:00",
+  "environment": {
+    "PATH": "/workspace/scratch/998ee29c5e28/platform-audit-20261014/runtime/node_modules/node/bin:/root/.codex/tmp/arg0/codex-arg0zSBFLm:/opt/codex/codex-path:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+    "TMPDIR": "/workspace/scratch/998ee29c5e28/candidate-n-20261014/tmp"
+  },
+  "pid": 6,
+  "exitCode": 0,
+  "signal": null,
+  "finishedUTC": "2026-10-14T15:49:20.217831+00:00"
+}

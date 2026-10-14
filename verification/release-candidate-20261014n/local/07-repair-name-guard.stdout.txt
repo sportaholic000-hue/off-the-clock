@@ -1,0 +1,18 @@
+Confirmed passing: booking service end: public polling and direct recovery deny service-ended
+Confirmed passing: booking service end: public polling and direct recovery deny expired-trial
+Confirmed passing: booking service end: public polling and direct recovery deny lost-booking-plan
+Confirmed passing: booking service end: public recovery at deadline offset -1ms
+Confirmed passing: booking service end: public recovery at deadline offset 0ms
+Confirmed passing: booking service end: deadline during awaited getEvent prevents recovery write
+Confirmed passing: booking service end: plan-change during awaited getEvent prevents recovery write
+Confirmed passing: booking service end: deadline during awaited listBusy prevents recovery write
+Confirmed passing: booking service end: plan-change during awaited listBusy prevents recovery write
+Confirmed passing: booking service end: active recovery reuses saved event, preserves receipt and confirms once
+Confirmed passing: booking service end: existing provider event reconciles without creation or duplicate notification
+Confirmed passing: booking service end: lookup error stays uncertain and retains pending receipt/slot
+Confirmed passing: booking service end: database reopen/service reconstruction blocks expired recovery
+Confirmed passing: booking service end: database reopen/service reconstruction allows entitled recovery
+Confirmed passing: booking service end: already-dispatched original write can settle after deadline
+Confirmed passing: booking service end: already-dispatched recovery write can settle after deadline
+Confirmed passing: booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+PASS: all 17 pinned booking service-end regression names ran and passed.

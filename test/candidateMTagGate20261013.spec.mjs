@@ -68,11 +68,19 @@ test('candidate m workflow preserves inherited commands and earlier conditions w
   }
   for(const [name,original] of Object.entries(contracts)) {
     const current=blocks.get(name);assert.ok(current,'Missing inherited step: '+name);
-    const expected=original.replace(/^(        if: .*refs\/heads\/claude\/release-candidate-20261012l'.*)$/m,"$1 || github.ref == 'refs/heads/"+BRANCH+"'");
+    const candidateM=original.replace(/^(        if: .*refs\/heads\/claude\/release-candidate-20261012l'.*)$/m,"$1 || github.ref == 'refs/heads/"+BRANCH+"'");
+    // The sole authorized extension is candidate n's additional branch clause.
+    // Compare complete blocks so every original command and condition survives.
+    const expected=candidateM.replace(/^(        if: .*refs\/heads\/.*)$/m,"$1 || github.ref == 'refs/heads/claude/release-candidate-20261014n'");
     assert.equal(current,expected,'Changed inherited command/condition: '+name);
   }
   for(const name of manifest.test.filter(n=>n.startsWith('Candidate m '))) {
     assert.ok(blocks.get(name)?.includes("if: github.ref == 'refs/heads/"+BRANCH+"'"));
+  }
+  for(const name of Object.values(manifest).flat()) {
+    const current=blocks.get(name);assert.ok(current,'Missing candidate-m requirement: '+name);
+    const condition=current.match(/^        if: (.*)$/m)?.[1];
+    if(condition?.includes('refs/heads/'))assert.ok(condition.endsWith(" || github.ref == 'refs/heads/claude/release-candidate-20261014n'"),'Candidate n must enable inherited requirement: '+name);
   }
   assert.match(source,/name: Full test suite\s+run: npm test/);
   assert.ok(source.indexOf('- name: Candidate m runner and tag qualification regressions')<source.indexOf('- name: Strict quote engine and price book gate'));

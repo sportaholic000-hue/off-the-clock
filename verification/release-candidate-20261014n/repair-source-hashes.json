@@ -1,0 +1,8 @@
+{
+  "commit": "64e2229c8ee4819eba7a641c5c5ac04438fc4916",
+  "sha256": {
+    "server/src/bookingService.js": "baefd632e5a7652e8ad553ef9448cb88a890be55a093644f26fcc5b64b966dff",
+    "server/src/bookingRoutes.js": "4492b2553430c88637bbaafa58b02040faa38a3c6a2467ee292f3c74f2711c13",
+    "test/bookingServiceEnd20261014.spec.mjs": "d086acd5e5b656f1a6985f9b48ae5ad8302f5386de3d102d2141e98ac455a202"
+  }
+}
