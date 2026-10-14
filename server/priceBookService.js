@@ -33,26 +33,31 @@ export function unreadablePricebook(ownerId, reason, {ownerRecovery=false}={}) {
 }
 
 let creationRecordsReady = false;
-function ensureCreationRecords({create=true}={}) {
-  if (creationRecordsReady) return true;
-  // Established stores must remain readable when SQLite writes are
-  // unavailable. Avoid issuing DDL merely to discover an existing table.
-  if (applicationDb.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='priceBookCreationRecords'").get()) {
-    creationRecordsReady = true;
-    return true;
-  }
-  if (!create) return false;
+function ensureCreationRecords() {
+  if (creationRecordsReady) return;
   applicationDb.exec(`CREATE TABLE IF NOT EXISTS priceBookCreationRecords (
     ownerId TEXT PRIMARY KEY,
     createdAt TEXT NOT NULL,
     updatedAt TEXT NOT NULL
   )`);
   creationRecordsReady = true;
-  return true;
 }
 export function pricebookCreationRecorded(ownerId) {
-  if (!ensureCreationRecords({create:false})) return false;
-  return Boolean(ownerQuery('SELECT 1 FROM priceBookCreationRecords WHERE ownerId = ?').get(String(ownerId)));
+  // Probe the owner row directly so an established store performs no DDL and
+  // stays readable on a query-only connection. A missing legacy table is the
+  // sole read failure that means "not recorded"; all other storage errors
+  // remain visible.
+  try {
+    const recorded = Boolean(ownerQuery('SELECT 1 FROM priceBookCreationRecords WHERE ownerId = ?').get(String(ownerId)));
+    creationRecordsReady = true;
+    return recorded;
+  } catch (error) {
+    if (error?.code === 'SQLITE_ERROR' && /^no such table: priceBookCreationRecords$/i.test(error.message)) {
+      creationRecordsReady = false;
+      return false;
+    }
+    throw error;
+  }
 }
 function recordPricebookCreation(ownerId, timestamp = new Date().toISOString()) {
   assertRetainedAccount(ownerId);
