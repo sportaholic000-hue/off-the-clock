@@ -1,0 +1,1478 @@
+TAP version 13
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:13) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Operator monthly: trial reminder exactly October 17, once, amount 11900
+ok 1 - Operator monthly: trial reminder exactly October 17, once, amount 11900
+  ---
+  duration_ms: 69.48323
+  type: 'test'
+  ...
+# Subtest: Operator monthly: no paid term before trial end; first charge 11900
+ok 2 - Operator monthly: no paid term before trial end; first charge 11900
+  ---
+  duration_ms: 31.812896
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+ok 3 - QuoteDone monthly: trial reminder exactly October 17, once, amount 27900
+  ---
+  duration_ms: 34.586204
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly: no paid term before trial end; first charge 27900
+ok 4 - QuoteDone monthly: no paid term before trial end; first charge 27900
+  ---
+  duration_ms: 33.878997
+  type: 'test'
+  ...
+# Subtest: Operator annual: trial reminder exactly October 17, once, amount 119000
+ok 5 - Operator annual: trial reminder exactly October 17, once, amount 119000
+  ---
+  duration_ms: 34.091838
+  type: 'test'
+  ...
+# Subtest: Operator annual: no paid term before trial end; first charge 119000
+ok 6 - Operator annual: no paid term before trial end; first charge 119000
+  ---
+  duration_ms: 44.46648
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+ok 7 - QuoteDone annual: trial reminder exactly October 17, once, amount 279000
+  ---
+  duration_ms: 55.29759
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual: no paid term before trial end; first charge 279000
+ok 8 - QuoteDone annual: no paid term before trial end; first charge 279000
+  ---
+  duration_ms: 44.50028
+  type: 'test'
+  ...
+# Subtest: annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+ok 9 - annual renewal reminder: September 20 2027, exactly $1,190 and October 20 date
+  ---
+  duration_ms: 56.270791
+  type: 'test'
+  ...
+# Subtest: monthly: cancel mid-period, no refund, access ends at paid boundary
+ok 10 - monthly: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 52.945748
+  type: 'test'
+  ...
+# Subtest: monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 11 - monthly: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 86.408872
+  type: 'test'
+  ...
+# Subtest: annual: cancel mid-period, no refund, access ends at paid boundary
+ok 12 - annual: cancel mid-period, no refund, access ends at paid boundary
+  ---
+  duration_ms: 44.921456
+  type: 'test'
+  ...
+# Subtest: annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+ok 13 - annual: exact 30-day phone and 90-day export/deletion boundaries, tenant isolation
+  ---
+  duration_ms: 49.640596
+  type: 'test'
+  ...
+# Subtest: trial cancel is immediate with no invoice and no refund
+ok 14 - trial cancel is immediate with no invoice and no refund
+  ---
+  duration_ms: 38.774642
+  type: 'test'
+  ...
+# Subtest: reactivation before period end reverses scheduled cancel once, keeps records
+ok 15 - reactivation before period end reverses scheduled cancel once, keeps records
+  ---
+  duration_ms: 49.104516
+  type: 'test'
+  ...
+# Subtest: after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+ok 16 - after termination reactivation requires a new verified subscription; unpaid redirect cannot restore
+  ---
+  duration_ms: 58.139504
+  type: 'test'
+  ...
+# Subtest: paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+ok 17 - paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery
+  ---
+  duration_ms: 105.446473
+  type: 'test'
+  ...
+# Subtest: subscription receipt preserves actual charge currency and handwritten amount
+ok 18 - subscription receipt preserves actual charge currency and handwritten amount
+  ---
+  duration_ms: 37.951263
+  type: 'test'
+  ...
+# Subtest: settled invoices suppress stale failure notices in either event order and at dispatch
+    # Subtest: paid-then-older-failed
+    ok 1 - paid-then-older-failed
+      ---
+      duration_ms: 42.7288
+      type: 'test'
+      ...
+    # Subtest: failed-then-paid-before-sync
+    ok 2 - failed-then-paid-before-sync
+      ---
+      duration_ms: 46.277696
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-before-dispatch
+    ok 3 - failed-queued-then-paid-before-dispatch
+      ---
+      duration_ms: 40.687981
+      type: 'test'
+      ...
+    # Subtest: failed-queued-then-paid-minute-worker-dispatch
+    ok 4 - failed-queued-then-paid-minute-worker-dispatch
+      ---
+      duration_ms: 44.02022
+      type: 'test'
+      ...
+    # Subtest: paid-only
+    ok 5 - paid-only
+      ---
+      duration_ms: 29.148701
+      type: 'test'
+      ...
+    1..5
+ok 19 - settled invoices suppress stale failure notices in either event order and at dispatch
+  ---
+  duration_ms: 203.879954
+  type: 'test'
+  ...
+# Subtest: overage receipt: ten extra minutes × 35 cents = $3.50, once
+ok 20 - overage receipt: ten extra minutes × 35 cents = $3.50, once
+  ---
+  duration_ms: 65.952821
+  type: 'test'
+  ...
+# Subtest: final overage remainder is charged at the service-end boundary
+ok 21 - final overage remainder is charged at the service-end boundary
+  ---
+  duration_ms: 45.557126
+  type: 'test'
+  ...
+# Subtest: lost email response and restart retain one accepted notice
+ok 22 - lost email response and restart retain one accepted notice
+  ---
+  duration_ms: 99.929812
+  type: 'test'
+  ...
+# Subtest: email ambiguity after retry window does not duplicate delivery
+ok 23 - email ambiguity after retry window does not duplicate delivery
+  ---
+  duration_ms: 47.005274
+  type: 'test'
+  ...
+# Subtest: cancellation lost response recovers by subscription read without repeating mutation
+ok 24 - cancellation lost response recovers by subscription read without repeating mutation
+  ---
+  duration_ms: 46.377276
+  type: 'test'
+  ...
+# Subtest: wrong provider customer cannot cancel or receive access and does not affect tenant B
+ok 25 - wrong provider customer cannot cancel or receive access and does not affect tenant B
+  ---
+  duration_ms: 47.57158
+  type: 'test'
+  ...
+# Subtest: invalid price cannot create a false trial reminder
+ok 26 - invalid price cannot create a false trial reminder
+  ---
+  duration_ms: 30.903972
+  type: 'test'
+  ...
+# Subtest: HTTP owner actions and CSV exports reject owner spoofing, cross-tenant bodies and staff
+ok 27 - HTTP owner actions and CSV exports reject owner spoofing, cross-tenant bodies and staff
+  ---
+  duration_ms: 158.692886
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2026-12-01T12:00:00.000Z: phone released=false, records deleted=false
+ok 28 - verified reactivation 2026-12-01T12:00:00.000Z: phone released=false, records deleted=false
+  ---
+  duration_ms: 52.194663
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2026-12-21T12:00:00.000Z: phone released=true, records deleted=false
+ok 29 - verified reactivation 2026-12-21T12:00:00.000Z: phone released=true, records deleted=false
+  ---
+  duration_ms: 61.302732
+  type: 'test'
+  ...
+# Subtest: verified reactivation 2027-02-19T12:00:00.000Z: phone released=true, records deleted=true
+ok 30 - verified reactivation 2027-02-19T12:00:00.000Z: phone released=true, records deleted=true
+  ---
+  duration_ms: 46.833916
+  type: 'test'
+  ...
+# Subtest: new active/card-only subscription without its paid invoice cannot restore retained service
+ok 31 - new active/card-only subscription without its paid invoice cannot restore retained service
+  ---
+  duration_ms: 46.979986
+  type: 'test'
+  ...
+# Subtest: overage failure uses the existing grace and suspension path; paid callback recovers without duplicates
+ok 32 - overage failure uses the existing grace and suspension path; paid callback recovers without duplicates
+  ---
+  duration_ms: 51.42426
+  type: 'test'
+  ...
+# Subtest: reminder uses invoice preview total with tax, not an invented base amount
+ok 33 - reminder uses invoice preview total with tax, not an invented base amount
+  ---
+  duration_ms: 25.964581
+  type: 'test'
+  ...
+# Subtest: cancelled renewal suppresses the reminder; incorrect preview tenant fails closed
+ok 34 - cancelled renewal suppresses the reminder; incorrect preview tenant fails closed
+  ---
+  duration_ms: 28.966777
+  type: 'test'
+  ...
+# Subtest: 90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts
+ok 35 - 90-day erasure removes transcripts, quote response copies, booking rows and hashed tool receipts
+  ---
+  duration_ms: 31.970204
+  type: 'test'
+  ...
+# Subtest: merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant
+ok 36 - merged 90-day erasure removes callback, alert, SMS and inbound receipt copies only for the ended tenant
+  ---
+  duration_ms: 33.779055
+  type: 'test'
+  ...
+# Subtest: durable notice transaction rolls back both dashboard and email on partial storage failure
+ok 37 - durable notice transaction rolls back both dashboard and email on partial storage failure
+  ---
+  duration_ms: 27.419599
+  type: 'test'
+  ...
+# Subtest: concurrent tenant cancellation requests cause a single provider mutation
+ok 38 - concurrent tenant cancellation requests cause a single provider mutation
+  ---
+  duration_ms: 28.482325
+  type: 'test'
+  ...
+# Subtest: cancellation intent survives DB restart and no pending intent is advertised as confirmed
+ok 39 - cancellation intent survives DB restart and no pending intent is advertised as confirmed
+  ---
+  duration_ms: 65.5381
+  type: 'test'
+  ...
+# Subtest: service end does not attempt a carrier shutdown or claim confirmation
+ok 40 - service end does not attempt a carrier shutdown or claim confirmation
+  ---
+  duration_ms: 31.213139
+  type: 'test'
+  ...
+# Subtest: phone release failure retains its saved SID and retries only that tenant
+ok 41 - phone release failure retains its saved SID and retries only that tenant
+  ---
+  duration_ms: 30.419201
+  type: 'test'
+  ...
+# Subtest: a delayed cleanup worker does not release a phone reactivated within its 30-day window
+ok 42 - a delayed cleanup worker does not release a phone reactivated within its 30-day window
+  ---
+  duration_ms: 44.434231
+  type: 'test'
+  ...
+# Subtest: legacy missing currency is recovered from a bound provider receipt, never guessed
+ok 43 - legacy missing currency is recovered from a bound provider receipt, never guessed
+  ---
+  duration_ms: 28.80432
+  type: 'test'
+  ...
+# Subtest: service end preserves automatic collection on a previously submitted unpaid overage invoice
+ok 44 - service end preserves automatic collection on a previously submitted unpaid overage invoice
+  ---
+  duration_ms: 55.785298
+  type: 'test'
+  ...
+# Subtest: crossing service end while reading an overage period still finalizes accrued overage
+ok 45 - crossing service end while reading an overage period still finalizes accrued overage
+  ---
+  duration_ms: 43.423233
+  type: 'test'
+  ...
+# Subtest: lease loss during phone release cannot clear the saved phone receipt
+ok 46 - lease loss during phone release cannot clear the saved phone receipt
+  ---
+  duration_ms: 42.073976
+  type: 'test'
+  ...
+# Subtest: a slow invoice preview crossing the first-charge time cannot send a stale trial reminder
+ok 47 - a slow invoice preview crossing the first-charge time cannot send a stale trial reminder
+  ---
+  duration_ms: 23.059984
+  type: 'test'
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: actual production routes enforce cancelled service and tenant-scoped exports without enabling any providers
+ok 48 - actual production routes enforce cancelled service and tenant-scoped exports without enabling any providers
+  ---
+  duration_ms: 911.31189
+  type: 'test'
+  ...
+# Subtest: signed production incoming call after service end starts no AI and forwards no call
+ok 49 - signed production incoming call after service end starts no AI and forwards no call
+  ---
+  duration_ms: 438.09745
+  type: 'test'
+  ...
+# (node:15) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking owner routes expose the complete configuration surface
+ok 50 - booking owner routes expose the complete configuration surface
+  ---
+  duration_ms: 1.802914
+  type: 'test'
+  ...
+# Subtest: route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+ok 51 - route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+  ---
+  duration_ms: 0.929133
+  type: 'test'
+  ...
+# (node:16) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:16) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: owner settings and per-service policy become direct-ready only from owner-scoped saved state
+ok 52 - owner settings and per-service policy become direct-ready only from owner-scoped saved state
+  ---
+  duration_ms: 28.914087
+  type: 'test'
+  ...
+# Subtest: narrow grant is direct-ready; a missing grant has the owner reconnect message
+ok 53 - narrow grant is direct-ready; a missing grant has the owner reconnect message
+  ---
+  duration_ms: 5.362681
+  type: 'test'
+  ...
+# Subtest: tenant isolation prevents reading or writing another owner service policy
+ok 54 - tenant isolation prevents reading or writing another owner service policy
+  ---
+  duration_ms: 2.15147
+  type: 'test'
+  ...
+# Subtest: settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+ok 55 - settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+  ---
+  duration_ms: 14.078466
+  type: 'test'
+  ...
+# Subtest: policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+ok 56 - policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+  ---
+  duration_ms: 5.916167
+  type: 'test'
+  ...
+# Subtest: widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+ok 57 - widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+  ---
+  duration_ms: 8.19579
+  type: 'test'
+  ...
+# Subtest: widget settings and access-key creation roll back together on key collision
+ok 58 - widget settings and access-key creation roll back together on key collision
+  ---
+  duration_ms: 1.245721
+  type: 'test'
+  ...
+# Subtest: readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+ok 59 - readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+  ---
+  duration_ms: 9.740363
+  type: 'test'
+  ...
+# Subtest: structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+ok 60 - structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+  ---
+  duration_ms: 4.175147
+  type: 'test'
+  ...
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking B01 spring-forward duration cannot extend past owner closing time
+ok 61 - booking B01 spring-forward duration cannot extend past owner closing time
+  ---
+  duration_ms: 24.728363
+  type: 'test'
+  ...
+# Subtest: booking B01 fall-back elapsed duration includes the valid extra-hour slot
+ok 62 - booking B01 fall-back elapsed duration includes the valid extra-hour slot
+  ---
+  duration_ms: 8.184083
+  type: 'test'
+  ...
+# Subtest: DST control: a skipped closing wall time does not discard an earlier valid short appointment
+ok 63 - DST control: a skipped closing wall time does not discard an earlier valid short appointment
+  ---
+  duration_ms: 3.649242
+  type: 'test'
+  ...
+# Subtest: DST control: a narrow repeated-hours window cannot span intervening closed clock times
+ok 64 - DST control: a narrow repeated-hours window cannot span intervening closed clock times
+  ---
+  duration_ms: 5.423071
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+ok 65 - booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+  ---
+  duration_ms: 102.766595
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+ok 66 - booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+  ---
+  duration_ms: 103.355776
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+ok 67 - booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+  ---
+  duration_ms: 95.09798
+  type: 'test'
+  ...
+# Subtest: booking B03 confirmation rechecks a slot start that passed during hold
+ok 68 - booking B03 confirmation rechecks a slot start that passed during hold
+  ---
+  duration_ms: 108.861122
+  type: 'test'
+  ...
+# Subtest: booking B03 confirmation rechecks a slot start that passed during provider read
+ok 69 - booking B03 confirmation rechecks a slot start that passed during provider read
+  ---
+  duration_ms: 113.027536
+  type: 'test'
+  ...
+# Subtest: booking B04 changed owner availability during busy read prevents stale provider write
+ok 70 - booking B04 changed owner availability during busy read prevents stale provider write
+  ---
+  duration_ms: 84.587065
+  type: 'test'
+  ...
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: two independent SQLite workers racing for one slot yield exactly one hold and one booking
+ok 71 - two independent SQLite workers racing for one slot yield exactly one hold and one booking
+  ---
+  duration_ms: 544.28336
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 299999
+ok 72 - hold expiry releases overlap exactly at five minutes: 299999
+  ---
+  duration_ms: 121.29931
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 300000
+ok 73 - hold expiry releases overlap exactly at five minutes: 300000
+  ---
+  duration_ms: 106.920039
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 300001
+ok 74 - hold expiry releases overlap exactly at five minutes: 300001
+  ---
+  duration_ms: 111.294688
+  type: 'test'
+  ...
+# Subtest: hold and booking receipts survive restart; changed payload and alternate key cannot duplicate
+ok 75 - hold and booking receipts survive restart; changed payload and alternate key cannot duplicate
+  ---
+  duration_ms: 113.338736
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: busy-rejection
+ok 76 - provider/storage failure keeps visible durable outcome: busy-rejection
+  ---
+  duration_ms: 122.510234
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: create-rejection
+ok 77 - provider/storage failure keeps visible durable outcome: create-rejection
+  ---
+  duration_ms: 99.287451
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: lost-response
+ok 78 - provider/storage failure keeps visible durable outcome: lost-response
+  ---
+  duration_ms: 78.935217
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: sqlite-finalization
+ok 79 - provider/storage failure keeps visible durable outcome: sqlite-finalization
+  ---
+  duration_ms: 66.48503
+  type: 'test'
+  ...
+# Subtest: tenant contexts, holds, slots, confirmations, dashboard and provider reads never cross owners
+ok 80 - tenant contexts, holds, slots, confirmations, dashboard and provider reads never cross owners
+  ---
+  duration_ms: 83.042732
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-03-07
+ok 81 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-07
+  ---
+  duration_ms: 66.278222
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-03-08
+ok 82 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-08
+  ---
+  duration_ms: 74.047063
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-11-01
+ok 83 - Moncton booking, owner views and Los Angeles instant agree on 2026-11-01
+  ---
+  duration_ms: 66.270015
+  type: 'test'
+  ...
+# Subtest: Moncton DST gap and repeated times have exact unambiguous instants
+ok 84 - Moncton DST gap and repeated times have exact unambiguous instants
+  ---
+  duration_ms: 1.867862
+  type: 'test'
+  ...
+# (node:29) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production server booking routes, adapter and owner views agree under concurrent HTTP requests
+ok 85 - production server booking routes, adapter and owner views agree under concurrent HTTP requests
+  ---
+  duration_ms: 1248.247564
+  type: 'test'
+  ...
+# Subtest: production provider response loss stays visible and reconciles after lookup recovery
+ok 86 - production provider response loss stays visible and reconciles after lookup recovery
+  ---
+  duration_ms: 1676.19978
+  type: 'test'
+  ...
+# (node:39) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking capability fails closed through explicit, direct, handoff, and preference states
+ok 87 - booking capability fails closed through explicit, direct, handoff, and preference states
+  ---
+  duration_ms: 33.306232
+  type: 'test'
+  ...
+# Subtest: public branding validates every owner-configurable value
+ok 88 - public branding validates every owner-configurable value
+  ---
+  duration_ms: 5.396071
+  type: 'test'
+  ...
+# (node:45) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:45) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: preference request atomically stores a callback request without claiming a booking
+ok 89 - preference request atomically stores a callback request without claiming a booking
+  ---
+  duration_ms: 26.556636
+  type: 'test'
+  ...
+# Subtest: tenant isolation and expired or inactive intent checks happen before writes
+ok 90 - tenant isolation and expired or inactive intent checks happen before writes
+  ---
+  duration_ms: 3.958339
+  type: 'test'
+  ...
+# Subtest: request validation is closed and rejects malformed nested data
+ok 91 - request validation is closed and rejects malformed nested data
+  ---
+  duration_ms: 20.031009
+  type: 'test'
+  ...
+# Subtest: future dates use settings timezone, then a valid owner timezone fallback
+ok 92 - future dates use settings timezone, then a valid owner timezone fallback
+  ---
+  duration_ms: 3.708052
+  type: 'test'
+  ...
+# Subtest: exact retry survives restart and expiry while changed payload conflicts
+ok 93 - exact retry survives restart and expiry while changed payload conflicts
+  ---
+  duration_ms: 1.756222
+  type: 'test'
+  ...
+# Subtest: outbox failure rolls back preference and idempotency receipt atomically
+ok 94 - outbox failure rolls back preference and idempotency receipt atomically
+  ---
+  duration_ms: 1.259072
+  type: 'test'
+  ...
+# (node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: public booking context binds token tenant and exact allowed website origin
+ok 95 - public booking context binds token tenant and exact allowed website origin
+  ---
+  duration_ms: 2.707099
+  type: 'test'
+  ...
+# Subtest: availability requires unchanged scope and a strict post-quote identity envelope
+ok 96 - availability requires unchanged scope and a strict post-quote identity envelope
+  ---
+  duration_ms: 1.132992
+  type: 'test'
+  ...
+# Subtest: hold, release, confirm, and polling forward only server-bound context
+ok 97 - hold, release, confirm, and polling forward only server-bound context
+  ---
+  duration_ms: 1.035484
+  type: 'test'
+  ...
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:85) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: booking tokens resolve tenant context without accepting a body ownerId
+ok 98 - booking tokens resolve tenant context without accepting a body ownerId
+  ---
+  duration_ms: 8.44757
+  type: 'test'
+  ...
+# Subtest: tenant-scoped availability does not reveal another owner intent
+ok 99 - tenant-scoped availability does not reveal another owner intent
+  ---
+  duration_ms: 2.44932
+  type: 'test'
+  ...
+# Subtest: unconfigured and out-of-area requests fall back before any calendar read
+ok 100 - unconfigured and out-of-area requests fall back before any calendar read
+  ---
+  duration_ms: 20.05245
+  type: 'test'
+  ...
+# Subtest: confirmation rechecks current service-area policy before provider work
+ok 101 - confirmation rechecks current service-area policy before provider work
+  ---
+  duration_ms: 36.10589
+  type: 'test'
+  ...
+# Subtest: slot IDs are opaque and tampering is rejected without creating a hold
+ok 102 - slot IDs are opaque and tampering is rejected without creating a hold
+  ---
+  duration_ms: 19.857275
+  type: 'test'
+  ...
+# Subtest: holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+ok 103 - holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+  ---
+  duration_ms: 32.582018
+  type: 'test'
+  ...
+# Subtest: hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+ok 104 - hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+  ---
+  duration_ms: 25.557547
+  type: 'test'
+  ...
+# Subtest: idempotency key reuse with a changed hold payload is rejected
+ok 105 - idempotency key reuse with a changed hold payload is rejected
+  ---
+  duration_ms: 15.756391
+  type: 'test'
+  ...
+# Subtest: a policy revision change invalidates a held slot before provider work
+ok 106 - a policy revision change invalidates a held slot before provider work
+  ---
+  duration_ms: 17.496199
+  type: 'test'
+  ...
+# Subtest: review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+ok 107 - review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+  ---
+  duration_ms: 22.874794
+  type: 'test'
+  ...
+# Subtest: confirmed provider result commits one appointment and one outbox event, with exact retry
+ok 108 - confirmed provider result commits one appointment and one outbox event, with exact retry
+  ---
+  duration_ms: 22.641262
+  type: 'test'
+  ...
+# Subtest: pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+ok 109 - pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+  ---
+  duration_ms: 24.55982
+  type: 'test'
+  ...
+# Subtest: confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+ok 110 - confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+  ---
+  duration_ms: 20.942615
+  type: 'test'
+  ...
+# Subtest: confirmation polling returns an exact customer-safe failure shape
+ok 111 - confirmation polling returns an exact customer-safe failure shape
+  ---
+  duration_ms: 16.003785
+  type: 'test'
+  ...
+# Subtest: a provider conflict discovered after the hold releases it without creating an event
+ok 112 - a provider conflict discovered after the hold releases it without creating an event
+  ---
+  duration_ms: 15.955661
+  type: 'test'
+  ...
+# Subtest: known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+ok 113 - known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+  ---
+  duration_ms: 23.247326
+  type: 'test'
+  ...
+# Subtest: ambiguous provider timeout reconciles by deterministic event lookup
+ok 114 - ambiguous provider timeout reconciles by deterministic event lookup
+  ---
+  duration_ms: 27.872364
+  type: 'test'
+  ...
+# Subtest: calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+ok 115 - calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+  ---
+  duration_ms: 2.102946
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-status never books or emits booked notification
+ok 116 - Provider confirmation create: missing-status never books or emits booked notification
+  ---
+  duration_ms: 25.185926
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: tentative never books or emits booked notification
+ok 117 - Provider confirmation create: tentative never books or emits booked notification
+  ---
+  duration_ms: 26.965664
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: cancelled never books or emits booked notification
+ok 118 - Provider confirmation create: cancelled never books or emits booked notification
+  ---
+  duration_ms: 30.94208
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-id never books or emits booked notification
+ok 119 - Provider confirmation create: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 33.0211
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-day never books or emits booked notification
+ok 120 - Provider confirmation create: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 23.436112
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-duration never books or emits booked notification
+ok 121 - Provider confirmation create: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 25.008076
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-start never books or emits booked notification
+ok 122 - Provider confirmation create: missing-start never books or emits booked notification
+  ---
+  duration_ms: 35.646526
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: numeric-start never books or emits booked notification
+ok 123 - Provider confirmation create: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 26.919053
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-status never books or emits booked notification
+ok 124 - Provider confirmation recovery: missing-status never books or emits booked notification
+  ---
+  duration_ms: 30.882951
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: tentative never books or emits booked notification
+ok 125 - Provider confirmation recovery: tentative never books or emits booked notification
+  ---
+  duration_ms: 25.464505
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: cancelled never books or emits booked notification
+ok 126 - Provider confirmation recovery: cancelled never books or emits booked notification
+  ---
+  duration_ms: 23.678539
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-id never books or emits booked notification
+ok 127 - Provider confirmation recovery: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 26.973164
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-day never books or emits booked notification
+ok 128 - Provider confirmation recovery: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 16.873518
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-duration never books or emits booked notification
+ok 129 - Provider confirmation recovery: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 20.437833
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-start never books or emits booked notification
+ok 130 - Provider confirmation recovery: missing-start never books or emits booked notification
+  ---
+  duration_ms: 29.438078
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: numeric-start never books or emits booked notification
+ok 131 - Provider confirmation recovery: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 22.812984
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-status never books or emits booked notification
+ok 132 - Provider confirmation poll: missing-status never books or emits booked notification
+  ---
+  duration_ms: 25.23532
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: tentative never books or emits booked notification
+ok 133 - Provider confirmation poll: tentative never books or emits booked notification
+  ---
+  duration_ms: 24.291034
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: cancelled never books or emits booked notification
+ok 134 - Provider confirmation poll: cancelled never books or emits booked notification
+  ---
+  duration_ms: 30.053357
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-id never books or emits booked notification
+ok 135 - Provider confirmation poll: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 25.589454
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-day never books or emits booked notification
+ok 136 - Provider confirmation poll: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 26.519409
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-duration never books or emits booked notification
+ok 137 - Provider confirmation poll: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 36.914782
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-start never books or emits booked notification
+ok 138 - Provider confirmation poll: missing-start never books or emits booked notification
+  ---
+  duration_ms: 28.648906
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: numeric-start never books or emits booked notification
+ok 139 - Provider confirmation poll: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 30.086858
+  type: 'test'
+  ...
+# Subtest: Provider confirmation accepts the same exact instants expressed with another timezone offset
+ok 140 - Provider confirmation accepts the same exact instants expressed with another timezone offset
+  ---
+  duration_ms: 44.834947
+  type: 'test'
+  ...
+# Subtest: One intent cannot create another appointment through a different hold or idempotency key
+ok 141 - One intent cannot create another appointment through a different hold or idempotency key
+  ---
+  duration_ms: 24.182013
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler
+ok 142 - Interrupted pre-write preparation releases its slot and fences a late handler
+  ---
+  duration_ms: 69.621188
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+ok 143 - Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+  ---
+  duration_ms: 69.930735
+  type: 'test'
+  ...
+# Subtest: A provider write already started remains pending after restart until its exact event is confirmed
+ok 144 - A provider write already started remains pending after restart until its exact event is confirmed
+  ---
+  duration_ms: 33.302261
+  type: 'test'
+  ...
+# Subtest: Opus booking: missing event after write marker retries the exact saved event and confirms once
+ok 145 - Opus booking: missing event after write marker retries the exact saved event and confirms once
+  ---
+  duration_ms: 27.870831
+  type: 'test'
+  ...
+# Subtest: Opus booking: simultaneous recovery polls create only one retry
+ok 146 - Opus booking: simultaneous recovery polls create only one retry
+  ---
+  duration_ms: 27.442504
+  type: 'test'
+  ...
+# Subtest: Opus booking control: lookup-failed never creates a new event or announces confirmation
+ok 147 - Opus booking control: lookup-failed never creates a new event or announces confirmation
+  ---
+  duration_ms: 26.107347
+  type: 'test'
+  ...
+# Subtest: Opus booking control: busy never creates a new event or announces confirmation
+ok 148 - Opus booking control: busy never creates a new event or announces confirmation
+  ---
+  duration_ms: 31.783401
+  type: 'test'
+  ...
+# Subtest: Opus booking control: policy-changed never creates a new event or announces confirmation
+ok 149 - Opus booking control: policy-changed never creates a new event or announces confirmation
+  ---
+  duration_ms: 26.212115
+  type: 'test'
+  ...
+# Subtest: Opus booking control: calendar-changed never creates a new event or announces confirmation
+ok 150 - Opus booking control: calendar-changed never creates a new event or announces confirmation
+  ---
+  duration_ms: 60.492139
+  type: 'test'
+  ...
+# Subtest: Opus booking control: no-idempotency never creates a new event or announces confirmation
+ok 151 - Opus booking control: no-idempotency never creates a new event or announces confirmation
+  ---
+  duration_ms: 75.437083
+  type: 'test'
+  ...
+# Subtest: Opus booking control: expired-time never creates a new event or announces confirmation
+ok 152 - Opus booking control: expired-time never creates a new event or announces confirmation
+  ---
+  duration_ms: 51.571071
+  type: 'test'
+  ...
+# Subtest: Opus booking: existing event is reconciled without a write
+ok 153 - Opus booking: existing event is reconciled without a write
+  ---
+  duration_ms: 39.327557
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking service end: public polling and direct recovery deny service-ended
+ok 154 - booking service end: public polling and direct recovery deny service-ended
+  ---
+  duration_ms: 196.218784
+  type: 'test'
+  ...
+# Subtest: booking service end: public polling and direct recovery deny expired-trial
+ok 155 - booking service end: public polling and direct recovery deny expired-trial
+  ---
+  duration_ms: 142.292964
+  type: 'test'
+  ...
+# Subtest: booking service end: public polling and direct recovery deny lost-booking-plan
+ok 156 - booking service end: public polling and direct recovery deny lost-booking-plan
+  ---
+  duration_ms: 137.12758
+  type: 'test'
+  ...
+# Subtest: booking service end: public recovery at deadline offset -1ms
+ok 157 - booking service end: public recovery at deadline offset -1ms
+  ---
+  duration_ms: 104.20638
+  type: 'test'
+  ...
+# Subtest: booking service end: public recovery at deadline offset 0ms
+ok 158 - booking service end: public recovery at deadline offset 0ms
+  ---
+  duration_ms: 116.664799
+  type: 'test'
+  ...
+# Subtest: booking service end: deadline during awaited getEvent prevents recovery write
+ok 159 - booking service end: deadline during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 111.592979
+  type: 'test'
+  ...
+# Subtest: booking service end: plan-change during awaited getEvent prevents recovery write
+ok 160 - booking service end: plan-change during awaited getEvent prevents recovery write
+  ---
+  duration_ms: 125.136381
+  type: 'test'
+  ...
+# Subtest: booking service end: deadline during awaited listBusy prevents recovery write
+ok 161 - booking service end: deadline during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 185.713067
+  type: 'test'
+  ...
+# Subtest: booking service end: plan-change during awaited listBusy prevents recovery write
+ok 162 - booking service end: plan-change during awaited listBusy prevents recovery write
+  ---
+  duration_ms: 187.912689
+  type: 'test'
+  ...
+# Subtest: booking service end: active recovery reuses saved event, preserves receipt and confirms once
+ok 163 - booking service end: active recovery reuses saved event, preserves receipt and confirms once
+  ---
+  duration_ms: 197.208746
+  type: 'test'
+  ...
+# Subtest: booking service end: existing provider event reconciles without creation or duplicate notification
+ok 164 - booking service end: existing provider event reconciles without creation or duplicate notification
+  ---
+  duration_ms: 174.864093
+  type: 'test'
+  ...
+# Subtest: booking service end: lookup error stays uncertain and retains pending receipt/slot
+ok 165 - booking service end: lookup error stays uncertain and retains pending receipt/slot
+  ---
+  duration_ms: 112.32508
+  type: 'test'
+  ...
+# Subtest: booking service end: database reopen/service reconstruction blocks expired recovery
+ok 166 - booking service end: database reopen/service reconstruction blocks expired recovery
+  ---
+  duration_ms: 87.550551
+  type: 'test'
+  ...
+# Subtest: booking service end: database reopen/service reconstruction allows entitled recovery
+ok 167 - booking service end: database reopen/service reconstruction allows entitled recovery
+  ---
+  duration_ms: 112.786051
+  type: 'test'
+  ...
+# Subtest: booking service end: already-dispatched original write can settle after deadline
+ok 168 - booking service end: already-dispatched original write can settle after deadline
+  ---
+  duration_ms: 103.575272
+  type: 'test'
+  ...
+# Subtest: booking service end: already-dispatched recovery write can settle after deadline
+ok 169 - booking service end: already-dispatched recovery write can settle after deadline
+  ---
+  duration_ms: 109.155196
+  type: 'test'
+  ...
+# Subtest: booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+ok 170 - booking service end: tenant, origin, token and confirmation-handle denials preserve both owners
+  ---
+  duration_ms: 145.059272
+  type: 'test'
+  ...
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking token receipts round trip without exposing the public token
+ok 171 - booking token receipts round trip without exposing the public token
+  ---
+  duration_ms: 3.172662
+  type: 'test'
+  ...
+# Subtest: booking token receipts reject tampering, wrong keys, and incomplete payloads
+ok 172 - booking token receipts reject tampering, wrong keys, and incomplete payloads
+  ---
+  duration_ms: 0.769292
+  type: 'test'
+  ...
+# (node:118) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: calendar change recovery restores rejected bookings and reconciles ambiguous writes without retrying the requested action
+    # Subtest: cancel: definite HTTP 400 restores the original and releases the replacement
+    ok 1 - cancel: definite HTTP 400 restores the original and releases the replacement
+      ---
+      duration_ms: 177.552986
+      type: 'test'
+      ...
+    # Subtest: cancel: definite HTTP 403 restores the original and releases the replacement
+    ok 2 - cancel: definite HTTP 403 restores the original and releases the replacement
+      ---
+      duration_ms: 79.119184
+      type: 'test'
+      ...
+    # Subtest: reschedule: definite HTTP 400 restores the original and releases the replacement
+    ok 3 - reschedule: definite HTTP 400 restores the original and releases the replacement
+      ---
+      duration_ms: 111.759811
+      type: 'test'
+      ...
+    # Subtest: reschedule: definite HTTP 403 restores the original and releases the replacement
+    ok 4 - reschedule: definite HTTP 403 restores the original and releases the replacement
+      ---
+      duration_ms: 227.194842
+      type: 'test'
+      ...
+    # Subtest: cancel: timeout-delayed, restart and read reconciliation preserve one provider write
+    ok 5 - cancel: timeout-delayed, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 135.19733
+      type: 'test'
+      ...
+    # Subtest: cancel: 503-after, restart and read reconciliation preserve one provider write
+    ok 6 - cancel: 503-after, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 153.480486
+      type: 'test'
+      ...
+    # Subtest: cancel: lost-response-after, restart and read reconciliation preserve one provider write
+    ok 7 - cancel: lost-response-after, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 109.745272
+      type: 'test'
+      ...
+    # Subtest: reschedule: timeout-delayed, restart and read reconciliation preserve one provider write
+    ok 8 - reschedule: timeout-delayed, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 219.842056
+      type: 'test'
+      ...
+    # Subtest: reschedule: 503-after, restart and read reconciliation preserve one provider write
+    ok 9 - reschedule: 503-after, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 139.480563
+      type: 'test'
+      ...
+    # Subtest: reschedule: lost-response-after, restart and read reconciliation preserve one provider write
+    ok 10 - reschedule: lost-response-after, restart and read reconciliation preserve one provider write
+      ---
+      duration_ms: 100.915234
+      type: 'test'
+      ...
+    # Subtest: cancel: timeout-never safely resolves the original slot and blocks a late write
+    ok 11 - cancel: timeout-never safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 110.459556
+      type: 'test'
+      ...
+    # Subtest: cancel: timeout-success-during-fence safely resolves the original slot and blocks a late write
+    ok 12 - cancel: timeout-success-during-fence safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 141.469765
+      type: 'test'
+      ...
+    # Subtest: cancel: timeout-fence-lost-response safely resolves the original slot and blocks a late write
+    ok 13 - cancel: timeout-fence-lost-response safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 153.117349
+      type: 'test'
+      ...
+    # Subtest: reschedule: timeout-never safely resolves the original slot and blocks a late write
+    ok 14 - reschedule: timeout-never safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 145.427257
+      type: 'test'
+      ...
+    # Subtest: reschedule: timeout-success-during-fence safely resolves the original slot and blocks a late write
+    ok 15 - reschedule: timeout-success-during-fence safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 136.140148
+      type: 'test'
+      ...
+    # Subtest: reschedule: timeout-fence-lost-response safely resolves the original slot and blocks a late write
+    ok 16 - reschedule: timeout-fence-lost-response safely resolves the original slot and blocks a late write
+      ---
+      duration_ms: 143.755777
+      type: 'test'
+      ...
+    # Subtest: a failed local restoration retains definite rejection evidence and rolls back both slots atomically
+    ok 17 - a failed local restoration retains definite rejection evidence and rolls back both slots atomically
+      ---
+      duration_ms: 77.587682
+      type: 'test'
+      ...
+    # Subtest: interrupted preparation expires safely and an older worker cannot start a late write
+    ok 18 - interrupted preparation expires safely and an older worker cannot start a late write
+      ---
+      duration_ms: 74.565936
+      type: 'test'
+      ...
+    1..18
+ok 173 - calendar change recovery restores rejected bookings and reconciles ambiguous writes without retrying the requested action
+  ---
+  duration_ms: 2441.494543
+  type: 'test'
+  ...
+# (node:125) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: calendar credentials encrypt with authenticated encryption and round trip
+ok 174 - calendar credentials encrypt with authenticated encryption and round trip
+  ---
+  duration_ms: 2.695632
+  type: 'test'
+  ...
+# Subtest: calendar credential tampering and invalid keys fail closed
+ok 175 - calendar credential tampering and invalid keys fail closed
+  ---
+  duration_ms: 0.836093
+  type: 'test'
+  ...
+# Subtest: legacy plaintext Google credentials are encrypted before profile metadata is scrubbed
+ok 176 - legacy plaintext Google credentials are encrypted before profile metadata is scrubbed
+  ---
+  duration_ms: 0.502118
+  type: 'test'
+  ...
+# Subtest: non-secret calendar metadata does not trigger a credential migration
+ok 177 - non-secret calendar metadata does not trigger a credential migration
+  ---
+  duration_ms: 0.193903
+  type: 'test'
+  ...
+# (node:141) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:141) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: issue returns 32-byte base64url entropy and stores only its SHA-256 hash
+ok 178 - issue returns 32-byte base64url entropy and stores only its SHA-256 hash
+  ---
+  duration_ms: 3.364982
+  type: 'test'
+  ...
+# Subtest: consume atomically marks a live state and returns its persisted owner binding
+ok 179 - consume atomically marks a live state and returns its persisted owner binding
+  ---
+  duration_ms: 0.985879
+  type: 'test'
+  ...
+# Subtest: a consumed state is rejected on replay with the generic public message
+ok 180 - a consumed state is rejected on replay with the generic public message
+  ---
+  duration_ms: 1.459655
+  type: 'test'
+  ...
+# Subtest: an expired state fails closed and is not marked consumed
+ok 181 - an expired state fails closed and is not marked consumed
+  ---
+  duration_ms: 0.725226
+  type: 'test'
+  ...
+# Subtest: malformed and unknown state values fail closed without reflecting input
+ok 182 - malformed and unknown state values fail closed without reflecting input
+  ---
+  duration_ms: 0.828602
+  type: 'test'
+  ...
+# Subtest: a digest collision is retried without overwriting the existing owner
+ok 183 - a digest collision is retried without overwriting the existing owner
+  ---
+  duration_ms: 0.597622
+  type: 'test'
+  ...
+# Subtest: collision exhaustion fails safely after a bounded number of attempts
+ok 184 - collision exhaustion fails safely after a bounded number of attempts
+  ---
+  duration_ms: 1.143097
+  type: 'test'
+  ...
+# Subtest: database failures are replaced by stable secret-safe errors
+ok 185 - database failures are replaced by stable secret-safe errors
+  ---
+  duration_ms: 0.847831
+  type: 'test'
+  ...
+# Subtest: a reentrant competing consumer can win, but exactly one consumer succeeds
+ok 186 - a reentrant competing consumer can win, but exactly one consumer succeeds
+  ---
+  duration_ms: 1.169476
+  type: 'test'
+  ...
+# Subtest: state survives a service and database restart until its one successful consume
+ok 187 - state survives a service and database restart until its one successful consume
+  ---
+  duration_ms: 3.137068
+  type: 'test'
+  ...
+# Subtest: owner, TTL, clock, and random-source validation fails before unsafe state use
+ok 188 - owner, TTL, clock, and random-source validation fails before unsafe state use
+  ---
+  duration_ms: 1.601218
+  type: 'test'
+  ...
+# (node:149) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Google Calendar authorization requests exactly the booking scopes
+ok 189 - Google Calendar authorization requests exactly the booking scopes
+  ---
+  duration_ms: 1.758607
+  type: 'test'
+  ...
+# (node:163) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: owned-events and freebusy grant allows availability and booking on the connected calendar
+ok 190 - owned-events and freebusy grant allows availability and booking on the connected calendar
+  ---
+  duration_ms: 22.484094
+  type: 'test'
+  ...
+# Subtest: missing booking permission refuses the adapter before any provider request
+ok 191 - missing booking permission refuses the adapter before any provider request
+  ---
+  duration_ms: 1.48316
+  type: 'test'
+  ...
+# Subtest: an existing full Calendar grant remains usable without reconnecting
+ok 192 - an existing full Calendar grant remains usable without reconnecting
+  ---
+  duration_ms: 1.55553
+  type: 'test'
+  ...
+# Subtest: a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials
+ok 193 - a scope lost on token refresh stops before Calendar API and does not persist narrowed credentials
+  ---
+  duration_ms: 1.93999
+  type: 'test'
+  ...
+# Subtest: listBusy is owner scoped and maps the Google freebusy request and response
+ok 194 - listBusy is owner scoped and maps the Google freebusy request and response
+  ---
+  duration_ms: 0.957867
+  type: 'test'
+  ...
+# Subtest: UTC request bounds and freebusy response bounds fail closed before use
+ok 195 - UTC request bounds and freebusy response bounds fail closed before use
+  ---
+  duration_ms: 1.259883
+  type: 'test'
+  ...
+# Subtest: createEvent uses the deterministic BookingService event ID and getEvent validates it
+ok 196 - createEvent uses the deterministic BookingService event ID and getEvent validates it
+  ---
+  duration_ms: 2.575961
+  type: 'test'
+  ...
+# Subtest: getEvent preserves cancelled provider status for BookingService reconciliation
+ok 197 - getEvent preserves cancelled provider status for BookingService reconciliation
+  ---
+  duration_ms: 0.3706
+  type: 'test'
+  ...
+# Subtest: an expired access token is refreshed, persisted with its refresh token, and never returned
+ok 198 - an expired access token is refreshed, persisted with its refresh token, and never returned
+  ---
+  duration_ms: 0.967862
+  type: 'test'
+  ...
+# Subtest: concurrent expired-token requests coalesce one owner-scoped refresh
+ok 199 - concurrent expired-token requests coalesce one owner-scoped refresh
+  ---
+  duration_ms: 11.658742
+  type: 'test'
+  ...
+# Subtest: a 401 refreshes and retries the Calendar request once
+ok 200 - a 401 refreshes and retries the Calendar request once
+  ---
+  duration_ms: 1.02605
+  type: 'test'
+  ...
+# Subtest: a staggered concurrent 401 reloads a token another request already rotated
+ok 201 - a staggered concurrent 401 reloads a token another request already rotated
+  ---
+  duration_ms: 1.227644
+  type: 'test'
+  ...
+# Subtest: a repeated 401 is not retried or refreshed more than once
+ok 202 - a repeated 401 is not retried or refreshed more than once
+  ---
+  duration_ms: 0.778356
+  type: 'test'
+  ...
+# Subtest: create network and timeout failures are ambiguous without exposing underlying errors
+ok 203 - create network and timeout failures are ambiguous without exposing underlying errors
+  ---
+  duration_ms: 1.23818
+  type: 'test'
+  ...
+# Subtest: the request deadline covers a stalled create response body
+ok 204 - the request deadline covers a stalled create response body
+  ---
+  duration_ms: 20.728492
+  type: 'test'
+  ...
+# Subtest: a known Google 4xx write failure is non-ambiguous and sanitized
+ok 205 - a known Google 4xx write failure is non-ambiguous and sanitized
+  ---
+  duration_ms: 1.325532
+  type: 'test'
+  ...
+# Subtest: tenant and credential failures fail closed before a provider call
+ok 206 - tenant and credential failures fail closed before a provider call
+  ---
+  duration_ms: 0.607277
+  type: 'test'
+  ...
+# Subtest: refresh rejection and persistence failures expose no OAuth or credential material
+ok 207 - refresh rejection and persistence failures expose no OAuth or credential material
+  ---
+  duration_ms: 1.020452
+  type: 'test'
+  ...
+# Subtest: malformed Google response shapes fail closed and create parse failures remain ambiguous
+ok 208 - malformed Google response shapes fail closed and create parse failures remain ambiguous
+  ---
+  duration_ms: 4.134986
+  type: 'test'
+  ...
+# Subtest: Owner ruling: cancel suppresses all calendar messages and reminders
+ok 209 - Owner ruling: cancel suppresses all calendar messages and reminders
+  ---
+  duration_ms: 0.601729
+  type: 'test'
+  ...
+# Subtest: Owner ruling: reschedule suppresses all calendar messages and reminders
+ok 210 - Owner ruling: reschedule suppresses all calendar messages and reminders
+  ---
+  duration_ms: 0.322718
+  type: 'test'
+  ...
+# (node:171) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:171) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Calendar uses business date and correct 25-hour fall-back day boundaries
+ok 211 - Calendar uses business date and correct 25-hour fall-back day boundaries
+  ---
+  duration_ms: 32.326286
+  type: 'test'
+  ...
+# Subtest: Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+ok 212 - Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+  ---
+  duration_ms: 4.152823
+  type: 'test'
+  ...
+# Subtest: Calendar rejects unsupported filters, impossible dates and missing owner
+ok 213 - Calendar rejects unsupported filters, impossible dates and missing owner
+  ---
+  duration_ms: 2.978209
+  type: 'test'
+  ...
+# Subtest: Busy-time read is scoped and changing the connection in flight rejects the old response
+ok 214 - Busy-time read is scoped and changing the connection in flight rejects the old response
+  ---
+  duration_ms: 6.726791
+  type: 'test'
+  ...
+# Subtest: Provider failure is an error, never a successful empty calendar
+ok 215 - Provider failure is an error, never a successful empty calendar
+  ---
+  duration_ms: 4.770756
+  type: 'test'
+  ...

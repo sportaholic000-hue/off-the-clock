@@ -17,7 +17,6 @@ import {
   intervalsOverlap,
   isValidIanaTimeZone
 } from './calendarTime.js';
-
 const HOLD_DURATION_MS = 5 * 60 * 1000;
 const CHANGE_PREPARATION_LEASE_MS = 120000;
 const CHANGE_SETTLE_MS = 30000;
@@ -1181,7 +1180,7 @@ export function createBookingService({
     }
   }
 
-  async function getConfirmationStatus({ bookingToken, confirmationId }) {
+  async function getConfirmationStatus({ bookingToken, confirmationId, readOnly = false }) {
     const resolved = resolveBookingToken(bookingToken);
     const now = nowFrom(clock);
     const handle = openConfirmationId(confirmationId, resolved, now);
@@ -1189,6 +1188,10 @@ export function createBookingService({
     let appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
     const historicalIntent=usageOwnerQuery(db)("SELECT id FROM appointmentChanges WHERE ownerId=? AND appointmentId=? AND json_extract(oldSlotJson,'$.bookingIntentId')=? LIMIT 1");
     if (!appointment||appointment.bookingIntentId!==resolved.intentId&&!historicalIntent.get(resolved.ownerId,handle.appointmentId,resolved.intentId)) throw confirmationNotFound();
+    // A completed receipt remains readable after service end. This branch must
+    // never reconcile provider state or mutate an interrupted/pending booking.
+    if (readOnly) return appointment.status === 'CONFIRMED' && appointment.providerEventStatus !== 'CHANGE_PENDING'
+      ? { statusCode: 200, body: confirmedAppointmentBody(appointment) } : null;
     releaseInterruptedPreparation(appointment);
     appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
     if(appointment.providerEventStatus==='CHANGE_PENDING'){

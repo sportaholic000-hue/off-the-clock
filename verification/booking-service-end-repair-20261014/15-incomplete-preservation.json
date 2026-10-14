@@ -1,0 +1,42 @@
+{
+  "observedUTC": "2026-10-14T08:23:13.507955+00:00",
+  "status": "INCOMPLETE: exit 0 but missing final TAP summary; not PASS",
+  "files": [
+    {
+      "path": "15-post-hosted-focused.stdout.txt",
+      "bytes": 59451,
+      "sha256": "b17888e11af06da56d8ed38828a69c429588644909957d2828539902a8c5ebd6"
+    },
+    {
+      "path": "15-post-hosted-focused.stderr.txt",
+      "bytes": 174,
+      "sha256": "e0cb71fe601c6aa0bc77d1c72b7de24eb689cec9d73775860edf39dc4fa5755c"
+    },
+    {
+      "path": "15-post-hosted-focused.meta.json",
+      "bytes": 2100,
+      "sha256": "bbf719ae2439222f01f09779f2a74a7162ea28465bd39e9e385265af34ac2ade"
+    },
+    {
+      "path": "post-hosted-correction.diff",
+      "bytes": 4658,
+      "sha256": "82c3b32917b9729af100e1572378c6554e47023dfce6108bd6ab2fcdd0ac44c2"
+    },
+    {
+      "path": "post-hosted-correction.json",
+      "bytes": 874,
+      "sha256": "12fc5578e7b3e6ab481706522913c7a8d0b39a504a3d61fa8bb65b32060eb5bf"
+    }
+  ],
+  "processObservation": {
+    "command": [
+      "ps",
+      "-eo",
+      "pid,ppid,stat,args"
+    ],
+    "exitCode": 47,
+    "stderr": "Error, do this: mount -t proc proc /proc\n",
+    "limitation": "Process inventory unavailable; no mount attempted. First preservation helper aborted with CalledProcessError before writing JSON; original captures unchanged."
+  },
+  "note": "No cause established. No rerun of this incomplete local invocation. Required new hosted CI will assess changed code with its strict complete-summary guards."
+}

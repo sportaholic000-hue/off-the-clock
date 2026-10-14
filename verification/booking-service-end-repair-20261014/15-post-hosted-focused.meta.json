@@ -1,0 +1,43 @@
+{
+  "argv": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "test/bookingService.spec.mjs",
+    "test/bookingRoutes.spec.mjs",
+    "test/bookingTokenReceipt.spec.mjs",
+    "test/bookingCalendar20261006.spec.mjs",
+    "test/bookingCalendarApplication20261006.spec.mjs",
+    "test/calendarChangeRecovery20261008.spec.mjs",
+    "test/calendarScopeAuthorization20261010.spec.mjs",
+    "test/googleCalendarAdapter.spec.mjs",
+    "test/calendarOAuthState.spec.mjs",
+    "test/calendarCredentials.spec.mjs",
+    "test/bookingAdminService.spec.mjs",
+    "test/bookingAdminRoutes.spec.mjs",
+    "test/bookingPreferenceService.spec.mjs",
+    "test/bookingCapabilities.spec.mjs",
+    "test/ownerCalendarService.spec.mjs",
+    "test/planAccess.spec.mjs",
+    "test/starterPlanRoutes20261009.spec.mjs",
+    "test/billingCustomerLifecycle20261007.spec.mjs",
+    "test/billingCustomerLifecycleProduction20261007.spec.mjs",
+    "test/tenantIsolationRoutes.spec.mjs",
+    "test/bookingServiceEnd20261014.spec.mjs",
+    "test/ownerQueryCoverage20261009.spec.mjs",
+    "test/workflowBillingAudit20261009.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/repo",
+  "startedUTC": "2026-10-14T08:20:08.799022+00:00",
+  "environment": {
+    "PATH": "/workspace/scratch/998ee29c5e28/platform-audit-20261014/runtime/node_modules/node/bin:/root/.codex/tmp/arg0/codex-arg0zSBFLm:/opt/codex/codex-path:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+    "TMPDIR": "/workspace/scratch/998ee29c5e28/booking-service-end-repair-20261014/tmp"
+  },
+  "pid": 6,
+  "exitCode": 0,
+  "signal": null,
+  "finishedUTC": "2026-10-14T08:20:26.369357+00:00"
+}

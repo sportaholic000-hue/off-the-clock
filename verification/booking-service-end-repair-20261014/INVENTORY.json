@@ -1,5 +1,5 @@
 {
-  "createdUTC": "2026-10-14T08:02:19.402517+00:00",
+  "createdUTC": "2026-10-14T08:24:08.650066+00:00",
   "base": "95e1631f42461ca8ae7d46d859940bffc302d155",
   "files": [
     {
@@ -269,13 +269,13 @@
     },
     {
       "path": "REPORT.md",
-      "sha256": "f6c54ade2cdb86b18eccae0f668933506ff8fe87771ed0f0f0e0ce7e80f81d43",
-      "bytes": 7063
+      "sha256": "619282ec40401e17998818aa6a3890fd086bca9cec7d2cc8419f358f852d3c3c",
+      "bytes": 9701
     },
     {
       "path": "EXPECTATIONS.md",
-      "sha256": "323df014271ef554fe09ceff04f43f352906fce2766b47fa56889d6395231a1e",
-      "bytes": 1340
+      "sha256": "aab325d3bd999e4956794e82f6e19405d32b0c231655fc407baf9cf32181b5df",
+      "bytes": 1453
     },
     {
       "path": "repair.diff",
@@ -284,20 +284,75 @@
     },
     {
       "path": "regression-source.mjs",
-      "sha256": "6af90c07e2a2d5b4dd46ae706138510b940259ac3f8914a301021662b88eb0db",
-      "bytes": 15869
+      "sha256": "d086acd5e5b656f1a6985f9b48ae5ad8302f5386de3d102d2141e98ac455a202",
+      "bytes": 16088
+    },
+    {
+      "path": "15-post-hosted-focused.stdout.txt",
+      "sha256": "b17888e11af06da56d8ed38828a69c429588644909957d2828539902a8c5ebd6",
+      "bytes": 59451
+    },
+    {
+      "path": "15-post-hosted-focused.stderr.txt",
+      "sha256": "e0cb71fe601c6aa0bc77d1c72b7de24eb689cec9d73775860edf39dc4fa5755c",
+      "bytes": 174
+    },
+    {
+      "path": "15-post-hosted-focused.meta.json",
+      "sha256": "bbf719ae2439222f01f09779f2a74a7162ea28465bd39e9e385265af34ac2ade",
+      "bytes": 2100
+    },
+    {
+      "path": "15-incomplete-preservation.json",
+      "sha256": "7690fa391cf8422accf2ff4be5b8fd15f62e359adcc52e60431a20c134ea222f",
+      "bytes": 1509
+    },
+    {
+      "path": "post-hosted-correction.diff",
+      "sha256": "82c3b32917b9729af100e1572378c6554e47023dfce6108bd6ab2fcdd0ac44c2",
+      "bytes": 4658
+    },
+    {
+      "path": "post-hosted-correction.json",
+      "sha256": "12fc5578e7b3e6ab481706522913c7a8d0b39a504a3d61fa8bb65b32060eb5bf",
+      "bytes": 874
+    },
+    {
+      "path": "hosted-jobs-first-complete.json",
+      "sha256": "95e49321f2b666d2b2f47dd6383728d9e977f9ace775de56b1bcf751febed09b",
+      "bytes": 21110
+    },
+    {
+      "path": "hosted-run-first-complete.json",
+      "sha256": "a691b6816cd1b3ec053ba44ef5786d0caaea3eda759d257310e30c4b20c8d443",
+      "bytes": 15039
+    },
+    {
+      "path": "CHECKPOINT_REPORT_0f0a8fd.md",
+      "sha256": "f6c54ade2cdb86b18eccae0f668933506ff8fe87771ed0f0f0e0ce7e80f81d43",
+      "bytes": 7063
+    },
+    {
+      "path": "first-hosted-failures.txt",
+      "sha256": "c02ef823e30bf59ae5eb08d986486e38f6d5e33d27297a8597ae30994f68c536",
+      "bytes": 6921
+    },
+    {
+      "path": "final-repair.diff",
+      "sha256": "ad3f18fb28328e460483a18e14988d2cfbe19f1b2d5980385572e0ccb6b14e89",
+      "bytes": 24261
     }
   ],
   "changedSource": [
     {
       "path": "server/src/bookingRoutes.js",
-      "sha256": "5d267515c7cef403a81c6ebd484ad41f4df5e303fe69880fd3b673a3b3300f26",
-      "bytes": 12395
+      "sha256": "4492b2553430c88637bbaafa58b02040faa38a3c6a2467ee292f3c74f2711c13",
+      "bytes": 12720
     },
     {
       "path": "server/src/bookingService.js",
-      "sha256": "872843a8523575b0d8747281a68af24aa405d2921022d2f6ff487a487f449c44",
-      "bytes": 77941
+      "sha256": "baefd632e5a7652e8ad553ef9448cb88a890be55a093644f26fcc5b64b966dff",
+      "bytes": 78315
     },
     {
       "path": "test/bookingService.spec.mjs",
@@ -306,12 +361,12 @@
     },
     {
       "path": "test/bookingServiceEnd20261014.spec.mjs",
-      "sha256": "6af90c07e2a2d5b4dd46ae706138510b940259ac3f8914a301021662b88eb0db",
-      "bytes": 15869
+      "sha256": "d086acd5e5b656f1a6985f9b48ae5ad8302f5386de3d102d2141e98ac455a202",
+      "bytes": 16088
     },
     {
       "path": "verification/tenant-isolation-20261007/route-sources.json",
-      "sha256": "75431a78f34e1ed924104c946bd73234e65fa42fbd8aed0f8578dff07aaa2131",
+      "sha256": "ae11f6c7284407514dde76cd470dc6503a8be255b78d2b4fe9f2827d22e48983",
       "bytes": 3389
     }
   ],

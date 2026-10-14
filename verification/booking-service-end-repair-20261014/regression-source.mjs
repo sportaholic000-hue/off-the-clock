@@ -199,7 +199,9 @@ for (const dispatched of ['original','recovery']) test(`booking service end: alr
   }
   assert.equal(result.body.status,'CONFIRMED');assert.equal(s.snapshot().outboxEvents.length,1);
   assert.equal(s.snapshot().bookingHolds[0].status,'CONFIRMED');
-  const before=s.snapshot();assert.equal((await s.http(p.poll)).status,403);
+  const before=s.snapshot(),operations=s.operations.slice();
+  assert.deepEqual(await s.http(p.poll),{status:200,body:result.body},'Completed receipt remains read-only after service end');
+  assert.deepEqual(s.operations,operations,'Reading the completed receipt must not contact the provider');
   assert.equal((await s.booking.getConfirmationStatus(p.poll)).body.status,'CONFIRMED');assert.deepEqual(s.snapshot(),before);
   assert.equal(s.operations.filter(r=>r.op==='createEvent').length,dispatched==='original'?0:1);
 });

@@ -1,0 +1,95 @@
+477: 2026-10-14T08:05:36.4255893Z 1..3
+478: 2026-10-14T08:05:36.4256084Z # tests 12
+479: 2026-10-14T08:05:36.4256293Z # suites 0
+480: 2026-10-14T08:05:36.4256502Z # pass 12
+481: 2026-10-14T08:05:36.4256689Z # fail 0
+482: 2026-10-14T08:05:36.4256898Z # cancelled 0
+483: 2026-10-14T08:05:36.4257096Z # skipped 0
+484: 2026-10-14T08:05:36.4257311Z # todo 0
+485: 2026-10-14T08:05:36.4257544Z # duration_ms 6574.504458
+13453: 2026-10-14T08:08:57.5979290Z # Subtest: every direct database prepare or exec in server is an exact listed exception
+13454: 2026-10-14T08:08:57.5980738Z not ok 1879 - every direct database prepare or exec in server is an exact listed exception
+13455: 2026-10-14T08:08:57.5981691Z   ---
+13456: 2026-10-14T08:08:57.5982067Z   duration_ms: 1515.208899
+13457: 2026-10-14T08:08:57.5982537Z   type: 'test'
+13458: 2026-10-14T08:08:57.5983502Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/ownerQueryCoverage20261009.spec.mjs:9:1'
+13459: 2026-10-14T08:08:57.5984739Z   failureType: 'testCodeFailure'
+13460: 2026-10-14T08:08:57.5985856Z   error: 'Unused allowed use: server/src/bookingService.js:263 dependency validation'
+13461: 2026-10-14T08:08:57.5986712Z   code: 'ERR_ASSERTION'
+13462: 2026-10-14T08:08:57.5987132Z   name: 'AssertionError'
+13463: 2026-10-14T08:08:57.5987567Z   expected: true
+13464: 2026-10-14T08:08:57.5987958Z   actual: false
+13465: 2026-10-14T08:08:57.5988352Z   operator: '=='
+13466: 2026-10-14T08:08:57.5988732Z   stack: |-
+13467: 2026-10-14T08:08:57.5989870Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/ownerQueryCoverage20261009.spec.mjs:28:10)
+13468: 2026-10-14T08:08:57.5991163Z     Test.runInAsyncScope (node:async_hooks:214:14)
+13469: 2026-10-14T08:08:57.5991837Z     Test.run (node:internal/test_runner/test:1047:25)
+13470: 2026-10-14T08:08:57.5992505Z     Test.start (node:internal/test_runner/test:944:17)
+13471: 2026-10-14T08:08:57.5993347Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+13472: 2026-10-14T08:08:57.5994027Z   ...
+13473: 2026-10-14T08:08:57.5994681Z # Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+13474: 2026-10-14T08:08:57.5995913Z ok 1880 - scan rejects bracketed database['prepare'] in .js: 1 finding
+13475: 2026-10-14T08:08:57.5996548Z   ---
+13476: 2026-10-14T08:08:57.5996873Z   duration_ms: 1.585955
+13477: 2026-10-14T08:08:57.5997246Z   type: 'test'
+13478: 2026-10-14T08:08:57.5997568Z   ...
+13479: 2026-10-14T08:08:57.5998305Z # Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+13480: 2026-10-14T08:08:57.5999866Z ok 1881 - scan rejects double quoted and template computed prepare in .js: 1 each
+13481: 2026-10-14T08:08:57.6000589Z   ---
+13482: 2026-10-14T08:08:57.6000911Z   duration_ms: 1.698144
+13483: 2026-10-14T08:08:57.6001288Z   type: 'test'
+13484: 2026-10-14T08:08:57.6001607Z   ...
+13485: 2026-10-14T08:08:57.6002180Z # Subtest: scan rejects dynamic key spelling in .js: 1 finding
+13486: 2026-10-14T08:08:57.6003013Z ok 1882 - scan rejects dynamic key spelling in .js: 1 finding
+13487: 2026-10-14T08:08:57.6003560Z   ---
+13488: 2026-10-14T08:08:57.6003877Z   duration_ms: 0.958216
+27375: 2026-10-14T08:15:02.7623212Z # Subtest: audit 2: existing confirmation status remains readable after service ends
+27376: 2026-10-14T08:15:02.7626009Z not ok 3912 - audit 2: existing confirmation status remains readable after service ends
+27377: 2026-10-14T08:15:02.7630272Z   ---
+27378: 2026-10-14T08:15:02.7630707Z   duration_ms: 737.38694
+27379: 2026-10-14T08:15:02.7631464Z   type: 'test'
+27380: 2026-10-14T08:15:02.7632155Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/workflowBillingAudit20261009.spec.mjs:80:1'
+27381: 2026-10-14T08:15:02.7632892Z   failureType: 'testCodeFailure'
+27382: 2026-10-14T08:15:02.7633385Z   error: |-
+27383: 2026-10-14T08:15:02.7633877Z     Expected values to be strictly equal:
+27384: 2026-10-14T08:15:02.7634378Z     
+27385: 2026-10-14T08:15:02.7634702Z     403 !== 200
+27386: 2026-10-14T08:15:02.7635044Z     
+27387: 2026-10-14T08:15:02.7635642Z   code: 'ERR_ASSERTION'
+27388: 2026-10-14T08:15:02.7635895Z   name: 'AssertionError'
+27389: 2026-10-14T08:15:02.7636133Z   expected: 200
+27390: 2026-10-14T08:15:02.7636340Z   actual: 403
+27391: 2026-10-14T08:15:02.7636555Z   operator: 'strictEqual'
+27392: 2026-10-14T08:15:02.7636785Z   stack: |-
+27393: 2026-10-14T08:15:02.7637389Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/workflowBillingAudit20261009.spec.mjs:85:66)
+27394: 2026-10-14T08:15:02.7638204Z     process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+27395: 2026-10-14T08:15:02.7638724Z     async Test.run (node:internal/test_runner/test:1054:7)
+27396: 2026-10-14T08:15:02.7639209Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+27397: 2026-10-14T08:15:02.7639592Z   ...
+27398: 2026-10-14T08:15:02.7639942Z # Subtest: audit 3: trial six unconfirmed ten-minute calls pending
+27399: 2026-10-14T08:15:02.7640450Z ok 3913 - audit 3: trial six unconfirmed ten-minute calls pending
+27400: 2026-10-14T08:15:02.7640785Z   ---
+27401: 2026-10-14T08:15:02.7640980Z   duration_ms: 46.386952
+27402: 2026-10-14T08:15:02.7641209Z   type: 'test'
+27403: 2026-10-14T08:15:02.7641401Z   ...
+27404: 2026-10-14T08:15:02.7641746Z # Subtest: audit 3: trial six unconfirmed ten-minute calls receipts
+27405: 2026-10-14T08:15:02.7642248Z ok 3914 - audit 3: trial six unconfirmed ten-minute calls receipts
+27406: 2026-10-14T08:15:02.7642579Z   ---
+27407: 2026-10-14T08:15:02.7642773Z   duration_ms: 48.235074
+27408: 2026-10-14T08:15:02.7642997Z   type: 'test'
+27409: 2026-10-14T08:15:02.7643185Z   ...
+27410: 2026-10-14T08:15:02.7643593Z # Subtest: audit 3: Operator 300 confirmed plus ten unconfirmed minutes pending
+27440: 2026-10-14T08:15:02.7898569Z 1..3919
+27441: 2026-10-14T08:15:02.7898836Z # tests 4262
+27442: 2026-10-14T08:15:02.7899050Z # suites 0
+27443: 2026-10-14T08:15:02.7899592Z # pass 4260
+27444: 2026-10-14T08:15:02.7899815Z # fail 2
+27445: 2026-10-14T08:15:02.7900010Z # cancelled 0
+27446: 2026-10-14T08:15:02.7900215Z # skipped 0
+27447: 2026-10-14T08:15:02.7900403Z # todo 0
+27448: 2026-10-14T08:15:02.7900618Z # duration_ms 565085.481732
+27449: 2026-10-14T08:15:02.7906939Z FAIL: /home/runner/work/off-the-clock/off-the-clock/test/ownerQueryCoverage20261009.spec.mjs did not complete every test successfully.
+27450: 2026-10-14T08:15:02.7909023Z FAIL: /home/runner/work/off-the-clock/off-the-clock/test/workflowBillingAudit20261009.spec.mjs did not complete every test successfully.
+27451: 2026-10-14T08:15:02.7910557Z FAIL: The complete test summary is missing or contains unsuccessful tests.
+27452: 2026-10-14T08:15:02.8051464Z ##[error]Process completed with exit code 1.
+27453: 2026-10-14T08:15:02.8186803Z ##[group]Run mkdir -p /tmp/ci && cd /tmp/ci

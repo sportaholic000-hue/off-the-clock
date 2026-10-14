@@ -1,0 +1,17 @@
+{
+  "failedCommit": "0f0a8fd83d772f3571310254135763d634b41946",
+  "failedRun": 38532608143,
+  "quote": {
+    "tests": 4262,
+    "pass": 4260,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "diagnosis": [
+    "Added import shifted exact dependency-validation inventory line; restored line position without editing the inventory or scanner.",
+    "Blanket route denial regressed existing already-completed read-only receipt behavior. A pure bound read-only lookup can return that receipt; pending recovery still requires access. Existing workflowBillingAudit assertion unchanged."
+  ],
+  "regressionCorrection": "The two new already-dispatched completion cases now assert exact saved receipt plus no additional provider calls and unchanged rows after expiry, in place of their over-broad 403 expectation. Pending-denial assertions are unchanged."
+}
