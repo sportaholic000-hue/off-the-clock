@@ -33,24 +33,32 @@ export function unreadablePricebook(ownerId, reason, {ownerRecovery=false}={}) {
 }
 
 let creationRecordsReady = false;
-function ensureCreationRecords() {
-  if (creationRecordsReady) return;
+function ensureCreationRecords({create=true}={}) {
+  if (creationRecordsReady) return true;
+  // Established stores must remain readable when SQLite writes are
+  // unavailable. Avoid issuing DDL merely to discover an existing table.
+  if (applicationDb.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='priceBookCreationRecords'").get()) {
+    creationRecordsReady = true;
+    return true;
+  }
+  if (!create) return false;
   applicationDb.exec(`CREATE TABLE IF NOT EXISTS priceBookCreationRecords (
     ownerId TEXT PRIMARY KEY,
     createdAt TEXT NOT NULL,
     updatedAt TEXT NOT NULL
   )`);
   creationRecordsReady = true;
+  return true;
 }
 export function pricebookCreationRecorded(ownerId) {
-  ensureCreationRecords();
+  if (!ensureCreationRecords({create:false})) return false;
   return Boolean(ownerQuery('SELECT 1 FROM priceBookCreationRecords WHERE ownerId = ?').get(String(ownerId)));
 }
 function recordPricebookCreation(ownerId, timestamp = new Date().toISOString()) {
   assertRetainedAccount(ownerId);
   ensureCreationRecords();
   ownerQuery(`INSERT INTO priceBookCreationRecords(ownerId,createdAt,updatedAt)
-    VALUES(?,?,?) ON CONFLICT(ownerId) DO UPDATE SET updatedAt=excluded.updatedAt`).run(String(ownerId),timestamp,timestamp);
+    VALUES(?,?,?) ON CONFLICT(ownerId) DO NOTHING`).run(String(ownerId),timestamp,timestamp);
 }
 function assertRetainedAccount(ownerId){
   // This module also supports standalone file stores before the application
@@ -62,6 +70,9 @@ function assertRetainedAccount(ownerId){
 }
 function missingCreatedPricebook(ownerId) {
   return unreadablePricebook(ownerId, 'a durable creation record exists but the saved file is missing', {ownerRecovery:true});
+}
+function missingUnconfirmedPricebook(ownerId) {
+  return unreadablePricebook(ownerId, 'an unconfirmed replacement exists but the saved file is missing', {ownerRecovery:true});
 }
 function blankPricebook(ownerId) {
   return {
@@ -86,6 +97,9 @@ export function loadPricebook(ownerId) {
   catch (err) {
     if (err.code === 'ENOENT') {
       if (pricebookCreationRecorded(ownerId)) throw missingCreatedPricebook(ownerId);
+      // A crash after the durable marker but before replacement is not proof
+      // that this owner never had a book. Keep recovery fail-closed.
+      if (pricebookSaveUnconfirmed(ownerId)) throw missingUnconfirmedPricebook(ownerId);
       return blankPricebook(ownerId);
     }
     throw err;
@@ -97,8 +111,11 @@ export function loadPricebook(ownerId) {
   if (Object.hasOwn(book, 'ownerId') && book.ownerId !== ownerId) throw unreadablePricebook(ownerId, 'the file belongs to a different business');
   const issue = pricebookStructureIssue(book);
   if (issue) throw unreadablePricebook(ownerId, issue);
-  // Backfill the durable record for books created before this guard existed.
-  recordPricebookCreation(ownerId, typeof book.updatedAt === 'string' ? book.updatedAt : undefined);
+  // File-only legacy books get one explicit backfill. An unconfirmed first
+  // save is instead confirmed by its next locked save; a read must not turn an
+  // uncertain replacement into an accepted creation.
+  if (!pricebookCreationRecorded(ownerId) && !pricebookSaveUnconfirmed(ownerId))
+    confirmLegacyPricebookCreation(ownerId, typeof book.updatedAt === 'string' ? book.updatedAt : undefined);
   return book;
 }
 
@@ -116,8 +133,33 @@ export function flushDirectory(path, ops = defaultFileOps) {
 const unconfirmedMarker = (directory, ownerId) => resolve(directory, `${ownerId}.unconfirmed`);
 export function pricebookSaveUnconfirmed(ownerId) { return existsSync(unconfirmedMarker(pricebookDirectory(), ownerId)); }
 const notDurable = cause => Object.assign(new Error('The price book change could not be confirmed on disk. Quoting is paused for this business until a save is confirmed. Save again.'), { code:'PRICEBOOK_NOT_DURABLE', statusCode:503, retryable:true, cause });
+const pauseNotCleared = cause => Object.assign(new Error('The price book was saved, but quoting could not be resumed. Quoting stays paused for this business until the next successful save.'), { code:'PRICEBOOK_PAUSE_NOT_CLEARED', statusCode:503, retryable:true, cause });
+const creationUnconfirmed = cause => Object.assign(new Error('The price book change reached durable storage, but its creation record could not be confirmed. Quoting stays paused for this business until the next successful save.'), { code:'PRICEBOOK_CREATION_UNCONFIRMED', statusCode:503, retryable:true, cause });
+function confirmCreationRecord(ownerId,timestamp) {
+  try { recordPricebookCreation(ownerId,timestamp); }
+  catch (cause) { if (cause?.code === 'ACCOUNT_ERASED') throw cause; throw creationUnconfirmed(cause); }
+}
 
-export function writePricebookFile(directory, ownerId, serialized, ops = defaultFileOps, beforeReplace = null) {
+function confirmLegacyPricebookCreation(ownerId,timestamp) {
+  return withPricebookLock(ownerId,()=>{
+    if (pricebookCreationRecorded(ownerId)) return;
+    const directory=pricebookDirectory(), marker=unconfirmedMarker(directory,ownerId);
+    // Another locked save/backfill may have left a recoverable uncertain state.
+    // Its marker must be cleared only by a complete subsequent save.
+    if (existsSync(marker)) return;
+    try { writeFileSync(marker,'unconfirmed price-book creation backfill\n',{flush:true}); flushDirectory(directory); }
+    catch (error) {
+      try { unlinkSync(marker); } catch (cleanupError) { if (cleanupError.code !== 'ENOENT') error.cleanupError=cleanupError.code; }
+      throw error;
+    }
+    if (!existsSync(resolve(directory,`${ownerId}.json`))) throw missingUnconfirmedPricebook(ownerId);
+    confirmCreationRecord(ownerId,timestamp);
+    try { unlinkSync(marker); } catch (cause) { throw pauseNotCleared(cause); }
+    try { flushDirectory(directory); } catch { /* a reappearing marker fails closed */ }
+  });
+}
+
+export function writePricebookFile(directory, ownerId, serialized, ops = defaultFileOps, beforeReplace = null, confirmReplacement = null) {
   const target = resolve(directory, `${ownerId}.json`);
   const temporary = resolve(directory, `${ownerId}.${crypto.randomUUID()}.tmp`);
   const marker = unconfirmedMarker(directory, ownerId);
@@ -131,8 +173,12 @@ export function writePricebookFile(directory, ownerId, serialized, ops = default
   try { beforeReplace?.(); ops.renameSync(temporary, target); }
   catch (error) { cleanup(error, [temporary, ...ownMarker]); throw error; }
   try { flushDirectory(directory, ops); } catch (cause) { throw notDurable(cause); }
+  // Cross-store confirmation belongs inside the marker's fail-closed window.
+  // If it fails (or completion is uncertain), the durable replacement remains
+  // available to the owner but cannot become customer-visible pricing.
+  confirmReplacement?.();
   try { ops.unlinkSync(marker); }
-  catch (cause) { throw Object.assign(new Error('The price book was saved, but quoting could not be resumed. Quoting stays paused for this business until the next successful save.'), { code:'PRICEBOOK_PAUSE_NOT_CLEARED', statusCode:503, retryable:true, cause }); }
+  catch (cause) { throw pauseNotCleared(cause); }
   try { flushDirectory(directory, ops); } catch { /* durable replacement; a reappearing marker fails closed */ }
 }
 
@@ -186,7 +232,11 @@ export function savePricebook(ownerId, data) {
   });
   const dir = pricebookDirectory();
   const target = resolve(dir, `${ownerId}.json`);
-  if (pricebookCreationRecorded(ownerId) && !existsSync(target)) throw missingCreatedPricebook(ownerId);
+  const creationRecorded = pricebookCreationRecorded(ownerId);
+  if (!existsSync(target)) {
+    if (creationRecorded) throw missingCreatedPricebook(ownerId);
+    if (pricebookSaveUnconfirmed(ownerId)) throw missingUnconfirmedPricebook(ownerId);
+  }
   mkdirSync(dir, { recursive: true });
   const next = {
     ...data,
@@ -194,8 +244,8 @@ export function savePricebook(ownerId, data) {
     updatedAt: new Date().toISOString(),
     services
   };
-  writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2));
-  recordPricebookCreation(ownerId, next.updatedAt);
+  const confirmCreation = creationRecorded ? null : () => confirmCreationRecord(ownerId,next.updatedAt);
+  writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2), defaultFileOps, null, confirmCreation);
   return { success: true, pricebook: next };
 }
 
