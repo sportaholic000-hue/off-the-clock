@@ -1,0 +1,421 @@
+{
+  "startedUTC": "2026-10-14T05:24:06.788209+00:00",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "verification/restore-isolation-20261014/review-supplied-archive.py",
+    "/workspace/scratch/998ee29c5e28/upload/Personal_Full_Audit_rc-20261013m(2).zip",
+    "/workspace/scratch/998ee29c5e28/restore-isolation-control",
+    "verification/restore-isolation-20261014/supplied-archive-review.json"
+  ],
+  "cwd": "/workspace/scratch/998ee29c5e28/restore-isolation-control",
+  "operation": "Read-only archive/source verification; no application executions",
+  "archive": {
+    "bytes": 7404196,
+    "sha256": "bc944f6c275caeec5f110e8cc1694f303a1af8bdae14adf622e85ffb02d72a74",
+    "zipEntries": 131,
+    "verifiedInventoryFiles": 129,
+    "verifiedChecksumLines": 129,
+    "crc": "PASS",
+    "exactInventoryMembership": "PASS"
+  },
+  "nestedArchives": [
+    {
+      "path": "provided-originals/INCOMPLETE-original-engine-pricebook-rc-20261013m.zip",
+      "bytes": 3705775,
+      "sha256": "b4dd3bbc86308b4879f127093fb4ef6a9a09c25ce74b2c84ce2b3f0209ad04d8",
+      "zipEntries": 131,
+      "verifiedInventoryFiles": 129,
+      "verifiedChecksumLines": 130,
+      "crc": "PASS",
+      "exactInventoryMembership": "PASS"
+    },
+    {
+      "path": "provided-originals/restore-diagnosis-rc-20261013m.zip",
+      "bytes": 532198,
+      "sha256": "bda2c534f9743dcd9232617904059f4031d187b4a0cbe34920d57ae032ec410e",
+      "zipEntries": 87,
+      "verifiedInventoryFiles": 85,
+      "verifiedChecksumLines": 85,
+      "crc": "PASS",
+      "exactInventoryMembership": "PASS"
+    }
+  ],
+  "immutableApplication": "95e1631f42461ca8ae7d46d859940bffc302d155",
+  "taggedSourceComparison": {
+    "verifiedFiles": 651,
+    "byteIdentical": true,
+    "method": "git cat-file --batch against immutable commit; archived files never executed"
+  },
+  "suppliedReport": {
+    "path": "Full_Audit_rc-20261013m.md",
+    "sha256": "2c59d66f06160be7a39570bc6bede9d026be06ca93e91bf8336565270a77fa49",
+    "verdict": "INCOMPLETE; no confirmed SHARE; historical restore/provenance unresolved"
+  },
+  "priorLocalSuites": [
+    {
+      "name": "07-full-suite",
+      "metadata": {
+        "command": [
+          "env",
+          "PLAYWRIGHT_BROWSERS_PATH=/workspace/scratch/d66d14fd9a7f/personal-full-audit-20261014/browsers",
+          "npm",
+          "test"
+        ],
+        "cwd": "/workspace/scratch/d66d14fd9a7f/personal-full-audit-20261014/repo",
+        "startedUTC": "2026-10-14T04:15:22.126284+00:00",
+        "PATH_node": "/workspace/scratch/d66d14fd9a7f/personal-full-audit-20261014/runtime/node_modules/node/bin",
+        "TMPDIR": "/workspace/scratch/d66d14fd9a7f/personal-full-audit-20261014/tmp",
+        "pid": 4,
+        "exitCode": 1,
+        "signal": null,
+        "finishedUTC": "2026-10-14T04:22:26.866164+00:00"
+      },
+      "completeSummary": {
+        "tests": 5121,
+        "suites": 0,
+        "pass": 5059,
+        "fail": 62,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "restorePassNames": [
+        "1. production startup passes the release engine guard on a temporary volume",
+        "2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP",
+        "3. graceful production restart preserves exact book, approval, rows and replay receipts",
+        "4. real backup CLI includes the SQLite database and every saved price book",
+        "5. wipe entire fake volume, restore CLI from independent archive, restart, and replay identical receipts without duplicates",
+        "6. invalid JSON after restore pauses new quotes, explains owner recovery and keeps server/replays alive",
+        "6. invalid structure after restore pauses new quotes, explains owner recovery and keeps server/replays alive",
+        "6. missing after restore pauses new quotes, explains owner recovery and keeps server/replays alive",
+        "production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings"
+      ]
+    },
+    {
+      "name": "08-quote-suite",
+      "metadata": {
+        "command": [
+          "env",
+          "PLAYWRIGHT_BROWSERS_PATH=/workspace/scratch/d66d14fd9a7f/personal-full-audit-20261014/browsers",
+          "npm",
+          "run",
+          "test:quote"
+        ],
+        "cwd": "/workspace/scratch/d66d14fd9a7f/personal-full-audit-20261014/repo",
+        "startedUTC": "2026-10-14T04:22:56.595616+00:00",
+        "PATH_node": "/workspace/scratch/d66d14fd9a7f/personal-full-audit-20261014/runtime/node_modules/node/bin",
+        "TMPDIR": "/workspace/scratch/d66d14fd9a7f/personal-full-audit-20261014/tmp",
+        "pid": 4,
+        "exitCode": 1,
+        "signal": null,
+        "finishedUTC": "2026-10-14T04:29:15.294233+00:00"
+      },
+      "completeSummary": {
+        "tests": 4234,
+        "suites": 0,
+        "pass": 4172,
+        "fail": 62,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "restorePassNames": [
+        "1. production startup passes the release engine guard on a temporary volume",
+        "2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP",
+        "3. graceful production restart preserves exact book, approval, rows and replay receipts",
+        "4. real backup CLI includes the SQLite database and every saved price book",
+        "5. wipe entire fake volume, restore CLI from independent archive, restart, and replay identical receipts without duplicates",
+        "6. invalid JSON after restore pauses new quotes, explains owner recovery and keeps server/replays alive",
+        "6. invalid structure after restore pauses new quotes, explains owner recovery and keeps server/replays alive",
+        "6. missing after restore pauses new quotes, explains owner recovery and keeps server/replays alive",
+        "production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings"
+      ]
+    }
+  ],
+  "priorLiveBookCheck": {
+    "passed": true,
+    "storageObservations": [
+      {
+        "label": "corrupt",
+        "beforeRead": {
+          "bytes": 7,
+          "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73"
+        },
+        "afterRequests": {
+          "bytes": 7,
+          "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73"
+        }
+      },
+      {
+        "label": "invalid-structure",
+        "beforeRead": {
+          "bytes": 2,
+          "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "afterRequests": {
+          "bytes": 2,
+          "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        }
+      },
+      {
+        "label": "missing",
+        "beforeRead": null,
+        "afterRequests": null
+      }
+    ],
+    "requestCount": 29,
+    "scope": "Application already running; not a recreation of child-start reappearance"
+  },
+  "priorHostedRecordedValidation": {
+    "checkedUTC": "2026-10-14T04:43:08.828612+00:00",
+    "exactHostedSummaries": [
+      {
+        "counts": {
+          "tests": 4245,
+          "suites": 0,
+          "pass": 4245,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "originalLines": [
+          "# tests 4245",
+          "# suites 0",
+          "# pass 4245",
+          "# fail 0",
+          "# cancelled 0",
+          "# skipped 0",
+          "# todo 0",
+          "# duration_ms 566265.479762"
+        ]
+      },
+      {
+        "counts": {
+          "tests": 5132,
+          "suites": 0,
+          "pass": 5132,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "originalLines": [
+          "# tests 5132",
+          "# suites 0",
+          "# pass 5132",
+          "# fail 0",
+          "# cancelled 0",
+          "# skipped 0",
+          "# todo 0",
+          "# duration_ms 619595.416564"
+        ]
+      }
+    ],
+    "jobSHABinding": "PASS, raw attempt-1 jobs",
+    "jobInventory": 8,
+    "requiredStepSuccesses": 27,
+    "markerReportHash": "PASS",
+    "markerManifestHash": "PASS"
+  },
+  "priorHostedArchiveCrosscheck": {
+    "requiredOutcomes": [
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Install from lockfile (ignores committed node_modules)",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Install Playwright test dependency without changing the lockfile",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Install Chromium for the browser tests",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Verify Chromium can launch; install system libraries if needed",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Build owner app and widget",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate l controlled owner-alert browser reproduction",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Owner alerts and dashboard browser regressions",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate l harness and CI safety regressions",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate l shared HTTP fixture consumers and alert worker regressions",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Strict quote engine and price book gate",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Full test suite",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate i confirms required test names in the full-suite log",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate k backup coordination regressions",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate j and k standalone regressions (each file independently)",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate j and k confirm required lock test names in the full-suite log",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate k confirms coordination test names in the full-suite log",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate l expiry regressions and required passing names",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate l follow-up required passing names",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "No failures beyond the known list",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Publish test summary to claude/ci-results (push events only)",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Production dependency audit",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate m runner and tag qualification regressions",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043704,
+        "job": "test",
+        "step": "Candidate m confirms every CI-runner regression passed",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043367,
+        "job": "voice-docker-startup",
+        "step": "Build production runtime image",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043367,
+        "job": "voice-docker-startup",
+        "step": "Voice enabled with synthetic credentials and no provider network",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043367,
+        "job": "voice-docker-startup",
+        "step": "Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke",
+        "conclusion": "success"
+      },
+      {
+        "jobId": 115603043367,
+        "job": "voice-docker-startup",
+        "step": "Candidate j and k production-user lock database proof",
+        "conclusion": "success"
+      }
+    ],
+    "completeSummaryLinesFound": [
+      [
+        "# tests 4245",
+        "# suites 0",
+        "# pass 4245",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0",
+        "# duration_ms 566265.479762"
+      ],
+      [
+        "# tests 5132",
+        "# suites 0",
+        "# pass 5132",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0",
+        "# duration_ms 619595.416564"
+      ]
+    ],
+    "limitation": "Archived original metadata/log inspection only; no new hosted execution or release qualification"
+  },
+  "rehearsalSources": {
+    "test/backupRestoreRehearsal.spec.mjs": "a3be06ce0499d88b8cb3798ec28dcd7df1ceb21debf87a1af85a40323e1309e0",
+    "test/helpers/backupRestoreProcess.mjs": "f2696cf4ee6ea4aa1ac6fe3d364f8d9f88252a66f69efc659aed436f5b020f2f"
+  },
+  "limitations": [
+    "Integrity and source matching do not establish historical capture time, continuity or writer identity.",
+    "Existing archived execution results were inspected, not rerun or represented as newly constructed probes.",
+    "The original audit verdict remains INCOMPLETE; targeted hosted verification is a separate PASS.",
+    "No new explanation for the 27 historical temporary-tree files; no database snapshot claimed."
+  ],
+  "finishedUTC": "2026-10-14T05:24:07.286549+00:00"
+}
