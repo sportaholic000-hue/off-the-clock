@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "git",
+    "ls-remote",
+    "https://github.com/sportaholic000-hue/off-the-clock.git",
+    "refs/heads/main",
+    "refs/heads/claude/release-candidate-20261013m",
+    "refs/heads/codex/restore-isolation-20261014",
+    "refs/tags/rc-20261013m",
+    "refs/tags/rc-20261013m^{}"
+  ],
+  "cwd": "/workspace/scratch/998ee29c5e28/restore-isolation-control",
+  "startedUTC": "2026-10-14T05:03:30.839975+00:00",
+  "finishedUTC": "2026-10-14T05:03:34.769980+00:00",
+  "exitCode": 0,
+  "stdout": "95e1631f42461ca8ae7d46d859940bffc302d155\trefs/heads/claude/release-candidate-20261013m\ned12dca1253a8790c885b071ab6037e05632bea0\trefs/heads/main\n7c7e5a9363ed7113ea8969cdd3e400f58b1b538f\trefs/tags/rc-20261013m\n95e1631f42461ca8ae7d46d859940bffc302d155\trefs/tags/rc-20261013m^{}\n",
+  "stderr": "",
+  "attachmentReview": "NOT RUN: Personal_Full_Audit_rc-20261013m.zip unavailable in conversation workspace",
+  "expectedAttachmentSha256": "bc944f6c275caeec5f110e8cc1694f303a1af8bdae14adf622e85ffb02d72a74"
+}

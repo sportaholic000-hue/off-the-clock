@@ -1,0 +1,49 @@
+name: Restore isolation 20261014
+on:
+  push:
+    branches: [codex/restore-isolation-20261014]
+    paths:
+      - .github/workflows/restore-isolation-20261014.yml
+      - verification/restore-isolation-20261014/run.py
+      - verification/restore-isolation-20261014/trace-smoke.py
+      - verification/restore-isolation-20261014/EXECUTION.json
+permissions:
+  contents: read
+jobs:
+  isolated-restore:
+    if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[restore-isolation-run]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout diagnostic checkpoint
+        uses: actions/checkout@v4
+        with:
+          path: diagnostic
+          persist-credentials: false
+      - name: Checkout immutable application
+        uses: actions/checkout@v4
+        with:
+          ref: 95e1631f42461ca8ae7d46d859940bffc302d155
+          path: application
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Established Node 22 setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Capture preparation and exactly two sequential rehearsals
+        env:
+          ISOLATION_APPLICATION: ${{ github.workspace }}/application
+          ISOLATION_EVIDENCE: ${{ runner.temp }}/restore-isolation-evidence
+          ISOLATION_OUTPUT: ${{ runner.temp }}/restore-isolation-output
+        run: python3 diagnostic/verification/restore-isolation-20261014/run.py
+      - name: Publish explicit evidence package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restore-isolation-20261014-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/restore-isolation-output/restore-isolation-evidence.zip
+            ${{ runner.temp }}/restore-isolation-output/restore-isolation-evidence.zip.sha256
+          if-no-files-found: error
+          retention-days: 30
