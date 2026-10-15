@@ -48,7 +48,37 @@ function MoneyInput({ value, onChange, money, kind, wholeCents }) {
 }
 
 
-function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] }) {
+function priceStatusDiagnostics(status={}) {
+  return [status,...(status.failedTierDiagnostics||[]),...(status.productCoverage||[])]
+    .flatMap(row=>row?.ownerDiagnostics||[]);
+}
+
+function zeroClassifiesPrice(service,path) {
+  const policy=service.zeroPricePolicy;
+  if(!policy||typeof policy!=='object')return false;
+  if(typeof policy.includedPrices?.[path]==='string')return true;
+  const tiers=Array.isArray(service.tiers)?service.tiers:[];
+  if(!tiers.length)return policy.freeCompleteService===true;
+  const [field,key]=path.split('.');
+  return tiers.every(tier=>{
+    const override=tier?.overrides?.[field]?.[key];
+    const effective=override===undefined?0:override;
+    return (typeof effective==='number'&&Number.isFinite(effective)&&effective>0)||policy.freeTiers?.includes(tier?.name);
+  });
+}
+
+export function shapedPriceRowStatus({service,definition,key,value,offered,status,incomplete=false}) {
+  if(!offered)return 'NOT OFFERED';
+  const path=definition.field+'.'+key;
+  const diagnostics=priceStatusDiagnostics(status);
+  const exactProblem=diagnostics.some(d=>d?.path===path);
+  if(typeof value!=='number'||!Number.isFinite(value)||value<0||exactProblem||incomplete)return 'NEEDS PRICE';
+  if(value>0)return 'READY';
+  const policyProblem=diagnostics.some(d=>d?.path==='zeroPricePolicy'||d?.path==='zeroPricePolicy.includedPrices.'+path);
+  return zeroClassifiesPrice(service,path)&&!policyProblem?'READY':'NEEDS PRICE';
+}
+
+function ShapedMapField({ definition, value, onChange, incompleteOfferings = [], status }) {
   const domain = definition.shapedKeys;
   const service = useContext(PricingContext);
   const kind = definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, servicePricing(service));
@@ -118,6 +148,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
               {keys.map(key => {
                 const offered = offeredKeys.includes(key);
                 const incomplete = incompleteOfferings.includes(key);
+                const rowStatus=shapedPriceRowStatus({service,definition,key,value:map[key],offered,status,incomplete});
                 return (
                   <tr key={key} className={offered ? '' : 'row-not-offered'}>
                     <th scope="row">
@@ -139,8 +170,8 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
                       ) : <span className="matrix-off mono">NOT OFFERED</span>}
                     </td>
                     <td className="matrix-status">
-                      {!offered ? <span className="chip chip-quiet">NOT OFFERED</span>
-                        : incomplete || !map[key] ? <span className="chip chip-need">NEEDS PRICE</span>
+                      {rowStatus==='NOT OFFERED' ? <span className="chip chip-quiet">NOT OFFERED</span>
+                        : rowStatus==='NEEDS PRICE' ? <span className="chip chip-need">NEEDS PRICE</span>
                         : <span className="chip chip-live">READY</span>}
                     </td>
                   </tr>
@@ -294,7 +325,7 @@ function StructuredFactorField({ value, defaultValue, onChange, unit, wastePerce
   );
 }
 
-function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [] }) {
+function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [], status }) {
   const service = useContext(PricingContext);
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
     ? moneyKindForField(service.serviceType, definition.field, servicePricing(service))
@@ -310,8 +341,13 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       </Select>
     );
   } else if (definition.type === 'json') {
-    control = definition.tree ? <PricingTree value={value} onChange={onChange} definition={definition}/> : definition.shapedKeys
-      ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} />
+    // Flat owner-selectable product maps use the product matrix: it is the
+    // only editor that distinguishes offered, not-offered, and price status.
+    // Nested/open pricing trees keep their established generic editor.
+    const productRows=definition.shapedKeys?.ownerSelectable===true&&!definition.shapedKeys?.nested;
+    control = productRows
+      ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} />
+      : definition.tree ? <PricingTree value={value} onChange={onChange} definition={definition}/>
       : <JsonEditor value={value} onChange={onChange} />;
   } else {
     control = <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} wholeCents={definition.wholeCents} />;
@@ -1019,7 +1055,7 @@ export default function PriceBook() {
                     {requiredFields.map(definition => (
                       <div key={definition.field} id={`field-${definition.field}`}
                         className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
+                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} status={selectedStatus} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
@@ -1050,7 +1086,7 @@ export default function PriceBook() {
                     {optionalFields.map(definition => (
                       <div key={definition.field} id={`field-${definition.field}`}
                         className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
+                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} status={selectedStatus} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}

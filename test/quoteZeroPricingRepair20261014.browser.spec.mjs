@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { randomUUID } from 'node:crypto';
 import { build } from 'esbuild';
 import { flooring, siding } from '../verification/engine-independent/fixtures.mjs';
-import { freeFixture } from './quoteEngineVNextFixtures.mjs';
+import { freeFixture, includedFixture } from './quoteEngineVNextFixtures.mjs';
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import { loadPricebook } from '../server/priceBookService.js';
 
@@ -14,7 +14,7 @@ import { loadPricebook } from '../server/priceBookService.js';
 // bridge and isolated JSON/SQLite stores; pricing and status responses are not
 // mocked. The expected row labels below were written before the repair:
 // absent -> NOT OFFERED; unclassified zero -> NEEDS PRICE; explicitly approved
-// free zero -> READY; positive -> READY.
+// free/included zero -> READY; positive -> READY.
 const date = { timeZone:'UTC', quoteInstant:'2026-10-14T12:00:00.000Z' };
 let browser;
 let bundle;
@@ -47,7 +47,7 @@ before(async () => {
 after(async () => { await browser?.close(); });
 
 function applicationFixture(type, mode) {
-  const input = type === 'FLOORING_INSTALL' ? flooring('tile') : siding();
+  const input = type === 'FLOORING_INSTALL' ? flooring(mode === 'included' ? 'vinyl_plank' : 'tile') : siding();
   input.ownerPricing.service = '[SYNTHETIC] '+mode+' '+type;
   if (mode === 'free') {
     if (type === 'FLOORING_INSTALL') {
@@ -60,6 +60,22 @@ function applicationFixture(type, mode) {
     input.ownerPricing = freeFixture(input.ownerPricing);
   } else if (mode === 'unclassified-zero') {
     input.ownerPricing.pricing.laborPerSqft.tile = 0;
+  } else if (mode === 'missing') {
+    delete input.ownerPricing.pricing.laborPerSqft.tile;
+  } else if (mode === 'included') {
+    const p = input.ownerPricing.pricing;
+    p.materialPerSqft.vinyl_plank = 0;
+    Object.assign(p, {
+      vinylPlankUnderlaymentRule:'always_included',
+      underlaymentPerSqft:100,
+      underlaymentPriceBasis:'installed_area_sell_price',
+      installedLaborPercent:{ underlaymentPerSqft:0 },
+      installedMaterialsPercent:{ underlaymentPerSqft:100 }
+    });
+    input.ownerPricing.priceBasisByCategory.material = 'sell_price';
+    input.ownerPricing = includedFixture(input.ownerPricing, {
+      'materialPerSqft.vinyl_plank':'underlaymentPerSqft'
+    });
   }
   return input;
 }
@@ -151,8 +167,10 @@ test('QE-007 browser: approved free flooring product rows survive save/reload an
     assert.equal(await rowStatus(page, 'materialPerSqft', 'Tile'), 'READY');
     assert.equal(await rowStatus(page, 'laborPerSqft', 'Carpet'), 'NOT OFFERED');
 
-    await page.getByRole('button', { name:'Save & validate', exact:true }).click();
-    await page.waitForFunction(() => !document.querySelector('button')?.disabled);
+    await Promise.all([
+      page.waitForResponse(response => response.url().endsWith('/api/pricebook/save') && response.request().method() === 'POST'),
+      page.getByRole('button', { name:'Save & validate', exact:true }).click()
+    ]);
     await page.reload();
     await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
     assert.equal(await rowStatus(page, 'laborPerSqft', 'Tile'), 'READY');
@@ -162,7 +180,10 @@ test('QE-007 browser: approved free flooring product rows survive save/reload an
     // explicitly re-approved.
     const minimum = page.locator('#field-minimumJob input');
     await minimum.fill('1');
-    await page.getByRole('button', { name:'Save & validate', exact:true }).click();
+    await Promise.all([
+      page.waitForResponse(response => response.url().endsWith('/api/pricebook/save') && response.request().method() === 'POST'),
+      page.getByRole('button', { name:'Save & validate', exact:true }).click()
+    ]);
     await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
     const stored = loadPricebook(owner);
     const status = bridge.bookStatuses(stored, date)[0];
@@ -175,8 +196,38 @@ test('QE-007 browser: approved free flooring product rows survive save/reload an
   }
 });
 
+test('QE-007 browser: approved included flooring zero is READY only with its selected positive covering charge', async () => {
+  const input = applicationFixture('FLOORING_INSTALL', 'included');
+  const owner = seed(input, true);
+  const { context, page, errors } = await openEditor(owner, input.serviceType);
+  try {
+    await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
+    assert.equal(await rowStatus(page, 'materialPerSqft', 'Vinyl plank'), 'READY');
+    assert.equal(await rowStatus(page, 'laborPerSqft', 'Vinyl plank'), 'READY');
+    assert.equal(await rowStatus(page, 'materialPerSqft', 'Tile'), 'NOT OFFERED');
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
+
 test('QE-007 browser: unclassified zero is not READY, while a positive flooring price is READY', async () => {
   const input = applicationFixture('FLOORING_INSTALL', 'unclassified-zero');
+  const owner = seed(input, false);
+  const { context, page, errors } = await openEditor(owner, input.serviceType);
+  try {
+    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    assert.equal(await rowStatus(page, 'laborPerSqft', 'Tile'), 'NEEDS PRICE');
+    assert.equal(await rowStatus(page, 'materialPerSqft', 'Tile'), 'READY');
+    assert.equal(await rowStatus(page, 'laborPerSqft', 'Carpet'), 'NOT OFFERED');
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
+
+test('QE-007 browser: an offered product with a missing price is NEEDS PRICE', async () => {
+  const input = applicationFixture('FLOORING_INSTALL', 'missing');
   const owner = seed(input, false);
   const { context, page, errors } = await openEditor(owner, input.serviceType);
   try {

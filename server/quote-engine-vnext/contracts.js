@@ -1,2280 +1,1 @@
-import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
-import {validPricebookServiceId} from '../priceBookStructure.js';
-import {productIdentityRequired} from '../productNames.js';
-import {mergePricingForValidationVNext} from './pricingMerge.js';
-import {fixedPriceField} from '../pricePrecision.js';
-import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
-import { measuredOutlineVNext } from './geometry.js';
-import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
-import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringBaselineConfirmation} from './configuredOfferings.js';
-import { denseArrayIssue, snapshotPlainData } from './safeData.js';
-import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
-
-// Readiness validates many selections against one immutable tier. Only private,
-// fully snapshotted and deeply frozen copies are eligible for this reuse. Caller
-// objects and customer answers always pass the ordinary snapshot boundary.
-const activationSnapshots = new WeakSet();
-const activationPricingChecks = new WeakMap();
-const activationRegistryChecks = new WeakMap();
-const activationZeroPolicyChecks = new WeakMap();
-const activationIncludedPriceChecks = new WeakMap();
-export function validationSnapshotVNext(value, root) {
-  return activationSnapshots.has(value)
-    ? { ok: true, value, nonPlainPaths: [] }
-    : snapshotPlainData(value, root);
-}
-
-export function createActivationValidationVNext(serviceType, pricing, serviceRules, tierName = null) {
-  const price = snapshotPlainData(pricing, 'pricing');
-  const rules = snapshotPlainData(serviceRules, 'serviceRules');
-  if (price.ok && !price.nonPlainPaths.length && rules.ok && !rules.nonPlainPaths.length) {
-    pricing = deepFreeze(price.value);
-    serviceRules = deepFreeze(rules.value);
-    activationSnapshots.add(pricing);
-    activationSnapshots.add(serviceRules);
-    const structures = deepFreeze(validatePricingStructuresDetailed(serviceType, pricing));
-    const factors = deepFreeze(validateClass2FactorsDetailed(serviceType, pricing));
-    activationPricingChecks.set(pricing, { serviceType, structures, factors });
-    for (const [field, registry] of Object.entries(serviceRules.knownOfferings || {})) {
-      if (isRecord(registry)) activationRegistryChecks.set(registry, {
-        field, diagnostics: deepFreeze(offeringRegistryDiagnosticsVNext(field, registry))
-      });
-    }
-  }
-  return Object.freeze({
-    pricing, serviceRules,
-    customer: inputs => validateCustomerInputs(serviceType, inputs, pricing, serviceRules),
-    owner: inputs => validateOwnerPricing(serviceType, inputs, pricing, serviceRules, tierName)
-  });
-}
-
-function relativeSnapshotPath(snapshot, root) {
-  const prefix = `${root}.`;
-  return snapshot.errorPath.startsWith(prefix)
-    ? snapshot.errorPath.slice(prefix.length)
-    : snapshot.errorPath;
-}
-
-function firstNonPlainPath(snapshot, root) {
-  const path = snapshot.nonPlainPaths?.[0];
-  if (!path) return null;
-  const prefix = `${root}.`;
-  return path.startsWith(prefix) ? path.slice(prefix.length) : path;
-}
-export const SERVICE_TYPES = Object.freeze([
-  'ROOFING_REPLACEMENT', 'ROOFING_REPAIR',
-  'FLAT_ROOF_REPLACEMENT', 'FLAT_ROOF_REPAIR',
-  'INTERIOR_PAINTING', 'EXTERIOR_PAINTING',
-  'FLOORING_INSTALL', 'FLOORING_REPLACEMENT',
-  'FENCING_INSTALL', 'FENCING_REPLACEMENT',
-  'SIDING_REPLACEMENT', 'SIDING_REPAIR',
-  'CONCRETE_DRIVEWAY', 'CONCRETE_PATIO_SLAB',
-  'LANDSCAPING_CLEANUP', 'LANDSCAPING_MULCH',
-  'LANDSCAPING_SOD', 'LANDSCAPING_PLANTING',
-  'LANDSCAPING_MOWING', 'CUSTOM'
-]);
-
-export const FEE_NAMES = Object.freeze(['travel', 'disposal', 'permit', 'overhead']);
-export const FEE_RULE_MODES = Object.freeze([
-  'not_applicable',
-  'included_in_rates',
-  'always',
-  'when_scope_selected',
-  'owner_selected',
-  'customer_selected'
-]);
-export const PRICE_BASIS_CATEGORIES = Object.freeze([
-  'labor', 'material', 'removal', 'prep', 'addon', 'equipment',
-  'travel', 'disposal', 'permit', 'overhead', 'surcharge'
-]);
-export const TAXABILITY_CATEGORIES = Object.freeze([...PRICE_BASIS_CATEGORIES]);
-
-export function repairSizeFromAffectedArea(serviceType, affectedArea) {
-  if (typeof affectedArea !== 'number' || !Number.isFinite(affectedArea) || affectedArea <= 0) return null;
-  const boundaries = serviceType === 'ROOFING_REPAIR' ? [50, 200] : [20, 80];
-  if (!['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR', 'SIDING_REPAIR'].includes(serviceType)) return null;
-  if (affectedArea < boundaries[0]) return 'small';
-  if (affectedArea <= boundaries[1]) return 'medium';
-  return 'large';
-}
-
-const FLOORING_TYPES = ['hardwood', 'laminate', 'vinyl_plank', 'carpet', 'tile'];
-const SIDING_TYPES = ['vinyl', 'fiber_cement', 'wood', 'metal'];
-const SIZE_KEYS = ['small', 'medium', 'large'];
-const PITCHES = ['low', 'medium', 'steep', 'very_steep'];
-const STORIES = [1, 2, 3];
-const ACCESS = ['easy', 'moderate', 'difficult'];
-const SLOPES = ['flat', 'moderate', 'steep'];
-const CANONICAL_SLUG = /^[a-z][a-z0-9_]*$/;
-
-const field = (label, unit, type, extra = {}) => ({ label, unit, type, ...extra });
-const numberField = (label, unit, min, max, extra = {}) => field(label, unit, 'number', { min, max, ...extra });
-const enumField = (label, values) => field(label, null, 'enum', { values });
-const booleanField = label => field(label, null, 'boolean');
-const slugField = label => field(label, null, 'slug');
-
-const measuredArea = numberField('Measured area', 'square feet', 1, 1_000_000);
-const measuredLength = numberField('Confirmed measured length', 'linear feet', 0, 1_000_000);
-
-function commonContract({ fields, required, inspection, crossValidate }) {
-  return { fields: { ...fields, permitRequired: booleanField('Permit required for this measured project') }, required, inspection, crossValidate };
-}
-
-export const MEASUREMENT_CONTRACTS = {
-  ROOFING_REPLACEMENT: commonContract({
-    fields: {
-      roofSizeMethod: enumField('Roof measurement method', ['roof_measured']),
-      roofSizeInput: numberField('Measured roof surface area', 'square feet', 50, 1_000_000),
-      existingRoofType: slugField('Existing roofing material'),
-      replacementRoofType: slugField('Replacement roofing material'),
-      pitch: enumField('Roof pitch', PITCHES),
-      stories: enumField('Building stories', STORIES),
-      existingLayers: numberField('Measured existing roof layers', 'layers', 1, 10, { integer: true }),
-      roofComplexity: enumField('Roof complexity', ['simple', 'moderate', 'complex']),
-      serviceScope: enumField('Replacement scope', ['full', 'partial']),
-      partialPercent: numberField('Confirmed affected portion', 'percent', 0.1, 100),
-      partialAreaSqft: numberField('Measured affected roof area', 'square feet', 1, 1_000_000),
-      starterLengthLF: measuredLength,
-      dripEdgeLengthLF: measuredLength,
-      ridgeCapLengthLF: measuredLength,
-      deckingSheets: numberField('Confirmed decking sheets to replace', 'sheets', 0, 100_000, { integer: true })
-    },
-    required(c, p) {
-      const out = ['roofSizeMethod', 'roofSizeInput', 'existingRoofType', 'replacementRoofType', 'pitch', 'stories', 'existingLayers', 'roofComplexity', 'serviceScope'];
-      if (c.serviceScope === 'partial' && c.partialPercent === undefined && c.partialAreaSqft === undefined) out.push('partialAreaSqft');
-      if (p.accessoryPricingMode === 'itemized') out.push('starterLengthLF', 'dripEdgeLengthLF', 'ridgeCapLengthLF');
-      return out;
-    },
-    inspection(c) {
-      if (c.roofSizeMethod && c.roofSizeMethod !== 'roof_measured') {
-        return 'Measured roof surface area is required; home-size and size-category geometry is not sufficient for a customer-ready quote.';
-      }
-      return null;
-    },
-    crossValidate(c, p) {
-      const errors = [];
-      if (p.accessoryPricingMode !== 'itemized') {
-        for (const fieldName of ['starterLengthLF', 'dripEdgeLengthLF', 'ridgeCapLengthLF']) {
-          if (c[fieldName] !== undefined) errors.push({ field: fieldName, message: `${fieldName} is only valid with itemized roof accessory pricing.` });
-        }
-      }
-      if (c.serviceScope === 'full') {
-        if (c.partialPercent !== undefined) errors.push({ field: 'partialPercent', message: 'Affected percentage is only valid for a partial roof replacement.' });
-        if (c.partialAreaSqft !== undefined) errors.push({ field: 'partialAreaSqft', message: 'Affected roof area is only valid for a partial roof replacement.' });
-      }
-      if (c.serviceScope === 'partial' && c.partialPercent !== undefined && c.partialAreaSqft !== undefined) {
-        if ([c.roofSizeInput,c.partialPercent,c.partialAreaSqft].every(Number.isFinite) && exactCompare(exactMultiply(c.roofSizeInput,c.partialPercent),exactMultiply(c.partialAreaSqft,100))!==0) {
-          errors.push({ field: 'partialAreaSqft', message: 'Measured partial area and affected percentage do not agree.' });
-        }
-      }
-      if (c.partialAreaSqft !== undefined && c.roofSizeInput !== undefined && c.partialAreaSqft > c.roofSizeInput) {
-        errors.push({ field: 'partialAreaSqft', message: 'Affected roof area cannot exceed the measured roof area.' });
-      }
-      return errors;
-    }
-  }),
-
-  ROOFING_REPAIR: commonContract({
-    fields: {
-      repairType: slugField('Roof repair type'),
-      affectedArea: numberField('Measured affected roof area', 'square feet', 0.01, 1_000_000),
-      roofType: slugField('Roofing material'),
-      pitch: enumField('Roof pitch', PITCHES),
-      stories: enumField('Building stories', STORIES),
-      leakPresent: booleanField('Active leak reported')
-    },
-    required: () => ['repairType', 'affectedArea', 'roofType', 'pitch', 'stories', 'leakPresent'],
-    inspection: c => c.repairType === 'unknown'
-      ? 'Leak source is unknown. An in-person inspection is required before pricing this repair.'
-      : null
-  }),
-
-  FLAT_ROOF_REPLACEMENT: commonContract({
-    fields: {
-      roofSqft: numberField('Measured flat-roof area', 'square feet', 25, 2_000_000),
-      sqftMethod: enumField('Roof measurement method', ['exact']),
-      membraneType: slugField('Existing membrane type'),
-      existingLayers: field('Measured existing membrane layers', 'layers', 'integer_or_unknown', { min: 1, max: 10 }),
-      accessDifficulty: enumField('Roof access', ACCESS),
-      serviceScope: enumField('Replacement scope', ['full', 'partial']),
-      buildingType: enumField('Building type', ['residential', 'commercial']),
-      insulationNeeded:booleanField('New insulation needed'),
-      coverboardNeeded:booleanField('New coverboard needed'),
-      partialPercent: numberField('Confirmed affected portion', 'percent', 0.1, 100),
-      partialAreaSqft: numberField('Measured affected roof area', 'square feet', 1, 2_000_000)
-    },
-    required(c) {
-      const out = ['roofSqft', 'sqftMethod', 'membraneType', 'existingLayers', 'accessDifficulty', 'serviceScope', 'insulationNeeded', 'coverboardNeeded'];
-      if (c.serviceScope === 'partial' && c.partialPercent === undefined && c.partialAreaSqft === undefined) out.push('partialAreaSqft');
-      return out;
-    },
-    inspection(c) {
-      if (c.sqftMethod && c.sqftMethod !== 'exact') return 'Measured flat-roof area is required for a customer-ready quote.';
-      if (c.membraneType === 'unknown') return 'The membrane type must be confirmed before this flat-roof replacement can be priced.';
-      if (c.existingLayers === 'unknown') return 'The existing layer count must be measured before this flat-roof replacement can be priced.';
-      return null;
-    },
-    crossValidate(c) {
-      const errors = [];
-      if (c.serviceScope === 'full') {
-        if (c.partialPercent !== undefined) errors.push({ field: 'partialPercent', message: 'Affected percentage is only valid for a partial flat-roof replacement.' });
-        if (c.partialAreaSqft !== undefined) errors.push({ field: 'partialAreaSqft', message: 'Affected roof area is only valid for a partial flat-roof replacement.' });
-      }
-      if (c.serviceScope === 'partial' && c.partialPercent !== undefined && c.partialAreaSqft !== undefined) {
-        if ([c.roofSqft,c.partialPercent,c.partialAreaSqft].every(Number.isFinite) && exactCompare(exactMultiply(c.roofSqft,c.partialPercent),exactMultiply(c.partialAreaSqft,100))!==0) {
-          errors.push({ field: 'partialAreaSqft', message: 'Measured flat-roof partial area and affected percentage do not agree.' });
-        }
-      }
-      if (c.partialAreaSqft !== undefined && c.roofSqft !== undefined && c.partialAreaSqft > c.roofSqft) {
-        errors.push({ field: 'partialAreaSqft', message: 'Affected flat-roof area cannot exceed total measured roof area.' });
-      }
-      return errors;
-    }
-  }),
-
-  FLAT_ROOF_REPAIR: commonContract({
-    fields: {
-      repairType: slugField('Flat-roof repair type'),
-      affectedArea: numberField('Measured affected flat-roof area', 'square feet', 0.01, 1_000_000),
-      membraneType: slugField('Membrane type'),
-      leakPresent: booleanField('Active leak reported'),
-      pondingWater: booleanField('Ponding water reported')
-    },
-    required: () => ['repairType', 'affectedArea', 'membraneType', 'leakPresent', 'pondingWater'],
-    inspection(c) {
-      if (c.repairType === 'unknown_leak') return 'Flat-roof leak source requires inspection before pricing.';
-      if (c.membraneType === 'unknown') return 'The flat-roof membrane type must be confirmed before repair pricing.';
-      return null;
-    }
-  }),
-
-  INTERIOR_PAINTING: commonContract({
-    fields: {
-      areaInputMethod: enumField('Wall area measurement method', ['wall_sqft']),
-      wallAreaSqft: numberField('Measured paintable wall area', 'square feet', 1, 2_000_000),
-      wallHeight: enumField('Wall height', ['standard', 'high', 'vaulted']),
-      surfaceCondition: enumField('Wall condition', ['good', 'fair', 'poor']),
-      coats: numberField('Paint coats', 'coats', 1, 3, { integer: true }),
-      ceilingsIncluded: booleanField('Ceilings included'),
-      ceilingAreaSqft: numberField('Measured ceiling area', 'square feet', 1, 1_000_000),
-      trimIncluded: booleanField('Trim included'),
-      trimLengthLF: numberField('Measured trim length', 'linear feet', 0.1, 1_000_000)
-    },
-    required(c) {
-      const out = ['areaInputMethod', 'wallAreaSqft', 'wallHeight', 'surfaceCondition', 'coats', 'ceilingsIncluded', 'trimIncluded'];
-      if (c.ceilingsIncluded) out.push('ceilingAreaSqft');
-      if (c.trimIncluded) out.push('trimLengthLF');
-      return out;
-    },
-    inspection(c) {
-      if (c.areaInputMethod !== 'wall_sqft') return 'Measured paintable wall area is required; floor-area and room-count geometry are not used by the audit engine.';
-      if (c.surfaceCondition !== 'good') return BASIC_PAINT_PREPARATION_NOTICE;
-      return null;
-    },
-    crossValidate(c) {
-      const errors = [];
-      if (c.ceilingsIncluded === false && c.ceilingAreaSqft !== undefined) errors.push({ field: 'ceilingAreaSqft', message: 'Ceiling area cannot be supplied when ceilings are not included.' });
-      if (c.trimIncluded === false && c.trimLengthLF !== undefined) errors.push({ field: 'trimLengthLF', message: 'Trim length cannot be supplied when trim is not included.' });
-      return errors;
-    }
-  }),
-
-  EXTERIOR_PAINTING: commonContract({
-    fields: {
-      areaInputMethod: enumField('Wall area measurement method', ['wall_sqft']),
-      exteriorAreaSqft: numberField('Measured paintable wall area', 'square feet', 1, 2_000_000),
-      stories: enumField('Building stories', STORIES),
-      surfaceCondition: enumField('Exterior surface condition', ['good', 'fair', 'poor']),
-      coats: numberField('Paint coats', 'coats', 1, 3, { integer: true })
-    },
-    required: () => ['areaInputMethod', 'exteriorAreaSqft', 'stories', 'surfaceCondition', 'coats'],
-    inspection(c) {
-      if (c.areaInputMethod !== 'wall_sqft') return 'Measured paintable wall area is required; home-size maps are not sufficient for a customer-ready quote.';
-      if (c.surfaceCondition === 'poor') return 'Poor exterior surfaces require an explicitly confirmed primer pricing rule before pricing.';
-      return null;
-    }
-  }),
-
-  FLOORING_INSTALL: null,
-  FLOORING_REPLACEMENT: null,
-  FENCING_INSTALL: null,
-  FENCING_REPLACEMENT: null,
-  CONCRETE_DRIVEWAY: null,
-  CONCRETE_PATIO_SLAB: null,
-  LANDSCAPING_CLEANUP: null,
-  LANDSCAPING_MULCH: null,
-  LANDSCAPING_SOD: null,
-  LANDSCAPING_PLANTING: null,
-  LANDSCAPING_MOWING: null,
-  SIDING_REPLACEMENT: null,
-  SIDING_REPAIR: null,
-  CUSTOM: null
-};
-
-function flooringContract(replacement) {
-  return commonContract({
-    fields: {
-      sqft: numberField('Measured flooring area', 'square feet', 1, 1_000_000),
-      sqftMethod: enumField('Floor measurement method', ['exact']),
-      newFlooringType: enumField('New flooring type', FLOORING_TYPES),
-      existingFloorType: slugField('Existing floor type'),
-      removalNeeded: booleanField('Existing floor removal included'),
-      roomCount: numberField('Rooms in scope', 'rooms', 1, 10_000, { integer: true }),
-      layoutPattern: enumField('Flooring layout', ['straight', 'diagonal_or_pattern']),
-      stairSteps: numberField('Stair steps in scope', 'steps', 0, 10_000, { integer: true }),
-      underlaymentSelected: booleanField('Vinyl-plank underlayment selected'),
-      subfloorCondition: enumField('Subfloor underlayment condition', ['requires_underlayment', 'does_not_require_underlayment', 'unknown']),
-      ...(replacement ? {
-        subfloorIssues: booleanField('Subfloor issues reported'),
-        subfloorRepairAreaSqft: numberField('Measured subfloor repair area', 'square feet', 0.1, 1_000_000)
-      } : {})
-    },
-    required(c, p) {
-      const out = ['sqft', 'sqftMethod', 'newFlooringType', 'existingFloorType', 'removalNeeded', 'roomCount', 'layoutPattern', 'stairSteps'];
-      if (c.newFlooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon') out.push('underlaymentSelected');
-      if (c.newFlooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition') out.push('subfloorCondition');
-      if (replacement) {
-        out.push('subfloorIssues');
-        if (c.subfloorIssues) out.push('subfloorRepairAreaSqft');
-      }
-      return out;
-    },
-    inspection(c, p) {
-      if (c.sqftMethod && c.sqftMethod !== 'exact') return 'Measured flooring area is required for a customer-ready quote.';
-      if (c.newFlooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'owner_review') {
-        return 'Vinyl-plank underlayment is configured for owner review.';
-      }
-      if (c.newFlooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' && c.subfloorCondition === 'unknown') {
-        return 'The subfloor condition must be confirmed before applying the vinyl-plank underlayment rule.';
-      }
-      return null;
-    },
-    crossValidate(c, p) {
-      const errors = [];
-      if (c.removalNeeded && c.existingFloorType === 'none') errors.push({ field: 'existingFloorType', message: 'Removal cannot be selected when no existing floor is present.' });
-      if (c.underlaymentSelected !== undefined && !(c.newFlooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon')) {
-        errors.push({ field: 'underlaymentSelected', message: 'Underlayment selection is only valid for customer-selectable vinyl-plank underlayment.' });
-      }
-      if (c.subfloorCondition !== undefined && !(c.newFlooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition')) {
-        errors.push({ field: 'subfloorCondition', message: 'Subfloor condition is only valid for the vinyl-plank subfloor-condition rule.' });
-      }
-      if (c.subfloorRepairAreaSqft !== undefined && c.sqft !== undefined && c.subfloorRepairAreaSqft > c.sqft) {
-        errors.push({ field: 'subfloorRepairAreaSqft', message: 'Subfloor repair area cannot exceed the measured flooring area.' });
-      }
-      if (replacement && c.subfloorIssues === false && c.subfloorRepairAreaSqft !== undefined) {
-        errors.push({ field: 'subfloorRepairAreaSqft', message: 'Subfloor repair area cannot be supplied when no subfloor issues are reported.' });
-      }
-      return errors;
-    }
-  });
-}
-
-function fencingContract(replacement) {
-  return commonContract({
-    fields: {
-      linearFeet: numberField('Measured fence length', 'linear feet', 1, 1_000_000),
-      lfMethod: enumField('Fence measurement method', ['exact']),
-      fenceType: slugField('Fence type'),
-      fenceHeight: numberField('Fence height', 'feet', Number.MIN_VALUE, Number.MAX_VALUE),
-      gateCount: numberField('Gate count', 'gates', 0, 10_000, { integer: true }),
-      gateWidthTotalLF: numberField('Measured total gate-opening width', 'linear feet', 0, 100_000),
-      terrainSlope: enumField('Terrain slope', SLOPES),
-      ...(replacement ? { oldFenceRemoval: booleanField('Old fence removal included') } : {})
-    },
-    required: c => [
-      'linearFeet', 'lfMethod', 'fenceType', 'fenceHeight',
-      'gateCount', 'terrainSlope',
-      ...(c.gateCount > 0 ? ['gateWidthTotalLF'] : []),
-      ...(replacement ? ['oldFenceRemoval'] : [])
-    ],
-    inspection: c => c.lfMethod === 'assumption'
-      ? 'Measured fence length is required for a customer-ready quote.'
-      : null,
-    crossValidate(c) {
-      const errors = [];
-      if (c.gateCount === 0 && c.gateWidthTotalLF !== undefined && c.gateWidthTotalLF !== 0) {
-        errors.push({ field: 'gateWidthTotalLF', message: 'Gate-opening width cannot be supplied when no gates are selected.' });
-      }
-      if (c.gateCount > 0 && c.gateWidthTotalLF !== undefined && c.gateWidthTotalLF <= 0) {
-        errors.push({ field: 'gateWidthTotalLF', message: 'A positive measured gate-opening width is required when gates are selected.' });
-      }
-      if (c.gateCount > 0 && c.gateWidthTotalLF !== undefined && c.linearFeet !== undefined && c.gateWidthTotalLF >= c.linearFeet) {
-        errors.push({ field: 'gateWidthTotalLF', message: 'Gate-opening width must be less than the measured fence length.' });
-      }
-      return errors;
-    }
-  });
-}
-
-function concreteContract() {
-  return commonContract({
-    fields: {
-      dimensionMethod: enumField('Slab measurement method', ['exact', 'measured_area_perimeter', 'measured_outline']),
-      length: numberField('Measured slab length', 'feet', 0.1, 100_000),
-      width: numberField('Measured slab width', 'feet', 0.1, 100_000),
-      areaSqft: numberField('Measured slab area', 'square feet', 1, 10_000_000),
-      perimeterLF: numberField('Measured slab perimeter', 'linear feet', 0.1, 1_000_000),
-      thickness: numberField('Concrete thickness', 'inches', 2, 24),
-      finishType: enumField('Concrete finish', ['broom', 'smooth', 'exposed_aggregate', 'stamped']),
-      demolitionNeeded: booleanField('Existing concrete demolition included'),
-      demolitionAreaSqft: numberField('Measured demolition area', 'square feet', 0.1, 10_000_000),
-      reinforcement: enumField('Reinforcement', ['none', 'wire_mesh', 'rebar']),
-      accessDifficulty: enumField('Project access', ACCESS),
-      baseNeeded: booleanField('Base preparation included'),
-      adjoinsExistingConcrete:{...booleanField('Does any edge touch a house foundation, garage foundation, or existing concrete?'),summaryLabel:'Edges against foundation or existing concrete'},
-      adjoiningEdgeLF:numberField('Total measured length of those adjoining edges','linear feet',0.1,1_000_000,{visibleWhen:[[['adjoinsExistingConcrete','eq',true]]]})
-    },
-    required(c) {
-      const out = ['dimensionMethod', 'thickness', 'finishType', 'demolitionNeeded', 'reinforcement', 'accessDifficulty', 'baseNeeded', 'adjoinsExistingConcrete'];
-      if(c.adjoinsExistingConcrete===true)out.push('adjoiningEdgeLF');
-      if (c.dimensionMethod === 'exact') out.push('length', 'width');
-      if (c.dimensionMethod === 'measured_area_perimeter') out.push('areaSqft', 'perimeterLF');
-      if (c.demolitionNeeded) out.push('demolitionAreaSqft');
-      return out;
-    },
-    inspection(c, p) {
-      if (['area_only', 'assumption'].includes(c.dimensionMethod)) {
-        return 'Measured slab dimensions or measured area and perimeter are required; perimeter is not inferred from area.';
-      }
-      if (c.finishType === 'exposed_aggregate' && !p.scopeDetails?.exposed_aggregate) {
-        return 'Exposed-aggregate material pricing requires an approved owner pricing rule before quoting.';
-      }
-      return null;
-    },
-    crossValidate(c) {
-      const errors = [];
-      if (c.dimensionMethod === 'exact') {
-        if (c.areaSqft !== undefined) errors.push({ field: 'areaSqft', message: 'Measured area cannot be supplied when length and width are the selected slab measurement method.' });
-        if (c.perimeterLF !== undefined) errors.push({ field: 'perimeterLF', message: 'Measured perimeter cannot be supplied when length and width are the selected slab measurement method.' });
-        if (Number.isFinite(c.length) && Number.isFinite(c.width) && exactCompare(exactMultiply(c.length, c.width), 10_000_000) > 0) {
-          const message = 'Measured slab length and width produce an area above the supported 10,000,000 square-foot limit.';
-          errors.push({ field: 'length', message });
-          errors.push({ field: 'width', message });
-        }
-      }
-      if (c.dimensionMethod === 'measured_area_perimeter') {
-        if (c.length !== undefined) errors.push({ field: 'length', message: 'Slab length cannot be supplied when measured area and perimeter are the selected method.' });
-        if (c.width !== undefined) errors.push({ field: 'width', message: 'Slab width cannot be supplied when measured area and perimeter are the selected method.' });
-      }
-      if(c.adjoinsExistingConcrete===false&&c.adjoiningEdgeLF!==undefined)errors.push({field:'adjoiningEdgeLF',message:'Adjoining edge length is only supplied when an edge touches foundation or existing concrete.'});
-      if(c.adjoinsExistingConcrete===true&&Number.isFinite(c.adjoiningEdgeLF)){
-        let perimeter;
-        if(c.dimensionMethod==='exact'&&Number.isFinite(c.length)&&Number.isFinite(c.width))perimeter=exactMultiply(2,exactAdd(c.length,c.width));
-        if(c.dimensionMethod==='measured_area_perimeter'&&Number.isFinite(c.perimeterLF))perimeter=c.perimeterLF;
-        if(c.dimensionMethod==='measured_outline')try{perimeter=measuredOutlineVNext(c.outlinePoints).exactPerimeterLF;}catch{}
-        if(perimeter!==undefined&&exactCompare(c.adjoiningEdgeLF,perimeter)>0)errors.push({field:'adjoiningEdgeLF',message:'Adjoining edges cannot exceed the measured slab perimeter.'});
-      }
-      if (c.demolitionNeeded === false && c.demolitionAreaSqft !== undefined) errors.push({ field: 'demolitionAreaSqft', message: 'Demolition area cannot be supplied when demolition is not included.' });
-      return errors;
-    }
-  });
-}
-
-MEASUREMENT_CONTRACTS.FLOORING_INSTALL = flooringContract(false);
-MEASUREMENT_CONTRACTS.FLOORING_REPLACEMENT = flooringContract(true);
-MEASUREMENT_CONTRACTS.FENCING_INSTALL = fencingContract(false);
-MEASUREMENT_CONTRACTS.FENCING_REPLACEMENT = fencingContract(true);
-MEASUREMENT_CONTRACTS.CONCRETE_DRIVEWAY = concreteContract();
-MEASUREMENT_CONTRACTS.CONCRETE_PATIO_SLAB = concreteContract();
-
-MEASUREMENT_CONTRACTS.LANDSCAPING_CLEANUP = commonContract({
-  fields: {
-    yardSqft: numberField('Measured cleanup area', 'square feet', 1, 10_000_000),
-    sqftMethod: enumField('Cleanup area method', ['exact']),
-    debrisLevel: enumField('Debris level', ['light', 'moderate', 'heavy']),
-    slope: enumField('Terrain slope', SLOPES),
-    haulAway: booleanField('Additional haul-away selected')
-  },
-  required: () => ['yardSqft', 'sqftMethod', 'debrisLevel', 'slope', 'haulAway'],
-  inspection: c => c.sqftMethod === 'assumption' ? 'Measured cleanup area is required for a customer-ready quote.' : null
-});
-
-MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
-  fields: {
-    inputMethod: {...enumField('Mulch quantity method', ['sqft', 'yards']), optionLabels:{sqft:'Bed area and depth',yards:'Cubic yards of mulch'}},
-    mulchArea: {...numberField('Mulch quantity', 'square feet for bed area; cubic yards for mulch volume', 0.01, 10_000_000),
-      visibleWhen:[[['inputMethod','in',['sqft','yards']]]],
-      presentationVariants:[
-        {label:'Measured bed area',unit:'square feet',visibleWhen:[[['inputMethod','eq','sqft']]]},
-        {label:'Mulch volume',unit:'cubic yards',visibleWhen:[[['inputMethod','eq','yards']]]}
-      ]},
-    mulchDepth: numberField('Mulch depth', 'inches', 0.5, 24),
-    mulchType: slugField('Mulch type'),
-    bedCondition: enumField('Planting-bed condition', ['clean', 'needs_weeding', 'overgrown']),
-    bedSqft: numberField('Measured preparation area', 'square feet', 0.1, 10_000_000),
-    edgingNeeded: booleanField('Bed edging included'),
-    edgeLF: numberField('Measured bed-edge length', 'linear feet', 0.1, 1_000_000)
-  },
-  required(c) {
-    const out = ['inputMethod', 'mulchArea', 'mulchType', 'bedCondition', 'edgingNeeded'];
-    if (c.inputMethod === 'sqft') out.push('mulchDepth');
-    if (c.bedCondition !== 'clean') out.push('bedSqft');
-    if (c.edgingNeeded) out.push('edgeLF');
-    return out;
-  },
-  crossValidate(c) {
-    const errors = [];
-    if (c.inputMethod === 'yards' && c.mulchDepth !== undefined) errors.push({ field: 'mulchDepth', message: 'Mulch depth cannot be supplied when cubic yards are entered directly.' });
-    if (c.bedCondition === 'clean' && c.bedSqft !== undefined) errors.push({ field: 'bedSqft', message: 'Bed preparation area cannot be supplied for a clean bed.' });
-    if (c.edgingNeeded === false && c.edgeLF !== undefined) errors.push({ field: 'edgeLF', message: 'Bed-edge length cannot be supplied when edging is not included.' });
-    return errors;
-  }
-});
-
-MEASUREMENT_CONTRACTS.LANDSCAPING_SOD = commonContract({
-  fields: {
-    sodSqft: numberField('Measured sod area', 'square feet', 1, 10_000_000),
-    sqftMethod: enumField('Sod area method', ['exact']),
-    groundPrepNeeded: booleanField('Ground preparation included'),
-    slope: enumField('Terrain slope', SLOPES),
-    accessDifficulty: enumField('Project access', ACCESS)
-  },
-  required: () => ['sodSqft', 'sqftMethod', 'groundPrepNeeded', 'slope', 'accessDifficulty'],
-  inspection: c => c.sqftMethod === 'assumption' ? 'Measured sod area is required for a customer-ready quote.' : null
-});
-
-MEASUREMENT_CONTRACTS.LANDSCAPING_PLANTING = commonContract({
-  fields: {
-    plantsBySize: field('Measured plant count by size', 'plants', 'plant_counts'),
-    bedCondition: enumField('Planting-bed condition', ['clean', 'needs_weeding', 'overgrown']),
-    bedSqft: numberField('Measured preparation area', 'square feet', 0.1, 10_000_000),
-    mulchNeeded: booleanField('Mulch included'),
-    mulchYards: numberField('Measured mulch quantity', 'cubic yards', 0.01, 100_000),
-    mulchType: slugField('Mulch type')
-  },
-  required(c) {
-    const out = ['plantsBySize', 'bedCondition', 'mulchNeeded'];
-    if (c.bedCondition !== 'clean') out.push('bedSqft');
-    if (c.mulchNeeded) out.push('mulchYards', 'mulchType');
-    return out;
-  },
-  crossValidate(c) {
-    const errors = [];
-    if (c.bedCondition === 'clean' && c.bedSqft !== undefined) errors.push({ field: 'bedSqft', message: 'Bed preparation area cannot be supplied for a clean planting bed.' });
-    if (c.mulchNeeded === false && c.mulchYards !== undefined) errors.push({ field: 'mulchYards', message: 'Mulch quantity cannot be supplied when mulch is not included.' });
-    if (c.mulchNeeded === false && c.mulchType !== undefined) errors.push({ field: 'mulchType', message: 'Mulch type cannot be supplied when mulch is not included.' });
-    return errors;
-  }
-});
-
-MEASUREMENT_CONTRACTS.LANDSCAPING_MOWING = commonContract({
-  fields: {
-    yardSqft: numberField('Measured mowable lawn area', 'square feet', 1, 10_000_000),
-    sqftMethod: enumField('Lawn area method', ['exact']),
-    serviceFrequency: enumField('Service frequency', ['weekly', 'biweekly', 'monthly', 'one_time']),
-    grassCondition: enumField('Grass condition', ['maintained', 'overgrown', 'severe']),
-    bagClippings: booleanField('Clipping bagging selected'),
-    edgingIncluded: booleanField('Lawn edging selected'),
-    edgingLengthLF: numberField('Measured edging length', 'linear feet', 0.1, 1_000_000)
-  },
-  required(c) {
-    const out = ['yardSqft', 'sqftMethod', 'serviceFrequency', 'grassCondition', 'bagClippings', 'edgingIncluded'];
-    if (c.edgingIncluded) out.push('edgingLengthLF');
-    return out;
-  },
-  inspection: c => c.sqftMethod === 'assumption' ? 'Measured mowable lawn area is required for a customer-ready quote.' : null,
-  crossValidate(c) {
-    if (c.edgingIncluded === false && c.edgingLengthLF !== undefined) return [{ field: 'edgingLengthLF', message: 'Edging length cannot be supplied when lawn edging is not included.' }];
-    return [];
-  }
-});
-
-MEASUREMENT_CONTRACTS.SIDING_REPLACEMENT = commonContract({
-  fields: {
-    areaInputMethod: enumField('Siding area method', ['sqft']),
-    sidingAreaSqft: numberField('Measured siding wall area', 'square feet', 1, 2_000_000),
-    sidingType: enumField('Siding type', SIDING_TYPES),
-    stories: enumField('Building stories', STORIES),
-    oldSidingRemoval: booleanField('Old siding removal included'),
-    trimIncluded: booleanField('Siding trim included'),
-    trimLengthLF: numberField('Measured siding trim length', 'linear feet', 0.1, 1_000_000)
-  },
-  required(c) {
-    const out = ['areaInputMethod', 'sidingAreaSqft', 'sidingType', 'stories', 'oldSidingRemoval', 'trimIncluded'];
-    if (c.trimIncluded) out.push('trimLengthLF');
-    return out;
-  },
-  inspection: c => c.areaInputMethod === 'homesize'
-    ? 'Measured siding wall area is required; home-size area maps are not used by the audit engine.'
-    : null,
-  crossValidate(c) {
-    if (c.trimIncluded === false && c.trimLengthLF !== undefined) return [{ field: 'trimLengthLF', message: 'Siding trim length cannot be supplied when trim is not included.' }];
-    return [];
-  }
-});
-
-MEASUREMENT_CONTRACTS.SIDING_REPAIR = commonContract({
-  fields: {
-    sidingType: enumField('Siding type', SIDING_TYPES),
-    damageLevel: slugField('Siding damage type'),
-    affectedArea: numberField('Measured affected siding area', 'square feet', 0.01, 1_000_000),
-    stories: enumField('Building stories', STORIES)
-  },
-  required: () => ['sidingType', 'damageLevel', 'affectedArea', 'stories']
-});
-
-MEASUREMENT_CONTRACTS.CUSTOM = commonContract({
-  fields: {
-    service: field('Confirmed custom service', null, 'string', { minLength: 1, maxLength: 80 }),
-    serviceConfirmed: booleanField('Customer confirmed the matched service'),
-    unit: enumField('Customer quantity unit', ['flat', 'per_sqft', 'per_hour', 'per_unit', 'per_LF', 'per_square']),
-    hours: numberField('Measured labor time', 'hours', 0.01, 100_000),
-    itemCount: numberField('Confirmed item count', 'items', 1, 10_000_000, { integer: true }),
-    areaSqft: numberField('Measured service area', 'square feet', 0.01, 10_000_000),
-    linearFeet: numberField('Measured service length', 'linear feet', 0.01, 10_000_000),
-    roofSquares: numberField('Measured roofing area', 'roofing squares', 0.01, 100_000)
-  },
-  required(c, p) {
-    const out = ['service', 'serviceConfirmed', 'unit'];
-    const quantityField = {
-      per_hour: 'hours', per_unit: 'itemCount', per_sqft: 'areaSqft',
-      per_LF: 'linearFeet', per_square: 'roofSquares'
-    }[p.unit || c.unit];
-    if (quantityField) out.push(quantityField);
-    return out;
-  },
-  inspection(c, p) {
-    if (p.customPricingMode === 'inspection_first') return 'This custom service is configured as inspection-first.';
-    if (c.serviceConfirmed === false) return 'The matched custom service must be confirmed before quoting.';
-    return null;
-  },
-  crossValidate(c, p) {
-    const errors = [];
-    if (c.unit !== undefined && p.unit !== undefined && c.unit !== p.unit) {
-      errors.push({ field: 'unit', message: 'Customer quantity unit does not match the configured custom-service unit.' });
-    }
-    const quantityFieldByUnit = {
-      per_hour: 'hours',
-      per_unit: 'itemCount',
-      per_sqft: 'areaSqft',
-      per_LF: 'linearFeet',
-      per_square: 'roofSquares'
-    };
-    const selectedQuantityField = quantityFieldByUnit[p.unit || c.unit];
-    for (const quantityField of Object.values(quantityFieldByUnit)) {
-      if (quantityField !== selectedQuantityField && c[quantityField] !== undefined) errors.push({ field: quantityField, message: `${quantityField} does not apply to the configured custom-service unit.` });
-    }
-    return errors;
-  }
-});
-
-const factor = (defaultValue, label, unit, min, max) => ({ defaultValue, label, unit, min, max });
-const factorMap = (defaultValue, label, unit, min, max) => ({ defaultValue, label, unit, min, max });
-
-export const CLASS2_DEFINITIONS = {
-  ROOFING_REPLACEMENT: {
-    wasteFactorByComplexity: factorMap({ simple: 0.10, moderate: 0.13, complex: 0.18 }, 'Roofing material waste by roof complexity', 'decimal fraction', 0, 0.5),
-    pitchMultiplier: factorMap({ low: 1, medium: 1.15, steep: 1.25, very_steep: 1.40 }, 'Roof pitch labor multiplier', 'multiplier', 0.1, 5),
-    storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Story-count labor multiplier', 'multiplier', 0.1, 5)
-  },
-  ROOFING_REPAIR: {
-    pitchMultiplier: factorMap({ low: 1, medium: 1.15, steep: 1.25, very_steep: 1.40 }, 'Roof pitch labor multiplier', 'multiplier', 0.1, 5),
-    storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Story-count labor multiplier', 'multiplier', 0.1, 5)
-  },
-  FLAT_ROOF_REPLACEMENT: {
-    accessMultiplier: factorMap({ easy: 1, moderate: 1.15, difficult: 1.30 }, 'Flat-roof access labor multiplier', 'multiplier', 0.1, 5)
-  },
-  FLAT_ROOF_REPAIR: {},
-  INTERIOR_PAINTING: {
-    wallHeightLaborMultiplier: factorMap({ standard: 1, high: 1.10, vaulted: 1.25 }, 'Wall-height labor multiplier', 'multiplier', 0.1, 5)
-  },
-  EXTERIOR_PAINTING: {
-    storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Exterior story labor multiplier', 'multiplier', 0.1, 5),
-    prepHoursPerSqft: factorMap({ fair: 0.008 }, 'Exterior fair-condition preparation labor hours', 'hours per square foot', 0.000001, 2)
-  },
-  FLOORING_INSTALL: {
-    wasteFactorByType: factorMap({ hardwood: 0.10, laminate: 0.08, vinyl_plank: 0.08, carpet: 0.10, tile: 0.12 }, 'Flooring material waste by type', 'decimal fraction', 0, 0.5),
-    patternWasteAdder: factorMap({ straight: 0, diagonal_or_pattern: 0.07 }, 'Pattern material waste addition', 'decimal fraction', 0, 0.5),
-    roomComplexityMultiplier: factorMap({ large: 1, medium: 1.10, small: 1.20 }, 'Average-room labor multiplier', 'multiplier', 0.1, 5),
-    roomSizeThresholds: factorMap({ smallMaxSqft: 150, mediumMaxSqft: 300 }, 'Average-room size thresholds', 'square feet', 1, 10_000)
-  },
-  FLOORING_REPLACEMENT: {},
-  FENCING_INSTALL: {},
-  FENCING_REPLACEMENT: {},
-  CONCRETE_DRIVEWAY: {
-    concreteWasteFactor: factor(0.10, 'Concrete ordering waste allowance', 'decimal fraction', 0, 0.5),
-    finishMultiplier: factorMap({ broom: 1, smooth: 1.05, stamped: 1.50 }, 'Concrete finish extra-labor multiplier', 'multiplier', 1, 5),
-    accessMultiplier: factorMap({ easy: 1, moderate: 1.10, difficult: 1.25 }, 'Concrete access labor multiplier', 'multiplier', 0.1, 5)
-  },
-  CONCRETE_PATIO_SLAB: {},
-  LANDSCAPING_CLEANUP: {
-    slopeMultiplier: factorMap({ flat: 1, moderate: 1.15, steep: 1.35 }, 'Cleanup slope labor multiplier', 'multiplier', 0.1, 5)
-  },
-  LANDSCAPING_MULCH: {
-    mulchOverageFactor: factor(1.15, 'Mulch ordering overage factor', 'quantity multiplier', 1, 2)
-  },
-  LANDSCAPING_SOD: {
-    sodWasteFactor: factor(0.05, 'Sod material waste allowance', 'decimal fraction', 0, 0.5),
-    slopeMultiplier: factorMap({ flat: 1, moderate: 1.15, steep: 1.35 }, 'Sod slope labor multiplier', 'multiplier', 0.1, 5),
-    accessMultiplier: factorMap({ easy: 1, moderate: 1.10, difficult: 1.25 }, 'Sod access labor multiplier', 'multiplier', 0.1, 5)
-  },
-  LANDSCAPING_PLANTING: {
-    mulchOverageFactor: factor(1.15, 'Mulch ordering overage factor', 'quantity multiplier', 1, 2)
-  },
-  LANDSCAPING_MOWING: {},
-  SIDING_REPLACEMENT: {
-    wasteFactorByType: factorMap({ vinyl: 0.10, fiber_cement: 0.12, wood: 0.12, metal: 0.10 }, 'Siding material waste by type', 'decimal fraction', 0, 0.5),
-    storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Siding story labor and removal multiplier', 'multiplier', 0.1, 5)
-  },
-  SIDING_REPAIR: {
-    storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Siding repair story labor multiplier', 'multiplier', 0.1, 5)
-  },
-  CUSTOM: {}
-};
-
-// October 3 owner-approved material quantities and labor adjustments.
-const waste = label => factor(0.10,label,'decimal fraction',0,0.5);
-CLASS2_DEFINITIONS.ROOFING_REPLACEMENT.accessoryWasteFactor=factorMap({starterPerLF:0.10,dripEdgePerLF:0.10,ridgeCapPerLF:0.10},'Starter strip, drip edge and ridge cap waste','decimal fraction',0,0.5);
-CLASS2_DEFINITIONS.FLAT_ROOF_REPLACEMENT.membraneWasteFactor=waste('Membrane material waste');
-CLASS2_DEFINITIONS.FLAT_ROOF_REPAIR.accessMultiplier=structuredClone(CLASS2_DEFINITIONS.FLAT_ROOF_REPLACEMENT.accessMultiplier);
-for(const type of ['INTERIOR_PAINTING','EXTERIOR_PAINTING']){
- CLASS2_DEFINITIONS[type].paintWasteFactor=waste('Finish paint material waste');
- CLASS2_DEFINITIONS[type].primerWasteFactor=waste('Primer material waste');
- CLASS2_DEFINITIONS[type].prepMaterialWasteFactor=waste('Preparation material waste');
-}
-CLASS2_DEFINITIONS.FLOORING_INSTALL.layoutLaborMultiplier=factorMap({straight:1,diagonal_or_pattern:1.20},'Flooring layout labor adjustment','multiplier',0.1,5);
-CLASS2_DEFINITIONS.FENCING_INSTALL={postSpacingLF:factor(8,'Distance between fence posts','feet',0.1,100),fenceWasteFactor:waste('Fence infill material waste'),terrainLaborMultiplier:factorMap({flat:1,moderate:1.15,steep:1.30},'Fence terrain labor adjustment','multiplier',0.1,5)};
-CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.reinforcementWasteFactor=factorMap({wire_mesh:0.10,rebar:0.10},'Wire mesh and rebar material waste','decimal fraction',0,0.5);
-CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.stampedMaterialWasteFactor=waste('Stamped finish material waste');
-for(const type of ['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'])CLASS2_DEFINITIONS[type].accessMultiplier=structuredClone(CLASS2_DEFINITIONS.LANDSCAPING_SOD.accessMultiplier);
-
-CLASS2_DEFINITIONS.FLOORING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FLOORING_INSTALL);
-CLASS2_DEFINITIONS.FENCING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FENCING_INSTALL);
-CLASS2_DEFINITIONS.CONCRETE_PATIO_SLAB = structuredClone(CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY);
-
-// Repairs 107, 110, 112, 120-127: explicit facts or review, never inferred scope.
-function extendMeasuredContract(type, fields, requiredFacts, inspect, cross) {
-  const contract = MEASUREMENT_CONTRACTS[type];
-  Object.assign(contract.fields, fields);
-  const previousRequired = contract.required, previousInspection = contract.inspection, previousCross = contract.crossValidate;
-  contract.required = (c,p) => [...(previousRequired?.(c,p) || []), ...requiredFacts(c,p)];
-  contract.inspection = (c,p) => previousInspection?.(c,p) || inspect?.(c,p) || null;
-  contract.crossValidate = (c,p) => [...(previousCross?.(c,p) || []), ...(cross?.(c,p) || [])];
-}
-for(const type of ['FLAT_ROOF_REPAIR','LANDSCAPING_MULCH','LANDSCAPING_PLANTING'])extendMeasuredContract(type,{accessDifficulty:enumField('Project access',ACCESS)},()=>['accessDifficulty']);
-for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB'])extendMeasuredContract(type,
- {outlinePoints:field('Closed measured orthogonal outline coordinates','feet','orthogonal_outline')},c=>c.dimensionMethod==='measured_outline'?['outlinePoints']:[],null,
- c=>c.dimensionMethod==='measured_outline'?['length','width','areaSqft','perimeterLF'].filter(k=>c[k]!==undefined).map(field=>({field,message:'Measured outline derives area and perimeter; duplicate geometry inputs are not accepted.'})):c.outlinePoints!==undefined?[{field:'outlinePoints',message:'Outline points require the measured_outline method.'}]:[]);
-const uncertainRepair = c => ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average'].includes(c.repairType) || (c.leakPresent && c.leakSourceIdentified !== true);
-for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR']) extendMeasuredContract(type,
-  { leakSourceIdentified: booleanField('Leak source specifically identified') }, () => [],
-  c => uncertainRepair(c) ? 'The leak source must be specifically identified by inspection before pricing.' : null);
-// Owner ruling area (audit M03): a repair larger than the area the owner prices as a
-// large repair is not quoted from the fixed large-repair hours and allowance.
-export const LARGE_REPAIR_LIMIT_MESSAGE = 'This repair is larger than the area this business prices as a repair. The business will follow up to assess it.';
-export function largeRepairLimitProblem(serviceType, value) {
-  if (value === undefined) return null;
-  const mediumMax = serviceType === 'ROOFING_REPAIR' ? 200 : 80;
-  return typeof value === 'number' && Number.isFinite(value) && value > mediumMax && value <= 1_000_000 ? null
-    : `Enter the largest affected area priced as a repair: more than ${mediumMax} sq ft (the medium-repair limit) and at most 1,000,000.`;
-}
-for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR']) extendMeasuredContract(type, {}, () => [],
-  (c, p) => repairSizeFromAffectedArea(type, c.affectedArea) === 'large' && typeof p?.largeRepairMaxSqft === 'number' && c.affectedArea > p.largeRepairMaxSqft ? LARGE_REPAIR_LIMIT_MESSAGE : null);
-for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasuredContract(type, {}, () => [], null, c => {
-  if(c.serviceScope !== 'partial') return [];
-  const total = type === 'ROOFING_REPLACEMENT' ? c.roofSizeInput : c.roofSqft;
-  if(typeof total !== 'number' || !Number.isFinite(total)) return [];
-  const errors=[];
-  for(const name of ['partialAreaSqft','partialPercent']) {
-    if(typeof c[name] !== 'number' || !Number.isFinite(c[name])) continue;
-    const area = name === 'partialPercent' ? exactDivide(exactMultiply(total,c[name]),100) : c[name];
-    const domain=MEASUREMENT_CONTRACTS[type].fields.partialAreaSqft;
-    if(exactCompare(area,domain.min)<0 || exactCompare(area,domain.max)>0 || exactCompare(area,total)>=0)
-      errors.push({field:name,message:'Partial area must satisfy the measured-area bounds and be strictly smaller than the total roof area.'});
-  }
-  return errors;
-});
-extendMeasuredContract('FLAT_ROOF_REPLACEMENT', {replacementMembraneType:slugField('Replacement membrane type')}, () => ['replacementMembraneType'],
- (c,p) => ['unknown','average'].includes(c.membraneType) || ['unknown','average'].includes(c.replacementMembraneType)
-  ? 'Both existing and replacement membrane systems must be identified.'
-  : (c.insulationNeeded===true||c.coverboardNeeded===true)&&!p.scopeDetails?.insulation
-    ? 'New roof insulation or coverboard was requested, but this business has not set up insulation and coverboard pricing.'
-    : null);
-for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredContract(type,
- {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000)}, c=>c.removalNeeded?['removalAreaSqft']:[],
- (c,p)=>c.stairSteps>0&&!scopeEntriesFor(p,'stairs').length?'Stair scope requires an explicitly all-inclusive owner price or separate labor, material, underlayment, removal, and disposal pricing.':null,
- c=>c.removalNeeded===false && c.removalAreaSqft!==undefined?[{field:'removalAreaSqft',message:'Removal area cannot be supplied when removal is not selected.'}]:[]);
-extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
-for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredContract(type,{},()=>[],
- (c,p)=>c.demolitionNeeded&&!scopeEntriesFor(p,'demolition').length?'Existing slab thickness, reinforcement, access, and demolition scope require an owner-priced contract; new slab facts cannot price the existing slab.'
- :null,
- c=>{
-   const errors=[];
-   if(c.dimensionMethod==='exact' && Number.isFinite(c.length) && Number.isFinite(c.width)){
-     const area=exactMultiply(c.length,c.width),domain=MEASUREMENT_CONTRACTS[type].fields.areaSqft;
-     if(exactCompare(area,domain.min)<0 || exactCompare(area,domain.max)>0)errors.push({field:'length',message:'Derived concrete area must satisfy the direct measured-area bounds.'});
-   }
-   // Isoperimetric bound: no planar slab can have less perimeter than an equal-area circle.
-   if(c.dimensionMethod==='measured_area_perimeter' && Number.isFinite(c.areaSqft) && Number.isFinite(c.perimeterLF) && exactCompare(exactMultiply(c.perimeterLF,c.perimeterLF),exactMultiply(4*Math.PI,c.areaSqft))<0)
-     errors.push({field:'perimeterLF',message:'The supplied area and perimeter are physically impossible for a simple planar slab.'});
-   return errors;
- });
-extendMeasuredContract('INTERIOR_PAINTING',{
- wallScopeUniform:booleanField('All wall area shares the confirmed height, access, and finish-coat count'),
- ceilingCoats:numberField('Independently confirmed ceiling finish coats','coats',1,3,{integer:true})
-},c=>['wallScopeUniform',...(c.ceilingsIncluded?['ceilingCoats']:[])],
- c=>c.wallScopeUniform!==true?'Mixed wall height, access, or coat zones require separate measured scope or inspection.':null,
- c=>c.ceilingsIncluded===false && c.ceilingCoats!==undefined?[{field:'ceilingCoats',message:'Ceiling coats cannot be supplied when ceilings are excluded.'}]:[]);
-extendMeasuredContract('EXTERIOR_PAINTING',{},()=>[],()=> 'Set up an exterior painting offering with the surface, coating, coats, preparation and primer it includes, then enter its installed or itemized prices.');
-extendMeasuredContract('LANDSCAPING_SOD',{separateDisposalSelected:booleanField('Separate project debris disposal selected')},()=>[]);
-
-for (const [type, contract] of Object.entries(MEASUREMENT_CONTRACTS)) {
-  if (Object.values(contract.fields).some(f => f.type === 'slug')) extendMeasuredContract(type, {
-    confirmedFacts: { label: 'Affirmatively identified owner offerings', unit: null, type: 'confirmed_facts' }
-  }, () => []);
-}
-deepFreeze(MEASUREMENT_CONTRACTS);
-deepFreeze(CLASS2_DEFINITIONS);
-
-export function withClass2Defaults(serviceType, pricing = {}) {
-  if (!SERVICE_TYPES.includes(serviceType)) throw new TypeError('Service type is unsupported.');
-  const snapshot = snapshotPlainData(pricing, 'pricing');
-  if (!snapshot.ok) {
-    if (!isRecord(pricing)) throw new TypeError('Pricing must be an object before Class 2 defaults can be applied.');
-    throw new TypeError(
-      `Pricing could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`
-    );
-  }
-  const nonPlainPath = firstNonPlainPath(snapshot, 'pricing');
-  if (nonPlainPath) {
-    throw new TypeError(`Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`);
-  }
-  const next = snapshot.value;
-  for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
-    if (next[name] === undefined) next[name] = structuredClone(definition.defaultValue);
-  }
-  // Snapshot trust is request-local. Never expose a mutable trusted object that
-  // could be changed after inspection and then supplied to another public API.
-  return structuredClone(next);
-}
-
-function missing(value) {
-  return value === undefined || value === null || value === '' || value === 'unsure';
-}
-
-function validateFieldValue(definition, value) {
-  if(definition.type==='offering_counts') {
-    if(!isRecord(value)||Object.keys(value).some(key=>!definition.values.includes(key)))return 'must contain only offered gate selections';
-    if(Object.values(value).some(count=>!Number.isInteger(count)||count<0||count>10_000))return 'must contain whole gate counts from zero to 10,000';
-    return null;
-  }
-  if (definition.type === 'orthogonal_outline') { try { measuredOutlineVNext(value); return null; } catch(error) { return error.message; } }
-  if (definition.type === 'number') {
-    if (typeof value !== 'number' || !Number.isFinite(value)) return 'must be a finite number';
-    if (value < definition.min || value > definition.max) return `must be between ${definition.min} and ${definition.max} ${definition.unit || ''}`.trim();
-    if (definition.integer && !Number.isInteger(value)) return 'must be a whole number';
-    return null;
-  }
-  if (definition.type === 'integer_or_unknown') {
-    if (value === 'unknown') return null;
-    if (!Number.isInteger(value) || value < definition.min || value > definition.max) return `must be unknown or a whole number from ${definition.min} to ${definition.max}`;
-    return null;
-  }
-  if (definition.type === 'enum') return definition.values.includes(value) ? null : `must be one of: ${definition.values.join(', ')}`;
-  if (definition.type === 'boolean') return typeof value === 'boolean' ? null : 'must be true or false';
-  if (definition.type === 'confirmed_facts') return isRecord(value) ? null : 'must be a structured fact-confirmation map';
-  if (definition.type === 'slug') return typeof value === 'string' && CANONICAL_SLUG.test(value) ? null : 'must be a canonical lowercase value';
-  if (definition.type === 'string') {
-    if (typeof value !== 'string') return 'must be text';
-    const length = value.trim().length;
-    if (length < definition.minLength || length > definition.maxLength) return `must contain ${definition.minLength}-${definition.maxLength} characters`;
-    return null;
-  }
-  if (definition.type === 'plant_counts') {
-    if (!isRecord(value)) return 'must be an object keyed by small, medium, and large';
-    const keys = Object.keys(value);
-    if (keys.some(key => !SIZE_KEYS.includes(key)) || SIZE_KEYS.some(key => !keys.includes(key))) return 'must contain exactly small, medium, and large';
-    if (SIZE_KEYS.some(key => !Number.isInteger(value[key]) || value[key] < 0 || value[key] > 1_000_000)) return 'must contain finite non-negative whole-number plant counts';
-    if (SIZE_KEYS.every(key => value[key] === 0)) return 'must include at least one plant';
-    return null;
-  }
-  return 'uses an unsupported contract type';
-}
-
-export function validateCustomerInputs(serviceType, customerInputs = {}, pricing = {}, serviceRules = {}) {
-  let contract = MEASUREMENT_CONTRACTS[serviceType];
-  if (!contract) return { ok: false, missingCustomerFields: [], invalidCustomerFields: ['serviceType'], reviewReason: 'Unsupported service type.' };
-  const customerSnapshot = snapshotPlainData(customerInputs, 'customerInputs');
-  if (!customerSnapshot.ok) {
-    return {
-      ok: false, missingCustomerFields: [],
-      invalidCustomerFields: [relativeSnapshotPath(customerSnapshot, 'customerInputs')],
-      reviewReason: `Customer inputs could not be read safely: ${customerSnapshot.reason}.`
-    };
-  }
-  const customerNonPlainPath = firstNonPlainPath(customerSnapshot, 'customerInputs');
-  if (customerNonPlainPath) return {
-    ok: false,
-    missingCustomerFields: [],
-    invalidCustomerFields: [customerNonPlainPath],
-    reviewReason: `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`
-  };
-  customerInputs = customerSnapshot.value;
-  const pricingSnapshot = validationSnapshotVNext(pricing, 'pricing');
-  if (!pricingSnapshot.ok) {
-    return {
-      ok: false, missingCustomerFields: [], invalidCustomerFields: [],
-      invalidOwnerFields: [relativeSnapshotPath(pricingSnapshot, 'pricing')],
-      reviewReason: `Pricing context could not be read safely: ${pricingSnapshot.reason}.`
-    };
-  }
-  const pricingNonPlainPath = firstNonPlainPath(pricingSnapshot, 'pricing');
-  if (pricingNonPlainPath) return {
-    ok: false,
-    missingCustomerFields: [],
-    invalidCustomerFields: [],
-    invalidOwnerFields: [pricingNonPlainPath],
-    reviewReason: `Pricing context must contain only plain data objects; ${pricingNonPlainPath} is not plain data.`
-  };
-  pricing = pricingSnapshot.value;
-  if(configuredOffering(serviceType,pricing))contract=offeringContract(serviceType,pricing);
-  const rules = validationSnapshotVNext(serviceRules, 'serviceRules');
-  if (!rules.ok || rules.nonPlainPaths.length) return { ok: false, missingCustomerFields: [], invalidCustomerFields: [], invalidOwnerFields: ['serviceRules'], reviewReason: 'Service rules must be plain data.' };
-  serviceRules = rules.value;
-  contract=customerContractForVNext(serviceType,pricing,serviceRules);
-  const allowed = new Set(Object.keys(contract.fields));
-  const unexpected = Object.keys(customerInputs).filter(key => !allowed.has(key));
-  const required = [...new Set(contract.required?.(customerInputs, pricing) || [])];
-  const missingCustomerFields = required.filter(name => missing(customerInputs[name]));
-  const invalidCustomerFields = [];
-  const validationMessages = [];
-
-  for (const [name, value] of Object.entries(customerInputs)) {
-    if (!allowed.has(name)) continue;
-    if (missing(value)) continue;
-    const message = validateFieldValue(contract.fields[name], value);
-    if (message) {
-      invalidCustomerFields.push(name);
-      validationMessages.push(`${contract.fields[name].label} ${message}.`);
-    }
-  }
-  const selectors = Object.entries(contract.fields).filter(([name, def]) => def.type === 'slug' && !missing(customerInputs[name]) && productIdentityRequired(name, customerInputs[name])).map(([name]) => name);
-  const facts = customerInputs.confirmedFacts;
-  const missingOfferingMaps = [], offeringOwnerDiagnostics = [], unsupportedOfferingFields = [];
-  if (facts !== undefined && isRecord(facts)) for (const name of Object.keys(facts)) {
-    if (!selectors.includes(name)) invalidCustomerFields.push('confirmedFacts.' + name);
-  }
-  for (const name of selectors) {
-    // Diagnose the unavailable owner contract before assessing a customer's fact
-    // against it. One absent registry must not manufacture two responsible parties.
-    const registry = serviceRules.knownOfferings?.[name], selected = customerInputs[name];
-    if (!isRecord(registry)) {
-      missingOfferingMaps.push(name);
-      offeringOwnerDiagnostics.push(ownerDiagnostic('missing','known_offerings','knownOfferings.'+name,'Register the products you offer for this selection in the price book.'));
-      continue;
-    }
-    const registryErrors = offeringRegistryDiagnosticsVNext(name, registry);
-    if (registryErrors.length) { offeringOwnerDiagnostics.push(...registryErrors); continue; }
-    const offeringId = Object.hasOwn(registry, selected) ? registry[selected] : undefined;
-    if (!validServiceIdVNext(offeringId)) {
-      if (hasSelectedOfferingPriceVNext(serviceType, customerInputs, pricing, name)) {
-        offeringOwnerDiagnostics.push(ownerDiagnostic('invalid','offering_registry_inconsistency','knownOfferings.'+name+'.'+selected,'Register this priced product under Registered products before quoting it.'));
-      } else {
-        unsupportedOfferingFields.push(name);
-        invalidCustomerFields.push(name);
-        validationMessages.push(name+' is not an offered service option.');
-      }
-      continue;
-    }
-    const fact = facts?.[name];
-    if (!isRecord(fact)) missingCustomerFields.push('confirmedFacts.' + name);
-    else if (Object.keys(fact).length !== 4 || fact.status !== 'identified' || fact.field !== name || fact.value !== selected ||
-        !validServiceIdVNext(fact.offeringId) || !sameServiceIdVNext(fact.offeringId, offeringId)) {
-      invalidCustomerFields.push('confirmedFacts.' + name);
-      validationMessages.push(name + ' requires confirmation of this exact selector, value, and known offering UUID.');
-    }
-  }
-  if (serviceType === 'LANDSCAPING_SOD') {
-    if (serviceRules.disposalScope === 'separate_project_debris') {
-      if (customerInputs.separateDisposalSelected === undefined) missingCustomerFields.push('separateDisposalSelected');
-    } else if (Object.hasOwn(customerInputs, 'separateDisposalSelected')) {
-      invalidCustomerFields.push('separateDisposalSelected');
-      validationMessages.push('Separate disposal can be selected only when the owner explicitly configures separate_project_debris.');
-    }
-  }
-  if (unexpected.length) {
-    invalidCustomerFields.push(...unexpected);
-    validationMessages.push('The quote contains unsupported customer input fields.');
-  }
-  for (const error of contract.crossValidate?.(customerInputs, pricing) || []) {
-    invalidCustomerFields.push(error.field);
-    validationMessages.push(error.message);
-  }
-  const explicitInspection = contract.inspection?.(customerInputs, pricing);
-  const factVerificationNeeded = [...missingCustomerFields, ...invalidCustomerFields].some(path => path.startsWith('confirmedFacts.') || (selectors.includes(path) && !unsupportedOfferingFields.includes(path)));
-  if (offeringOwnerDiagnostics.length || missingCustomerFields.length || invalidCustomerFields.length) {
-    return {
-      ok: false,
-      missingCustomerFields,
-      ...(offeringOwnerDiagnostics.length ? { ownerDiagnostics:offeringOwnerDiagnostics, missingOwnerFields:offeringOwnerDiagnostics.filter(d=>d.type==='missing').map(d=>d.path), invalidOwnerFields:offeringOwnerDiagnostics.filter(d=>d.type!=='missing').map(d=>d.path) } : {}),
-      invalidCustomerFields: [...new Set(invalidCustomerFields)],
-      validationMessages,
-      ...((explicitInspection || factVerificationNeeded) ? { inspectionFirst: true } : {}),
-      reviewReason: explicitInspection || (offeringOwnerDiagnostics.length ? 'Register the products you offer and check that their names match your priced products.' : null) || (unsupportedOfferingFields.length ? 'The selected value is not an offered service option.' : null) || (factVerificationNeeded ? 'Price-selecting project facts require affirmative confirmation of known offerings before pricing.' : null) || (missingCustomerFields.length
-        ? 'Required measured project details were not provided.'
-        : 'Project details were invalid or internally inconsistent.')
-    };
-  }
-  const inspectionReason = contract.inspection?.(customerInputs, pricing);
-  if (inspectionReason) {
-    return {
-      ok: false,
-      normalized: structuredClone(customerInputs),
-      missingCustomerFields: [],
-      invalidCustomerFields: [],
-      inspectionFirst: true,
-      reviewReason: inspectionReason
-    };
-  }
-  return { ok: true, normalized: canonicalCustomerIdentityVNext(customerInputs) };
-}
-
-
-function previousInspectionOwnerDecisionsVNext(serviceType, customerInputs = {}) {
-  if (serviceType === 'INTERIOR_PAINTING' && ['fair', 'poor'].includes(customerInputs.surfaceCondition)) {
-    return [{
-      path: 'interiorPrepPricing',
-      kind: 'measured_prep_pricing_contract',
-      message: 'Approve a measured interior preparation scope and pricing contract.'
-    }];
-  }
-  if (serviceType === 'EXTERIOR_PAINTING' && customerInputs.surfaceCondition === 'poor') {
-    return [{
-      path: 'exteriorPrimerPricing',
-      kind: 'primer_pricing_contract',
-      message: 'Approve separate primer pricing or an explicit all-inclusive exterior rate rule.'
-    }];
-  }
-  if (serviceType.startsWith('CONCRETE_') && customerInputs.finishType === 'exposed_aggregate') {
-    return [{
-      path: 'exposedAggregateMaterialPricing',
-      kind: 'finish_material_pricing_contract',
-      message: 'Approve an exposed-aggregate material price or an explicit all-inclusive finish rule.'
-    }];
-  }
-  return [];
-}
-
-function ownerDiagnostic(type, kind, path, message) {
-  return { type, kind, path, message };
-}
-
-function validFactorLeaf(value, definition) {
-  return typeof value === 'number' && Number.isFinite(value) && value >= definition.min && value <= definition.max;
-}
-
-export function validateClass2FactorsDetailed(serviceType, pricing = {}) {
-  const prepared = activationPricingChecks.get(pricing);
-  if (prepared?.serviceType === serviceType) return [...prepared.factors];
-  const diagnostics = [];
-  if (!SERVICE_TYPES.includes(serviceType)) {
-    return [ownerDiagnostic('invalid', 'service', 'serviceType', 'Unsupported service type.')];
-  }
-  const snapshot = snapshotPlainData(pricing, 'pricing');
-  if (!snapshot.ok) return [ownerDiagnostic(
-    'invalid', 'class2', relativeSnapshotPath(snapshot, 'pricing'),
-    `Pricing could not be read safely: ${snapshot.reason}.`
-  )];
-  const nonPlainPath = firstNonPlainPath(snapshot, 'pricing');
-  if (nonPlainPath) return [ownerDiagnostic(
-    'invalid', 'class2', nonPlainPath,
-    `Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`
-  )];
-  pricing = snapshot.value;
-
-  for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
-    const expected = definition.defaultValue;
-    const value = pricing[name];
-    if (value === undefined) {
-      diagnostics.push(ownerDiagnostic('missing', 'class2', name, `${name} must be stored in the service price book.`));
-      continue;
-    }
-    if (typeof expected === 'number') {
-      if (!validFactorLeaf(value, definition)) diagnostics.push(ownerDiagnostic('invalid', 'class2', name, `${name} must be a finite number from ${definition.min} to ${definition.max}.`));
-      continue;
-    }
-    if (!value || typeof value !== 'object' || Array.isArray(value)) {
-      diagnostics.push(ownerDiagnostic('invalid', 'class2', name, `${name} must be an object with the exact supported keys.`));
-      continue;
-    }
-    const expectedKeys = Object.keys(expected).map(String);
-    for (const key of Object.keys(value)) {
-      if (!expectedKeys.includes(String(key))) diagnostics.push(ownerDiagnostic('unsupported', 'class2', `${name}.${key}`, `${name}.${key} is not a supported Class 2 factor.`));
-    }
-    for (const key of expectedKeys) {
-      const path = `${name}.${key}`;
-      if (!Object.hasOwn(value, key)) diagnostics.push(ownerDiagnostic('missing', 'class2', path, `${path} is required.`));
-      else if (!validFactorLeaf(value[key], definition)) diagnostics.push(ownerDiagnostic('invalid', 'class2', path, `${path} must be a finite number from ${definition.min} to ${definition.max}.`));
-    }
-  }
-  const thresholds = pricing.roomSizeThresholds;
-  if (serviceType.startsWith('FLOORING_') && thresholds &&
-      Number.isFinite(thresholds.smallMaxSqft) && Number.isFinite(thresholds.mediumMaxSqft) &&
-      thresholds.smallMaxSqft >= thresholds.mediumMaxSqft) {
-    const message = 'roomSizeThresholds.smallMaxSqft must be less than roomSizeThresholds.mediumMaxSqft.';
-    diagnostics.push(ownerDiagnostic('cross_field', 'relationship', 'roomSizeThresholds.smallMaxSqft', message));
-    diagnostics.push(ownerDiagnostic('cross_field', 'relationship', 'roomSizeThresholds.mediumMaxSqft', message));
-  }
-  return diagnostics;
-}
-
-export function validateClass2Factors(serviceType, pricing = {}) {
-  return [...new Set(validateClass2FactorsDetailed(serviceType, pricing).map(item => item.message))];
-}
-
-const ALLOWED_PRICING_FIELDS = {
-  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
-  ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance', 'largeRepairMaxSqft'],
-  FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
-  FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge', 'largeRepairMaxSqft'],
-  INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
-  EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
-  FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule'],
-  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft'],
-  FENCING_INSTALL: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob'],
-  FENCING_REPLACEMENT: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob', 'removalPerLinearFoot', 'disposalPerLF'],
-  CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
-  CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
-  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee'],
-  LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot'],
-  LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft'],
-  LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard'],
-  LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot'],
-  SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
-  SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance', 'largeRepairMaxSqft'],
-  CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
-};
-
-export function customerContractForVNext(type,p={},rules={}) {
- const base=configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type];
- // A confirmation for another offered option is evidence, not extra measured
- // work. Accept only its registered confirmation boolean here. All quantities,
- // selections and scope checks remain specific to the option being priced.
- const optionConfirmations={};
- for(const tier of Array.isArray(rules.tiers)?rules.tiers:[]){
-  const effective={...(rules.pricing||{}),...(tier.overrides||{})},definitions=scopeDefinitions(type,effective);
-  for(const key of Object.keys(tier.overrides?.scopeDetails||{}))if(definitions[key])optionConfirmations[definitions[key].confirmation]={...booleanField('Confirmed '+definitions[key].label.toLowerCase()),evidenceOnly:true};
- }
- return {...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)};
-}
-
-export function allowedPricingFields(serviceType) {
-  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
-}
-
-const AI_CONFIRMABLE_SERVICE_FIELDS = [
-  'feeRules',
-  'priceBasisByCategory',
-  'taxabilityByCategory',
-  'peakMonths',
-  'peakSurchargePercent',
-  'disclaimer', 'disposalScope', 'knownOfferings', 'zeroPricePolicy'
-];
-
-export function pricingMapDomainVNext(type, field) {
-  if(type.startsWith('FLOORING_')&&['laborPerSqft','materialPerSqft'].includes(field))return {rootKeys:[...FLOORING_TYPES]};
-  if(type==='SIDING_REPLACEMENT'&&['laborPerSqft','materialPerSqft'].includes(field)||type==='SIDING_REPAIR'&&['repairHours','materialAllowance'].includes(field))return {rootKeys:[...SIDING_TYPES]};
-  if(['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'].includes(type)&&field==='bedPrepLaborPerSqft')return {rootKeys:['needs_weeding','overgrown'],requiredRootKeys:['needs_weeding','overgrown']};
-  if(type==='LANDSCAPING_PLANTING'&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(field))return {rootKeys:[...SIZE_KEYS],requiredRootKeys:[...SIZE_KEYS]};
-  return {};
-}
-
-export function aiConfirmationFieldsVNext(service = {}, pricing = {}) {
-  const fields = isRecord(pricing) ? Object.keys(pricing) : [];
-  if (!isRecord(service)) return fields;
-  for (const fieldName of AI_CONFIRMABLE_SERVICE_FIELDS) {
-    if (Object.hasOwn(service, fieldName)) fields.push(fieldName);
-  }
-  if (service.serviceType === 'CUSTOM' && Object.hasOwn(service, 'service')) fields.push('service');
-  if (Array.isArray(service.tiers) && service.tiers.length) fields.push('tiers');
-  return [...new Set(fields)];
-}
-
-const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
-const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedPricingFields(serviceType)));
-const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
-  'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
-  'travelFee', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
-  'rangeBufferPercent', 'markupApplies', 'peakMonths', 'peakSurchargePercent'
-];
-
-const nonNegative = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
-function monthListIssue(value) {
-  if (!Array.isArray(value)) return { path: '', message: 'must be an array of month numbers from 1 through 12' };
-  const arrayIssue = denseArrayIssue(value);
-  if (arrayIssue) return {
-    path: arrayIssue.path,
-    message: arrayIssue.reason
-  };
-  for (let index = 0; index < value.length; index += 1) {
-    const month = value[index];
-    if (!Number.isInteger(month) || month < 1 || month > 12) return { path: String(index), message: 'must be a whole month number from 1 through 12' };
-  }
-  return null;
-}
-
-const nonNegativeMoney = value => Number.isSafeInteger(value) && value >= 0;
-
-const SCALAR_MONEY_FIELDS = {
-  ROOFING_REPLACEMENT: ['starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
-  ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum'],
-  FLAT_ROOF_REPLACEMENT: ['minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
-  FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'pondingWaterSurcharge'],
-  INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
-  EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
-  FLOORING_INSTALL: ['minimumJob', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft'],
-  FLOORING_REPLACEMENT: ['minimumJob', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'subfloorAllowancePerSqft'],
-  FENCING_INSTALL: ['concretePerPost', 'minimumJob'],
-  FENCING_REPLACEMENT: ['concretePerPost', 'minimumJob', 'disposalPerLF'],
-  CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
-  CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
-  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'minimumServiceCharge', 'haulAwayFee'],
-  LANDSCAPING_MULCH: ['mulchInstallLaborPerYard', 'minimumServiceCharge', 'edgingPerLinearFoot'],
-  LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft'],
-  LANDSCAPING_PLANTING: ['minimumServiceCharge', 'mulchInstallLaborPerYard'],
-  LANDSCAPING_MOWING: ['minimumServiceCharge', 'edgingPerLinearFoot'],
-  SIDING_REPLACEMENT: ['minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
-  SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum'],
-  CUSTOM: ['price', 'low', 'high', 'minimumJob']
-};
-
-function scalarMoneyFields(serviceType) {
-  return SCALAR_MONEY_FIELDS[serviceType] || [];
-}
-
-export function valueAtPath(source, path) {
-  let value = source;
-  for (const key of String(path).split('.')) {
-    if (!isRecord(value) || !Object.hasOwn(value, key)) return undefined;
-    value = value[key];
-  }
-  return value;
-}
-
-export function ownerRequirements(type,c={},p={},rules={}) { return [...baseOwnerRequirements(type,c,p).filter(item=>!scopesSuppressPrice(type,c,p,rules,item.path)),...scopeRequirements(type,c,p,rules)]; }
-
-const requirement = (path, label, options = {}) => ({ path, label, kind: fixedPriceField(path.split('.')[0])?'non_negative_money':'non_negative_number', ...options });
-
-export function vinylUnderlaymentApplies(customerInputs, pricing) {
-  const type = customerInputs.newFlooringType;
-  if (type !== 'vinyl_plank') return false;
-  const rule = pricing.vinylPlankUnderlaymentRule;
-  if (rule === 'always_included') return true;
-  if (rule === 'never_included') return false;
-  if (rule === 'customer_selectable_addon') return customerInputs.underlaymentSelected === true;
-  if (rule === 'subfloor_condition') return customerInputs.subfloorCondition === 'requires_underlayment';
-  return false;
-}
-
-function baseOwnerRequirements(serviceType, c = {}, p = {}) {
-  if(configuredOffering(serviceType,p))return offeringRequirements(serviceType,c,p);
-  const out = [];
-  const add = (path, label, options) => out.push(requirement(path, label, options));
-  if (serviceType === 'ROOFING_REPLACEMENT') {
-    add(`laborPerSquare.${c.replacementRoofType}`, 'Roof installation labor price for the selected replacement material');
-    add(`materialCostPerSquare.${c.replacementRoofType}`, 'Roof material price for the selected replacement material');
-    add(`underlaymentPerSquare.${c.replacementRoofType}`, 'Installed-area underlayment sell price per roofing square');
-    out.push({ path: `underlaymentPriceBasis.${c.replacementRoofType}`, label: 'Underlayment price basis for the selected replacement material', kind: 'enum', values: ['installed_area_sell_price', 'cost'] });
-    add(`tearOffPerSquare.${c.existingRoofType}`, 'Tear-off price for the existing roof material');
-    add('minimumJob', 'Minimum roof replacement job price', { kind: 'minimum' });
-    out.push({ path: 'accessoryPricingMode', label: 'Roof accessory pricing method', kind: 'enum', values: ['per_square_allin', 'itemized'] });
-    if (p.accessoryPricingMode === 'itemized') {
-      out.push({path:'materialAccessoryBasis',label:'Base material excludes separately itemized starter, drip edge, and ridge cap',kind:'enum',values:['excludes_itemized_accessories']});
-      if (c.starterLengthLF > 0) add('starterPerLF', 'Starter strip price per linear foot');
-      if (c.dripEdgeLengthLF > 0) add('dripEdgePerLF', 'Drip edge price per linear foot');
-      if (c.ridgeCapLengthLF > 0) add('ridgeCapPerLF', 'Ridge cap price per linear foot');
-    }
-    if (c.deckingSheets > 0) add('deckingPerSheet', 'Decking replacement price per sheet');
-  } else if (serviceType === 'ROOFING_REPAIR') {
-    add('laborHourlyRate', 'Roof repair labor rate per hour');
-    add('repairMinimum', 'Minimum repair visit price', { kind: 'minimum' });
-    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
-    add(`repairHours.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair labor hours for the measured affected-area category', { kind: 'positive_number' });
-    add(`repairMaterialAllowance.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair material allowance for the measured affected-area category');
-    // A large repair is priced only up to the area the owner says it covers.
-    if (repairSize === 'large') add('largeRepairMaxSqft', 'Largest affected area priced as a repair', { kind: 'positive_number' });
-  } else if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
-    const membrane = c.replacementMembraneType;
-    add(`laborPerSqft.${membrane}`, 'Flat-roof labor price for the selected membrane');
-    add(`membraneCostPerSqft.${membrane}`, 'Flat-roof membrane price for the selected membrane');
-    add(`tearOffPerSqft.${c.membraneType}`, 'Flat-roof tear-off price for the selected membrane');
-    add('minimumJob', 'Minimum flat-roof job price', { kind: 'minimum' });
-
-  } else if (serviceType === 'FLAT_ROOF_REPAIR') {
-    add('laborHourlyRate', 'Flat-roof repair labor rate per hour');
-    add('repairMinimum', 'Minimum flat-roof repair visit price', { kind: 'minimum' });
-    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
-    add(`patchRepairHours.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof repair hours for the measured affected-area category', { kind: 'positive_number' });
-    add(`patchMaterialAllowance.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof material allowance for the measured affected-area category');
-    // A large repair is priced only up to the area the owner says it covers.
-    if (repairSize === 'large') add('largeRepairMaxSqft', 'Largest affected area priced as a repair', { kind: 'positive_number' });
-    // Optional ponding treatment is disclosed as excluded when unpriced.
-  } else if (serviceType === 'INTERIOR_PAINTING') {
-    add('laborPerWallSqftPerCoat', 'Wall painting labor price per measured wall square foot per coat');
-    add('materialPerWallSqftPerCoat', 'Wall paint material price per measured wall square foot per coat');
-    add('minimumJob', 'Minimum interior-painting job price', { kind: 'minimum' });
-
-    if (c.ceilingsIncluded) {
-      add('ceilingLaborPerSqftPerCoat', 'Ceiling labor price per measured ceiling square foot per coat');
-      add('ceilingMaterialPerSqftPerCoat', 'Ceiling material price per measured ceiling square foot per coat');
-    }
-    if (c.trimIncluded) {
-      add('trimLaborPerLF', 'Trim painting labor price per measured linear foot');
-      add('trimMaterialPerLF', 'Trim paint material price per measured linear foot');
-    }
-  } else if (serviceType === 'EXTERIOR_PAINTING') {
-    add('exteriorLaborPerSqftPerCoat', 'Exterior labor price per measured paintable square foot per applied coat');
-    add('materialPerSqftPerCoat', 'Exterior material price per measured square foot per coat');
-    add('minimumJob', 'Minimum exterior-painting job price', { kind: 'minimum' });
-    if (c.surfaceCondition !== 'good') add('laborHourlyRate', 'Exterior preparation labor rate per hour');
-  } else if (serviceType.startsWith('FLOORING_')) {
-    add(`laborPerSqft.${c.newFlooringType}`, 'Flooring labor price for the selected flooring type');
-    add(`materialPerSqft.${c.newFlooringType}`, 'Flooring material price for the selected flooring type');
-    add('minimumJob', 'Minimum flooring job price', { kind: 'minimum' });
-    if (c.newFlooringType === 'vinyl_plank') out.push({ path: 'vinylPlankUnderlaymentRule', label: 'Vinyl-plank underlayment rule', kind: 'enum', values: ['always_included', 'never_included', 'subfloor_condition', 'customer_selectable_addon', 'owner_review'] });
-    if (c.removalNeeded) add(`removalPerSqft.${c.existingFloorType}`, 'Removal price for the selected existing floor type');
-    if (c.stairSteps > 0) add('perStepPrice', 'Stair installation price per step');
-    if (vinylUnderlaymentApplies(c, p)) {
-      add('underlaymentPerSqft', 'Installed-area underlayment sell price per square foot');
-      out.push({ path: 'underlaymentPriceBasis', label: 'Flooring underlayment price basis', kind: 'enum', values: ['installed_area_sell_price', 'cost'] });
-    }
-    if (serviceType === 'FLOORING_REPLACEMENT' && c.subfloorIssues) add('subfloorAllowancePerSqft', 'Subfloor repair allowance per affected square foot');
-  } else if (serviceType.startsWith('FENCING_')) {
-    add(`laborPerLinearFoot.${c.fenceType}`, 'Fence labor price for the selected fence type');
-    add(`materialPerLinearFoot.${c.fenceType}`, 'Fence material price for the selected fence type');
-    out.push({ path: `postsIncludedInMaterial.${c.fenceType}`, label: 'Posts included in material rate for selected fence type', kind: 'boolean' });
-    if (p.postsIncludedInMaterial?.[c.fenceType] === false) add(`postPrice.${c.fenceType}`, 'Fence post price for the selected fence type');
-    add('minimumJob', 'Minimum fence job price', { kind: 'minimum' });
-    if (serviceType === 'FENCING_REPLACEMENT' && c.oldFenceRemoval) add(`removalPerLinearFoot.${c.fenceType}`, 'Fence removal price for the selected fence type');
-  } else if (serviceType.startsWith('CONCRETE_')) {
-    add('laborPerSqft', 'Concrete labor price per square foot');
-    add('concreteCostPerCubicYard', 'Ready-mix concrete price per cubic yard');
-    add('formworkPerLF', 'Formwork price per measured linear foot');
-    add('minimumJob', 'Minimum concrete job price', { kind: 'minimum' });
-    if (c.demolitionNeeded) add('demolitionPerSqft', 'Concrete demolition price per measured square foot');
-    if (c.baseNeeded) add('basePrepPerSqft', 'Base preparation price per square foot');
-    if (c.reinforcement === 'wire_mesh') add('wireReinforcementPerSqft', 'Wire mesh price per square foot');
-    if (c.reinforcement === 'rebar') add('rebarReinforcementPerSqft', 'Rebar price per square foot');
-    if (c.finishType === 'stamped') add('stampedMaterialPerSqft', 'Stamped finish material price per square foot');
-  } else if (serviceType === 'LANDSCAPING_CLEANUP') {
-    add('cleanupBaseRatePerSqft', 'Cleanup labor price per measured square foot');
-    add(`debrisPricing.${c.debrisLevel}.laborMultiplier`, 'Cleanup labor multiplier for selected debris level', { kind: 'positive_number' });
-    add(`debrisPricing.${c.debrisLevel}.disposalFlat`, 'Cleanup disposal charge for selected debris level', { kind: 'non_negative_money' });
-    add('minimumServiceCharge', 'Minimum cleanup service charge', { kind: 'minimum' });
-    if (c.haulAway) add('haulAwayFee', 'Additional haul-away charge');
-  } else if (serviceType === 'LANDSCAPING_MULCH') {
-    add(`mulchMaterialPerYard.${c.mulchType}`, 'Mulch material price for the selected mulch type');
-    add('mulchInstallLaborPerYard', 'Mulch installation labor price per cubic yard');
-    add('minimumServiceCharge', 'Minimum mulch service charge', { kind: 'minimum' });
-    if (c.bedCondition !== 'clean') add(`bedPrepLaborPerSqft.${c.bedCondition}`, 'Bed preparation price for the selected bed condition');
-    if (c.edgingNeeded) add('edgingPerLinearFoot', 'Bed edging labor price per measured linear foot');
-  } else if (serviceType === 'LANDSCAPING_SOD') {
-    add('sodMaterialPerSqft', 'Sod material price per square foot');
-    add('sodInstallLaborPerSqft', 'Sod installation labor price per square foot');
-    add('minimumServiceCharge', 'Minimum sod service charge', { kind: 'minimum' });
-    if (c.groundPrepNeeded) add('groundPrepPerSqft', 'Ground preparation price per square foot');
-  } else if (serviceType === 'LANDSCAPING_PLANTING') {
-    for (const size of SIZE_KEYS.filter(size => c.plantsBySize?.[size] > 0)) {
-      add(`plantingLaborPerPlant.${size}`, `Planting labor price for ${size} plants`);
-      add(`plantMaterialAllowance.${size}`, `Material allowance for ${size} plants`);
-    }
-    add('minimumServiceCharge', 'Minimum planting service charge', { kind: 'minimum' });
-    if (c.bedCondition !== 'clean') add(`bedPrepLaborPerSqft.${c.bedCondition}`, 'Bed preparation price for the selected bed condition');
-    if (c.mulchNeeded) {
-      add(`mulchMaterialPerYard.${c.mulchType}`, 'Mulch material price for the selected mulch type');
-      add('mulchInstallLaborPerYard', 'Mulch installation labor price per cubic yard');
-    }
-  } else if (serviceType === 'LANDSCAPING_MOWING') {
-    add('mowingBaseRatePerSqft', 'Mowing labor cents per measured square foot (fractional cents supported)', {kind:'non_negative_number'});
-    add('minimumServiceCharge', 'Minimum mowing service charge', { kind: 'minimum' });
-    add(`frequencyMultipliers.${c.serviceFrequency}`, 'Mowing frequency multiplier', { kind: 'positive_number' });
-    add(`overgrowthMultipliers.${c.grassCondition}`, 'Grass condition multiplier', { kind: 'positive_number' });
-    // Bagging and mowing edging are ADDONs under spec STEP 2b.
-  } else if (serviceType === 'SIDING_REPLACEMENT') {
-    add(`laborPerSqft.${c.sidingType}`, 'Siding labor price for the selected siding type');
-    add(`materialPerSqft.${c.sidingType}`, 'Siding material price for the selected siding type');
-    add('minimumJob', 'Minimum siding job price', { kind: 'minimum' });
-    if (c.oldSidingRemoval) add('removalPerSqft', 'Existing siding removal price per square foot');
-  } else if (serviceType === 'SIDING_REPAIR') {
-    add('laborHourlyRate', 'Siding repair labor rate per hour');
-    add('repairMinimum', 'Minimum siding repair visit price', { kind: 'minimum' });
-    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
-    add(`repairHours.${c.sidingType}.${c.damageLevel}.${repairSize}`, 'Siding repair hours for the measured affected-area category', { kind: 'positive_number' });
-    add(`materialAllowance.${c.sidingType}.${c.damageLevel}.${repairSize}`, 'Siding material allowance for the measured affected-area category');
-    // A large repair is priced only up to the area the owner says it covers.
-    if (repairSize === 'large') add('largeRepairMaxSqft', 'Largest affected area priced as a repair', { kind: 'positive_number' });
-  } else if (serviceType === 'CUSTOM') {
-    out.push({ path: 'customPricingMode', label: 'Custom service pricing mode', kind: 'enum', values: ['fixed', 'range', 'inspection_first'] });
-    out.push({ path: 'unit', label: 'Custom service unit', kind: 'enum', values: ['flat', 'per_sqft', 'per_hour', 'per_unit', 'per_LF', 'per_square'] });
-    add('minimumJob', 'Minimum custom-service price', { kind: 'minimum' });
-    const rateKind = ['flat','per_unit'].includes(p.unit) ? 'non_negative_money' : 'non_negative_number';
-    if (p.customPricingMode === 'fixed') add('price', 'Fixed price per configured unit', {kind:rateKind});
-    if (p.customPricingMode === 'range') {
-      add('low', 'Low price per configured unit', {kind:rateKind});
-      add('high', 'High price per configured unit', {kind:rateKind});
-    }
-  }
-  return out;
-}
-
-function validateRequirementValue(requirementDefinition, value) {
-  if (requirementDefinition.kind === 'minimum') return nonNegativeMoney(value);
-  if (requirementDefinition.kind === 'non_negative_number') return nonNegative(value) && value <= Number.MAX_SAFE_INTEGER;
-  if (requirementDefinition.kind === 'positive_number') return positive(value);
-  if (requirementDefinition.kind === 'non_negative_money') return nonNegativeMoney(value);
-  if (requirementDefinition.kind === 'boolean') return typeof value === 'boolean';
-  if (requirementDefinition.kind === 'enum') return requirementDefinition.values.includes(value);
-  if (requirementDefinition.kind === 'integer') return Number.isInteger(value) && value >= requirementDefinition.min && value <= requirementDefinition.max;
-  return false;
-}
-
-
-function leafPaths(value, prefix = '') {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return [prefix];
-  return Object.keys(value).sort().flatMap(key => leafPaths(value[key], prefix ? `${prefix}.${key}` : key));
-}
-
-function isRecord(value) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-  try {
-    const prototype = Object.getPrototypeOf(value);
-    return prototype === Object.prototype || prototype === null;
-  } catch {
-    return false;
-  }
-}
-function deepFreeze(value) {
-  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
-  for (const nested of Object.values(value)) deepFreeze(nested);
-  return Object.freeze(value);
-}
-
-
-function structureDiagnostic(diagnostics, type, path, message, kind = 'structure') {
-  diagnostics.push(ownerDiagnostic(type, kind, path, message));
-}
-
-function inspectPriceMap(diagnostics, pricing, name, { allowedKeys = null, requireAll = false, predicate = value=>fixedPriceField(name)?nonNegativeMoney(value):nonNegative(value)&&value<=Number.MAX_SAFE_INTEGER, canonicalKeys = false } = {}) {
-  const value = pricing[name];
-  if (value === undefined) return;
-  if (!isRecord(value) || !Object.keys(value).length) {
-    structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-empty price map.`);
-    return;
-  }
-  const keys = Object.keys(value);
-  if (allowedKeys) {
-    for (const key of keys) if (!allowedKeys.includes(key)) structureDiagnostic(diagnostics, 'unsupported', `${name}.${key}`, `${name}.${key} is not supported.`);
-    if (requireAll) for (const key of allowedKeys) if (!Object.hasOwn(value, key)) structureDiagnostic(diagnostics, 'missing', `${name}.${key}`, `${name}.${key} is required.`);
-  }
-  if (canonicalKeys) for (const key of keys) if (!CANONICAL_SLUG.test(key)) structureDiagnostic(diagnostics, 'invalid', `${name}.${key}`, `${name}.${key} must use a canonical lowercase key.`);
-  for (const key of keys) {
-    if ((allowedKeys && !allowedKeys.includes(key)) || (canonicalKeys && !CANONICAL_SLUG.test(key))) continue;
-    if (!predicate(value[key])) structureDiagnostic(diagnostics, 'invalid', `${name}.${key}`, `${name}.${key} contains an invalid value.`);
-  }
-}
-
-function inspectMatchingFirstLevelKeys(diagnostics, pricing, names, relationship, ignoredKeys = []) {
-  const union = new Set(names.flatMap(name => isRecord(pricing[name]) ? Object.keys(pricing[name]) : []).filter(key => !ignoredKeys.includes(key)));
-  for (const key of union) {
-    for (const name of names) {
-      if (!isRecord(pricing[name]) || !Object.hasOwn(pricing[name], key)) {
-        structureDiagnostic(diagnostics, 'missing', `${name}.${key}`, `${relationship} must contain matching keys.`, 'relationship');
-      }
-    }
-  }
-}
-
-function inspectRepairCube(diagnostics, value, name, { firstLevelAllowed = null, leafPredicate = positive } = {}) {
-  if (value === undefined) return;
-  if (!isRecord(value) || !Object.keys(value).length) {
-    structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-empty three-level pricing map.`);
-    return;
-  }
-  for (const [firstKey, secondLevel] of Object.entries(value)) {
-    const firstPath = `${name}.${firstKey}`;
-    if (firstLevelAllowed && !firstLevelAllowed.includes(firstKey)) {
-      structureDiagnostic(diagnostics, 'unsupported', firstPath, `${firstPath} is not supported.`);
-      continue;
-    }
-    if (!firstLevelAllowed && !CANONICAL_SLUG.test(firstKey)) {
-      structureDiagnostic(diagnostics, 'invalid', firstPath, `${firstPath} must use a canonical lowercase key.`);
-      continue;
-    }
-    if (!isRecord(secondLevel) || !Object.keys(secondLevel).length) {
-      structureDiagnostic(diagnostics, 'invalid', firstPath, `${firstPath} must contain at least one repair type.`);
-      continue;
-    }
-    for (const [secondKey, row] of Object.entries(secondLevel)) {
-      const rowPath = `${firstPath}.${secondKey}`;
-      if (!CANONICAL_SLUG.test(secondKey)) {
-        structureDiagnostic(diagnostics, 'invalid', rowPath, `${rowPath} must use a canonical lowercase key.`);
-        continue;
-      }
-      if (!isRecord(row)) {
-        structureDiagnostic(diagnostics, 'invalid', rowPath, `${rowPath} must contain small, medium, and large values.`);
-        continue;
-      }
-      for (const key of Object.keys(row)) if (!SIZE_KEYS.includes(key)) structureDiagnostic(diagnostics, 'unsupported', `${rowPath}.${key}`, `${rowPath}.${key} is not a supported repair-size key.`);
-      for (const size of SIZE_KEYS) {
-        const path = `${rowPath}.${size}`;
-        if (!Object.hasOwn(row, size)) structureDiagnostic(diagnostics, 'missing', path, `${path} is required.`);
-        else if (!leafPredicate(row[size])) structureDiagnostic(diagnostics, 'invalid', path, `${path} contains an invalid value.`);
-      }
-    }
-  }
-}
-
-function inspectMatchingLeafPaths(diagnostics, pricing, names, relationship) {
-  const pathsByName = new Map(names.map(name => [name, new Set(isRecord(pricing[name]) ? leafPaths(pricing[name]) : [])]));
-  const union = new Set([...pathsByName.values()].flatMap(paths => [...paths]));
-  for (const suffix of union) {
-    for (const name of names) {
-      if (!pathsByName.get(name).has(suffix)) structureDiagnostic(diagnostics, 'missing', `${name}.${suffix}`, `${relationship} must contain matching nested paths.`, 'relationship');
-    }
-  }
-}
-
-export function validatePricingStructuresDetailed(serviceType, p = {}) {
-  const prepared = activationPricingChecks.get(p);
-  if (prepared?.serviceType === serviceType) return [...prepared.structures];
-  const diagnostics = [];
-  if (!SERVICE_TYPES.includes(serviceType)) {
-    return [ownerDiagnostic('invalid', 'service', 'serviceType', 'Unsupported service type.')];
-  }
-  const snapshot = snapshotPlainData(p, 'pricing');
-  if (!snapshot.ok) return [ownerDiagnostic(
-    'invalid', 'pricing_structure', relativeSnapshotPath(snapshot, 'pricing'),
-    `Pricing could not be read safely: ${snapshot.reason}.`
-  )];
-  const nonPlainPath = firstNonPlainPath(snapshot, 'pricing');
-  if (nonPlainPath) return [ownerDiagnostic(
-    'invalid', 'pricing_structure', nonPlainPath,
-    `Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`
-  )];
-  p = snapshot.value;
-  for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
-    if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
-    else for(const [key,value] of Object.entries(p[field])){
-      if(!/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft)$/.test(key)||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
-      else if(field==='installedMaterialsPercent'&&typeof p.installedLaborPercent?.[key]==='number'&&Number.isFinite(p.installedLaborPercent[key])&&p.installedLaborPercent[key]>=0&&p.installedLaborPercent[key]<=100&&exactCompare(exactAdd(value,p.installedLaborPercent[key]),100)>0)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Materials and labor portions cannot total more than 100%.');
-    }
-  }
-
-  if(configuredOffering(serviceType,p))return [...diagnostics,...offeringStructureDiagnostics(serviceType,p),...scopeStructureDiagnostics(serviceType,p)];
-  diagnostics.push(...scopeStructureDiagnostics(serviceType,p));
-
-  for (const name of scalarMoneyFields(serviceType)) {
-    if (!fixedPriceField(name,p)) {
-      if (p[name] !== undefined && (!nonNegative(p[name]) || p[name] > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a finite non-negative unit rate in cents.`);
-      continue;
-    }
-    if (p[name] !== undefined && !nonNegativeMoney(p[name])) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-negative integer-cent amount.`);
-  }
-  if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'baggingSurchargePercent must be from 0 to 500.');
-  if (serviceType === 'CUSTOM' && p.customChargeClassification !== undefined && !PRICE_BASIS_CATEGORIES.includes(p.customChargeClassification)) structureDiagnostic(diagnostics, 'invalid', 'customChargeClassification', 'Choose the configured line category for this custom service.');
-
-  if (serviceType === 'ROOFING_REPLACEMENT') {
-    if(p.materialAccessoryBasis!==undefined && (p.materialAccessoryBasis!=='excludes_itemized_accessories'||p.accessoryPricingMode!=='itemized'))structureDiagnostic(diagnostics,'invalid','materialAccessoryBasis','Accessory exclusion declaration requires itemized mode and the exact excludes_itemized_accessories value.');
-    for (const name of ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
-    inspectPriceMap(diagnostics, p, 'underlaymentPriceBasis', { predicate: value => ['installed_area_sell_price', 'cost'].includes(value), canonicalKeys: true });
-    const replacementKeys=new Set(['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis'].flatMap(name=>isRecord(p[name])?Object.keys(p[name]):[]));
-    for(const key of replacementKeys)for(const name of ['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis']){
-      if(name==='underlaymentPerSquare'&&p.underlaymentPriceBasis?.[key]==='cost'&&p.scopeDetails?.['roof_underlayment_'+key])continue;
-      if(!isRecord(p[name])||!Object.hasOwn(p[name],key))structureDiagnostic(diagnostics,'missing',name+'.'+key,'Roof replacement labor, material and selected underlayment pricing must cover the same replacement types.','relationship');
-    }
-  }
-  if (['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'].includes(serviceType)) {
-    const limitProblem = largeRepairLimitProblem(serviceType, p.largeRepairMaxSqft);
-    if (limitProblem) structureDiagnostic(diagnostics, 'invalid', 'largeRepairMaxSqft', limitProblem);
-  }
-  if (serviceType === 'ROOFING_REPAIR') {
-    inspectRepairCube(diagnostics, p.repairHours, 'repairHours');
-    inspectRepairCube(diagnostics, p.repairMaterialAllowance, 'repairMaterialAllowance', { leafPredicate: nonNegativeMoney });
-    inspectMatchingLeafPaths(diagnostics, p, ['repairHours', 'repairMaterialAllowance'], 'Roof repair hour and material maps');
-  }
-  if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
-    for (const name of ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft']) {
-      inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
-    }
-    // A retained historical average is validated as data, but never offered or required in another map.
-    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'membraneCostPerSqft'], 'Replacement membrane labor and material maps', ['average']);
-  }
-  if (serviceType === 'FLAT_ROOF_REPAIR') {
-    inspectRepairCube(diagnostics, p.patchRepairHours, 'patchRepairHours');
-    inspectRepairCube(diagnostics, p.patchMaterialAllowance, 'patchMaterialAllowance', { leafPredicate: nonNegativeMoney });
-    inspectMatchingLeafPaths(diagnostics, p, ['patchRepairHours', 'patchMaterialAllowance'], 'Flat-roof repair hour and material maps');
-  }
-  if (serviceType.startsWith('FLOORING_')) {
-    inspectPriceMap(diagnostics, p, 'laborPerSqft', { allowedKeys: FLOORING_TYPES });
-    inspectPriceMap(diagnostics, p, 'materialPerSqft', { allowedKeys: FLOORING_TYPES });
-    inspectPriceMap(diagnostics, p, 'removalPerSqft', { canonicalKeys: true });
-    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'materialPerSqft'], 'Flooring labor and material maps');
-    if(p.vinylPlankUnderlaymentRule!==undefined&&!['always_included','never_included','customer_selectable_addon','subfloor_condition','owner_review'].includes(p.vinylPlankUnderlaymentRule))structureDiagnostic(diagnostics,'invalid','vinylPlankUnderlaymentRule','Vinyl-plank underlayment rule is invalid.');
-    if (p.underlaymentPriceBasis !== undefined && !['installed_area_sell_price', 'cost'].includes(p.underlaymentPriceBasis)) structureDiagnostic(diagnostics, 'invalid', 'underlaymentPriceBasis', 'underlaymentPriceBasis must be installed_area_sell_price or cost.');
-  }
-  if (serviceType.startsWith('FENCING_')) {
-    for (const name of ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'gatePrice', 'removalPerLinearFoot']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
-    if (p.postsIncludedInMaterial !== undefined) {
-      if (!isRecord(p.postsIncludedInMaterial) || !Object.keys(p.postsIncludedInMaterial).length) structureDiagnostic(diagnostics, 'invalid', 'postsIncludedInMaterial', 'postsIncludedInMaterial must be a non-empty boolean map.');
-      else {
-        for (const [key, value] of Object.entries(p.postsIncludedInMaterial)) {
-          if (!CANONICAL_SLUG.test(key)) structureDiagnostic(diagnostics, 'invalid', `postsIncludedInMaterial.${key}`, `postsIncludedInMaterial.${key} must use a canonical lowercase key.`);
-          if (typeof value !== 'boolean') structureDiagnostic(diagnostics, 'invalid', `postsIncludedInMaterial.${key}`, `postsIncludedInMaterial.${key} must be true or false.`);
-        }
-      }
-    }
-    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerLinearFoot', 'materialPerLinearFoot', 'postsIncludedInMaterial'], 'Fence labor, material, and post-inclusion maps');
-    const offered = new Set(isRecord(p.laborPerLinearFoot) ? Object.keys(p.laborPerLinearFoot) : []);
-    for (const name of ['postPrice', 'gatePrice', 'removalPerLinearFoot']) if (isRecord(p[name])) for (const key of Object.keys(p[name])) if (!offered.has(key)) structureDiagnostic(diagnostics, 'unsupported', `${name}.${key}`, `${name}.${key} is not an offered fence type.`);
-  }
-  if (serviceType === 'LANDSCAPING_CLEANUP' && p.debrisPricing !== undefined) {
-    if (!isRecord(p.debrisPricing)) structureDiagnostic(diagnostics, 'invalid', 'debrisPricing', 'debrisPricing must contain complete debris-level rows.');
-    else {
-      for (const key of Object.keys(p.debrisPricing)) if (!['light', 'moderate', 'heavy'].includes(key)) structureDiagnostic(diagnostics, 'unsupported', `debrisPricing.${key}`, `debrisPricing.${key} is not supported.`);
-      for (const level of ['light', 'moderate', 'heavy']) {
-        const row = p.debrisPricing[level];
-        if (!isRecord(row)) {
-          structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}`, `debrisPricing.${level} is required.`);
-          continue;
-        }
-        for (const key of Object.keys(row)) if (!['laborMultiplier', 'disposalFlat'].includes(key)) structureDiagnostic(diagnostics, 'unsupported', `debrisPricing.${level}.${key}`, `debrisPricing.${level}.${key} is not supported.`);
-        if (!Object.hasOwn(row, 'laborMultiplier')) structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}.laborMultiplier`, `debrisPricing.${level}.laborMultiplier is required.`);
-        else if (!positive(row.laborMultiplier)) structureDiagnostic(diagnostics, 'invalid', `debrisPricing.${level}.laborMultiplier`, `debrisPricing.${level}.laborMultiplier must be positive.`);
-        if (!Object.hasOwn(row, 'disposalFlat')) structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}.disposalFlat`, `debrisPricing.${level}.disposalFlat is required.`);
-        else if (!nonNegativeMoney(row.disposalFlat)) structureDiagnostic(diagnostics, 'invalid', `debrisPricing.${level}.disposalFlat`, `debrisPricing.${level}.disposalFlat must be a non-negative integer-cent amount.`);
-      }
-    }
-  }
-  if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'mulchMaterialPerYard', { canonicalKeys: true });
-  if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'bedPrepLaborPerSqft', { allowedKeys: ['needs_weeding', 'overgrown'], requireAll: p.bedPrepLaborPerSqft !== undefined });
-  if (serviceType === 'LANDSCAPING_PLANTING') {
-    inspectPriceMap(diagnostics, p, 'plantingLaborPerPlant', { allowedKeys: SIZE_KEYS, requireAll: true });
-    inspectPriceMap(diagnostics, p, 'plantMaterialAllowance', { allowedKeys: SIZE_KEYS, requireAll: true });
-  }
-  if (serviceType === 'LANDSCAPING_MOWING') {
-    if (p.mowingBaseRatePerSqft !== undefined && (!nonNegative(p.mowingBaseRatePerSqft) || p.mowingBaseRatePerSqft > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics,'invalid','mowingBaseRatePerSqft','Mowing rate must be finite nonnegative cents per square foot, up to MAX_SAFE_INTEGER; fractional cents are supported.');
-    for(const [f,factor] of Object.entries(isRecord(p.frequencyMultipliers)?p.frequencyMultipliers:{})) for(const [g,growth] of Object.entries(isRecord(p.overgrowthMultipliers)?p.overgrowthMultipliers:{})) {
-      if(!positive(factor)||!positive(growth))continue;
-      try {const product=exactMultiply(factor,growth);exactToNumber(product);exactFromEvidence(exactEvidence(product));}
-      catch {for(const path of [`frequencyMultipliers.${f}`,`overgrowthMultipliers.${g}`])structureDiagnostic(diagnostics,'invalid',path,'The selected factor combination exceeds the supported exact-evidence domain.');}
-    }
-    inspectPriceMap(diagnostics, p, 'frequencyMultipliers', { allowedKeys: ['weekly', 'biweekly', 'monthly', 'one_time'], requireAll: true, predicate: positive });
-    inspectPriceMap(diagnostics, p, 'overgrowthMultipliers', { allowedKeys: ['maintained', 'overgrown', 'severe'], requireAll: true, predicate: positive });
-  }
-  if (serviceType === 'SIDING_REPLACEMENT') {
-    inspectPriceMap(diagnostics, p, 'laborPerSqft', { allowedKeys: SIDING_TYPES });
-    inspectPriceMap(diagnostics, p, 'materialPerSqft', { allowedKeys: SIDING_TYPES });
-    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'materialPerSqft'], 'Siding labor and material maps');
-  }
-  if (serviceType === 'SIDING_REPAIR') {
-    inspectRepairCube(diagnostics, p.repairHours, 'repairHours', { firstLevelAllowed: SIDING_TYPES });
-    inspectRepairCube(diagnostics, p.materialAllowance, 'materialAllowance', { firstLevelAllowed: SIDING_TYPES, leafPredicate: nonNegativeMoney });
-    inspectMatchingLeafPaths(diagnostics, p, ['repairHours', 'materialAllowance'], 'Siding repair hour and material maps');
-  }
-  return uniqueDiagnostics(diagnostics);
-}
-
-export function pricingDiagnosticsForSelection(type,diagnostics,c,pricing={},serviceRules={}) {
-  const activeScopes = new Set(scopeKeysForRequest(type,c,pricing,serviceRules));
-  let scopeRates;
-  return diagnostics.filter(item=>{
-    if(item.type!=='missing')return true; // Malformed or unsupported saved data still fails closed.
-    // An unfinished additional scope must not disable independently priced
-    // work. Keep every missing field for a selected scope; global malformed
-    // data was retained above, and unknown/root diagnostics remain blocking.
-    if(item.kind==='scope_configuration'){
-      if(item.path.startsWith('scopeDetails.')){
-        if(item.path==='scopeDetails.insulation.insulationSystem')return c.insulationNeeded===true;
-        if(item.path==='scopeDetails.insulation.coverboardSystem')return c.coverboardNeeded===true;
-        return activeScopes.has(item.path.split('.')[1]);
-      }
-      if(item.path.startsWith('scopeRates.')){
-        scopeRates ||= scopeRateDefinitions(type,pricing,true);
-        const definition=scopeRates[item.path.split('.')[1]],key=definition?.scopeKey;
-        if(key)return activeScopes.has(key)&&(!definition.layer||c[definition.layer+'Needed']===true);
-      }
-    }
-    const selected=type==='ROOFING_REPLACEMENT'?c.replacementRoofType:type.startsWith('FLOORING_')?c.newFlooringType:type==='FLAT_ROOF_REPLACEMENT'?c.replacementMembraneType:null;
-    if(!selected)return true;
-    // Flat roofs: tear-off prices belong to the existing membrane, so only the requested one matters.
-    if(type==='FLAT_ROOF_REPLACEMENT'&&item.kind==='relationship'&&item.path.startsWith('tearOffPerSqft.'))return item.path.split('.')[1]===c.membraneType;
-    const roots=type==='ROOFING_REPLACEMENT'?['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis']:type==='FLAT_ROOF_REPLACEMENT'?['laborPerSqft','membraneCostPerSqft']:['laborPerSqft','materialPerSqft'];
-    if(item.kind==='relationship'&&roots.some(root=>item.path.startsWith(root+'.')))return item.path.split('.')[1]===selected;
-    const scope=type==='ROOFING_REPLACEMENT'?'roof_underlayment_':'floor_underlayment_';
-    if(['scopeDetails.','scopeRates.'].some(root=>item.path.startsWith(root+scope)))return item.path.split('.')[1]===scope+selected;
-    return true;
-  });
-}
-
-function uniqueDiagnostics(items) {
-  const seen = new Set();
-  return items.filter(item => {
-    const key = `${item.type}:${item.path}:${item.kind || ''}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-function blockedOwnerValidation(path, message) {
-  const diagnostic = ownerDiagnostic('invalid', 'owner_pricing', path, message);
-  return {
-    ok: false,
-    missingOwnerFields: [],
-    invalidOwnerFields: [path],
-    crossFieldOwnerFields: [],
-    unsupportedOwnerFields: [],
-    unexpectedOwnerFields: [],
-    ownerDecisionRequired: [],
-    ownerDiagnostics: [diagnostic],
-    validationMessages: [message]
-  };
-}
-
-export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, serviceRules = {}, tierName = null) {
-  if (!SERVICE_TYPES.includes(serviceType)) {
-    return blockedOwnerValidation('serviceType', 'Unsupported service type.');
-  }
-  const pricingSnapshot = validationSnapshotVNext(pricing, 'pricing');
-  if (!pricingSnapshot.ok) return blockedOwnerValidation(
-    relativeSnapshotPath(pricingSnapshot, 'pricing'),
-    `Owner pricing could not be read safely: ${pricingSnapshot.reason}.`
-  );
-  const pricingNonPlainPath = firstNonPlainPath(pricingSnapshot, 'pricing');
-  if (pricingNonPlainPath) return blockedOwnerValidation(pricingNonPlainPath, `Owner pricing must contain only plain data objects; ${pricingNonPlainPath} is not plain data.`);
-  pricing = pricingSnapshot.value;
-  const customerSnapshot = snapshotPlainData(customerInputs, 'customerInputs');
-  if (!customerSnapshot.ok) return blockedOwnerValidation(customerSnapshot.errorPath, `Customer inputs could not be read safely: ${customerSnapshot.reason}.`);
-  const customerNonPlainPath = firstNonPlainPath(customerSnapshot, 'customerInputs');
-  if (customerNonPlainPath) return blockedOwnerValidation(customerNonPlainPath, `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`);
-  customerInputs = customerSnapshot.value;
-  const rulesSnapshot = validationSnapshotVNext(serviceRules, 'serviceRules');
-  if (!rulesSnapshot.ok) return blockedOwnerValidation(rulesSnapshot.errorPath, `Service rules could not be read safely: ${rulesSnapshot.reason}.`);
-  const rulesNonPlainPath = firstNonPlainPath(rulesSnapshot, 'serviceRules');
-  if (rulesNonPlainPath) return blockedOwnerValidation(rulesNonPlainPath, `Service rules must contain only plain data objects; ${rulesNonPlainPath} is not plain data.`);
-  serviceRules = rulesSnapshot.value;
-  const allowed = new Set(allowedPricingFields(serviceType));
-  const unsupportedOwnerFields = Object.keys(pricing).filter(key => !allowed.has(key));
-  const structureDiagnostics = pricingDiagnosticsForSelection(serviceType,validatePricingStructuresDetailed(serviceType, pricing),customerInputs,pricing,serviceRules);
-  const class2Diagnostics = validateClass2FactorsDetailed(serviceType, pricing);
-  const missingOwnerFields = [];
-  const invalidOwnerFields = [];
-  const crossFieldOwnerFields = [];
-  const ownerDiagnostics = [...structureDiagnostics, ...class2Diagnostics, ...includedPathDiagnosticsVNext(serviceRules, pricing)];
-
-  for (const diagnostic of ownerDiagnostics) {
-    if (diagnostic.type === 'missing') missingOwnerFields.push(diagnostic.path);
-    else if (diagnostic.type === 'unsupported') unsupportedOwnerFields.push(diagnostic.path);
-    else if (diagnostic.type === 'cross_field') crossFieldOwnerFields.push(diagnostic.path);
-    else invalidOwnerFields.push(diagnostic.path);
-  }
-
-  const requiredPrices = ownerRequirements(serviceType, customerInputs, pricing, serviceRules);
-  for (const item of requiredPrices) {
-    const value = valueAtPath(pricing, item.path);
-    if (missing(value)) {
-      missingOwnerFields.push(item.path);
-      ownerDiagnostics.push(ownerDiagnostic('missing', item.kind, item.path, `${item.label} is required.`));
-    } else if (value === 0 && corePriceRequirementVNext(item) && !freeOfferingVNext(serviceRules, tierName) &&
-        !includedCorePriceVNext(serviceRules, pricing, requiredPrices, item.path)) {
-      missingOwnerFields.push(item.path);
-      ownerDiagnostics.push(ownerDiagnostic('missing', 'unclassified_zero_core_price', item.path, item.label + ' is zero without an explicit free offering or included-price classification.'));
-    } else if (!validateRequirementValue(item, value)) {
-      invalidOwnerFields.push(item.path);
-      ownerDiagnostics.push(ownerDiagnostic('invalid', item.kind, item.path, `${item.label} is invalid.`));
-    }
-  }
-
-  if (serviceType === 'CUSTOM' && pricing.customPricingMode === 'range' && nonNegative(pricing.low) && nonNegative(pricing.high) && pricing.high <= pricing.low) {
-    invalidOwnerFields.push('high');
-    crossFieldOwnerFields.push('low', 'high');
-    ownerDiagnostics.push(ownerDiagnostic('cross_field', 'range_order', 'high', 'Custom range high price must be greater than low price.'));
-  }
-
-  const ownerDecisionRequired = [];
-  const requireDecision = (path, kind, message) => ownerDecisionRequired.push({ path, kind, message });
-  const baselineConfirmation=offeringBaselineConfirmation(serviceType,pricing);
-  if(baselineConfirmation)ownerDecisionRequired.push(baselineConfirmation);
-  if (serviceType.startsWith('FENCING_') && !configuredOffering(serviceType,pricing)) {
-    requireDecision('postDerivationRule', 'post_geometry_contract', 'Set up a fence offering with its type, height, terrain and included posts and footings. Choose an installed price or measured component prices.');
-    requireDecision('concretePerPost', 'mixed_charge_allocation', 'In the fence offering, define the posts, footings and digging included in the installed price, or enter their separate labor and material prices.');
-    if (customerInputs.gateCount > 0) requireDecision(`gatePrice.${customerInputs.fenceType}`, 'gate_width_pricing_contract', 'Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths.');
-  }
-  if (serviceType === 'ROOFING_REPLACEMENT') {
-    const basisPath = `underlaymentPriceBasis.${customerInputs.replacementRoofType}`;
-    if (valueAtPath(pricing, basisPath) === 'cost' && !pricing.scopeDetails?.['roof_underlayment_'+customerInputs.replacementRoofType]) requireDecision(basisPath, 'purchasable_underlayment_contract', 'Cost-based roof underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
-  }
-  if (serviceType.startsWith('FLOORING_')) {
-    if (['hardwood', 'laminate', 'carpet'].includes(customerInputs.newFlooringType) && !pricing.scopeDetails?.['floor_underlayment_'+customerInputs.newFlooringType]) requireDecision(`underlaymentPricing.${customerInputs.newFlooringType}`, 'product_specific_underlayment_contract', 'Approve product-specific underlayment scope, coverage, purchasable quantity, and pricing for this flooring type. The vinyl-plank scalar is not reused.');
-    if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost' && !pricing.scopeDetails?.floor_underlayment_vinyl_plank) requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
-    if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !scopeEntriesFor(pricing,'floor_overlay').some(([key,d])=>scopeMatchesRequest(key,d,customerInputs))) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
-  }
-  if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) {
-    const labels={paint_wall:'Wall paint product',paint_ceiling:'Ceiling paint product',paint_trim:'Trim paint product',paint_primer:'Wall primer product',paint_ceiling_primer:'Ceiling primer product',paint_prep:'Preparation product'};
-    for(const key of scopeKeysForRequest(serviceType,customerInputs,pricing,serviceRules).filter(k=>!pricing.scopeDetails?.[k])) requireDecision('scopeDetails.'+key,'purchasable_paint_contract',(labels[key]||scopeDefinitions(serviceType,pricing)[key]?.label||'Selected paint product')+' is not configured. Enter its coverage, waste allowance and package price in Additional priced scope.');
-  }
-  if (serviceType === 'SIDING_REPLACEMENT' && customerInputs.trimIncluded && !pricing.scopeDetails?.siding_trim) requireDecision('trimPerLinearFoot', 'mixed_charge_classification', 'Siding trim installation needs separate labor and material rates, or an explicit owner-confirmed category and allocation rule.');
-  if (serviceType === 'CUSTOM' && pricing.customChargeClassification === undefined) requireDecision('customChargeClassification', 'custom_charge_classification', 'Choose the custom service charge category in the owner price book. The category selects the existing owner-configured price basis, taxability and markup settings; no labor/material split is inferred.');
-
-  ownerDiagnostics.push(...ownerDecisionRequired.map(decision => ownerDiagnostic('owner_decision', decision.kind, decision.path, decision.message)));
-  for (const path of unsupportedOwnerFields) ownerDiagnostics.push(ownerDiagnostic('unsupported', 'field', path, 'This pricing field is not supported for the selected service.'));
-
-  const missingFields = [...new Set(missingOwnerFields)];
-  const invalidFields = [...new Set(invalidOwnerFields)];
-  const unsupportedFields = [...new Set(unsupportedOwnerFields)];
-  const crossFields = [...new Set(crossFieldOwnerFields)];
-  const diagnostics = uniqueDiagnostics(ownerDiagnostics);
-  const validationMessages = [...new Set([...diagnostics.map(item => item.message), ...ownerDecisionRequired.map(item => item.message)])];
-  return {
-    ok: !missingFields.length && !invalidFields.length && !unsupportedFields.length && !crossFields.length && !ownerDecisionRequired.length,
-    missingOwnerFields: missingFields,
-    invalidOwnerFields: invalidFields,
-    crossFieldOwnerFields: crossFields,
-    unsupportedOwnerFields: unsupportedFields,
-    unexpectedOwnerFields: unsupportedFields,
-    ownerDecisionRequired,
-    ownerDiagnostics: diagnostics,
-    validationMessages
-  };
-}
-
-function inspectRuleMap(diagnostics, source, name, keys, validator, expectedCopy) {
-  const value = source[name];
-  if (!isRecord(value)) {
-    if (missing(value)) for (const key of keys) diagnostics.push(ownerDiagnostic('missing', 'service_rule', `${name}.${key}`, `${name}.${key} is required.`));
-    else diagnostics.push(ownerDiagnostic('invalid', 'service_rule', name, `${name} must be an object.`));
-    return;
-  }
-  for (const key of Object.keys(value)) if (!keys.includes(key)) diagnostics.push(ownerDiagnostic('unsupported', 'service_rule', `${name}.${key}`, `${name}.${key} is not supported.`));
-  for (const key of keys) {
-    const path = `${name}.${key}`;
-    if (!Object.hasOwn(value, key)) diagnostics.push(ownerDiagnostic('missing', 'service_rule', path, `${path} is required.`));
-    else if (!validator(value[key])) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', path, `${path} ${expectedCopy}.`));
-  }
-}
-
-export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
-  const snapshot = snapshotPlainData(ownerPricing, 'ownerPricing');
-  if (!snapshot.ok) return [ownerDiagnostic(
-    'invalid', 'service_rule', relativeSnapshotPath(snapshot, 'ownerPricing'),
-    `Owner pricing rules could not be read safely: ${snapshot.reason}.`
-  )];
-  const nonPlainPath = firstNonPlainPath(snapshot, 'ownerPricing');
-  if (nonPlainPath) return [ownerDiagnostic(
-    'invalid', 'service_rule', nonPlainPath,
-    `Owner pricing rules must contain only plain data objects; ${nonPlainPath} is not plain data.`
-  )];
-  ownerPricing = canonicalServiceIdentityVNext(snapshot.value);
-  serviceType ||= ownerPricing.serviceType;
-  const diagnostics = [];
-  const supportedRoot = new Set(['active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','id','origin','zeroPricePolicy','knownOfferings']);
-  for(const key of Object.keys(ownerPricing)) if(!supportedRoot.has(key) && !ALL_PRICING_FIELDS.has(key) && !BUSINESS_DEFAULT_FIELDS.includes(key)) diagnostics.push(ownerDiagnostic('unsupported','service_root',key,'Unsupported service setting; migrate or explicitly configure its VNext contract before quoting.'));
-  if(ownerPricing.disposalScope!==undefined && (serviceType!=='LANDSCAPING_SOD'||ownerPricing.disposalScope!=='separate_project_debris')) diagnostics.push(ownerDiagnostic('invalid','service_rule','disposalScope','Only explicitly separate sod-project debris is supported.'));
-  const nestedPricing = ownerPricing.pricing;
-  const hasNestedPricing = isRecord(nestedPricing);
-  if (nestedPricing === undefined) {
-    diagnostics.push(ownerDiagnostic('missing', 'service_rule', 'pricing', 'pricing must be stored as an object on the service.'));
-  } else if (!hasNestedPricing) {
-    diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'pricing', 'pricing must be an object.'));
-  }
-  for (const key of Object.keys(ownerPricing)) {
-    if (!ALL_PRICING_FIELDS.has(key)) continue;
-    diagnostics.push(ownerDiagnostic('unsupported', 'misplaced_pricing', key, `${key} must be stored inside pricing, not at the service root.`));
-  }
-  for (const key of BUSINESS_DEFAULT_FIELDS.filter(name => !['peakMonths', 'peakSurchargePercent'].includes(name))) {
-    if (Object.hasOwn(ownerPricing, key)) diagnostics.push(ownerDiagnostic('unsupported', 'misplaced_business_default', key, `${key} is a business-wide default and cannot be stored on a service.`));
-  }
-  diagnostics.push(...identityDiagnosticsVNext(ownerPricing, serviceType));
-  diagnostics.push(...zeroPolicyDiagnosticsVNext(ownerPricing));
-  if (ownerPricing.knownOfferings !== undefined) {
-    const maps = ownerPricing.knownOfferings;
-    if (!isRecord(maps)) diagnostics.push(ownerDiagnostic('invalid','known_offerings','knownOfferings','Use Registered products to identify the products you offer.'));
-    else for (const [field, values] of Object.entries(maps)) {
-      if (MEASUREMENT_CONTRACTS[serviceType]?.fields[field]?.type !== 'slug') diagnostics.push(ownerDiagnostic('invalid','known_offerings','knownOfferings.'+field,'This is not an open offering selector.'));
-      else diagnostics.push(...offeringRegistryDiagnosticsVNext(field,values));
-    }
-  }
-  if (ownerPricing.disclaimer !== undefined && (typeof ownerPricing.disclaimer !== 'string' || !ownerPricing.disclaimer.trim())) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'disclaimer', 'disclaimer must be non-empty text when it is present.'));
-  if (ownerPricing.confirmedFields !== undefined) {
-    if (!isRecord(ownerPricing.confirmedFields)) {
-      diagnostics.push(ownerDiagnostic('invalid', 'ai_confirmation', 'confirmedFields', 'confirmedFields must be an object of explicit boolean approvals.'));
-    } else {
-      const confirmableFields = new Set(
-        ['AI_SUGGESTED', 'AI_INTERVIEW'].includes(ownerPricing.source)
-          ? aiConfirmationFieldsVNext(ownerPricing, hasNestedPricing ? nestedPricing : {})
-          : []
-      );
-      for (const [field, value] of Object.entries(ownerPricing.confirmedFields)) {
-        const path = `confirmedFields.${field}`;
-        if (!confirmableFields.has(field)) {
-          diagnostics.push(ownerDiagnostic('unsupported', 'ai_confirmation', path, `${path} does not match a confirmable field on this service.`));
-        } else if (typeof value !== 'boolean') {
-          diagnostics.push(ownerDiagnostic('invalid', 'ai_confirmation', path, `${path} must be true or false.`));
-        }
-      }
-    }
-  }
-  if(ownerPricing.approvedValues!==undefined){
-    const fields=['AI_SUGGESTED','AI_INTERVIEW'].includes(ownerPricing.source)?aiConfirmationFieldsVNext(ownerPricing,nestedPricing||{}):[];
-    if(!isRecord(ownerPricing.approvedValues))diagnostics.push(ownerDiagnostic('invalid','ai_confirmation','approvedValues','Approved values must be a plain field-to-approval map.'));
-    else for(const [field,record] of Object.entries(ownerPricing.approvedValues)){
-      if(!fields.includes(field))diagnostics.push(ownerDiagnostic('unsupported','ai_confirmation','approvedValues.'+field,'Approval does not match a confirmable service field.'));
-      else if(!isRecord(record)||Object.keys(record).length!==6||!Object.hasOwn(record,'value')||record.serviceType!==serviceType||!sameServiceIdVNext(record.serviceId,ownerPricing.id)||record.ownerId!==ownerPricing.origin?.ownerId||['ownerId','operationId','approvedAt'].some(key=>typeof record[key]!=='string'||!record[key].trim())||!/^\d{4}-\d{2}-\d{2}T/.test(record.approvedAt)||!Number.isFinite(Date.parse(record.approvedAt)))diagnostics.push(ownerDiagnostic('invalid','ai_confirmation','approvedValues.'+field,'Approval must retain the exact value, service identity, owner, operation, and timestamp.'));
-    }
-  }
-  inspectRuleMap(diagnostics, ownerPricing, 'feeRules', FEE_NAMES, value => FEE_RULE_MODES.includes(value), 'must use a supported applicability mode');
-  if(['when_scope_selected','customer_selected'].includes(ownerPricing.feeRules?.permit))diagnostics.push(ownerDiagnostic('owner_decision','service_rule','feeRules.permit','Choose whether the permit fee always applies, is included, does not apply, or is selected by you. Customers do not decide permit charges.'));
-  inspectRuleMap(diagnostics, ownerPricing, 'priceBasisByCategory', PRICE_BASIS_CATEGORIES, value => ['cost', 'sell_price'].includes(value), 'must be cost or sell_price');
-  inspectRuleMap(diagnostics, ownerPricing, 'taxabilityByCategory', TAXABILITY_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
-  if (ownerPricing.peakMonths !== undefined) {
-    const issue = monthListIssue(ownerPricing.peakMonths);
-    const path = issue?.path ? `peakMonths.${issue.path}` : 'peakMonths';
-    if (issue) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', path, `${path} ${issue.message}.`));
-  }
-  if (ownerPricing.peakSurchargePercent !== undefined && (!nonNegative(ownerPricing.peakSurchargePercent) || ownerPricing.peakSurchargePercent > 500)) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'peakSurchargePercent', 'peakSurchargePercent must be from 0 to 500.'));
-  return uniqueDiagnostics(diagnostics);
-}
-
-export function validateServiceRules(ownerPricing = {}, serviceType) {
-  return [...new Set(validateServiceRulesDetailed(ownerPricing, serviceType).map(item => item.message))];
-}
-
-export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency'].includes(field));
-  const snapshot = snapshotPlainData(defaults, 'businessDefaults');
-  if (!snapshot.ok) {
-    const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
-    const diagnostic = ownerDiagnostic('invalid', 'business_default', snapshot.errorPath, message);
-    return {
-      ok: false,
-      missingFields: [],
-      invalidFields: [snapshot.errorPath],
-      unsupportedFields: [],
-      diagnostics: [diagnostic],
-      errors: [diagnostic.message]
-    };
-  }
-  const nonPlainPath = firstNonPlainPath(snapshot, 'businessDefaults');
-  if (nonPlainPath) {
-    const message = `Business defaults must contain only plain data objects; ${nonPlainPath} is not plain data.`;
-    const diagnostic = ownerDiagnostic('invalid', 'business_default', nonPlainPath, message);
-    return {
-      ok: false,
-      missingFields: [],
-      invalidFields: [nonPlainPath],
-      unsupportedFields: [],
-      diagnostics: [diagnostic],
-      errors: [message]
-    };
-  }
-  defaults = snapshot.value;
-  const missingFields = required.filter(name => !Object.hasOwn(defaults, name) || missing(defaults[name]));
-  const invalidFields = [];
-  const unsupportedFields = Object.keys(defaults).filter(key => !BUSINESS_DEFAULT_FIELDS.includes(key));
-  const diagnostics = [
-    ...missingFields.map(path => ownerDiagnostic('missing', 'business_default', path, `${path} is required.`)),
-    ...unsupportedFields.map(path => ownerDiagnostic('unsupported', 'business_default', path, `${path} is not a supported business default.`))
-  ];
-  const invalid = (path, message) => {
-    invalidFields.push(path);
-    diagnostics.push(ownerDiagnostic('invalid', 'business_default', path, message));
-  };
-  // Prices are in one stated currency (set from the business country at onboarding).
-  if(defaults.currency!==undefined&&!['CAD','USD'].includes(defaults.currency))invalid('currency','Choose CAD or USD as the currency of your prices.');
-  if(defaults.quoteTimeZone!==undefined){try{if(typeof defaults.quoteTimeZone!=='string'||!defaults.quoteTimeZone.trim())throw new Error();new Intl.DateTimeFormat('en-US',{timeZone:defaults.quoteTimeZone}).format(new Date(0));}catch{invalid('quoteTimeZone','Choose a valid business time zone for quote-date pricing.');}}
-  if (!missing(defaults.markupMode) && !['markup', 'margin'].includes(defaults.markupMode)) invalid('markupMode', 'markupMode must be markup or margin.');
-  if (!missing(defaults.markupPercent) && (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100))) invalid('markupPercent', 'markupPercent is outside its supported range.');
-  for (const name of ['overheadFixed', 'minimumJobPrice', 'travelFee', 'disposalFee', 'permitFee']) if (!missing(defaults[name]) && !nonNegativeMoney(defaults[name])) invalid(name, `${name} must be a non-negative integer-cent amount.`);
-  if (!missing(defaults.taxMode) && !['TAX_NONE', 'TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode)) invalid('taxMode', 'taxMode is invalid.');
-  if (!missing(defaults.taxPercent) && (!nonNegative(defaults.taxPercent) || defaults.taxPercent > 100)) invalid('taxPercent', 'taxPercent must be from 0 to 100.');
-  if (defaults.taxMode === 'TAX_NONE' && defaults.taxPercent !== 0) invalid('taxPercent', 'TAX_NONE requires a zero taxPercent.');
-  if (['TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode) && defaults.taxPercent <= 0) invalid('taxPercent', 'A taxable mode requires a positive taxPercent.');
-  if (!missing(defaults.rangeBufferPercent) && (!nonNegative(defaults.rangeBufferPercent) || defaults.rangeBufferPercent > 25)) invalid('rangeBufferPercent', 'rangeBufferPercent must be from 0 to 25.');
-  const markupDiagnostics = [];
-  inspectRuleMap(markupDiagnostics, defaults, 'markupApplies', PRICE_BASIS_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
-  for (const item of markupDiagnostics) {
-    diagnostics.push({ ...item, kind: 'business_default' });
-    if (item.type === 'missing') missingFields.push(item.path);
-    else if (item.type === 'unsupported') unsupportedFields.push(item.path);
-    else invalidFields.push(item.path);
-  }
-  if (!missing(defaults.peakMonths)) {
-    const issue = monthListIssue(defaults.peakMonths);
-    const path = issue?.path ? `peakMonths.${issue.path}` : 'peakMonths';
-    if (issue) invalid(path, `${path} ${issue.message}.`);
-  }
-  if (!missing(defaults.peakSurchargePercent) && (!nonNegative(defaults.peakSurchargePercent) || defaults.peakSurchargePercent > 500)) invalid('peakSurchargePercent', 'peakSurchargePercent must be from 0 to 500.');
-  const finalDiagnostics = uniqueDiagnostics(diagnostics);
-  const errors = [...new Set(finalDiagnostics.filter(item => item.type !== 'missing').map(item => item.message))];
-  const finalMissing = [...new Set(missingFields)];
-  const finalInvalid = [...new Set(invalidFields)];
-  const finalUnsupported = [...new Set(unsupportedFields)];
-  return {
-    ok: !finalMissing.length && !finalInvalid.length && !finalUnsupported.length,
-    missingFields: finalMissing,
-    invalidFields: finalInvalid,
-    unsupportedFields: finalUnsupported,
-    diagnostics: finalDiagnostics,
-    errors
-  };
-}
-
-export function contractMetadata() {
-  return SERVICE_TYPES.map(serviceType => ({
-    serviceType,
-    customerFields: Object.entries(MEASUREMENT_CONTRACTS[serviceType].fields).map(([name, definition]) => ({ name, ...structuredClone(definition) })),
-    class2Fields: Object.entries(CLASS2_DEFINITIONS[serviceType] || {}).map(([name, definition]) => ({ name, ...structuredClone(definition) })),
-    allowedPricingFields: allowedPricingFields(serviceType)
-  }));
-}
-
-// A pure approval operation. An owner-only adapter must authenticate/authorize ownerId
-// before calling and persist its returned snapshot atomically. This is not authentication.
-export function equalApprovalDataVNext(left,right) {
-  const canonical = value => Array.isArray(value) ? value.map(canonical) : isRecord(value)
-    ? Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])) : value;
-  return JSON.stringify(canonical(left))===JSON.stringify(canonical(right));
-}
-export function hasCurrentApprovalVNext(service,pricing,field) {
-  try { service = canonicalServiceIdentityVNext(service); } catch { return false; }
-  const approval=service.approvedValues?.[field];
-  const value=Object.hasOwn(pricing,field)?pricing[field]:service[field];
-  return service.confirmedFields?.[field]===true && isRecord(approval) && approval.serviceType===service.serviceType && sameServiceIdVNext(approval.serviceId,service.id) && approval.ownerId===service.origin?.ownerId && identityDiagnosticsVNext(service).length===0 &&
-    ['ownerId','operationId','approvedAt'].every(key=>typeof approval[key]==='string'&&approval[key].trim()) &&
-    /^\d{4}-\d{2}-\d{2}T/.test(approval.approvedAt) && Number.isFinite(Date.parse(approval.approvedAt)) &&
-    Object.keys(approval).length===6 && Object.hasOwn(approval,'value') && equalApprovalDataVNext(value,approval.value);
-}
-export function approveVNextValues(input,operation) {
-  const serviceSnapshot=snapshotPlainData(input,'service'), opSnapshot=snapshotPlainData(operation,'approval');
-  if(!serviceSnapshot.ok||serviceSnapshot.nonPlainPaths.length||!opSnapshot.ok||opSnapshot.nonPlainPaths.length)throw new TypeError('Approval requires plain data.');
-  const service=canonicalServiceIdentityVNext(serviceSnapshot.value), op=opSnapshot.value;
-  if(!isRecord(service)||!isRecord(op)||!['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)||!SERVICE_TYPES.includes(service.serviceType))throw new TypeError('Approval requires an AI-originated service.');
-  if (identityDiagnosticsVNext(service).length || op.ownerId !== service.origin.ownerId) throw new TypeError('Approval must match the persisted service and its authenticated owner context.');
-  const allowed=aiConfirmationFieldsVNext(service,service.pricing);
-  if(Object.keys(op).some(k=>!['fields','ownerId','operationId','approvedAt'].includes(k))||!Array.isArray(op.fields)||denseArrayIssue(op.fields)||!op.fields.length||new Set(op.fields).size!==op.fields.length||op.fields.some(k=>!allowed.includes(k))||['ownerId','operationId','approvedAt'].some(k=>typeof op[k]!=='string'||!op[k].trim())||!/^\d{4}-\d{2}-\d{2}T/.test(op.approvedAt)||!Number.isFinite(Date.parse(op.approvedAt)))throw new TypeError('Explicit fields and auditable owner, operation, and timestamp are required.');
-  // Explicit approval retires receipts for fields no longer in this contract.
-  // Current fields not selected in a partial approval retain their old receipts.
-  for(const key of ['confirmedFields','approvedValues'])service[key]=Object.fromEntries(
-    Object.entries(isRecord(service[key])?service[key]:{}).filter(([field])=>allowed.includes(field))
-  );
-  for(const field of op.fields){service.confirmedFields[field]=true;service.approvedValues[field]={value:structuredClone(Object.hasOwn(service.pricing,field)?service.pricing[field]:service[field]),serviceType:service.serviceType,serviceId:service.id,ownerId:op.ownerId,operationId:op.operationId,approvedAt:op.approvedAt};}
-  return service;
-}
-
-export function inspectionOwnerDecisionsVNext(type,c={},p={}) {
- if(configuredOffering(type,p))return [];
- const decisions=previousInspectionOwnerDecisionsVNext(type,c);
- const add=(path,kind,message)=>decisions.push({path,kind,message});
- for(const key of scopeKeysForRequest(type,c,p))if(!p.scopeDetails?.[key]&&scopeEntriesFor(p,scopeBaseKey(key)).length)add('scopeDetails.'+key,'scope_matching','No configured scope entry matches these measured job facts.');
- if(type.startsWith('FLOORING_')&&c.stairSteps>0&&!scopeEntriesFor(p,'stairs').length)add('perStepPrice','stair_scope_contract','Confirm an all-inclusive stair package or separately price every included stair component.');
- if(type==='SIDING_REPLACEMENT'&&c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length)add('removalPerSqft','existing_siding_removal_contract','Confirm existing siding type, measured removal area, and the supported removal-price scope.');
- if(type==='SIDING_REPLACEMENT'&&c.trimIncluded&&!p.scopeDetails?.siding_trim)add('trimPerLinearFoot','mixed_charge_classification','Confirm trim labor/material allocation.');
- if(type.startsWith('CONCRETE_')&&c.demolitionNeeded&&!scopeEntriesFor(p,'demolition').length)add('demolitionPerSqft','existing_slab_demolition_contract','Define the existing slab facts or explicit bounded package covered by the demolition price.');
- if(type==='FLAT_ROOF_REPLACEMENT'&&(c.insulationNeeded===true||c.coverboardNeeded===true)&&!p.scopeDetails?.insulation)add('insulationPerSqft','insulation_scope_contract','Confirm insulation and coverboard scope, systems, and measured areas before pricing.');
- if(type==='EXTERIOR_PAINTING')add('exteriorCoatingScope','exterior_coating_scope_contract','Define supported substrate/coating systems and measured preparation scope or a bounded all-area package.');
- return decisions;
-}
-
-
-export function validServiceIdVNext(value) {
-  return validPricebookServiceId(value);
-}
-const auditText = value => typeof value === 'string' && value.trim().length > 0;
-const auditTime = value => auditText(value) && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value));
-
-export function sameServiceIdVNext(left, right) {
-  return validServiceIdVNext(left) && validServiceIdVNext(right) && left.toLowerCase() === right.toLowerCase();
-}
-function canonicalUuid(value) { return validServiceIdVNext(value) ? value.toLowerCase() : value; }
-function canonicalOfferingRegistry(registries) {
-  if (!isRecord(registries)) return;
-  for (const values of Object.values(registries)) if (isRecord(values)) {
-    for (const key of Object.keys(values)) values[key] = canonicalUuid(values[key]);
-  }
-}
-export function canonicalServiceIdentityVNext(input) {
-  const snapshot = snapshotPlainData(input, 'service');
-  if (!snapshot.ok || snapshot.nonPlainPaths.length || !isRecord(snapshot.value)) throw new TypeError('Service identity requires plain data.');
-  const service = snapshot.value;
-  if (Object.hasOwn(service, 'id')) service.id = canonicalUuid(service.id);
-  if (isRecord(service.origin) && Object.hasOwn(service.origin, 'serviceId')) service.origin.serviceId = canonicalUuid(service.origin.serviceId);
-  if (isRecord(service.zeroPricePolicy) && Object.hasOwn(service.zeroPricePolicy, 'serviceId')) service.zeroPricePolicy.serviceId = canonicalUuid(service.zeroPricePolicy.serviceId);
-  canonicalOfferingRegistry(service.knownOfferings);
-  if (isRecord(service.approvedValues)) for (const [field, approval] of Object.entries(service.approvedValues)) if (isRecord(approval)) {
-    if (Object.hasOwn(approval, 'serviceId')) approval.serviceId = canonicalUuid(approval.serviceId);
-    if (field === 'knownOfferings') canonicalOfferingRegistry(approval.value);
-    if (field === 'zeroPricePolicy' && isRecord(approval.value) && Object.hasOwn(approval.value, 'serviceId')) approval.value.serviceId = canonicalUuid(approval.value.serviceId);
-  }
-  return service;
-}
-export function canonicalCustomerIdentityVNext(input) {
-  const snapshot = snapshotPlainData(input, 'customerInputs');
-  if (!snapshot.ok || snapshot.nonPlainPaths.length || !isRecord(snapshot.value)) throw new TypeError('Customer identity requires plain data.');
-  const customer = snapshot.value;
-  if (isRecord(customer.confirmedFacts)) for (const fact of Object.values(customer.confirmedFacts)) {
-    if (isRecord(fact) && Object.hasOwn(fact, 'offeringId')) fact.offeringId = canonicalUuid(fact.offeringId);
-  }
-  return customer;
-}
-
-export function identityDiagnosticsVNext(service, requestedType = service?.serviceType) {
-  if (!isRecord(service)) return [ownerDiagnostic('invalid', 'service_identity', 'service', 'A persisted service object is required.')];
-  const out = [];
-  const add = (path, message) => out.push(ownerDiagnostic(service[path] === undefined ? 'missing' : 'invalid', 'service_identity', path, message));
-  if (!validServiceIdVNext(service.id)) add('id', 'A valid persisted service UUID is required.');
-  if (!SERVICE_TYPES.includes(service.serviceType)) add('serviceType', 'A supported persisted serviceType is required.');
-  else if (service.serviceType !== requestedType) add('serviceType', 'Requested serviceType must equal the persisted serviceType.');
-  if (!['MANUAL', 'AI_SUGGESTED', 'AI_INTERVIEW'].includes(service.source)) add('source', 'Explicit MANUAL, AI_SUGGESTED, or AI_INTERVIEW source is required; deleting origin does not create a manual service.');
-  const o = service.origin;
-  if (!isRecord(o) || Object.keys(o).length !== 6 || !sameServiceIdVNext(o.serviceId, service.id) || o.source !== service.source ||
-      !auditText(o.ownerId) || !auditText(o.operationId) || !auditTime(o.createdAt)) {
-    add('origin', 'Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt.');
-  }
-  if (isRecord(o) && (!SERVICE_TYPES.includes(o.serviceType) || o.serviceType !== service.serviceType)) {
-    out.push(ownerDiagnostic(o.serviceType === undefined ? 'missing' : 'invalid', 'service_identity', 'origin.serviceType', 'Creation-receipt serviceType must equal the persisted serviceType; changing type requires a new identity and creation receipt.'));
-  }
-  return out;
-}
-
-
-function supportedIncludedPricePath(serviceType, path, pricing = {}) {
-  if (typeof path !== 'string' || !SERVICE_TYPES.includes(serviceType)) return false;
-  const parts = path.split('.'), [root, key, leaf, size] = parts;
-  if (!allowedPricingFields(serviceType).includes(root)) return false;
-  if (parts.length === 1) return (
-    scalarMoneyFields(serviceType).includes(root) && !['minimumJob','repairMinimum','minimumServiceCharge'].includes(root)
-  ) || (serviceType === 'LANDSCAPING_MOWING' && root === 'mowingBaseRatePerSqft');
-  const openMaps = {
-    ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare'],
-    FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
-    FLOORING_INSTALL:['removalPerSqft'], FLOORING_REPLACEMENT:['removalPerSqft'],
-    FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
-    FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
-    LANDSCAPING_MULCH:['mulchMaterialPerYard'], LANDSCAPING_PLANTING:['mulchMaterialPerYard']
-  };
-  if (parts.length === 2) {
-    if(root==='scopeRates'&&SCOPE_TYPES.includes(serviceType))return Object.hasOwn(scopeRateDefinitions(serviceType,pricing),key);
-    if(root==='offeringRates'&&configuredOffering(serviceType,pricing))return Object.hasOwn(offeringRateDefinitions(serviceType,pricing),key);
-    if (openMaps[serviceType]?.includes(root)) return CANONICAL_SLUG.test(key);
-    if (serviceType.startsWith('FLOORING_') && ['laborPerSqft','materialPerSqft'].includes(root)) return FLOORING_TYPES.includes(key);
-    if (serviceType === 'SIDING_REPLACEMENT' && ['laborPerSqft','materialPerSqft'].includes(root)) return SIDING_TYPES.includes(key);
-    if (['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'].includes(serviceType) && root === 'bedPrepLaborPerSqft') return ['needs_weeding','overgrown'].includes(key);
-    if (serviceType === 'LANDSCAPING_PLANTING' && ['plantingLaborPerPlant','plantMaterialAllowance'].includes(root)) return SIZE_KEYS.includes(key);
-  }
-  if (parts.length === 3) return serviceType === 'LANDSCAPING_CLEANUP' && root === 'debrisPricing' && ['light','moderate','heavy'].includes(key) && leaf === 'disposalFlat';
-  if (parts.length === 4) {
-    const materialMap = {ROOFING_REPAIR:'repairMaterialAllowance',FLAT_ROOF_REPAIR:'patchMaterialAllowance',SIDING_REPAIR:'materialAllowance'}[serviceType];
-    return root === materialMap && (serviceType === 'SIDING_REPAIR' ? SIDING_TYPES.includes(key) : CANONICAL_SLUG.test(key)) && CANONICAL_SLUG.test(leaf) && SIZE_KEYS.includes(size);
-  }
-  return false;
-}
-function includedPathDiagnosticsVNext(service, pricing) {
-  if(!activationSnapshots.has(service)||(pricing!==undefined&&!activationSnapshots.has(pricing)))return computeIncludedPathDiagnostics(service,pricing);
-  let checks=activationIncludedPriceChecks.get(service);
-  if(!checks){checks=new Map();activationIncludedPriceChecks.set(service,checks);}
-  if(!checks.has(pricing))checks.set(pricing,deepFreeze(computeIncludedPathDiagnostics(service,pricing)));
-  return structuredClone(checks.get(pricing));
-}
-function computeIncludedPathDiagnostics(service, pricing) {
-  const mappings = service.zeroPricePolicy?.includedPrices;
-  if (!isRecord(mappings)) return [];
-  const variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>mergePricingForValidationVNext(service.pricing||{},t?.overrides||{}))];
-  const supported=(path,p)=>supportedIncludedPricePath(service.serviceType,path,p);
-  const out = [], configured = path => variants.some(p=>supported(path,p)&&valueAtPath(p,path)!==undefined);
-  const validPrice = (path, value) => {
-    const [root,key]=path.split('.');
-    const fractional=root==='offeringRates'?offeringRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate':root==='scopeRates'?scopeRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate':!fixedPriceField(root,pricing);
-    return fractional ? nonNegative(value)&&value<=Number.MAX_SAFE_INTEGER : nonNegativeMoney(value);
-  };
-  for (const [source, covering] of Object.entries(mappings)) {
-    const path = 'zeroPricePolicy.includedPrices.' + source;
-    for (const [role, pricePath] of [['source',source],['covering',covering]]) {
-      if (!configured(pricePath)) {
-        out.push(ownerDiagnostic('invalid','included_price_path',path,'The '+role+' path '+String(pricePath)+' must name an explicitly configured price in this exact service contract or one of its tiers.'));
-      }
-    }
-    if (pricing !== undefined && supported(source,pricing)) {
-      const value = valueAtPath(pricing, source);
-      // A source absent from this variant belongs to another configured tier.
-      // A present source is checked even when it is not selected by this request.
-      if (value !== undefined) {
-        const coveringValue = valueAtPath(pricing, covering);
-        if (!validPrice(source, value) || !supported(covering,pricing) ||
-            !validPrice(covering, coveringValue) || (value === 0 && coveringValue === 0)) {
-          out.push(ownerDiagnostic('invalid','included_price_path',path,'The effective tier must retain valid source and covering prices; an included zero needs a positive covering price.'));
-        }
-      }
-    }
-  }
-  return uniqueDiagnostics(out);
-}
-
-function zeroPolicyDiagnosticsVNext(service) {
-  if(!activationSnapshots.has(service))return computeZeroPolicyDiagnostics(service);
-  if(!activationZeroPolicyChecks.has(service))activationZeroPolicyChecks.set(service,deepFreeze(computeZeroPolicyDiagnostics(service)));
-  return structuredClone(activationZeroPolicyChecks.get(service));
-}
-function computeZeroPolicyDiagnostics(service) {
-  const p = service.zeroPricePolicy;
-  if (p === undefined) return [];
-  const valid = isRecord(p) && Object.keys(p).length === 7 && validServiceIdVNext(p.serviceId) && sameServiceIdVNext(p.serviceId, service.id) &&
-    auditText(p.ownerId) && p.ownerId === service.origin?.ownerId && auditText(p.operationId) && auditTime(p.approvedAt) &&
-    typeof p.freeCompleteService === 'boolean' && Array.isArray(p.freeTiers) && !denseArrayIssue(p.freeTiers) &&
-    p.freeTiers.every(name => auditText(name) && name === name.trim() && Array.isArray(service.tiers) && service.tiers.some(t => t?.name === name)) &&
-    new Set(p.freeTiers).size === p.freeTiers.length && isRecord(p.includedPrices) &&
-    Object.entries(p.includedPrices).every(([path, includedIn]) => auditText(path) && auditText(includedIn) && path !== includedIn);
-  return valid ? includedPathDiagnosticsVNext(service) : [ownerDiagnostic('invalid', 'zero_price_policy', 'zeroPricePolicy', 'Zero-price policy must explicitly bind the persisted service, owner approval, free offerings, and included-price paths.')];
-}
-export function freeOfferingVNext(service, tierName = null) {
-  const p = service.zeroPricePolicy;
-  return p !== undefined && zeroPolicyDiagnosticsVNext(service).length === 0 &&
-    (tierName === null ? p.freeCompleteService : p.freeTiers.includes(tierName));
-}
-function corePriceRequirementVNext(item) {
-  return ['non_negative_money', 'non_negative_number'].includes(item.kind) &&
-    !['haulAwayFee', 'edgingPerLinearFoot', 'baggingSurchargePercent', 'pondingWaterSurcharge'].includes(item.path) && !item.path.endsWith('.disposalFlat');
-}
-function includedCorePriceVNext(service, pricing, required, path) {
-  if (zeroPolicyDiagnosticsVNext(service).length) return false;
-  const includedIn = service.zeroPricePolicy?.includedPrices?.[path];
-  return typeof includedIn === 'string' && required.some(item => item.path === includedIn && corePriceRequirementVNext(item)) &&
-    valueAtPath(pricing, includedIn) > 0;
-}
-
-// The caller must load origin from protected persistence and authenticate its owner.
-// This helper implements ordinary edits only; it cannot mint a manual replacement.
-export function editVNextService(input, changes) {
-  const current = snapshotPlainData(input, 'service'), patch = snapshotPlainData(changes, 'changes');
-  if (!current.ok || current.nonPlainPaths.length || !patch.ok || patch.nonPlainPaths.length ||
-      identityDiagnosticsVNext(current.value).length) throw new TypeError('Ordinary edits require a valid persisted service and plain changes.');
-  if (['id', 'serviceType', 'source', 'origin', 'confirmedFields', 'approvedValues'].some(key => Object.hasOwn(patch.value, key))) throw new TypeError('Ordinary edits cannot change persisted identity, origin, or approval receipts.');
-  return canonicalServiceIdentityVNext({ ...current.value, ...patch.value });
-}
-
-// IDs are one-to-one within a selector. Different selectors may have their own
-// registries, but a customer fact must also name its exact field and value.
-function offeringRegistryDiagnosticsVNext(field, values) {
-  const prepared = activationRegistryChecks.get(values);
-  if (prepared?.field === field) return [...prepared.diagnostics];
-  const root='knownOfferings.'+field;
-  if(!isRecord(values))return [ownerDiagnostic('invalid','known_offerings',root,'Known offerings must be a plain value-to-UUID map.')];
-  const out=[],groups=new Map();
-  for(const [value,id] of Object.entries(values)){
-    if(!CANONICAL_SLUG.test(value)||!validServiceIdVNext(id)){out.push(ownerDiagnostic('invalid','known_offerings',root+'.'+value,'Each offered value requires a canonical slug and valid UUID.'));continue;}
-    const key=id.toLowerCase();if(!groups.has(key))groups.set(key,[]);groups.get(key).push(value);
-  }
-  for(const values of groups.values())if(values.length>1)for(const value of values)out.push(ownerDiagnostic('invalid','duplicate_offering_id',root+'.'+value,'An offering UUID must identify exactly one value within this selector.'));
-  return out;
-}
-function hasSelectedOfferingPriceVNext(type,c,p,field) {
-  const value=c[field], present=(root,...parents)=>{let map=p[root];for(const key of parents)map=isRecord(map)?map[key]:undefined;return isRecord(map)&&Object.hasOwn(map,value);};
-  if(type==='ROOFING_REPLACEMENT')return (field==='existingRoofType'?['tearOffPerSquare']:['laborPerSquare','materialCostPerSquare','underlaymentPerSquare']).some(root=>present(root));
-  if(type==='ROOFING_REPAIR')return ['repairHours','repairMaterialAllowance'].some(root=>field==='roofType'?present(root):present(root,c.roofType));
-  if(type==='FLAT_ROOF_REPLACEMENT')return (field==='membraneType'?['tearOffPerSqft']:['laborPerSqft','membraneCostPerSqft']).some(root=>present(root));
-  if(type==='FLAT_ROOF_REPAIR')return ['patchRepairHours','patchMaterialAllowance'].some(root=>field==='membraneType'?present(root):present(root,c.membraneType));
-  if(type==='SIDING_REPAIR')return ['repairHours','materialAllowance'].some(root=>present(root,c.sidingType));
-  if(type.startsWith('FLOORING_'))return ['removalPerSqft','disposalPerSqft'].some(root=>present(root));
-  if(type.startsWith('FENCING_'))return ['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'].some(root=>present(root));
-  if(field==='mulchType')return present('mulchMaterialPerYard');
-  return false;
-}
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíç}ùÕ:-jZ.¶›­–)Þ³V–×÷'B´$4”5õ”åEõ$U$D”ôåôäõD”4WÒg&öÒrââ÷66÷T6öæf–wW&F–öâæ§2s°¦–×÷'B·fÆ–E&–6V&ööµ6W'f–6T–GÒg&öÒrââ÷&–6T&ööµ7G'V7GW&Ræ§2s°¦–×÷'B·&öGV7D–FVçF—G•&WV—&VGÒg&öÒrââ÷&öGV7DæÖW2æ§2s°¦–×÷'B¶ÖW&vU&–6–ætf÷%fÆ–FF–öådæW‡GÒg&öÒrâ÷&–6–ætÖW&vRæ§2s°¦–×÷'B¶f—†VE&–6Tf–VÆGÒg&öÒrââ÷&–6U&V6—6–öâæ§2s°¦–×÷'B·66÷TVçG&–W4f÷"Ç66÷T&6T¶W’Ç66÷TÖF6†W5&WVW7GÒg&öÒrââ÷66÷T6öæf–wW&F–öâæ§2s°¦–×÷'B²ÖV7W&VD÷WFÆ–æUdæW‡BÒg&öÒrâövVöÖWG'’æ§2s°¦–×÷'Bµ44õUõE•U2Å44õUôd”TÄE2Ç66÷T7W7FöÖW$f–VÆG2Ç66÷U&WV—&VD7W7FöÖW"Ç66÷T7W7FöÖW$W'&÷'2Ç66÷U7G'V7GW&TF–væ÷7F–72Ç66÷U&WV—&VÖVçG2Ç66÷W57W&W75&–6RÇ66÷T¶W—4f÷%&WVW7BÇ66÷TFVf–æ—F–öç2Ç66÷U&FTFVf–æ—F–öç7Òg&öÒrâ÷66÷U&–6–æræ§2s°¦–×÷'B´ôddU$”äuôd”TÄE2ÂôddU$”äuõE•U2Â6öæf–wW&VDöffW&–ærÂöffW&–æt6öçG&7BÂöffW&–æu&WV—&VÖVçG2ÂöffW&–æu7G'V7GW&TF–væ÷7F–72ÂöffW&–æu&FTFVf–æ—F–öç2ÂöffW&–æt&6VÆ–æT6öæf—&ÖF–öçÒg&öÒrâö6öæf–wW&VDöffW&–æw2æ§2s°¦–×÷'B²FVç6T'&”—77VRÂ6æ6†÷EÆ–äFFÒg&öÒrâ÷6fTFFæ§2s°¦–×÷'B²W†7DFBÂW†7D6ö×&RÂW†7D×VÇF—Ç’ÂW†7DF—f–FRÂW†7EFôçVÖ&W"ÂW†7DWf–FVæ6RÂW†7Dg&öÔWf–FVæ6RÒg&öÒrâöW†7DÖF‚æ§2s° ¢òò&VF–æW72fÆ–FFW2Öç’6VÆV7F–öç2v–ç7BöæR–Ö×WF&ÆRF–W"âöæÇ’&—fFRÀ¢òògVÆÇ’6æ6†÷GFVBæBFVWÇ’g&÷¦Vâ6÷–W2&RVÆ–v–&ÆRf÷"F†—2&WW6Râ6ÆÆW ¢òòö&¦V7G2æB7W7FöÖW"ç7vW'2Çv—272F†R÷&F–æ'’6æ6†÷B&÷VæF'’à¦6öç7B7F—fF–öå6æ6†÷G2ÒæWrvVµ6WB‚“°¦6öç7B7F—fF–öå&–6–æt6†V6·2ÒæWrvV´Ö‚“°¦6öç7B7F—fF–öå&Vv—7G'”6†V6·2ÒæWrvV´Ö‚“°¦6öç7B7F—fF–öå¦W&õöÆ–7”6†V6·2ÒæWrvV´Ö‚“°¦6öç7B7F—fF–öä–æ6ÇVFVE&–6T6†V6·2ÒæWrvV´Ö‚“°¦W‡÷'BgVæ7F–öâfÆ–FF–öå6æ6†÷EdæW‡B‡fÇVRÂ&ö÷B’°¢&WGW&â7F—fF–öå6æ6†÷G2æ†2‡fÇVR¢ò²ö³¢G'VRÂfÇVRÂæöåÆ–åF‡3¢µÒÐ¢¢6æ6†÷EÆ–äFF‡fÇVRÂ&ö÷B“°§Ð ¦W‡÷'BgVæ7F–öâ7&VFT7F—fF–öåfÆ–FF–öådæW‡B‡6W'f–6UG—RÂ&–6–ærÂ6W'f–6U'VÆW2ÂF–W$æÖRÒçVÆÂ’°¢6öç7B&–6RÒ6æ6†÷EÆ–äFF‡&–6–ærÂw&–6–ærr“°¢6öç7B'VÆW2Ò6æ6†÷EÆ–äFF‡6W'f–6U'VÆW2Âw6W'f–6U'VÆW2r“°¢–b‡&–6Ræö²bb&–6RææöåÆ–åF‡2æÆVæwF‚bb'VÆW2æö²bb'VÆW2ææöåÆ–åF‡2æÆVæwF‚’°¢&–6–ærÒFVWg&VW¦R‡&–6RçfÇVR“°¢6W'f–6U'VÆW2ÒFVWg&VW¦R‡'VÆW2çfÇVR“°¢7F—fF–öå6æ6†÷G2æFB‡&–6–ær“°¢7F—fF–öå6æ6†÷G2æFB‡6W'f–6U'VÆW2“°¢6öç7B7G'V7GW&W2ÒFVWg&VW¦R‡fÆ–FFU&–6–æu7G'V7GW&W4FWF–ÆVB‡6W'f–6UG—RÂ&–6–ær’“°¢6öç7Bf7F÷'2ÒFVWg&VW¦R‡fÆ–FFT6Æ73$f7F÷'4FWF–ÆVB‡6W'f–6UG—RÂ&–6–ær’“°¢7F—fF–öå&–6–æt6†V6·2ç6WB‡&–6–ærÂ²6W'f–6UG—RÂ7G'V7GW&W2Âf7F÷'2Ò“°¢f÷"†6öç7B¶f–VÆBÂ&Vv—7G'•Òöbö&¦V7BæVçG&–W2‡6W'f–6U'VÆW2æ¶æ÷väöffW&–æw2ÇÂ·Ò’’°¢–b†—5&V6÷&B‡&Vv—7G'’’’7F—fF–öå&Vv—7G'”6†V6·2ç6WB‡&Vv—7G'’Â°¢f–VÆBÂF–væ÷7F–73¢FVWg&VW¦R†öffW&–æu&Vv—7G'”F–væ÷7F–75dæW‡B†f–VÆBÂ&Vv—7G'’’¢Ò“°¢Ð¢Ð¢&WGW&âö&¦V7Bæg&VW¦R‡°¢&–6–ærÂ6W'f–6U'VÆW2À¢7W7FöÖW#¢–çWG2ÓâfÆ–FFT7W7FöÖW$–çWG2‡6W'f–6UG—RÂ–çWG2Â&–6–ærÂ6W'f–6U'VÆW2’À¢÷væW#¢–çWG2ÓâfÆ–FFT÷væW%&–6–ær‡6W'f–6UG—RÂ–çWG2Â&–6–ærÂ6W'f–6U'VÆW2ÂF–W$æÖR¢Ò“°§Ð ¦gVæ7F–öâ&VÆF—fU6æ6†÷EF‚‡6æ6†÷BÂ&ö÷B’°¢6öç7B&Vf—‚ÒG·&ö÷GÒæ°¢&WGW&â6æ6†÷BæW'&÷%F‚ç7F'G5v—F‚‡&Vf—‚¢ò6æ6†÷BæW'&÷%F‚ç6Æ–6R‡&Vf—‚æÆVæwF‚¢¢6æ6†÷BæW'&÷%Fƒ°§Ð ¦gVæ7F–öâf—'7DæöåÆ–åF‚‡6æ6†÷BÂ&ö÷B’°¢6öç7BF‚Ò6æ6†÷BææöåÆ–åF‡3òå³Ó°¢–b‚F‚’&WGW&âçVÆÃ°¢6öç7B&Vf—‚ÒG·&ö÷GÒæ°¢&WGW&âF‚ç7F'G5v—F‚‡&Vf—‚’òF‚ç6Æ–6R‡&Vf—‚æÆVæwF‚’¢Fƒ°§Ð¦W‡÷'B6öç7B4U%d”4UõE•U2Òö&¦V7Bæg&VW¦R…°¢u$ôôd”äuõ$UÄ4TÔTåBrÂu$ôôd”äuõ$U•"rÀ¢tdÄEõ$ôôeõ$UÄ4TÔTåBrÂtdÄEõ$ôôeõ$U•"rÀ¢t”åDU$”õ%õ”åD”ärrÂtU…DU$”õ%õ”åD”ärrÀ¢tdÄôõ$”äuô”å5DÄÂrÂtdÄôõ$”äuõ$UÄ4TÔTåBrÀ¢tdTä4”äuô”å5DÄÂrÂtdTä4”äuõ$UÄ4TÔTåBrÀ¢u4”D”äuõ$UÄ4TÔTåBrÂu4”D”äuõ$U•"rÀ¢t4ôä5$UDUôE$•dUt’rÂt4ôä5$UDUõD”õõ4Ä"rÀ¢tÄäE44”äuô4ÄTåUrÂtÄäE44”äuôÕTÄ4‚rÀ¢tÄäE44”äuõ4ôBrÂtÄäE44”äuõÄåD”ärrÀ¢tÄäE44”äuôÔõt”ärrÂt5U5DôÒp¥Ò“° ¦W‡÷'B6öç7BdTUôäÔU2Òö&¦V7Bæg&VW¦R…²wG&fVÂrÂvF—7÷6ÂrÂwW&Ö—BrÂv÷fW&†VBuÒ“°¦W‡÷'B6öç7BdTUõ%TÄUôÔôDU2Òö&¦V7Bæg&VW¦R…°¢væ÷EöÆ–6&ÆRrÀ¢v–æ6ÇVFVEö–å÷&FW2rÀ¢vÇv—2rÀ¢wv†Vå÷66÷U÷6VÆV7FVBrÀ¢v÷væW%÷6VÆV7FVBrÀ¢v7W7FöÖW%÷6VÆV7FVBp¥Ò“°¦W‡÷'B6öç7B$”4Uô$4•5ô4DTtõ$”U2Òö&¦V7Bæg&VW¦R…°¢vÆ&÷"rÂvÖFW&–ÂrÂw&VÖ÷fÂrÂw&WrÂvFFöârÂvWV—ÖVçBrÀ¢wG&fVÂrÂvF—7÷6ÂrÂwW&Ö—BrÂv÷fW&†VBrÂw7W&6†&vRp¥Ò“°¦W‡÷'B6öç7BD„$”Ä•E•ô4DTtõ$”U2Òö&¦V7Bæg&VW¦R…²ââå$”4Uô$4•5ô4DTtõ$”U5Ò“° ¦W‡÷'BgVæ7F–öâ&W—%6—¦Tg&öÔffV7FVD&V‡6W'f–6UG—RÂffV7FVD&V’°¢–b‡G—VöbffV7FVD&VÓÒvçVÖ&W"rÇÂçVÖ&W"æ—4f–æ—FR†ffV7FVD&V’ÇÂffV7FVD&VÃÒ’&WGW&âçVÆÃ°¢6öç7B&÷VæF&–W2Ò6W'f–6UG—RÓÓÒu$ôôd”äuõ$U•"rò³SÂ#Ò¢³#ÂƒÓ°¢–b‚²u$ôôd”äuõ$U•"rÂtdÄEõ$ôôeõ$U•"rÂu4”D”äuõ$U•"uÒæ–æ6ÇVFW2‡6W'f–6UG—R’’&WGW&âçVÆÃ°¢–b†ffV7FVD&VÂ&÷VæF&–W5³Ò’&WGW&âw6ÖÆÂs°¢–b†ffV7FVD&VÃÒ&÷VæF&–W5³Ò’&WGW&âvÖVF—VÒs°¢&WGW&âvÆ&vRs°§Ð ¦6öç7BdÄôõ$”äuõE•U2Ò²v†&GvööBrÂvÆÖ–æFRrÂwf–ç–Å÷Ææ²rÂv6'WBrÂwF–ÆRuÓ°¦6öç7B4”D”äuõE•U2Ò²wf–ç–ÂrÂvf–&W%ö6VÖVçBrÂwvööBrÂvÖWFÂuÓ°¦6öç7B4•¤Uô´U•2Ò²w6ÖÆÂrÂvÖVF—VÒrÂvÆ&vRuÓ°¦6öç7B•D4„U2Ò²vÆ÷rrÂvÖVF—VÒrÂw7FVWrÂwfW'•÷7FVWuÓ°¦6öç7B5Dõ$”U2Ò³Â"Â5Ó°¦6öç7B44U52Ò²vV7’rÂvÖöFW&FRrÂvF–ff–7VÇBuÓ°¦6öç7B4ÄõU2Ò²vfÆBrÂvÖöFW&FRrÂw7FVWuÓ°¦6öç7B4äôä”4Åõ4ÅTrÒõå¶×¥Õ¶×£Ó•õÒ¢Bó° ¦6öç7Bf–VÆBÒ†Æ&VÂÂVæ—BÂG—RÂW‡G&Ò·Ò’Óâ‡²Æ&VÂÂVæ—BÂG—RÂââæW‡G&Ò“°¦6öç7BçVÖ&W$f–VÆBÒ†Æ&VÂÂVæ—BÂÖ–âÂÖ‚ÂW‡G&Ò·Ò’Óâf–VÆB†Æ&VÂÂVæ—BÂvçVÖ&W"rÂ²Ö–âÂÖ‚ÂââæW‡G&Ò“°¦6öç7BVçVÔf–VÆBÒ†Æ&VÂÂfÇVW2’Óâf–VÆB†Æ&VÂÂçVÆÂÂvVçVÒrÂ²fÇVW2Ò“°¦6öç7B&ööÆVäf–VÆBÒÆ&VÂÓâf–VÆB†Æ&VÂÂçVÆÂÂv&ööÆVâr“°¦6öç7B6ÇVtf–VÆBÒÆ&VÂÓâf–VÆB†Æ&VÂÂçVÆÂÂw6ÇVrr“° ¦6öç7BÖV7W&VD&VÒçVÖ&W$f–VÆB‚tÖV7W&VB&VrÂw7V&RfVWBrÂÂóó“°¦6öç7BÖV7W&VDÆVæwF‚ÒçVÖ&W$f–VÆB‚t6öæf—&ÖVBÖV7W&VBÆVæwF‚rÂvÆ–æV"fVWBrÂÂóó“° ¦gVæ7F–öâ6öÖÖöä6öçG&7B‡²f–VÆG2Â&WV—&VBÂ–ç7V7F–öâÂ7&÷75fÆ–FFRÒ’°¢&WGW&â²f–VÆG3¢²ââæf–VÆG2ÂW&Ö—E&WV—&VC¢&ööÆVäf–VÆB‚uW&Ö—B&WV—&VBf÷"F†—2ÖV7W&VB&ö¦V7Br’ÒÂ&WV—&VBÂ–ç7V7F–öâÂ7&÷75fÆ–FFRÓ°§Ð ¦W‡÷'B6öç7BÔT5U$TÔTåEô4ôåE$5E2Ò°¢$ôôd”äuõ$UÄ4TÔTåC¢6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢&ööe6—¦TÖWF†öC¢VçVÔf–VÆB‚u&ööbÖV7W&VÖVçBÖWF†öBrÂ²w&ööeöÖV7W&VBuÒ’À¢&ööe6—¦T–çWC¢çVÖ&W$f–VÆB‚tÖV7W&VB&ööb7W&f6R&VrÂw7V&RfVWBrÂSÂóó’À¢W†—7F–æu&ööeG—S¢6ÇVtf–VÆB‚tW†—7F–ær&ööf–ærÖFW&–Âr’À¢&WÆ6VÖVçE&ööeG—S¢6ÇVtf–VÆB‚u&WÆ6VÖVçB&ööf–ærÖFW&–Âr’À¢—F6ƒ¢VçVÔf–VÆB‚u&ööb—F6‚rÂ•D4„U2’À¢7F÷&–W3¢VçVÔf–VÆB‚t'V–ÆF–ær7F÷&–W2rÂ5Dõ$”U2’À¢W†—7F–ætÆ–W'3¢çVÖ&W$f–VÆB‚tÖV7W&VBW†—7F–ær&ööbÆ–W'2rÂvÆ–W'2rÂÂÂ²–çFVvW#¢G'VRÒ’À¢&ööd6ö×ÆW†—G“¢VçVÔf–VÆB‚u&ööb6ö×ÆW†—G’rÂ²w6–×ÆRrÂvÖöFW&FRrÂv6ö×ÆW‚uÒ’À¢6W'f–6U66÷S¢VçVÔf–VÆB‚u&WÆ6VÖVçB66÷RrÂ²vgVÆÂrÂw'F–ÂuÒ’À¢'F–ÅW&6VçC¢çVÖ&W$f–VÆB‚t6öæf—&ÖVBffV7FVB÷'F–öârÂwW&6VçBrÂãÂ’À¢'F–Ä&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VBffV7FVB&ööb&VrÂw7V&RfVWBrÂÂóó’À¢7F'FW$ÆVæwF„Äc¢ÖV7W&VDÆVæwF‚À¢G&—VFvTÆVæwF„Äc¢ÖV7W&VDÆVæwF‚À¢&–FvT6ÆVæwF„Äc¢ÖV7W&VDÆVæwF‚À¢FV6¶–æu6†VWG3¢çVÖ&W$f–VÆB‚t6öæf—&ÖVBFV6¶–ær6†VWG2Fò&WÆ6RrÂw6†VWG2rÂÂóÂ²–çFVvW#¢G'VRÒ¢ÒÀ¢&WV—&VB†2Â’°¢6öç7B÷WBÒ²w&ööe6—¦TÖWF†öBrÂw&ööe6—¦T–çWBrÂvW†—7F–æu&ööeG—RrÂw&WÆ6VÖVçE&ööeG—RrÂw—F6‚rÂw7F÷&–W2rÂvW†—7F–ætÆ–W'2rÂw&ööd6ö×ÆW†—G’rÂw6W'f–6U66÷RuÓ°¢–b†2ç6W'f–6U66÷RÓÓÒw'F–Ârbb2ç'F–ÅW&6VçBÓÓÒVæFVf–æVBbb2ç'F–Ä&V7gBÓÓÒVæFVf–æVB’÷WBçW6‚‚w'F–Ä&V7gBr“°¢–b‡æ66W76÷'•&–6–ætÖöFRÓÓÒv—FVÖ—¦VBr’÷WBçW6‚‚w7F'FW$ÆVæwF„ÄbrÂvG&—VFvTÆVæwF„ÄbrÂw&–FvT6ÆVæwF„Äbr“°¢&WGW&â÷WC°¢ÒÀ¢–ç7V7F–öâ†2’°¢–b†2ç&ööe6—¦TÖWF†öBbb2ç&ööe6—¦TÖWF†öBÓÒw&ööeöÖV7W&VBr’°¢&WGW&âtÖV7W&VB&ööb7W&f6R&V—2&WV—&VC²†öÖR×6—¦RæB6—¦RÖ6FVv÷'’vVöÖWG'’—2æ÷B7Vff–6–VçBf÷"7W7FöÖW"×&VG’V÷FRâs°¢Ð¢&WGW&âçVÆÃ°¢ÒÀ¢7&÷75fÆ–FFR†2Â’°¢6öç7BW'&÷'2ÒµÓ°¢–b‡æ66W76÷'•&–6–ætÖöFRÓÒv—FVÖ—¦VBr’°¢f÷"†6öç7Bf–VÆDæÖRöb²w7F'FW$ÆVæwF„ÄbrÂvG&—VFvTÆVæwF„ÄbrÂw&–FvT6ÆVæwF„ÄbuÒ’°¢–b†5¶f–VÆDæÖUÒÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢f–VÆDæÖRÂÖW76vS¢G¶f–VÆDæÖWÒ—2öæÇ’fÆ–Bv—F‚—FVÖ—¦VB&ööb66W76÷'’&–6–æræÒ“°¢Ð¢Ð¢–b†2ç6W'f–6U66÷RÓÓÒvgVÆÂr’°¢–b†2ç'F–ÅW&6VçBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢w'F–ÅW&6VçBrÂÖW76vS¢tffV7FVBW&6VçFvR—2öæÇ’fÆ–Bf÷"'F–Â&ööb&WÆ6VÖVçBârÒ“°¢–b†2ç'F–Ä&V7gBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢w'F–Ä&V7gBrÂÖW76vS¢tffV7FVB&ööb&V—2öæÇ’fÆ–Bf÷"'F–Â&ööb&WÆ6VÖVçBârÒ“°¢Ð¢–b†2ç6W'f–6U66÷RÓÓÒw'F–Ârbb2ç'F–ÅW&6VçBÓÒVæFVf–æVBbb2ç'F–Ä&V7gBÓÒVæFVf–æVB’°¢–b…¶2ç&ööe6—¦T–çWBÆ2ç'F–ÅW&6VçBÆ2ç'F–Ä&V7gEÒæWfW'’„çVÖ&W"æ—4f–æ—FR’bbW†7D6ö×&R†W†7D×VÇF—Ç’†2ç&ööe6—¦T–çWBÆ2ç'F–ÅW&6VçB’ÆW†7D×VÇF—Ç’†2ç'F–Ä&V7gBÃ’’ÓÓ’°¢W'&÷'2çW6‚‡²f–VÆC¢w'F–Ä&V7gBrÂÖW76vS¢tÖV7W&VB'F–Â&VæBffV7FVBW&6VçFvRFòæ÷Bw&VRârÒ“°¢Ð¢Ð¢–b†2ç'F–Ä&V7gBÓÒVæFVf–æVBbb2ç&ööe6—¦T–çWBÓÒVæFVf–æVBbb2ç'F–Ä&V7gBâ2ç&ööe6—¦T–çWB’°¢W'&÷'2çW6‚‡²f–VÆC¢w'F–Ä&V7gBrÂÖW76vS¢tffV7FVB&ööb&V6ææ÷BW†6VVBF†RÖV7W&VB&ööb&VârÒ“°¢Ð¢&WGW&âW'&÷'3°¢Ð¢Ò’À ¢$ôôd”äuõ$U•#¢6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢&W—%G—S¢6ÇVtf–VÆB‚u&ööb&W—"G—Rr’À¢ffV7FVD&V¢çVÖ&W$f–VÆB‚tÖV7W&VBffV7FVB&ööb&VrÂw7V&RfVWBrÂãÂóó’À¢&ööeG—S¢6ÇVtf–VÆB‚u&ööf–ærÖFW&–Âr’À¢—F6ƒ¢VçVÔf–VÆB‚u&ööb—F6‚rÂ•D4„U2’À¢7F÷&–W3¢VçVÔf–VÆB‚t'V–ÆF–ær7F÷&–W2rÂ5Dõ$”U2’À¢ÆVµ&W6VçC¢&ööÆVäf–VÆB‚t7F—fRÆV²&W÷'FVBr¢ÒÀ¢&WV—&VC¢‚’Óâ²w&W—%G—RrÂvffV7FVD&VrÂw&ööeG—RrÂw—F6‚rÂw7F÷&–W2rÂvÆVµ&W6VçBuÒÀ¢–ç7V7F–öã¢2Óâ2ç&W—%G—RÓÓÒwVæ¶æ÷vâp¢òtÆV²6÷W&6R—2Væ¶æ÷vâââ–â×W'6öâ–ç7V7F–öâ—2&WV—&VB&Vf÷&R&–6–ærF†—2&W—"âp¢¢çVÆÀ¢Ò’À ¢dÄEõ$ôôeõ$UÄ4TÔTåC¢6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢&ööe7gC¢çVÖ&W$f–VÆB‚tÖV7W&VBfÆB×&ööb&VrÂw7V&RfVWBrÂ#RÂ%óó’À¢7gDÖWF†öC¢VçVÔf–VÆB‚u&ööbÖV7W&VÖVçBÖWF†öBrÂ²vW†7BuÒ’À¢ÖVÖ'&æUG—S¢6ÇVtf–VÆB‚tW†—7F–ærÖVÖ'&æRG—Rr’À¢W†—7F–ætÆ–W'3¢f–VÆB‚tÖV7W&VBW†—7F–ærÖVÖ'&æRÆ–W'2rÂvÆ–W'2rÂv–çFVvW%ö÷%÷Væ¶æ÷vârÂ²Ö–ã¢ÂÖƒ¢Ò’À¢66W74F–ff–7VÇG“¢VçVÔf–VÆB‚u&ööb66W72rÂ44U52’À¢6W'f–6U66÷S¢VçVÔf–VÆB‚u&WÆ6VÖVçB66÷RrÂ²vgVÆÂrÂw'F–ÂuÒ’À¢'V–ÆF–æuG—S¢VçVÔf–VÆB‚t'V–ÆF–ærG—RrÂ²w&W6–FVçF–ÂrÂv6öÖÖW&6–ÂuÒ’À¢–ç7VÆF–öäæVVFVC¦&ööÆVäf–VÆB‚tæWr–ç7VÆF–öâæVVFVBr’À¢6÷fW&&ö&DæVVFVC¦&ööÆVäf–VÆB‚tæWr6÷fW&&ö&BæVVFVBr’À¢'F–ÅW&6VçC¢çVÖ&W$f–VÆB‚t6öæf—&ÖVBffV7FVB÷'F–öârÂwW&6VçBrÂãÂ’À¢'F–Ä&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VBffV7FVB&ööb&VrÂw7V&RfVWBrÂÂ%óó¢ÒÀ¢&WV—&VB†2’°¢6öç7B÷WBÒ²w&ööe7gBrÂw7gDÖWF†öBrÂvÖVÖ'&æUG—RrÂvW†—7F–ætÆ–W'2rÂv66W74F–ff–7VÇG’rÂw6W'f–6U66÷RrÂv–ç7VÆF–öäæVVFVBrÂv6÷fW&&ö&DæVVFVBuÓ°¢–b†2ç6W'f–6U66÷RÓÓÒw'F–Ârbb2ç'F–ÅW&6VçBÓÓÒVæFVf–æVBbb2ç'F–Ä&V7gBÓÓÒVæFVf–æVB’÷WBçW6‚‚w'F–Ä&V7gBr“°¢&WGW&â÷WC°¢ÒÀ¢–ç7V7F–öâ†2’°¢–b†2ç7gDÖWF†öBbb2ç7gDÖWF†öBÓÒvW†7Br’&WGW&âtÖV7W&VBfÆB×&ööb&V—2&WV—&VBf÷"7W7FöÖW"×&VG’V÷FRâs°¢–b†2æÖVÖ'&æUG—RÓÓÒwVæ¶æ÷vâr’&WGW&âuF†RÖVÖ'&æRG—R×W7B&R6öæf—&ÖVB&Vf÷&RF†—2fÆB×&ööb&WÆ6VÖVçB6â&R&–6VBâs°¢–b†2æW†—7F–ætÆ–W'2ÓÓÒwVæ¶æ÷vâr’&WGW&âuF†RW†—7F–ærÆ–W"6÷VçB×W7B&RÖV7W&VB&Vf÷&RF†—2fÆB×&ööb&WÆ6VÖVçB6â&R&–6VBâs°¢&WGW&âçVÆÃ°¢ÒÀ¢7&÷75fÆ–FFR†2’°¢6öç7BW'&÷'2ÒµÓ°¢–b†2ç6W'f–6U66÷RÓÓÒvgVÆÂr’°¢–b†2ç'F–ÅW&6VçBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢w'F–ÅW&6VçBrÂÖW76vS¢tffV7FVBW&6VçFvR—2öæÇ’fÆ–Bf÷"'F–ÂfÆB×&ööb&WÆ6VÖVçBârÒ“°¢–b†2ç'F–Ä&V7gBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢w'F–Ä&V7gBrÂÖW76vS¢tffV7FVB&ööb&V—2öæÇ’fÆ–Bf÷"'F–ÂfÆB×&ööb&WÆ6VÖVçBârÒ“°¢Ð¢–b†2ç6W'f–6U66÷RÓÓÒw'F–Ârbb2ç'F–ÅW&6VçBÓÒVæFVf–æVBbb2ç'F–Ä&V7gBÓÒVæFVf–æVB’°¢–b…¶2ç&ööe7gBÆ2ç'F–ÅW&6VçBÆ2ç'F–Ä&V7gEÒæWfW'’„çVÖ&W"æ—4f–æ—FR’bbW†7D6ö×&R†W†7D×VÇF—Ç’†2ç&ööe7gBÆ2ç'F–ÅW&6VçB’ÆW†7D×VÇF—Ç’†2ç'F–Ä&V7gBÃ’’ÓÓ’°¢W'&÷'2çW6‚‡²f–VÆC¢w'F–Ä&V7gBrÂÖW76vS¢tÖV7W&VBfÆB×&ööb'F–Â&VæBffV7FVBW&6VçFvRFòæ÷Bw&VRârÒ“°¢Ð¢Ð¢–b†2ç'F–Ä&V7gBÓÒVæFVf–æVBbb2ç&ööe7gBÓÒVæFVf–æVBbb2ç'F–Ä&V7gBâ2ç&ööe7gB’°¢W'&÷'2çW6‚‡²f–VÆC¢w'F–Ä&V7gBrÂÖW76vS¢tffV7FVBfÆB×&ööb&V6ææ÷BW†6VVBF÷FÂÖV7W&VB&ööb&VârÒ“°¢Ð¢&WGW&âW'&÷'3°¢Ð¢Ò’À ¢dÄEõ$ôôeõ$U•#¢6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢&W—%G—S¢6ÇVtf–VÆB‚tfÆB×&ööb&W—"G—Rr’À¢ffV7FVD&V¢çVÖ&W$f–VÆB‚tÖV7W&VBffV7FVBfÆB×&ööb&VrÂw7V&RfVWBrÂãÂóó’À¢ÖVÖ'&æUG—S¢6ÇVtf–VÆB‚tÖVÖ'&æRG—Rr’À¢ÆVµ&W6VçC¢&ööÆVäf–VÆB‚t7F—fRÆV²&W÷'FVBr’À¢öæF–æuvFW#¢&ööÆVäf–VÆB‚uöæF–ærvFW"&W÷'FVBr¢ÒÀ¢&WV—&VC¢‚’Óâ²w&W—%G—RrÂvffV7FVD&VrÂvÖVÖ'&æUG—RrÂvÆVµ&W6VçBrÂwöæF–æuvFW"uÒÀ¢–ç7V7F–öâ†2’°¢–b†2ç&W—%G—RÓÓÒwVæ¶æ÷våöÆV²r’&WGW&âtfÆB×&ööbÆV²6÷W&6R&WV—&W2–ç7V7F–öâ&Vf÷&R&–6–ærâs°¢–b†2æÖVÖ'&æUG—RÓÓÒwVæ¶æ÷vâr’&WGW&âuF†RfÆB×&ööbÖVÖ'&æRG—R×W7B&R6öæf—&ÖVB&Vf÷&R&W—"&–6–ærâs°¢&WGW&âçVÆÃ°¢Ð¢Ò’À ¢”åDU$”õ%õ”åD”äs¢6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢&V–çWDÖWF†öC¢VçVÔf–VÆB‚uvÆÂ&VÖV7W&VÖVçBÖWF†öBrÂ²wvÆÅ÷7gBuÒ’À¢vÆÄ&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB–çF&ÆRvÆÂ&VrÂw7V&RfVWBrÂÂ%óó’À¢vÆÄ†V–v‡C¢VçVÔf–VÆB‚uvÆÂ†V–v‡BrÂ²w7FæF&BrÂv†–v‚rÂwfVÇFVBuÒ’À¢7W&f6T6öæF—F–öã¢VçVÔf–VÆB‚uvÆÂ6öæF—F–öârÂ²vvööBrÂvf—"rÂwö÷"uÒ’À¢6öG3¢çVÖ&W$f–VÆB‚u–çB6öG2rÂv6öG2rÂÂ2Â²–çFVvW#¢G'VRÒ’À¢6V–Æ–æw4–æ6ÇVFVC¢&ööÆVäf–VÆB‚t6V–Æ–æw2–æ6ÇVFVBr’À¢6V–Æ–æt&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB6V–Æ–ær&VrÂw7V&RfVWBrÂÂóó’À¢G&–Ô–æ6ÇVFVC¢&ööÆVäf–VÆB‚uG&–Ò–æ6ÇVFVBr’À¢G&–ÔÆVæwF„Äc¢çVÖ&W$f–VÆB‚tÖV7W&VBG&–ÒÆVæwF‚rÂvÆ–æV"fVWBrÂãÂóó¢ÒÀ¢&WV—&VB†2’°¢6öç7B÷WBÒ²v&V–çWDÖWF†öBrÂwvÆÄ&V7gBrÂwvÆÄ†V–v‡BrÂw7W&f6T6öæF—F–öârÂv6öG2rÂv6V–Æ–æw4–æ6ÇVFVBrÂwG&–Ô–æ6ÇVFVBuÓ°¢–b†2æ6V–Æ–æw4–æ6ÇVFVB’÷WBçW6‚‚v6V–Æ–æt&V7gBr“°¢–b†2çG&–Ô–æ6ÇVFVB’÷WBçW6‚‚wG&–ÔÆVæwF„Äbr“°¢&WGW&â÷WC°¢ÒÀ¢–ç7V7F–öâ†2’°¢–b†2æ&V–çWDÖWF†öBÓÒwvÆÅ÷7gBr’&WGW&âtÖV7W&VB–çF&ÆRvÆÂ&V—2&WV—&VC²fÆö÷"Ö&VæB&ööÒÖ6÷VçBvVöÖWG'’&Ræ÷BW6VB'’F†RVF—BVæv–æRâs°¢–b†2ç7W&f6T6öæF—F–öâÓÒvvööBr’&WGW&â$4”5õ”åEõ$U$D”ôåôäõD”4S°¢&WGW&âçVÆÃ°¢ÒÀ¢7&÷75fÆ–FFR†2’°¢6öç7BW'&÷'2ÒµÓ°¢–b†2æ6V–Æ–æw4–æ6ÇVFVBÓÓÒfÇ6Rbb2æ6V–Æ–æt&V7gBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢v6V–Æ–æt&V7gBrÂÖW76vS¢t6V–Æ–ær&V6ææ÷B&R7WÆ–VBv†Vâ6V–Æ–æw2&Ræ÷B–æ6ÇVFVBârÒ“°¢–b†2çG&–Ô–æ6ÇVFVBÓÓÒfÇ6Rbb2çG&–ÔÆVæwF„ÄbÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢wG&–ÔÆVæwF„ÄbrÂÖW76vS¢uG&–ÒÆVæwF‚6ææ÷B&R7WÆ–VBv†VâG&–Ò—2æ÷B–æ6ÇVFVBârÒ“°¢&WGW&âW'&÷'3°¢Ð¢Ò’À ¢U…DU$”õ%õ”åD”äs¢6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢&V–çWDÖWF†öC¢VçVÔf–VÆB‚uvÆÂ&VÖV7W&VÖVçBÖWF†öBrÂ²wvÆÅ÷7gBuÒ’À¢W‡FW&–÷$&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB–çF&ÆRvÆÂ&VrÂw7V&RfVWBrÂÂ%óó’À¢7F÷&–W3¢VçVÔf–VÆB‚t'V–ÆF–ær7F÷&–W2rÂ5Dõ$”U2’À¢7W&f6T6öæF—F–öã¢VçVÔf–VÆB‚tW‡FW&–÷"7W&f6R6öæF—F–öârÂ²vvööBrÂvf—"rÂwö÷"uÒ’À¢6öG3¢çVÖ&W$f–VÆB‚u–çB6öG2rÂv6öG2rÂÂ2Â²–çFVvW#¢G'VRÒ¢ÒÀ¢&WV—&VC¢‚’Óâ²v&V–çWDÖWF†öBrÂvW‡FW&–÷$&V7gBrÂw7F÷&–W2rÂw7W&f6T6öæF—F–öârÂv6öG2uÒÀ¢–ç7V7F–öâ†2’°¢–b†2æ&V–çWDÖWF†öBÓÒwvÆÅ÷7gBr’&WGW&âtÖV7W&VB–çF&ÆRvÆÂ&V—2&WV—&VC²†öÖR×6—¦RÖ2&Ræ÷B7Vff–6–VçBf÷"7W7FöÖW"×&VG’V÷FRâs°¢–b†2ç7W&f6T6öæF—F–öâÓÓÒwö÷"r’&WGW&âuö÷"W‡FW&–÷"7W&f6W2&WV—&RâW‡Æ–6—FÇ’6öæf—&ÖVB&–ÖW"&–6–ær'VÆR&Vf÷&R&–6–ærâs°¢&WGW&âçVÆÃ°¢Ð¢Ò’À ¢dÄôõ$”äuô”å5DÄÃ¢çVÆÂÀ¢dÄôõ$”äuõ$UÄ4TÔTåC¢çVÆÂÀ¢dTä4”äuô”å5DÄÃ¢çVÆÂÀ¢dTä4”äuõ$UÄ4TÔTåC¢çVÆÂÀ¢4ôä5$UDUôE$•dUt“¢çVÆÂÀ¢4ôä5$UDUõD”õõ4Ä#¢çVÆÂÀ¢ÄäE44”äuô4ÄTåU¢çVÆÂÀ¢ÄäE44”äuôÕTÄ4ƒ¢çVÆÂÀ¢ÄäE44”äuõ4ôC¢çVÆÂÀ¢ÄäE44”äuõÄåD”äs¢çVÆÂÀ¢ÄäE44”äuôÔõt”äs¢çVÆÂÀ¢4”D”äuõ$UÄ4TÔTåC¢çVÆÂÀ¢4”D”äuõ$U•#¢çVÆÂÀ¢5U5DôÓ¢çVÆÀ§Ó° ¦gVæ7F–öâfÆö÷&–æt6öçG&7B‡&WÆ6VÖVçB’°¢&WGW&â6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢7gC¢çVÖ&W$f–VÆB‚tÖV7W&VBfÆö÷&–ær&VrÂw7V&RfVWBrÂÂóó’À¢7gDÖWF†öC¢VçVÔf–VÆB‚tfÆö÷"ÖV7W&VÖVçBÖWF†öBrÂ²vW†7BuÒ’À¢æWtfÆö÷&–æuG—S¢VçVÔf–VÆB‚tæWrfÆö÷&–ærG—RrÂdÄôõ$”äuõE•U2’À¢W†—7F–ætfÆö÷%G—S¢6ÇVtf–VÆB‚tW†—7F–ærfÆö÷"G—Rr’À¢&VÖ÷fÄæVVFVC¢&ööÆVäf–VÆB‚tW†—7F–ærfÆö÷"&VÖ÷fÂ–æ6ÇVFVBr’À¢&ööÔ6÷VçC¢çVÖ&W$f–VÆB‚u&öö×2–â66÷RrÂw&öö×2rÂÂóÂ²–çFVvW#¢G'VRÒ’À¢Æ–÷WEGFW&ã¢VçVÔf–VÆB‚tfÆö÷&–ærÆ–÷WBrÂ²w7G&–v‡BrÂvF–vöæÅö÷%÷GFW&âuÒ’À¢7F—%7FW3¢çVÖ&W$f–VÆB‚u7F—"7FW2–â66÷RrÂw7FW2rÂÂóÂ²–çFVvW#¢G'VRÒ’À¢VæFW&Æ–ÖVçE6VÆV7FVC¢&ööÆVäf–VÆB‚uf–ç–Â×Ææ²VæFW&Æ–ÖVçB6VÆV7FVBr’À¢7V&fÆö÷$6öæF—F–öã¢VçVÔf–VÆB‚u7V&fÆö÷"VæFW&Æ–ÖVçB6öæF—F–öârÂ²w&WV—&W5÷VæFW&Æ–ÖVçBrÂvFöW5öæ÷E÷&WV—&U÷VæFW&Æ–ÖVçBrÂwVæ¶æ÷vâuÒ’À¢âââ‡&WÆ6VÖVçBò°¢7V&fÆö÷$—77VW3¢&ööÆVäf–VÆB‚u7V&fÆö÷"—77VW2&W÷'FVBr’À¢7V&fÆö÷%&W—$&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB7V&fÆö÷"&W—"&VrÂw7V&RfVWBrÂãÂóó¢Ò¢·Ò¢ÒÀ¢&WV—&VB†2Â’°¢6öç7B÷WBÒ²w7gBrÂw7gDÖWF†öBrÂvæWtfÆö÷&–æuG—RrÂvW†—7F–ætfÆö÷%G—RrÂw&VÖ÷fÄæVVFVBrÂw&ööÔ6÷VçBrÂvÆ–÷WEGFW&ârÂw7F—%7FW2uÓ°¢–b†2ææWtfÆö÷&–æuG—RÓÓÒwf–ç–Å÷Ææ²rbbçf–ç–ÅÆæµVæFW&Æ–ÖVçE'VÆRÓÓÒv7W7FöÖW%÷6VÆV7F&ÆUöFFöâr’÷WBçW6‚‚wVæFW&Æ–ÖVçE6VÆV7FVBr“°¢–b†2ææWtfÆö÷&–æuG—RÓÓÒwf–ç–Å÷Ææ²rbbçf–ç–ÅÆæµVæFW&Æ–ÖVçE'VÆRÓÓÒw7V&fÆö÷%ö6öæF—F–öâr’÷WBçW6‚‚w7V&fÆö÷$6öæF—F–öâr“°¢–b‡&WÆ6VÖVçB’°¢÷WBçW6‚‚w7V&fÆö÷$—77VW2r“°¢–b†2ç7V&fÆö÷$—77VW2’÷WBçW6‚‚w7V&fÆö÷%&W—$&V7gBr“°¢Ð¢&WGW&â÷WC°¢ÒÀ¢–ç7V7F–öâ†2Â’°¢–b†2ç7gDÖWF†öBbb2ç7gDÖWF†öBÓÒvW†7Br’&WGW&âtÖV7W&VBfÆö÷&–ær&V—2&WV—&VBf÷"7W7FöÖW"×&VG’V÷FRâs°¢–b†2ææWtfÆö÷&–æuG—RÓÓÒwf–ç–Å÷Ææ²rbbçf–ç–ÅÆæµVæFW&Æ–ÖVçE'VÆRÓÓÒv÷væW%÷&Wf–Wrr’°¢&WGW&âuf–ç–Â×Ææ²VæFW&Æ–ÖVçB—26öæf–wW&VBf÷"÷væW"&Wf–Wrâs°¢Ð¢–b†2ææWtfÆö÷&–æuG—RÓÓÒwf–ç–Å÷Ææ²rbbçf–ç–ÅÆæµVæFW&Æ–ÖVçE'VÆRÓÓÒw7V&fÆö÷%ö6öæF—F–öârbb2ç7V&fÆö÷$6öæF—F–öâÓÓÒwVæ¶æ÷vâr’°¢&WGW&âuF†R7V&fÆö÷"6öæF—F–öâ×W7B&R6öæf—&ÖVB&Vf÷&RÇ––ærF†Rf–ç–Â×Ææ²VæFW&Æ–ÖVçB'VÆRâs°¢Ð¢&WGW&âçVÆÃ°¢ÒÀ¢7&÷75fÆ–FFR†2Â’°¢6öç7BW'&÷'2ÒµÓ°¢–b†2ç&VÖ÷fÄæVVFVBbb2æW†—7F–ætfÆö÷%G—RÓÓÒvæöæRr’W'&÷'2çW6‚‡²f–VÆC¢vW†—7F–ætfÆö÷%G—RrÂÖW76vS¢u&VÖ÷fÂ6ææ÷B&R6VÆV7FVBv†VâæòW†—7F–ærfÆö÷"—2&W6VçBârÒ“°¢–b†2çVæFW&Æ–ÖVçE6VÆV7FVBÓÒVæFVf–æVBbb†2ææWtfÆö÷&–æuG—RÓÓÒwf–ç–Å÷Ææ²rbbçf–ç–ÅÆæµVæFW&Æ–ÖVçE'VÆRÓÓÒv7W7FöÖW%÷6VÆV7F&ÆUöFFöâr’’°¢W'&÷'2çW6‚‡²f–VÆC¢wVæFW&Æ–ÖVçE6VÆV7FVBrÂÖW76vS¢uVæFW&Æ–ÖVçB6VÆV7F–öâ—2öæÇ’fÆ–Bf÷"7W7FöÖW"×6VÆV7F&ÆRf–ç–Â×Ææ²VæFW&Æ–ÖVçBârÒ“°¢Ð¢–b†2ç7V&fÆö÷$6öæF—F–öâÓÒVæFVf–æVBbb†2ææWtfÆö÷&–æuG—RÓÓÒwf–ç–Å÷Ææ²rbbçf–ç–ÅÆæµVæFW&Æ–ÖVçE'VÆRÓÓÒw7V&fÆö÷%ö6öæF—F–öâr’’°¢W'&÷'2çW6‚‡²f–VÆC¢w7V&fÆö÷$6öæF—F–öârÂÖW76vS¢u7V&fÆö÷"6öæF—F–öâ—2öæÇ’fÆ–Bf÷"F†Rf–ç–Â×Ææ²7V&fÆö÷"Ö6öæF—F–öâ'VÆRârÒ“°¢Ð¢–b†2ç7V&fÆö÷%&W—$&V7gBÓÒVæFVf–æVBbb2ç7gBÓÒVæFVf–æVBbb2ç7V&fÆö÷%&W—$&V7gBâ2ç7gB’°¢W'&÷'2çW6‚‡²f–VÆC¢w7V&fÆö÷%&W—$&V7gBrÂÖW76vS¢u7V&fÆö÷"&W—"&V6ææ÷BW†6VVBF†RÖV7W&VBfÆö÷&–ær&VârÒ“°¢Ð¢–b‡&WÆ6VÖVçBbb2ç7V&fÆö÷$—77VW2ÓÓÒfÇ6Rbb2ç7V&fÆö÷%&W—$&V7gBÓÒVæFVf–æVB’°¢W'&÷'2çW6‚‡²f–VÆC¢w7V&fÆö÷%&W—$&V7gBrÂÖW76vS¢u7V&fÆö÷"&W—"&V6ææ÷B&R7WÆ–VBv†Vâæò7V&fÆö÷"—77VW2&R&W÷'FVBârÒ“°¢Ð¢&WGW&âW'&÷'3°¢Ð¢Ò“°§Ð ¦gVæ7F–öâfVæ6–æt6öçG&7B‡&WÆ6VÖVçB’°¢&WGW&â6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢Æ–æV$fVWC¢çVÖ&W$f–VÆB‚tÖV7W&VBfVæ6RÆVæwF‚rÂvÆ–æV"fVWBrÂÂóó’À¢ÆdÖWF†öC¢VçVÔf–VÆB‚tfVæ6RÖV7W&VÖVçBÖWF†öBrÂ²vW†7BuÒ’À¢fVæ6UG—S¢6ÇVtf–VÆB‚tfVæ6RG—Rr’À¢fVæ6T†V–v‡C¢çVÖ&W$f–VÆB‚tfVæ6R†V–v‡BrÂvfVWBrÂçVÖ&W"äÔ”åõdÅTRÂçVÖ&W"äÔ…õdÅTR’À¢vFT6÷VçC¢çVÖ&W$f–VÆB‚tvFR6÷VçBrÂvvFW2rÂÂóÂ²–çFVvW#¢G'VRÒ’À¢vFUv–GF…F÷FÄÄc¢çVÖ&W$f–VÆB‚tÖV7W&VBF÷FÂvFRÖ÷Væ–ærv–GF‚rÂvÆ–æV"fVWBrÂÂó’À¢FW'&–å6Æ÷S¢VçVÔf–VÆB‚uFW'&–â6Æ÷RrÂ4ÄõU2’À¢âââ‡&WÆ6VÖVçBò²öÆDfVæ6U&VÖ÷fÃ¢&ööÆVäf–VÆB‚töÆBfVæ6R&VÖ÷fÂ–æ6ÇVFVBr’Ò¢·Ò¢ÒÀ¢&WV—&VC¢2Óâ°¢vÆ–æV$fVWBrÂvÆdÖWF†öBrÂvfVæ6UG—RrÂvfVæ6T†V–v‡BrÀ¢vvFT6÷VçBrÂwFW'&–å6Æ÷RrÀ¢âââ†2ævFT6÷VçBâò²vvFUv–GF…F÷FÄÄbuÒ¢µÒ’À¢âââ‡&WÆ6VÖVçBò²vöÆDfVæ6U&VÖ÷fÂuÒ¢µÒ¢ÒÀ¢–ç7V7F–öã¢2Óâ2æÆdÖWF†öBÓÓÒv77V×F–öâp¢òtÖV7W&VBfVæ6RÆVæwF‚—2&WV—&VBf÷"7W7FöÖW"×&VG’V÷FRâp¢¢çVÆÂÀ¢7&÷75fÆ–FFR†2’°¢6öç7BW'&÷'2ÒµÓ°¢–b†2ævFT6÷VçBÓÓÒbb2ævFUv–GF…F÷FÄÄbÓÒVæFVf–æVBbb2ævFUv–GF…F÷FÄÄbÓÒ’°¢W'&÷'2çW6‚‡²f–VÆC¢vvFUv–GF…F÷FÄÄbrÂÖW76vS¢tvFRÖ÷Væ–ærv–GF‚6ææ÷B&R7WÆ–VBv†VâæòvFW2&R6VÆV7FVBârÒ“°¢Ð¢–b†2ævFT6÷VçBâbb2ævFUv–GF…F÷FÄÄbÓÒVæFVf–æVBbb2ævFUv–GF…F÷FÄÄbÃÒ’°¢W'&÷'2çW6‚‡²f–VÆC¢vvFUv–GF…F÷FÄÄbrÂÖW76vS¢t÷6—F—fRÖV7W&VBvFRÖ÷Væ–ærv–GF‚—2&WV—&VBv†VâvFW2&R6VÆV7FVBârÒ“°¢Ð¢–b†2ævFT6÷VçBâbb2ævFUv–GF…F÷FÄÄbÓÒVæFVf–æVBbb2æÆ–æV$fVWBÓÒVæFVf–æVBbb2ævFUv–GF…F÷FÄÄbãÒ2æÆ–æV$fVWB’°¢W'&÷'2çW6‚‡²f–VÆC¢vvFUv–GF…F÷FÄÄbrÂÖW76vS¢tvFRÖ÷Væ–ærv–GF‚×W7B&RÆW72F†âF†RÖV7W&VBfVæ6RÆVæwF‚ârÒ“°¢Ð¢&WGW&âW'&÷'3°¢Ð¢Ò“°§Ð ¦gVæ7F–öâ6öæ7&WFT6öçG&7B‚’°¢&WGW&â6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢F–ÖVç6–öäÖWF†öC¢VçVÔf–VÆB‚u6Æ"ÖV7W&VÖVçBÖWF†öBrÂ²vW†7BrÂvÖV7W&VEö&V÷W&–ÖWFW"rÂvÖV7W&VEö÷WFÆ–æRuÒ’À¢ÆVæwFƒ¢çVÖ&W$f–VÆB‚tÖV7W&VB6Æ"ÆVæwF‚rÂvfVWBrÂãÂó’À¢v–GFƒ¢çVÖ&W$f–VÆB‚tÖV7W&VB6Æ"v–GF‚rÂvfVWBrÂãÂó’À¢&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB6Æ"&VrÂw7V&RfVWBrÂÂóó’À¢W&–ÖWFW$Äc¢çVÖ&W$f–VÆB‚tÖV7W&VB6Æ"W&–ÖWFW"rÂvÆ–æV"fVWBrÂãÂóó’À¢F†–6¶æW73¢çVÖ&W$f–VÆB‚t6öæ7&WFRF†–6¶æW72rÂv–æ6†W2rÂ"Â#B’À¢f–æ—6…G—S¢VçVÔf–VÆB‚t6öæ7&WFRf–æ—6‚rÂ²v'&ööÒrÂw6Öö÷F‚rÂvW‡÷6VEövw&VvFRrÂw7F×VBuÒ’À¢FVÖöÆ—F–öäæVVFVC¢&ööÆVäf–VÆB‚tW†—7F–ær6öæ7&WFRFVÖöÆ—F–öâ–æ6ÇVFVBr’À¢FVÖöÆ—F–öä&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VBFVÖöÆ—F–öâ&VrÂw7V&RfVWBrÂãÂóó’À¢&V–æf÷&6VÖVçC¢VçVÔf–VÆB‚u&V–æf÷&6VÖVçBrÂ²væöæRrÂwv—&UöÖW6‚rÂw&V&"uÒ’À¢66W74F–ff–7VÇG“¢VçVÔf–VÆB‚u&ö¦V7B66W72rÂ44U52’À¢&6TæVVFVC¢&ööÆVäf–VÆB‚t&6R&W&F–öâ–æ6ÇVFVBr’À¢F¦ö–ç4W†—7F–æt6öæ7&WFS§²ââæ&ööÆVäf–VÆB‚tFöW2ç’VFvRF÷V6‚†÷W6Rf÷VæFF–öâÂv&vRf÷VæFF–öâÂ÷"W†—7F–ær6öæ7&WFSòr’Ç7VÖÖ'”Æ&VÃ¢tVFvW2v–ç7Bf÷VæFF–öâ÷"W†—7F–ær6öæ7&WFRwÒÀ¢F¦ö–æ–ætVFvTÄc¦çVÖ&W$f–VÆB‚uF÷FÂÖV7W&VBÆVæwF‚öbF†÷6RF¦ö–æ–ærVFvW2rÂvÆ–æV"fVWBrÃãÃóóÇ·f—6–&ÆUv†Vã¥µµ²vF¦ö–ç4W†—7F–æt6öæ7&WFRrÂvWrÇG'VUÕÕ×Ò¢ÒÀ¢&WV—&VB†2’°¢6öç7B÷WBÒ²vF–ÖVç6–öäÖWF†öBrÂwF†–6¶æW72rÂvf–æ—6…G—RrÂvFVÖöÆ—F–öäæVVFVBrÂw&V–æf÷&6VÖVçBrÂv66W74F–ff–7VÇG’rÂv&6TæVVFVBrÂvF¦ö–ç4W†—7F–æt6öæ7&WFRuÓ°¢–b†2æF¦ö–ç4W†—7F–æt6öæ7&WFSÓÓ×G'VR–÷WBçW6‚‚vF¦ö–æ–ætVFvTÄbr“°¢–b†2æF–ÖVç6–öäÖWF†öBÓÓÒvW†7Br’÷WBçW6‚‚vÆVæwF‚rÂwv–GF‚r“°¢–b†2æF–ÖVç6–öäÖWF†öBÓÓÒvÖV7W&VEö&V÷W&–ÖWFW"r’÷WBçW6‚‚v&V7gBrÂwW&–ÖWFW$Äbr“°¢–b†2æFVÖöÆ—F–öäæVVFVB’÷WBçW6‚‚vFVÖöÆ—F–öä&V7gBr“°¢&WGW&â÷WC°¢ÒÀ¢–ç7V7F–öâ†2Â’°¢–b…²v&VööæÇ’rÂv77V×F–öâuÒæ–æ6ÇVFW2†2æF–ÖVç6–öäÖWF†öB’’°¢&WGW&âtÖV7W&VB6Æ"F–ÖVç6–öç2÷"ÖV7W&VB&VæBW&–ÖWFW"&R&WV—&VC²W&–ÖWFW"—2æ÷B–æfW'&VBg&öÒ&Vâs°¢Ð¢–b†2æf–æ—6…G—RÓÓÒvW‡÷6VEövw&VvFRrbbç66÷TFWF–Ç3òæW‡÷6VEövw&VvFR’°¢&WGW&âtW‡÷6VBÖvw&VvFRÖFW&–Â&–6–ær&WV—&W2â&÷fVB÷væW"&–6–ær'VÆR&Vf÷&RV÷F–ærâs°¢Ð¢&WGW&âçVÆÃ°¢ÒÀ¢7&÷75fÆ–FFR†2’°¢6öç7BW'&÷'2ÒµÓ°¢–b†2æF–ÖVç6–öäÖWF†öBÓÓÒvW†7Br’°¢–b†2æ&V7gBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢v&V7gBrÂÖW76vS¢tÖV7W&VB&V6ææ÷B&R7WÆ–VBv†VâÆVæwF‚æBv–GF‚&RF†R6VÆV7FVB6Æ"ÖV7W&VÖVçBÖWF†öBârÒ“°¢–b†2çW&–ÖWFW$ÄbÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢wW&–ÖWFW$ÄbrÂÖW76vS¢tÖV7W&VBW&–ÖWFW"6ææ÷B&R7WÆ–VBv†VâÆVæwF‚æBv–GF‚&RF†R6VÆV7FVB6Æ"ÖV7W&VÖVçBÖWF†öBârÒ“°¢–b„çVÖ&W"æ—4f–æ—FR†2æÆVæwF‚’bbçVÖ&W"æ—4f–æ—FR†2çv–GF‚’bbW†7D6ö×&R†W†7D×VÇF—Ç’†2æÆVæwF‚Â2çv–GF‚’Âóó’â’°¢6öç7BÖW76vRÒtÖV7W&VB6Æ"ÆVæwF‚æBv–GF‚&öGV6Râ&V&÷fRF†R7W÷'FVBÃÃ7V&RÖfö÷BÆ–Ö—Bâs°¢W'&÷'2çW6‚‡²f–VÆC¢vÆVæwF‚rÂÖW76vRÒ“°¢W'&÷'2çW6‚‡²f–VÆC¢wv–GF‚rÂÖW76vRÒ“°¢Ð¢Ð¢–b†2æF–ÖVç6–öäÖWF†öBÓÓÒvÖV7W&VEö&V÷W&–ÖWFW"r’°¢–b†2æÆVæwF‚ÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢vÆVæwF‚rÂÖW76vS¢u6Æ"ÆVæwF‚6ææ÷B&R7WÆ–VBv†VâÖV7W&VB&VæBW&–ÖWFW"&RF†R6VÆV7FVBÖWF†öBârÒ“°¢–b†2çv–GF‚ÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢wv–GF‚rÂÖW76vS¢u6Æ"v–GF‚6ææ÷B&R7WÆ–VBv†VâÖV7W&VB&VæBW&–ÖWFW"&RF†R6VÆV7FVBÖWF†öBârÒ“°¢Ð¢–b†2æF¦ö–ç4W†—7F–æt6öæ7&WFSÓÓÖfÇ6Rbf2æF¦ö–æ–ætVFvTÄbÓ×VæFVf–æVB–W'&÷'2çW6‚‡¶f–VÆC¢vF¦ö–æ–ætVFvTÄbrÆÖW76vS¢tF¦ö–æ–ærVFvRÆVæwF‚—2öæÇ’7WÆ–VBv†VââVFvRF÷V6†W2f÷VæFF–öâ÷"W†—7F–ær6öæ7&WFRâwÒ“°¢–b†2æF¦ö–ç4W†—7F–æt6öæ7&WFSÓÓ×G'VRbdçVÖ&W"æ—4f–æ—FR†2æF¦ö–æ–ætVFvTÄb’—°¢ÆWBW&–ÖWFW#°¢–b†2æF–ÖVç6–öäÖWF†öCÓÓÒvW†7BrbdçVÖ&W"æ—4f–æ—FR†2æÆVæwF‚’bdçVÖ&W"æ—4f–æ—FR†2çv–GF‚’—W&–ÖWFW#ÖW†7D×VÇF—Ç’ƒ"ÆW†7DFB†2æÆVæwF‚Æ2çv–GF‚’“°¢–b†2æF–ÖVç6–öäÖWF†öCÓÓÒvÖV7W&VEö&V÷W&–ÖWFW"rbdçVÖ&W"æ—4f–æ—FR†2çW&–ÖWFW$Äb’—W&–ÖWFW#Ö2çW&–ÖWFW$Äc°¢–b†2æF–ÖVç6–öäÖWF†öCÓÓÒvÖV7W&VEö÷WFÆ–æRr—G'—·W&–ÖWFW#ÖÖV7W&VD÷WFÆ–æUdæW‡B†2æ÷WFÆ–æUö–çG2’æW†7EW&–ÖWFW$Äc·Ö6F6‡·Ð¢–b‡W&–ÖWFW"Ó×VæFVf–æVBbfW†7D6ö×&R†2æF¦ö–æ–ætVFvTÄbÇW&–ÖWFW"“ã–W'&÷'2çW6‚‡¶f–VÆC¢vF¦ö–æ–ætVFvTÄbrÆÖW76vS¢tF¦ö–æ–ærVFvW26ææ÷BW†6VVBF†RÖV7W&VB6Æ"W&–ÖWFW"âwÒ“°¢Ð¢–b†2æFVÖöÆ—F–öäæVVFVBÓÓÒfÇ6Rbb2æFVÖöÆ—F–öä&V7gBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢vFVÖöÆ—F–öä&V7gBrÂÖW76vS¢tFVÖöÆ—F–öâ&V6ææ÷B&R7WÆ–VBv†VâFVÖöÆ—F–öâ—2æ÷B–æ6ÇVFVBârÒ“°¢&WGW&âW'&÷'3°¢Ð¢Ò“°§Ð ¤ÔT5U$TÔTåEô4ôåE$5E2ädÄôõ$”äuô”å5DÄÂÒfÆö÷&–æt6öçG&7B†fÇ6R“°¤ÔT5U$TÔTåEô4ôåE$5E2ädÄôõ$”äuõ$UÄ4TÔTåBÒfÆö÷&–æt6öçG&7B‡G'VR“°¤ÔT5U$TÔTåEô4ôåE$5E2ädTä4”äuô”å5DÄÂÒfVæ6–æt6öçG&7B†fÇ6R“°¤ÔT5U$TÔTåEô4ôåE$5E2ädTä4”äuõ$UÄ4TÔTåBÒfVæ6–æt6öçG&7B‡G'VR“°¤ÔT5U$TÔTåEô4ôåE$5E2ä4ôä5$UDUôE$•dUt’Ò6öæ7&WFT6öçG&7B‚“°¤ÔT5U$TÔTåEô4ôåE$5E2ä4ôä5$UDUõD”õõ4Ä"Ò6öæ7&WFT6öçG&7B‚“° ¤ÔT5U$TÔTåEô4ôåE$5E2äÄäE44”äuô4ÄTåUÒ6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢–&E7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB6ÆVçW&VrÂw7V&RfVWBrÂÂóó’À¢7gDÖWF†öC¢VçVÔf–VÆB‚t6ÆVçW&VÖWF†öBrÂ²vW†7BuÒ’À¢FV'&—4ÆWfVÃ¢VçVÔf–VÆB‚tFV'&—2ÆWfVÂrÂ²vÆ–v‡BrÂvÖöFW&FRrÂv†Vg’uÒ’À¢6Æ÷S¢VçVÔf–VÆB‚uFW'&–â6Æ÷RrÂ4ÄõU2’À¢†VÄv“¢&ööÆVäf–VÆB‚tFF—F–öæÂ†VÂÖv’6VÆV7FVBr¢ÒÀ¢&WV—&VC¢‚’Óâ²w–&E7gBrÂw7gDÖWF†öBrÂvFV'&—4ÆWfVÂrÂw6Æ÷RrÂv†VÄv’uÒÀ¢–ç7V7F–öã¢2Óâ2ç7gDÖWF†öBÓÓÒv77V×F–öâròtÖV7W&VB6ÆVçW&V—2&WV—&VBf÷"7W7FöÖW"×&VG’V÷FRâr¢çVÆÀ§Ò“° ¤ÔT5U$TÔTåEô4ôåE$5E2äÄäE44”äuôÕTÄ4‚Ò6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢–çWDÖWF†öC¢²ââæVçVÔf–VÆB‚t×VÆ6‚VçF—G’ÖWF†öBrÂ²w7gBrÂw–&G2uÒ’Â÷F–öäÆ&VÇ3§·7gC¢t&VB&VæBFWF‚rÇ–&G3¢t7V&–2–&G2öb×VÆ6‚w×ÒÀ¢×VÆ6„&V¢²ââæçVÖ&W$f–VÆB‚t×VÆ6‚VçF—G’rÂw7V&RfVWBf÷"&VB&V²7V&–2–&G2f÷"×VÆ6‚föÇVÖRrÂãÂóó’À¢f—6–&ÆUv†Vã¥µµ²v–çWDÖWF†öBrÂv–ârÅ²w7gBrÂw–&G2uÕÕÕÒÀ¢&W6VçFF–öåf&–çG3¥°¢¶Æ&VÃ¢tÖV7W&VB&VB&VrÇVæ—C¢w7V&RfVWBrÇf—6–&ÆUv†Vã¥µµ²v–çWDÖWF†öBrÂvWrÂw7gBuÕÕ×ÒÀ¢¶Æ&VÃ¢t×VÆ6‚föÇVÖRrÇVæ—C¢v7V&–2–&G2rÇf—6–&ÆUv†Vã¥µµ²v–çWDÖWF†öBrÂvWrÂw–&G2uÕÕ×Ð¢×ÒÀ¢×VÆ6„FWFƒ¢çVÖ&W$f–VÆB‚t×VÆ6‚FWF‚rÂv–æ6†W2rÂãRÂ#B’À¢×VÆ6…G—S¢6ÇVtf–VÆB‚t×VÆ6‚G—Rr’À¢&VD6öæF—F–öã¢VçVÔf–VÆB‚uÆçF–ærÖ&VB6öæF—F–öârÂ²v6ÆVârÂvæVVG5÷vVVF–ærrÂv÷fW&w&÷vâuÒ’À¢&VE7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB&W&F–öâ&VrÂw7V&RfVWBrÂãÂóó’À¢VFv–ætæVVFVC¢&ööÆVäf–VÆB‚t&VBVFv–ær–æ6ÇVFVBr’À¢VFvTÄc¢çVÖ&W$f–VÆB‚tÖV7W&VB&VBÖVFvRÆVæwF‚rÂvÆ–æV"fVWBrÂãÂóó¢ÒÀ¢&WV—&VB†2’°¢6öç7B÷WBÒ²v–çWDÖWF†öBrÂv×VÆ6„&VrÂv×VÆ6…G—RrÂv&VD6öæF—F–öârÂvVFv–ætæVVFVBuÓ°¢–b†2æ–çWDÖWF†öBÓÓÒw7gBr’÷WBçW6‚‚v×VÆ6„FWF‚r“°¢–b†2æ&VD6öæF—F–öâÓÒv6ÆVâr’÷WBçW6‚‚v&VE7gBr“°¢–b†2æVFv–ætæVVFVB’÷WBçW6‚‚vVFvTÄbr“°¢&WGW&â÷WC°¢ÒÀ¢7&÷75fÆ–FFR†2’°¢6öç7BW'&÷'2ÒµÓ°¢–b†2æ–çWDÖWF†öBÓÓÒw–&G2rbb2æ×VÆ6„FWF‚ÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢v×VÆ6„FWF‚rÂÖW76vS¢t×VÆ6‚FWF‚6ææ÷B&R7WÆ–VBv†Vâ7V&–2–&G2&RVçFW&VBF—&V7FÇ’ârÒ“°¢–b†2æ&VD6öæF—F–öâÓÓÒv6ÆVârbb2æ&VE7gBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢v&VE7gBrÂÖW76vS¢t&VB&W&F–öâ&V6ææ÷B&R7WÆ–VBf÷"6ÆVâ&VBârÒ“°¢–b†2æVFv–ætæVVFVBÓÓÒfÇ6Rbb2æVFvTÄbÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢vVFvTÄbrÂÖW76vS¢t&VBÖVFvRÆVæwF‚6ææ÷B&R7WÆ–VBv†VâVFv–ær—2æ÷B–æ6ÇVFVBârÒ“°¢&WGW&âW'&÷'3°¢Ð§Ò“° ¤ÔT5U$TÔTåEô4ôåE$5E2äÄäE44”äuõ4ôBÒ6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢6öE7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB6öB&VrÂw7V&RfVWBrÂÂóó’À¢7gDÖWF†öC¢VçVÔf–VÆB‚u6öB&VÖWF†öBrÂ²vW†7BuÒ’À¢w&÷VæE&WæVVFVC¢&ööÆVäf–VÆB‚tw&÷VæB&W&F–öâ–æ6ÇVFVBr’À¢6Æ÷S¢VçVÔf–VÆB‚uFW'&–â6Æ÷RrÂ4ÄõU2’À¢66W74F–ff–7VÇG“¢VçVÔf–VÆB‚u&ö¦V7B66W72rÂ44U52¢ÒÀ¢&WV—&VC¢‚’Óâ²w6öE7gBrÂw7gDÖWF†öBrÂvw&÷VæE&WæVVFVBrÂw6Æ÷RrÂv66W74F–ff–7VÇG’uÒÀ¢–ç7V7F–öã¢2Óâ2ç7gDÖWF†öBÓÓÒv77V×F–öâròtÖV7W&VB6öB&V—2&WV—&VBf÷"7W7FöÖW"×&VG’V÷FRâr¢çVÆÀ§Ò“° ¤ÔT5U$TÔTåEô4ôåE$5E2äÄäE44”äuõÄåD”ärÒ6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢ÆçG4'•6—¦S¢f–VÆB‚tÖV7W&VBÆçB6÷VçB'’6—¦RrÂwÆçG2rÂwÆçEö6÷VçG2r’À¢&VD6öæF—F–öã¢VçVÔf–VÆB‚uÆçF–ærÖ&VB6öæF—F–öârÂ²v6ÆVârÂvæVVG5÷vVVF–ærrÂv÷fW&w&÷vâuÒ’À¢&VE7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB&W&F–öâ&VrÂw7V&RfVWBrÂãÂóó’À¢×VÆ6„æVVFVC¢&ööÆVäf–VÆB‚t×VÆ6‚–æ6ÇVFVBr’À¢×VÆ6…–&G3¢çVÖ&W$f–VÆB‚tÖV7W&VB×VÆ6‚VçF—G’rÂv7V&–2–&G2rÂãÂó’À¢×VÆ6…G—S¢6ÇVtf–VÆB‚t×VÆ6‚G—Rr¢ÒÀ¢&WV—&VB†2’°¢6öç7B÷WBÒ²wÆçG4'•6—¦RrÂv&VD6öæF—F–öârÂv×VÆ6„æVVFVBuÓ°¢–b†2æ&VD6öæF—F–öâÓÒv6ÆVâr’÷WBçW6‚‚v&VE7gBr“°¢–b†2æ×VÆ6„æVVFVB’÷WBçW6‚‚v×VÆ6…–&G2rÂv×VÆ6…G—Rr“°¢&WGW&â÷WC°¢ÒÀ¢7&÷75fÆ–FFR†2’°¢6öç7BW'&÷'2ÒµÓ°¢–b†2æ&VD6öæF—F–öâÓÓÒv6ÆVârbb2æ&VE7gBÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢v&VE7gBrÂÖW76vS¢t&VB&W&F–öâ&V6ææ÷B&R7WÆ–VBf÷"6ÆVâÆçF–ær&VBârÒ“°¢–b†2æ×VÆ6„æVVFVBÓÓÒfÇ6Rbb2æ×VÆ6…–&G2ÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢v×VÆ6…–&G2rÂÖW76vS¢t×VÆ6‚VçF—G’6ææ÷B&R7WÆ–VBv†Vâ×VÆ6‚—2æ÷B–æ6ÇVFVBârÒ“°¢–b†2æ×VÆ6„æVVFVBÓÓÒfÇ6Rbb2æ×VÆ6…G—RÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢v×VÆ6…G—RrÂÖW76vS¢t×VÆ6‚G—R6ææ÷B&R7WÆ–VBv†Vâ×VÆ6‚—2æ÷B–æ6ÇVFVBârÒ“°¢&WGW&âW'&÷'3°¢Ð§Ò“° ¤ÔT5U$TÔTåEô4ôåE$5E2äÄäE44”äuôÔõt”ärÒ6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢–&E7gC¢çVÖ&W$f–VÆB‚tÖV7W&VBÖ÷v&ÆRÆvâ&VrÂw7V&RfVWBrÂÂóó’À¢7gDÖWF†öC¢VçVÔf–VÆB‚tÆvâ&VÖWF†öBrÂ²vW†7BuÒ’À¢6W'f–6Tg&WVVæ7“¢VçVÔf–VÆB‚u6W'f–6Rg&WVVæ7’rÂ²wvVV¶Ç’rÂv&—vVV¶Ç’rÂvÖöçF†Ç’rÂvöæU÷F–ÖRuÒ’À¢w&746öæF—F–öã¢VçVÔf–VÆB‚tw&726öæF—F–öârÂ²vÖ–çF–æVBrÂv÷fW&w&÷vârÂw6WfW&RuÒ’À¢&t6Æ—–æw3¢&ööÆVäf–VÆB‚t6Æ—–ær&vv–ær6VÆV7FVBr’À¢VFv–æt–æ6ÇVFVC¢&ööÆVäf–VÆB‚tÆvâVFv–ær6VÆV7FVBr’À¢VFv–ætÆVæwF„Äc¢çVÖ&W$f–VÆB‚tÖV7W&VBVFv–ærÆVæwF‚rÂvÆ–æV"fVWBrÂãÂóó¢ÒÀ¢&WV—&VB†2’°¢6öç7B÷WBÒ²w–&E7gBrÂw7gDÖWF†öBrÂw6W'f–6Tg&WVVæ7’rÂvw&746öæF—F–öârÂv&t6Æ—–æw2rÂvVFv–æt–æ6ÇVFVBuÓ°¢–b†2æVFv–æt–æ6ÇVFVB’÷WBçW6‚‚vVFv–ætÆVæwF„Äbr“°¢&WGW&â÷WC°¢ÒÀ¢–ç7V7F–öã¢2Óâ2ç7gDÖWF†öBÓÓÒv77V×F–öâròtÖV7W&VBÖ÷v&ÆRÆvâ&V—2&WV—&VBf÷"7W7FöÖW"×&VG’V÷FRâr¢çVÆÂÀ¢7&÷75fÆ–FFR†2’°¢–b†2æVFv–æt–æ6ÇVFVBÓÓÒfÇ6Rbb2æVFv–ætÆVæwF„ÄbÓÒVæFVf–æVB’&WGW&â·²f–VÆC¢vVFv–ætÆVæwF„ÄbrÂÖW76vS¢tVFv–ærÆVæwF‚6ææ÷B&R7WÆ–VBv†VâÆvâVFv–ær—2æ÷B–æ6ÇVFVBârÕÓ°¢&WGW&âµÓ°¢Ð§Ò“° ¤ÔT5U$TÔTåEô4ôåE$5E2å4”D”äuõ$UÄ4TÔTåBÒ6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢&V–çWDÖWF†öC¢VçVÔf–VÆB‚u6–F–ær&VÖWF†öBrÂ²w7gBuÒ’À¢6–F–æt&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB6–F–ærvÆÂ&VrÂw7V&RfVWBrÂÂ%óó’À¢6–F–æuG—S¢VçVÔf–VÆB‚u6–F–ærG—RrÂ4”D”äuõE•U2’À¢7F÷&–W3¢VçVÔf–VÆB‚t'V–ÆF–ær7F÷&–W2rÂ5Dõ$”U2’À¢öÆE6–F–æu&VÖ÷fÃ¢&ööÆVäf–VÆB‚töÆB6–F–ær&VÖ÷fÂ–æ6ÇVFVBr’À¢G&–Ô–æ6ÇVFVC¢&ööÆVäf–VÆB‚u6–F–ærG&–Ò–æ6ÇVFVBr’À¢G&–ÔÆVæwF„Äc¢çVÖ&W$f–VÆB‚tÖV7W&VB6–F–ærG&–ÒÆVæwF‚rÂvÆ–æV"fVWBrÂãÂóó¢ÒÀ¢&WV—&VB†2’°¢6öç7B÷WBÒ²v&V–çWDÖWF†öBrÂw6–F–æt&V7gBrÂw6–F–æuG—RrÂw7F÷&–W2rÂvöÆE6–F–æu&VÖ÷fÂrÂwG&–Ô–æ6ÇVFVBuÓ°¢–b†2çG&–Ô–æ6ÇVFVB’÷WBçW6‚‚wG&–ÔÆVæwF„Äbr“°¢&WGW&â÷WC°¢ÒÀ¢–ç7V7F–öã¢2Óâ2æ&V–çWDÖWF†öBÓÓÒv†öÖW6—¦Rp¢òtÖV7W&VB6–F–ærvÆÂ&V—2&WV—&VC²†öÖR×6—¦R&VÖ2&Ræ÷BW6VB'’F†RVF—BVæv–æRâp¢¢çVÆÂÀ¢7&÷75fÆ–FFR†2’°¢–b†2çG&–Ô–æ6ÇVFVBÓÓÒfÇ6Rbb2çG&–ÔÆVæwF„ÄbÓÒVæFVf–æVB’&WGW&â·²f–VÆC¢wG&–ÔÆVæwF„ÄbrÂÖW76vS¢u6–F–ærG&–ÒÆVæwF‚6ææ÷B&R7WÆ–VBv†VâG&–Ò—2æ÷B–æ6ÇVFVBârÕÓ°¢&WGW&âµÓ°¢Ð§Ò“° ¤ÔT5U$TÔTåEô4ôåE$5E2å4”D”äuõ$U•"Ò6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢6–F–æuG—S¢VçVÔf–VÆB‚u6–F–ærG—RrÂ4”D”äuõE•U2’À¢FÖvTÆWfVÃ¢6ÇVtf–VÆB‚u6–F–ærFÖvRG—Rr’À¢ffV7FVD&V¢çVÖ&W$f–VÆB‚tÖV7W&VBffV7FVB6–F–ær&VrÂw7V&RfVWBrÂãÂóó’À¢7F÷&–W3¢VçVÔf–VÆB‚t'V–ÆF–ær7F÷&–W2rÂ5Dõ$”U2¢ÒÀ¢&WV—&VC¢‚’Óâ²w6–F–æuG—RrÂvFÖvTÆWfVÂrÂvffV7FVD&VrÂw7F÷&–W2uÐ§Ò“° ¤ÔT5U$TÔTåEô4ôåE$5E2ä5U5DôÒÒ6öÖÖöä6öçG&7B‡°¢f–VÆG3¢°¢6W'f–6S¢f–VÆB‚t6öæf—&ÖVB7W7FöÒ6W'f–6RrÂçVÆÂÂw7G&–ærrÂ²Ö–äÆVæwFƒ¢ÂÖ„ÆVæwFƒ¢ƒÒ’À¢6W'f–6T6öæf—&ÖVC¢&ööÆVäf–VÆB‚t7W7FöÖW"6öæf—&ÖVBF†RÖF6†VB6W'f–6Rr’À¢Væ—C¢VçVÔf–VÆB‚t7W7FöÖW"VçF—G’Væ—BrÂ²vfÆBrÂwW%÷7gBrÂwW%ö†÷W"rÂwW%÷Væ—BrÂwW%ôÄbrÂwW%÷7V&RuÒ’À¢†÷W'3¢çVÖ&W$f–VÆB‚tÖV7W&VBÆ&÷"F–ÖRrÂv†÷W'2rÂãÂó’À¢—FVÔ6÷VçC¢çVÖ&W$f–VÆB‚t6öæf—&ÖVB—FVÒ6÷VçBrÂv—FV×2rÂÂóóÂ²–çFVvW#¢G'VRÒ’À¢&V7gC¢çVÖ&W$f–VÆB‚tÖV7W&VB6W'f–6R&VrÂw7V&RfVWBrÂãÂóó’À¢Æ–æV$fVWC¢çVÖ&W$f–VÆB‚tÖV7W&VB6W'f–6RÆVæwF‚rÂvÆ–æV"fVWBrÂãÂóó’À¢&ööe7V&W3¢çVÖ&W$f–VÆB‚tÖV7W&VB&ööf–ær&VrÂw&ööf–ær7V&W2rÂãÂó¢ÒÀ¢&WV—&VB†2Â’°¢6öç7B÷WBÒ²w6W'f–6RrÂw6W'f–6T6öæf—&ÖVBrÂwVæ—BuÓ°¢6öç7BVçF—G”f–VÆBÒ°¢W%ö†÷W#¢v†÷W'2rÂW%÷Væ—C¢v—FVÔ6÷VçBrÂW%÷7gC¢v&V7gBrÀ¢W%ôÄc¢vÆ–æV$fVWBrÂW%÷7V&S¢w&ööe7V&W2p¢Õ·çVæ—BÇÂ2çVæ—EÓ°¢–b‡VçF—G”f–VÆB’÷WBçW6‚‡VçF—G”f–VÆB“°¢&WGW&â÷WC°¢ÒÀ¢–ç7V7F–öâ†2Â’°¢–b‡æ7W7FöÕ&–6–ætÖöFRÓÓÒv–ç7V7F–öåöf—'7Br’&WGW&âuF†—27W7FöÒ6W'f–6R—26öæf–wW&VB2–ç7V7F–öâÖf—'7Bâs°¢–b†2ç6W'f–6T6öæf—&ÖVBÓÓÒfÇ6R’&WGW&âuF†RÖF6†VB7W7FöÒ6W'f–6R×W7B&R6öæf—&ÖVB&Vf÷&RV÷F–ærâs°¢&WGW&âçVÆÃ°¢ÒÀ¢7&÷75fÆ–FFR†2Â’°¢6öç7BW'&÷'2ÒµÓ°¢–b†2çVæ—BÓÒVæFVf–æVBbbçVæ—BÓÒVæFVf–æVBbb2çVæ—BÓÒçVæ—B’°¢W'&÷'2çW6‚‡²f–VÆC¢wVæ—BrÂÖW76vS¢t7W7FöÖW"VçF—G’Væ—BFöW2æ÷BÖF6‚F†R6öæf–wW&VB7W7FöÒ×6W'f–6RVæ—BârÒ“°¢Ð¢6öç7BVçF—G”f–VÆD'•Væ—BÒ°¢W%ö†÷W#¢v†÷W'2rÀ¢W%÷Væ—C¢v—FVÔ6÷VçBrÀ¢W%÷7gC¢v&V7gBrÀ¢W%ôÄc¢vÆ–æV$fVWBrÀ¢W%÷7V&S¢w&ööe7V&W2p¢Ó°¢6öç7B6VÆV7FVEVçF—G”f–VÆBÒVçF—G”f–VÆD'•Væ—E·çVæ—BÇÂ2çVæ—EÓ°¢f÷"†6öç7BVçF—G”f–VÆBöbö&¦V7BçfÇVW2‡VçF—G”f–VÆD'•Væ—B’’°¢–b‡VçF—G”f–VÆBÓÒ6VÆV7FVEVçF—G”f–VÆBbb5·VçF—G”f–VÆEÒÓÒVæFVf–æVB’W'&÷'2çW6‚‡²f–VÆC¢VçF—G”f–VÆBÂÖW76vS¢G·VçF—G”f–VÆGÒFöW2æ÷BÇ’FòF†R6öæf–wW&VB7W7FöÒ×6W'f–6RVæ—BæÒ“°¢Ð¢&WGW&âW'&÷'3°¢Ð§Ò“° ¦6öç7Bf7F÷"Ò†FVfVÇEfÇVRÂÆ&VÂÂVæ—BÂÖ–âÂÖ‚’Óâ‡²FVfVÇEfÇVRÂÆ&VÂÂVæ—BÂÖ–âÂÖ‚Ò“°¦6öç7Bf7F÷$ÖÒ†FVfVÇEfÇVRÂÆ&VÂÂVæ—BÂÖ–âÂÖ‚’Óâ‡²FVfVÇEfÇVRÂÆ&VÂÂVæ—BÂÖ–âÂÖ‚Ò“° ¦W‡÷'B6öç7B4Ä53%ôDTd”ä•D”ôå2Ò°¢$ôôd”äuõ$UÄ4TÔTåC¢°¢v7FTf7F÷$'”6ö×ÆW†—G“¢f7F÷$Ö‡²6–×ÆS¢ãÂÖöFW&FS¢ã2Â6ö×ÆWƒ¢ã‚ÒÂu&ööf–ærÖFW&–Âv7FR'’&ööb6ö×ÆW†—G’rÂvFV6–ÖÂg&7F–öârÂÂãR’À¢—F6„×VÇF—Æ–W#¢f7F÷$Ö‡²Æ÷s¢ÂÖVF—VÓ¢ãRÂ7FVW¢ã#RÂfW'•÷7FVW¢ãCÒÂu&ööb—F6‚Æ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR’À¢7F÷'”×VÇF—Æ–W#¢f7F÷$Ö‡²¢Â#¢ãÂ3¢ã#ÒÂu7F÷'’Ö6÷VçBÆ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢$ôôd”äuõ$U•#¢°¢—F6„×VÇF—Æ–W#¢f7F÷$Ö‡²Æ÷s¢ÂÖVF—VÓ¢ãRÂ7FVW¢ã#RÂfW'•÷7FVW¢ãCÒÂu&ööb—F6‚Æ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR’À¢7F÷'”×VÇF—Æ–W#¢f7F÷$Ö‡²¢Â#¢ãÂ3¢ã#ÒÂu7F÷'’Ö6÷VçBÆ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢dÄEõ$ôôeõ$UÄ4TÔTåC¢°¢66W74×VÇF—Æ–W#¢f7F÷$Ö‡²V7“¢ÂÖöFW&FS¢ãRÂF–ff–7VÇC¢ã3ÒÂtfÆB×&ööb66W72Æ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢dÄEõ$ôôeõ$U•#¢·ÒÀ¢”åDU$”õ%õ”åD”äs¢°¢vÆÄ†V–v‡DÆ&÷$×VÇF—Æ–W#¢f7F÷$Ö‡²7FæF&C¢Â†–vƒ¢ãÂfVÇFVC¢ã#RÒÂuvÆÂÖ†V–v‡BÆ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢U…DU$”õ%õ”åD”äs¢°¢7F÷'”×VÇF—Æ–W#¢f7F÷$Ö‡²¢Â#¢ãÂ3¢ã#ÒÂtW‡FW&–÷"7F÷'’Æ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR’À¢&W†÷W'5W%7gC¢f7F÷$Ö‡²f—#¢ã‚ÒÂtW‡FW&–÷"f—"Ö6öæF—F–öâ&W&F–öâÆ&÷"†÷W'2rÂv†÷W'2W"7V&Rfö÷BrÂãÂ"¢ÒÀ¢dÄôõ$”äuô”å5DÄÃ¢°¢v7FTf7F÷$'•G—S¢f7F÷$Ö‡²†&GvööC¢ãÂÆÖ–æFS¢ã‚Âf–ç–Å÷Ææ³¢ã‚Â6'WC¢ãÂF–ÆS¢ã"ÒÂtfÆö÷&–ærÖFW&–Âv7FR'’G—RrÂvFV6–ÖÂg&7F–öârÂÂãR’À¢GFW&åv7FTFFW#¢f7F÷$Ö‡²7G&–v‡C¢ÂF–vöæÅö÷%÷GFW&ã¢ãrÒÂuGFW&âÖFW&–Âv7FRFF—F–öârÂvFV6–ÖÂg&7F–öârÂÂãR’À¢&ööÔ6ö×ÆW†—G”×VÇF—Æ–W#¢f7F÷$Ö‡²Æ&vS¢ÂÖVF—VÓ¢ãÂ6ÖÆÃ¢ã#ÒÂtfW&vR×&ööÒÆ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR’À¢&ööÕ6—¦UF‡&W6†öÆG3¢f7F÷$Ö‡²6ÖÆÄÖ…7gC¢SÂÖVF—VÔÖ…7gC¢3ÒÂtfW&vR×&ööÒ6—¦RF‡&W6†öÆG2rÂw7V&RfVWBrÂÂó¢ÒÀ¢dÄôõ$”äuõ$UÄ4TÔTåC¢·ÒÀ¢dTä4”äuô”å5DÄÃ¢·ÒÀ¢dTä4”äuõ$UÄ4TÔTåC¢·ÒÀ¢4ôä5$UDUôE$•dUt“¢°¢6öæ7&WFUv7FTf7F÷#¢f7F÷"ƒãÂt6öæ7&WFR÷&FW&–ærv7FRÆÆ÷væ6RrÂvFV6–ÖÂg&7F–öârÂÂãR’À¢f–æ—6„×VÇF—Æ–W#¢f7F÷$Ö‡²'&ööÓ¢Â6Öö÷Fƒ¢ãRÂ7F×VC¢ãSÒÂt6öæ7&WFRf–æ—6‚W‡G&ÖÆ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂÂR’À¢66W74×VÇF—Æ–W#¢f7F÷$Ö‡²V7“¢ÂÖöFW&FS¢ãÂF–ff–7VÇC¢ã#RÒÂt6öæ7&WFR66W72Æ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢4ôä5$UDUõD”õõ4Ä#¢·ÒÀ¢ÄäE44”äuô4ÄTåU¢°¢6Æ÷T×VÇF—Æ–W#¢f7F÷$Ö‡²fÆC¢ÂÖöFW&FS¢ãRÂ7FVW¢ã3RÒÂt6ÆVçW6Æ÷RÆ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢ÄäE44”äuôÕTÄ4ƒ¢°¢×VÆ6„÷fW&vTf7F÷#¢f7F÷"ƒãRÂt×VÆ6‚÷&FW&–ær÷fW&vRf7F÷"rÂwVçF—G’×VÇF—Æ–W"rÂÂ"¢ÒÀ¢ÄäE44”äuõ4ôC¢°¢6öEv7FTf7F÷#¢f7F÷"ƒãRÂu6öBÖFW&–Âv7FRÆÆ÷væ6RrÂvFV6–ÖÂg&7F–öârÂÂãR’À¢6Æ÷T×VÇF—Æ–W#¢f7F÷$Ö‡²fÆC¢ÂÖöFW&FS¢ãRÂ7FVW¢ã3RÒÂu6öB6Æ÷RÆ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR’À¢66W74×VÇF—Æ–W#¢f7F÷$Ö‡²V7“¢ÂÖöFW&FS¢ãÂF–ff–7VÇC¢ã#RÒÂu6öB66W72Æ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢ÄäE44”äuõÄåD”äs¢°¢×VÆ6„÷fW&vTf7F÷#¢f7F÷"ƒãRÂt×VÆ6‚÷&FW&–ær÷fW&vRf7F÷"rÂwVçF—G’×VÇF—Æ–W"rÂÂ"¢ÒÀ¢ÄäE44”äuôÔõt”äs¢·ÒÀ¢4”D”äuõ$UÄ4TÔTåC¢°¢v7FTf7F÷$'•G—S¢f7F÷$Ö‡²f–ç–Ã¢ãÂf–&W%ö6VÖVçC¢ã"ÂvööC¢ã"ÂÖWFÃ¢ãÒÂu6–F–ærÖFW&–Âv7FR'’G—RrÂvFV6–ÖÂg&7F–öârÂÂãR’À¢7F÷'”×VÇF—Æ–W#¢f7F÷$Ö‡²¢Â#¢ãÂ3¢ã#ÒÂu6–F–ær7F÷'’Æ&÷"æB&VÖ÷fÂ×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢4”D”äuõ$U•#¢°¢7F÷'”×VÇF—Æ–W#¢f7F÷$Ö‡²¢Â#¢ãÂ3¢ã#ÒÂu6–F–ær&W—"7F÷'’Æ&÷"×VÇF—Æ–W"rÂv×VÇF—Æ–W"rÂãÂR¢ÒÀ¢5U5DôÓ¢·Ð§Ó° ¢òòö7Fö&W"2÷væW"Ö&÷fVBÖFW&–ÂVçF—F–W2æBÆ&÷"F§W7FÖVçG2à¦6öç7Bv7FRÒÆ&VÂÓâf7F÷"ƒãÆÆ&VÂÂvFV6–ÖÂg&7F–öârÃÃãR“°¤4Ä53%ôDTd”ä•D”ôå2å$ôôd”äuõ$UÄ4TÔTåBæ66W76÷'•v7FTf7F÷#Öf7F÷$Ö‡·7F'FW%W$Äc£ãÆG&—VFvUW$Äc£ãÇ&–FvT6W$Äc£ãÒÂu7F'FW"7G&—ÂG&—VFvRæB&–FvR6v7FRrÂvFV6–ÖÂg&7F–öârÃÃãR“°¤4Ä53%ôDTd”ä•D”ôå2ädÄEõ$ôôeõ$UÄ4TÔTåBæÖVÖ'&æUv7FTf7F÷#×v7FR‚tÖVÖ'&æRÖFW&–Âv7FRr“°¤4Ä53%ôDTd”ä•D”ôå2ädÄEõ$ôôeõ$U•"æ66W74×VÇF—Æ–W#×7G'V7GW&VD6ÆöæR„4Ä53%ôDTd”ä•D”ôå2ädÄEõ$ôôeõ$UÄ4TÔTåBæ66W74×VÇF—Æ–W"“°¦f÷"†6öç7BG—Röb²t”åDU$”õ%õ”åD”ärrÂtU…DU$”õ%õ”åD”äruÒ—°¢4Ä53%ôDTd”ä•D”ôå5·G—UÒç–çEv7FTf7F÷#×v7FR‚tf–æ—6‚–çBÖFW&–Âv7FRr“°¢4Ä53%ôDTd”ä•D”ôå5·G—UÒç&–ÖW%v7FTf7F÷#×v7FR‚u&–ÖW"ÖFW&–Âv7FRr“°¢4Ä53%ôDTd”ä•D”ôå5·G—UÒç&WÖFW&–Åv7FTf7F÷#×v7FR‚u&W&F–öâÖFW&–Âv7FRr“°§Ð¤4Ä53%ôDTd”ä•D”ôå2ädÄôõ$”äuô”å5DÄÂæÆ–÷WDÆ&÷$×VÇF—Æ–W#Öf7F÷$Ö‡·7G&–v‡C£ÆF–vöæÅö÷%÷GFW&ã£ã#ÒÂtfÆö÷&–ærÆ–÷WBÆ&÷"F§W7FÖVçBrÂv×VÇF—Æ–W"rÃãÃR“°¤4Ä53%ôDTd”ä•D”ôå2ädTä4”äuô”å5DÄÃ×·÷7E76–ætÄc¦f7F÷"ƒ‚ÂtF—7Fæ6R&WGvVVâfVæ6R÷7G2rÂvfVWBrÃãÃ’ÆfVæ6Uv7FTf7F÷#§v7FR‚tfVæ6R–æf–ÆÂÖFW&–Âv7FRr’ÇFW'&–äÆ&÷$×VÇF—Æ–W#¦f7F÷$Ö‡¶fÆC£ÆÖöFW&FS£ãRÇ7FVW£ã3ÒÂtfVæ6RFW'&–âÆ&÷"F§W7FÖVçBrÂv×VÇF—Æ–W"rÃãÃR—Ó°¤4Ä53%ôDTd”ä•D”ôå2ä4ôä5$UDUôE$•dUt’ç&V–æf÷&6VÖVçEv7FTf7F÷#Öf7F÷$Ö‡·v—&UöÖW6ƒ£ãÇ&V&#£ãÒÂuv—&RÖW6‚æB&V&"ÖFW&–Âv7FRrÂvFV6–ÖÂg&7F–öârÃÃãR“°¤4Ä53%ôDTd”ä•D”ôå2ä4ôä5$UDUôE$•dUt’ç7F×VDÖFW&–Åv7FTf7F÷#×v7FR‚u7F×VBf–æ—6‚ÖFW&–Âv7FRr“°¦f÷"†6öç7BG—Röb²tÄäE44”äuôÕTÄ4‚rÂtÄäE44”äuõÄåD”äruÒ”4Ä53%ôDTd”ä•D”ôå5·G—UÒæ66W74×VÇF—Æ–W#×7G'V7GW&VD6ÆöæR„4Ä53%ôDTd”ä•D”ôå2äÄäE44”äuõ4ôBæ66W74×VÇF—Æ–W"“° ¤4Ä53%ôDTd”ä•D”ôå2ädÄôõ$”äuõ$UÄ4TÔTåBÒ7G'V7GW&VD6ÆöæR„4Ä53%ôDTd”ä•D”ôå2ädÄôõ$”äuô”å5DÄÂ“°¤4Ä53%ôDTd”ä•D”ôå2ädTä4”äuõ$UÄ4TÔTåBÒ7G'V7GW&VD6ÆöæR„4Ä53%ôDTd”ä•D”ôå2ädTä4”äuô”å5DÄÂ“°¤4Ä53%ôDTd”ä•D”ôå2ä4ôä5$UDUõD”õõ4Ä"Ò7G'V7GW&VD6ÆöæR„4Ä53%ôDTd”ä•D”ôå2ä4ôä5$UDUôE$•dUt’“° ¢òò&W—'2rÂÂ"Â#Ó#s¢W‡Æ–6—Bf7G2÷"&Wf–WrÂæWfW"–æfW'&VB66÷Rà¦gVæ7F–öâW‡FVæDÖV7W&VD6öçG&7B‡G—RÂf–VÆG2Â&WV—&VDf7G2Â–ç7V7BÂ7&÷72’°¢6öç7B6öçG&7BÒÔT5U$TÔTåEô4ôåE$5E5·G—UÓ°¢ö&¦V7Bæ76–vâ†6öçG&7Bæf–VÆG2Âf–VÆG2“°¢6öç7B&Wf–÷W5&WV—&VBÒ6öçG&7Bç&WV—&VBÂ&Wf–÷W4–ç7V7F–öâÒ6öçG&7Bæ–ç7V7F–öâÂ&Wf–÷W47&÷72Ò6öçG&7Bæ7&÷75fÆ–FFS°¢6öçG&7Bç&WV—&VBÒ†2Ç’Óâ²âââ‡&Wf–÷W5&WV—&VCòâ†2Ç’ÇÂµÒ’Âââç&WV—&VDf7G2†2Ç•Ó°¢6öçG&7Bæ–ç7V7F–öâÒ†2Ç’Óâ&Wf–÷W4–ç7V7F–öãòâ†2Ç’ÇÂ–ç7V7Còâ†2Ç’ÇÂçVÆÃ°¢6öçG&7Bæ7&÷75fÆ–FFRÒ†2Ç’Óâ²âââ‡&Wf–÷W47&÷73òâ†2Ç’ÇÂµÒ’Ââââ†7&÷73òâ†2Ç’ÇÂµÒ•Ó°§Ð¦f÷"†6öç7BG—Röb²tdÄEõ$ôôeõ$U•"rÂtÄäE44”äuôÕTÄ4‚rÂtÄäE44”äuõÄåD”äruÒ–W‡FVæDÖV7W&VD6öçG&7B‡G—RÇ¶66W74F–ff–7VÇG“¦VçVÔf–VÆB‚u&ö¦V7B66W72rÄ44U52—ÒÂ‚“Óå²v66W74F–ff–7VÇG’uÒ“°¦f÷"†6öç7BG—Röb²t4ôä5$UDUôE$•dUt’rÂt4ôä5$UDUõD”õõ4Ä"uÒ–W‡FVæDÖV7W&VD6öçG&7B‡G—RÀ¢¶÷WFÆ–æUö–çG3¦f–VÆB‚t6Æ÷6VBÖV7W&VB÷'F†övöæÂ÷WFÆ–æR6ö÷&F–æFW2rÂvfVWBrÂv÷'F†övöæÅö÷WFÆ–æRr—ÒÆ3Óæ2æF–ÖVç6–öäÖWF†öCÓÓÒvÖV7W&VEö÷WFÆ–æRsõ²v÷WFÆ–æUö–çG2uÓ¥µÒÆçVÆÂÀ¢3Óæ2æF–ÖVç6–öäÖWF†öCÓÓÒvÖV7W&VEö÷WFÆ–æRsõ²vÆVæwF‚rÂwv–GF‚rÂv&V7gBrÂwW&–ÖWFW$ÄbuÒæf–ÇFW"†³Óæ5¶µÒÓ×VæFVf–æVB’æÖ†f–VÆCÓâ‡¶f–VÆBÆÖW76vS¢tÖV7W&VB÷WFÆ–æRFW&—fW2&VæBW&–ÖWFW#²GWÆ–6FRvVöÖWG'’–çWG2&Ræ÷B66WFVBâwÒ’“¦2æ÷WFÆ–æUö–çG2Ó×VæFVf–æVCõ·¶f–VÆC¢v÷WFÆ–æUö–çG2rÆÖW76vS¢t÷WFÆ–æRö–çG2&WV—&RF†RÖV7W&VEö÷WFÆ–æRÖWF†öBâwÕÓ¥µÒ“°¦6öç7BVæ6W'F–å&W—"Ò2Óâ²wVæ¶æ÷vârÂwVæ¶æ÷våöÆV²rÂwVç7W&RrÂwVæ–FVçF–f–VBrÂwVæ–FVçF–f–VEöÆV²rÂwVæ¶æ÷vå÷6÷W&6RrÂwVæ¶æ÷våöÆVµ÷6÷W&6RrÂv÷F†W"rÂvfW&vRuÒæ–æ6ÇVFW2†2ç&W—%G—R’ÇÂ†2æÆVµ&W6VçBbb2æÆVµ6÷W&6T–FVçF–f–VBÓÒG'VR“°¦f÷"†6öç7BG—Röb²u$ôôd”äuõ$U•"rÂtdÄEõ$ôôeõ$U•"uÒ’W‡FVæDÖV7W&VD6öçG&7B‡G—RÀ¢²ÆVµ6÷W&6T–FVçF–f–VC¢&ööÆVäf–VÆB‚tÆV²6÷W&6R7V6–f–6ÆÇ’–FVçF–f–VBr’ÒÂ‚’ÓâµÒÀ¢2ÓâVæ6W'F–å&W—"†2’òuF†RÆV²6÷W&6R×W7B&R7V6–f–6ÆÇ’–FVçF–f–VB'’–ç7V7F–öâ&Vf÷&R&–6–ærâr¢çVÆÂ“°¢òò÷væW"'VÆ–ær&V†VF—BÓ2“¢&W—"Æ&vW"F†âF†R&VF†R÷væW"&–6W22¢òòÆ&vR&W—"—2æ÷BV÷FVBg&öÒF†Rf—†VBÆ&vR×&W—"†÷W'2æBÆÆ÷væ6Rà¦W‡÷'B6öç7BÄ$tUõ$U•%ôÄ”Ô•EôÔU54tRÒuF†—2&W—"—2Æ&vW"F†âF†R&VF†—2'W6–æW72&–6W22&W—"âF†R'W6–æW72v–ÆÂföÆÆ÷rWFò76W72—Bâs°¦W‡÷'BgVæ7F–öâÆ&vU&W—$Æ–Ö—E&ö&ÆVÒ‡6W'f–6UG—RÂfÇVR’°¢–b‡fÇVRÓÓÒVæFVf–æVB’&WGW&âçVÆÃ°¢6öç7BÖVF—VÔÖ‚Ò6W'f–6UG—RÓÓÒu$ôôd”äuõ$U•"rò#¢ƒ°¢&WGW&âG—VöbfÇVRÓÓÒvçVÖ&W"rbbçVÖ&W"æ—4f–æ—FR‡fÇVR’bbfÇVRâÖVF—VÔÖ‚bbfÇVRÃÒóóòçVÆÀ¢¢VçFW"F†RÆ&vW7BffV7FVB&V&–6VB2&W—#¢Ö÷&RF†âG¶ÖVF—VÔÖ‡Ò7gB‡F†RÖVF—VÒ×&W—"Æ–Ö—B’æBBÖ÷7BÃÃæ°§Ð¦f÷"†6öç7BG—Röb²u$ôôd”äuõ$U•"rÂtdÄEõ$ôôeõ$U•"rÂu4”D”äuõ$U•"uÒ’W‡FVæDÖV7W&VD6öçG&7B‡G—RÂ·ÒÂ‚’ÓâµÒÀ¢†2Â’Óâ&W—%6—¦Tg&öÔffV7FVD&V‡G—RÂ2æffV7FVD&V’ÓÓÒvÆ&vRrbbG—VöbòæÆ&vU&W—$Ö…7gBÓÓÒvçVÖ&W"rbb2æffV7FVD&VâæÆ&vU&W—$Ö…7gBòÄ$tUõ$U•%ôÄ”Ô•EôÔU54tR¢çVÆÂ“°¦f÷"†6öç7BG—Röb²u$ôôd”äuõ$UÄ4TÔTåBrÂtdÄEõ$ôôeõ$UÄ4TÔTåBuÒ’W‡FVæDÖV7W&VD6öçG&7B‡G—RÂ·ÒÂ‚’ÓâµÒÂçVÆÂÂ2Óâ°¢–b†2ç6W'f–6U66÷RÓÒw'F–Âr’&WGW&âµÓ°¢6öç7BF÷FÂÒG—RÓÓÒu$ôôd”äuõ$UÄ4TÔTåBrò2ç&ööe6—¦T–çWB¢2ç&ööe7gC°¢–b‡G—VöbF÷FÂÓÒvçVÖ&W"rÇÂçVÖ&W"æ—4f–æ—FR‡F÷FÂ’’&WGW&âµÓ°¢6öç7BW'&÷'3ÕµÓ°¢f÷"†6öç7BæÖRöb²w'F–Ä&V7gBrÂw'F–ÅW&6VçBuÒ’°¢–b‡G—Vöb5¶æÖUÒÓÒvçVÖ&W"rÇÂçVÖ&W"æ—4f–æ—FR†5¶æÖUÒ’’6öçF–çVS°¢6öç7B&VÒæÖRÓÓÒw'F–ÅW&6VçBròW†7DF—f–FR†W†7D×VÇF—Ç’‡F÷FÂÆ5¶æÖUÒ’Ã’¢5¶æÖUÓ°¢6öç7BFöÖ–ãÔÔT5U$TÔTåEô4ôåE$5E5·G—UÒæf–VÆG2ç'F–Ä&V7gC°¢–b†W†7D6ö×&R†&VÆFöÖ–âæÖ–â“ÃÇÂW†7D6ö×&R†&VÆFöÖ–âæÖ‚“ãÇÂW†7D6ö×&R†&VÇF÷FÂ“ãÓ¢W'&÷'2çW6‚‡¶f–VÆC¦æÖRÆÖW76vS¢u'F–Â&V×W7B6F—6g’F†RÖV7W&VBÖ&V&÷VæG2æB&R7G&–7FÇ’6ÖÆÆW"F†âF†RF÷FÂ&ööb&VâwÒ“°¢Ð¢&WGW&âW'&÷'3°§Ò“°¦W‡FVæDÖV7W&VD6öçG&7B‚tdÄEõ$ôôeõ$UÄ4TÔTåBrÂ·&WÆ6VÖVçDÖVÖ'&æUG—S§6ÇVtf–VÆB‚u&WÆ6VÖVçBÖVÖ'&æRG—Rr—ÒÂ‚’Óâ²w&WÆ6VÖVçDÖVÖ'&æUG—RuÒÀ¢†2Ç’Óâ²wVæ¶æ÷vârÂvfW&vRuÒæ–æ6ÇVFW2†2æÖVÖ'&æUG—R’ÇÂ²wVæ¶æ÷vârÂvfW&vRuÒæ–æ6ÇVFW2†2ç&WÆ6VÖVçDÖVÖ'&æUG—R¢òt&÷F‚W†—7F–æræB&WÆ6VÖVçBÖVÖ'&æR7—7FV×2×W7B&R–FVçF–f–VBâp¢¢†2æ–ç7VÆF–öäæVVFVCÓÓ×G'VWÇÆ2æ6÷fW&&ö&DæVVFVCÓÓ×G'VR’bbç66÷TFWF–Ç3òæ–ç7VÆF–öà¢òtæWr&ööb–ç7VÆF–öâ÷"6÷fW&&ö&Bv2&WVW7FVBÂ'WBF†—2'W6–æW72†2æ÷B6WBW–ç7VÆF–öâæB6÷fW&&ö&B&–6–ærâp¢¢çVÆÂ“°¦f÷"†6öç7BG—Röb²tdÄôõ$”äuô”å5DÄÂrÂtdÄôõ$”äuõ$UÄ4TÔTåBuÒ’W‡FVæDÖV7W&VD6öçG&7B‡G—RÀ¢·&VÖ÷fÄ&V7gC¦çVÖ&W$f–VÆB‚tÖV7W&VBW†—7F–ærfÆö÷&–ær&VÖ÷fÂ&VrÂw7V&RfVWBrÃÃ—ÒÂ3Óæ2ç&VÖ÷fÄæVVFVCõ²w&VÖ÷fÄ&V7gBuÓ¥µÒÀ¢†2Ç“Óæ2ç7F—%7FW3ãbb66÷TVçG&–W4f÷"‡Âw7F—'2r’æÆVæwFƒòu7F—"66÷R&WV—&W2âW‡Æ–6—FÇ’ÆÂÖ–æ6ÇW6—fR÷væW"&–6R÷"6W&FRÆ&÷"ÂÖFW&–ÂÂVæFW&Æ–ÖVçBÂ&VÖ÷fÂÂæBF—7÷6Â&–6–ærâs¦çVÆÂÀ¢3Óæ2ç&VÖ÷fÄæVVFVCÓÓÖfÇ6Rbb2ç&VÖ÷fÄ&V7gBÓ×VæFVf–æVCõ·¶f–VÆC¢w&VÖ÷fÄ&V7gBrÆÖW76vS¢u&VÖ÷fÂ&V6ææ÷B&R7WÆ–VBv†Vâ&VÖ÷fÂ—2æ÷B6VÆV7FVBâwÕÓ¥µÒ“°¦W‡FVæDÖV7W&VD6öçG&7B‚u4”D”äuõ$UÄ4TÔTåBrÇ·ÒÂ‚“ÓåµÒÂ†2Ç“Óæ2æöÆE6–F–æu&VÖ÷fÂbb66÷TVçG&–W4f÷"‡Âw6–F–æu÷&VÖ÷fÂr’æÆVæwFƒòtW†—7F–ær6–F–ærG—RæBÖV7W&VB&VÖ÷fÂ&V&WV—&R6W&FR÷væW"×&–6VB&VÖ÷fÂ6öçG&7Bâs¦çVÆÂ“°¦f÷"†6öç7BG—Röb²t4ôä5$UDUôE$•dUt’rÂt4ôä5$UDUõD”õõ4Ä"uÒ’W‡FVæDÖV7W&VD6öçG&7B‡G—RÇ·ÒÂ‚“ÓåµÒÀ¢†2Ç“Óæ2æFVÖöÆ—F–öäæVVFVBbb66÷TVçG&–W4f÷"‡ÂvFVÖöÆ—F–öâr’æÆVæwFƒòtW†—7F–ær6Æ"F†–6¶æW72Â&V–æf÷&6VÖVçBÂ66W72ÂæBFVÖöÆ—F–öâ66÷R&WV—&Râ÷væW"×&–6VB6öçG&7C²æWr6Æ"f7G26ææ÷B&–6RF†RW†—7F–ær6Æ"âp¢¦çVÆÂÀ¢3Óç°¢6öç7BW'&÷'3ÕµÓ°¢–b†2æF–ÖVç6–öäÖWF†öCÓÓÒvW†7BrbbçVÖ&W"æ—4f–æ—FR†2æÆVæwF‚’bbçVÖ&W"æ—4f–æ—FR†2çv–GF‚’—°¢6öç7B&VÖW†7D×VÇF—Ç’†2æÆVæwF‚Æ2çv–GF‚’ÆFöÖ–ãÔÔT5U$TÔTåEô4ôåE$5E5·G—UÒæf–VÆG2æ&V7gC°¢–b†W†7D6ö×&R†&VÆFöÖ–âæÖ–â“ÃÇÂW†7D6ö×&R†&VÆFöÖ–âæÖ‚“ã–W'&÷'2çW6‚‡¶f–VÆC¢vÆVæwF‚rÆÖW76vS¢tFW&—fVB6öæ7&WFR&V×W7B6F—6g’F†RF—&V7BÖV7W&VBÖ&V&÷VæG2âwÒ“°¢Ð¢òò—6÷W&–ÖWG&–2&÷VæC¢æòÆæ"6Æ"6â†fRÆW72W&–ÖWFW"F†ââWVÂÖ&V6—&6ÆRà¢–b†2æF–ÖVç6–öäÖWF†öCÓÓÒvÖV7W&VEö&V÷W&–ÖWFW"rbbçVÖ&W"æ—4f–æ—FR†2æ&V7gB’bbçVÖ&W"æ—4f–æ—FR†2çW&–ÖWFW$Äb’bbW†7D6ö×&R†W†7D×VÇF—Ç’†2çW&–ÖWFW$ÄbÆ2çW&–ÖWFW$Äb’ÆW†7D×VÇF—Ç’ƒB¤ÖF‚å’Æ2æ&V7gB’“Ã¢W'&÷'2çW6‚‡¶f–VÆC¢wW&–ÖWFW$ÄbrÆÖW76vS¢uF†R7WÆ–VB&VæBW&–ÖWFW"&R‡—6–6ÆÇ’–×÷76–&ÆRf÷"6–×ÆRÆæ"6Æ"âwÒ“°¢&WGW&âW'&÷'3°¢Ò“°¦W‡FVæDÖV7W&VD6öçG&7B‚t”åDU$”õ%õ”åD”ärrÇ°¢vÆÅ66÷UVæ–f÷&Ó¦&ööÆVäf–VÆB‚tÆÂvÆÂ&V6†&W2F†R6öæf—&ÖVB†V–v‡BÂ66W72ÂæBf–æ—6‚Ö6öB6÷VçBr’À¢6V–Æ–æt6öG3¦çVÖ&W$f–VÆB‚t–æFWVæFVçFÇ’6öæf—&ÖVB6V–Æ–ærf–æ—6‚6öG2rÂv6öG2rÃÃ2Ç¶–çFVvW#§G'VWÒ§ÒÆ3Óå²wvÆÅ66÷UVæ–f÷&ÒrÂâââ†2æ6V–Æ–æw4–æ6ÇVFVCõ²v6V–Æ–æt6öG2uÓ¥µÒ•ÒÀ¢3Óæ2çvÆÅ66÷UVæ–f÷&ÒÓ×G'VSòtÖ—†VBvÆÂ†V–v‡BÂ66W72Â÷"6öB¦öæW2&WV—&R6W&FRÖV7W&VB66÷R÷"–ç7V7F–öââs¦çVÆÂÀ¢3Óæ2æ6V–Æ–æw4–æ6ÇVFVCÓÓÖfÇ6Rbb2æ6V–Æ–æt6öG2Ó×VæFVf–æVCõ·¶f–VÆC¢v6V–Æ–æt6öG2rÆÖW76vS¢t6V–Æ–ær6öG26ææ÷B&R7WÆ–VBv†Vâ6V–Æ–æw2&RW†6ÇVFVBâwÕÓ¥µÒ“°¦W‡FVæDÖV7W&VD6öçG&7B‚tU…DU$”õ%õ”åD”ärrÇ·ÒÂ‚“ÓåµÒÂ‚“Óâu6WBWâW‡FW&–÷"–çF–æröffW&–ærv—F‚F†R7W&f6RÂ6öF–ærÂ6öG2Â&W&F–öâæB&–ÖW"—B–æ6ÇVFW2ÂF†VâVçFW"—G2–ç7FÆÆVB÷"—FVÖ—¦VB&–6W2âr“°¦W‡FVæDÖV7W&VD6öçG&7B‚tÄäE44”äuõ4ôBrÇ·6W&FTF—7÷6Å6VÆV7FVC¦&ööÆVäf–VÆB‚u6W&FR&ö¦V7BFV'&—2F—7÷6Â6VÆV7FVBr—ÒÂ‚“ÓåµÒ“° ¦f÷"†6öç7B·G—RÂ6öçG&7EÒöbö&¦V7BæVçG&–W2„ÔT5U$TÔTåEô4ôåE$5E2’’°¢–b„ö&¦V7BçfÇVW2†6öçG&7Bæf–VÆG2’ç6öÖR†bÓâbçG—RÓÓÒw6ÇVrr’’W‡FVæDÖV7W&VD6öçG&7B‡G—RÂ°¢6öæf—&ÖVDf7G3¢²Æ&VÃ¢tff—&ÖF—fVÇ’–FVçF–f–VB÷væW"öffW&–æw2rÂVæ—C¢çVÆÂÂG—S¢v6öæf—&ÖVEöf7G2rÐ¢ÒÂ‚’ÓâµÒ“°§Ð¦FVWg&VW¦R„ÔT5U$TÔTåEô4ôåE$5E2“°¦FVWg&VW¦R„4Ä53%ôDTd”ä•D”ôå2“° ¦W‡÷'BgVæ7F–öâv—F„6Æ73$FVfVÇG2‡6W'f–6UG—RÂ&–6–ærÒ·Ò’°¢–b‚4U%d”4UõE•U2æ–æ6ÇVFW2‡6W'f–6UG—R’’F‡&÷ræWrG—TW'&÷"‚u6W'f–6RG—R—2Vç7W÷'FVBâr“°¢6öç7B6æ6†÷BÒ6æ6†÷EÆ–äFF‡&–6–ærÂw&–6–ærr“°¢–b‚6æ6†÷Bæö²’°¢–b‚—5&V6÷&B‡&–6–ær’’F‡&÷ræWrG—TW'&÷"‚u&–6–ær×W7B&Râö&¦V7B&Vf÷&R6Æ72"FVfVÇG26â&RÆ–VBâr“°¢F‡&÷ræWrG—TW'&÷"€¢&–6–ær6÷VÆBæ÷B&R&VB6fVÇ’BG·6æ6†÷BæW'&÷%F‡Ó¢G·6æ6†÷Bç&V6öçÒæ ¢“°¢Ð¢6öç7BæöåÆ–åF‚Òf—'7DæöåÆ–åF‚‡6æ6†÷BÂw&–6–ærr“°¢–b†æöåÆ–åF‚’°¢F‡&÷ræWrG—TW'&÷"†&–6–ær×W7B6öçF–âöæÇ’Æ–âFFö&¦V7G3²G¶æöåÆ–åF‡Ò—2æ÷BÆ–âFFæ“°¢Ð¢6öç7BæW‡BÒ6æ6†÷BçfÇVS°¢f÷"†6öç7B¶æÖRÂFVf–æ—F–öåÒöbö&¦V7BæVçG&–W2„4Ä53%ôDTd”ä•D”ôå5·6W'f–6UG—UÒÇÂ·Ò’’°¢–b†æW‡E¶æÖUÒÓÓÒVæFVf–æVB’æW‡E¶æÖUÒÒ7G'V7GW&VD6ÆöæR†FVf–æ—F–öâæFVfVÇEfÇVR“°¢Ð¢òò6æ6†÷BG'W7B—2&WVW7BÖÆö6ÂâæWfW"W‡÷6R×WF&ÆRG'W7FVBö&¦V7BF†@¢òò6÷VÆB&R6†ævVBgFW"–ç7V7F–öâæBF†Vâ7WÆ–VBFòæ÷F†W"V&Æ–2’à¢&WGW&â7G'V7GW&VD6ÆöæR†æW‡B“°§Ð ¦gVæ7F–öâÖ—76–ær‡fÇVR’°¢&WGW&âfÇVRÓÓÒVæFVf–æVBÇÂfÇVRÓÓÒçVÆÂÇÂfÇVRÓÓÒrrÇÂfÇVRÓÓÒwVç7W&Rs°§Ð ¦gVæ7F–öâfÆ–FFTf–VÆEfÇVR†FVf–æ—F–öâÂfÇVR’°¢–b†FVf–æ—F–öâçG—SÓÓÒvöffW&–æuö6÷VçG2r’°¢–b‚—5&V6÷&B‡fÇVR—ÇÄö&¦V7Bæ¶W—2‡fÇVR’ç6öÖR†¶W“ÓâFVf–æ—F–öâçfÇVW2æ–æ6ÇVFW2†¶W’’’—&WGW&âv×W7B6öçF–âöæÇ’öffW&VBvFR6VÆV7F–öç2s°¢–b„ö&¦V7BçfÇVW2‡fÇVR’ç6öÖR†6÷VçCÓâçVÖ&W"æ—4–çFVvW"†6÷VçB—ÇÆ6÷VçCÃÇÆ6÷VçCãó’—&WGW&âv×W7B6öçF–âv†öÆRvFR6÷VçG2g&öÒ¦W&òFòÃs°¢&WGW&âçVÆÃ°¢Ð¢–b†FVf–æ—F–öâçG—RÓÓÒv÷'F†övöæÅö÷WFÆ–æRr’²G'’²ÖV7W&VD÷WFÆ–æUdæW‡B‡fÇVR“²&WGW&âçVÆÃ²Ò6F6‚†W'&÷"’²&WGW&âW'&÷"æÖW76vS²ÒÐ¢–b†FVf–æ—F–öâçG—RÓÓÒvçVÖ&W"r’°¢–b‡G—VöbfÇVRÓÒvçVÖ&W"rÇÂçVÖ&W"æ—4f–æ—FR‡fÇVR’’&WGW&âv×W7B&Rf–æ—FRçVÖ&W"s°¢–b‡fÇVRÂFVf–æ—F–öâæÖ–âÇÂfÇVRâFVf–æ—F–öâæÖ‚’&WGW&â×W7B&R&WGvVVâG¶FVf–æ—F–öâæÖ–çÒæBG¶FVf–æ—F–öâæÖ‡ÒG¶FVf–æ—F–öâçVæ—BÇÂrwÖçG&–Ò‚“°¢–b†FVf–æ—F–öâæ–çFVvW"bbçVÖ&W"æ—4–çFVvW"‡fÇVR’’&WGW&âv×W7B&Rv†öÆRçVÖ&W"s°¢&WGW&âçVÆÃ°¢Ð¢–b†FVf–æ—F–öâçG—RÓÓÒv–çFVvW%ö÷%÷Væ¶æ÷vâr’°¢–b‡fÇVRÓÓÒwVæ¶æ÷vâr’&WGW&âçVÆÃ°¢–b‚çVÖ&W"æ—4–çFVvW"‡fÇVR’ÇÂfÇVRÂFVf–æ—F–öâæÖ–âÇÂfÇVRâFVf–æ—F–öâæÖ‚’&WGW&â×W7B&RVæ¶æ÷vâ÷"v†öÆRçVÖ&W"g&öÒG¶FVf–æ—F–öâæÖ–çÒFòG¶FVf–æ—F–öâæÖ‡Ö°¢&WGW&âçVÆÃ°¢Ð¢–b†FVf–æ—F–öâçG—RÓÓÒvVçVÒr’&WGW&âFVf–æ—F–öâçfÇVW2æ–æ6ÇVFW2‡fÇVR’òçVÆÂ¢×W7B&RöæRöc¢G¶FVf–æ—F–öâçfÇVW2æ¦ö–â‚rÂr—Ö°¢–b†FVf–æ—F–öâçG—RÓÓÒv&ööÆVâr’&WGW&âG—VöbfÇVRÓÓÒv&ööÆVâròçVÆÂ¢v×W7B&RG'VR÷"fÇ6Rs°¢–b†FVf–æ—F–öâçG—RÓÓÒv6öæf—&ÖVEöf7G2r’&WGW&â—5&V6÷&B‡fÇVR’òçVÆÂ¢v×W7B&R7G'V7GW&VBf7BÖ6öæf—&ÖF–öâÖs°¢–b†FVf–æ—F–öâçG—RÓÓÒw6ÇVrr’&WGW&âG—VöbfÇVRÓÓÒw7G&–ærrbb4äôä”4Åõ4ÅTrçFW7B‡fÇVR’òçVÆÂ¢v×W7B&R6æöæ–6ÂÆ÷vW&66RfÇVRs°¢–b†FVf–æ—F–öâçG—RÓÓÒw7G&–ærr’°¢–b‡G—VöbfÇVRÓÒw7G&–ærr’&WGW&âv×W7B&RFW‡Bs°¢6öç7BÆVæwF‚ÒfÇVRçG&–Ò‚’æÆVæwFƒ°¢–b†ÆVæwF‚ÂFVf–æ—F–öâæÖ–äÆVæwF‚ÇÂÆVæwF‚âFVf–æ—F–öâæÖ„ÆVæwF‚’&WGW&â×W7B6öçF–âG¶FVf–æ—F–öâæÖ–äÆVæwF‡ÒÒG¶FVf–æ—F–öâæÖ„ÆVæwF‡Ò6†&7FW'6°¢&WGW&âçVÆÃ°¢Ð¢–b†FVf–æ—F–öâçG—RÓÓÒwÆçEö6÷VçG2r’°¢–b‚—5&V6÷&B‡fÇVR’’&WGW&âv×W7B&Râö&¦V7B¶W–VB'’6ÖÆÂÂÖVF—VÒÂæBÆ&vRs°¢6öç7B¶W—2Òö&¦V7Bæ¶W—2‡fÇVR“°¢–b†¶W—2ç6öÖR†¶W’Óâ4•¤Uô´U•2æ–æ6ÇVFW2†¶W’’’ÇÂ4•¤Uô´U•2ç6öÖR†¶W’Óâ¶W—2æ–æ6ÇVFW2†¶W’’’’&WGW&âv×W7B6öçF–âW†7FÇ’6ÖÆÂÂÖVF—VÒÂæBÆ&vRs°¢–b…4•¤Uô´U•2ç6öÖR†¶W’ÓâçVÖ&W"æ—4–çFVvW"‡fÇVU¶¶W•Ò’ÇÂfÇVU¶¶W•ÒÂÇÂfÇVU¶¶W•Òâóó’’&WGW&âv×W7B6öçF–âf–æ—FRæöâÖæVvF—fRv†öÆRÖçVÖ&W"ÆçB6÷VçG2s°¢–b…4•¤Uô´U•2æWfW'’†¶W’ÓâfÇVU¶¶W•ÒÓÓÒ’’&WGW&âv×W7B–æ6ÇVFRBÆV7BöæRÆçBs°¢&WGW&âçVÆÃ°¢Ð¢&WGW&âwW6W2âVç7W÷'FVB6öçG&7BG—Rs°§Ð ¦W‡÷'BgVæ7F–öâfÆ–FFT7W7FöÖW$–çWG2‡6W'f–6UG—RÂ7W7FöÖW$–çWG2Ò·ÒÂ&–6–ærÒ·ÒÂ6W'f–6U'VÆW2Ò·Ò’°¢ÆWB6öçG&7BÒÔT5U$TÔTåEô4ôåE$5E5·6W'f–6UG—UÓ°¢–b‚6öçG&7B’&WGW&â²ö³¢fÇ6RÂÖ—76–æt7W7FöÖW$f–VÆG3¢µÒÂ–çfÆ–D7W7FöÖW$f–VÆG3¢²w6W'f–6UG—RuÒÂ&Wf–Wu&V6öã¢uVç7W÷'FVB6W'f–6RG—RârÓ°¢6öç7B7W7FöÖW%6æ6†÷BÒ6æ6†÷EÆ–äFF†7W7FöÖW$–çWG2Âv7W7FöÖW$–çWG2r“°¢–b‚7W7FöÖW%6æ6†÷Bæö²’°¢&WGW&â°¢ö³¢fÇ6RÂÖ—76–æt7W7FöÖW$f–VÆG3¢µÒÀ¢–çfÆ–D7W7FöÖW$f–VÆG3¢·&VÆF—fU6æ6†÷EF‚†7W7FöÖW%6æ6†÷BÂv7W7FöÖW$–çWG2r•ÒÀ¢&Wf–Wu&V6öã¢7W7FöÖW"–çWG26÷VÆBæ÷B&R&VB6fVÇ“¢G¶7W7FöÖW%6æ6†÷Bç&V6öçÒæ ¢Ó°¢Ð¢6öç7B7W7FöÖW$æöåÆ–åF‚Òf—'7DæöåÆ–åF‚†7W7FöÖW%6æ6†÷BÂv7W7FöÖW$–çWG2r“°¢–b†7W7FöÖW$æöåÆ–åF‚’&WGW&â°¢ö³¢fÇ6RÀ¢Ö—76–æt7W7FöÖW$f–VÆG3¢µÒÀ¢–çfÆ–D7W7FöÖW$f–VÆG3¢¶7W7FöÖW$æöåÆ–åF…ÒÀ¢&Wf–Wu&V6öã¢7W7FöÖW"–çWG2×W7B6öçF–âöæÇ’Æ–âFFö&¦V7G3²G¶7W7FöÖW$æöåÆ–åF‡Ò—2æ÷BÆ–âFFæ ¢Ó°¢7W7FöÖW$–çWG2Ò7W7FöÖW%6æ6†÷BçfÇVS°¢6öç7B&–6–æu6æ6†÷BÒfÆ–FF–öå6æ6†÷EdæW‡B‡&–6–ærÂw&–6–ærr“°¢–b‚&–6–æu6æ6†÷Bæö²’°¢&WGW&â°¢ö³¢fÇ6RÂÖ—76–æt7W7FöÖW$f–VÆG3¢µÒÂ–çfÆ–D7W7FöÖW$f–VÆG3¢µÒÀ¢–çfÆ–D÷væW$f–VÆG3¢·&VÆF—fU6æ6†÷EF‚‡&–6–æu6æ6†÷BÂw&–6–ærr•ÒÀ¢&Wf–Wu&V6öã¢&–6–ær6öçFW‡B6÷VÆBæ÷B&R&VB6fVÇ“¢G·&–6–æu6æ6†÷Bç&V6öçÒæ ¢Ó°¢Ð¢6öç7B&–6–ætæöåÆ–åF‚Òf—'7DæöåÆ–åF‚‡&–6–æu6æ6†÷BÂw&–6–ærr“°¢–b‡&–6–ætæöåÆ–åF‚’&WGW&â°¢ö³¢fÇ6RÀ¢Ö—76–æt7W7FöÖW$f–VÆG3¢µÒÀ¢–çfÆ–D7W7FöÖW$f–VÆG3¢µÒÀ¢–çfÆ–D÷væW$f–VÆG3¢·&–6–ætæöåÆ–åF…ÒÀ¢&Wf–Wu&V6öã¢&–6–ær6öçFW‡B×W7B6öçF–âöæÇ’Æ–âFFö&¦V7G3²G·&–6–ætæöåÆ–åF‡Ò—2æ÷BÆ–âFFæ ¢Ó°¢&–6–ærÒ&–6–æu6æ6†÷BçfÇVS°¢–b†6öæf–wW&VDöffW&–ær‡6W'f–6UG—RÇ&–6–ær’–6öçG&7CÖöffW&–æt6öçG&7B‡6W'f–6UG—RÇ&–6–ær“°¢6öç7B'VÆW2ÒfÆ–FF–öå6æ6†÷EdæW‡B‡6W'f–6U'VÆW2Âw6W'f–6U'VÆW2r“°¢–b‚'VÆW2æö²ÇÂ'VÆW2ææöåÆ–åF‡2æÆVæwF‚’&WGW&â²ö³¢fÇ6RÂÖ—76–æt7W7FöÖW$f–VÆG3¢µÒÂ–çfÆ–D7W7FöÖW$f–VÆG3¢µÒÂ–çfÆ–D÷væW$f–VÆG3¢²w6W'f–6U'VÆW2uÒÂ&Wf–Wu&V6öã¢u6W'f–6R'VÆW2×W7B&RÆ–âFFârÓ°¢6W'f–6U'VÆW2Ò'VÆW2çfÇVS°¢6öçG&7CÖ7W7FöÖW$6öçG&7Df÷%dæW‡B‡6W'f–6UG—RÇ&–6–ærÇ6W'f–6U'VÆW2“°¢6öç7BÆÆ÷vVBÒæWr6WB„ö&¦V7Bæ¶W—2†6öçG&7Bæf–VÆG2’“°¢6öç7BVæW‡V7FVBÒö&¦V7Bæ¶W—2†7W7FöÖW$–çWG2’æf–ÇFW"†¶W’ÓâÆÆ÷vVBæ†2†¶W’’“°¢6öç7B&WV—&VBÒ²ââææWr6WB†6öçG&7Bç&WV—&VCòâ†7W7FöÖW$–çWG2Â&–6–ær’ÇÂµÒ•Ó°¢6öç7BÖ—76–æt7W7FöÖW$f–VÆG2Ò&WV—&VBæf–ÇFW"†æÖRÓâÖ—76–ær†7W7FöÖW$–çWG5¶æÖUÒ’“°¢6öç7B–çfÆ–D7W7FöÖW$f–VÆG2ÒµÓ°¢6öç7BfÆ–FF–öäÖW76vW2ÒµÓ° ¢f÷"†6öç7B¶æÖRÂfÇVUÒöbö&¦V7BæVçG&–W2†7W7FöÖW$–çWG2’’°¢–b‚ÆÆ÷vVBæ†2†æÖR’’6öçF–çVS°¢–b†Ö—76–ær‡fÇVR’’6öçF–çVS°¢6öç7BÖW76vRÒfÆ–FFTf–VÆEfÇVR†6öçG&7Bæf–VÆG5¶æÖUÒÂfÇVR“°¢–b†ÖW76vR’°¢–çfÆ–D7W7FöÖW$f–VÆG2çW6‚†æÖR“°¢fÆ–FF–öäÖW76vW2çW6‚†G¶6öçG&7Bæf–VÆG5¶æÖUÒæÆ&VÇÒG¶ÖW76vWÒæ“°¢Ð¢Ð¢6öç7B6VÆV7F÷'2Òö&¦V7BæVçG&–W2†6öçG&7Bæf–VÆG2’æf–ÇFW"‚…¶æÖRÂFVeÒ’ÓâFVbçG—RÓÓÒw6ÇVrrbbÖ—76–ær†7W7FöÖW$–çWG5¶æÖUÒ’bb&öGV7D–FVçF—G•&WV—&VB†æÖRÂ7W7FöÖW$–çWG5¶æÖUÒ’’æÖ‚…¶æÖUÒ’ÓâæÖR“°¢6öç7Bf7G2Ò7W7FöÖW$–çWG2æ6öæf—&ÖVDf7G3°¢6öç7BÖ—76–ætöffW&–ætÖ2ÒµÒÂöffW&–æt÷væW$F–væ÷7F–72ÒµÒÂVç7W÷'FVDöffW&–ætf–VÆG2ÒµÓ°¢–b†f7G2ÓÒVæFVf–æVBbb—5&V6÷&B†f7G2’’f÷"†6öç7BæÖRöbö&¦V7Bæ¶W—2†f7G2’’°¢–b‚6VÆV7F÷'2æ–æ6ÇVFW2†æÖR’’–çfÆ–D7W7FöÖW$f–VÆG2çW6‚‚v6öæf—&ÖVDf7G2âr²æÖR“°¢Ð¢f÷"†6öç7BæÖRöb6VÆV7F÷'2’°¢òòF–væ÷6RF†RVæf–Æ&ÆR÷væW"6öçG&7B&Vf÷&R76W76–ær7W7FöÖW"w2f7@¢òòv–ç7B—BâöæR'6VçB&Vv—7G'’×W7Bæ÷BÖçVf7GW&RGvò&W7öç6–&ÆR'F–W2à¢6öç7B&Vv—7G'’Ò6W'f–6U'VÆW2æ¶æ÷väöffW&–æw3òå¶æÖUÒÂ6VÆV7FVBÒ7W7FöÖW$–çWG5¶æÖUÓ°¢–b‚—5&V6÷&B‡&Vv—7G'’’’°¢Ö—76–ætöffW&–ætÖ2çW6‚†æÖR“°¢öffW&–æt÷væW$F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚vÖ—76–ærrÂv¶æ÷våööffW&–æw2rÂv¶æ÷väöffW&–æw2âr¶æÖRÂu&Vv—7FW"F†R&öGV7G2–÷RöffW"f÷"F†—26VÆV7F–öâ–âF†R&–6R&öö²âr’“°¢6öçF–çVS°¢Ð¢6öç7B&Vv—7G'”W'&÷'2ÒöffW&–æu&Vv—7G'”F–væ÷7F–75dæW‡B†æÖRÂ&Vv—7G'’“°¢–b‡&Vv—7G'”W'&÷'2æÆVæwF‚’²öffW&–æt÷væW$F–væ÷7F–72çW6‚‚ââç&Vv—7G'”W'&÷'2“²6öçF–çVS²Ð¢6öç7BöffW&–æt–BÒö&¦V7Bæ†4÷vâ‡&Vv—7G'’Â6VÆV7FVB’ò&Vv—7G'•·6VÆV7FVEÒ¢VæFVf–æVC°¢–b‚fÆ–E6W'f–6T–EdæW‡B†öffW&–æt–B’’°¢–b††56VÆV7FVDöffW&–æu&–6UdæW‡B‡6W'f–6UG—RÂ7W7FöÖW$–çWG2Â&–6–ærÂæÖR’’°¢öffW&–æt÷væW$F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚v–çfÆ–BrÂvöffW&–æu÷&Vv—7G'•ö–æ6öç6—7FVæ7’rÂv¶æ÷väöffW&–æw2âr¶æÖR²râr·6VÆV7FVBÂu&Vv—7FW"F†—2&–6VB&öGV7BVæFW"&Vv—7FW&VB&öGV7G2&Vf÷&RV÷F–ær—Bâr’“°¢ÒVÇ6R°¢Vç7W÷'FVDöffW&–ætf–VÆG2çW6‚†æÖR“°¢–çfÆ–D7W7FöÖW$f–VÆG2çW6‚†æÖR“°¢fÆ–FF–öäÖW76vW2çW6‚†æÖR²r—2æ÷BâöffW&VB6W'f–6R÷F–öââr“°¢Ð¢6öçF–çVS°¢Ð¢6öç7Bf7BÒf7G3òå¶æÖUÓ°¢–b‚—5&V6÷&B†f7B’’Ö—76–æt7W7FöÖW$f–VÆG2çW6‚‚v6öæf—&ÖVDf7G2âr²æÖR“°¢VÇ6R–b„ö&¦V7Bæ¶W—2†f7B’æÆVæwF‚ÓÒBÇÂf7Bç7FGW2ÓÒv–FVçF–f–VBrÇÂf7Bæf–VÆBÓÒæÖRÇÂf7BçfÇVRÓÒ6VÆV7FVBÇÀ¢fÆ–E6W'f–6T–EdæW‡B†f7BæöffW&–æt–B’ÇÂ6ÖU6W'f–6T–EdæW‡B†f7BæöffW&–æt–BÂöffW&–æt–B’’°¢–çfÆ–D7W7FöÖW$f–VÆG2çW6‚‚v6öæf—&ÖVDf7G2âr²æÖR“°¢fÆ–FF–öäÖW76vW2çW6‚†æÖR²r&WV—&W26öæf—&ÖF–öâöbF†—2W†7B6VÆV7F÷"ÂfÇVRÂæB¶æ÷vâöffW&–ærUT”Bâr“°¢Ð¢Ð¢–b‡6W'f–6UG—RÓÓÒtÄäE44”äuõ4ôBr’°¢–b‡6W'f–6U'VÆW2æF—7÷6Å66÷RÓÓÒw6W&FU÷&ö¦V7EöFV'&—2r’°¢–b†7W7FöÖW$–çWG2ç6W&FTF—7÷6Å6VÆV7FVBÓÓÒVæFVf–æVB’Ö—76–æt7W7FöÖW$f–VÆG2çW6‚‚w6W&FTF—7÷6Å6VÆV7FVBr“°¢ÒVÇ6R–b„ö&¦V7Bæ†4÷vâ†7W7FöÖW$–çWG2Âw6W&FTF—7÷6Å6VÆV7FVBr’’°¢–çfÆ–D7W7FöÖW$f–VÆG2çW6‚‚w6W&FTF—7÷6Å6VÆV7FVBr“°¢fÆ–FF–öäÖW76vW2çW6‚‚u6W&FRF—7÷6Â6â&R6VÆV7FVBöæÇ’v†VâF†R÷væW"W‡Æ–6—FÇ’6öæf–wW&W26W&FU÷&ö¦V7EöFV'&—2âr“°¢Ð¢Ð¢–b‡VæW‡V7FVBæÆVæwF‚’°¢–çfÆ–D7W7FöÖW$f–VÆG2çW6‚‚ââçVæW‡V7FVB“°¢fÆ–FF–öäÖW76vW2çW6‚‚uF†RV÷FR6öçF–ç2Vç7W÷'FVB7W7FöÖW"–çWBf–VÆG2âr“°¢Ð¢f÷"†6öç7BW'&÷"öb6öçG&7Bæ7&÷75fÆ–FFSòâ†7W7FöÖW$–çWG2Â&–6–ær’ÇÂµÒ’°¢–çfÆ–D7W7FöÖW$f–VÆG2çW6‚†W'&÷"æf–VÆB“°¢fÆ–FF–öäÖW76vW2çW6‚†W'&÷"æÖW76vR“°¢Ð¢6öç7BW‡Æ–6—D–ç7V7F–öâÒ6öçG&7Bæ–ç7V7F–öãòâ†7W7FöÖW$–çWG2Â&–6–ær“°¢6öç7Bf7EfW&–f–6F–öäæVVFVBÒ²ââæÖ—76–æt7W7FöÖW$f–VÆG2Âââæ–çfÆ–D7W7FöÖW$f–VÆG5Òç6öÖR‡F‚ÓâF‚ç7F'G5v—F‚‚v6öæf—&ÖVDf7G2âr’ÇÂ‡6VÆV7F÷'2æ–æ6ÇVFW2‡F‚’bbVç7W÷'FVDöffW&–ætf–VÆG2æ–æ6ÇVFW2‡F‚’’“°¢–b†öffW&–æt÷væW$F–væ÷7F–72æÆVæwF‚ÇÂÖ—76–æt7W7FöÖW$f–VÆG2æÆVæwF‚ÇÂ–çfÆ–D7W7FöÖW$f–VÆG2æÆVæwF‚’°¢&WGW&â°¢ö³¢fÇ6RÀ¢Ö—76–æt7W7FöÖW$f–VÆG2À¢âââ†öffW&–æt÷væW$F–væ÷7F–72æÆVæwF‚ò²÷væW$F–væ÷7F–73¦öffW&–æt÷væW$F–væ÷7F–72ÂÖ—76–æt÷væW$f–VÆG3¦öffW&–æt÷væW$F–væ÷7F–72æf–ÇFW"†CÓæBçG—SÓÓÒvÖ—76–ærr’æÖ†CÓæBçF‚’Â–çfÆ–D÷væW$f–VÆG3¦öffW&–æt÷væW$F–væ÷7F–72æf–ÇFW"†CÓæBçG—RÓÒvÖ—76–ærr’æÖ†CÓæBçF‚’Ò¢·Ò’À¢–çfÆ–D7W7FöÖW$f–VÆG3¢²ââææWr6WB†–çfÆ–D7W7FöÖW$f–VÆG2•ÒÀ¢fÆ–FF–öäÖW76vW2À¢âââ‚†W‡Æ–6—D–ç7V7F–öâÇÂf7EfW&–f–6F–öäæVVFVB’ò²–ç7V7F–öäf—'7C¢G'VRÒ¢·Ò’À¢&Wf–Wu&V6öã¢W‡Æ–6—D–ç7V7F–öâÇÂ†öffW&–æt÷væW$F–væ÷7F–72æÆVæwF‚òu&Vv—7FW"F†R&öGV7G2–÷RöffW"æB6†V6²F†BF†V—"æÖW2ÖF6‚–÷W"&–6VB&öGV7G2âr¢çVÆÂ’ÇÂ‡Vç7W÷'FVDöffW&–ætf–VÆG2æÆVæwF‚òuF†R6VÆV7FVBfÇVR—2æ÷BâöffW&VB6W'f–6R÷F–öââr¢çVÆÂ’ÇÂ†f7EfW&–f–6F–öäæVVFVBòu&–6R×6VÆV7F–ær&ö¦V7Bf7G2&WV—&Rff—&ÖF—fR6öæf—&ÖF–öâöb¶æ÷vâöffW&–æw2&Vf÷&R&–6–ærâr¢çVÆÂ’ÇÂ†Ö—76–æt7W7FöÖW$f–VÆG2æÆVæwF€¢òu&WV—&VBÖV7W&VB&ö¦V7BFWF–Ç2vW&Ræ÷B&÷f–FVBâp¢¢u&ö¦V7BFWF–Ç2vW&R–çfÆ–B÷"–çFW&æÆÇ’–æ6öç6—7FVçBâr¢Ó°¢Ð¢6öç7B–ç7V7F–öå&V6öâÒ6öçG&7Bæ–ç7V7F–öãòâ†7W7FöÖW$–çWG2Â&–6–ær“°¢–b†–ç7V7F–öå&V6öâ’°¢&WGW&â°¢ö³¢fÇ6RÀ¢æ÷&ÖÆ—¦VC¢7G'V7GW&VD6ÆöæR†7W7FöÖW$–çWG2’À¢Ö—76–æt7W7FöÖW$f–VÆG3¢µÒÀ¢–çfÆ–D7W7FöÖW$f–VÆG3¢µÒÀ¢–ç7V7F–öäf—'7C¢G'VRÀ¢&Wf–Wu&V6öã¢–ç7V7F–öå&V6öà¢Ó°¢Ð¢&WGW&â²ö³¢G'VRÂæ÷&ÖÆ—¦VC¢6æöæ–6Ä7W7FöÖW$–FVçF—G•dæW‡B†7W7FöÖW$–çWG2’Ó°§Ð  ¦gVæ7F–öâ&Wf–÷W4–ç7V7F–öä÷væW$FV6—6–öç5dæW‡B‡6W'f–6UG—RÂ7W7FöÖW$–çWG2Ò·Ò’°¢–b‡6W'f–6UG—RÓÓÒt”åDU$”õ%õ”åD”ärrbb²vf—"rÂwö÷"uÒæ–æ6ÇVFW2†7W7FöÖW$–çWG2ç7W&f6T6öæF—F–öâ’’°¢&WGW&â·°¢Fƒ¢v–çFW&–÷%&W&–6–ærrÀ¢¶–æC¢vÖV7W&VE÷&W÷&–6–æuö6öçG&7BrÀ¢ÖW76vS¢t&÷fRÖV7W&VB–çFW&–÷"&W&F–öâ66÷RæB&–6–ær6öçG&7Bâp¢ÕÓ°¢Ð¢–b‡6W'f–6UG—RÓÓÒtU…DU$”õ%õ”åD”ärrbb7W7FöÖW$–çWG2ç7W&f6T6öæF—F–öâÓÓÒwö÷"r’°¢&WGW&â·°¢Fƒ¢vW‡FW&–÷%&–ÖW%&–6–ærrÀ¢¶–æC¢w&–ÖW%÷&–6–æuö6öçG&7BrÀ¢ÖW76vS¢t&÷fR6W&FR&–ÖW"&–6–ær÷"âW‡Æ–6—BÆÂÖ–æ6ÇW6—fRW‡FW&–÷"&FR'VÆRâp¢ÕÓ°¢Ð¢–b‡6W'f–6UG—Rç7F'G5v—F‚‚t4ôä5$UDUòr’bb7W7FöÖW$–çWG2æf–æ—6…G—RÓÓÒvW‡÷6VEövw&VvFRr’°¢&WGW&â·°¢Fƒ¢vW‡÷6VDvw&VvFTÖFW&–Å&–6–ærrÀ¢¶–æC¢vf–æ—6…öÖFW&–Å÷&–6–æuö6öçG&7BrÀ¢ÖW76vS¢t&÷fRâW‡÷6VBÖvw&VvFRÖFW&–Â&–6R÷"âW‡Æ–6—BÆÂÖ–æ6ÇW6—fRf–æ—6‚'VÆRâp¢ÕÓ°¢Ð¢&WGW&âµÓ°§Ð ¦gVæ7F–öâ÷væW$F–væ÷7F–2‡G—RÂ¶–æBÂF‚ÂÖW76vR’°¢&WGW&â²G—RÂ¶–æBÂF‚ÂÖW76vRÓ°§Ð ¦gVæ7F–öâfÆ–Df7F÷$ÆVb‡fÇVRÂFVf–æ—F–öâ’°¢&WGW&âG—VöbfÇVRÓÓÒvçVÖ&W"rbbçVÖ&W"æ—4f–æ—FR‡fÇVR’bbfÇVRãÒFVf–æ—F–öâæÖ–âbbfÇVRÃÒFVf–æ—F–öâæÖƒ°§Ð ¦W‡÷'BgVæ7F–öâfÆ–FFT6Æ73$f7F÷'4FWF–ÆVB‡6W'f–6UG—RÂ&–6–ærÒ·Ò’°¢6öç7B&W&VBÒ7F—fF–öå&–6–æt6†V6·2ævWB‡&–6–ær“°¢–b‡&W&VCòç6W'f–6UG—RÓÓÒ6W'f–6UG—R’&WGW&â²ââç&W&VBæf7F÷'5Ó°¢6öç7BF–væ÷7F–72ÒµÓ°¢–b‚4U%d”4UõE•U2æ–æ6ÇVFW2‡6W'f–6UG—R’’°¢&WGW&â¶÷væW$F–væ÷7F–2‚v–çfÆ–BrÂw6W'f–6RrÂw6W'f–6UG—RrÂuVç7W÷'FVB6W'f–6RG—Râr•Ó°¢Ð¢6öç7B6æ6†÷BÒ6æ6†÷EÆ–äFF‡&–6–ærÂw&–6–ærr“°¢–b‚6æ6†÷Bæö²’&WGW&â¶÷væW$F–væ÷7F–2€¢v–çfÆ–BrÂv6Æ73"rÂ&VÆF—fU6æ6†÷EF‚‡6æ6†÷BÂw&–6–ærr’À¢&–6–ær6÷VÆBæ÷B&R&VB6fVÇ“¢G·6æ6†÷Bç&V6öçÒæ ¢•Ó°¢6öç7BæöåÆ–åF‚Òf—'7DæöåÆ–åF‚‡6æ6†÷BÂw&–6–ærr“°¢–b†æöåÆ–åF‚’&WGW&â¶÷væW$F–væ÷7F–2€¢v–çfÆ–BrÂv6Æ73"rÂæöåÆ–åF‚À¢&–6–ær×W7B6öçF–âöæÇ’Æ–âFFö&¦V7G3²G¶æöåÆ–åF‡Ò—2æ÷BÆ–âFFæ ¢•Ó°¢&–6–ærÒ6æ6†÷BçfÇVS° ¢f÷"†6öç7B¶æÖRÂFVf–æ—F–öåÒöbö&¦V7BæVçG&–W2„4Ä53%ôDTd”ä•D”ôå5·6W'f–6UG—UÒÇÂ·Ò’’°¢6öç7BW‡V7FVBÒFVf–æ—F–öâæFVfVÇEfÇVS°¢6öç7BfÇVRÒ&–6–æu¶æÖUÓ°¢–b‡fÇVRÓÓÒVæFVf–æVB’°¢F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚vÖ—76–ærrÂv6Æ73"rÂæÖRÂG¶æÖWÒ×W7B&R7F÷&VB–âF†R6W'f–6R&–6R&öö²æ’“°¢6öçF–çVS°¢Ð¢–b‡G—VöbW‡V7FVBÓÓÒvçVÖ&W"r’°¢–b‚fÆ–Df7F÷$ÆVb‡fÇVRÂFVf–æ—F–öâ’’F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚v–çfÆ–BrÂv6Æ73"rÂæÖRÂG¶æÖWÒ×W7B&Rf–æ—FRçVÖ&W"g&öÒG¶FVf–æ—F–öâæÖ–çÒFòG¶FVf–æ—F–öâæÖ‡Òæ’“°¢6öçF–çVS°¢Ð¢–b‚fÇVRÇÂG—VöbfÇVRÓÒvö&¦V7BrÇÂ'&’æ—4'&’‡fÇVR’’°¢F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚v–çfÆ–BrÂv6Æ73"rÂæÖRÂG¶æÖWÒ×W7B&Râö&¦V7Bv—F‚F†RW†7B7W÷'FVB¶W—2æ’“°¢6öçF–çVS°¢Ð¢6öç7BW‡V7FVD¶W—2Òö&¦V7Bæ¶W—2†W‡V7FVB’æÖ…7G&–ær“°¢f÷"†6öç7B¶W’öbö&¦V7Bæ¶W—2‡fÇVR’’°¢–b‚W‡V7FVD¶W—2æ–æ6ÇVFW2…7G&–ær†¶W’’’’F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚wVç7W÷'FVBrÂv6Æ73"rÂG¶æÖWÒâG¶¶W—ÖÂG¶æÖWÒâG¶¶W—Ò—2æ÷B7W÷'FVB6Æ72"f7F÷"æ’“°¢Ð¢f÷"†6öç7B¶W’öbW‡V7FVD¶W—2’°¢6öç7BF‚ÒG¶æÖWÒâG¶¶W—Ö°¢–b‚ö&¦V7Bæ†4÷vâ‡fÇVRÂ¶W’’’F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚vÖ—76–ærrÂv6Æ73"rÂF‚ÂG·F‡Ò—2&WV—&VBæ’“°¢VÇ6R–b‚fÆ–Df7F÷$ÆVb‡fÇVU¶¶W•ÒÂFVf–æ—F–öâ’’F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚v–çfÆ–BrÂv6Æ73"rÂF‚ÂG·F‡Ò×W7B&Rf–æ—FRçVÖ&W"g&öÒG¶FVf–æ—F–öâæÖ–çÒFòG¶FVf–æ—F–öâæÖ‡Òæ’“°¢Ð¢Ð¢6öç7BF‡&W6†öÆG2Ò&–6–ærç&ööÕ6—¦UF‡&W6†öÆG3°¢–b‡6W'f–6UG—Rç7F'G5v—F‚‚tdÄôõ$”äuòr’bbF‡&W6†öÆG2b`¢çVÖ&W"æ—4f–æ—FR‡F‡&W6†öÆG2ç6ÖÆÄÖ…7gB’bbçVÖ&W"æ—4f–æ—FR‡F‡&W6†öÆG2æÖVF—VÔÖ…7gB’b`¢F‡&W6†öÆG2ç6ÖÆÄÖ…7gBãÒF‡&W6†öÆG2æÖVF—VÔÖ…7gB’°¢6öç7BÖW76vRÒw&ööÕ6—¦UF‡&W6†öÆG2ç6ÖÆÄÖ…7gB×W7B&RÆW72F†â&ööÕ6—¦UF‡&W6†öÆG2æÖVF—VÔÖ…7gBâs°¢F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚v7&÷75öf–VÆBrÂw&VÆF–öç6†—rÂw&ööÕ6—¦UF‡&W6†öÆG2ç6ÖÆÄÖ…7gBrÂÖW76vR’“°¢F–væ÷7F–72çW6‚†÷væW$F–væ÷7F–2‚v7&÷75öf–VÆBrÂw&VÆF–öç6†—rÂw&ööÕ6—¦UF‡&W6†öÆG2æÖVF—VÔÖ…7gBrÂÖW76vR’“°¢Ð¢&WGW&âF–væ÷7F–73°§Ð ¦W‡÷'BgVæ7F–öâfÆ–FFT6Æ73$f7F÷'2‡6W'f–6UG—RÂ&–6–ærÒ·Ò’°¢&WGW&â²ââææWr6WB‡fÆ–FFT6Æ73$f7F÷'4FWF–ÆVB‡6W'f–6UG—RÂ&–6–ær’æÖ†—FVÒÓâ—FVÒæÖW76vR’•Ó°§Ð ¦6öç7BÄÄõtTEõ$”4”äuôd”TÄE2Ò°¢$ôôd”äuõ$UÄ4TÔTåC¢²vÆ&÷%W%7V&RrÂvÖFW&–Ä6÷7EW%7V&RrÂwFV$öfeW%7V&RrÂwVæFW&Æ–ÖVçEW%7V&RrÂwVæFW&Æ–ÖVçE&–6T&6—2rÂv66W76÷'•&–6–ætÖöFRrÂvÖFW&–Ä66W76÷'”&6—2rÂw7F'FW%W$ÄbrÂvG&—VFvUW$ÄbrÂw&–FvT6W$ÄbrÂvFV6¶–æuW%6†VWBrÂvF—7÷6ÅW%7V&RrÂvÖ–æ–×VÔ¦ö"uÒÀ¢$ôôd”äuõ$U•#¢²vÆ&÷$†÷W&Ç•&FRrÂw&W—$Ö–æ–×VÒrÂw&W—$†÷W'2rÂw&W—$ÖFW&–ÄÆÆ÷væ6RrÂvÆ&vU&W—$Ö…7gBuÒÀ¢dÄEõ$ôôeõ$UÄ4TÔTåC¢²vÆ&÷%W%7gBrÂvÖVÖ'&æT6÷7EW%7gBrÂwFV$öfeW%7gBrÂvÖ–æ–×VÔ¦ö"rÂv–ç7VÆF–öåW%7gBrÂvF—7÷6ÅW%7gBuÒÀ¢dÄEõ$ôôeõ$U•#¢²vÆ&÷$†÷W&Ç•&FRrÂw&W—$Ö–æ–×VÒrÂwF6…&W—$†÷W'2rÂwF6„ÖFW&–ÄÆÆ÷væ6RrÂwöæF–æuvFW%7W&6†&vRrÂvÆ&vU&W—$Ö…7gBuÒÀ¢”åDU$”õ%õ”åD”äs¢²vÆ&÷%W%vÆÅ7gEW$6öBrÂvÖFW&–ÅW%vÆÅ7gEW$6öBrÂvÖ–æ–×VÔ¦ö"rÂv6V–Æ–ætÆ&÷%W%7gEW$6öBrÂv6V–Æ–ætÖFW&–ÅW%7gEW$6öBrÂwG&–ÔÆ&÷%W$ÄbrÂwG&–ÔÖFW&–ÅW$ÄbuÒÀ¢U…DU$”õ%õ”åD”äs¢²vW‡FW&–÷$Æ&÷%W%7gEW$6öBrÂvÖFW&–ÅW%7gEW$6öBrÂvÖ–æ–×VÔ¦ö"rÂvÆ&÷$†÷W&Ç•&FRuÒÀ¢dÄôõ$”äuô”å5DÄÃ¢²vÆ&÷%W%7gBrÂvÖFW&–ÅW%7gBrÂvÖ–æ–×VÔ¦ö"rÂw&VÖ÷fÅW%7gBrÂvF—7÷6ÅW%7gBrÂwW%7FW&–6RrÂwVæFW&Æ–ÖVçEW%7gBrÂwVæFW&Æ–ÖVçE&–6T&6—2rÂwf–ç–ÅÆæµVæFW&Æ–ÖVçE'VÆRuÒÀ¢dÄôõ$”äuõ$UÄ4TÔTåC¢²vÆ&÷%W%7gBrÂvÖFW&–ÅW%7gBrÂvÖ–æ–×VÔ¦ö"rÂw&VÖ÷fÅW%7gBrÂvF—7÷6ÅW%7gBrÂwW%7FW&–6RrÂwVæFW&Æ–ÖVçEW%7gBrÂwVæFW&Æ–ÖVçE&–6T&6—2rÂwf–ç–ÅÆæµVæFW&Æ–ÖVçE'VÆRrÂw7V&fÆö÷$ÆÆ÷væ6UW%7gBuÒÀ¢dTä4”äuô”å5DÄÃ¢²vÆ&÷%W$Æ–æV$fö÷BrÂvÖFW&–ÅW$Æ–æV$fö÷BrÂw÷7E&–6RrÂv6öæ7&WFUW%÷7BrÂw÷7G4–æ6ÇVFVD–äÖFW&–ÂrÂvvFU&–6RrÂvÖ–æ–×VÔ¦ö"uÒÀ¢dTä4”äuõ$UÄ4TÔTåC¢²vÆ&÷%W$Æ–æV$fö÷BrÂvÖFW&–ÅW$Æ–æV$fö÷BrÂw÷7E&–6RrÂv6öæ7&WFUW%÷7BrÂw÷7G4–æ6ÇVFVD–äÖFW&–ÂrÂvvFU&–6RrÂvÖ–æ–×VÔ¦ö"rÂw&VÖ÷fÅW$Æ–æV$fö÷BrÂvF—7÷6ÅW$ÄbuÒÀ¢4ôä5$UDUôE$•dUt“¢²vÆ&÷%W%7gBrÂv6öæ7&WFT6÷7EW$7V&–5–&BrÂvf÷&×v÷&µW$ÄbrÂvÖ–æ–×VÔ¦ö"rÂvFVÖöÆ—F–öåW%7gBrÂv&6U&WW%7gBrÂwv—&U&V–æf÷&6VÖVçEW%7gBrÂw&V&%&V–æf÷&6VÖVçEW%7gBrÂw7F×VDÖFW&–ÅW%7gBrÂvF—7÷6ÅW%7gBuÒÀ¢4ôä5$UDUõD”õõ4Ä#¢²vÆ&÷%W%7gBrÂv6öæ7&WFT6÷7EW$7V&–5–&BrÂvf÷&×v÷&µW$ÄbrÂvÖ–æ–×VÔ¦ö"rÂvFVÖöÆ—F–öåW%7gBrÂv&6U&WW%7gBrÂwv—&U&V–æf÷&6VÖVçEW%7gBrÂw&V&%&V–æf÷&6VÖVçEW%7gBrÂw7F×VDÖFW&–ÅW%7gBrÂvF—7÷6ÅW%7gBuÒÀ¢ÄäE44”äuô4ÄTåU¢²v6ÆVçW&6U&FUW%7gBrÂvFV'&—5&–6–ærrÂvÖ–æ–×VÕ6W'f–6T6†&vRrÂv†VÄv”fVRuÒÀ¢ÄäE44”äuôÕTÄ4ƒ¢²v×VÆ6„ÖFW&–ÅW%–&BrÂv×VÆ6„–ç7FÆÄÆ&÷%W%–&BrÂvÖ–æ–×VÕ6W'f–6T6†&vRrÂv&VE&WÆ&÷%W%7gBrÂvVFv–æuW$Æ–æV$fö÷BuÒÀ¢ÄäE44”äuõ4ôC¢²w6öDÖFW&–ÅW%7gBrÂw6öD–ç7FÆÄÆ&÷%W%7gBrÂvÖ–æ–×VÕ6W'f–6T6†&vRrÂvw&÷VæE&WW%7gBuÒÀ¢ÄäE44”äuõÄåD”äs¢²wÆçF–ætÆ&÷%W%ÆçBrÂwÆçDÖFW&–ÄÆÆ÷væ6RrÂvÖ–æ–×VÕ6W'f–6T6†&vRrÂv&VE&WÆ&÷%W%7gBrÂv×VÆ6„ÖFW&–ÅW%–&BrÂv×VÆ6„–ç7FÆÄÆ&÷%W%–&BuÒÀ¢ÄäE44”äuôÔõt”äs¢²vÖ÷v–æt&6U&FUW%7gBrÂvÖ–æ–×VÕ6W'f–6T6†&vRrÂvg&WVVæ7”×VÇF—Æ–W'2rÂv÷fW&w&÷wF„×VÇF—Æ–W'2rÂv&vv–æu7W&6†&vUW&6VçBrÂvVFv–æuW$Æ–æV$fö÷BuÒÀ¢4”D”äuõ$UÄ4TÔTåC¢²vÆ&÷%W%7gBrÂvÖFW&–ÅW%7gBrÂvÖ–æ–×VÔ¦ö"rÂw&VÖ÷fÅW%7gBrÂvF—7÷6ÅW%7gBrÂwG&–ÕW$Æ–æV$fö÷BuÒÀ¢4”D”äuõ$U•#¢²vÆ&÷$†÷W&Ç•&FRrÂw&W—$Ö–æ–×VÒrÂw&W—$†÷W'2rÂvÖFW&–ÄÆÆ÷væ6RrÂvÆ&vU&W—$Ö…7gBuÒÀ¢5U5DôÓ¢²v7W7FöÕ&–6–ætÖöFRrÂv7W7FöÔ6†&vT6Æ76–f–6F–öârÂw&–6RrÂvÆ÷rrÂv†–v‚rÂwVæ—BrÂvÖ–æ–×VÔ¦ö"uÐ§Ó° ¦W‡÷'BgVæ7F–öâ7W7FöÖW$6öçG&7Df÷%dæW‡B‡G—RÇ×·ÒÇ'VÆW3×·Ò’°¢6öç7B&6SÖ6öæf–wW&VDöffW&–ær‡G—RÇ“ööffW&–æt6öçG&7B‡G—RÇÇ'VÆW2“¤ÔT5U$TÔTåEô4ôåE$5E5·G—UÓ°¢òò6öæf—&ÖF–öâf÷"æ÷F†W"öffW&VB÷F–öâ—2Wf–FVæ6RÂæ÷BW‡G&ÖV7W&V@¢òòv÷&²â66WBöæÇ’—G2&Vv—7FW&VB6öæf—&ÖF–öâ&ööÆVâ†W&RâÆÂVçF—F–W2À¢òò6VÆV7F–öç2æB66÷R6†V6·2&VÖ–â7V6–f–2FòF†R÷F–öâ&V–ær&–6VBà¢6öç7B÷F–öä6öæf—&ÖF–öç3×·Ó°¢f÷"†6öç7BF–W"öb'&’æ—4'&’‡'VÆW2çF–W'2“÷'VÆW2çF–W'3¥µÒ—°¢6öç7BVffV7F—fS×²âââ‡'VÆW2ç&–6–æwÇÇ·Ò’Ââââ‡F–W"æ÷fW'&–FW7ÇÇ·Ò—ÒÆFVf–æ—F–öç3×66÷TFVf–æ—F–öç2‡G—RÆVffV7F—fR“°¢f÷"†6öç7B¶W’öbö&¦V7Bæ¶W—2‡F–W"æ÷fW'&–FW3òç66÷TFWF–Ç7ÇÇ·Ò’––b†FVf–æ—F–öç5¶¶W•Ò–÷F–öä6öæf—&ÖF–öç5¶FVf–æ—F–öç5¶¶W•Òæ6öæf—&ÖF–öåÓ×²ââæ&ööÆVäf–VÆB‚t6öæf—&ÖVBr¶FVf–æ—F–öç5¶¶W•ÒæÆ&VÂçFôÆ÷vW$66R‚’’ÆWf–FVæ6TöæÇ“§G'VWÓ°¢Ð¢&WGW&â²ââæ&6RÆf–VÆG3§²ââæ&6Ræf–VÆG2Âââæ÷F–öä6öæf—&ÖF–öç2Âââç66÷T7W7FöÖW$f–VÆG2‡G—RÇÇ'VÆW2—ÒÇ&WV—&VC¦3Óå²âââ†&6Rç&WV—&VCòâ†2Ç—ÇÅµÒ’Âââç66÷U&WV—&VD7W7FöÖW"‡G—RÆ2ÇÇ'VÆW2•ÒÆ7&÷75fÆ–FFS¦3Óå²âââ†&6Ræ7&÷75fÆ–FFSòâ†2Ç—ÇÅµÒ’Âââç66÷T7W7FöÖW$W'&÷'2‡G—RÆ2ÇÇ'VÆW2•ÒÆ–ç7V7F–öã¦3Óæ&6Ræ–ç7V7F–öãòâ†2Ç—Ó°§Ð ¦W‡÷'BgVæ7F–öâÆÆ÷vVE&–6–ætf–VÆG2‡6W'f–6UG—R’°¢&WGW&â²v–ç7FÆÆVDÖFW&–Ç5W&6VçBrÂv–ç7FÆÆVDÆ&÷%W&6VçBrÂâââ„ÄÄõtTEõ$”4”äuôd”TÄE5·6W'f–6UG—UÒÇÂµÒ’Âââäö&¦V7Bæ¶W—2„4Ä53%ôDTd”ä•D”ôå5·6W'f–6UG—UÒÇÂ·Ò’Ââââ„ôddU$”äuõE•U2æ–æ6ÇVFW2‡6W'f–6UG—R“ôôddU$”äuôd”TÄE3¥µÒ’Ââââ…44õUõE•U2æ–æ6ÇVFW2‡6W'f–6UG—R“õ44õUôd”TÄE3¥µÒ•Ó°§Ð ¦6öç7B•ô4ôäd•$Ô$ÄUõ4U%d”4Uôd”TÄE2Ò°¢vfVU'VÆW2rÀ¢w&–6T&6—4'”6FVv÷'’rÀ¢wF†&–Æ—G”'”6FVv÷'’rÀ¢wV´ÖöçF‡2rÀ¢wVµ7W&6†&vUW&6VçBrÀ¢vF—66Æ–ÖW"rÂvF—7÷6Å66÷RrÂv¶æ÷väöffW&–æw2rÂw¦W&õ&–6UöÆ–7’p¥Ó° ¦W‡÷'BgVæ7F–öâ&–6–ætÖFöÖ–ådæW‡B‡G—RÂf–VÆB’°¢–b‡G—Rç7F'G5v—F‚‚tdÄôõ$”äuòr’be²vÆ&÷%W%7gBrÂvÖFW&–ÅW%7gBuÒæ–æ6ÇVFW2†f–VÆB’—&WGW&â·&ö÷D¶W—3¥²ââädÄôõ$”äuõE•U5×Ó°¢–b‡G—SÓÓÒu4”D”äuõ$UÄ4TÔTåBrbe²vÆ&÷%W%7gBrÂvÖFW&–ÅW%7gBuÒæ–æ6ÇVFW2†f–VÆB—ÇÇG—SÓÓÒu4”D”äuõ$U•"rbe²w&W—$†÷W'2rÂvÖFW&–ÄÆÆ÷væ6RuÒæ–æ6ÇVFW2†f–VÆB’—&WGW&â·&ö÷D¶W—3¥²ââå4”D”äuõE•U5×Ó°¢–b…²tÄäE44”äuôÕTÄ4‚rÂtÄäE44”äuõÄåD”äruÒæ–æ6ÇVFW2‡G—R’bff–VÆCÓÓÒv&VE&WÆ&÷%W%7gBr—&WGW&â·&ö÷D¶W—3¥²væVVG5÷vVVF–ærrÂv÷fW&w&÷vâuÒÇ&WV—&VE&ö÷D¶W—3¥²væVVG5÷vVVF–ærrÂv÷fW&w&÷vâu×Ó°¢–b‡G—SÓÓÒtÄäE44”äuõÄåD”ärrbe²wÆçF–ætÆ&÷%W%ÆçBrÂwÆçDÖFW&–ÄÆÆ÷væ6RuÒæ–æ6ÇVFW2†f–VÆB’—&WGW&â·&ö÷D¶W—3¥²ââå4•¤Uô´U•5ÒÇ&WV—&VE&ö÷D¶W—3¥²ââå4•¤Uô´U•5×Ó°¢&WGW&â·Ó°§Ð ¦W‡÷'BgVæ7F–öâ”6öæf—&ÖF–öäf–VÆG5dæW‡B‡6W'f–6RÒ·ÒÂ&–6–ærÒ·Ò’°¢6öç7Bf–VÆG2Ò—5&V6÷&B‡&–6–ær’òö&¦V7Bæ¶W—2‡&–6–ær’¢µÓ°¢–b‚—5&V6÷&B‡6W'f–6R’’&WGW&âf–VÆG3°¢f÷"†6öç7Bf–VÆDæÖRöb•ô4ôäd•$Ô$ÄUõ4U%d”4Uôd”TÄE2’°¢–b„ö&¦V7Bæ†4÷vâ‡6W'f–6RÂf–VÆDæÖR’’f–VÆG2çW6‚†f–VÆDæÖR“°¢Ð¢–b‡6W'f–6Rç6W'f–6UG—RÓÓÒt5U5DôÒrbbö&¦V7Bæ†4÷vâ‡6W'f–6RÂw6W'f–6Rr’’f–VÆG2çW6‚‚w6W'f–6Rr“°¢–b„'&’æ—4'&’‡6W'f–6RçF–W'2’bb6W'f–6RçF–W'2æÆVæwF‚’f–VÆG2çW6‚‚wF–W'2r“°¢&WGW&â²ââææWr6WB†f–VÆG2•Ó°§Ð ¦6öç7B÷6—F—fRÒfÇVRÓâG—VöbfÇVRÓÓÒvçVÖ&W"rbbçVÖ&W"æ—4f–æ—FR‡fÇVR’bbfÇVRâ°¦6öç7BÄÅõ$”4”äuôd”TÄE2ÒæWr6WB…4U%d”4UõE•U2æfÆDÖ‡6W'f–6UG—RÓâÆÆ÷vVE&–6–ætf–VÆG2‡6W'f–6UG—R’’“°¦6öç7B%U4”äU55ôDTdTÅEôd”TÄE2Ò²wV÷FUF–ÖU¦öæRrÂv7W'&Væ7’rÀ¢vÖ&·WW&6VçBrÂvÖ&·WÖöFRrÂv÷fW&†VDf—†VBrÂvÖ–æ–×VÔ¦ö%&–6RrÀ¢wG&fVÄfVRrÂvF—7÷6ÄfVRrÂwW&Ö—DfVRrÂwF„ÖöFRrÂwF…W&6VçBrÀ¢w&ævT'VffW%W&6VçBrÂvÖ&·WÆ–W2rÂwV´ÖöçF‡2rÂwVµ7W&6†&vUW&6VçBp¥Ó° ¦6öç7BæöäæVvF—fRÒfÇVRÓâG—VöbfÇVRÓÓÒvçVÖ&W"rbbçVÖ&W"æ—4f–æ—FR‡fÇVR’bbfÇVRãÒ°¦gVæ7F–öâÖöçF„Æ—7D—77VR‡fÇVR’°¢–b‚'&’æ—4'&’‡fÇVR’’&WGW&â²Fƒ¢rrÂÖW76vS¢v×W7B&Râ'&’öbÖöçF‚çVÖ&W'2g&öÒF‡&÷Vv‚"rÓ°¢6öç7B'&”—77VRÒFVç6T'&”—77VR‡fÇVR“°¢–b†'&”—77VR’&WGW&â°¢Fƒ¢'&”—77VRçF‚À¢ÖW76vS¢'&÷ç[h‘éì¶»§q«^u”œ°€½ÍÐtô¤ì(€€€ô(€€€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€1==I%9}IA159Pœ€˜˜Œ¹ÍÕ‰™±½½É%ÍÍÕ•Ì¤…‘ ÍÕ‰™±½½É±±½Ý…¹•A•ÉMÅ™Ðœ°€MÕ‰™±½½ÈÉ•Á…¥È…±±½Ý…¹”Á•È…™™•Ñ•ÍÅÕ…É”™½½Ðœ¤ì(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  9%9|œ¤¤ì(€€€…‘¡±…‰½ÉA•É1¥¹•…É½½Ð¸‘íŒ¹™•¹•QåÁ•õ€°€•¹”±…‰½ÈÁÉ¥”™½ÈÑ¡”Í•±•Ñ•™•¹”ÑåÁ”œ¤ì(€€€…‘¡µ…Ñ•É¥…±A•É1¥¹•…É½½Ð¸‘íŒ¹™•¹•QåÁ•õ€°€•¹”µ…Ñ•É¥…°ÁÉ¥”™½ÈÑ¡”Í•±•Ñ•™•¹”ÑåÁ”œ¤ì(€€€½ÕÐ¹ÁÕÍ ¡ìÁ…Ñ èÁ½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°¸‘íŒ¹™•¹•QåÁ•õ€°±…‰•°è€A½ÍÑÌ¥¹±Õ‘•¥¸µ…Ñ•É¥…°É…Ñ”™½ÈÍ•±•Ñ•™•¹”ÑåÁ”œ°­¥¹è€‰½½±•…¸œô¤ì(€€€¥˜€¡À¹Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°ü¹mŒ¹™•¹•QåÁ•t€ôôô™…±Í”¤…‘¡Á½ÍÑAÉ¥”¸‘íŒ¹™•¹•QåÁ•õ€°€•¹”Á½ÍÐÁÉ¥”™½ÈÑ¡”Í•±•Ñ•™•¹”ÑåÁ”œ¤ì(€€€…‘ µ¥¹¥µÕµ)½ˆœ°€5¥¹¥µÕ´™•¹”©½ˆÁÉ¥”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€9%9}IA159Pœ€˜˜Œ¹½±‘•¹•I•µ½Ù…°¤…‘¡É•µ½Ù…±A•É1¥¹•…É½½Ð¸‘íŒ¹™•¹•QåÁ•õ€°€•¹”É•µ½Ù…°ÁÉ¥”™½ÈÑ¡”Í•±•Ñ•™•¹”ÑåÁ”œ¤ì(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  =9IQ|œ¤¤ì(€€€…‘ ±…‰½ÉA•ÉMÅ™Ðœ°€½¹É•Ñ”±…‰½ÈÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€€€…‘ ½¹É•Ñ•½ÍÑA•ÉÕ‰¥e…Éœ°€I•…‘äµµ¥à½¹É•Ñ”ÁÉ¥”Á•ÈÕ‰¥Œå…Éœ¤ì(€€€…‘ ™½ÉµÝ½É­A•É1œ°€½ÉµÝ½É¬ÁÉ¥”Á•Èµ•…ÍÕÉ•±¥¹•…È™½½Ðœ¤ì(€€€…‘ µ¥¹¥µÕµ)½ˆœ°€5¥¹¥µÕ´½¹É•Ñ”©½ˆÁÉ¥”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€¥˜€¡Œ¹‘•µ½±¥Ñ¥½¹9••‘•¤…‘ ‘•µ½±¥Ñ¥½¹A•ÉMÅ™Ðœ°€½¹É•Ñ”‘•µ½±¥Ñ¥½¸ÁÉ¥”Á•Èµ•…ÍÕÉ•ÍÅÕ…É”™½½Ðœ¤ì(€€€¥˜€¡Œ¹‰…Í•9••‘•¤…‘ ‰…Í•AÉ•ÁA•ÉMÅ™Ðœ°€	…Í”ÁÉ•Á…É…Ñ¥½¸ÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€€€¥˜€¡Œ¹É•¥¹™½É•µ•¹Ð€ôôô€Ý¥É•}µ•Í œ¤…‘ Ý¥É•I•¥¹™½É•µ•¹ÑA•ÉMÅ™Ðœ°€]¥É”µ•Í ÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€€€¥˜€¡Œ¹É•¥¹™½É•µ•¹Ð€ôôô€É•‰…Èœ¤…‘ É•‰…ÉI•¥¹™½É•µ•¹ÑA•ÉMÅ™Ðœ°€I•‰…ÈÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€€€¥˜€¡Œ¹™¥¹¥Í¡QåÁ”€ôôô€ÍÑ…µÁ•œ¤…‘ ÍÑ…µÁ•‘5…Ñ•É¥…±A•ÉMÅ™Ðœ°€MÑ…µÁ•™¥¹¥Í µ…Ñ•É¥…°ÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}19U@œ¤ì(€€€…‘ ±•…¹ÕÁ	…Í•I…Ñ•A•ÉMÅ™Ðœ°€±•…¹ÕÀ±…‰½ÈÁÉ¥”Á•Èµ•…ÍÕÉ•ÍÅÕ…É”™½½Ðœ¤ì(€€€…‘¡‘•‰É¥ÍAÉ¥¥¹œ¸‘íŒ¹‘•‰É¥Í1•Ù•±ô¹±…‰½É5Õ±Ñ¥Á±¥•É€°€±•…¹ÕÀ±…‰½ÈµÕ±Ñ¥Á±¥•È™½ÈÍ•±•Ñ•‘•‰É¥Ì±•Ù•°œ°ì­¥¹è€Á½Í¥Ñ¥Ù•}¹Õµ‰•Èœô¤ì(€€€…‘¡‘•‰É¥ÍAÉ¥¥¹œ¸‘íŒ¹‘•‰É¥Í1•Ù•±ô¹‘¥ÍÁ½Í…±±…Ñ€°€±•…¹ÕÀ‘¥ÍÁ½Í…°¡…É”™½ÈÍ•±•Ñ•‘•‰É¥Ì±•Ù•°œ°ì­¥¹è€¹½¹}¹•…Ñ¥Ù•}µ½¹•äœô¤ì(€€€…‘ µ¥¹¥µÕµM•ÉÙ¥•¡…É”œ°€5¥¹¥µÕ´±•…¹ÕÀÍ•ÉÙ¥”¡…É”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€¥˜€¡Œ¹¡…Õ±Ý…ä¤…‘ ¡…Õ±Ý…å•”œ°€‘‘¥Ñ¥½¹…°¡…Õ°µ…Ý…ä¡…É”œ¤ì(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}5U1 œ¤ì(€€€…‘¡µÕ±¡5…Ñ•É¥…±A•Ée…É¸‘íŒ¹µÕ±¡QåÁ•õ€°€5Õ± µ…Ñ•É¥…°ÁÉ¥”™½ÈÑ¡”Í•±•Ñ•µÕ± ÑåÁ”œ¤ì(€€€…‘ µÕ±¡%¹ÍÑ…±±1…‰½ÉA•Ée…Éœ°€5Õ± ¥¹ÍÑ…±±…Ñ¥½¸±…‰½ÈÁÉ¥”Á•ÈÕ‰¥Œå…Éœ¤ì(€€€…‘ µ¥¹¥µÕµM•ÉÙ¥•¡…É”œ°€5¥¹¥µÕ´µÕ± Í•ÉÙ¥”¡…É”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€¥˜€¡Œ¹‰•‘½¹‘¥Ñ¥½¸€„ôô€±•…¸œ¤…‘¡‰•‘AÉ•Á1…‰½ÉA•ÉMÅ™Ð¸‘íŒ¹‰•‘½¹‘¥Ñ¥½¹õ€°€	•ÁÉ•Á…É…Ñ¥½¸ÁÉ¥”™½ÈÑ¡”Í•±•Ñ•‰•½¹‘¥Ñ¥½¸œ¤ì(€€€¥˜€¡Œ¹•‘¥¹9••‘•¤…‘ •‘¥¹A•É1¥¹•…É½½Ðœ°€	••‘¥¹œ±…‰½ÈÁÉ¥”Á•Èµ•…ÍÕÉ•±¥¹•…È™½½Ðœ¤ì(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}M=œ¤ì(€€€…‘ Í½‘5…Ñ•É¥…±A•ÉMÅ™Ðœ°€M½µ…Ñ•É¥…°ÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€€€…‘ Í½‘%¹ÍÑ…±±1…‰½ÉA•ÉMÅ™Ðœ°€M½¥¹ÍÑ…±±…Ñ¥½¸±…‰½ÈÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€€€…‘ µ¥¹¥µÕµM•ÉÙ¥•¡…É”œ°€5¥¹¥µÕ´Í½Í•ÉÙ¥”¡…É”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€¥˜€¡Œ¹É½Õ¹‘AÉ•Á9••‘•¤…‘ É½Õ¹‘AÉ•ÁA•ÉMÅ™Ðœ°€É½Õ¹ÁÉ•Á…É…Ñ¥½¸ÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}A19Q%9œ¤ì(€€€™½È€¡½¹ÍÐÍ¥é”½˜M%i}-eL¹™¥±Ñ•È¡Í¥é”€ôøŒ¹Á±…¹ÑÍ	åM¥é”ü¹mÍ¥é•t€ø€À¤¤ì(€€€€€…‘¡Á±…¹Ñ¥¹1…‰½ÉA•ÉA±…¹Ð¸‘íÍ¥é•õ€°A±…¹Ñ¥¹œ±…‰½ÈÁÉ¥”™½È€‘íÍ¥é•ôÁ±…¹ÑÍ€¤ì(€€€€€…‘¡Á±…¹Ñ5…Ñ•É¥…±±±½Ý…¹”¸‘íÍ¥é•õ€°5…Ñ•É¥…°…±±½Ý…¹”™½È€‘íÍ¥é•ôÁ±…¹ÑÍ€¤ì(€€€ô(€€€…‘ µ¥¹¥µÕµM•ÉÙ¥•¡…É”œ°€5¥¹¥µÕ´Á±…¹Ñ¥¹œÍ•ÉÙ¥”¡…É”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€¥˜€¡Œ¹‰•‘½¹‘¥Ñ¥½¸€„ôô€±•…¸œ¤…‘¡‰•‘AÉ•Á1…‰½ÉA•ÉMÅ™Ð¸‘íŒ¹‰•‘½¹‘¥Ñ¥½¹õ€°€	•ÁÉ•Á…É…Ñ¥½¸ÁÉ¥”™½ÈÑ¡”Í•±•Ñ•‰•½¹‘¥Ñ¥½¸œ¤ì(€€€¥˜€¡Œ¹µÕ±¡9••‘•¤ì(€€€€€…‘¡µÕ±¡5…Ñ•É¥…±A•Ée…É¸‘íŒ¹µÕ±¡QåÁ•õ€°€5Õ± µ…Ñ•É¥…°ÁÉ¥”™½ÈÑ¡”Í•±•Ñ•µÕ± ÑåÁ”œ¤ì(€€€€€…‘ µÕ±¡%¹ÍÑ…±±1…‰½ÉA•Ée…Éœ°€5Õ± ¥¹ÍÑ…±±…Ñ¥½¸±…‰½ÈÁÉ¥”Á•ÈÕ‰¥Œå…Éœ¤ì(€€€ô(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}5=]%9œ¤ì(€€€…‘ µ½Ý¥¹	…Í•I…Ñ•A•ÉMÅ™Ðœ°€5½Ý¥¹œ±…‰½È•¹ÑÌÁ•Èµ•…ÍÕÉ•ÍÅÕ…É”™½½Ð€¡™É…Ñ¥½¹…°•¹ÑÌÍÕÁÁ½ÉÑ•¤œ°í­¥¹è¹½¹}¹•…Ñ¥Ù•}¹Õµ‰•Èô¤ì(€€€…‘ µ¥¹¥µÕµM•ÉÙ¥•¡…É”œ°€5¥¹¥µÕ´µ½Ý¥¹œÍ•ÉÙ¥”¡…É”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€…‘¡™É•ÅÕ•¹å5Õ±Ñ¥Á±¥•ÉÌ¸‘íŒ¹Í•ÉÙ¥•É•ÅÕ•¹åõ€°€5½Ý¥¹œ™É•ÅÕ•¹äµÕ±Ñ¥Á±¥•Èœ°ì­¥¹è€Á½Í¥Ñ¥Ù•}¹Õµ‰•Èœô¤ì(€€€…‘¡½Ù•ÉÉ½ÝÑ¡5Õ±Ñ¥Á±¥•ÉÌ¸‘íŒ¹É…ÍÍ½¹‘¥Ñ¥½¹õ€°€É…ÍÌ½¹‘¥Ñ¥½¸µÕ±Ñ¥Á±¥•Èœ°ì­¥¹è€Á½Í¥Ñ¥Ù•}¹Õµ‰•Èœô¤ì(€€€€¼¼	…¥¹œ…¹µ½Ý¥¹œ•‘¥¹œ…É”=9ÌÕ¹‘•ÈÍÁ•ŒMQ@€Éˆ¸(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€M%%9}IA159Pœ¤ì(€€€…‘¡±…‰½ÉA•ÉMÅ™Ð¸‘íŒ¹Í¥‘¥¹QåÁ•õ€°€M¥‘¥¹œ±…‰½ÈÁÉ¥”™½ÈÑ¡”Í•±•Ñ•Í¥‘¥¹œÑåÁ”œ¤ì(€€€…‘¡µ…Ñ•É¥…±A•ÉMÅ™Ð¸‘íŒ¹Í¥‘¥¹QåÁ•õ€°€M¥‘¥¹œµ…Ñ•É¥…°ÁÉ¥”™½ÈÑ¡”Í•±•Ñ•Í¥‘¥¹œÑåÁ”œ¤ì(€€€…‘ µ¥¹¥µÕµ)½ˆœ°€5¥¹¥µÕ´Í¥‘¥¹œ©½ˆÁÉ¥”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€¥˜€¡Œ¹½±‘M¥‘¥¹I•µ½Ù…°¤…‘ É•µ½Ù…±A•ÉMÅ™Ðœ°€á¥ÍÑ¥¹œÍ¥‘¥¹œÉ•µ½Ù…°ÁÉ¥”Á•ÈÍÅÕ…É”™½½Ðœ¤ì(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€M%%9}IA%Hœ¤ì(€€€…‘ ±…‰½É!½ÕÉ±åI…Ñ”œ°€M¥‘¥¹œÉ•Á…¥È±…‰½ÈÉ…Ñ”Á•È¡½ÕÈœ¤ì(€€€…‘ É•Á…¥É5¥¹¥µÕ´œ°€5¥¹¥µÕ´Í¥‘¥¹œÉ•Á…¥ÈÙ¥Í¥ÐÁÉ¥”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€½¹ÍÐÉ•Á…¥ÉM¥é”€ôÉ•Á…¥ÉM¥é•É½µ™™•Ñ•‘É•„¡Í•ÉÙ¥•QåÁ”°Œ¹…™™•Ñ•‘É•„¤ì(€€€…‘¡É•Á…¥É!½ÕÉÌ¸‘íŒ¹Í¥‘¥¹QåÁ•ô¸‘íŒ¹‘…µ…•1•Ù•±ô¸‘íÉ•Á…¥ÉM¥é•õ€°€M¥‘¥¹œÉ•Á…¥È¡½ÕÉÌ™½ÈÑ¡”µ•…ÍÕÉ•…™™•Ñ•µ…É•„…Ñ•½Éäœ°ì­¥¹è€Á½Í¥Ñ¥Ù•}¹Õµ‰•Èœô¤ì(€€€…‘¡µ…Ñ•É¥…±±±½Ý…¹”¸‘íŒ¹Í¥‘¥¹QåÁ•ô¸‘íŒ¹‘…µ…•1•Ù•±ô¸‘íÉ•Á…¥ÉM¥é•õ€°€M¥‘¥¹œµ…Ñ•É¥…°…±±½Ý…¹”™½ÈÑ¡”µ•…ÍÕÉ•…™™•Ñ•µ…É•„…Ñ•½Éäœ¤ì(€€€€¼¼±…É”É•Á…¥È¥ÌÁÉ¥•½¹±äÕÀÑ¼Ñ¡”…É•„Ñ¡”½Ý¹•ÈÍ…åÌ¥Ð½Ù•ÉÌ¸(€€€¥˜€¡É•Á…¥ÉM¥é”€ôôô€±…É”œ¤…‘ ±…É•I•Á…¥É5…áMÅ™Ðœ°€1…É•ÍÐ…™™•Ñ•…É•„ÁÉ¥•…Ì„É•Á…¥Èœ°ì­¥¹è€Á½Í¥Ñ¥Ù•}¹Õµ‰•Èœô¤ì(€ô•±Í”¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€UMQ=4œ¤ì(€€€½ÕÐ¹ÁÕÍ ¡ìÁ…Ñ è€ÕÍÑ½µAÉ¥¥¹5½‘”œ°±…‰•°è€ÕÍÑ½´Í•ÉÙ¥”ÁÉ¥¥¹œµ½‘”œ°­¥¹è€•¹Õ´œ°Ù…±Õ•Ìèl™¥á•œ°€É…¹”œ°€¥¹ÍÁ•Ñ¥½¹}™¥ÉÍÐtô¤ì(€€€½ÕÐ¹ÁÕÍ ¡ìÁ…Ñ è€Õ¹¥Ðœ°±…‰•°è€ÕÍÑ½´Í•ÉÙ¥”Õ¹¥Ðœ°­¥¹è€•¹Õ´œ°Ù…±Õ•Ìèl™±…Ðœ°€Á•É}ÍÅ™Ðœ°€Á•É}¡½ÕÈœ°€Á•É}Õ¹¥Ðœ°€Á•É}1œ°€Á•É}ÍÅÕ…É”tô¤ì(€€€…‘ µ¥¹¥µÕµ)½ˆœ°€5¥¹¥µÕ´ÕÍÑ½´µÍ•ÉÙ¥”ÁÉ¥”œ°ì­¥¹è€µ¥¹¥µÕ´œô¤ì(€€€½¹ÍÐÉ…Ñ•-¥¹€ôl™±…Ðœ°Á•É}Õ¹¥Ðt¹¥¹±Õ‘•Ì¡À¹Õ¹¥Ð¤€ü€¹½¹}¹•…Ñ¥Ù•}µ½¹•äœ€è€¹½¹}¹•…Ñ¥Ù•}¹Õµ‰•Èœì(€€€¥˜€¡À¹ÕÍÑ½µAÉ¥¥¹5½‘”€ôôô€™¥á•œ¤…‘ ÁÉ¥”œ°€¥á•ÁÉ¥”Á•È½¹™¥ÕÉ•Õ¹¥Ðœ°í­¥¹éÉ…Ñ•-¥¹‘ô¤ì(€€€¥˜€¡À¹ÕÍÑ½µAÉ¥¥¹5½‘”€ôôô€É…¹”œ¤ì(€€€€€…‘ ±½Üœ°€1½ÜÁÉ¥”Á•È½¹™¥ÕÉ•Õ¹¥Ðœ°í­¥¹éÉ…Ñ•-¥¹‘ô¤ì(€€€€€…‘ ¡¥ œ°€!¥ ÁÉ¥”Á•È½¹™¥ÕÉ•Õ¹¥Ðœ°í­¥¹éÉ…Ñ•-¥¹‘ô¤ì(€€€ô(€ô(€É•ÑÕÉ¸½ÕÐì)ô()™Õ¹Ñ¥½¸Ù…±¥‘…Ñ•I•ÅÕ¥É•µ•¹ÑY…±Õ”¡É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸°Ù…±Õ”¤ì(€¥˜€¡É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹­¥¹€ôôô€µ¥¹¥µÕ´œ¤É•ÑÕÉ¸¹½¹9•…Ñ¥Ù•5½¹•ä¡Ù…±Õ”¤ì(€¥˜€¡É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹­¥¹€ôôô€¹½¹}¹•…Ñ¥Ù•}¹Õµ‰•Èœ¤É•ÑÕÉ¸¹½¹9•…Ñ¥Ù”¡Ù…±Õ”¤€˜˜Ù…±Õ”€ðô9Õµ‰•È¹5a}M}%9QHì(€¥˜€¡É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹­¥¹€ôôô€Á½Í¥Ñ¥Ù•}¹Õµ‰•Èœ¤É•ÑÕÉ¸Á½Í¥Ñ¥Ù”¡Ù…±Õ”¤ì(€¥˜€¡É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹­¥¹€ôôô€¹½¹}¹•…Ñ¥Ù•}µ½¹•äœ¤É•ÑÕÉ¸¹½¹9•…Ñ¥Ù•5½¹•ä¡Ù…±Õ”¤ì(€¥˜€¡É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹­¥¹€ôôô€‰½½±•…¸œ¤É•ÑÕÉ¸ÑåÁ•½˜Ù…±Õ”€ôôô€‰½½±•…¸œì(€¥˜€¡É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹­¥¹€ôôô€•¹Õ´œ¤É•ÑÕÉ¸É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹Ù…±Õ•Ì¹¥¹±Õ‘•Ì¡Ù…±Õ”¤ì(€¥˜€¡É•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹­¥¹€ôôô€¥¹Ñ••Èœ¤É•ÑÕÉ¸9Õµ‰•È¹¥Í%¹Ñ••È¡Ù…±Õ”¤€˜˜Ù…±Õ”€øôÉ•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹µ¥¸€˜˜Ù…±Õ”€ðôÉ•ÅÕ¥É•µ•¹Ñ•™¥¹¥Ñ¥½¸¹µ…àì(€É•ÑÕÉ¸™…±Í”ì)ô(()™Õ¹Ñ¥½¸±•…™A…Ñ¡Ì¡Ù…±Õ”°ÁÉ•™¥à€ô€œœ¤ì(€¥˜€ …Ù…±Õ”ñðÑåÁ•½˜Ù…±Õ”€„ôô€½‰©•ÐœñðÉÉ…ä¹¥ÍÉÉ…ä¡Ù…±Õ”¤¤É•ÑÕÉ¸mÁÉ•™¥átì(€É•ÑÕÉ¸=‰©•Ð¹­•åÌ¡Ù…±Õ”¤¹Í½ÉÐ ¤¹™±…Ñ5…À¡­•ä€ôø±•…™A…Ñ¡Ì¡Ù…±Õ•m­•åt°ÁÉ•™¥à€ü€‘íÁÉ•™¥áô¸‘í­•åõ€€è­•ä¤¤ì)ô()™Õ¹Ñ¥½¸¥ÍI•½É¡Ù…±Õ”¤ì(€¥˜€ …Ù…±Õ”ñðÑåÁ•½˜Ù…±Õ”€„ôô€½‰©•ÐœñðÉÉ…ä¹¥ÍÉÉ…ä¡Ù…±Õ”¤¤É•ÑÕÉ¸™…±Í”ì(€ÑÉäì(€€€½¹ÍÐÁÉ½Ñ½ÑåÁ”€ô=‰©•Ð¹•ÑAÉ½Ñ½ÑåÁ•=˜¡Ù…±Õ”¤ì(€€€É•ÑÕÉ¸ÁÉ½Ñ½ÑåÁ”€ôôô=‰©•Ð¹ÁÉ½Ñ½ÑåÁ”ñðÁÉ½Ñ½ÑåÁ”€ôôô¹Õ±°ì(€ô…Ñ ì(€€€É•ÑÕÉ¸™…±Í”ì(€ô)ô)™Õ¹Ñ¥½¸‘••ÁÉ••é”¡Ù…±Õ”¤ì(€¥˜€ …Ù…±Õ”ñðÑåÁ•½˜Ù…±Õ”€„ôô€½‰©•Ðœñð=‰©•Ð¹¥ÍÉ½é•¸¡Ù…±Õ”¤¤É•ÑÕÉ¸Ù…±Õ”ì(€™½È€¡½¹ÍÐ¹•ÍÑ•½˜=‰©•Ð¹Ù…±Õ•Ì¡Ù…±Õ”¤¤‘••ÁÉ••é”¡¹•ÍÑ•¤ì(€É•ÑÕÉ¸=‰©•Ð¹™É••é”¡Ù…±Õ”¤ì)ô(()™Õ¹Ñ¥½¸ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°ÑåÁ”°Á…Ñ °µ•ÍÍ…”°­¥¹€ô€ÍÑÉÕÑÕÉ”œ¤ì(€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ¡ÑåÁ”°­¥¹°Á…Ñ °µ•ÍÍ…”¤¤ì)ô()™Õ¹Ñ¥½¸¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°ÁÉ¥¥¹œ°¹…µ”°ì…±±½Ý•‘-•åÌ€ô¹Õ±°°É•ÅÕ¥É•±°€ô™…±Í”°ÁÉ•‘¥…Ñ”€ôÙ…±Õ”ôù™¥á•‘AÉ¥•¥•±¡¹…µ”¤ý¹½¹9•…Ñ¥Ù•5½¹•ä¡Ù…±Õ”¤é¹½¹9•…Ñ¥Ù”¡Ù…±Õ”¤˜™Ù…±Õ”ðõ9Õµ‰•È¹5a}M}%9QH°…¹½¹¥…±-•åÌ€ô™…±Í”ô€ôíô¤ì(€½¹ÍÐÙ…±Õ”€ôÁÉ¥¥¹m¹…µ•tì(€¥˜€¡Ù…±Õ”€ôôôÕ¹‘•™¥¹•¤É•ÑÕÉ¸ì(€¥˜€ …¥ÍI•½É¡Ù…±Õ”¤ñð€…=‰©•Ð¹­•åÌ¡Ù…±Õ”¤¹±•¹Ñ ¤ì(€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°¹…µ”°€‘í¹…µ•ôµÕÍÐ‰”„¹½¸µ•µÁÑäÁÉ¥”µ…À¹€¤ì(€€€É•ÑÕÉ¸ì(€ô(€½¹ÍÐ­•åÌ€ô=‰©•Ð¹­•åÌ¡Ù…±Õ”¤ì(€¥˜€¡…±±½Ý•‘-•åÌ¤ì(€€€™½È€¡½¹ÍÐ­•ä½˜­•åÌ¤¥˜€ ……±±½Ý•‘-•åÌ¹¥¹±Õ‘•Ì¡­•ä¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€Õ¹ÍÕÁÁ½ÉÑ•œ°€‘í¹…µ•ô¸‘í­•åõ€°€‘í¹…µ•ô¸‘í­•åô¥Ì¹½ÐÍÕÁÁ½ÉÑ•¹€¤ì(€€€¥˜€¡É•ÅÕ¥É•±°¤™½È€¡½¹ÍÐ­•ä½˜…±±½Ý•‘-•åÌ¤¥˜€ …=‰©•Ð¹¡…Í=Ý¸¡Ù…±Õ”°­•ä¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€µ¥ÍÍ¥¹œœ°€‘í¹…µ•ô¸‘í­•åõ€°€‘í¹…µ•ô¸‘í­•åô¥ÌÉ•ÅÕ¥É•¹€¤ì(€ô(€¥˜€¡…¹½¹¥…±-•åÌ¤™½È€¡½¹ÍÐ­•ä½˜­•åÌ¤¥˜€ …9=9%1}M1U¹Ñ•ÍÐ¡­•ä¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°€‘í¹…µ•ô¸‘í­•åõ€°€‘í¹…µ•ô¸‘í­•åôµÕÍÐÕÍ”„…¹½¹¥…°±½Ý•É…Í”­•ä¹€¤ì(€™½È€¡½¹ÍÐ­•ä½˜­•åÌ¤ì(€€€¥˜€ ¡…±±½Ý•‘-•åÌ€˜˜€……±±½Ý•‘-•åÌ¹¥¹±Õ‘•Ì¡­•ä¤¤ñð€¡…¹½¹¥…±-•åÌ€˜˜€…9=9%1}M1U¹Ñ•ÍÐ¡­•ä¤¤¤½¹Ñ¥¹Õ”ì(€€€¥˜€ …ÁÉ•‘¥…Ñ”¡Ù…±Õ•m­•åt¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°€‘í¹…µ•ô¸‘í­•åõ€°€‘í¹…µ•ô¸‘í­•åô½¹Ñ…¥¹Ì…¸¥¹Ù…±¥Ù…±Õ”¹€¤ì(€ô)ô()™Õ¹Ñ¥½¸¥¹ÍÁ•Ñ5…Ñ¡¥¹¥ÉÍÑ1•Ù•±-•åÌ¡‘¥…¹½ÍÑ¥Ì°ÁÉ¥¥¹œ°¹…µ•Ì°É•±…Ñ¥½¹Í¡¥À°¥¹½É•‘-•åÌ€ômt¤ì(€½¹ÍÐÕ¹¥½¸€ô¹•ÜM•Ð¡¹…µ•Ì¹™±…Ñ5…À¡¹…µ”€ôø¥ÍI•½É¡ÁÉ¥¥¹m¹…µ•t¤€ü=‰©•Ð¹­•åÌ¡ÁÉ¥¥¹m¹…µ•t¤€èmt¤¹™¥±Ñ•È¡­•ä€ôø€…¥¹½É•‘-•åÌ¹¥¹±Õ‘•Ì¡­•ä¤¤¤ì(€™½È€¡½¹ÍÐ­•ä½˜Õ¹¥½¸¤ì(€€€™½È€¡½¹ÍÐ¹…µ”½˜¹…µ•Ì¤ì(€€€€€¥˜€ …¥ÍI•½É¡ÁÉ¥¥¹m¹…µ•t¤ñð€…=‰©•Ð¹¡…Í=Ý¸¡ÁÉ¥¥¹m¹…µ•t°­•ä¤¤ì(€€€€€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€µ¥ÍÍ¥¹œœ°€‘í¹…µ•ô¸‘í­•åõ€°€‘íÉ•±…Ñ¥½¹Í¡¥ÁôµÕÍÐ½¹Ñ…¥¸µ…Ñ¡¥¹œ­•åÌ¹€°€É•±…Ñ¥½¹Í¡¥Àœ¤ì(€€€€€ô(€€€ô(€ô)ô()™Õ¹Ñ¥½¸¥¹ÍÁ•ÑI•Á…¥ÉÕ‰”¡‘¥…¹½ÍÑ¥Ì°Ù…±Õ”°¹…µ”°ì™¥ÉÍÑ1•Ù•±±±½Ý•€ô¹Õ±°°±•…™AÉ•‘¥…Ñ”€ôÁ½Í¥Ñ¥Ù”ô€ôíô¤ì(€¥˜€¡Ù…±Õ”€ôôôÕ¹‘•™¥¹•¤É•ÑÕÉ¸ì(€¥˜€ …¥ÍI•½É¡Ù…±Õ”¤ñð€…=‰©•Ð¹­•åÌ¡Ù…±Õ”¤¹±•¹Ñ ¤ì(€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°¹…µ”°€‘í¹…µ•ôµÕÍÐ‰”„¹½¸µ•µÁÑäÑ¡É•”µ±•Ù•°ÁÉ¥¥¹œµ…À¹€¤ì(€€€É•ÑÕÉ¸ì(€ô(€™½È€¡½¹ÍÐm™¥ÉÍÑ-•ä°Í•½¹‘1•Ù•±t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡Ù…±Õ”¤¤ì(€€€½¹ÍÐ™¥ÉÍÑA…Ñ €ô€‘í¹…µ•ô¸‘í™¥ÉÍÑ-•åõ€ì(€€€¥˜€¡™¥ÉÍÑ1•Ù•±±±½Ý•€˜˜€…™¥ÉÍÑ1•Ù•±±±½Ý•¹¥¹±Õ‘•Ì¡™¥ÉÍÑ-•ä¤¤ì(€€€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€Õ¹ÍÕÁÁ½ÉÑ•œ°™¥ÉÍÑA…Ñ °€‘í™¥ÉÍÑA…Ñ¡ô¥Ì¹½ÐÍÕÁÁ½ÉÑ•¹€¤ì(€€€€€½¹Ñ¥¹Õ”ì(€€€ô(€€€¥˜€ …™¥ÉÍÑ1•Ù•±±±½Ý•€˜˜€…9=9%1}M1U¹Ñ•ÍÐ¡™¥ÉÍÑ-•ä¤¤ì(€€€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°™¥ÉÍÑA…Ñ °€‘í™¥ÉÍÑA…Ñ¡ôµÕÍÐÕÍ”„…¹½¹¥…°±½Ý•É…Í”­•ä¹€¤ì(€€€€€½¹Ñ¥¹Õ”ì(€€€ô(€€€¥˜€ …¥ÍI•½É¡Í•½¹‘1•Ù•°¤ñð€…=‰©•Ð¹­•åÌ¡Í•½¹‘1•Ù•°¤¹±•¹Ñ ¤ì(€€€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°™¥ÉÍÑA…Ñ °€‘í™¥ÉÍÑA…Ñ¡ôµÕÍÐ½¹Ñ…¥¸…Ð±•…ÍÐ½¹”É•Á…¥ÈÑåÁ”¹€¤ì(€€€€€½¹Ñ¥¹Õ”ì(€€€ô(€€€™½È€¡½¹ÍÐmÍ•½¹‘-•ä°É½Ýt½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡Í•½¹‘1•Ù•°¤¤ì(€€€€€½¹ÍÐÉ½ÝA…Ñ €ô€‘í™¥ÉÍÑA…Ñ¡ô¸‘íÍ•½¹‘-•åõ€ì(€€€€€¥˜€ …9=9%1}M1U¹Ñ•ÍÐ¡Í•½¹‘-•ä¤¤ì(€€€€€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°É½ÝA…Ñ °€‘íÉ½ÝA…Ñ¡ôµÕÍÐÕÍ”„…¹½¹¥…°±½Ý•É…Í”­•ä¹€¤ì(€€€€€€€½¹Ñ¥¹Õ”ì(€€€€€ô(€€€€€¥˜€ …¥ÍI•½É¡É½Ü¤¤ì(€€€€€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°É½ÝA…Ñ °€‘íÉ½ÝA…Ñ¡ôµÕÍÐ½¹Ñ…¥¸Íµ…±°°µ•‘¥Õ´°…¹±…É”Ù…±Õ•Ì¹€¤ì(€€€€€€€½¹Ñ¥¹Õ”ì(€€€€€ô(€€€€€™½È€¡½¹ÍÐ­•ä½˜=‰©•Ð¹­•åÌ¡É½Ü¤¤¥˜€ …M%i}-eL¹¥¹±Õ‘•Ì¡­•ä¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€Õ¹ÍÕÁÁ½ÉÑ•œ°€‘íÉ½ÝA…Ñ¡ô¸‘í­•åõ€°€‘íÉ½ÝA…Ñ¡ô¸‘í­•åô¥Ì¹½Ð„ÍÕÁÁ½ÉÑ•É•Á…¥ÈµÍ¥é”­•ä¹€¤ì(€€€€€™½È€¡½¹ÍÐÍ¥é”½˜M%i}-eL¤ì(€€€€€€€½¹ÍÐÁ…Ñ €ô€‘íÉ½ÝA…Ñ¡ô¸‘íÍ¥é•õ€ì(€€€€€€€¥˜€ …=‰©•Ð¹¡…Í=Ý¸¡É½Ü°Í¥é”¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€µ¥ÍÍ¥¹œœ°Á…Ñ °€‘íÁ…Ñ¡ô¥ÌÉ•ÅÕ¥É•¹€¤ì(€€€€€€€•±Í”¥˜€ …±•…™AÉ•‘¥…Ñ”¡É½ÝmÍ¥é•t¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°Á…Ñ °€‘íÁ…Ñ¡ô½¹Ñ…¥¹Ì…¸¥¹Ù…±¥Ù…±Õ”¹€¤ì(€€€€€ô(€€€ô(€ô)ô()™Õ¹Ñ¥½¸¥¹ÍÁ•Ñ5…Ñ¡¥¹1•…™A…Ñ¡Ì¡‘¥…¹½ÍÑ¥Ì°ÁÉ¥¥¹œ°¹…µ•Ì°É•±…Ñ¥½¹Í¡¥À¤ì(€½¹ÍÐÁ…Ñ¡Í	å9…µ”€ô¹•Ü5…À¡¹…µ•Ì¹µ…À¡¹…µ”€ôøm¹…µ”°¹•ÜM•Ð¡¥ÍI•½É¡ÁÉ¥¥¹m¹…µ•t¤€ü±•…™A…Ñ¡Ì¡ÁÉ¥¥¹m¹…µ•t¤€èmt¥t¤¤ì(€½¹ÍÐÕ¹¥½¸€ô¹•ÜM•Ð¡l¸¸¹Á…Ñ¡Í	å9…µ”¹Ù…±Õ•Ì ¥t¹™±…Ñ5…À¡Á…Ñ¡Ì€ôøl¸¸¹Á…Ñ¡Ít¤¤ì(€™½È€¡½¹ÍÐÍÕ™™¥à½˜Õ¹¥½¸¤ì(€€€™½È€¡½¹ÍÐ¹…µ”½˜¹…µ•Ì¤ì(€€€€€¥˜€ …Á…Ñ¡Í	å9…µ”¹•Ð¡¹…µ”¤¹¡…Ì¡ÍÕ™™¥à¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€µ¥ÍÍ¥¹œœ°€‘í¹…µ•ô¸‘íÍÕ™™¥áõ€°€‘íÉ•±…Ñ¥½¹Í¡¥ÁôµÕÍÐ½¹Ñ…¥¸µ…Ñ¡¥¹œ¹•ÍÑ•Á…Ñ¡Ì¹€°€É•±…Ñ¥½¹Í¡¥Àœ¤ì(€€€ô(€ô)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸Ù…±¥‘…Ñ•AÉ¥¥¹MÑÉÕÑÕÉ•Í•Ñ…¥±•¡Í•ÉÙ¥•QåÁ”°À€ôíô¤ì(€½¹ÍÐÁÉ•Á…É•€ô…Ñ¥Ù…Ñ¥½¹AÉ¥¥¹¡•­Ì¹•Ð¡À¤ì(€¥˜€¡ÁÉ•Á…É•ü¹Í•ÉÙ¥•QåÁ”€ôôôÍ•ÉÙ¥•QåÁ”¤É•ÑÕÉ¸l¸¸¹ÁÉ•Á…É•¹ÍÑÉÕÑÕÉ•Ítì(€½¹ÍÐ‘¥…¹½ÍÑ¥Ì€ômtì(€¥˜€ …MIY%}QeAL¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤¤ì(€€€É•ÑÕÉ¸m½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€Í•ÉÙ¥”œ°€Í•ÉÙ¥•QåÁ”œ°€U¹ÍÕÁÁ½ÉÑ•Í•ÉÙ¥”ÑåÁ”¸œ¥tì(€ô(€½¹ÍÐÍ¹…ÁÍ¡½Ð€ôÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡À°€ÁÉ¥¥¹œœ¤ì(€¥˜€ …Í¹…ÁÍ¡½Ð¹½¬¤É•ÑÕÉ¸m½Ý¹•É¥…¹½ÍÑ¥Œ (€€€€¥¹Ù…±¥œ°€ÁÉ¥¥¹}ÍÑÉÕÑÕÉ”œ°É•±…Ñ¥Ù•M¹…ÁÍ¡½ÑA…Ñ ¡Í¹…ÁÍ¡½Ð°€ÁÉ¥¥¹œœ¤°(€€€AÉ¥¥¹œ½Õ±¹½Ð‰”É•…Í…™•±äè€‘íÍ¹…ÁÍ¡½Ð¹É•…Í½¹ô¹€(€€¥tì(€½¹ÍÐ¹½¹A±…¥¹A…Ñ €ô™¥ÉÍÑ9½¹A±…¥¹A…Ñ ¡Í¹…ÁÍ¡½Ð°€ÁÉ¥¥¹œœ¤ì(€¥˜€¡¹½¹A±…¥¹A…Ñ ¤É•ÑÕÉ¸m½Ý¹•É¥…¹½ÍÑ¥Œ (€€€€¥¹Ù…±¥œ°€ÁÉ¥¥¹}ÍÑÉÕÑÕÉ”œ°¹½¹A±…¥¹A…Ñ °(€€€AÉ¥¥¹œµÕÍÐ½¹Ñ…¥¸½¹±äÁ±…¥¸‘…Ñ„½‰©•ÑÌì€‘í¹½¹A±…¥¹A…Ñ¡ô¥Ì¹½ÐÁ±…¥¸‘…Ñ„¹€(€€¥tì(€À€ôÍ¹…ÁÍ¡½Ð¹Ù…±Õ”ì(€™½È¡½¹ÍÐ™¥•±½˜l¥¹ÍÑ…±±•‘5…Ñ•É¥…±ÍA•É•¹Ðœ°¥¹ÍÑ…±±•‘1…‰½ÉA•É•¹Ðt¥¥˜¡Ám™¥•±‘t„ôõÕ¹‘•™¥¹•¥ì(€€€¥˜ …¥ÍI•½É¡Ám™¥•±‘t¤¥ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°¥¹Ù…±¥œ±™¥•±°%¹ÍÑ…±±•µÁÉ¥”Á½ÉÑ¥½¹ÌµÕÍÐ‰”µ…ÁÌ¸œ¤ì(€€€•±Í”™½È¡½¹ÍÐm­•ä±Ù…±Õ•t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡Ám™¥•±‘t¤¥ì(€€€€€¥˜ „½x üè üé½™™•É¥¹I…Ñ•ÍñÍ½Á•I…Ñ•ÍñÕ¹‘•É±…åµ•¹ÑA•ÉMÅÕ…É”¥p¹m„µéµium„µéµhÀ´å}t©ñÕ¹‘•É±…åµ•¹ÑA•ÉMÅ™Ð¤¼¹Ñ•ÍÐ¡­•ä¥ññÑåÁ•½˜Ù…±Õ”„ôô¹Õµ‰•Èñð…9Õµ‰•È¹¥Í¥¹¥Ñ”¡Ù…±Õ”¥ññÙ…±Õ”ðÁññÙ…±Õ”øÄÀÀ¥ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°¥¹Ù…±¥œ±™¥•±¬œ¸œ­­•ä°¹Ñ•È„Á•É•¹Ñ…”™É½´€ÀÑ¼€ÄÀÀ™½È„¹…µ•¥¹ÍÑ…±±•ÁÉ¥”¸œ¤ì(€€€€€•±Í”¥˜¡™¥•±ôôô¥¹ÍÑ…±±•‘5…Ñ•É¥…±ÍA•É•¹Ðœ˜™ÑåÁ•½˜À¹¥¹ÍÑ…±±•‘1…‰½ÉA•É•¹Ðü¹m­•åtôôô¹Õµ‰•Èœ˜™9Õµ‰•È¹¥Í¥¹¥Ñ”¡À¹¥¹ÍÑ…±±•‘1…‰½ÉA•É•¹Ñm­•åt¤˜™À¹¥¹ÍÑ…±±•‘1…‰½ÉA•É•¹Ñm­•åtøôÀ˜™À¹¥¹ÍÑ…±±•‘1…‰½ÉA•É•¹Ñm­•åtðôÄÀÀ˜™•á…Ñ½µÁ…É”¡•á…Ñ‘¡Ù…±Õ”±À¹¥¹ÍÑ…±±•‘1…‰½ÉA•É•¹Ñm­•åt¤°ÄÀÀ¤øÀ¥ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°¥¹Ù…±¥œ±™¥•±¬œ¸œ­­•ä°5…Ñ•É¥…±Ì…¹±…‰½ÈÁ½ÉÑ¥½¹Ì…¹¹½ÐÑ½Ñ…°µ½É”Ñ¡…¸€ÄÀÀ”¸œ¤ì(€€€ô(€ô((€¥˜¡½¹™¥ÕÉ•‘=™™•É¥¹œ¡Í•ÉÙ¥•QåÁ”±À¤¥É•ÑÕÉ¸l¸¸¹‘¥…¹½ÍÑ¥Ì°¸¸¹½™™•É¥¹MÑÉÕÑÕÉ•¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥•QåÁ”±À¤°¸¸¹Í½Á•MÑÉÕÑÕÉ•¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥•QåÁ”±À¥tì(€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ  ¸¸¹Í½Á•MÑÉÕÑÕÉ•¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥•QåÁ”±À¤¤ì((€™½È€¡½¹ÍÐ¹…µ”½˜Í…±…É5½¹•å¥•±‘Ì¡Í•ÉÙ¥•QåÁ”¤¤ì(€€€¥˜€ …™¥á•‘AÉ¥•¥•±¡¹…µ”±À¤¤ì(€€€€€¥˜€¡Ám¹…µ•t€„ôôÕ¹‘•™¥¹•€˜˜€ …¹½¹9•…Ñ¥Ù”¡Ám¹…µ•t¤ñðÁm¹…µ•t€ø9Õµ‰•È¹5a}M}%9QH¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°¹…µ”°€‘í¹…µ•ôµÕÍÐ‰”„™¥¹¥Ñ”¹½¸µ¹•…Ñ¥Ù”Õ¹¥ÐÉ…Ñ”¥¸•¹ÑÌ¹€¤ì(€€€€€½¹Ñ¥¹Õ”ì(€€€ô(€€€¥˜€¡Ám¹…µ•t€„ôôÕ¹‘•™¥¹•€˜˜€…¹½¹9•…Ñ¥Ù•5½¹•ä¡Ám¹…µ•t¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°¹…µ”°€‘í¹…µ•ôµÕÍÐ‰”„¹½¸µ¹•…Ñ¥Ù”¥¹Ñ••Èµ•¹Ð…µ½Õ¹Ð¹€¤ì(€ô(€¥˜€¡À¹‰…¥¹MÕÉ¡…É•A•É•¹Ð€„ôôÕ¹‘•™¥¹•€˜˜€ …¹½¹9•…Ñ¥Ù”¡À¹‰…¥¹MÕÉ¡…É•A•É•¹Ð¤ñðÀ¹‰…¥¹MÕÉ¡…É•A•É•¹Ð€ø€ÔÀÀ¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°€‰…¥¹MÕÉ¡…É•A•É•¹Ðœ°€‰…¥¹MÕÉ¡…É•A•É•¹ÐµÕÍÐ‰”™É½´€ÀÑ¼€ÔÀÀ¸œ¤ì(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€UMQ=4œ€˜˜À¹ÕÍÑ½µ¡…É•±…ÍÍ¥™¥…Ñ¥½¸€„ôôÕ¹‘•™¥¹•€˜˜€…AI%}	M%M}Q=I%L¹¥¹±Õ‘•Ì¡À¹ÕÍÑ½µ¡…É•±…ÍÍ¥™¥…Ñ¥½¸¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°€ÕÍÑ½µ¡…É•±…ÍÍ¥™¥…Ñ¥½¸œ°€¡½½Í”Ñ¡”½¹™¥ÕÉ•±¥¹”…Ñ•½Éä™½ÈÑ¡¥ÌÕÍÑ½´Í•ÉÙ¥”¸œ¤ì((€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€I==%9}IA159Pœ¤ì(€€€¥˜¡À¹µ…Ñ•É¥…±•ÍÍ½Éå	…Í¥Ì„ôõÕ¹‘•™¥¹•€˜˜€¡À¹µ…Ñ•É¥…±•ÍÍ½Éå	…Í¥Ì„ôô•á±Õ‘•Í}¥Ñ•µ¥é•‘}…•ÍÍ½É¥•ÌññÀ¹…•ÍÍ½ÉåAÉ¥¥¹5½‘”„ôô¥Ñ•µ¥é•œ¤¥ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°¥¹Ù…±¥œ°µ…Ñ•É¥…±•ÍÍ½Éå	…Í¥Ìœ°•ÍÍ½Éä•á±ÕÍ¥½¸‘•±…É…Ñ¥½¸É•ÅÕ¥É•Ì¥Ñ•µ¥é•µ½‘”…¹Ñ¡”•á…Ð•á±Õ‘•Í}¥Ñ•µ¥é•‘}…•ÍÍ½É¥•ÌÙ…±Õ”¸œ¤ì(€€€™½È€¡½¹ÍÐ¹…µ”½˜l±…‰½ÉA•ÉMÅÕ…É”œ°€µ…Ñ•É¥…±½ÍÑA•ÉMÅÕ…É”œ°€Ñ•…É=™™A•ÉMÅÕ…É”œ°€Õ¹‘•É±…åµ•¹ÑA•ÉMÅÕ…É”t¤¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°¹…µ”°ì…¹½¹¥…±-•åÌèÑÉÕ”ô¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ìœ°ìÁÉ•‘¥…Ñ”èÙ…±Õ”€ôøl¥¹ÍÑ…±±•‘}…É•…}Í•±±}ÁÉ¥”œ°€½ÍÐt¹¥¹±Õ‘•Ì¡Ù…±Õ”¤°…¹½¹¥…±-•åÌèÑÉÕ”ô¤ì(€€€½¹ÍÐÉ•Á±…•µ•¹Ñ-•åÌõ¹•ÜM•Ð¡l±…‰½ÉA•ÉMÅÕ…É”œ°µ…Ñ•É¥…±½ÍÑA•ÉMÅÕ…É”œ°Õ¹‘•É±…åµ•¹ÑA•ÉMÅÕ…É”œ°Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ìt¹™±…Ñ5…À¡¹…µ”ôù¥ÍI•½É¡Ám¹…µ•t¤ý=‰©•Ð¹­•åÌ¡Ám¹…µ•t¤émt¤¤ì(€€€™½È¡½¹ÍÐ­•ä½˜É•Á±…•µ•¹Ñ-•åÌ¥™½È¡½¹ÍÐ¹…µ”½˜l±…‰½ÉA•ÉMÅÕ…É”œ°µ…Ñ•É¥…±½ÍÑA•ÉMÅÕ…É”œ°Õ¹‘•É±…åµ•¹ÑA•ÉMÅÕ…É”œ°Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ìt¥ì(€€€€€¥˜¡¹…µ”ôôôÕ¹‘•É±…åµ•¹ÑA•ÉMÅÕ…É”œ˜™À¹Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ìü¹m­•åtôôô½ÍÐœ˜™À¹Í½Á••Ñ…¥±Ìü¹lÉ½½™}Õ¹‘•É±…åµ•¹Ñ|œ­­•åt¥½¹Ñ¥¹Õ”ì(€€€€€¥˜ …¥ÍI•½É¡Ám¹…µ•t¥ñð…=‰©•Ð¹¡…Í=Ý¸¡Ám¹…µ•t±­•ä¤¥ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°µ¥ÍÍ¥¹œœ±¹…µ”¬œ¸œ­­•ä°I½½˜É•Á±…•µ•¹Ð±…‰½È°µ…Ñ•É¥…°…¹Í•±•Ñ•Õ¹‘•É±…åµ•¹ÐÁÉ¥¥¹œµÕÍÐ½Ù•ÈÑ¡”Í…µ”É•Á±…•µ•¹ÐÑåÁ•Ì¸œ°É•±…Ñ¥½¹Í¡¥Àœ¤ì(€€€ô(€ô(€¥˜€¡lI==%9}IA%Hœ°1Q}I==}IA%Hœ°M%%9}IA%Ht¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤¤ì(€€€½¹ÍÐ±¥µ¥ÑAÉ½‰±•´€ô±…É•I•Á…¥É1¥µ¥ÑAÉ½‰±•´¡Í•ÉÙ¥•QåÁ”°À¹±…É•I•Á…¥É5…áMÅ™Ð¤ì(€€€¥˜€¡±¥µ¥ÑAÉ½‰±•´¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°€±…É•I•Á…¥É5…áMÅ™Ðœ°±¥µ¥ÑAÉ½‰±•´¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€I==%9}IA%Hœ¤ì(€€€¥¹ÍÁ•ÑI•Á…¥ÉÕ‰”¡‘¥…¹½ÍÑ¥Ì°À¹É•Á…¥É!½ÕÉÌ°€É•Á…¥É!½ÕÉÌœ¤ì(€€€¥¹ÍÁ•ÑI•Á…¥ÉÕ‰”¡‘¥…¹½ÍÑ¥Ì°À¹É•Á…¥É5…Ñ•É¥…±±±½Ý…¹”°€É•Á…¥É5…Ñ•É¥…±±±½Ý…¹”œ°ì±•…™AÉ•‘¥…Ñ”è¹½¹9•…Ñ¥Ù•5½¹•äô¤ì(€€€¥¹ÍÁ•Ñ5…Ñ¡¥¹1•…™A…Ñ¡Ì¡‘¥…¹½ÍÑ¥Ì°À°lÉ•Á…¥É!½ÕÉÌœ°€É•Á…¥É5…Ñ•É¥…±±±½Ý…¹”t°€I½½˜É•Á…¥È¡½ÕÈ…¹µ…Ñ•É¥…°µ…ÁÌœ¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€1Q}I==}IA159Pœ¤ì(€€€™½È€¡½¹ÍÐ¹…µ”½˜l±…‰½ÉA•ÉMÅ™Ðœ°€µ•µ‰É…¹•½ÍÑA•ÉMÅ™Ðœ°€Ñ•…É=™™A•ÉMÅ™Ðt¤ì(€€€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°¹…µ”°ì…¹½¹¥…±-•åÌèÑÉÕ”ô¤ì(€€€ô(€€€€¼¼É•Ñ…¥¹•¡¥ÍÑ½É¥…°…Ù•É…”¥ÌÙ…±¥‘…Ñ•…Ì‘…Ñ„°‰ÕÐ¹•Ù•È½™™•É•½ÈÉ•ÅÕ¥É•¥¸…¹½Ñ¡•Èµ…À¸(€€€¥¹ÍÁ•Ñ5…Ñ¡¥¹¥ÉÍÑ1•Ù•±-•åÌ¡‘¥…¹½ÍÑ¥Ì°À°l±…‰½ÉA•ÉMÅ™Ðœ°€µ•µ‰É…¹•½ÍÑA•ÉMÅ™Ðt°€I•Á±…•µ•¹Ðµ•µ‰É…¹”±…‰½È…¹µ…Ñ•É¥…°µ…ÁÌœ°l…Ù•É…”t¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€1Q}I==}IA%Hœ¤ì(€€€¥¹ÍÁ•ÑI•Á…¥ÉÕ‰”¡‘¥…¹½ÍÑ¥Ì°À¹Á…Ñ¡I•Á…¥É!½ÕÉÌ°€Á…Ñ¡I•Á…¥É!½ÕÉÌœ¤ì(€€€¥¹ÍÁ•ÑI•Á…¥ÉÕ‰”¡‘¥…¹½ÍÑ¥Ì°À¹Á…Ñ¡5…Ñ•É¥…±±±½Ý…¹”°€Á…Ñ¡5…Ñ•É¥…±±±½Ý…¹”œ°ì±•…™AÉ•‘¥…Ñ”è¹½¹9•…Ñ¥Ù•5½¹•äô¤ì(€€€¥¹ÍÁ•Ñ5…Ñ¡¥¹1•…™A…Ñ¡Ì¡‘¥…¹½ÍÑ¥Ì°À°lÁ…Ñ¡I•Á…¥É!½ÕÉÌœ°€Á…Ñ¡5…Ñ•É¥…±±±½Ý…¹”t°€±…ÐµÉ½½˜É•Á…¥È¡½ÕÈ…¹µ…Ñ•É¥…°µ…ÁÌœ¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  1==I%9|œ¤¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€±…‰½ÉA•ÉMÅ™Ðœ°ì…±±½Ý•‘-•åÌè1==I%9}QeALô¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€µ…Ñ•É¥…±A•ÉMÅ™Ðœ°ì…±±½Ý•‘-•åÌè1==I%9}QeALô¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€É•µ½Ù…±A•ÉMÅ™Ðœ°ì…¹½¹¥…±-•åÌèÑÉÕ”ô¤ì(€€€¥¹ÍÁ•Ñ5…Ñ¡¥¹¥ÉÍÑ1•Ù•±-•åÌ¡‘¥…¹½ÍÑ¥Ì°À°l±…‰½ÉA•ÉMÅ™Ðœ°€µ…Ñ•É¥…±A•ÉMÅ™Ðt°€±½½É¥¹œ±…‰½È…¹µ…Ñ•É¥…°µ…ÁÌœ¤ì(€€€¥˜¡À¹Ù¥¹å±A±…¹­U¹‘•É±…åµ•¹ÑIÕ±”„ôõÕ¹‘•™¥¹•˜˜…l…±Ý…åÍ}¥¹±Õ‘•œ°¹•Ù•É}¥¹±Õ‘•œ°ÕÍÑ½µ•É}Í•±•Ñ…‰±•}…‘‘½¸œ°ÍÕ‰™±½½É}½¹‘¥Ñ¥½¸œ°½Ý¹•É}É•Ù¥•Üt¹¥¹±Õ‘•Ì¡À¹Ù¥¹å±A±…¹­U¹‘•É±…åµ•¹ÑIÕ±”¤¥ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°¥¹Ù…±¥œ°Ù¥¹å±A±…¹­U¹‘•É±…åµ•¹ÑIÕ±”œ°Y¥¹å°µÁ±…¹¬Õ¹‘•É±…åµ•¹ÐÉÕ±”¥Ì¥¹Ù…±¥¸œ¤ì(€€€¥˜€¡À¹Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ì€„ôôÕ¹‘•™¥¹•€˜˜€…l¥¹ÍÑ…±±•‘}…É•…}Í•±±}ÁÉ¥”œ°€½ÍÐt¹¥¹±Õ‘•Ì¡À¹Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ì¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°€Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ìœ°€Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥ÌµÕÍÐ‰”¥¹ÍÑ…±±•‘}…É•…}Í•±±}ÁÉ¥”½È½ÍÐ¸œ¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  9%9|œ¤¤ì(€€€™½È€¡½¹ÍÐ¹…µ”½˜l±…‰½ÉA•É1¥¹•…É½½Ðœ°€µ…Ñ•É¥…±A•É1¥¹•…É½½Ðœ°€Á½ÍÑAÉ¥”œ°€…Ñ•AÉ¥”œ°€É•µ½Ù…±A•É1¥¹•…É½½Ðt¤¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°¹…µ”°ì…¹½¹¥…±-•åÌèÑÉÕ”ô¤ì(€€€¥˜€¡À¹Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°€„ôôÕ¹‘•™¥¹•¤ì(€€€€€¥˜€ …¥ÍI•½É¡À¹Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°¤ñð€…=‰©•Ð¹­•åÌ¡À¹Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°¤¹±•¹Ñ ¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°€Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°œ°€Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°µÕÍÐ‰”„¹½¸µ•µÁÑä‰½½±•…¸µ…À¸œ¤ì(€€€€€•±Í”ì(€€€€€€€™½È€¡½¹ÍÐm­•ä°Ù…±Õ•t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡À¹Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°¤¤ì(€€€€€€€€€¥˜€ …9=9%1}M1U¹Ñ•ÍÐ¡­•ä¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°¸‘í­•åõ€°Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°¸‘í­•åôµÕÍÐÕÍ”„…¹½¹¥…°±½Ý•É…Í”­•ä¹€¤ì(€€€€€€€€€¥˜€¡ÑåÁ•½˜Ù…±Õ”€„ôô€‰½½±•…¸œ¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°¸‘í­•åõ€°Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°¸‘í­•åôµÕÍÐ‰”ÑÉÕ”½È™…±Í”¹€¤ì(€€€€€€€ô(€€€€€ô(€€€ô(€€€¥¹ÍÁ•Ñ5…Ñ¡¥¹¥ÉÍÑ1•Ù•±-•åÌ¡‘¥…¹½ÍÑ¥Ì°À°l±…‰½ÉA•É1¥¹•…É½½Ðœ°€µ…Ñ•É¥…±A•É1¥¹•…É½½Ðœ°€Á½ÍÑÍ%¹±Õ‘•‘%¹5…Ñ•É¥…°t°€•¹”±…‰½È°µ…Ñ•É¥…°°…¹Á½ÍÐµ¥¹±ÕÍ¥½¸µ…ÁÌœ¤ì(€€€½¹ÍÐ½™™•É•€ô¹•ÜM•Ð¡¥ÍI•½É¡À¹±…‰½ÉA•É1¥¹•…É½½Ð¤€ü=‰©•Ð¹­•åÌ¡À¹±…‰½ÉA•É1¥¹•…É½½Ð¤€èmt¤ì(€€€™½È€¡½¹ÍÐ¹…µ”½˜lÁ½ÍÑAÉ¥”œ°€…Ñ•AÉ¥”œ°€É•µ½Ù…±A•É1¥¹•…É½½Ðt¤¥˜€¡¥ÍI•½É¡Ám¹…µ•t¤¤™½È€¡½¹ÍÐ­•ä½˜=‰©•Ð¹­•åÌ¡Ám¹…µ•t¤¤¥˜€ …½™™•É•¹¡…Ì¡­•ä¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€Õ¹ÍÕÁÁ½ÉÑ•œ°€‘í¹…µ•ô¸‘í­•åõ€°€‘í¹…µ•ô¸‘í­•åô¥Ì¹½Ð…¸½™™•É•™•¹”ÑåÁ”¹€¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}19U@œ€˜˜À¹‘•‰É¥ÍAÉ¥¥¹œ€„ôôÕ¹‘•™¥¹•¤ì(€€€¥˜€ …¥ÍI•½É¡À¹‘•‰É¥ÍAÉ¥¥¹œ¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°€‘•‰É¥ÍAÉ¥¥¹œœ°€‘•‰É¥ÍAÉ¥¥¹œµÕÍÐ½¹Ñ…¥¸½µÁ±•Ñ”‘•‰É¥Ìµ±•Ù•°É½ÝÌ¸œ¤ì(€€€•±Í”ì(€€€€€™½È€¡½¹ÍÐ­•ä½˜=‰©•Ð¹­•åÌ¡À¹‘•‰É¥ÍAÉ¥¥¹œ¤¤¥˜€ …l±¥¡Ðœ°€µ½‘•É…Ñ”œ°€¡•…Ùät¹¥¹±Õ‘•Ì¡­•ä¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€Õ¹ÍÕÁÁ½ÉÑ•œ°‘•‰É¥ÍAÉ¥¥¹œ¸‘í­•åõ€°‘•‰É¥ÍAÉ¥¥¹œ¸‘í­•åô¥Ì¹½ÐÍÕÁÁ½ÉÑ•¹€¤ì(€€€€€™½È€¡½¹ÍÐ±•Ù•°½˜l±¥¡Ðœ°€µ½‘•É…Ñ”œ°€¡•…Ùät¤ì(€€€€€€€½¹ÍÐÉ½Ü€ôÀ¹‘•‰É¥ÍAÉ¥¥¹m±•Ù•±tì(€€€€€€€¥˜€ …¥ÍI•½É¡É½Ü¤¤ì(€€€€€€€€€ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€µ¥ÍÍ¥¹œœ°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±õ€°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¥ÌÉ•ÅÕ¥É•¹€¤ì(€€€€€€€€€½¹Ñ¥¹Õ”ì(€€€€€€€ô(€€€€€€€™½È€¡½¹ÍÐ­•ä½˜=‰©•Ð¹­•åÌ¡É½Ü¤¤¥˜€ …l±…‰½É5Õ±Ñ¥Á±¥•Èœ°€‘¥ÍÁ½Í…±±…Ðt¹¥¹±Õ‘•Ì¡­•ä¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€Õ¹ÍÕÁÁ½ÉÑ•œ°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¸‘í­•åõ€°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¸‘í­•åô¥Ì¹½ÐÍÕÁÁ½ÉÑ•¹€¤ì(€€€€€€€¥˜€ …=‰©•Ð¹¡…Í=Ý¸¡É½Ü°€±…‰½É5Õ±Ñ¥Á±¥•Èœ¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€µ¥ÍÍ¥¹œœ°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¹±…‰½É5Õ±Ñ¥Á±¥•É€°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¹±…‰½É5Õ±Ñ¥Á±¥•È¥ÌÉ•ÅÕ¥É•¹€¤ì(€€€€€€€•±Í”¥˜€ …Á½Í¥Ñ¥Ù”¡É½Ü¹±…‰½É5Õ±Ñ¥Á±¥•È¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¹±…‰½É5Õ±Ñ¥Á±¥•É€°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¹±…‰½É5Õ±Ñ¥Á±¥•ÈµÕÍÐ‰”Á½Í¥Ñ¥Ù”¹€¤ì(€€€€€€€¥˜€ …=‰©•Ð¹¡…Í=Ý¸¡É½Ü°€‘¥ÍÁ½Í…±±…Ðœ¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€µ¥ÍÍ¥¹œœ°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¹‘¥ÍÁ½Í…±±…Ñ€°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¹‘¥ÍÁ½Í…±±…Ð¥ÌÉ•ÅÕ¥É•¹€¤ì(€€€€€€€•±Í”¥˜€ …¹½¹9•…Ñ¥Ù•5½¹•ä¡É½Ü¹‘¥ÍÁ½Í…±±…Ð¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°€¥¹Ù…±¥œ°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¹‘¥ÍÁ½Í…±±…Ñ€°‘•‰É¥ÍAÉ¥¥¹œ¸‘í±•Ù•±ô¹‘¥ÍÁ½Í…±±…ÐµÕÍÐ‰”„¹½¸µ¹•…Ñ¥Ù”¥¹Ñ••Èµ•¹Ð…µ½Õ¹Ð¹€¤ì(€€€€€ô(€€€ô(€ô(€¥˜€¡l19MA%9}5U1 œ°€19MA%9}A19Q%9t¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤¤¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€µÕ±¡5…Ñ•É¥…±A•Ée…Éœ°ì…¹½¹¥…±-•åÌèÑÉÕ”ô¤ì(€¥˜€¡l19MA%9}5U1 œ°€19MA%9}A19Q%9t¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤¤¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€‰•‘AÉ•Á1…‰½ÉA•ÉMÅ™Ðœ°ì…±±½Ý•‘-•åÌèl¹••‘Í}Ý••‘¥¹œœ°€½Ù•ÉÉ½Ý¸t°É•ÅÕ¥É•±°èÀ¹‰•‘AÉ•Á1…‰½ÉA•ÉMÅ™Ð€„ôôÕ¹‘•™¥¹•ô¤ì(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}A19Q%9œ¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€Á±…¹Ñ¥¹1…‰½ÉA•ÉA±…¹Ðœ°ì…±±½Ý•‘-•åÌèM%i}-eL°É•ÅÕ¥É•±°èÑÉÕ”ô¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€Á±…¹Ñ5…Ñ•É¥…±±±½Ý…¹”œ°ì…±±½Ý•‘-•åÌèM%i}-eL°É•ÅÕ¥É•±°èÑÉÕ”ô¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}5=]%9œ¤ì(€€€¥˜€¡À¹µ½Ý¥¹	…Í•I…Ñ•A•ÉMÅ™Ð€„ôôÕ¹‘•™¥¹•€˜˜€ …¹½¹9•…Ñ¥Ù”¡À¹µ½Ý¥¹	…Í•I…Ñ•A•ÉMÅ™Ð¤ñðÀ¹µ½Ý¥¹	…Í•I…Ñ•A•ÉMÅ™Ð€ø9Õµ‰•È¹5a}M}%9QH¤¤ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°¥¹Ù…±¥œ°µ½Ý¥¹	…Í•I…Ñ•A•ÉMÅ™Ðœ°5½Ý¥¹œÉ…Ñ”µÕÍÐ‰”™¥¹¥Ñ”¹½¹¹•…Ñ¥Ù”•¹ÑÌÁ•ÈÍÅÕ…É”™½½Ð°ÕÀÑ¼5a}M}%9QHì™É…Ñ¥½¹…°•¹ÑÌ…É”ÍÕÁÁ½ÉÑ•¸œ¤ì(€€€™½È¡½¹ÍÐm˜±™…Ñ½Ét½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡¥ÍI•½É¡À¹™É•ÅÕ•¹å5Õ±Ñ¥Á±¥•ÉÌ¤ýÀ¹™É•ÅÕ•¹å5Õ±Ñ¥Á±¥•ÉÌéíô¤¤™½È¡½¹ÍÐmœ±É½ÝÑ¡t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡¥ÍI•½É¡À¹½Ù•ÉÉ½ÝÑ¡5Õ±Ñ¥Á±¥•ÉÌ¤ýÀ¹½Ù•ÉÉ½ÝÑ¡5Õ±Ñ¥Á±¥•ÉÌéíô¤¤ì(€€€€€¥˜ …Á½Í¥Ñ¥Ù”¡™…Ñ½È¥ñð…Á½Í¥Ñ¥Ù”¡É½ÝÑ ¤¥½¹Ñ¥¹Õ”ì(€€€€€ÑÉäí½¹ÍÐÁÉ½‘ÕÐõ•á…Ñ5Õ±Ñ¥Á±ä¡™…Ñ½È±É½ÝÑ ¤í•á…ÑQ½9Õµ‰•È¡ÁÉ½‘ÕÐ¤í•á…ÑÉ½µÙ¥‘•¹”¡•á…ÑÙ¥‘•¹”¡ÁÉ½‘ÕÐ¤¤íô(€€€€€…Ñ í™½È¡½¹ÍÐÁ…Ñ ½˜m™É•ÅÕ•¹å5Õ±Ñ¥Á±¥•ÉÌ¸‘í™õ€±½Ù•ÉÉ½ÝÑ¡5Õ±Ñ¥Á±¥•ÉÌ¸‘íõt¥ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Œ¡‘¥…¹½ÍÑ¥Ì°¥¹Ù…±¥œ±Á…Ñ °Q¡”Í•±•Ñ•™…Ñ½È½µ‰¥¹…Ñ¥½¸•á••‘ÌÑ¡”ÍÕÁÁ½ÉÑ••á…Ðµ•Ù¥‘•¹”‘½µ…¥¸¸œ¤íô(€€€ô(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€™É•ÅÕ•¹å5Õ±Ñ¥Á±¥•ÉÌœ°ì…±±½Ý•‘-•åÌèlÝ••­±äœ°€‰¥Ý••­±äœ°€µ½¹Ñ¡±äœ°€½¹•}Ñ¥µ”t°É•ÅÕ¥É•±°èÑÉÕ”°ÁÉ•‘¥…Ñ”èÁ½Í¥Ñ¥Ù”ô¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€½Ù•ÉÉ½ÝÑ¡5Õ±Ñ¥Á±¥•ÉÌœ°ì…±±½Ý•‘-•åÌèlµ…¥¹Ñ…¥¹•œ°€½Ù•ÉÉ½Ý¸œ°€Í•Ù•É”t°É•ÅÕ¥É•±°èÑÉÕ”°ÁÉ•‘¥…Ñ”èÁ½Í¥Ñ¥Ù”ô¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€M%%9}IA159Pœ¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€±…‰½ÉA•ÉMÅ™Ðœ°ì…±±½Ý•‘-•åÌèM%%9}QeALô¤ì(€€€¥¹ÍÁ•ÑAÉ¥•5…À¡‘¥…¹½ÍÑ¥Ì°À°€µ…Ñ•É¥…±A•ÉMÅ™Ðœ°ì…±±½Ý•‘-•åÌèM%%9}QeALô¤ì(€€€¥¹ÍÁ•Ñ5…Ñ¡¥¹¥ÉÍÑ1•Ù•±-•åÌ¡‘¥…¹½ÍÑ¥Ì°À°l±…‰½ÉA•ÉMÅ™Ðœ°€µ…Ñ•É¥…±A•ÉMÅ™Ðt°€M¥‘¥¹œ±…‰½È…¹µ…Ñ•É¥…°µ…ÁÌœ¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€M%%9}IA%Hœ¤ì(€€€¥¹ÍÁ•ÑI•Á…¥ÉÕ‰”¡‘¥…¹½ÍÑ¥Ì°À¹É•Á…¥É!½ÕÉÌ°€É•Á…¥É!½ÕÉÌœ°ì™¥ÉÍÑ1•Ù•±±±½Ý•èM%%9}QeALô¤ì(€€€¥¹ÍÁ•ÑI•Á…¥ÉÕ‰”¡‘¥…¹½ÍÑ¥Ì°À¹µ…Ñ•É¥…±±±½Ý…¹”°€µ…Ñ•É¥…±±±½Ý…¹”œ°ì™¥ÉÍÑ1•Ù•±±±½Ý•èM%%9}QeAL°±•…™AÉ•‘¥…Ñ”è¹½¹9•…Ñ¥Ù•5½¹•äô¤ì(€€€¥¹ÍÁ•Ñ5…Ñ¡¥¹1•…™A…Ñ¡Ì¡‘¥…¹½ÍÑ¥Ì°À°lÉ•Á…¥É!½ÕÉÌœ°€µ…Ñ•É¥…±±±½Ý…¹”t°€M¥‘¥¹œÉ•Á…¥È¡½ÕÈ…¹µ…Ñ•É¥…°µ…ÁÌœ¤ì(€ô(€É•ÑÕÉ¸Õ¹¥ÅÕ•¥…¹½ÍÑ¥Ì¡‘¥…¹½ÍÑ¥Ì¤ì)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸ÁÉ¥¥¹¥…¹½ÍÑ¥Í½ÉM•±•Ñ¥½¸¡ÑåÁ”±‘¥…¹½ÍÑ¥Ì±Œ±ÁÉ¥¥¹œõíô±Í•ÉÙ¥•IÕ±•Ìõíô¤ì(€½¹ÍÐ…Ñ¥Ù•M½Á•Ì€ô¹•ÜM•Ð¡Í½Á•-•åÍ½ÉI•ÅÕ•ÍÐ¡ÑåÁ”±Œ±ÁÉ¥¥¹œ±Í•ÉÙ¥•IÕ±•Ì¤¤ì(€±•ÐÍ½Á•I…Ñ•Ìì(€É•ÑÕÉ¸‘¥…¹½ÍÑ¥Ì¹™¥±Ñ•È¡¥Ñ•´ôùì(€€€¥˜¡¥Ñ•´¹ÑåÁ”„ôôµ¥ÍÍ¥¹œœ¥É•ÑÕÉ¸ÑÉÕ”ì€¼¼5…±™½Éµ•½ÈÕ¹ÍÕÁÁ½ÉÑ•Í…Ù•‘…Ñ„ÍÑ¥±°™…¥±Ì±½Í•¸(€€€€¼¼¸Õ¹™¥¹¥Í¡•…‘‘¥Ñ¥½¹…°Í½Á”µÕÍÐ¹½Ð‘¥Í…‰±”¥¹‘•Á•¹‘•¹Ñ±äÁÉ¥•(€€€€¼¼Ý½É¬¸-••À•Ù•Éäµ¥ÍÍ¥¹œ™¥•±™½È„Í•±•Ñ•Í½Á”ì±½‰…°µ…±™½Éµ•(€€€€¼¼‘…Ñ„Ý…ÌÉ•Ñ…¥¹•…‰½Ù”°…¹Õ¹­¹½Ý¸½É½½Ð‘¥…¹½ÍÑ¥ÌÉ•µ…¥¸‰±½­¥¹œ¸(€€€¥˜¡¥Ñ•´¹­¥¹ôôôÍ½Á•}½¹™¥ÕÉ…Ñ¥½¸œ¥ì(€€€€€¥˜¡¥Ñ•´¹Á…Ñ ¹ÍÑ…ÉÑÍ]¥Ñ  Í½Á••Ñ…¥±Ì¸œ¤¥ì(€€€€€€€¥˜¡¥Ñ•´¹Á…Ñ ôôôÍ½Á••Ñ…¥±Ì¹¥¹ÍÕ±…Ñ¥½¸¹¥¹ÍÕ±…Ñ¥½¹MåÍÑ•´œ¥É•ÑÕÉ¸Œ¹¥¹ÍÕ±…Ñ¥½¹9••‘•ôôõÑÉÕ”ì(€€€€€€€¥˜¡¥Ñ•´¹Á…Ñ ôôôÍ½Á••Ñ…¥±Ì¹¥¹ÍÕ±…Ñ¥½¸¹½Ù•É‰½…É‘MåÍÑ•´œ¥É•ÑÕÉ¸Œ¹½Ù•É‰½…É‘9••‘•ôôõÑÉÕ”ì(€€€€€€€É•ÑÕÉ¸…Ñ¥Ù•M½Á•Ì¹¡…Ì¡¥Ñ•´¹Á…Ñ ¹ÍÁ±¥Ð œ¸œ¥lÅt¤ì(€€€€€ô(€€€€€¥˜¡¥Ñ•´¹Á…Ñ ¹ÍÑ…ÉÑÍ]¥Ñ  Í½Á•I…Ñ•Ì¸œ¤¥ì(€€€€€€€Í½Á•I…Ñ•ÌñðôÍ½Á•I…Ñ••™¥¹¥Ñ¥½¹Ì¡ÑåÁ”±ÁÉ¥¥¹œ±ÑÉÕ”¤ì(€€€€€€€½¹ÍÐ‘•™¥¹¥Ñ¥½¸õÍ½Á•I…Ñ•Ím¥Ñ•´¹Á…Ñ ¹ÍÁ±¥Ð œ¸œ¥lÅut±­•äõ‘•™¥¹¥Ñ¥½¸ü¹Í½Á•-•äì(€€€€€€€¥˜¡­•ä¥É•ÑÕÉ¸…Ñ¥Ù•M½Á•Ì¹¡…Ì¡­•ä¤˜˜ …‘•™¥¹¥Ñ¥½¸¹±…å•Éññm‘•™¥¹¥Ñ¥½¸¹±…å•È¬9••‘•tôôõÑÉÕ”¤ì(€€€€€ô(€€€ô(€€€½¹ÍÐÍ•±•Ñ•õÑåÁ”ôôôI==%9}IA159PœýŒ¹É•Á±…•µ•¹ÑI½½™QåÁ”éÑåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  1==I%9|œ¤ýŒ¹¹•Ý±½½É¥¹QåÁ”éÑåÁ”ôôô1Q}I==}IA159PœýŒ¹É•Á±…•µ•¹Ñ5•µ‰É…¹•QåÁ”é¹Õ±°ì(€€€¥˜ …Í•±•Ñ•¥É•ÑÕÉ¸ÑÉÕ”ì(€€€€¼¼±…ÐÉ½½™ÌèÑ•…Èµ½™˜ÁÉ¥•Ì‰•±½¹œÑ¼Ñ¡”•á¥ÍÑ¥¹œµ•µ‰É…¹”°Í¼½¹±äÑ¡”É•ÅÕ•ÍÑ•½¹”µ…ÑÑ•ÉÌ¸(€€€¥˜¡ÑåÁ”ôôô1Q}I==}IA159Pœ˜™¥Ñ•´¹­¥¹ôôôÉ•±…Ñ¥½¹Í¡¥Àœ˜™¥Ñ•´¹Á…Ñ ¹ÍÑ…ÉÑÍ]¥Ñ  Ñ•…É=™™A•ÉMÅ™Ð¸œ¤¥É•ÑÕÉ¸¥Ñ•´¹Á…Ñ ¹ÍÁ±¥Ð œ¸œ¥lÅtôôõŒ¹µ•µ‰É…¹•QåÁ”ì(€€€½¹ÍÐÉ½½ÑÌõÑåÁ”ôôôI==%9}IA159Pœýl±…‰½ÉA•ÉMÅÕ…É”œ°µ…Ñ•É¥…±½ÍÑA•ÉMÅÕ…É”œ°Õ¹‘•É±…åµ•¹ÑA•ÉMÅÕ…É”œ°Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥ÌtéÑåÁ”ôôô1Q}I==}IA159Pœýl±…‰½ÉA•ÉMÅ™Ðœ°µ•µ‰É…¹•½ÍÑA•ÉMÅ™Ðtél±…‰½ÉA•ÉMÅ™Ðœ°µ…Ñ•É¥…±A•ÉMÅ™Ðtì(€€€¥˜¡¥Ñ•´¹­¥¹ôôôÉ•±…Ñ¥½¹Í¡¥Àœ˜™É½½ÑÌ¹Í½µ”¡É½½Ðôù¥Ñ•´¹Á…Ñ ¹ÍÑ…ÉÑÍ]¥Ñ ¡É½½Ð¬œ¸œ¤¤¥É•ÑÕÉ¸¥Ñ•´¹Á…Ñ ¹ÍÁ±¥Ð œ¸œ¥lÅtôôõÍ•±•Ñ•ì(€€€½¹ÍÐÍ½Á”õÑåÁ”ôôôI==%9}IA159PœüÉ½½™}Õ¹‘•É±…åµ•¹Ñ|œè™±½½É}Õ¹‘•É±…åµ•¹Ñ|œì(€€€¥˜¡lÍ½Á••Ñ…¥±Ì¸œ°Í½Á•I…Ñ•Ì¸t¹Í½µ”¡É½½Ðôù¥Ñ•´¹Á…Ñ ¹ÍÑ…ÉÑÍ]¥Ñ ¡É½½Ð­Í½Á”¤¤¥É•ÑÕÉ¸¥Ñ•´¹Á…Ñ ¹ÍÁ±¥Ð œ¸œ¥lÅtôôõÍ½Á”­Í•±•Ñ•ì(€€€É•ÑÕÉ¸ÑÉÕ”ì(€ô¤ì)ô()™Õ¹Ñ¥½¸Õ¹¥ÅÕ•¥…¹½ÍÑ¥Ì¡¥Ñ•µÌ¤ì(€½¹ÍÐÍ••¸€ô¹•ÜM•Ð ¤ì(€É•ÑÕÉ¸¥Ñ•µÌ¹™¥±Ñ•È¡¥Ñ•´€ôøì(€€€½¹ÍÐ­•ä€ô€‘í¥Ñ•´¹ÑåÁ•ôè‘í¥Ñ•´¹Á…Ñ¡ôè‘í¥Ñ•´¹­¥¹ñð€œõ€ì(€€€¥˜€¡Í••¸¹¡…Ì¡­•ä¤¤É•ÑÕÉ¸™…±Í”ì(€€€Í••¸¹…‘¡­•ä¤ì(€€€É•ÑÕÉ¸ÑÉÕ”ì(€ô¤ì)ô()™Õ¹Ñ¥½¸‰±½­•‘=Ý¹•ÉY…±¥‘…Ñ¥½¸¡Á…Ñ °µ•ÍÍ…”¤ì(€½¹ÍÐ‘¥…¹½ÍÑ¥Œ€ô½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€½Ý¹•É}ÁÉ¥¥¹œœ°Á…Ñ °µ•ÍÍ…”¤ì(€É•ÑÕÉ¸ì(€€€½¬è™…±Í”°(€€€µ¥ÍÍ¥¹=Ý¹•É¥•±‘Ìèmt°(€€€¥¹Ù…±¥‘=Ý¹•É¥•±‘ÌèmÁ…Ñ¡t°(€€€É½ÍÍ¥•±‘=Ý¹•É¥•±‘Ìèmt°(€€€Õ¹ÍÕÁÁ½ÉÑ•‘=Ý¹•É¥•±‘Ìèmt°(€€€Õ¹•áÁ•Ñ•‘=Ý¹•É¥•±‘Ìèmt°(€€€½Ý¹•É•¥Í¥½¹I•ÅÕ¥É•èmt°(€€€½Ý¹•É¥…¹½ÍÑ¥Ìèm‘¥…¹½ÍÑ¥t°(€€€Ù…±¥‘…Ñ¥½¹5•ÍÍ…•Ìèmµ•ÍÍ…•t(€ôì)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸Ù…±¥‘…Ñ•=Ý¹•ÉAÉ¥¥¹œ¡Í•ÉÙ¥•QåÁ”°ÕÍÑ½µ•É%¹ÁÕÑÌ°ÁÉ¥¥¹œ€ôíô°Í•ÉÙ¥•IÕ±•Ì€ôíô°Ñ¥•É9…µ”€ô¹Õ±°¤ì(€¥˜€ …MIY%}QeAL¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤¤ì(€€€É•ÑÕÉ¸‰±½­•‘=Ý¹•ÉY…±¥‘…Ñ¥½¸ Í•ÉÙ¥•QåÁ”œ°€U¹ÍÕÁÁ½ÉÑ•Í•ÉÙ¥”ÑåÁ”¸œ¤ì(€ô(€½¹ÍÐÁÉ¥¥¹M¹…ÁÍ¡½Ð€ôÙ…±¥‘…Ñ¥½¹M¹…ÁÍ¡½ÑY9•áÐ¡ÁÉ¥¥¹œ°€ÁÉ¥¥¹œœ¤ì(€¥˜€ …ÁÉ¥¥¹M¹…ÁÍ¡½Ð¹½¬¤É•ÑÕÉ¸‰±½­•‘=Ý¹•ÉY…±¥‘…Ñ¥½¸ (€€€É•±…Ñ¥Ù•M¹…ÁÍ¡½ÑA…Ñ ¡ÁÉ¥¥¹M¹…ÁÍ¡½Ð°€ÁÉ¥¥¹œœ¤°(€€€=Ý¹•ÈÁÉ¥¥¹œ½Õ±¹½Ð‰”É•…Í…™•±äè€‘íÁÉ¥¥¹M¹…ÁÍ¡½Ð¹É•…Í½¹ô¹€(€€¤ì(€½¹ÍÐÁÉ¥¥¹9½¹A±…¥¹A…Ñ €ô™¥ÉÍÑ9½¹A±…¥¹A…Ñ ¡ÁÉ¥¥¹M¹…ÁÍ¡½Ð°€ÁÉ¥¥¹œœ¤ì(€¥˜€¡ÁÉ¥¥¹9½¹A±…¥¹A…Ñ ¤É•ÑÕÉ¸‰±½­•‘=Ý¹•ÉY…±¥‘…Ñ¥½¸¡ÁÉ¥¥¹9½¹A±…¥¹A…Ñ °=Ý¹•ÈÁÉ¥¥¹œµÕÍÐ½¹Ñ…¥¸½¹±äÁ±…¥¸‘…Ñ„½‰©•ÑÌì€‘íÁÉ¥¥¹9½¹A±…¥¹A…Ñ¡ô¥Ì¹½ÐÁ±…¥¸‘…Ñ„¹€¤ì(€ÁÉ¥¥¹œ€ôÁÉ¥¥¹M¹…ÁÍ¡½Ð¹Ù…±Õ”ì(€½¹ÍÐÕÍÑ½µ•ÉM¹…ÁÍ¡½Ð€ôÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡ÕÍÑ½µ•É%¹ÁÕÑÌ°€ÕÍÑ½µ•É%¹ÁÕÑÌœ¤ì(€¥˜€ …ÕÍÑ½µ•ÉM¹…ÁÍ¡½Ð¹½¬¤É•ÑÕÉ¸‰±½­•‘=Ý¹•ÉY…±¥‘…Ñ¥½¸¡ÕÍÑ½µ•ÉM¹…ÁÍ¡½Ð¹•ÉÉ½ÉA…Ñ °ÕÍÑ½µ•È¥¹ÁÕÑÌ½Õ±¹½Ð‰”É•…Í…™•±äè€‘íÕÍÑ½µ•ÉM¹…ÁÍ¡½Ð¹É•…Í½¹ô¹€¤ì(€½¹ÍÐÕÍÑ½µ•É9½¹A±…¥¹A…Ñ €ô™¥ÉÍÑ9½¹A±…¥¹A…Ñ ¡ÕÍÑ½µ•ÉM¹…ÁÍ¡½Ð°€ÕÍÑ½µ•É%¹ÁÕÑÌœ¤ì(€¥˜€¡ÕÍÑ½µ•É9½¹A±…¥¹A…Ñ ¤É•ÑÕÉ¸‰±½­•‘=Ý¹•ÉY…±¥‘…Ñ¥½¸¡ÕÍÑ½µ•É9½¹A±…¥¹A…Ñ °ÕÍÑ½µ•È¥¹ÁÕÑÌµÕÍÐ½¹Ñ…¥¸½¹±äÁ±…¥¸‘…Ñ„½‰©•ÑÌì€‘íÕÍÑ½µ•É9½¹A±…¥¹A…Ñ¡ô¥Ì¹½ÐÁ±…¥¸‘…Ñ„¹€¤ì(€ÕÍÑ½µ•É%¹ÁÕÑÌ€ôÕÍÑ½µ•ÉM¹…ÁÍ¡½Ð¹Ù…±Õ”ì(€½¹ÍÐÉÕ±•ÍM¹…ÁÍ¡½Ð€ôÙ…±¥‘…Ñ¥½¹M¹…ÁÍ¡½ÑY9•áÐ¡Í•ÉÙ¥•IÕ±•Ì°€Í•ÉÙ¥•IÕ±•Ìœ¤ì(€¥˜€ …ÉÕ±•ÍM¹…ÁÍ¡½Ð¹½¬¤É•ÑÕÉ¸‰±½­•‘=Ý¹•ÉY…±¥‘…Ñ¥½¸¡ÉÕ±•ÍM¹…ÁÍ¡½Ð¹•ÉÉ½ÉA…Ñ °M•ÉÙ¥”ÉÕ±•Ì½Õ±¹½Ð‰”É•…Í…™•±äè€‘íÉÕ±•ÍM¹…ÁÍ¡½Ð¹É•…Í½¹ô¹€¤ì(€½¹ÍÐÉÕ±•Í9½¹A±…¥¹A…Ñ €ô™¥ÉÍÑ9½¹A±…¥¹A…Ñ ¡ÉÕ±•ÍM¹…ÁÍ¡½Ð°€Í•ÉÙ¥•IÕ±•Ìœ¤ì(€¥˜€¡ÉÕ±•Í9½¹A±…¥¹A…Ñ ¤É•ÑÕÉ¸‰±½­•‘=Ý¹•ÉY…±¥‘…Ñ¥½¸¡ÉÕ±•Í9½¹A±…¥¹A…Ñ °M•ÉÙ¥”ÉÕ±•ÌµÕÍÐ½¹Ñ…¥¸½¹±äÁ±…¥¸‘…Ñ„½‰©•ÑÌì€‘íÉÕ±•Í9½¹A±…¥¹A…Ñ¡ô¥Ì¹½ÐÁ±…¥¸‘…Ñ„¹€¤ì(€Í•ÉÙ¥•IÕ±•Ì€ôÉÕ±•ÍM¹…ÁÍ¡½Ð¹Ù…±Õ”ì(€½¹ÍÐ…±±½Ý•€ô¹•ÜM•Ð¡…±±½Ý•‘AÉ¥¥¹¥•±‘Ì¡Í•ÉÙ¥•QåÁ”¤¤ì(€½¹ÍÐÕ¹ÍÕÁÁ½ÉÑ•‘=Ý¹•É¥•±‘Ì€ô=‰©•Ð¹­•åÌ¡ÁÉ¥¥¹œ¤¹™¥±Ñ•È¡­•ä€ôø€……±±½Ý•¹¡…Ì¡­•ä¤¤ì(€½¹ÍÐÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Ì€ôÁÉ¥¥¹¥…¹½ÍÑ¥Í½ÉM•±•Ñ¥½¸¡Í•ÉÙ¥•QåÁ”±Ù…±¥‘…Ñ•AÉ¥¥¹MÑÉÕÑÕÉ•Í•Ñ…¥±•¡Í•ÉÙ¥•QåÁ”°ÁÉ¥¥¹œ¤±ÕÍÑ½µ•É%¹ÁÕÑÌ±ÁÉ¥¥¹œ±Í•ÉÙ¥•IÕ±•Ì¤ì(€½¹ÍÐ±…ÍÌÉ¥…¹½ÍÑ¥Ì€ôÙ…±¥‘…Ñ•±…ÍÌÉ…Ñ½ÉÍ•Ñ…¥±•¡Í•ÉÙ¥•QåÁ”°ÁÉ¥¥¹œ¤ì(€½¹ÍÐµ¥ÍÍ¥¹=Ý¹•É¥•±‘Ì€ômtì(€½¹ÍÐ¥¹Ù…±¥‘=Ý¹•É¥•±‘Ì€ômtì(€½¹ÍÐÉ½ÍÍ¥•±‘=Ý¹•É¥•±‘Ì€ômtì(€½¹ÍÐ½Ý¹•É¥…¹½ÍÑ¥Ì€ôl¸¸¹ÍÑÉÕÑÕÉ•¥…¹½ÍÑ¥Ì°€¸¸¹±…ÍÌÉ¥…¹½ÍÑ¥Ì°€¸¸¹¥¹±Õ‘•‘A…Ñ¡¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥•IÕ±•Ì°ÁÉ¥¥¹œ¥tì((€™½È€¡½¹ÍÐ‘¥…¹½ÍÑ¥Œ½˜½Ý¹•É¥…¹½ÍÑ¥Ì¤ì(€€€¥˜€¡‘¥…¹½ÍÑ¥Œ¹ÑåÁ”€ôôô€µ¥ÍÍ¥¹œœ¤µ¥ÍÍ¥¹=Ý¹•É¥•±‘Ì¹ÁÕÍ ¡‘¥…¹½ÍÑ¥Œ¹Á…Ñ ¤ì(€€€•±Í”¥˜€¡‘¥…¹½ÍÑ¥Œ¹ÑåÁ”€ôôô€Õ¹ÍÕÁÁ½ÉÑ•œ¤Õ¹ÍÕÁÁ½ÉÑ•‘=Ý¹•É¥•±‘Ì¹ÁÕÍ ¡‘¥…¹½ÍÑ¥Œ¹Á…Ñ ¤ì(€€€•±Í”¥˜€¡‘¥…¹½ÍÑ¥Œ¹ÑåÁ”€ôôô€É½ÍÍ}™¥•±œ¤É½ÍÍ¥•±‘=Ý¹•É¥•±‘Ì¹ÁÕÍ ¡‘¥…¹½ÍÑ¥Œ¹Á…Ñ ¤ì(€€€•±Í”¥¹Ù…±¥‘=Ý¹•É¥•±‘Ì¹ÁÕÍ ¡‘¥…¹½ÍÑ¥Œ¹Á…Ñ ¤ì(€ô((€½¹ÍÐÉ•ÅÕ¥É•‘AÉ¥•Ì€ô½Ý¹•ÉI•ÅÕ¥É•µ•¹ÑÌ¡Í•ÉÙ¥•QåÁ”°ÕÍÑ½µ•É%¹ÁÕÑÌ°ÁÉ¥¥¹œ°Í•ÉÙ¥•IÕ±•Ì¤ì(€™½È€¡½¹ÍÐ¥Ñ•´½˜É•ÅÕ¥É•‘AÉ¥•Ì¤ì(€€€½¹ÍÐÙ…±Õ”€ôÙ…±Õ•ÑA…Ñ ¡ÁÉ¥¥¹œ°¥Ñ•´¹Á…Ñ ¤ì(€€€¥˜€¡µ¥ÍÍ¥¹œ¡Ù…±Õ”¤¤ì(€€€€€µ¥ÍÍ¥¹=Ý¹•É¥•±‘Ì¹ÁÕÍ ¡¥Ñ•´¹Á…Ñ ¤ì(€€€€€½Ý¹•É¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ µ¥ÍÍ¥¹œœ°¥Ñ•´¹­¥¹°¥Ñ•´¹Á…Ñ °€‘í¥Ñ•´¹±…‰•±ô¥ÌÉ•ÅÕ¥É•¹€¤¤ì(€€€ô•±Í”¥˜€¡Ù…±Õ”€ôôô€À€˜˜½É•AÉ¥•I•ÅÕ¥É•µ•¹ÑY9•áÐ¡¥Ñ•´¤€˜˜€…™É••=™™•É¥¹Y9•áÐ¡Í•ÉÙ¥•IÕ±•Ì°Ñ¥•É9…µ”¤€˜˜(€€€€€€€€…¥¹±Õ‘•‘½É•AÉ¥•Y9•áÐ¡Í•ÉÙ¥•IÕ±•Ì°ÁÉ¥¥¹œ°É•ÅÕ¥É•‘AÉ¥•Ì°¥Ñ•´¹Á…Ñ ¤¤ì(€€€€€µ¥ÍÍ¥¹=Ý¹•É¥•±‘Ì¹ÁÕÍ ¡¥Ñ•´¹Á…Ñ ¤ì(€€€€€½Ý¹•É¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ µ¥ÍÍ¥¹œœ°€Õ¹±…ÍÍ¥™¥•‘}é•É½}½É•}ÁÉ¥”œ°¥Ñ•´¹Á…Ñ °¥Ñ•´¹±…‰•°€¬€œ¥Ìé•É¼Ý¥Ñ¡½ÕÐ…¸•áÁ±¥¥Ð™É•”½™™•É¥¹œ½È¥¹±Õ‘•µÁÉ¥”±…ÍÍ¥™¥…Ñ¥½¸¸œ¤¤ì(€€€ô•±Í”¥˜€ …Ù…±¥‘…Ñ•I•ÅÕ¥É•µ•¹ÑY…±Õ”¡¥Ñ•´°Ù…±Õ”¤¤ì(€€€€€¥¹Ù…±¥‘=Ý¹•É¥•±‘Ì¹ÁÕÍ ¡¥Ñ•´¹Á…Ñ ¤ì(€€€€€½Ý¹•É¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°¥Ñ•´¹­¥¹°¥Ñ•´¹Á…Ñ °€‘í¥Ñ•´¹±…‰•±ô¥Ì¥¹Ù…±¥¹€¤¤ì(€€€ô(€ô((€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€UMQ=4œ€˜˜ÁÉ¥¥¹œ¹ÕÍÑ½µAÉ¥¥¹5½‘”€ôôô€É…¹”œ€˜˜¹½¹9•…Ñ¥Ù”¡ÁÉ¥¥¹œ¹±½Ü¤€˜˜¹½¹9•…Ñ¥Ù”¡ÁÉ¥¥¹œ¹¡¥ ¤€˜˜ÁÉ¥¥¹œ¹¡¥ €ðôÁÉ¥¥¹œ¹±½Ü¤ì(€€€¥¹Ù…±¥‘=Ý¹•É¥•±‘Ì¹ÁÕÍ  ¡¥ œ¤ì(€€€É½ÍÍ¥•±‘=Ý¹•É¥•±‘Ì¹ÁÕÍ  ±½Üœ°€¡¥ œ¤ì(€€€½Ý¹•É¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ É½ÍÍ}™¥•±œ°€É…¹•}½É‘•Èœ°€¡¥ œ°€ÕÍÑ½´É…¹”¡¥ ÁÉ¥”µÕÍÐ‰”É•…Ñ•ÈÑ¡…¸±½ÜÁÉ¥”¸œ¤¤ì(€ô((€½¹ÍÐ½Ý¹•É•¥Í¥½¹I•ÅÕ¥É•€ômtì(€½¹ÍÐÉ•ÅÕ¥É••¥Í¥½¸€ô€¡Á…Ñ °­¥¹°µ•ÍÍ…”¤€ôø½Ý¹•É•¥Í¥½¹I•ÅÕ¥É•¹ÁÕÍ ¡ìÁ…Ñ °­¥¹°µ•ÍÍ…”ô¤ì(€½¹ÍÐ‰…Í•±¥¹•½¹™¥Éµ…Ñ¥½¸õ½™™•É¥¹	…Í•±¥¹•½¹™¥Éµ…Ñ¥½¸¡Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¤ì(€¥˜¡‰…Í•±¥¹•½¹™¥Éµ…Ñ¥½¸¥½Ý¹•É•¥Í¥½¹I•ÅÕ¥É•¹ÁÕÍ ¡‰…Í•±¥¹•½¹™¥Éµ…Ñ¥½¸¤ì(€¥˜€¡Í•ÉÙ¥•QåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  9%9|œ¤€˜˜€…½¹™¥ÕÉ•‘=™™•É¥¹œ¡Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¤¤ì(€€€É•ÅÕ¥É••¥Í¥½¸ Á½ÍÑ•É¥Ù…Ñ¥½¹IÕ±”œ°€Á½ÍÑ}•½µ•ÑÉå}½¹ÑÉ…Ðœ°€M•ÐÕÀ„™•¹”½™™•É¥¹œÝ¥Ñ ¥ÑÌÑåÁ”°¡•¥¡Ð°Ñ•ÉÉ…¥¸…¹¥¹±Õ‘•Á½ÍÑÌ…¹™½½Ñ¥¹Ì¸¡½½Í”…¸¥¹ÍÑ…±±•ÁÉ¥”½Èµ•…ÍÕÉ•½µÁ½¹•¹ÐÁÉ¥•Ì¸œ¤ì(€€€É•ÅÕ¥É••¥Í¥½¸ ½¹É•Ñ•A•ÉA½ÍÐœ°€µ¥á•‘}¡…É•}…±±½…Ñ¥½¸œ°€%¸Ñ¡”™•¹”½™™•É¥¹œ°‘•™¥¹”Ñ¡”Á½ÍÑÌ°™½½Ñ¥¹Ì…¹‘¥¥¹œ¥¹±Õ‘•¥¸Ñ¡”¥¹ÍÑ…±±•ÁÉ¥”°½È•¹Ñ•ÈÑ¡•¥ÈÍ•Á…É…Ñ”±…‰½È…¹µ…Ñ•É¥…°ÁÉ¥•Ì¸œ¤ì(€€€¥˜€¡ÕÍÑ½µ•É%¹ÁÕÑÌ¹…Ñ•½Õ¹Ð€ø€À¤É•ÅÕ¥É••¥Í¥½¸¡…Ñ•AÉ¥”¸‘íÕÍÑ½µ•É%¹ÁÕÑÌ¹™•¹•QåÁ•õ€°€…Ñ•}Ý¥‘Ñ¡}ÁÉ¥¥¹}½¹ÑÉ…Ðœ°€M•±•Ñ•…Ñ•Ì¹••…¸½Ý¹•Èµ½¹™¥Éµ•µ•…ÍÕÉ•µÝ¥‘Ñ ÁÉ¥¥¹œµ½‘•°ìÑ¡”•á¥ÍÑ¥¹œÁ•Èµ…Ñ”ÁÉ¥”…¹¹½Ð‘¥ÍÑ¥¹Õ¥Í ½Á•¹¥¹œÝ¥‘Ñ¡Ì¸œ¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€I==%9}IA159Pœ¤ì(€€€½¹ÍÐ‰…Í¥ÍA…Ñ €ôÕ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ì¸‘íÕÍÑ½µ•É%¹ÁÕÑÌ¹É•Á±…•µ•¹ÑI½½™QåÁ•õ€ì(€€€¥˜€¡Ù…±Õ•ÑA…Ñ ¡ÁÉ¥¥¹œ°‰…Í¥ÍA…Ñ ¤€ôôô€½ÍÐœ€˜˜€…ÁÉ¥¥¹œ¹Í½Á••Ñ…¥±Ìü¹lÉ½½™}Õ¹‘•É±…åµ•¹Ñ|œ­ÕÍÑ½µ•É%¹ÁÕÑÌ¹É•Á±…•µ•¹ÑI½½™QåÁ•t¤É•ÅÕ¥É••¥Í¥½¸¡‰…Í¥ÍA…Ñ °€ÁÕÉ¡…Í…‰±•}Õ¹‘•É±…åµ•¹Ñ}½¹ÑÉ…Ðœ°€½ÍÐµ‰…Í•É½½˜Õ¹‘•É±…åµ•¹Ð¹••‘ÌÁÉ½‘ÕÐµÍÁ•¥™¥ŒÁ…­…”½Ù•É…”°Ý…ÍÑ”°…¹ÁÕÉ¡…Í…‰±”µÅÕ…¹Ñ¥ÑäÉ½Õ¹‘¥¹œ‰•™½É”¥Ð…¸‰”…±Õ±…Ñ•¸œ¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  1==I%9|œ¤¤ì(€€€¥˜€¡l¡…É‘Ý½½œ°€±…µ¥¹…Ñ”œ°€…ÉÁ•Ðt¹¥¹±Õ‘•Ì¡ÕÍÑ½µ•É%¹ÁÕÑÌ¹¹•Ý±½½É¥¹QåÁ”¤€˜˜€…ÁÉ¥¥¹œ¹Í½Á••Ñ…¥±Ìü¹l™±½½É}Õ¹‘•É±…åµ•¹Ñ|œ­ÕÍÑ½µ•É%¹ÁÕÑÌ¹¹•Ý±½½É¥¹QåÁ•t¤É•ÅÕ¥É••¥Í¥½¸¡Õ¹‘•É±…åµ•¹ÑAÉ¥¥¹œ¸‘íÕÍÑ½µ•É%¹ÁÕÑÌ¹¹•Ý±½½É¥¹QåÁ•õ€°€ÁÉ½‘ÕÑ}ÍÁ•¥™¥}Õ¹‘•É±…åµ•¹Ñ}½¹ÑÉ…Ðœ°€ÁÁÉ½Ù”ÁÉ½‘ÕÐµÍÁ•¥™¥ŒÕ¹‘•É±…åµ•¹ÐÍ½Á”°½Ù•É…”°ÁÕÉ¡…Í…‰±”ÅÕ…¹Ñ¥Ñä°…¹ÁÉ¥¥¹œ™½ÈÑ¡¥Ì™±½½É¥¹œÑåÁ”¸Q¡”Ù¥¹å°µÁ±…¹¬Í…±…È¥Ì¹½ÐÉ•ÕÍ•¸œ¤ì(€€€¥˜€¡Ù¥¹å±U¹‘•É±…åµ•¹ÑÁÁ±¥•Ì¡ÕÍÑ½µ•É%¹ÁÕÑÌ°ÁÉ¥¥¹œ¤€˜˜ÁÉ¥¥¹œ¹Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ì€ôôô€½ÍÐœ€˜˜€…ÁÉ¥¥¹œ¹Í½Á••Ñ…¥±Ìü¹™±½½É}Õ¹‘•É±…åµ•¹Ñ}Ù¥¹å±}Á±…¹¬¤É•ÅÕ¥É••¥Í¥½¸ Õ¹‘•É±…åµ•¹ÑAÉ¥•	…Í¥Ìœ°€ÁÕÉ¡…Í…‰±•}Õ¹‘•É±…åµ•¹Ñ}½¹ÑÉ…Ðœ°€½ÍÐµ‰…Í•™±½½É¥¹œÕ¹‘•É±…åµ•¹Ð¹••‘ÌÁÉ½‘ÕÐµÍÁ•¥™¥ŒÁ…­…”½Ù•É…”°Ý…ÍÑ”°…¹ÁÕÉ¡…Í…‰±”µÅÕ…¹Ñ¥ÑäÉ½Õ¹‘¥¹œ‰•™½É”¥Ð…¸‰”…±Õ±…Ñ•¸œ¤ì(€€€¥˜€¡ÕÍÑ½µ•É%¹ÁÕÑÌ¹É•µ½Ù…±9••‘•€ôôô™…±Í”€˜˜ÕÍÑ½µ•É%¹ÁÕÑÌ¹•á¥ÍÑ¥¹±½½ÉQåÁ”€„ôô€¹½¹”œ€˜˜€…Í½Á•¹ÑÉ¥•Í½È¡ÁÉ¥¥¹œ°™±½½É}½Ù•É±…äœ¤¹Í½µ” ¡m­•ä±‘t¤ôùÍ½Á•5…Ñ¡•ÍI•ÅÕ•ÍÐ¡­•ä±±ÕÍÑ½µ•É%¹ÁÕÑÌ¤¤¤É•ÅÕ¥É••¥Í¥½¸ ™±½½É=Ù•É±…åAÉ¥¥¹œœ°€™±½½É}½Ù•É±…å}½¹ÑÉ…Ðœ°€ÁÁÉ½Ù”ÁÉ•Á…É…Ñ¥½¸°½µÁ…Ñ¥‰¥±¥Ñä°…¹ÁÉ¥¥¹œÉÕ±•Ì™½È¥¹ÍÑ…±±¥¹œ½Ù•ÈÑ¡”½¹™¥Éµ••á¥ÍÑ¥¹œ™±½½ÈÝ¥Ñ¡½ÕÐÉ•µ½Ù…°¸œ¤ì(€ô(€¥˜€¡l%9QI%=I}A%9Q%9œ°€aQI%=I}A%9Q%9t¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤€˜˜Í•ÉÙ¥•IÕ±•Ì¹ÁÉ¥•	…Í¥Í	å…Ñ•½Éäü¹µ…Ñ•É¥…°€ôôô€½ÍÐœ€˜˜€„¡½¹™¥ÕÉ•‘=™™•É¥¹œ¡Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¤˜™ÁÉ¥¥¹œ¹½™™•É¥¹5½‘”ôôô¥¹ÍÑ…±±•œ¤¤ì(€€€½¹ÍÐ±…‰•±ÌõíÁ…¥¹Ñ}Ý…±°è]…±°Á…¥¹ÐÁÉ½‘ÕÐœ±Á…¥¹Ñ}•¥±¥¹œè•¥±¥¹œÁ…¥¹ÐÁÉ½‘ÕÐœ±Á…¥¹Ñ}ÑÉ¥´èQÉ¥´Á…¥¹ÐÁÉ½‘ÕÐœ±Á…¥¹Ñ}ÁÉ¥µ•Èè]…±°ÁÉ¥µ•ÈÁÉ½‘ÕÐœ±Á…¥¹Ñ}•¥±¥¹}ÁÉ¥µ•Èè•¥±¥¹œÁÉ¥µ•ÈÁÉ½‘ÕÐœ±Á…¥¹Ñ}ÁÉ•ÀèAÉ•Á…É…Ñ¥½¸ÁÉ½‘ÕÐôì(€€€™½È¡½¹ÍÐ­•ä½˜Í½Á•-•åÍ½ÉI•ÅÕ•ÍÐ¡Í•ÉÙ¥•QåÁ”±ÕÍÑ½µ•É%¹ÁÕÑÌ±ÁÉ¥¥¹œ±Í•ÉÙ¥•IÕ±•Ì¤¹™¥±Ñ•È¡¬ôø…ÁÉ¥¥¹œ¹Í½Á••Ñ…¥±Ìü¹m­t¤¤É•ÅÕ¥É••¥Í¥½¸ Í½Á••Ñ…¥±Ì¸œ­­•ä°ÁÕÉ¡…Í…‰±•}Á…¥¹Ñ}½¹ÑÉ…Ðœ°¡±…‰•±Ím­•åuññÍ½Á••™¥¹¥Ñ¥½¹Ì¡Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¥m­•åtü¹±…‰•±ñðM•±•Ñ•Á…¥¹ÐÁÉ½‘ÕÐœ¤¬œ¥Ì¹½Ð½¹™¥ÕÉ•¸¹Ñ•È¥ÑÌ½Ù•É…”°Ý…ÍÑ”…±±½Ý…¹”…¹Á…­…”ÁÉ¥”¥¸‘‘¥Ñ¥½¹…°ÁÉ¥•Í½Á”¸œ¤ì(€ô(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€M%%9}IA159Pœ€˜˜ÕÍÑ½µ•É%¹ÁÕÑÌ¹ÑÉ¥µ%¹±Õ‘•€˜˜€…ÁÉ¥¥¹œ¹Í½Á••Ñ…¥±Ìü¹Í¥‘¥¹}ÑÉ¥´¤É•ÅÕ¥É••¥Í¥½¸ ÑÉ¥µA•É1¥¹•…É½½Ðœ°€µ¥á•‘}¡…É•}±…ÍÍ¥™¥…Ñ¥½¸œ°€M¥‘¥¹œÑÉ¥´¥¹ÍÑ…±±…Ñ¥½¸¹••‘ÌÍ•Á…É…Ñ”±…‰½È…¹µ…Ñ•É¥…°É…Ñ•Ì°½È…¸•áÁ±¥¥Ð½Ý¹•Èµ½¹™¥Éµ•…Ñ•½Éä…¹…±±½…Ñ¥½¸ÉÕ±”¸œ¤ì(€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€UMQ=4œ€˜˜ÁÉ¥¥¹œ¹ÕÍÑ½µ¡…É•±…ÍÍ¥™¥…Ñ¥½¸€ôôôÕ¹‘•™¥¹•¤É•ÅÕ¥É••¥Í¥½¸ ÕÍÑ½µ¡…É•±…ÍÍ¥™¥…Ñ¥½¸œ°€ÕÍÑ½µ}¡…É•}±…ÍÍ¥™¥…Ñ¥½¸œ°€¡½½Í”Ñ¡”ÕÍÑ½´Í•ÉÙ¥”¡…É”…Ñ•½Éä¥¸Ñ¡”½Ý¹•ÈÁÉ¥”‰½½¬¸Q¡”…Ñ•½ÉäÍ•±•ÑÌÑ¡”•á¥ÍÑ¥¹œ½Ý¹•Èµ½¹™¥ÕÉ•ÁÉ¥”‰…Í¥Ì°Ñ…á…‰¥±¥Ñä…¹µ…É­ÕÀÍ•ÑÑ¥¹Ìì¹¼±…‰½È½µ…Ñ•É¥…°ÍÁ±¥Ð¥Ì¥¹™•ÉÉ•¸œ¤ì((€½Ý¹•É¥…¹½ÍÑ¥Ì¹ÁÕÍ  ¸¸¹½Ý¹•É•¥Í¥½¹I•ÅÕ¥É•¹µ…À¡‘•¥Í¥½¸€ôø½Ý¹•É¥…¹½ÍÑ¥Œ ½Ý¹•É}‘•¥Í¥½¸œ°‘•¥Í¥½¸¹­¥¹°‘•¥Í¥½¸¹Á…Ñ °‘•¥Í¥½¸¹µ•ÍÍ…”¤¤¤ì(€™½È€¡½¹ÍÐÁ…Ñ ½˜Õ¹ÍÕÁÁ½ÉÑ•‘=Ý¹•É¥•±‘Ì¤½Ý¹•É¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ Õ¹ÍÕÁÁ½ÉÑ•œ°€™¥•±œ°Á…Ñ °€Q¡¥ÌÁÉ¥¥¹œ™¥•±¥Ì¹½ÐÍÕÁÁ½ÉÑ•™½ÈÑ¡”Í•±•Ñ•Í•ÉÙ¥”¸œ¤¤ì((€½¹ÍÐµ¥ÍÍ¥¹¥•±‘Ì€ôl¸¸¹¹•ÜM•Ð¡µ¥ÍÍ¥¹=Ý¹•É¥•±‘Ì¥tì(€½¹ÍÐ¥¹Ù…±¥‘¥•±‘Ì€ôl¸¸¹¹•ÜM•Ð¡¥¹Ù…±¥‘=Ý¹•É¥•±‘Ì¥tì(€½¹ÍÐÕ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ì€ôl¸¸¹¹•ÜM•Ð¡Õ¹ÍÕÁÁ½ÉÑ•‘=Ý¹•É¥•±‘Ì¥tì(€½¹ÍÐÉ½ÍÍ¥•±‘Ì€ôl¸¸¹¹•ÜM•Ð¡É½ÍÍ¥•±‘=Ý¹•É¥•±‘Ì¥tì(€½¹ÍÐ‘¥…¹½ÍÑ¥Ì€ôÕ¹¥ÅÕ•¥…¹½ÍÑ¥Ì¡½Ý¹•É¥…¹½ÍÑ¥Ì¤ì(€½¹ÍÐÙ…±¥‘…Ñ¥½¹5•ÍÍ…•Ì€ôl¸¸¹¹•ÜM•Ð¡l¸¸¹‘¥…¹½ÍÑ¥Ì¹µ…À¡¥Ñ•´€ôø¥Ñ•´¹µ•ÍÍ…”¤°€¸¸¹½Ý¹•É•¥Í¥½¹I•ÅÕ¥É•¹µ…À¡¥Ñ•´€ôø¥Ñ•´¹µ•ÍÍ…”¥t¥tì(€É•ÑÕÉ¸ì(€€€½¬è€…µ¥ÍÍ¥¹¥•±‘Ì¹±•¹Ñ €˜˜€…¥¹Ù…±¥‘¥•±‘Ì¹±•¹Ñ €˜˜€…Õ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ì¹±•¹Ñ €˜˜€…É½ÍÍ¥•±‘Ì¹±•¹Ñ €˜˜€…½Ý¹•É•¥Í¥½¹I•ÅÕ¥É•¹±•¹Ñ °(€€€µ¥ÍÍ¥¹=Ý¹•É¥•±‘Ìèµ¥ÍÍ¥¹¥•±‘Ì°(€€€¥¹Ù…±¥‘=Ý¹•É¥•±‘Ìè¥¹Ù…±¥‘¥•±‘Ì°(€€€É½ÍÍ¥•±‘=Ý¹•É¥•±‘ÌèÉ½ÍÍ¥•±‘Ì°(€€€Õ¹ÍÕÁÁ½ÉÑ•‘=Ý¹•É¥•±‘ÌèÕ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ì°(€€€Õ¹•áÁ•Ñ•‘=Ý¹•É¥•±‘ÌèÕ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ì°(€€€½Ý¹•É•¥Í¥½¹I•ÅÕ¥É•°(€€€½Ý¹•É¥…¹½ÍÑ¥Ìè‘¥…¹½ÍÑ¥Ì°(€€€Ù…±¥‘…Ñ¥½¹5•ÍÍ…•Ì(€ôì)ô()™Õ¹Ñ¥½¸¥¹ÍÁ•ÑIÕ±•5…À¡‘¥…¹½ÍÑ¥Ì°Í½ÕÉ”°¹…µ”°­•åÌ°Ù…±¥‘…Ñ½È°•áÁ•Ñ•‘½Áä¤ì(€½¹ÍÐÙ…±Õ”€ôÍ½ÕÉ•m¹…µ•tì(€¥˜€ …¥ÍI•½É¡Ù…±Õ”¤¤ì(€€€¥˜€¡µ¥ÍÍ¥¹œ¡Ù…±Õ”¤¤™½È€¡½¹ÍÐ­•ä½˜­•åÌ¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ µ¥ÍÍ¥¹œœ°€Í•ÉÙ¥•}ÉÕ±”œ°€‘í¹…µ•ô¸‘í­•åõ€°€‘í¹…µ•ô¸‘í­•åô¥ÌÉ•ÅÕ¥É•¹€¤¤ì(€€€•±Í”‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€Í•ÉÙ¥•}ÉÕ±”œ°¹…µ”°€‘í¹…µ•ôµÕÍÐ‰”…¸½‰©•Ð¹€¤¤ì(€€€É•ÑÕÉ¸ì(€ô(€™½È€¡½¹ÍÐ­•ä½˜=‰©•Ð¹­•åÌ¡Ù…±Õ”¤¤¥˜€ …­•åÌ¹¥¹±Õ‘•Ì¡­•ä¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ Õ¹ÍÕÁÁ½ÉÑ•œ°€Í•ÉÙ¥•}ÉÕ±”œ°€‘í¹…µ•ô¸‘í­•åõ€°€‘í¹…µ•ô¸‘í­•åô¥Ì¹½ÐÍÕÁÁ½ÉÑ•¹€¤¤ì(€™½È€¡½¹ÍÐ­•ä½˜­•åÌ¤ì(€€€½¹ÍÐÁ…Ñ €ô€‘í¹…µ•ô¸‘í­•åõ€ì(€€€¥˜€ …=‰©•Ð¹¡…Í=Ý¸¡Ù…±Õ”°­•ä¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ µ¥ÍÍ¥¹œœ°€Í•ÉÙ¥•}ÉÕ±”œ°Á…Ñ °€‘íÁ…Ñ¡ô¥ÌÉ•ÅÕ¥É•¹€¤¤ì(€€€•±Í”¥˜€ …Ù…±¥‘…Ñ½È¡Ù…±Õ•m­•åt¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€Í•ÉÙ¥•}ÉÕ±”œ°Á…Ñ °€‘íÁ…Ñ¡ô€‘í•áÁ•Ñ•‘½Áåô¹€¤¤ì(€ô)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸Ù…±¥‘…Ñ•M•ÉÙ¥•IÕ±•Í•Ñ…¥±•¡½Ý¹•ÉAÉ¥¥¹œ€ôíô°Í•ÉÙ¥•QåÁ”¤ì(€½¹ÍÐÍ¹…ÁÍ¡½Ð€ôÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡½Ý¹•ÉAÉ¥¥¹œ°€½Ý¹•ÉAÉ¥¥¹œœ¤ì(€¥˜€ …Í¹…ÁÍ¡½Ð¹½¬¤É•ÑÕÉ¸m½Ý¹•É¥…¹½ÍÑ¥Œ (€€€€¥¹Ù…±¥œ°€Í•ÉÙ¥•}ÉÕ±”œ°É•±…Ñ¥Ù•M¹…ÁÍ¡½ÑA…Ñ ¡Í¹…ÁÍ¡½Ð°€½Ý¹•ÉAÉ¥¥¹œœ¤°(€€€=Ý¹•ÈÁÉ¥¥¹œÉÕ±•Ì½Õ±¹½Ð‰”É•…Í…™•±äè€‘íÍ¹…ÁÍ¡½Ð¹É•…Í½¹ô¹€(€€¥tì(€½¹ÍÐ¹½¹A±…¥¹A…Ñ €ô™¥ÉÍÑ9½¹A±…¥¹A…Ñ ¡Í¹…ÁÍ¡½Ð°€½Ý¹•ÉAÉ¥¥¹œœ¤ì(€¥˜€¡¹½¹A±…¥¹A…Ñ ¤É•ÑÕÉ¸m½Ý¹•É¥…¹½ÍÑ¥Œ (€€€€¥¹Ù…±¥œ°€Í•ÉÙ¥•}ÉÕ±”œ°¹½¹A±…¥¹A…Ñ °(€€€=Ý¹•ÈÁÉ¥¥¹œÉÕ±•ÌµÕÍÐ½¹Ñ…¥¸½¹±äÁ±…¥¸‘…Ñ„½‰©•ÑÌì€‘í¹½¹A±…¥¹A…Ñ¡ô¥Ì¹½ÐÁ±…¥¸‘…Ñ„¹€(€€¥tì(€½Ý¹•ÉAÉ¥¥¹œ€ô…¹½¹¥…±M•ÉÙ¥•%‘•¹Ñ¥ÑåY9•áÐ¡Í¹…ÁÍ¡½Ð¹Ù…±Õ”¤ì(€Í•ÉÙ¥•QåÁ”ñðô½Ý¹•ÉAÉ¥¥¹œ¹Í•ÉÙ¥•QåÁ”ì(€½¹ÍÐ‘¥…¹½ÍÑ¥Ì€ômtì(€½¹ÍÐÍÕÁÁ½ÉÑ•‘I½½Ð€ô¹•ÜM•Ð¡l…Ñ¥Ù”œ°Í•ÉÙ¥•QåÁ”œ°Í•ÉÙ¥”œ°ÁÉ¥¥¹œœ°Í½ÕÉ”œ°½¹™¥Éµ•‘¥•±‘Ìœ°…ÁÁÉ½Ù•‘Y…±Õ•Ìœ°Ñ¥•ÉÌœ°™••IÕ±•Ìœ°ÁÉ¥•	…Í¥Í	å…Ñ•½Éäœ°Ñ…á…‰¥±¥Ñå	å…Ñ•½Éäœ°Á•…­5½¹Ñ¡Ìœ°Á•…­MÕÉ¡…É•A•É•¹Ðœ°‘¥Í±…¥µ•Èœ°‘¥ÍÁ½Í…±M½Á”œ°¥œ°½É¥¥¸œ°é•É½AÉ¥•A½±¥äœ°­¹½Ý¹=™™•É¥¹Ìt¤ì(€™½È¡½¹ÍÐ­•ä½˜=‰©•Ð¹­•åÌ¡½Ý¹•ÉAÉ¥¥¹œ¤¤¥˜ …ÍÕÁÁ½ÉÑ•‘I½½Ð¹¡…Ì¡­•ä¤€˜˜€…11}AI%%9}%1L¹¡…Ì¡­•ä¤€˜˜€…	UM%9MM}U1Q}%1L¹¥¹±Õ‘•Ì¡­•ä¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ Õ¹ÍÕÁÁ½ÉÑ•œ°Í•ÉÙ¥•}É½½Ðœ±­•ä°U¹ÍÕÁÁ½ÉÑ•Í•ÉÙ¥”Í•ÑÑ¥¹œìµ¥É…Ñ”½È•áÁ±¥¥Ñ±ä½¹™¥ÕÉ”¥ÑÌY9•áÐ½¹ÑÉ…Ð‰•™½É”ÅÕ½Ñ¥¹œ¸œ¤¤ì(€¥˜¡½Ý¹•ÉAÉ¥¥¹œ¹‘¥ÍÁ½Í…±M½Á”„ôõÕ¹‘•™¥¹•€˜˜€¡Í•ÉÙ¥•QåÁ”„ôô19MA%9}M=ññ½Ý¹•ÉAÉ¥¥¹œ¹‘¥ÍÁ½Í…±M½Á”„ôôÍ•Á…É…Ñ•}ÁÉ½©•Ñ}‘•‰É¥Ìœ¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°Í•ÉÙ¥•}ÉÕ±”œ°‘¥ÍÁ½Í…±M½Á”œ°=¹±ä•áÁ±¥¥Ñ±äÍ•Á…É…Ñ”Í½µÁÉ½©•Ð‘•‰É¥Ì¥ÌÍÕÁÁ½ÉÑ•¸œ¤¤ì(€½¹ÍÐ¹•ÍÑ•‘AÉ¥¥¹œ€ô½Ý¹•ÉAÉ¥¥¹œ¹ÁÉ¥¥¹œì(€½¹ÍÐ¡…Í9•ÍÑ•‘AÉ¥¥¹œ€ô¥ÍI•½É¡¹•ÍÑ•‘AÉ¥¥¹œ¤ì(€¥˜€¡¹•ÍÑ•‘AÉ¥¥¹œ€ôôôÕ¹‘•™¥¹•¤ì(€€€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ µ¥ÍÍ¥¹œœ°€Í•ÉÙ¥•}ÉÕ±”œ°€ÁÉ¥¥¹œœ°€ÁÉ¥¥¹œµÕÍÐ‰”ÍÑ½É•…Ì…¸½‰©•Ð½¸Ñ¡”Í•ÉÙ¥”¸œ¤¤ì(€ô•±Í”¥˜€ …¡…Í9•ÍÑ•‘AÉ¥¥¹œ¤ì(€€€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€Í•ÉÙ¥•}ÉÕ±”œ°€ÁÉ¥¥¹œœ°€ÁÉ¥¥¹œµÕÍÐ‰”…¸½‰©•Ð¸œ¤¤ì(€ô(€™½È€¡½¹ÍÐ­•ä½˜=‰©•Ð¹­•åÌ¡½Ý¹•ÉAÉ¥¥¹œ¤¤ì(€€€¥˜€ …11}AI%%9}%1L¹¡…Ì¡­•ä¤¤½¹Ñ¥¹Õ”ì(€€€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ Õ¹ÍÕÁÁ½ÉÑ•œ°€µ¥ÍÁ±…•‘}ÁÉ¥¥¹œœ°­•ä°€‘í­•åôµÕÍÐ‰”ÍÑ½É•¥¹Í¥‘”ÁÉ¥¥¹œ°¹½Ð…ÐÑ¡”Í•ÉÙ¥”É½½Ð¹€¤¤ì(€ô(€™½È€¡½¹ÍÐ­•ä½˜	UM%9MM}U1Q}%1L¹™¥±Ñ•È¡¹…µ”€ôø€…lÁ•…­5½¹Ñ¡Ìœ°€Á•…­MÕÉ¡…É•A•É•¹Ðt¹¥¹±Õ‘•Ì¡¹…µ”¤¤¤ì(€€€¥˜€¡=‰©•Ð¹¡…Í=Ý¸¡½Ý¹•ÉAÉ¥¥¹œ°­•ä¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ Õ¹ÍÕÁÁ½ÉÑ•œ°€µ¥ÍÁ±…•‘}‰ÕÍ¥¹•ÍÍ}‘•™…Õ±Ðœ°­•ä°€‘í­•åô¥Ì„‰ÕÍ¥¹•ÍÌµÝ¥‘”‘•™…Õ±Ð…¹…¹¹½Ð‰”ÍÑ½É•½¸„Í•ÉÙ¥”¹€¤¤ì(€ô(€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ  ¸¸¹¥‘•¹Ñ¥Ñå¥…¹½ÍÑ¥ÍY9•áÐ¡½Ý¹•ÉAÉ¥¥¹œ°Í•ÉÙ¥•QåÁ”¤¤ì(€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ  ¸¸¹é•É½A½±¥å¥…¹½ÍÑ¥ÍY9•áÐ¡½Ý¹•ÉAÉ¥¥¹œ¤¤ì(€¥˜€¡½Ý¹•ÉAÉ¥¥¹œ¹­¹½Ý¹=™™•É¥¹Ì€„ôôÕ¹‘•™¥¹•¤ì(€€€½¹ÍÐµ…ÁÌ€ô½Ý¹•ÉAÉ¥¥¹œ¹­¹½Ý¹=™™•É¥¹Ìì(€€€¥˜€ …¥ÍI•½É¡µ…ÁÌ¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°­¹½Ý¹}½™™•É¥¹Ìœ°­¹½Ý¹=™™•É¥¹Ìœ°UÍ”I•¥ÍÑ•É•ÁÉ½‘ÕÑÌÑ¼¥‘•¹Ñ¥™äÑ¡”ÁÉ½‘ÕÑÌå½Ô½™™•È¸œ¤¤ì(€€€•±Í”™½È€¡½¹ÍÐm™¥•±°Ù…±Õ•Ít½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡µ…ÁÌ¤¤ì(€€€€€¥˜€¡5MUI59Q}=9QIQMmÍ•ÉÙ¥•QåÁ•tü¹™¥•±‘Ím™¥•±‘tü¹ÑåÁ”€„ôô€Í±Õœœ¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°­¹½Ý¹}½™™•É¥¹Ìœ°­¹½Ý¹=™™•É¥¹Ì¸œ­™¥•±°Q¡¥Ì¥Ì¹½Ð…¸½Á•¸½™™•É¥¹œÍ•±•Ñ½È¸œ¤¤ì(€€€€€•±Í”‘¥…¹½ÍÑ¥Ì¹ÁÕÍ  ¸¸¹½™™•É¥¹I•¥ÍÑÉå¥…¹½ÍÑ¥ÍY9•áÐ¡™¥•±±Ù…±Õ•Ì¤¤ì(€€€ô(€ô(€¥˜€¡½Ý¹•ÉAÉ¥¥¹œ¹‘¥Í±…¥µ•È€„ôôÕ¹‘•™¥¹•€˜˜€¡ÑåÁ•½˜½Ý¹•ÉAÉ¥¥¹œ¹‘¥Í±…¥µ•È€„ôô€ÍÑÉ¥¹œœñð€…½Ý¹•ÉAÉ¥¥¹œ¹‘¥Í±…¥µ•È¹ÑÉ¥´ ¤¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€Í•ÉÙ¥•}ÉÕ±”œ°€‘¥Í±…¥µ•Èœ°€‘¥Í±…¥µ•ÈµÕÍÐ‰”¹½¸µ•µÁÑäÑ•áÐÝ¡•¸¥Ð¥ÌÁÉ•Í•¹Ð¸œ¤¤ì(€¥˜€¡½Ý¹•ÉAÉ¥¥¹œ¹½¹™¥Éµ•‘¥•±‘Ì€„ôôÕ¹‘•™¥¹•¤ì(€€€¥˜€ …¥ÍI•½É¡½Ý¹•ÉAÉ¥¥¹œ¹½¹™¥Éµ•‘¥•±‘Ì¤¤ì(€€€€€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€…¥}½¹™¥Éµ…Ñ¥½¸œ°€½¹™¥Éµ•‘¥•±‘Ìœ°€½¹™¥Éµ•‘¥•±‘ÌµÕÍÐ‰”…¸½‰©•Ð½˜•áÁ±¥¥Ð‰½½±•…¸…ÁÁÉ½Ù…±Ì¸œ¤¤ì(€€€ô•±Í”ì(€€€€€½¹ÍÐ½¹™¥Éµ…‰±•¥•±‘Ì€ô¹•ÜM•Ð (€€€€€€€l%}MUMQœ°€%}%9QIY%\t¹¥¹±Õ‘•Ì¡½Ý¹•ÉAÉ¥¥¹œ¹Í½ÕÉ”¤(€€€€€€€€€€ü…¥½¹™¥Éµ…Ñ¥½¹¥•±‘ÍY9•áÐ¡½Ý¹•ÉAÉ¥¥¹œ°¡…Í9•ÍÑ•‘AÉ¥¥¹œ€ü¹•ÍÑ•‘AÉ¥¥¹œ€èíô¤(€€€€€€€€€€èmt(€€€€€€¤ì(€€€€€™½È€¡½¹ÍÐm™¥•±°Ù…±Õ•t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡½Ý¹•ÉAÉ¥¥¹œ¹½¹™¥Éµ•‘¥•±‘Ì¤¤ì(€€€€€€€½¹ÍÐÁ…Ñ €ô½¹™¥Éµ•‘¥•±‘Ì¸‘í™¥•±‘õ€ì(€€€€€€€¥˜€ …½¹™¥Éµ…‰±•¥•±‘Ì¹¡…Ì¡™¥•±¤¤ì(€€€€€€€€€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ Õ¹ÍÕÁÁ½ÉÑ•œ°€…¥}½¹™¥Éµ…Ñ¥½¸œ°Á…Ñ °€‘íÁ…Ñ¡ô‘½•Ì¹½Ðµ…Ñ „½¹™¥Éµ…‰±”™¥•±½¸Ñ¡¥ÌÍ•ÉÙ¥”¹€¤¤ì(€€€€€€€ô•±Í”¥˜€¡ÑåÁ•½˜Ù…±Õ”€„ôô€‰½½±•…¸œ¤ì(€€€€€€€€€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€…¥}½¹™¥Éµ…Ñ¥½¸œ°Á…Ñ °€‘íÁ…Ñ¡ôµÕÍÐ‰”ÑÉÕ”½È™…±Í”¹€¤¤ì(€€€€€€€ô(€€€€€ô(€€€ô(€ô(€¥˜¡½Ý¹•ÉAÉ¥¥¹œ¹…ÁÁÉ½Ù•‘Y…±Õ•Ì„ôõÕ¹‘•™¥¹•¥ì(€€€½¹ÍÐ™¥•±‘Ìõl%}MUMQœ°%}%9QIY%\t¹¥¹±Õ‘•Ì¡½Ý¹•ÉAÉ¥¥¹œ¹Í½ÕÉ”¤ý…¥½¹™¥Éµ…Ñ¥½¹¥•±‘ÍY9•áÐ¡½Ý¹•ÉAÉ¥¥¹œ±¹•ÍÑ•‘AÉ¥¥¹ññíô¤émtì(€€€¥˜ …¥ÍI•½É¡½Ý¹•ÉAÉ¥¥¹œ¹…ÁÁÉ½Ù•‘Y…±Õ•Ì¤¥‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°…¥}½¹™¥Éµ…Ñ¥½¸œ°…ÁÁÉ½Ù•‘Y…±Õ•Ìœ°ÁÁÉ½Ù•Ù…±Õ•ÌµÕÍÐ‰”„Á±…¥¸™¥•±µÑ¼µ…ÁÁÉ½Ù…°µ…À¸œ¤¤ì(€€€•±Í”™½È¡½¹ÍÐm™¥•±±É•½É‘t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡½Ý¹•ÉAÉ¥¥¹œ¹…ÁÁÉ½Ù•‘Y…±Õ•Ì¤¥ì(€€€€€¥˜ …™¥•±‘Ì¹¥¹±Õ‘•Ì¡™¥•±¤¥‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ Õ¹ÍÕÁÁ½ÉÑ•œ°…¥}½¹™¥Éµ…Ñ¥½¸œ°…ÁÁÉ½Ù•‘Y…±Õ•Ì¸œ­™¥•±°ÁÁÉ½Ù…°‘½•Ì¹½Ðµ…Ñ „½¹™¥Éµ…‰±”Í•ÉÙ¥”™¥•±¸œ¤¤ì(€€€€€•±Í”¥˜ …¥ÍI•½É¡É•½É¥ññ=‰©•Ð¹­•åÌ¡É•½É¤¹±•¹Ñ „ôôÙñð…=‰©•Ð¹¡…Í=Ý¸¡É•½É°Ù…±Õ”œ¥ññÉ•½É¹Í•ÉÙ¥•QåÁ”„ôõÍ•ÉÙ¥•QåÁ•ñð…Í…µ•M•ÉÙ¥•%‘Y9•áÐ¡É•½É¹Í•ÉÙ¥•%±½Ý¹•ÉAÉ¥¥¹œ¹¥¥ññÉ•½É¹½Ý¹•É%„ôõ½Ý¹•ÉAÉ¥¥¹œ¹½É¥¥¸ü¹½Ý¹•É%‘ññl½Ý¹•É%œ°½Á•É…Ñ¥½¹%œ°…ÁÁÉ½Ù•‘Ðt¹Í½µ”¡­•äôùÑåÁ•½˜É•½É‘m­•åt„ôôÍÑÉ¥¹œñð…É•½É‘m­•åt¹ÑÉ¥´ ¤¥ñð„½yq‘ìÑôµq‘ìÉôµq‘ìÉõP¼¹Ñ•ÍÐ¡É•½É¹…ÁÁÉ½Ù•‘Ð¥ñð…9Õµ‰•È¹¥Í¥¹¥Ñ”¡…Ñ”¹Á…ÉÍ”¡É•½É¹…ÁÁÉ½Ù•‘Ð¤¤¥‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°…¥}½¹™¥Éµ…Ñ¥½¸œ°…ÁÁÉ½Ù•‘Y…±Õ•Ì¸œ­™¥•±°ÁÁÉ½Ù…°µÕÍÐÉ•Ñ…¥¸Ñ¡”•á…ÐÙ…±Õ”°Í•ÉÙ¥”¥‘•¹Ñ¥Ñä°½Ý¹•È°½Á•É…Ñ¥½¸°…¹Ñ¥µ•ÍÑ…µÀ¸œ¤¤ì(€€€ô(€ô(€¥¹ÍÁ•ÑIÕ±•5…À¡‘¥…¹½ÍÑ¥Ì°½Ý¹•ÉAÉ¥¥¹œ°€™••IÕ±•Ìœ°}95L°Ù…±Õ”€ôø}IU1}5=L¹¥¹±Õ‘•Ì¡Ù…±Õ”¤°€µÕÍÐÕÍ”„ÍÕÁÁ½ÉÑ•…ÁÁ±¥…‰¥±¥Ñäµ½‘”œ¤ì(€¥˜¡lÝ¡•¹}Í½Á•}Í•±•Ñ•œ°ÕÍÑ½µ•É}Í•±•Ñ•t¹¥¹±Õ‘•Ì¡½Ý¹•ÉAÉ¥¥¹œ¹™••IÕ±•Ìü¹Á•Éµ¥Ð¤¥‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ½Ý¹•É}‘•¥Í¥½¸œ°Í•ÉÙ¥•}ÉÕ±”œ°™••IÕ±•Ì¹Á•Éµ¥Ðœ°¡½½Í”Ý¡•Ñ¡•ÈÑ¡”Á•Éµ¥Ð™•”…±Ý…åÌ…ÁÁ±¥•Ì°¥Ì¥¹±Õ‘•°‘½•Ì¹½Ð…ÁÁ±ä°½È¥ÌÍ•±•Ñ•‰äå½Ô¸ÕÍÑ½µ•ÉÌ‘¼¹½Ð‘•¥‘”Á•Éµ¥Ð¡…É•Ì¸œ¤¤ì(€¥¹ÍÁ•ÑIÕ±•5…À¡‘¥…¹½ÍÑ¥Ì°½Ý¹•ÉAÉ¥¥¹œ°€ÁÉ¥•	…Í¥Í	å…Ñ•½Éäœ°AI%}	M%M}Q=I%L°Ù…±Õ”€ôøl½ÍÐœ°€Í•±±}ÁÉ¥”t¹¥¹±Õ‘•Ì¡Ù…±Õ”¤°€µÕÍÐ‰”½ÍÐ½ÈÍ•±±}ÁÉ¥”œ¤ì(€¥¹ÍÁ•ÑIÕ±•5…À¡‘¥…¹½ÍÑ¥Ì°½Ý¹•ÉAÉ¥¥¹œ°€Ñ…á…‰¥±¥Ñå	å…Ñ•½Éäœ°Qa	%1%Qe}Q=I%L°Ù…±Õ”€ôøÑåÁ•½˜Ù…±Õ”€ôôô€‰½½±•…¸œ°€µÕÍÐ‰”ÑÉÕ”½È™…±Í”œ¤ì(€¥˜€¡½Ý¹•ÉAÉ¥¥¹œ¹Á•…­5½¹Ñ¡Ì€„ôôÕ¹‘•™¥¹•¤ì(€€€½¹ÍÐ¥ÍÍÕ”€ôµ½¹Ñ¡1¥ÍÑ%ÍÍÕ”¡½Ý¹•ÉAÉ¥¥¹œ¹Á•…­5½¹Ñ¡Ì¤ì(€€€½¹ÍÐÁ…Ñ €ô¥ÍÍÕ”ü¹Á…Ñ €üÁ•…­5½¹Ñ¡Ì¸‘í¥ÍÍÕ”¹Á…Ñ¡õ€€è€Á•…­5½¹Ñ¡Ìœì(€€€¥˜€¡¥ÍÍÕ”¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€Í•ÉÙ¥•}ÉÕ±”œ°Á…Ñ °€‘íÁ…Ñ¡ô€‘í¥ÍÍÕ”¹µ•ÍÍ…•ô¹€¤¤ì(€ô(€¥˜€¡½Ý¹•ÉAÉ¥¥¹œ¹Á•…­MÕÉ¡…É•A•É•¹Ð€„ôôÕ¹‘•™¥¹•€˜˜€ …¹½¹9•…Ñ¥Ù”¡½Ý¹•ÉAÉ¥¥¹œ¹Á•…­MÕÉ¡…É•A•É•¹Ð¤ñð½Ý¹•ÉAÉ¥¥¹œ¹Á•…­MÕÉ¡…É•A•É•¹Ð€ø€ÔÀÀ¤¤‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€Í•ÉÙ¥•}ÉÕ±”œ°€Á•…­MÕÉ¡…É•A•É•¹Ðœ°€Á•…­MÕÉ¡…É•A•É•¹ÐµÕÍÐ‰”™É½´€ÀÑ¼€ÔÀÀ¸œ¤¤ì(€É•ÑÕÉ¸Õ¹¥ÅÕ•¥…¹½ÍÑ¥Ì¡‘¥…¹½ÍÑ¥Ì¤ì)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸Ù…±¥‘…Ñ•M•ÉÙ¥•IÕ±•Ì¡½Ý¹•ÉAÉ¥¥¹œ€ôíô°Í•ÉÙ¥•QåÁ”¤ì(€É•ÑÕÉ¸l¸¸¹¹•ÜM•Ð¡Ù…±¥‘…Ñ•M•ÉÙ¥•IÕ±•Í•Ñ…¥±•¡½Ý¹•ÉAÉ¥¥¹œ°Í•ÉÙ¥•QåÁ”¤¹µ…À¡¥Ñ•´€ôø¥Ñ•´¹µ•ÍÍ…”¤¥tì)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸Ù…±¥‘…Ñ•	ÕÍ¥¹•ÍÍ•™…Õ±ÑÌ¡‘•™…Õ±ÑÌ€ôíô¤ì(€½¹ÍÐÉ•ÅÕ¥É•€ô	UM%9MM}U1Q}%1L¹™¥±Ñ•È¡™¥•±ôø…lÅÕ½Ñ•Q¥µ•i½¹”œ°ÕÉÉ•¹ät¹¥¹±Õ‘•Ì¡™¥•±¤¤ì(€½¹ÍÐÍ¹…ÁÍ¡½Ð€ôÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡‘•™…Õ±ÑÌ°€‰ÕÍ¥¹•ÍÍ•™…Õ±ÑÌœ¤ì(€¥˜€ …Í¹…ÁÍ¡½Ð¹½¬¤ì(€€€½¹ÍÐµ•ÍÍ…”€ô¥ÍI•½É¡‘•™…Õ±ÑÌ¤€ü	ÕÍ¥¹•ÍÌ‘•™…Õ±ÑÌ½Õ±¹½Ð‰”É•…Í…™•±äè€‘íÍ¹…ÁÍ¡½Ð¹É•…Í½¹ô¹€€è€	ÕÍ¥¹•ÍÌ‘•™…Õ±ÑÌµÕÍÐ‰”…¸½‰©•Ð¸œì(€€€½¹ÍÐ‘¥…¹½ÍÑ¥Œ€ô½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€‰ÕÍ¥¹•ÍÍ}‘•™…Õ±Ðœ°Í¹…ÁÍ¡½Ð¹•ÉÉ½ÉA…Ñ °µ•ÍÍ…”¤ì(€€€É•ÑÕÉ¸ì(€€€€€½¬è™…±Í”°(€€€€€µ¥ÍÍ¥¹¥•±‘Ìèmt°(€€€€€¥¹Ù…±¥‘¥•±‘ÌèmÍ¹…ÁÍ¡½Ð¹•ÉÉ½ÉA…Ñ¡t°(€€€€€Õ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ìèmt°(€€€€€‘¥…¹½ÍÑ¥Ìèm‘¥…¹½ÍÑ¥t°(€€€€€•ÉÉ½ÉÌèm‘¥…¹½ÍÑ¥Œ¹µ•ÍÍ…•t(€€€ôì(€ô(€½¹ÍÐ¹½¹A±…¥¹A…Ñ €ô™¥ÉÍÑ9½¹A±…¥¹A…Ñ ¡Í¹…ÁÍ¡½Ð°€‰ÕÍ¥¹•ÍÍ•™…Õ±ÑÌœ¤ì(€¥˜€¡¹½¹A±…¥¹A…Ñ ¤ì(€€€½¹ÍÐµ•ÍÍ…”€ô	ÕÍ¥¹•ÍÌ‘•™…Õ±ÑÌµÕÍÐ½¹Ñ…¥¸½¹±äÁ±…¥¸‘…Ñ„½‰©•ÑÌì€‘í¹½¹A±…¥¹A…Ñ¡ô¥Ì¹½ÐÁ±…¥¸‘…Ñ„¹€ì(€€€½¹ÍÐ‘¥…¹½ÍÑ¥Œ€ô½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€‰ÕÍ¥¹•ÍÍ}‘•™…Õ±Ðœ°¹½¹A±…¥¹A…Ñ °µ•ÍÍ…”¤ì(€€€É•ÑÕÉ¸ì(€€€€€½¬è™…±Í”°(€€€€€µ¥ÍÍ¥¹¥•±‘Ìèmt°(€€€€€¥¹Ù…±¥‘¥•±‘Ìèm¹½¹A±…¥¹A…Ñ¡t°(€€€€€Õ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ìèmt°(€€€€€‘¥…¹½ÍÑ¥Ìèm‘¥…¹½ÍÑ¥t°(€€€€€•ÉÉ½ÉÌèmµ•ÍÍ…•t(€€€ôì(€ô(€‘•™…Õ±ÑÌ€ôÍ¹…ÁÍ¡½Ð¹Ù…±Õ”ì(€½¹ÍÐµ¥ÍÍ¥¹¥•±‘Ì€ôÉ•ÅÕ¥É•¹™¥±Ñ•È¡¹…µ”€ôø€…=‰©•Ð¹¡…Í=Ý¸¡‘•™…Õ±ÑÌ°¹…µ”¤ñðµ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÍm¹…µ•t¤¤ì(€½¹ÍÐ¥¹Ù…±¥‘¥•±‘Ì€ômtì(€½¹ÍÐÕ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ì€ô=‰©•Ð¹­•åÌ¡‘•™…Õ±ÑÌ¤¹™¥±Ñ•È¡­•ä€ôø€…	UM%9MM}U1Q}%1L¹¥¹±Õ‘•Ì¡­•ä¤¤ì(€½¹ÍÐ‘¥…¹½ÍÑ¥Ì€ôl(€€€€¸¸¹µ¥ÍÍ¥¹¥•±‘Ì¹µ…À¡Á…Ñ €ôø½Ý¹•É¥…¹½ÍÑ¥Œ µ¥ÍÍ¥¹œœ°€‰ÕÍ¥¹•ÍÍ}‘•™…Õ±Ðœ°Á…Ñ °€‘íÁ…Ñ¡ô¥ÌÉ•ÅÕ¥É•¹€¤¤°(€€€€¸¸¹Õ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ì¹µ…À¡Á…Ñ €ôø½Ý¹•É¥…¹½ÍÑ¥Œ Õ¹ÍÕÁÁ½ÉÑ•œ°€‰ÕÍ¥¹•ÍÍ}‘•™…Õ±Ðœ°Á…Ñ °€‘íÁ…Ñ¡ô¥Ì¹½Ð„ÍÕÁÁ½ÉÑ•‰ÕÍ¥¹•ÍÌ‘•™…Õ±Ð¹€¤¤(€tì(€½¹ÍÐ¥¹Ù…±¥€ô€¡Á…Ñ °µ•ÍÍ…”¤€ôøì(€€€¥¹Ù…±¥‘¥•±‘Ì¹ÁÕÍ ¡Á…Ñ ¤ì(€€€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€‰ÕÍ¥¹•ÍÍ}‘•™…Õ±Ðœ°Á…Ñ °µ•ÍÍ…”¤¤ì(€ôì(€€¼¼AÉ¥•Ì…É”¥¸½¹”ÍÑ…Ñ•ÕÉÉ•¹ä€¡Í•Ð™É½´Ñ¡”‰ÕÍ¥¹•ÍÌ½Õ¹ÑÉä…Ð½¹‰½…É‘¥¹œ¤¸(€¥˜¡‘•™…Õ±ÑÌ¹ÕÉÉ•¹ä„ôõÕ¹‘•™¥¹•˜˜…lœ°UMt¹¥¹±Õ‘•Ì¡‘•™…Õ±ÑÌ¹ÕÉÉ•¹ä¤¥¥¹Ù…±¥ ÕÉÉ•¹äœ°¡½½Í”½ÈUM…ÌÑ¡”ÕÉÉ•¹ä½˜å½ÕÈÁÉ¥•Ì¸œ¤ì(€¥˜¡‘•™…Õ±ÑÌ¹ÅÕ½Ñ•Q¥µ•i½¹”„ôõÕ¹‘•™¥¹•¥íÑÉåí¥˜¡ÑåÁ•½˜‘•™…Õ±ÑÌ¹ÅÕ½Ñ•Q¥µ•i½¹”„ôôÍÑÉ¥¹œñð…‘•™…Õ±ÑÌ¹ÅÕ½Ñ•Q¥µ•i½¹”¹ÑÉ¥´ ¤¥Ñ¡É½Ü¹•ÜÉÉ½È ¤í¹•Ü%¹Ñ°¹…Ñ•Q¥µ•½Éµ…Ð •¸µULœ±íÑ¥µ•i½¹”é‘•™…Õ±ÑÌ¹ÅÕ½Ñ•Q¥µ•i½¹•ô¤¹™½Éµ…Ð¡¹•Ü…Ñ” À¤¤íõ…Ñ¡í¥¹Ù…±¥ ÅÕ½Ñ•Q¥µ•i½¹”œ°¡½½Í”„Ù…±¥‰ÕÍ¥¹•ÍÌÑ¥µ”é½¹”™½ÈÅÕ½Ñ”µ‘…Ñ”ÁÉ¥¥¹œ¸œ¤íõô(€¥˜€ …µ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÌ¹µ…É­ÕÁ5½‘”¤€˜˜€…lµ…É­ÕÀœ°€µ…É¥¸t¹¥¹±Õ‘•Ì¡‘•™…Õ±ÑÌ¹µ…É­ÕÁ5½‘”¤¤¥¹Ù…±¥ µ…É­ÕÁ5½‘”œ°€µ…É­ÕÁ5½‘”µÕÍÐ‰”µ…É­ÕÀ½Èµ…É¥¸¸œ¤ì(€¥˜€ …µ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÌ¹µ…É­ÕÁA•É•¹Ð¤€˜˜€ …¹½¹9•…Ñ¥Ù”¡‘•™…Õ±ÑÌ¹µ…É­ÕÁA•É•¹Ð¤ñð€¡‘•™…Õ±ÑÌ¹µ…É­ÕÁ5½‘”€ôôô€µ…É¥¸œ€˜˜‘•™…Õ±ÑÌ¹µ…É­ÕÁA•É•¹Ð€øô€ÄÀÀ¤¤¤¥¹Ù…±¥ µ…É­ÕÁA•É•¹Ðœ°€µ…É­ÕÁA•É•¹Ð¥Ì½ÕÑÍ¥‘”¥ÑÌÍÕÁÁ½ÉÑ•É…¹”¸œ¤ì(€™½È€¡½¹ÍÐ¹…µ”½˜l½Ù•É¡•…‘¥á•œ°€µ¥¹¥µÕµ)½‰AÉ¥”œ°€ÑÉ…Ù•±•”œ°€‘¥ÍÁ½Í…±•”œ°€Á•Éµ¥Ñ•”t¤¥˜€ …µ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÍm¹…µ•t¤€˜˜€…¹½¹9•…Ñ¥Ù•5½¹•ä¡‘•™…Õ±ÑÍm¹…µ•t¤¤¥¹Ù…±¥¡¹…µ”°€‘í¹…µ•ôµÕÍÐ‰”„¹½¸µ¹•…Ñ¥Ù”¥¹Ñ••Èµ•¹Ð…µ½Õ¹Ð¹€¤ì(€¥˜€ …µ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÌ¹Ñ…á5½‘”¤€˜˜€…lQa}9=9œ°€Qa}5QI%1Lœ°€Qa}10t¹¥¹±Õ‘•Ì¡‘•™…Õ±ÑÌ¹Ñ…á5½‘”¤¤¥¹Ù…±¥ Ñ…á5½‘”œ°€Ñ…á5½‘”¥Ì¥¹Ù…±¥¸œ¤ì(€¥˜€ …µ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÌ¹Ñ…áA•É•¹Ð¤€˜˜€ …¹½¹9•…Ñ¥Ù”¡‘•™…Õ±ÑÌ¹Ñ…áA•É•¹Ð¤ñð‘•™…Õ±ÑÌ¹Ñ…áA•É•¹Ð€ø€ÄÀÀ¤¤¥¹Ù…±¥ Ñ…áA•É•¹Ðœ°€Ñ…áA•É•¹ÐµÕÍÐ‰”™É½´€ÀÑ¼€ÄÀÀ¸œ¤ì(€¥˜€¡‘•™…Õ±ÑÌ¹Ñ…á5½‘”€ôôô€Qa}9=9œ€˜˜‘•™…Õ±ÑÌ¹Ñ…áA•É•¹Ð€„ôô€À¤¥¹Ù…±¥ Ñ…áA•É•¹Ðœ°€Qa}9=9É•ÅÕ¥É•Ì„é•É¼Ñ…áA•É•¹Ð¸œ¤ì(€¥˜€¡lQa}5QI%1Lœ°€Qa}10t¹¥¹±Õ‘•Ì¡‘•™…Õ±ÑÌ¹Ñ…á5½‘”¤€˜˜‘•™…Õ±ÑÌ¹Ñ…áA•É•¹Ð€ðô€À¤¥¹Ù…±¥ Ñ…áA•É•¹Ðœ°€Ñ…á…‰±”µ½‘”É•ÅÕ¥É•Ì„Á½Í¥Ñ¥Ù”Ñ…áA•É•¹Ð¸œ¤ì(€¥˜€ …µ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÌ¹É…¹•	Õ™™•ÉA•É•¹Ð¤€˜˜€ …¹½¹9•…Ñ¥Ù”¡‘•™…Õ±ÑÌ¹É…¹•	Õ™™•ÉA•É•¹Ð¤ñð‘•™…Õ±ÑÌ¹É…¹•	Õ™™•ÉA•É•¹Ð€ø€ÈÔ¤¤¥¹Ù…±¥ É…¹•	Õ™™•ÉA•É•¹Ðœ°€É…¹•	Õ™™•ÉA•É•¹ÐµÕÍÐ‰”™É½´€ÀÑ¼€ÈÔ¸œ¤ì(€½¹ÍÐµ…É­ÕÁ¥…¹½ÍÑ¥Ì€ômtì(€¥¹ÍÁ•ÑIÕ±•5…À¡µ…É­ÕÁ¥…¹½ÍÑ¥Ì°‘•™…Õ±ÑÌ°€µ…É­ÕÁÁÁ±¥•Ìœ°AI%}	M%M}Q=I%L°Ù…±Õ”€ôøÑåÁ•½˜Ù…±Õ”€ôôô€‰½½±•…¸œ°€µÕÍÐ‰”ÑÉÕ”½È™…±Í”œ¤ì(€™½È€¡½¹ÍÐ¥Ñ•´½˜µ…É­ÕÁ¥…¹½ÍÑ¥Ì¤ì(€€€‘¥…¹½ÍÑ¥Ì¹ÁÕÍ ¡ì€¸¸¹¥Ñ•´°­¥¹è€‰ÕÍ¥¹•ÍÍ}‘•™…Õ±Ðœô¤ì(€€€¥˜€¡¥Ñ•´¹ÑåÁ”€ôôô€µ¥ÍÍ¥¹œœ¤µ¥ÍÍ¥¹¥•±‘Ì¹ÁÕÍ ¡¥Ñ•´¹Á…Ñ ¤ì(€€€•±Í”¥˜€¡¥Ñ•´¹ÑåÁ”€ôôô€Õ¹ÍÕÁÁ½ÉÑ•œ¤Õ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ì¹ÁÕÍ ¡¥Ñ•´¹Á…Ñ ¤ì(€€€•±Í”¥¹Ù…±¥‘¥•±‘Ì¹ÁÕÍ ¡¥Ñ•´¹Á…Ñ ¤ì(€ô(€¥˜€ …µ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÌ¹Á•…­5½¹Ñ¡Ì¤¤ì(€€€½¹ÍÐ¥ÍÍÕ”€ôµ½¹Ñ¡1¥ÍÑ%ÍÍÕ”¡‘•™…Õ±ÑÌ¹Á•…­5½¹Ñ¡Ì¤ì(€€€½¹ÍÐÁ…Ñ €ô¥ÍÍÕ”ü¹Á…Ñ €üÁ•…­5½¹Ñ¡Ì¸‘í¥ÍÍÕ”¹Á…Ñ¡õ€€è€Á•…­5½¹Ñ¡Ìœì(€€€¥˜€¡¥ÍÍÕ”¤¥¹Ù…±¥¡Á…Ñ °€‘íÁ…Ñ¡ô€‘í¥ÍÍÕ”¹µ•ÍÍ…•ô¹€¤ì(€ô(€¥˜€ …µ¥ÍÍ¥¹œ¡‘•™…Õ±ÑÌ¹Á•…­MÕÉ¡…É•A•É•¹Ð¤€˜˜€ …¹½¹9•…Ñ¥Ù”¡‘•™…Õ±ÑÌ¹Á•…­MÕÉ¡…É•A•É•¹Ð¤ñð‘•™…Õ±ÑÌ¹Á•…­MÕÉ¡…É•A•É•¹Ð€ø€ÔÀÀ¤¤¥¹Ù…±¥ Á•…­MÕÉ¡…É•A•É•¹Ðœ°€Á•…­MÕÉ¡…É•A•É•¹ÐµÕÍÐ‰”™É½´€ÀÑ¼€ÔÀÀ¸œ¤ì(€½¹ÍÐ™¥¹…±¥…¹½ÍÑ¥Ì€ôÕ¹¥ÅÕ•¥…¹½ÍÑ¥Ì¡‘¥…¹½ÍÑ¥Ì¤ì(€½¹ÍÐ•ÉÉ½ÉÌ€ôl¸¸¹¹•ÜM•Ð¡™¥¹…±¥…¹½ÍÑ¥Ì¹™¥±Ñ•È¡¥Ñ•´€ôø¥Ñ•´¹ÑåÁ”€„ôô€µ¥ÍÍ¥¹œœ¤¹µ…À¡¥Ñ•´€ôø¥Ñ•´¹µ•ÍÍ…”¤¥tì(€½¹ÍÐ™¥¹…±5¥ÍÍ¥¹œ€ôl¸¸¹¹•ÜM•Ð¡µ¥ÍÍ¥¹¥•±‘Ì¥tì(€½¹ÍÐ™¥¹…±%¹Ù…±¥€ôl¸¸¹¹•ÜM•Ð¡¥¹Ù…±¥‘¥•±‘Ì¥tì(€½¹ÍÐ™¥¹…±U¹ÍÕÁÁ½ÉÑ•€ôl¸¸¹¹•ÜM•Ð¡Õ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ì¥tì(€É•ÑÕÉ¸ì(€€€½¬è€…™¥¹…±5¥ÍÍ¥¹œ¹±•¹Ñ €˜˜€…™¥¹…±%¹Ù…±¥¹±•¹Ñ €˜˜€…™¥¹…±U¹ÍÕÁÁ½ÉÑ•¹±•¹Ñ °(€€€µ¥ÍÍ¥¹¥•±‘Ìè™¥¹…±5¥ÍÍ¥¹œ°(€€€¥¹Ù…±¥‘¥•±‘Ìè™¥¹…±%¹Ù…±¥°(€€€Õ¹ÍÕÁÁ½ÉÑ•‘¥•±‘Ìè™¥¹…±U¹ÍÕÁÁ½ÉÑ•°(€€€‘¥…¹½ÍÑ¥Ìè™¥¹…±¥…¹½ÍÑ¥Ì°(€€€•ÉÉ½ÉÌ(€ôì)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸½¹ÑÉ…Ñ5•Ñ…‘…Ñ„ ¤ì(€É•ÑÕÉ¸MIY%}QeAL¹µ…À¡Í•ÉÙ¥•QåÁ”€ôø€¡ì(€€€Í•ÉÙ¥•QåÁ”°(€€€ÕÍÑ½µ•É¥•±‘Ìè=‰©•Ð¹•¹ÑÉ¥•Ì¡5MUI59Q}=9QIQMmÍ•ÉÙ¥•QåÁ•t¹™¥•±‘Ì¤¹µ…À ¡m¹…µ”°‘•™¥¹¥Ñ¥½¹t¤€ôø€¡ì¹…µ”°€¸¸¹ÍÑÉÕÑÕÉ•‘±½¹”¡‘•™¥¹¥Ñ¥½¸¤ô¤¤°(€€€±…ÍÌÉ¥•±‘Ìè=‰©•Ð¹•¹ÑÉ¥•Ì¡1MLÉ}%9%Q%=9MmÍ•ÉÙ¥•QåÁ•tñðíô¤¹µ…À ¡m¹…µ”°‘•™¥¹¥Ñ¥½¹t¤€ôø€¡ì¹…µ”°€¸¸¹ÍÑÉÕÑÕÉ•‘±½¹”¡‘•™¥¹¥Ñ¥½¸¤ô¤¤°(€€€…±±½Ý•‘AÉ¥¥¹¥•±‘Ìè…±±½Ý•‘AÉ¥¥¹¥•±‘Ì¡Í•ÉÙ¥•QåÁ”¤(€ô¤¤ì)ô((¼¼ÁÕÉ”…ÁÁÉ½Ù…°½Á•É…Ñ¥½¸¸¸½Ý¹•Èµ½¹±ä…‘…ÁÑ•ÈµÕÍÐ…ÕÑ¡•¹Ñ¥…Ñ”½…ÕÑ¡½É¥é”½Ý¹•É%(¼¼‰•™½É”…±±¥¹œ…¹Á•ÉÍ¥ÍÐ¥ÑÌÉ•ÑÕÉ¹•Í¹…ÁÍ¡½Ð…Ñ½µ¥…±±ä¸Q¡¥Ì¥Ì¹½Ð…ÕÑ¡•¹Ñ¥…Ñ¥½¸¸)•áÁ½ÉÐ™Õ¹Ñ¥½¸•ÅÕ…±ÁÁÉ½Ù…±…Ñ…Y9•áÐ¡±•™Ð±É¥¡Ð¤ì(€½¹ÍÐ…¹½¹¥…°€ôÙ…±Õ”€ôøÉÉ…ä¹¥ÍÉÉ…ä¡Ù…±Õ”¤€üÙ…±Õ”¹µ…À¡…¹½¹¥…°¤€è¥ÍI•½É¡Ù…±Õ”¤(€€€€ü=‰©•Ð¹™É½µ¹ÑÉ¥•Ì¡=‰©•Ð¹­•åÌ¡Ù…±Õ”¤¹Í½ÉÐ ¤¹µ…À¡­•äôùm­•ä±…¹½¹¥…°¡Ù…±Õ•m­•åt¥t¤¤€èÙ…±Õ”ì(€É•ÑÕÉ¸)M=8¹ÍÑÉ¥¹¥™ä¡…¹½¹¥…°¡±•™Ð¤¤ôôõ)M=8¹ÍÑÉ¥¹¥™ä¡…¹½¹¥…°¡É¥¡Ð¤¤ì)ô)•áÁ½ÉÐ™Õ¹Ñ¥½¸¡…ÍÕÉÉ•¹ÑÁÁÉ½Ù…±Y9•áÐ¡Í•ÉÙ¥”±ÁÉ¥¥¹œ±™¥•±¤ì(€ÑÉäìÍ•ÉÙ¥”€ô…¹½¹¥…±M•ÉÙ¥•%‘•¹Ñ¥ÑåY9•áÐ¡Í•ÉÙ¥”¤ìô…Ñ ìÉ•ÑÕÉ¸™…±Í”ìô(€½¹ÍÐ…ÁÁÉ½Ù…°õÍ•ÉÙ¥”¹…ÁÁÉ½Ù•‘Y…±Õ•Ìü¹m™¥•±‘tì(€½¹ÍÐÙ…±Õ”õ=‰©•Ð¹¡…Í=Ý¸¡ÁÉ¥¥¹œ±™¥•±¤ýÁÉ¥¥¹m™¥•±‘téÍ•ÉÙ¥•m™¥•±‘tì(€É•ÑÕÉ¸Í•ÉÙ¥”¹½¹™¥Éµ•‘¥•±‘Ìü¹m™¥•±‘tôôõÑÉÕ”€˜˜¥ÍI•½É¡…ÁÁÉ½Ù…°¤€˜˜…ÁÁÉ½Ù…°¹Í•ÉÙ¥•QåÁ”ôôõÍ•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”€˜˜Í…µ•M•ÉÙ¥•%‘Y9•áÐ¡…ÁÁÉ½Ù…°¹Í•ÉÙ¥•%±Í•ÉÙ¥”¹¥¤€˜˜…ÁÁÉ½Ù…°¹½Ý¹•É%ôôõÍ•ÉÙ¥”¹½É¥¥¸ü¹½Ý¹•É%€˜˜¥‘•¹Ñ¥Ñå¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥”¤¹±•¹Ñ ôôôÀ€˜˜(€€€l½Ý¹•É%œ°½Á•É…Ñ¥½¹%œ°…ÁÁÉ½Ù•‘Ðt¹•Ù•Éä¡­•äôùÑåÁ•½˜…ÁÁÉ½Ù…±m­•åtôôôÍÑÉ¥¹œœ˜™…ÁÁÉ½Ù…±m­•åt¹ÑÉ¥´ ¤¤€˜˜(€€€€½yq‘ìÑôµq‘ìÉôµq‘ìÉõP¼¹Ñ•ÍÐ¡…ÁÁÉ½Ù…°¹…ÁÁÉ½Ù•‘Ð¤€˜˜9Õµ‰•È¹¥Í¥¹¥Ñ”¡…Ñ”¹Á…ÉÍ”¡…ÁÁÉ½Ù…°¹…ÁÁÉ½Ù•‘Ð¤¤€˜˜(€€€=‰©•Ð¹­•åÌ¡…ÁÁÉ½Ù…°¤¹±•¹Ñ ôôôØ€˜˜=‰©•Ð¹¡…Í=Ý¸¡…ÁÁÉ½Ù…°°Ù…±Õ”œ¤€˜˜•ÅÕ…±ÁÁÉ½Ù…±…Ñ…Y9•áÐ¡Ù…±Õ”±…ÁÁÉ½Ù…°¹Ù…±Õ”¤ì)ô)•áÁ½ÉÐ™Õ¹Ñ¥½¸…ÁÁÉ½Ù•Y9•áÑY…±Õ•Ì¡¥¹ÁÕÐ±½Á•É…Ñ¥½¸¤ì(€½¹ÍÐÍ•ÉÙ¥•M¹…ÁÍ¡½ÐõÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡¥¹ÁÕÐ°Í•ÉÙ¥”œ¤°½ÁM¹…ÁÍ¡½ÐõÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡½Á•É…Ñ¥½¸°…ÁÁÉ½Ù…°œ¤ì(€¥˜ …Í•ÉÙ¥•M¹…ÁÍ¡½Ð¹½­ññÍ•ÉÙ¥•M¹…ÁÍ¡½Ð¹¹½¹A±…¥¹A…Ñ¡Ì¹±•¹Ñ¡ñð…½ÁM¹…ÁÍ¡½Ð¹½­ññ½ÁM¹…ÁÍ¡½Ð¹¹½¹A±…¥¹A…Ñ¡Ì¹±•¹Ñ ¥Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È ÁÁÉ½Ù…°É•ÅÕ¥É•ÌÁ±…¥¸‘…Ñ„¸œ¤ì(€½¹ÍÐÍ•ÉÙ¥”õ…¹½¹¥…±M•ÉÙ¥•%‘•¹Ñ¥ÑåY9•áÐ¡Í•ÉÙ¥•M¹…ÁÍ¡½Ð¹Ù…±Õ”¤°½Àõ½ÁM¹…ÁÍ¡½Ð¹Ù…±Õ”ì(€¥˜ …¥ÍI•½É¡Í•ÉÙ¥”¥ñð…¥ÍI•½É¡½À¥ñð…l%}MUMQœ°%}%9QIY%\t¹¥¹±Õ‘•Ì¡Í•ÉÙ¥”¹Í½ÕÉ”¥ñð…MIY%}QeAL¹¥¹±Õ‘•Ì¡Í•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”¤¥Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È ÁÁÉ½Ù…°É•ÅÕ¥É•Ì…¸$µ½É¥¥¹…Ñ•Í•ÉÙ¥”¸œ¤ì(€¥˜€¡¥‘•¹Ñ¥Ñå¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥”¤¹±•¹Ñ ñð½À¹½Ý¹•É%€„ôôÍ•ÉÙ¥”¹½É¥¥¸¹½Ý¹•É%¤Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È ÁÁÉ½Ù…°µÕÍÐµ…Ñ Ñ¡”Á•ÉÍ¥ÍÑ•Í•ÉÙ¥”…¹¥ÑÌ…ÕÑ¡•¹Ñ¥…Ñ•½Ý¹•È½¹Ñ•áÐ¸œ¤ì(€½¹ÍÐ…±±½Ý•õ…¥½¹™¥Éµ…Ñ¥½¹¥•±‘ÍY9•áÐ¡Í•ÉÙ¥”±Í•ÉÙ¥”¹ÁÉ¥¥¹œ¤ì(€¥˜¡=‰©•Ð¹­•åÌ¡½À¤¹Í½µ”¡¬ôø…l™¥•±‘Ìœ°½Ý¹•É%œ°½Á•É…Ñ¥½¹%œ°…ÁÁÉ½Ù•‘Ðt¹¥¹±Õ‘•Ì¡¬¤¥ñð…ÉÉ…ä¹¥ÍÉÉ…ä¡½À¹™¥•±‘Ì¥ññ‘•¹Í•ÉÉ…å%ÍÍÕ”¡½À¹™¥•±‘Ì¥ñð…½À¹™¥•±‘Ì¹±•¹Ñ¡ññ¹•ÜM•Ð¡½À¹™¥•±‘Ì¤¹Í¥é”„ôõ½À¹™¥•±‘Ì¹±•¹Ñ¡ññ½À¹™¥•±‘Ì¹Í½µ”¡¬ôø……±±½Ý•¹¥¹±Õ‘•Ì¡¬¤¥ññl½Ý¹•É%œ°½Á•É…Ñ¥½¹%œ°…ÁÁÉ½Ù•‘Ðt¹Í½µ”¡¬ôùÑåÁ•½˜½Ám­t„ôôÍÑÉ¥¹œñð…½Ám­t¹ÑÉ¥´ ¤¥ñð„½yq‘ìÑôµq‘ìÉôµq‘ìÉõP¼¹Ñ•ÍÐ¡½À¹…ÁÁÉ½Ù•‘Ð¥ñð…9Õµ‰•È¹¥Í¥¹¥Ñ”¡…Ñ”¹Á…ÉÍ”¡½À¹…ÁÁÉ½Ù•‘Ð¤¤¥Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È áÁ±¥¥Ð™¥•±‘Ì…¹…Õ‘¥Ñ…‰±”½Ý¹•È°½Á•É…Ñ¥½¸°…¹Ñ¥µ•ÍÑ…µÀ…É”É•ÅÕ¥É•¸œ¤ì(€€¼¼áÁ±¥¥Ð…ÁÁÉ½Ù…°É•Ñ¥É•ÌÉ••¥ÁÑÌ™½È™¥•±‘Ì¹¼±½¹•È¥¸Ñ¡¥Ì½¹ÑÉ…Ð¸(€€¼¼ÕÉÉ•¹Ð™¥•±‘Ì¹½ÐÍ•±•Ñ•¥¸„Á…ÉÑ¥…°…ÁÁÉ½Ù…°É•Ñ…¥¸Ñ¡•¥È½±É••¥ÁÑÌ¸(€™½È¡½¹ÍÐ­•ä½˜l½¹™¥Éµ•‘¥•±‘Ìœ°…ÁÁÉ½Ù•‘Y…±Õ•Ìt¥Í•ÉÙ¥•m­•åtõ=‰©•Ð¹™É½µ¹ÑÉ¥•Ì (€€€=‰©•Ð¹•¹ÑÉ¥•Ì¡¥ÍI•½É¡Í•ÉÙ¥•m­•åt¤ýÍ•ÉÙ¥•m­•åtéíô¤¹™¥±Ñ•È ¡m™¥•±‘t¤ôù…±±½Ý•¹¥¹±Õ‘•Ì¡™¥•±¤¤(€€¤ì(€™½È¡½¹ÍÐ™¥•±½˜½À¹™¥•±‘Ì¥íÍ•ÉÙ¥”¹½¹™¥Éµ•‘¥•±‘Ím™¥•±‘tõÑÉÕ”íÍ•ÉÙ¥”¹…ÁÁÉ½Ù•‘Y…±Õ•Ím™¥•±‘tõíÙ…±Õ”éÍÑÉÕÑÕÉ•‘±½¹”¡=‰©•Ð¹¡…Í=Ý¸¡Í•ÉÙ¥”¹ÁÉ¥¥¹œ±™¥•±¤ýÍ•ÉÙ¥”¹ÁÉ¥¥¹m™¥•±‘téÍ•ÉÙ¥•m™¥•±‘t¤±Í•ÉÙ¥•QåÁ”éÍ•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”±Í•ÉÙ¥•%éÍ•ÉÙ¥”¹¥±½Ý¹•É%é½À¹½Ý¹•É%±½Á•É…Ñ¥½¹%é½À¹½Á•É…Ñ¥½¹%±…ÁÁÉ½Ù•‘Ðé½À¹…ÁÁÉ½Ù•‘Ñôíô(€É•ÑÕÉ¸Í•ÉÙ¥”ì)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸¥¹ÍÁ•Ñ¥½¹=Ý¹•É•¥Í¥½¹ÍY9•áÐ¡ÑåÁ”±Œõíô±Àõíô¤ì(¥˜¡½¹™¥ÕÉ•‘=™™•É¥¹œ¡ÑåÁ”±À¤¥É•ÑÕÉ¸mtì(½¹ÍÐ‘•¥Í¥½¹ÌõÁÉ•Ù¥½ÕÍ%¹ÍÁ•Ñ¥½¹=Ý¹•É•¥Í¥½¹ÍY9•áÐ¡ÑåÁ”±Œ¤ì(½¹ÍÐ…‘ô¡Á…Ñ ±­¥¹±µ•ÍÍ…”¤ôù‘•¥Í¥½¹Ì¹ÁÕÍ ¡íÁ…Ñ ±­¥¹±µ•ÍÍ…•ô¤ì(™½È¡½¹ÍÐ­•ä½˜Í½Á•-•åÍ½ÉI•ÅÕ•ÍÐ¡ÑåÁ”±Œ±À¤¥¥˜ …À¹Í½Á••Ñ…¥±Ìü¹m­•åt˜™Í½Á•¹ÑÉ¥•Í½È¡À±Í½Á•	…Í•-•ä¡­•ä¤¤¹±•¹Ñ ¥…‘ Í½Á••Ñ…¥±Ì¸œ­­•ä°Í½Á•}µ…Ñ¡¥¹œœ°9¼½¹™¥ÕÉ•Í½Á”•¹ÑÉäµ…Ñ¡•ÌÑ¡•Í”µ•…ÍÕÉ•©½ˆ™…ÑÌ¸œ¤ì(¥˜¡ÑåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  1==I%9|œ¤˜™Œ¹ÍÑ…¥ÉMÑ•ÁÌøÀ˜˜…Í½Á•¹ÑÉ¥•Í½È¡À°ÍÑ…¥ÉÌœ¤¹±•¹Ñ ¥…‘ Á•ÉMÑ•ÁAÉ¥”œ°ÍÑ…¥É}Í½Á•}½¹ÑÉ…Ðœ°½¹™¥É´…¸…±°µ¥¹±ÕÍ¥Ù”ÍÑ…¥ÈÁ…­…”½ÈÍ•Á…É…Ñ•±äÁÉ¥”•Ù•Éä¥¹±Õ‘•ÍÑ…¥È½µÁ½¹•¹Ð¸œ¤ì(¥˜¡ÑåÁ”ôôôM%%9}IA159Pœ˜™Œ¹½±‘M¥‘¥¹I•µ½Ù…°˜˜…Í½Á•¹ÑÉ¥•Í½È¡À°Í¥‘¥¹}É•µ½Ù…°œ¤¹±•¹Ñ ¥…‘ É•µ½Ù…±A•ÉMÅ™Ðœ°•á¥ÍÑ¥¹}Í¥‘¥¹}É•µ½Ù…±}½¹ÑÉ…Ðœ°½¹™¥É´•á¥ÍÑ¥¹œÍ¥‘¥¹œÑåÁ”°µ•…ÍÕÉ•É•µ½Ù…°…É•„°…¹Ñ¡”ÍÕÁÁ½ÉÑ•É•µ½Ù…°µÁÉ¥”Í½Á”¸œ¤ì(¥˜¡ÑåÁ”ôôôM%%9}IA159Pœ˜™Œ¹ÑÉ¥µ%¹±Õ‘•˜˜…À¹Í½Á••Ñ…¥±Ìü¹Í¥‘¥¹}ÑÉ¥´¥…‘ ÑÉ¥µA•É1¥¹•…É½½Ðœ°µ¥á•‘}¡…É•}±…ÍÍ¥™¥…Ñ¥½¸œ°½¹™¥É´ÑÉ¥´±…‰½È½µ…Ñ•É¥…°…±±½…Ñ¥½¸¸œ¤ì(¥˜¡ÑåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  =9IQ|œ¤˜™Œ¹‘•µ½±¥Ñ¥½¹9••‘•˜˜…Í½Á•¹ÑÉ¥•Í½È¡À°‘•µ½±¥Ñ¥½¸œ¤¹±•¹Ñ ¥…‘ ‘•µ½±¥Ñ¥½¹A•ÉMÅ™Ðœ°•á¥ÍÑ¥¹}Í±…‰}‘•µ½±¥Ñ¥½¹}½¹ÑÉ…Ðœ°•™¥¹”Ñ¡”•á¥ÍÑ¥¹œÍ±…ˆ™…ÑÌ½È•áÁ±¥¥Ð‰½Õ¹‘•Á…­…”½Ù•É•‰äÑ¡”‘•µ½±¥Ñ¥½¸ÁÉ¥”¸œ¤ì(¥˜¡ÑåÁ”ôôô1Q}I==}IA159Pœ˜˜¡Œ¹¥¹ÍÕ±…Ñ¥½¹9••‘•ôôõÑÉÕ•ññŒ¹½Ù•É‰½…É‘9••‘•ôôõÑÉÕ”¤˜˜…À¹Í½Á••Ñ…¥±Ìü¹¥¹ÍÕ±…Ñ¥½¸¥…‘ ¥¹ÍÕ±…Ñ¥½¹A•ÉMÅ™Ðœ°¥¹ÍÕ±…Ñ¥½¹}Í½Á•}½¹ÑÉ…Ðœ°½¹™¥É´¥¹ÍÕ±…Ñ¥½¸…¹½Ù•É‰½…ÉÍ½Á”°ÍåÍÑ•µÌ°…¹µ•…ÍÕÉ•…É•…Ì‰•™½É”ÁÉ¥¥¹œ¸œ¤ì(¥˜¡ÑåÁ”ôôôaQI%=I}A%9Q%9œ¥…‘ •áÑ•É¥½É½…Ñ¥¹M½Á”œ°•áÑ•É¥½É}½…Ñ¥¹}Í½Á•}½¹ÑÉ…Ðœ°•™¥¹”ÍÕÁÁ½ÉÑ•ÍÕ‰ÍÑÉ…Ñ”½½…Ñ¥¹œÍåÍÑ•µÌ…¹µ•…ÍÕÉ•ÁÉ•Á…É…Ñ¥½¸Í½Á”½È„‰½Õ¹‘•…±°µ…É•„Á…­…”¸œ¤ì(É•ÑÕÉ¸‘•¥Í¥½¹Ìì)ô(()•áÁ½ÉÐ™Õ¹Ñ¥½¸Ù…±¥‘M•ÉÙ¥•%‘Y9•áÐ¡Ù…±Õ”¤ì(€É•ÑÕÉ¸Ù…±¥‘AÉ¥•‰½½­M•ÉÙ¥•%¡Ù…±Õ”¤ì)ô)½¹ÍÐ…Õ‘¥ÑQ•áÐ€ôÙ…±Õ”€ôøÑåÁ•½˜Ù…±Õ”€ôôô€ÍÑÉ¥¹œœ€˜˜Ù…±Õ”¹ÑÉ¥´ ¤¹±•¹Ñ €ø€Àì)½¹ÍÐ…Õ‘¥ÑQ¥µ”€ôÙ…±Õ”€ôø…Õ‘¥ÑQ•áÐ¡Ù…±Õ”¤€˜˜€½yq‘ìÑôµq‘ìÉôµq‘ìÉõP¼¹Ñ•ÍÐ¡Ù…±Õ”¤€˜˜9Õµ‰•È¹¥Í¥¹¥Ñ”¡…Ñ”¹Á…ÉÍ”¡Ù…±Õ”¤¤ì()•áÁ½ÉÐ™Õ¹Ñ¥½¸Í…µ•M•ÉÙ¥•%‘Y9•áÐ¡±•™Ð°É¥¡Ð¤ì(€É•ÑÕÉ¸Ù…±¥‘M•ÉÙ¥•%‘Y9•áÐ¡±•™Ð¤€˜˜Ù…±¥‘M•ÉÙ¥•%‘Y9•áÐ¡É¥¡Ð¤€˜˜±•™Ð¹Ñ½1½Ý•É…Í” ¤€ôôôÉ¥¡Ð¹Ñ½1½Ý•É…Í” ¤ì)ô)™Õ¹Ñ¥½¸…¹½¹¥…±UÕ¥¡Ù…±Õ”¤ìÉ•ÑÕÉ¸Ù…±¥‘M•ÉÙ¥•%‘Y9•áÐ¡Ù…±Õ”¤€üÙ…±Õ”¹Ñ½1½Ý•É…Í” ¤€èÙ…±Õ”ìô)™Õ¹Ñ¥½¸…¹½¹¥…±=™™•É¥¹I•¥ÍÑÉä¡É•¥ÍÑÉ¥•Ì¤ì(€¥˜€ …¥ÍI•½É¡É•¥ÍÑÉ¥•Ì¤¤É•ÑÕÉ¸ì(€™½È€¡½¹ÍÐÙ…±Õ•Ì½˜=‰©•Ð¹Ù…±Õ•Ì¡É•¥ÍÑÉ¥•Ì¤¤¥˜€¡¥ÍI•½É¡Ù…±Õ•Ì¤¤ì(€€€™½È€¡½¹ÍÐ­•ä½˜=‰©•Ð¹­•åÌ¡Ù…±Õ•Ì¤¤Ù…±Õ•Ím­•åt€ô…¹½¹¥…±UÕ¥¡Ù…±Õ•Ím­•åt¤ì(€ô)ô)•áÁ½ÉÐ™Õ¹Ñ¥½¸…¹½¹¥…±M•ÉÙ¥•%‘•¹Ñ¥ÑåY9•áÐ¡¥¹ÁÕÐ¤ì(€½¹ÍÐÍ¹…ÁÍ¡½Ð€ôÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡¥¹ÁÕÐ°€Í•ÉÙ¥”œ¤ì(€¥˜€ …Í¹…ÁÍ¡½Ð¹½¬ñðÍ¹…ÁÍ¡½Ð¹¹½¹A±…¥¹A…Ñ¡Ì¹±•¹Ñ ñð€…¥ÍI•½É¡Í¹…ÁÍ¡½Ð¹Ù…±Õ”¤¤Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È M•ÉÙ¥”¥‘•¹Ñ¥ÑäÉ•ÅÕ¥É•ÌÁ±…¥¸‘…Ñ„¸œ¤ì(€½¹ÍÐÍ•ÉÙ¥”€ôÍ¹…ÁÍ¡½Ð¹Ù…±Õ”ì(€¥˜€¡=‰©•Ð¹¡…Í=Ý¸¡Í•ÉÙ¥”°€¥œ¤¤Í•ÉÙ¥”¹¥€ô…¹½¹¥…±UÕ¥¡Í•ÉÙ¥”¹¥¤ì(€¥˜€¡¥ÍI•½É¡Í•ÉÙ¥”¹½É¥¥¸¤€˜˜=‰©•Ð¹¡…Í=Ý¸¡Í•ÉÙ¥”¹½É¥¥¸°€Í•ÉÙ¥•%œ¤¤Í•ÉÙ¥”¹½É¥¥¸¹Í•ÉÙ¥•%€ô…¹½¹¥…±UÕ¥¡Í•ÉÙ¥”¹½É¥¥¸¹Í•ÉÙ¥•%¤ì(€¥˜€¡¥ÍI•½É¡Í•ÉÙ¥”¹é•É½AÉ¥•A½±¥ä¤€˜˜=‰©•Ð¹¡…Í=Ý¸¡Í•ÉÙ¥”¹é•É½AÉ¥•A½±¥ä°€Í•ÉÙ¥•%œ¤¤Í•ÉÙ¥”¹é•É½AÉ¥•A½±¥ä¹Í•ÉÙ¥•%€ô…¹½¹¥…±UÕ¥¡Í•ÉÙ¥”¹é•É½AÉ¥•A½±¥ä¹Í•ÉÙ¥•%¤ì(€…¹½¹¥…±=™™•É¥¹I•¥ÍÑÉä¡Í•ÉÙ¥”¹­¹½Ý¹=™™•É¥¹Ì¤ì(€¥˜€¡¥ÍI•½É¡Í•ÉÙ¥”¹…ÁÁÉ½Ù•‘Y…±Õ•Ì¤¤™½È€¡½¹ÍÐm™¥•±°…ÁÁÉ½Ù…±t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡Í•ÉÙ¥”¹…ÁÁÉ½Ù•‘Y…±Õ•Ì¤¤¥˜€¡¥ÍI•½É¡…ÁÁÉ½Ù…°¤¤ì(€€€¥˜€¡=‰©•Ð¹¡…Í=Ý¸¡…ÁÁÉ½Ù…°°€Í•ÉÙ¥•%œ¤¤…ÁÁÉ½Ù…°¹Í•ÉÙ¥•%€ô…¹½¹¥…±UÕ¥¡…ÁÁÉ½Ù…°¹Í•ÉÙ¥•%¤ì(€€€¥˜€¡™¥•±€ôôô€­¹½Ý¹=™™•É¥¹Ìœ¤…¹½¹¥…±=™™•É¥¹I•¥ÍÑÉä¡…ÁÁÉ½Ù…°¹Ù…±Õ”¤ì(€€€¥˜€¡™¥•±€ôôô€é•É½AÉ¥•A½±¥äœ€˜˜¥ÍI•½É¡…ÁÁÉ½Ù…°¹Ù…±Õ”¤€˜˜=‰©•Ð¹¡…Í=Ý¸¡…ÁÁÉ½Ù…°¹Ù…±Õ”°€Í•ÉÙ¥•%œ¤¤…ÁÁÉ½Ù…°¹Ù…±Õ”¹Í•ÉÙ¥•%€ô…¹½¹¥…±UÕ¥¡…ÁÁÉ½Ù…°¹Ù…±Õ”¹Í•ÉÙ¥•%¤ì(€ô(€É•ÑÕÉ¸Í•ÉÙ¥”ì)ô)•áÁ½ÉÐ™Õ¹Ñ¥½¸…¹½¹¥…±ÕÍÑ½µ•É%‘•¹Ñ¥ÑåY9•áÐ¡¥¹ÁÕÐ¤ì(€½¹ÍÐÍ¹…ÁÍ¡½Ð€ôÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡¥¹ÁÕÐ°€ÕÍÑ½µ•É%¹ÁÕÑÌœ¤ì(€¥˜€ …Í¹…ÁÍ¡½Ð¹½¬ñðÍ¹…ÁÍ¡½Ð¹¹½¹A±…¥¹A…Ñ¡Ì¹±•¹Ñ ñð€…¥ÍI•½É¡Í¹…ÁÍ¡½Ð¹Ù…±Õ”¤¤Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È ÕÍÑ½µ•È¥‘•¹Ñ¥ÑäÉ•ÅÕ¥É•ÌÁ±…¥¸‘…Ñ„¸œ¤ì(€½¹ÍÐÕÍÑ½µ•È€ôÍ¹…ÁÍ¡½Ð¹Ù…±Õ”ì(€¥˜€¡¥ÍI•½É¡ÕÍÑ½µ•È¹½¹™¥Éµ•‘…ÑÌ¤¤™½È€¡½¹ÍÐ™…Ð½˜=‰©•Ð¹Ù…±Õ•Ì¡ÕÍÑ½µ•È¹½¹™¥Éµ•‘…ÑÌ¤¤ì(€€€¥˜€¡¥ÍI•½É¡™…Ð¤€˜˜=‰©•Ð¹¡…Í=Ý¸¡™…Ð°€½™™•É¥¹%œ¤¤™…Ð¹½™™•É¥¹%€ô…¹½¹¥…±UÕ¥¡™…Ð¹½™™•É¥¹%¤ì(€ô(€É•ÑÕÉ¸ÕÍÑ½µ•Èì)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸¥‘•¹Ñ¥Ñå¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥”°É•ÅÕ•ÍÑ•‘QåÁ”€ôÍ•ÉÙ¥”ü¹Í•ÉÙ¥•QåÁ”¤ì(€¥˜€ …¥ÍI•½É¡Í•ÉÙ¥”¤¤É•ÑÕÉ¸m½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€Í•ÉÙ¥•}¥‘•¹Ñ¥Ñäœ°€Í•ÉÙ¥”œ°€Á•ÉÍ¥ÍÑ•Í•ÉÙ¥”½‰©•Ð¥ÌÉ•ÅÕ¥É•¸œ¥tì(€½¹ÍÐ½ÕÐ€ômtì(€½¹ÍÐ…‘€ô€¡Á…Ñ °µ•ÍÍ…”¤€ôø½ÕÐ¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ¡Í•ÉÙ¥•mÁ…Ñ¡t€ôôôÕ¹‘•™¥¹•€ü€µ¥ÍÍ¥¹œœ€è€¥¹Ù…±¥œ°€Í•ÉÙ¥•}¥‘•¹Ñ¥Ñäœ°Á…Ñ °µ•ÍÍ…”¤¤ì(€¥˜€ …Ù…±¥‘M•ÉÙ¥•%‘Y9•áÐ¡Í•ÉÙ¥”¹¥¤¤…‘ ¥œ°€Ù…±¥Á•ÉÍ¥ÍÑ•Í•ÉÙ¥”UU%¥ÌÉ•ÅÕ¥É•¸œ¤ì(€¥˜€ …MIY%}QeAL¹¥¹±Õ‘•Ì¡Í•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”¤¤…‘ Í•ÉÙ¥•QåÁ”œ°€ÍÕÁÁ½ÉÑ•Á•ÉÍ¥ÍÑ•Í•ÉÙ¥•QåÁ”¥ÌÉ•ÅÕ¥É•¸œ¤ì(€•±Í”¥˜€¡Í•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”€„ôôÉ•ÅÕ•ÍÑ•‘QåÁ”¤…‘ Í•ÉÙ¥•QåÁ”œ°€I•ÅÕ•ÍÑ•Í•ÉÙ¥•QåÁ”µÕÍÐ•ÅÕ…°Ñ¡”Á•ÉÍ¥ÍÑ•Í•ÉÙ¥•QåÁ”¸œ¤ì(€¥˜€ …l59U0œ°€%}MUMQœ°€%}%9QIY%\t¹¥¹±Õ‘•Ì¡Í•ÉÙ¥”¹Í½ÕÉ”¤¤…‘ Í½ÕÉ”œ°€áÁ±¥¥Ð59U0°%}MUMQ°½È%}%9QIY%\Í½ÕÉ”¥ÌÉ•ÅÕ¥É•ì‘•±•Ñ¥¹œ½É¥¥¸‘½•Ì¹½ÐÉ•…Ñ”„µ…¹Õ…°Í•ÉÙ¥”¸œ¤ì(€½¹ÍÐ¼€ôÍ•ÉÙ¥”¹½É¥¥¸ì(€¥˜€ …¥ÍI•½É¡¼¤ñð=‰©•Ð¹­•åÌ¡¼¤¹±•¹Ñ €„ôô€Øñð€…Í…µ•M•ÉÙ¥•%‘Y9•áÐ¡¼¹Í•ÉÙ¥•%°Í•ÉÙ¥”¹¥¤ñð¼¹Í½ÕÉ”€„ôôÍ•ÉÙ¥”¹Í½ÕÉ”ñð(€€€€€€……Õ‘¥ÑQ•áÐ¡¼¹½Ý¹•É%¤ñð€……Õ‘¥ÑQ•áÐ¡¼¹½Á•É…Ñ¥½¹%¤ñð€……Õ‘¥ÑQ¥µ”¡¼¹É•…Ñ•‘Ð¤¤ì(€€€…‘ ½É¥¥¸œ°€I•Ñ…¥¸Ñ¡”¥µµÕÑ…‰±”É•…Ñ¥½¸É••¥ÁÐèÍ•ÉÙ¥•%°Í•ÉÙ¥•QåÁ”°Í½ÕÉ”°½Ý¹•É%°½Á•É…Ñ¥½¹%°…¹É•…Ñ•‘Ð¸œ¤ì(€ô(€¥˜€¡¥ÍI•½É¡¼¤€˜˜€ …MIY%}QeAL¹¥¹±Õ‘•Ì¡¼¹Í•ÉÙ¥•QåÁ”¤ñð¼¹Í•ÉÙ¥•QåÁ”€„ôôÍ•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”¤¤ì(€€€½ÕÐ¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ¡¼¹Í•ÉÙ¥•QåÁ”€ôôôÕ¹‘•™¥¹•€ü€µ¥ÍÍ¥¹œœ€è€¥¹Ù…±¥œ°€Í•ÉÙ¥•}¥‘•¹Ñ¥Ñäœ°€½É¥¥¸¹Í•ÉÙ¥•QåÁ”œ°€É•…Ñ¥½¸µÉ••¥ÁÐÍ•ÉÙ¥•QåÁ”µÕÍÐ•ÅÕ…°Ñ¡”Á•ÉÍ¥ÍÑ•Í•ÉÙ¥•QåÁ”ì¡…¹¥¹œÑåÁ”É•ÅÕ¥É•Ì„¹•Ü¥‘•¹Ñ¥Ñä…¹É•…Ñ¥½¸É••¥ÁÐ¸œ¤¤ì(€ô(€É•ÑÕÉ¸½ÕÐì)ô(()™Õ¹Ñ¥½¸ÍÕÁÁ½ÉÑ•‘%¹±Õ‘•‘AÉ¥•A…Ñ ¡Í•ÉÙ¥•QåÁ”°Á…Ñ °ÁÉ¥¥¹œ€ôíô¤ì(€¥˜€¡ÑåÁ•½˜Á…Ñ €„ôô€ÍÑÉ¥¹œœñð€…MIY%}QeAL¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤¤É•ÑÕÉ¸™…±Í”ì(€½¹ÍÐÁ…ÉÑÌ€ôÁ…Ñ ¹ÍÁ±¥Ð œ¸œ¤°mÉ½½Ð°­•ä°±•…˜°Í¥é•t€ôÁ…ÉÑÌì(€¥˜€ ……±±½Ý•‘AÉ¥¥¹¥•±‘Ì¡Í•ÉÙ¥•QåÁ”¤¹¥¹±Õ‘•Ì¡É½½Ð¤¤É•ÑÕÉ¸™…±Í”ì(€¥˜€¡Á…ÉÑÌ¹±•¹Ñ €ôôô€Ä¤É•ÑÕÉ¸€ (€€€Í…±…É5½¹•å¥•±‘Ì¡Í•ÉÙ¥•QåÁ”¤¹¥¹±Õ‘•Ì¡É½½Ð¤€˜˜€…lµ¥¹¥µÕµ)½ˆœ°É•Á…¥É5¥¹¥µÕ´œ°µ¥¹¥µÕµM•ÉÙ¥•¡…É”t¹¥¹±Õ‘•Ì¡É½½Ð¤(€€¤ñð€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}5=]%9œ€˜˜É½½Ð€ôôô€µ½Ý¥¹	…Í•I…Ñ•A•ÉMÅ™Ðœ¤ì(€½¹ÍÐ½Á•¹5…ÁÌ€ôì(€€€I==%9}IA159Pél±…‰½ÉA•ÉMÅÕ…É”œ°µ…Ñ•É¥…±½ÍÑA•ÉMÅÕ…É”œ°Ñ•…É=™™A•ÉMÅÕ…É”œ°Õ¹‘•É±…åµ•¹ÑA•ÉMÅÕ…É”t°(€€€1Q}I==}IA159Pél±…‰½ÉA•ÉMÅ™Ðœ°µ•µ‰É…¹•½ÍÑA•ÉMÅ™Ðœ°Ñ•…É=™™A•ÉMÅ™Ðt°(€€€1==I%9}%9MQ10élÉ•µ½Ù…±A•ÉMÅ™Ðt°1==I%9}IA159PélÉ•µ½Ù…±A•ÉMÅ™Ðt°(€€€9%9}%9MQ10él±…‰½ÉA•É1¥¹•…É½½Ðœ°µ…Ñ•É¥…±A•É1¥¹•…É½½Ðœ°Á½ÍÑAÉ¥”œ°…Ñ•AÉ¥”t°(€€€9%9}IA159Pél±…‰½ÉA•É1¥¹•…É½½Ðœ°µ…Ñ•É¥…±A•É1¥¹•…É½½Ðœ°Á½ÍÑAÉ¥”œ°…Ñ•AÉ¥”œ°É•µ½Ù…±A•É1¥¹•…É½½Ðt°(€€€19MA%9}5U1 élµÕ±¡5…Ñ•É¥…±A•Ée…Ét°19MA%9}A19Q%9élµÕ±¡5…Ñ•É¥…±A•Ée…Ét(€ôì(€¥˜€¡Á…ÉÑÌ¹±•¹Ñ €ôôô€È¤ì(€€€¥˜¡É½½ÐôôôÍ½Á•I…Ñ•Ìœ˜™M=A}QeAL¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤¥É•ÑÕÉ¸=‰©•Ð¹¡…Í=Ý¸¡Í½Á•I…Ñ••™¥¹¥Ñ¥½¹Ì¡Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¤±­•ä¤ì(€€€¥˜¡É½½Ðôôô½™™•É¥¹I…Ñ•Ìœ˜™½¹™¥ÕÉ•‘=™™•É¥¹œ¡Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¤¥É•ÑÕÉ¸=‰©•Ð¹¡…Í=Ý¸¡½™™•É¥¹I…Ñ••™¥¹¥Ñ¥½¹Ì¡Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¤±­•ä¤ì(€€€¥˜€¡½Á•¹5…ÁÍmÍ•ÉÙ¥•QåÁ•tü¹¥¹±Õ‘•Ì¡É½½Ð¤¤É•ÑÕÉ¸9=9%1}M1U¹Ñ•ÍÐ¡­•ä¤ì(€€€¥˜€¡Í•ÉÙ¥•QåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  1==I%9|œ¤€˜˜l±…‰½ÉA•ÉMÅ™Ðœ°µ…Ñ•É¥…±A•ÉMÅ™Ðt¹¥¹±Õ‘•Ì¡É½½Ð¤¤É•ÑÕÉ¸1==I%9}QeAL¹¥¹±Õ‘•Ì¡­•ä¤ì(€€€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€M%%9}IA159Pœ€˜˜l±…‰½ÉA•ÉMÅ™Ðœ°µ…Ñ•É¥…±A•ÉMÅ™Ðt¹¥¹±Õ‘•Ì¡É½½Ð¤¤É•ÑÕÉ¸M%%9}QeAL¹¥¹±Õ‘•Ì¡­•ä¤ì(€€€¥˜€¡l19MA%9}5U1 œ°19MA%9}A19Q%9t¹¥¹±Õ‘•Ì¡Í•ÉÙ¥•QåÁ”¤€˜˜É½½Ð€ôôô€‰•‘AÉ•Á1…‰½ÉA•ÉMÅ™Ðœ¤É•ÑÕÉ¸l¹••‘Í}Ý••‘¥¹œœ°½Ù•ÉÉ½Ý¸t¹¥¹±Õ‘•Ì¡­•ä¤ì(€€€¥˜€¡Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}A19Q%9œ€˜˜lÁ±…¹Ñ¥¹1…‰½ÉA•ÉA±…¹Ðœ°Á±…¹Ñ5…Ñ•É¥…±±±½Ý…¹”t¹¥¹±Õ‘•Ì¡É½½Ð¤¤É•ÑÕÉ¸M%i}-eL¹¥¹±Õ‘•Ì¡­•ä¤ì(€ô(€¥˜€¡Á…ÉÑÌ¹±•¹Ñ €ôôô€Ì¤É•ÑÕÉ¸Í•ÉÙ¥•QåÁ”€ôôô€19MA%9}19U@œ€˜˜É½½Ð€ôôô€‘•‰É¥ÍAÉ¥¥¹œœ€˜˜l±¥¡Ðœ°µ½‘•É…Ñ”œ°¡•…Ùät¹¥¹±Õ‘•Ì¡­•ä¤€˜˜±•…˜€ôôô€‘¥ÍÁ½Í…±±…Ðœì(€¥˜€¡Á…ÉÑÌ¹±•¹Ñ €ôôô€Ð¤ì(€€€½¹ÍÐµ…Ñ•É¥…±5…À€ôíI==%9}IA%HèÉ•Á…¥É5…Ñ•É¥…±±±½Ý…¹”œ±1Q}I==}IA%HèÁ…Ñ¡5…Ñ•É¥…±±±½Ý…¹”œ±M%%9}IA%Hèµ…Ñ•É¥…±±±½Ý…¹”õmÍ•ÉÙ¥•QåÁ•tì(€€€É•ÑÕÉ¸É½½Ð€ôôôµ…Ñ•É¥…±5…À€˜˜€¡Í•ÉÙ¥•QåÁ”€ôôô€M%%9}IA%Hœ€üM%%9}QeAL¹¥¹±Õ‘•Ì¡­•ä¤€è9=9%1}M1U¹Ñ•ÍÐ¡­•ä¤¤€˜˜9=9%1}M1U¹Ñ•ÍÐ¡±•…˜¤€˜˜M%i}-eL¹¥¹±Õ‘•Ì¡Í¥é”¤ì(€ô(€É•ÑÕÉ¸™…±Í”ì)ô)™Õ¹Ñ¥½¸¥¹±Õ‘•‘A…Ñ¡¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥”°ÁÉ¥¥¹œ¤ì(€¥˜ ……Ñ¥Ù…Ñ¥½¹M¹…ÁÍ¡½ÑÌ¹¡…Ì¡Í•ÉÙ¥”¥ñð¡ÁÉ¥¥¹œ„ôõÕ¹‘•™¥¹•˜˜……Ñ¥Ù…Ñ¥½¹M¹…ÁÍ¡½ÑÌ¹¡…Ì¡ÁÉ¥¥¹œ¤¤¥É•ÑÕÉ¸½µÁÕÑ•%¹±Õ‘•‘A…Ñ¡¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥”±ÁÉ¥¥¹œ¤ì(€±•Ð¡•­Ìõ…Ñ¥Ù…Ñ¥½¹%¹±Õ‘•‘AÉ¥•¡•­Ì¹•Ð¡Í•ÉÙ¥”¤ì(€¥˜ …¡•­Ì¥í¡•­Ìõ¹•Ü5…À ¤í…Ñ¥Ù…Ñ¥½¹%¹±Õ‘•‘AÉ¥•¡•­Ì¹Í•Ð¡Í•ÉÙ¥”±¡•­Ì¤íô(€¥˜ …¡•­Ì¹¡…Ì¡ÁÉ¥¥¹œ¤¥¡•­Ì¹Í•Ð¡ÁÉ¥¥¹œ±‘••ÁÉ••é”¡½µÁÕÑ•%¹±Õ‘•‘A…Ñ¡¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥”±ÁÉ¥¥¹œ¤¤¤ì(€É•ÑÕÉ¸ÍÑÉÕÑÕÉ•‘±½¹”¡¡•­Ì¹•Ð¡ÁÉ¥¥¹œ¤¤ì)ô)™Õ¹Ñ¥½¸½µÁÕÑ•%¹±Õ‘•‘A…Ñ¡¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥”°ÁÉ¥¥¹œ¤ì(€½¹ÍÐµ…ÁÁ¥¹Ì€ôÍ•ÉÙ¥”¹é•É½AÉ¥•A½±¥äü¹¥¹±Õ‘•‘AÉ¥•Ìì(€¥˜€ …¥ÍI•½É¡µ…ÁÁ¥¹Ì¤¤É•ÑÕÉ¸mtì(€½¹ÍÐÙ…É¥…¹ÑÌõmÍ•ÉÙ¥”¹ÁÉ¥¥¹œ°¸¸¸¡ÉÉ…ä¹¥ÍÉÉ…ä¡Í•ÉÙ¥”¹Ñ¥•ÉÌ¤ýÍ•ÉÙ¥”¹Ñ¥•ÉÌémt¤¹µ…À¡Ðôùµ•É•AÉ¥¥¹½ÉY…±¥‘…Ñ¥½¹Y9•áÐ¡Í•ÉÙ¥”¹ÁÉ¥¥¹ññíô±Ðü¹½Ù•ÉÉ¥‘•Íññíô¤¥tì(€½¹ÍÐÍÕÁÁ½ÉÑ•ô¡Á…Ñ ±À¤ôùÍÕÁÁ½ÉÑ•‘%¹±Õ‘•‘AÉ¥•A…Ñ ¡Í•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”±Á…Ñ ±À¤ì(€½¹ÍÐ½ÕÐ€ômt°½¹™¥ÕÉ•€ôÁ…Ñ €ôøÙ…É¥…¹ÑÌ¹Í½µ”¡ÀôùÍÕÁÁ½ÉÑ•¡Á…Ñ ±À¤˜™Ù…±Õ•ÑA…Ñ ¡À±Á…Ñ ¤„ôõÕ¹‘•™¥¹•¤ì(€½¹ÍÐÙ…±¥‘AÉ¥”€ô€¡Á…Ñ °Ù…±Õ”¤€ôøì(€€€½¹ÍÐmÉ½½Ð±­•åtõÁ…Ñ ¹ÍÁ±¥Ð œ¸œ¤ì(€€€½¹ÍÐ™É…Ñ¥½¹…°õÉ½½Ðôôô½™™•É¥¹I…Ñ•Ìœý½™™•É¥¹I…Ñ••™¥¹¥Ñ¥½¹Ì¡Í•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¥m­•åtü¹µ½¹•å-¥¹ôôôÕ¹¥Ñ}É…Ñ”œéÉ½½ÐôôôÍ½Á•I…Ñ•ÌœýÍ½Á•I…Ñ••™¥¹¥Ñ¥½¹Ì¡Í•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”±ÁÉ¥¥¹œ¥m­•åtü¹µ½¹•å-¥¹ôôôÕ¹¥Ñ}É…Ñ”œè…™¥á•‘AÉ¥•¥•±¡É½½Ð±ÁÉ¥¥¹œ¤ì(€€€É•ÑÕÉ¸™É…Ñ¥½¹…°€ü¹½¹9•…Ñ¥Ù”¡Ù…±Õ”¤˜™Ù…±Õ”ðõ9Õµ‰•È¹5a}M}%9QH€è¹½¹9•…Ñ¥Ù•5½¹•ä¡Ù…±Õ”¤ì(€ôì(€½¹ÍÐå±•M½ÕÉ•Ìõ¹•ÜM•Ð ¤ì(€™½È¡½¹ÍÐÍÑ…ÉÐ½˜=‰©•Ð¹­•åÌ¡µ…ÁÁ¥¹Ì¤¥ì(€€€½¹ÍÐÍ••¸õ¹•Ü5…À ¤±¡…¥¸õmtí±•ÐÁ…Ñ õÍÑ…ÉÐì(€€€Ý¡¥±”¡ÑåÁ•½˜Á…Ñ ôôôÍÑÉ¥¹œœ˜™=‰©•Ð¹¡…Í=Ý¸¡µ…ÁÁ¥¹Ì±Á…Ñ ¤¥ì(€€€€€¥˜¡Í••¸¹¡…Ì¡Á…Ñ ¤¥í™½È¡½¹ÍÐÍ½ÕÉ”½˜¡…¥¸¹Í±¥”¡Í••¸¹•Ð¡Á…Ñ ¤¤¥å±•M½ÕÉ•Ì¹…‘¡Í½ÕÉ”¤í‰É•…¬íô(€€€€€Í••¸¹Í•Ð¡Á…Ñ ±¡…¥¸¹±•¹Ñ ¤í¡…¥¸¹ÁÕÍ ¡Á…Ñ ¤íÁ…Ñ õµ…ÁÁ¥¹ÍmÁ…Ñ¡tì(€€€ô(€ô(€™½È€¡½¹ÍÐmÍ½ÕÉ”°½Ù•É¥¹t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡µ…ÁÁ¥¹Ì¤¤ì(€€€½¹ÍÐÁ…Ñ €ô€é•É½AÉ¥•A½±¥ä¹¥¹±Õ‘•‘AÉ¥•Ì¸œ€¬Í½ÕÉ”ì(€€€¥˜¡å±•M½ÕÉ•Ì¹¡…Ì¡Í½ÕÉ”¤¥½ÕÐ¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°¥¹±Õ‘•‘}ÁÉ¥•}å±”œ±Á…Ñ °%¹±Õ‘•µÁÉ¥”Á…Ñ¡Ì…¹¹½Ð™½É´„å±”ì•… é•É¼ÁÉ¥”¹••‘Ì…¸¥¹‘•Á•¹‘•¹Ñ±ä‰¥±±•Á½Í¥Ñ¥Ù”½Ù•É¥¹œ¡…É”¸œ¤¤ì(€€€¥˜¡Í•ÉÙ¥”¹Í•ÉÙ¥•QåÁ”ôôôUMQ=4œ˜™Ù…É¥…¹ÑÌ¹Í½µ”¡ÀôùÀü¹ÕÍÑ½µAÉ¥¥¹5½‘”ôôôÉ…¹”œ¤˜™l±½Üœ°¡¥ t¹¥¹±Õ‘•Ì¡Í½ÕÉ”¤˜™l±½Üœ°¡¥ t¹¥¹±Õ‘•Ì¡½Ù•É¥¹œ¤¥ì(€€€€€½ÕÐ¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°¥¹±Õ‘•‘}ÁÉ¥•}Í•¹…É¥¼œ±Á…Ñ °ÕÍÑ½´É…¹”•¹‘Á½¥¹ÑÌ…É”…±Ñ•É¹…Ñ¥Ù”ÅÕ½Ñ”Í•¹…É¥½Ìì½¹”•¹‘Á½¥¹Ð…¹¹½Ð½Ù•ÈÑ¡”½Ñ¡•È¸œ¤¤ì(€€€ô(€€€™½È€¡½¹ÍÐmÉ½±”°ÁÉ¥•A…Ñ¡t½˜mlÍ½ÕÉ”œ±Í½ÕÉ•t±l½Ù•É¥¹œœ±½Ù•É¥¹ut¤ì(€€€€€¥˜€ …½¹™¥ÕÉ•¡ÁÉ¥•A…Ñ ¤¤ì(€€€€€€€½ÕÐ¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°¥¹±Õ‘•‘}ÁÉ¥•}Á…Ñ œ±Á…Ñ °Q¡”€œ­É½±”¬œÁ…Ñ €œ­MÑÉ¥¹œ¡ÁÉ¥•A…Ñ ¤¬œµÕÍÐ¹…µ”…¸•áÁ±¥¥Ñ±ä½¹™¥ÕÉ•ÁÉ¥”¥¸Ñ¡¥Ì•á…ÐÍ•ÉÙ¥”½¹ÑÉ…Ð½È½¹”½˜¥ÑÌÑ¥•ÉÌ¸œ¤¤ì(€€€€€ô(€€€ô(€€€¥˜€¡ÁÉ¥¥¹œ€„ôôÕ¹‘•™¥¹•€˜˜ÍÕÁÁ½ÉÑ•¡Í½ÕÉ”±ÁÉ¥¥¹œ¤¤ì(€€€€€½¹ÍÐÙ…±Õ”€ôÙ…±Õ•ÑA…Ñ ¡ÁÉ¥¥¹œ°Í½ÕÉ”¤ì(€€€€€€¼¼Í½ÕÉ”…‰Í•¹Ð™É½´Ñ¡¥ÌÙ…É¥…¹Ð‰•±½¹ÌÑ¼…¹½Ñ¡•È½¹™¥ÕÉ•Ñ¥•È¸(€€€€€€¼¼ÁÉ•Í•¹ÐÍ½ÕÉ”¥Ì¡•­••Ù•¸Ý¡•¸¥Ð¥Ì¹½ÐÍ•±•Ñ•‰äÑ¡¥ÌÉ•ÅÕ•ÍÐ¸(€€€€€¥˜€¡Ù…±Õ”€„ôôÕ¹‘•™¥¹•¤ì(€€€€€€€½¹ÍÐ½Ù•É¥¹Y…±Õ”€ôÙ…±Õ•ÑA…Ñ ¡ÁÉ¥¥¹œ°½Ù•É¥¹œ¤ì(€€€€€€€¥˜€ …Ù…±¥‘AÉ¥”¡Í½ÕÉ”°Ù…±Õ”¤ñð€…ÍÕÁÁ½ÉÑ•¡½Ù•É¥¹œ±ÁÉ¥¥¹œ¤ñð(€€€€€€€€€€€€…Ù…±¥‘AÉ¥”¡½Ù•É¥¹œ°½Ù•É¥¹Y…±Õ”¤ñð€¡Ù…±Õ”€ôôô€À€˜˜½Ù•É¥¹Y…±Õ”€ôôô€À¤¤ì(€€€€€€€€€½ÕÐ¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°¥¹±Õ‘•‘}ÁÉ¥•}Á…Ñ œ±Á…Ñ °Q¡”•™™•Ñ¥Ù”Ñ¥•ÈµÕÍÐÉ•Ñ…¥¸Ù…±¥Í½ÕÉ”…¹½Ù•É¥¹œÁÉ¥•Ìì…¸¥¹±Õ‘•é•É¼¹••‘Ì„Á½Í¥Ñ¥Ù”½Ù•É¥¹œÁÉ¥”¸œ¤¤ì(€€€€€€€ô(€€€€€ô(€€€ô(€ô(€É•ÑÕÉ¸Õ¹¥ÅÕ•¥…¹½ÍÑ¥Ì¡½ÕÐ¤ì)ô()™Õ¹Ñ¥½¸é•É½A½±¥å¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥”¤ì(€¥˜ ……Ñ¥Ù…Ñ¥½¹M¹…ÁÍ¡½ÑÌ¹¡…Ì¡Í•ÉÙ¥”¤¥É•ÑÕÉ¸½µÁÕÑ•i•É½A½±¥å¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥”¤ì(€¥˜ ……Ñ¥Ù…Ñ¥½¹i•É½A½±¥å¡•­Ì¹¡…Ì¡Í•ÉÙ¥”¤¥…Ñ¥Ù…Ñ¥½¹i•É½A½±¥å¡•­Ì¹Í•Ð¡Í•ÉÙ¥”±‘••ÁÉ••é”¡½µÁÕÑ•i•É½A½±¥å¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥”¤¤¤ì(€É•ÑÕÉ¸ÍÑÉÕÑÕÉ•‘±½¹”¡…Ñ¥Ù…Ñ¥½¹i•É½A½±¥å¡•­Ì¹•Ð¡Í•ÉÙ¥”¤¤ì)ô)™Õ¹Ñ¥½¸½µÁÕÑ•i•É½A½±¥å¥…¹½ÍÑ¥Ì¡Í•ÉÙ¥”¤ì(€½¹ÍÐÀ€ôÍ•ÉÙ¥”¹é•É½AÉ¥•A½±¥äì(€¥˜€¡À€ôôôÕ¹‘•™¥¹•¤É•ÑÕÉ¸mtì(€½¹ÍÐÙ…±¥€ô¥ÍI•½É¡À¤€˜˜=‰©•Ð¹­•åÌ¡À¤¹±•¹Ñ €ôôô€Ü€˜˜Ù…±¥‘M•ÉÙ¥•%‘Y9•áÐ¡À¹Í•ÉÙ¥•%¤€˜˜Í…µ•M•ÉÙ¥•%‘Y9•áÐ¡À¹Í•ÉÙ¥•%°Í•ÉÙ¥”¹¥¤€˜˜(€€€…Õ‘¥ÑQ•áÐ¡À¹½Ý¹•É%¤€˜˜À¹½Ý¹•É%€ôôôÍ•ÉÙ¥”¹½É¥¥¸ü¹½Ý¹•É%€˜˜…Õ‘¥ÑQ•áÐ¡À¹½Á•É…Ñ¥½¹%¤€˜˜…Õ‘¥ÑQ¥µ”¡À¹…ÁÁÉ½Ù•‘Ð¤€˜˜(€€€ÑåÁ•½˜À¹™É••½µÁ±•Ñ•M•ÉÙ¥”€ôôô€‰½½±•…¸œ€˜˜ÉÉ…ä¹¥ÍÉÉ…ä¡À¹™É••Q¥•ÉÌ¤€˜˜€…‘•¹Í•ÉÉ…å%ÍÍÕ”¡À¹™É••Q¥•ÉÌ¤€˜˜(€€€À¹™É••Q¥•ÉÌ¹•Ù•Éä¡¹…µ”€ôø…Õ‘¥ÑQ•áÐ¡¹…µ”¤€˜˜¹…µ”€ôôô¹…µ”¹ÑÉ¥´ ¤€˜˜ÉÉ…ä¹¥ÍÉÉ…ä¡Í•ÉÙ¥”¹Ñ¥•ÉÌ¤€˜˜Í•ÉÙ¥”¹Ñ¥•ÉÌ¹Í½µ”¡Ð€ôøÐü¹¹…µ”€ôôô¹…µ”¤¤€˜˜(€€€¹•ÜM•Ð¡À¹™É••Q¥•ÉÌ¤¹Í¥é”€ôôôÀ¹™É••Q¥•ÉÌ¹±•¹Ñ €˜˜¥ÍI•½É¡À¹¥¹±Õ‘•‘AÉ¥•Ì¤€˜˜(€€€=‰©•Ð¹•¹ÑÉ¥•Ì¡À¹¥¹±Õ‘•‘AÉ¥•Ì¤¹•Ù•Éä ¡mÁ…Ñ °¥¹±Õ‘•‘%¹t¤€ôø…Õ‘¥ÑQ•áÐ¡Á…Ñ ¤€˜˜…Õ‘¥ÑQ•áÐ¡¥¹±Õ‘•‘%¸¤€˜˜Á…Ñ €„ôô¥¹±Õ‘•‘%¸¤ì(€É•ÑÕÉ¸Ù…±¥€ü¥¹±Õ‘•‘A…Ñ¡¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥”¤€èm½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°€é•É½}ÁÉ¥•}Á½±¥äœ°€é•É½AÉ¥•A½±¥äœ°€i•É¼µÁÉ¥”Á½±¥äµÕÍÐ•áÁ±¥¥Ñ±ä‰¥¹Ñ¡”Á•ÉÍ¥ÍÑ•Í•ÉÙ¥”°½Ý¹•È…ÁÁÉ½Ù…°°™É•”½™™•É¥¹Ì°…¹¥¹±Õ‘•µÁÉ¥”Á…Ñ¡Ì¸œ¥tì)ô)•áÁ½ÉÐ™Õ¹Ñ¥½¸™É••=™™•É¥¹Y9•áÐ¡Í•ÉÙ¥”°Ñ¥•É9…µ”€ô¹Õ±°¤ì(€½¹ÍÐÀ€ôÍ•ÉÙ¥”¹é•É½AÉ¥•A½±¥äì(€É•ÑÕÉ¸À€„ôôÕ¹‘•™¥¹•€˜˜é•É½A½±¥å¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥”¤¹±•¹Ñ €ôôô€À€˜˜(€€€€¡Ñ¥•É9…µ”€ôôô¹Õ±°€üÀ¹™É••½µÁ±•Ñ•M•ÉÙ¥”€èÀ¹™É••Q¥•ÉÌ¹¥¹±Õ‘•Ì¡Ñ¥•É9…µ”¤¤ì)ô)™Õ¹Ñ¥½¸½É•AÉ¥•I•ÅÕ¥É•µ•¹ÑY9•áÐ¡¥Ñ•´¤ì(€É•ÑÕÉ¸l¹½¹}¹•…Ñ¥Ù•}µ½¹•äœ°€¹½¹}¹•…Ñ¥Ù•}¹Õµ‰•Èt¹¥¹±Õ‘•Ì¡¥Ñ•´¹­¥¹¤€˜˜(€€€€…l¡…Õ±Ý…å•”œ°€•‘¥¹A•É1¥¹•…É½½Ðœ°€‰…¥¹MÕÉ¡…É•A•É•¹Ðœ°€Á½¹‘¥¹]…Ñ•ÉMÕÉ¡…É”t¹¥¹±Õ‘•Ì¡¥Ñ•´¹Á…Ñ ¤€˜˜€…¥Ñ•´¹Á…Ñ ¹•¹‘Í]¥Ñ  œ¹‘¥ÍÁ½Í…±±…Ðœ¤ì)ô)™Õ¹Ñ¥½¸¥¹±Õ‘•‘½É•AÉ¥•Y9•áÐ¡Í•ÉÙ¥”°ÁÉ¥¥¹œ°É•ÅÕ¥É•°Á…Ñ ¤ì(€¥˜€¡é•É½A½±¥å¥…¹½ÍÑ¥ÍY9•áÐ¡Í•ÉÙ¥”¤¹±•¹Ñ ¤É•ÑÕÉ¸™…±Í”ì(€½¹ÍÐ¥¹±Õ‘•‘%¸€ôÍ•ÉÙ¥”¹é•É½AÉ¥•A½±¥äü¹¥¹±Õ‘•‘AÉ¥•Ìü¹mÁ…Ñ¡tì(€É•ÑÕÉ¸ÑåÁ•½˜¥¹±Õ‘•‘%¸€ôôô€ÍÑÉ¥¹œœ€˜˜É•ÅÕ¥É•¹Í½µ”¡¥Ñ•´€ôø¥Ñ•´¹Á…Ñ €ôôô¥¹±Õ‘•‘%¸€˜˜½É•AÉ¥•I•ÅÕ¥É•µ•¹ÑY9•áÐ¡¥Ñ•´¤¤€˜˜(€€€Ù…±Õ•ÑA…Ñ ¡ÁÉ¥¥¹œ°¥¹±Õ‘•‘%¸¤€ø€Àì)ô((¼¼Q¡”…±±•ÈµÕÍÐ±½…½É¥¥¸™É½´ÁÉ½Ñ•Ñ•Á•ÉÍ¥ÍÑ•¹”…¹…ÕÑ¡•¹Ñ¥…Ñ”¥ÑÌ½Ý¹•È¸(¼¼Q¡¥Ì¡•±Á•È¥µÁ±•µ•¹ÑÌ½É‘¥¹…Éä•‘¥ÑÌ½¹±äì¥Ð…¹¹½Ðµ¥¹Ð„µ…¹Õ…°É•Á±…•µ•¹Ð¸)•áÁ½ÉÐ™Õ¹Ñ¥½¸•‘¥ÑY9•áÑM•ÉÙ¥”¡¥¹ÁÕÐ°¡…¹•Ì¤ì(€½¹ÍÐÕÉÉ•¹Ð€ôÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡¥¹ÁÕÐ°€Í•ÉÙ¥”œ¤°Á…Ñ €ôÍ¹…ÁÍ¡½ÑA±…¥¹…Ñ„¡¡…¹•Ì°€¡…¹•Ìœ¤ì(€¥˜€ …ÕÉÉ•¹Ð¹½¬ñðÕÉÉ•¹Ð¹¹½¹A±…¥¹A…Ñ¡Ì¹±•¹Ñ ñð€…Á…Ñ ¹½¬ñðÁ…Ñ ¹¹½¹A±…¥¹A…Ñ¡Ì¹±•¹Ñ ñð(€€€€€¥‘•¹Ñ¥Ñå¥…¹½ÍÑ¥ÍY9•áÐ¡ÕÉÉ•¹Ð¹Ù…±Õ”¤¹±•¹Ñ ¤Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È =É‘¥¹…Éä•‘¥ÑÌÉ•ÅÕ¥É”„Ù…±¥Á•ÉÍ¥ÍÑ•Í•ÉÙ¥”…¹Á±…¥¸¡…¹•Ì¸œ¤ì(€¥˜€¡l¥œ°€Í•ÉÙ¥•QåÁ”œ°€Í½ÕÉ”œ°€½É¥¥¸œ°€½¹™¥Éµ•‘¥•±‘Ìœ°€…ÁÁÉ½Ù•‘Y…±Õ•Ìt¹Í½µ”¡­•ä€ôø=‰©•Ð¹¡…Í=Ý¸¡Á…Ñ ¹Ù…±Õ”°­•ä¤¤¤Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È =É‘¥¹…Éä•‘¥ÑÌ…¹¹½Ð¡…¹”Á•ÉÍ¥ÍÑ•¥‘•¹Ñ¥Ñä°½É¥¥¸°½È…ÁÁÉ½Ù…°É••¥ÁÑÌ¸œ¤ì(€É•ÑÕÉ¸…¹½¹¥…±M•ÉÙ¥•%‘•¹Ñ¥ÑåY9•áÐ¡ì€¸¸¹ÕÉÉ•¹Ð¹Ù…±Õ”°€¸¸¹Á…Ñ ¹Ù…±Õ”ô¤ì)ô((¼¼%Ì…É”½¹”µÑ¼µ½¹”Ý¥Ñ¡¥¸„Í•±•Ñ½È¸¥™™•É•¹ÐÍ•±•Ñ½ÉÌµ…ä¡…Ù”Ñ¡•¥È½Ý¸(¼¼É•¥ÍÑÉ¥•Ì°‰ÕÐ„ÕÍÑ½µ•È™…ÐµÕÍÐ…±Í¼¹…µ”¥ÑÌ•á…Ð™¥•±…¹Ù…±Õ”¸)™Õ¹Ñ¥½¸½™™•É¥¹I•¥ÍÑÉå¥…¹½ÍÑ¥ÍY9•áÐ¡™¥•±°Ù…±Õ•Ì¤ì(€½¹ÍÐÁÉ•Á…É•€ô…Ñ¥Ù…Ñ¥½¹I•¥ÍÑÉå¡•­Ì¹•Ð¡Ù…±Õ•Ì¤ì(€¥˜€¡ÁÉ•Á…É•ü¹™¥•±€ôôô™¥•±¤É•ÑÕÉ¸l¸¸¹ÁÉ•Á…É•¹‘¥…¹½ÍÑ¥Ítì(€½¹ÍÐÉ½½Ðô­¹½Ý¹=™™•É¥¹Ì¸œ­™¥•±ì(€¥˜ …¥ÍI•½É¡Ù…±Õ•Ì¤¥É•ÑÕÉ¸m½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°­¹½Ý¹}½™™•É¥¹Ìœ±É½½Ð°-¹½Ý¸½™™•É¥¹ÌµÕÍÐ‰”„Á±…¥¸Ù…±Õ”µÑ¼µUU%µ…À¸œ¥tì(€½¹ÍÐ½ÕÐõmt±É½ÕÁÌõ¹•Ü5…À ¤ì(€™½È¡½¹ÍÐmÙ…±Õ”±¥‘t½˜=‰©•Ð¹•¹ÑÉ¥•Ì¡Ù…±Õ•Ì¤¥ì(€€€¥˜ …9=9%1}M1U¹Ñ•ÍÐ¡Ù…±Õ”¥ñð…Ù…±¥‘M•ÉÙ¥•%‘Y9•áÐ¡¥¤¥í½ÕÐ¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°­¹½Ý¹}½™™•É¥¹Ìœ±É½½Ð¬œ¸œ­Ù…±Õ”°… ½™™•É•Ù…±Õ”É•ÅÕ¥É•Ì„…¹½¹¥…°Í±Õœ…¹Ù…±¥UU%¸œ¤¤í½¹Ñ¥¹Õ”íô(€€€½¹ÍÐ­•äõ¥¹Ñ½1½Ý•É…Í” ¤í¥˜ …É½ÕÁÌ¹¡…Ì¡­•ä¤¥É½ÕÁÌ¹Í•Ð¡­•ä±mt¤íÉ½ÕÁÌ¹•Ð¡­•ä¤¹ÁÕÍ ¡Ù…±Õ”¤ì(€ô(€™½È¡½¹ÍÐÙ…±Õ•Ì½˜É½ÕÁÌ¹Ù…±Õ•Ì ¤¥¥˜¡Ù…±Õ•Ì¹±•¹Ñ øÄ¥™½È¡½¹ÍÐÙ…±Õ”½˜Ù…±Õ•Ì¥½ÕÐ¹ÁÕÍ ¡½Ý¹•É¥…¹½ÍÑ¥Œ ¥¹Ù…±¥œ°‘ÕÁ±¥…Ñ•}½™™•É¥¹}¥œ±É½½Ð¬œ¸œ­Ù…±Õ”°¸½™™•É¥¹œUU%µÕÍÐ¥‘•¹Ñ¥™ä•á…Ñ±ä½¹”Ù…±Õ”Ý¥Ñ¡¥¸Ñ¡¥ÌÍ•±•Ñ½È¸œ¤¤ì(€É•ÑÕÉ¸½ÕÐì)ô)™Õ¹Ñ¥½¸¡…ÍM•±•Ñ•‘=™™•É¥¹AÉ¥•Y9•áÐ¡ÑåÁ”±Œ±À±™¥•±¤ì(€½¹ÍÐÙ…±Õ”õm™¥•±‘t°ÁÉ•Í•¹Ðô¡É½½Ð°¸¸¹Á…É•¹ÑÌ¤ôùí±•Ðµ…ÀõÁmÉ½½Ñtí™½È¡½¹ÍÐ­•ä½˜Á…É•¹ÑÌ¥µ…Àõ¥ÍI•½É¡µ…À¤ýµ…Ám­•åtéÕ¹‘•™¥¹•íÉ•ÑÕÉ¸¥ÍI•½É¡µ…À¤˜™=‰©•Ð¹¡…Í=Ý¸¡µ…À±Ù…±Õ”¤íôì(€¥˜¡ÑåÁ”ôôôI==%9}IA159Pœ¥É•ÑÕÉ¸€¡™¥•±ôôô•á¥ÍÑ¥¹I½½™QåÁ”œýlÑ•…É=™™A•ÉMÅÕ…É”tél±…‰½ÉA•ÉMÅÕ…É”œ°µ…Ñ•É¥…±½ÍÑA•ÉMÅÕ…É”œ°Õ¹‘•É±…åµ•¹ÑA•ÉMÅÕ…É”t¤¹Í½µ”¡É½½ÐôùÁÉ•Í•¹Ð¡É½½Ð¤¤ì(€¥˜¡ÑåÁ”ôôôI==%9}IA%Hœ¥É•ÑÕÉ¸lÉ•Á…¥É!½ÕÉÌœ°É•Á…¥É5…Ñ•É¥…±±±½Ý…¹”t¹Í½µ”¡É½½Ðôù™¥•±ôôôÉ½½™QåÁ”œýÁÉ•Í•¹Ð¡É½½Ð¤éÁÉ•Í•¹Ð¡É½½Ð±Œ¹É½½™QåÁ”¤¤ì(€¥˜¡ÑåÁ”ôôô1Q}I==}IA159Pœ¥É•ÑÕÉ¸€¡™¥•±ôôôµ•µ‰É…¹•QåÁ”œýlÑ•…É=™™A•ÉMÅ™Ðtél±…‰½ÉA•ÉMÅ™Ðœ°µ•µ‰É…¹•½ÍÑA•ÉMÅ™Ðt¤¹Í½µ”¡É½½ÐôùÁÉ•Í•¹Ð¡É½½Ð¤¤ì(€¥˜¡ÑåÁ”ôôô1Q}I==}IA%Hœ¥É•ÑÕÉ¸lÁ…Ñ¡I•Á…¥É!½ÕÉÌœ°Á…Ñ¡5…Ñ•É¥…±±±½Ý…¹”t¹Í½µ”¡É½½Ðôù™¥•±ôôôµ•µ‰É…¹•QåÁ”œýÁÉ•Í•¹Ð¡É½½Ð¤éÁÉ•Í•¹Ð¡É½½Ð±Œ¹µ•µ‰É…¹•QåÁ”¤¤ì(€¥˜¡ÑåÁ”ôôôM%%9}IA%Hœ¥É•ÑÕÉ¸lÉ•Á…¥É!½ÕÉÌœ°µ…Ñ•É¥…±±±½Ý…¹”t¹Í½µ”¡É½½ÐôùÁÉ•Í•¹Ð¡É½½Ð±Œ¹Í¥‘¥¹QåÁ”¤¤ì(€¥˜¡ÑåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  1==I%9|œ¤¥É•ÑÕÉ¸lÉ•µ½Ù…±A•ÉMÅ™Ðœ°‘¥ÍÁ½Í…±A•ÉMÅ™Ðt¹Í½µ”¡É½½ÐôùÁÉ•Í•¹Ð¡É½½Ð¤¤ì(€¥˜¡ÑåÁ”¹ÍÑ…ÉÑÍ]¥Ñ  9%9|œ¤¥É•ÑÕÉ¸l±…‰½ÉA•É1¥¹•…É½½Ðœ°µ…Ñ•É¥…±A•É1¥¹•…É½½Ðœ°Á½ÍÑAÉ¥”œ°…Ñ•AÉ¥”t¹Í½µ”¡É½½ÐôùÁÉ•Í•¹Ð¡É½½Ð¤¤ì(€¥˜¡™¥•±ôôôµÕ±¡QåÁ”œ¥É•ÑÕÉ¸ÁÉ•Í•¹Ð µÕ±¡5…Ñ•É¥…±A•Ée…Éœ¤ì(€É•ÑÕÉ¸™…±Í”ì)ô(
