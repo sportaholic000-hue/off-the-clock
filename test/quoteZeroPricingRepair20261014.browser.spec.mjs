@@ -204,9 +204,14 @@ async function saveEditor(page) {
 
 async function approveEditor(page) {
   await page.getByRole('button', { name:'Review saved configuration', exact:true }).click();
+  // Opening the review performs saved-book and validation requests before the
+  // acknowledgements render. Wait for the unconditional exact-content control
+  // first, then inspect the now-rendered review for its conditional legacy ack.
+  const exact = page.getByRole('checkbox', { name:/I confirm these exact saved prices/ });
+  await exact.waitFor();
   const legacy = page.getByRole('checkbox', { name:/I confirm these retained legacy settings/ });
   if (await legacy.count()) await legacy.check();
-  await page.getByRole('checkbox', { name:/I confirm these exact saved prices/ }).check();
+  await exact.check();
   const response = await Promise.all([
     page.waitForResponse(item => /\/api\/pricebook\/services\/[^/]+\/approve$/.test(new URL(item.url()).pathname) && item.request().method() === 'POST'),
     page.getByRole('button', { name:'Confirm saved configuration', exact:true }).click()
