@@ -20,7 +20,7 @@ import {validateStarterServices} from '../server/src/platformIntegrations.js';
 const type='ROOFING_REPLACEMENT',path='underlaymentPerSquare.product_0';
 const stairPath='scopeRates.stairs_installed';
 const date={timeZone:'UTC',quoteInstant:'2026-10-15T12:00:00.000Z'};
-const nameError='Enter a service name of 1–80 characters.';
+const nameError='Service name must contain 1–80 characters.';
 test('QE-016 owner decision: compatibility starter retains 80 characters and rejects 81 without truncation',()=>{
   for(const type of ['CUSTOM','FENCING_INSTALL']){
     const entry=type==='CUSTOM'?{serviceType:type,low:100,high:150,unit:'flat'}:{serviceType:type,fields:{minimumJob:125}};

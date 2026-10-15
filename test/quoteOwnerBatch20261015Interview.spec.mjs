@@ -370,6 +370,6 @@ test('QE-016: 81-character custom identity is rejected specifically and never tr
   delete service.origin;
   const converted=bridge.convertApplicationBook({services:[service],defaults:{currency:'USD',quoteTimeZone:'UTC',...input.businessDefaults}},'toDollars');
   assert.throws(()=>bridge.saveApplicationBook(owner,{...converted,revision:initial.revision},date),error=>
-    error.statusCode===422&&error.message==='Enter a service name of 1–80 characters.');
+    error.statusCode===400&&error.message==='Service name must contain 1–80 characters.');
   assert.equal(bridge.readApplicationBook(owner).services.length,0);
 });

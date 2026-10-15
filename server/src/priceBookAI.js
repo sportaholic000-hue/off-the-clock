@@ -145,7 +145,7 @@ async function generateDraft(systemInstruction, data, validate, {env=process.env
         new Promise((_,rejectTimeout)=>{timer=setTimeout(()=>{controller.abort();rejectTimeout(new Error('Provider timeout'));},timeoutMs);})
       ]);
     } catch(error) {
-      if(error.code==='INVALID_SERVICE_NAME')throw error;
+      if(error.code==='INVALID_REQUEST'&&error.setting==='Service name')throw error;
       if(error instanceof PriceBookAIClarificationError)throw error;
       /* One bounded retry for invalid output/provider failure. Never expose provider details. */
     }

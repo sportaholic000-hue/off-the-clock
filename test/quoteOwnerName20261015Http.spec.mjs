@@ -37,8 +37,8 @@ test('QE-016 owner decision: real authenticated save and interview APIs reject 8
     const initial=(await request('/api/pricebook/'+id)).body;
     draft.services[0].service='X'.repeat(81);
     const rejected=await request('/api/pricebook/save','POST',{...draft,revision:initial.revision});
-    assert.equal(rejected.status,422,JSON.stringify(rejected));
-    assert.equal(rejected.body.error,'Enter a service name of 1–80 characters.');
+    assert.equal(rejected.status,400,JSON.stringify(rejected));
+    assert.equal(rejected.body.error,'Service name must contain 1–80 characters.');
     assert.equal(loadPricebook(id).services.length,0);
     for(const name of ['X','X'.repeat(40),'X'.repeat(80),'Réparation 🏠']){
       const current=(await request('/api/pricebook/'+id)).body;

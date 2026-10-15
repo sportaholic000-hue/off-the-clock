@@ -58,7 +58,7 @@ test('QE-016 owner decision: guided name rejects 81 without saving and resumes a
     const field=page.getByRole('textbox',{name:'Offering name',exact:true});
     await field.fill('X'.repeat(81));
     await page.getByRole('button',{name:'Read it back',exact:true}).click();
-    await page.getByText('Enter a service name of 1–80 characters.',{exact:true}).waitFor();
+    await page.getByText('Service name must contain 1–80 characters.',{exact:true}).waitFor();
     assert.equal(saves,0);assert.equal(onboarding.getInterviewDraft(owner,draft.id).fields.CUSTOM?.service,undefined);
     const name='é'.repeat(78)+'🏠';await field.fill(name);
     await page.getByRole('button',{name:'Read it back',exact:true}).click();

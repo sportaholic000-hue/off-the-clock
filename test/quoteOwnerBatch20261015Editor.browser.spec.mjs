@@ -309,7 +309,7 @@ test('QE-016 owner decision: actual editor rejects 81 characters without truncat
     await name.fill(tooLong);
     assert.equal(await name.inputValue(),tooLong,'an invalid name must not be silently shortened');
     await opened.page.getByRole('button',{name:'Save & validate',exact:true}).click();
-    await opened.page.getByText('Enter a service name of 1–80 characters.',{exact:true}).first().waitFor();
+    await opened.page.getByText('Service name must contain 1–80 characters.',{exact:true}).first().waitFor();
     assert.equal(loadPricebook(owner).services[0].service,original);
     await name.fill('X'.repeat(80));await save(opened.page);
     assert.equal(loadPricebook(owner).services[0].service,'X'.repeat(80));

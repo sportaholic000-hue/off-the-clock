@@ -50,7 +50,9 @@ async function interview({structured=false,failure=false,conflict=false}={},run)
       throw Error('Unexpected request '+request.method()+' '+url.pathname);
     });
     await page.goto('http://pricebook-interview.test/');
-    await page.evaluate(({service,first,second})=>window.mount({state:{account:{id:'[SYNTHETIC]-owner',plan:'QuoteDone'},profile:{businessTypes:[service.serviceType]}},metadata:[{...service,fields:[first,second]}],back:()=>{},next:()=>{}}),{service,first,second});
+    // This deferred-response fixture deliberately exposes exactly two pricing
+    // questions. Full metadata/name capture is covered by the owner interview tests.
+    await page.evaluate(({service,first,second})=>window.mount({state:{account:{id:'[SYNTHETIC]-owner',plan:'QuoteDone'},profile:{businessTypes:[service.serviceType]}},metadata:[{...service,fields:[first,second],interviewFields:[]}],back:()=>{},next:()=>{}}),{service,first,second});
     await page.getByRole('button',{name:structured?'Resume saved draft':'Start interview',exact:true}).click();
     const input=page.locator('.interview-field input').first();await input.waitFor();
     if(!structured)await input.fill('25');
