@@ -81,7 +81,8 @@ export function shapedPriceRowStatus({service,definition,key,value,offered,statu
 function ShapedMapField({ definition, value, onChange, incompleteOfferings = [], status }) {
   const domain = definition.shapedKeys;
   const service = useContext(PricingContext);
-  const kind = definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, servicePricing(service));
+  const pricing = servicePricing(service);
+  const kind = definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
   const map = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   const fixed = Array.isArray(domain.keys);
   const selectable = domain.ownerSelectable === true;
@@ -147,11 +148,15 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
             <tbody>
               {keys.map(key => {
                 const incomplete = incompleteOfferings.includes(key);
-                // A product selected in its companion price map is still
-                // offered when this exact component is missing. Keep that row
-                // editable and label it NEEDS PRICE; a product absent from all
-                // of its required maps remains NOT OFFERED.
-                const offered = offeredKeys.includes(key)||incomplete;
+                // Product offering is shared by its labor and material maps.
+                // If either component exists, keep a missing companion row
+                // editable and label it NEEDS PRICE. Only absence from both
+                // maps means NOT OFFERED.
+                const companionOffered=['laborPerSqft','materialPerSqft'].some(field=>{
+                  const prices=pricing[field];
+                  return prices&&typeof prices==='object'&&!Array.isArray(prices)&&Object.hasOwn(prices,key);
+                });
+                const offered = offeredKeys.includes(key)||incomplete||companionOffered;
                 const rowStatus=shapedPriceRowStatus({service,definition,key,value:map[key],offered,status,incomplete});
                 return (
                   <tr key={key} className={offered ? '' : 'row-not-offered'}>
@@ -353,6 +358,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     control = productRows
       ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} />
       : definition.tree ? <PricingTree value={value} onChange={onChange} definition={definition}/>
+      : definition.shapedKeys ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} />
       : <JsonEditor value={value} onChange={onChange} />;
   } else {
     control = <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} wholeCents={definition.wholeCents} />;
