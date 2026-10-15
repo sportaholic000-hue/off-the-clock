@@ -1,3 +1,4 @@
+import {serviceNameProblem,SERVICE_NAME_LIMIT} from '../serviceName.js';
 import {settingError,validatePricebookReceptionistSettings} from './voice/receptionistSettings.js';
 import {reviewLabel} from '../priceBookLabels.js';
 import {customerQuoteFields} from '../customerQuoteFields.js';
@@ -113,6 +114,7 @@ function seasonalDecision(raw,book) {
   return Array.isArray(months)&&months.length>0&&typeof percent==='number'&&percent>0;
 }
 function applicationPresentationIssues(raw) {
+  const nameProblem=raw.service!==undefined?serviceNameProblem(raw.service):null;if(nameProblem)return [nameProblem];
   try{return voiceConfigurationIssues(raw,applicationServiceDefinition(raw));}
   catch{return ['Correct the invalid service configuration before presenting it on the call or in a saved quote.'];}
 }
@@ -434,7 +436,8 @@ export function applicationMetadata() {
     const allocationInterviewFields=requiresOffering?fields.filter(field=>['installedLaborPercent','installedMaterialsPercent'].includes(field.field)):[];
     const ownerFields=requiresOffering?fields.filter(field=>!['installedLaborPercent','installedMaterialsPercent'].includes(field.field)):fields;
     const offeringRegistryFields=Object.values(MEASUREMENT_CONTRACTS[meta.serviceType].fields).some(f=>f.type==='slug')?[{field:'knownOfferings',label:'Products you explicitly offer',type:'offering_registry',interviewPriority:1}]:[];
-    return {...old,...meta,name:meta.service,requiresOffering,fields:ownerFields,interviewFields:[...offeringRegistryFields,...allocationInterviewFields],legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>{
+    const nameFields=meta.serviceType==='CUSTOM'?[{field:'service',label:'Offering name',type:'text',maxLength:SERVICE_NAME_LIMIT,interviewPriority:0}]:[];
+    return {...old,...meta,name:meta.service,requiresOffering,fields:ownerFields,interviewFields:[...nameFields,...offeringRegistryFields,...allocationInterviewFields],legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>{
       const inputCopy=class2FieldCopy(meta.serviceType,field.name,field.defaultValue),percent=inputCopy.ownerInputUnit==='percent';
       return {...field,...(percent?{help:inputCopy.help,unit:inputCopy.unit}:{}),ownerInputUnit:inputCopy.ownerInputUnit,field:field.name};
     }),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};

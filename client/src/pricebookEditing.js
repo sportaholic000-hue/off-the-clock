@@ -231,7 +231,19 @@ export function removeScopeConfiguration(service,key) {
     if(['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)&&service.confirmedFields?.[field]===true)next.confirmedFields={...next.confirmedFields,[field]:false};
   }
   if(service.tiers)next=editServiceTiers(next,service.tiers.map(tier=>{
-    if(tierOwnsCompleteScope(service,key,tier))return tier;
+    if(tierOwnsCompleteScope(service,key,tier)){
+      // A complete tier can inherit allocations from the removed base scope.
+      // Preserve only those effective values on that tier; never manufacture
+      // a missing percentage or overwrite an explicit tier value (even zero).
+      const tierEffective=mergePricingForValidationVNext(effective,tier.overrides||{});
+      const retainedRates=scopeRateNames(service.serviceType,tierEffective,key);
+      let overrides=tier.overrides;
+      for(const field of ['installedLaborPercent','installedMaterialsPercent'])for(const name of retainedRates){
+        const path=`scopeRates.${name}`;
+        if(!Object.hasOwn(overrides[field]||{},path)&&Object.hasOwn(tierEffective[field]||{},path))overrides={...overrides,[field]:{...overrides[field],[path]:tierEffective[field][path]}};
+      }
+      return overrides===tier.overrides?tier:{...tier,overrides};
+    }
     const tierEffective=mergePricingForValidationVNext(effective,tier.overrides||{});
     const rates=[...new Set([...baseRates,...scopeRateNames(service.serviceType,tierEffective,key,true)])];
     return {...tier,overrides:clean(tier.overrides||{},rates)};

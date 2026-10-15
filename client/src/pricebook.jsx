@@ -17,6 +17,7 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
 import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
 import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
@@ -968,6 +969,7 @@ export default function PriceBook() {
     if(productProblem){setError(Error(productProblem));return;}
     beginMutation(); setSaving(true); setError(null);
     try {
+      for(const service of book.services)if(service.service!==undefined)validateServiceName(service.service);
       if(!contract.engineVersion)validatePricebookNumericDraft(book);else if(document.querySelector('[aria-invalid="true"]'))throw Error('Correct invalid numeric inputs before saving or previewing.');
       const result = await api('/api/pricebook/save', { method:'POST', body:pricebookPayload(book) });
       setStatuses(result.statuses || []);
@@ -1128,7 +1130,7 @@ export default function PriceBook() {
                     </span>
                   </div>
 
-                  <Field label="Offering name" help="Use a distinct name for each height, product or scope you offer. Names may contain up to 200 characters and are never silently shortened."><TextInput aria-label="Offering name" maxLength={200} value={selected.service||''} onChange={event=>replaceSelected({...selected,service:event.target.value})}/></Field>
+                  <Field label="Offering name" help="Use a distinct name for each height, product or scope you offer. Names may contain up to 80 characters and are never silently shortened."><TextInput aria-label="Offering name" aria-invalid={!!serviceNameProblem(selected.service)} value={selected.service||''} onChange={event=>replaceSelected({...selected,service:event.target.value})}/>{serviceNameProblem(selected.service)&&<Notice tone="warning">{serviceNameProblem(selected.service)}</Notice>}</Field>
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
                   <ServiceStatusNotices status={selectedStatus}/>
                   {selectedStatus.productCoverage?.some(product=>!product.configurationComplete)&&<section className="scope-coverage" aria-label={selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}>

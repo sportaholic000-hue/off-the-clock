@@ -615,7 +615,7 @@ MEASUREMENT_CONTRACTS.SIDING_REPAIR = commonContract({
 
 MEASUREMENT_CONTRACTS.CUSTOM = commonContract({
   fields: {
-    service: field('Confirmed custom service', null, 'string', { minLength: 1, maxLength: 200 }),
+    service: field('Confirmed custom service', null, 'string', { minLength: 1, maxLength: 80 }),
     serviceConfirmed: booleanField('Customer confirmed the matched service'),
     unit: enumField('Customer quantity unit', ['flat', 'per_sqft', 'per_hour', 'per_unit', 'per_LF', 'per_square']),
     hours: numberField('Measured labor time', 'hours', 0.01, 100_000),

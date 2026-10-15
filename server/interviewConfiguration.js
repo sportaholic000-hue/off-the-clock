@@ -1,3 +1,4 @@
+import {validateServiceName} from './serviceName.js';
 import {productKeyFromName,DUPLICATE_NAME_MESSAGE} from './productNames.js';
 import {MEASUREMENT_CONTRACTS} from './quote-engine-vnext/contracts.js';
 import { scopeDefinitions, scopeRateDefinitions, scopeOverlapDiagnostics, MULTI_SCOPE_KEYS } from './scopeConfiguration.js';
@@ -84,10 +85,11 @@ export function describeInterviewConfiguration(type,field,value,pricing={}){
 // derive it from price-map keys or accept provider-generated identifiers.
 export function materializeInterviewFields(type,fields,createId){
  const pricing=structuredClone(fields),knownOfferings={};
+ const service=Object.hasOwn(pricing,'service')?validateServiceName(pricing.service):undefined;delete pricing.service;
  if(Object.hasOwn(pricing,'knownOfferings')){
   const choices=validateInterviewConfiguration(type,'knownOfferings',pricing.knownOfferings,pricing);
   for(const [field,products] of Object.entries(choices))knownOfferings[field]=Object.fromEntries(Object.keys(products).map(product=>[product,createId()]));
   delete pricing.knownOfferings;
  }
- return {pricing,knownOfferings};
+ return {pricing,knownOfferings,...(service!==undefined?{service}:{})};
 }

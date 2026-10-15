@@ -499,7 +499,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [error, setError] = useState(null);
   const allInterviewFields = useMemo(
     () => available.flatMap(service => [...service.fields,...(service.interviewFields||[])]
-      .filter(field=>['number','json','select','boolean','offering_configuration','scope_configuration','offering_registry'].includes(field.type))
+      .filter(field=>['text','number','json','select','boolean','offering_configuration','scope_configuration','offering_registry'].includes(field.type))
       .map((field,index) => ({ ...field, serviceType:service.serviceType, serviceName:service.name,metadataIndex:index }))
       .sort((left,right)=>(left.interviewPriority??2)-(right.interviewPriority??2)||left.metadataIndex-right.metadataIndex)),
     [available]
@@ -753,6 +753,8 @@ function PriceBookStep({ state, metadata, back, next }) {
                   </Select>
                 ) : current.type === 'boolean' ? (
                   <Select value={rawValue} onChange={event => editValue(event.target.value)}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>
+                ) : current.type === 'text' ? (
+                  <TextInput aria-label={current.label} value={rawValue} onChange={event=>editValue(event.target.value)} />
                 ) : current.type === 'json' ? (
                   <StructuredPricingQuestion
                     key={current.serviceType+'.'+current.field}
@@ -769,7 +771,7 @@ function PriceBookStep({ state, metadata, back, next }) {
                 <div className="readback-confirm">
                   <p className="mono">READ BACK: {readBack.spoken}</p>
                   <div className="test-call-row">
-                    <Button icon={Check} disabled={aiBusy||confirmBusy} onClick={confirmField}>{CONFIGURATION_FIELDS.includes(current.field)?'Yes, save these settings':current.type === 'json' ? 'Yes, save these prices' : 'Yes, save this number'}</Button>
+                    <Button icon={Check} disabled={aiBusy||confirmBusy} onClick={confirmField}>{CONFIGURATION_FIELDS.includes(current.field)||current.type==='text'?'Yes, save these settings':current.type === 'json' ? 'Yes, save these prices' : 'Yes, save this number'}</Button>
                     <Button variant="secondary" onClick={() => setReadBack(null)}>No, let me fix it</Button>
                   </div>
                 </div>

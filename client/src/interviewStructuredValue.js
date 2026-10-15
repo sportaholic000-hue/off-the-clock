@@ -1,3 +1,4 @@
+import {validateServiceName} from '../../server/serviceName.js';
 import {validatePriceBookTree} from '../../server/priceBookTree.js';
 import {moneyKindForField,parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import { humanPricingKey } from './pricebookFormatting.js';
@@ -148,6 +149,7 @@ function validateInterviewTree(value, definition, fieldLabel) {
 }
 
 export function parseInterviewScalar(raw, definition) {
+  if(definition.field==='service'&&definition.type==='text')return validateServiceName(raw);
   if(definition.type==='boolean'){
     if(raw===true||raw==='true')return true;
     if(raw===false||raw==='false')return false;

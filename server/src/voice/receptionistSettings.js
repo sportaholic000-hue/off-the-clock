@@ -1,3 +1,4 @@
+import {validateServiceName} from '../../serviceName.js';
 export const KNOWLEDGE_TEXT_FIELDS=['about','hours','services','policies','faqs','prices'];
 export const knowledgeFieldLabel=field=>({about:'About & area',hours:'Hours',services:'Services',policies:'Policies',faqs:'FAQs',prices:'Your prices',neverSay:'Never say'}[field]||field);
 export const settingError=(setting,message)=>Object.assign(new Error(message),{statusCode:400,code:'INVALID_REQUEST',setting});
@@ -20,7 +21,7 @@ export function validateKnowledge(knowledge){
 }
 export function validatePricebookReceptionistSettings(book){
  for(const service of book.services||[]){
-  if(service.service!==undefined&&service.service!=='')pricingLabel(service.service,'Service name');
+  if(service.service!==undefined&&service.service!==''){validateServiceName(service.service);pricingLabel(service.service,'Service name');}
   const products=Object.values(service.knownOfferings||{}).flatMap(group=>Object.keys(group||{}));
   if(products.length>1000)throw settingError('Registered products','Each service can have at most 1,000 registered products across all product fields.');
   for(const product of products)pricingLabel(product.replaceAll('_',' '),'Product name');

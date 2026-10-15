@@ -545,10 +545,17 @@ export function saveInterviewDraft(ownerId, id, input) {
     const confirmed = new Set(nextConfirmed[serviceType] || []);
     const ordered = Object.entries(incoming).map(([field,value],index)=>({field,value,index}))
       .sort((left,right)=>dependencyPriority(left.field)-dependencyPriority(right.field)||left.index-right.index);
+    // The pair is one atomic update. Validate each incoming map's own domain
+    // first, then check cross-map totals against the complete candidate below.
+    const allocationFields=['installedLaborPercent','installedMaterialsPercent'];
     for (const {field,value} of ordered) {
-      const validated = validateCaptured(serviceType,field,value,nextFields[serviceType]);
+      const pricing=allocationFields.includes(field)?{...nextFields[serviceType],...Object.fromEntries(allocationFields.map(name=>[name,{}]))}:nextFields[serviceType];
+      const validated = validateCaptured(serviceType,field,value,pricing);
       if (JSON.stringify(validated) !== JSON.stringify(nextFields[serviceType][field])) confirmed.delete(field);
       nextFields[serviceType][field] = validated;
+    }
+    if(allocationFields.some(field=>Object.hasOwn(incoming,field)))for(const field of allocationFields){
+      if(Object.hasOwn(nextFields[serviceType],field))validateCaptured(serviceType,field,nextFields[serviceType][field],nextFields[serviceType]);
     }
     const changedDependencies=changedInterviewDependencies(serviceType,incoming,beforeFields,nextFields[serviceType]);
     for(const field of changedDependencies){
@@ -592,7 +599,7 @@ export function draftReviewPayload(ownerId, id) {
     const unconfirmedFields = Object.keys(fields).filter(field => !confirmed.has(field));
     const captured=materializeInterviewFields(serviceType,fields,()=>crypto.randomUUID());
     return {
-      serviceType, service: SERVICE_NAMES[serviceType], fields:captured.pricing,knownOfferings:captured.knownOfferings,
+      serviceType, service: captured.service??SERVICE_NAMES[serviceType], fields:captured.pricing,knownOfferings:captured.knownOfferings,
       source: 'AI_INTERVIEW', active: false, confirmedFields: {}, unconfirmedFields: Object.keys(fields)
     };
   });

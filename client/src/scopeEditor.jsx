@@ -28,6 +28,6 @@ export function ScopeEditor({service,onChange}) {
     <Button variant="quiet" onClick={()=>{const names=independentScopeTierNames(service,key);setRetained(names);onChange(removeScopeConfiguration(service,key));}}>Remove {def.label} configuration and prices</Button>
    </>}</div>;
   })}
-  {!!retained.length&&<Notice tone="warning">Base scope was removed. Independent price {retained.length===1?'option remains':'options remain'} available: {retained.join(', ')}. Review those retained tier definitions and prices before saving.</Notice>}
+  {!!retained.length&&<Notice tone="warning">Base scope was removed. Independent price {retained.length===1?'option retained':'options retained'}: {retained.join(', ')}. Review those retained tier definitions, prices and required allocations before saving.</Notice>}
  </section>;
 }
