@@ -78,7 +78,9 @@ export function shapedPriceRowStatus({service,definition,key,value,offered,statu
   return zeroClassifiesPrice(service,path)&&!policyProblem?'READY':'NEEDS PRICE';
 }
 
-function ShapedMapField({ definition, value, onChange, incompleteOfferings = [], status }) {
+const PRODUCT_PRICE_FIELDS=['laborPerSqft','materialPerSqft'];
+
+function ShapedMapField({ definition, value, onChange, incompleteOfferings = [], status, onToggleOffering }) {
   const domain = definition.shapedKeys;
   const service = useContext(PricingContext);
   const pricing = servicePricing(service);
@@ -121,6 +123,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
   // free. Toggling a product off removes its pricing entirely, which is what
   // the corrected activation logic reads as "not offered".
   function toggleOffered(key, offered) {
+    if(onToggleOffering){onToggleOffering(key,offered);return;}
     if (offered) {
       write({ ...map, [key]: domain.nested ? {} : 0 });
     } else {
@@ -152,11 +155,15 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
                 // If either component exists, keep a missing companion row
                 // editable and label it NEEDS PRICE. Only absence from both
                 // maps means NOT OFFERED.
-                const companionOffered=['laborPerSqft','materialPerSqft'].some(field=>{
+                const companionOffered=PRODUCT_PRICE_FIELDS.some(field=>{
                   const prices=pricing[field];
                   return prices&&typeof prices==='object'&&!Array.isArray(prices)&&Object.hasOwn(prices,key);
                 });
-                const offered = offeredKeys.includes(key)||incomplete||companionOffered;
+                // A paired product checkbox is controlled only by the current
+                // draft maps. Validation can lag behind a click, so a stale
+                // incomplete-offering diagnostic must not keep it checked
+                // after both price components were removed.
+                const offered = onToggleOffering ? companionOffered : offeredKeys.includes(key)||incomplete||companionOffered;
                 const rowStatus=shapedPriceRowStatus({service,definition,key,value:map[key],offered,status,incomplete});
                 return (
                   <tr key={key} className={offered ? '' : 'row-not-offered'}>
@@ -334,7 +341,7 @@ function StructuredFactorField({ value, defaultValue, onChange, unit, wastePerce
   );
 }
 
-function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [], status }) {
+function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [], status, onToggleOffering }) {
   const service = useContext(PricingContext);
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
     ? moneyKindForField(service.serviceType, definition.field, servicePricing(service))
@@ -353,10 +360,14 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     // Flat owner-selectable product maps use the product matrix: it is the
     // only editor that distinguishes offered, not-offered, and price status.
     // Nested/open pricing trees keep their established generic editor.
-    const productRows=(service.serviceType.startsWith('FLOORING_')||service.serviceType==='SIDING_REPLACEMENT')&&
-      ['laborPerSqft','materialPerSqft'].includes(definition.field)&&definition.shapedKeys?.ownerSelectable===true;
+    // Offering switches belong to the base product pair. Tier editors inherit
+    // that offering and edit only their explicit price overrides, so rendering
+    // a second offering switch there would promise a deletion the tier merge
+    // cannot represent.
+    const productRows=!compact&&(service.serviceType.startsWith('FLOORING_')||service.serviceType==='SIDING_REPLACEMENT')&&
+      PRODUCT_PRICE_FIELDS.includes(definition.field)&&definition.shapedKeys?.ownerSelectable===true;
     control = productRows
-      ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} />
+      ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} onToggleOffering={onToggleOffering} />
       : definition.tree ? <PricingTree value={value} onChange={onChange} definition={definition}/>
       : definition.shapedKeys ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} />
       : <JsonEditor value={value} onChange={onChange} />;
@@ -840,6 +851,22 @@ export default function PriceBook() {
     replaceSelected(editServiceField(selected, field, value));
   }
 
+  function toggleProductOffering(key, offered) {
+    let next=selected;
+    for(const field of PRODUCT_PRICE_FIELDS){
+      const current=serviceFieldValue(next,field);
+      const map=current&&typeof current==='object'&&!Array.isArray(current)?current:{};
+      const prices={...map};
+      if(offered){
+        // Undefined keeps the newly enabled row editable in this draft but
+        // cannot masquerade as an explicitly approved free numeric zero.
+        if(!Object.hasOwn(prices,key))prices[key]=undefined;
+      }else delete prices[key];
+      next=editServiceField(next,field,Object.keys(prices).length?prices:undefined);
+    }
+    replaceSelected(next);
+  }
+
   function confirmField(field, value) {
     replaceSelected({ ...selected, confirmedFields:{ ...(selected.confirmedFields || {}), [field]:value } });
   }
@@ -1066,7 +1093,7 @@ export default function PriceBook() {
                     {requiredFields.map(definition => (
                       <div key={definition.field} id={`field-${definition.field}`}
                         className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} status={selectedStatus} />
+                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} status={selectedStatus} onToggleOffering={toggleProductOffering} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
@@ -1097,7 +1124,7 @@ export default function PriceBook() {
                     {optionalFields.map(definition => (
                       <div key={definition.field} id={`field-${definition.field}`}
                         className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} status={selectedStatus} />
+                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} status={selectedStatus} onToggleOffering={toggleProductOffering} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
