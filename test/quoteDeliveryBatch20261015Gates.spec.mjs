@@ -5,6 +5,7 @@ import {mowing} from '../verification/engine-independent/fixtures.mjs';
 import {projectSavedQuoteContext,projectVoiceQuote,VOICE_RESULT_BYTES} from '../server/src/voice/voiceQuotePresentation.js';
 import {voiceQuestionContract} from '../server/src/voice/voiceQuoteContract.js';
 import {projectVoiceToolResult} from '../server/src/voice/toolDispatcher.js';
+import {storedLeadView} from '../server/src/ownerRecordViews.js';
 import {quoteEmailFixture,gates,phone,publish,runtime,bridge,loadPricebook,date} from './quoteDeliveryBatch20261015Fixture.mjs';
 
 // Independent prices: 100 LF * $40 plus N gates * $250. Presentation must
@@ -66,8 +67,9 @@ for(const kind of ['characters','bytes','scope count'])test(`QE-004 unpresentabl
   assert.equal(p.result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(p.result.status,'needs_details');
   assert.equal(p.result.midEstimate,undefined);assert.equal(p.result.quoteNarration,undefined);assert.match(p.result.customerMessage,/saved.*review/i);
   const saved=h.db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=?').get(h.c.ownerId);assert.ok(saved);
-  assert.equal(saved.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(JSON.parse(saved.internalOutcomeJson).applicationOutcome.customerResult.midEstimate,100);
-  assert.deepEqual(JSON.parse(saved.internalOutcomeJson).applicationOutcome,JSON.parse(JSON.stringify(original)));
+  assert.equal(saved.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(JSON.parse(saved.internalOutcomeJson).originalApplicationOutcome.customerResult.midEstimate,100);
+  assert.deepEqual(JSON.parse(saved.internalOutcomeJson).originalApplicationOutcome,JSON.parse(JSON.stringify(original)));
+  assert.equal(JSON.parse(saved.internalOutcomeJson).applicationOutcome.customerResult.resultType,'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(JSON.parse(saved.originalSubmissionJson).customerInputs.yardSqft,5000);
   assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quotes WHERE ownerId=?').get(h.c.ownerId).n,0);
   assert.equal(h.db.prepare("SELECT COUNT(*) n FROM leads WHERE ownerId=? AND type='quote_review'").get(h.c.ownerId).n,1);
@@ -111,4 +113,22 @@ test('QE-004 a fallback database write failure is never acknowledged; a clean re
   h.db.exec('DROP TRIGGER synthetic_submission_write_failure');
   const retry=await v.tool('getQuote',args);assert.equal(retry.resultType,'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quoteSubmissions WHERE ownerId=?').get(h.c.ownerId).n,1);
+});
+test('QE-004 an unpresentable partial result saves an owner review without a nonexistent released-quote link',async t=>{
+  const h=quoteEmailFixture(t),f=mowing(),additional='[SYNTHETIC] Separate unpriced stump removal';let original;
+  const p=await phone(h,f,{additionalWork:[additional],quoteApplication:{calculate:(book,service,body,options)=>{
+    const calculated=bridge.calculateApplicationQuote(book,service,body,{...options,...date});
+    assert.equal(calculated.customerResult.resultType,'PARTIAL_ESTIMATE_READY');
+    calculated.customerResult.pricedEstimate.disclaimer='[SYNTHETIC] '+ 'D'.repeat(65536);original=structuredClone(calculated);return calculated;
+  }}});
+  assert.equal(p.result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(p.result.midEstimate,undefined);
+  const lead=h.db.prepare('SELECT * FROM leads WHERE ownerId=?').get(h.c.ownerId),submission=h.db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=?').get(h.c.ownerId);
+  const view=storedLeadView(lead,'owner',JSON.parse(submission.originalSubmissionJson));
+  assert.equal(view.type,'quote_review');assert.equal(view.status,'NEEDS REVIEW');assert.equal(view.linkedQuoteId,undefined);
+  assert.match(view.reviewReason,/present|deliver/i);assert.deepEqual(view.submittedAdditionalWork,[additional]);assert.equal(view.customerInputs.yardSqft,5000);
+  assert.equal(view.internal.applicationOutcome.customerResult.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(view.internal.originalApplicationOutcome,JSON.parse(JSON.stringify(original)));
+  assert.deepEqual(JSON.parse(submission.internalOutcomeJson).originalApplicationOutcome,JSON.parse(JSON.stringify(original)));
+  assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quotes WHERE ownerId=?').get(h.c.ownerId).n,0);
+  const replay=await p.tool('getQuote',p.args);assert.equal(replay.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(replay.customerMessage,p.result.customerMessage);
 });

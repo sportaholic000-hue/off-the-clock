@@ -513,7 +513,7 @@ export function createVoiceToolRuntime({
         voiceVersion: 1, ...(presentationReview?{voiceDelivery:{status:'REVIEW_REQUIRED',code:'QUOTE_PRESENTATION_UNAVAILABLE'}}:{}),
         voiceFollowUps: followUps,
         ...(args.callerMeasurementsEstimated?{callerMeasurementsEstimated:true}:{}),
-        applicationOutcome: calculated
+        ...voicePersistedOutcome(calculated,response,presentationReview)
       };
       if (RELEASED_RESULTS.has(response.resultType)) {
         tenantQuery(`INSERT INTO quotes (
@@ -1254,4 +1254,12 @@ function voiceDeliveryProjection(response,followUps,callerMeasurementsEstimated)
     if(!(error instanceof TypeError)&&!(error instanceof VoiceToolDispatchError))throw error;
     return {response:{resultType:'ESTIMATE_REQUIRES_REVIEW',customerMessage:'Your pricing request has been saved for review. No price has been confirmed.'},followUps:[],presentationReview:true};
   }
+}
+
+// Owner review projections must see the delivery outcome, including when the
+// original calculation was partial. Keep its complete evidence separately;
+// otherwise a review lead can acquire a link to a quote that was never released.
+function voicePersistedOutcome(calculated,response,presentationReview){
+  if(!presentationReview)return {applicationOutcome:calculated};
+  return {applicationOutcome:{...calculated,customerResult:response,applicationReview:{reason:'The complete estimate could not be presented. Review the saved request before giving a price.'}},originalApplicationOutcome:calculated};
 }
