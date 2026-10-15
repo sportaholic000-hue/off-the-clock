@@ -267,14 +267,17 @@ async function exercisePairedProductToggle(type, controlField) {
     await waitForRowStatus(page, 'materialPerSqft', label, 'READY');
     await saveEditor(page);
     await page.reload();
-    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    // Approval is bound to the exact saved content. The disabled save above
+    // made it stale; restoring every approved value exactly makes the same
+    // receipt current again without authorizing any different price.
+    await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
     const restored = loadPricebook(owner).services[0];
     assert.equal(restored.pricing.laborPerSqft[product], before.pricing.laborPerSqft[product]);
     assert.equal(restored.pricing.materialPerSqft[product], before.pricing.materialPerSqft[product]);
     assert.equal(restored.pricing.laborPerSqft[unrelated], before.pricing.laborPerSqft[unrelated]);
     assert.equal(restored.pricing.materialPerSqft[unrelated], before.pricing.materialPerSqft[unrelated]);
     assert.deepEqual(restored.tiers, before.tiers);
-    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, false);
+    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, true);
     assert.equal(await rowStatus(page, 'laborPerSqft', label), 'READY');
     assert.equal(await rowStatus(page, 'materialPerSqft', label), 'READY');
     assert.deepEqual(errors, []);
@@ -447,20 +450,21 @@ test('QE-007 follow-up: re-enabling an approved free pair does not manufacture f
       await waitForRowStatus(page, field, 'Tile', 'NEEDS PRICE');
     }
 
-    // Exact zero becomes READY only after the owner deliberately enters it;
-    // saving still invalidates the old approval digest.
+    // Exact zero becomes READY only after the owner deliberately enters it.
+    // Re-entering the complete, unchanged approved content keeps its
+    // content-bound approval current; a changed save is covered above.
     await productInput(page, 'laborPerSqft', 'Tile').fill('0');
     await productInput(page, 'materialPerSqft', 'Tile').fill('0');
     await waitForRowStatus(page, 'laborPerSqft', 'Tile', 'READY');
     await waitForRowStatus(page, 'materialPerSqft', 'Tile', 'READY');
     await saveEditor(page);
     await page.reload();
-    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
     const restored = loadPricebook(owner).services[0];
     assert.equal(restored.pricing.laborPerSqft.tile, 0);
     assert.equal(restored.pricing.materialPerSqft.tile, 0);
     assert.deepEqual(restored.zeroPricePolicy, before.zeroPricePolicy);
-    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, false);
+    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, true);
     assert.equal(await rowStatus(page, 'laborPerSqft', 'Tile'), 'READY');
     assert.equal(await rowStatus(page, 'materialPerSqft', 'Tile'), 'READY');
     assert.deepEqual(errors, []);
