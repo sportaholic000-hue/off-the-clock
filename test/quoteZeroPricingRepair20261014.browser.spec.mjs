@@ -16,6 +16,7 @@ import { loadPricebook } from '../server/priceBookService.js';
 // absent -> NOT OFFERED; unclassified zero -> NEEDS PRICE; explicitly approved
 // free/included zero -> READY; positive -> READY.
 const date = { timeZone:'UTC', quoteInstant:'2026-10-14T12:00:00.000Z' };
+const PRODUCT_PRICE_FIELDS = ['laborPerSqft','materialPerSqft'];
 let browser;
 let bundle;
 
@@ -120,6 +121,7 @@ async function openEditor(owner, type) {
   const context = await browser.newContext({ viewport:{ width:1440, height:1000 } });
   const page = await context.newPage();
   const errors = [];
+  let saveRequests = 0;
   page.on('pageerror', error => errors.push(error.stack || error.message));
   await page.route('**/*', async route => {
     const request = route.request();
@@ -141,8 +143,14 @@ async function openEditor(owner, type) {
       else if (url.pathname === '/api/pricebook/meta') payload = bridge.applicationMetadata();
       else if (url.pathname === '/api/pricebook/'+owner) payload = bridge.readApplicationBook(owner);
       else if (url.pathname === '/api/pricebook/validate') payload = bridge.validateApplicationDraft(owner, body, date);
-      else if (url.pathname === '/api/pricebook/save') payload = bridge.saveApplicationBook(owner, body, date);
+      else if (url.pathname === '/api/pricebook/save') {
+        saveRequests += 1;
+        payload = bridge.saveApplicationBook(owner, body, date);
+      }
       else if (url.pathname === '/api/pricebook/preview') payload = bridge.previewApplicationQuote(owner, body, date);
+      else if (/^\/api\/pricebook\/services\/[^/]+\/approve$/.test(url.pathname)) {
+        payload = bridge.approveApplicationService(owner, url.pathname.split('/').at(-2), body, date);
+      }
       else throw Error('Unexpected test endpoint '+url.pathname);
     } catch (error) {
       status = error.statusCode || 400;
@@ -152,7 +160,7 @@ async function openEditor(owner, type) {
   });
   await page.goto('http://zero-price-editor.test/');
   await page.getByRole('heading', { name:'Price book', exact:true }).waitFor();
-  return { context, page, errors };
+  return { context, page, errors, saveRequests:() => saveRequests };
 }
 
 function productRow(page, field, product) {
@@ -179,12 +187,30 @@ async function waitForRowStatus(page, field, product, expected) {
   assert.equal((await cell.innerText()).trim(), expected);
 }
 
+async function waitForTierOnlyRow(page, field, product, tierName = 'Premium') {
+  const row = productRow(page, field, product);
+  await waitForRowStatus(page, field, product, 'TIER ONLY');
+  await row.getByText('BASE PRICE OFF', { exact:true }).waitFor();
+  await row.getByText('Available in '+tierName+' price option.', { exact:true }).waitFor();
+}
+
 async function saveEditor(page) {
   const response = await Promise.all([
     page.waitForResponse(item => item.url().endsWith('/api/pricebook/save') && item.request().method() === 'POST'),
     page.getByRole('button', { name:'Save & validate', exact:true }).click()
   ]).then(([item]) => item);
   assert.equal(response.ok(), true, await response.text());
+}
+
+async function approveEditor(page) {
+  await page.getByRole('button', { name:'Review saved configuration', exact:true }).click();
+  await page.getByRole('checkbox', { name:/I confirm these exact saved prices/ }).check();
+  const response = await Promise.all([
+    page.waitForResponse(item => /\/api\/pricebook\/services\/[^/]+\/approve$/.test(new URL(item.url()).pathname) && item.request().method() === 'POST'),
+    page.getByRole('button', { name:'Confirm saved configuration', exact:true }).click()
+  ]).then(([item]) => item);
+  assert.equal(response.ok(), true, await response.text());
+  await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
 }
 
 function toggleFixture(type) {
@@ -216,12 +242,13 @@ async function exercisePairedProductToggle(type, controlField) {
       assert.equal(await rowStatus(page, field, label), 'READY');
     }
 
-    // Either visible control is the switch for the complete product offering.
-    // Turning it off removes both components in one edit.
+    // Either visible control is the switch for the paired base prices. Turning
+    // it off removes both base components but deliberately retains price-option
+    // overrides, so the editor must not claim that the product is unavailable.
     await productToggle(page, controlField, label).click();
     for (const field of ['laborPerSqft','materialPerSqft']) {
       assert.equal(await productToggle(page, field, label).isChecked(), false);
-      await waitForRowStatus(page, field, label, 'NOT OFFERED');
+      await waitForTierOnlyRow(page, field, label);
     }
 
     // The same control must be usable repeatedly, not remain checked while
@@ -248,7 +275,7 @@ async function exercisePairedProductToggle(type, controlField) {
     await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
     for (const field of ['laborPerSqft','materialPerSqft']) {
       assert.equal(await productToggle(page, field, label).isChecked(), false);
-      assert.equal(await rowStatus(page, field, label), 'NOT OFFERED');
+      await waitForTierOnlyRow(page, field, label);
     }
 
     // Re-enabling creates editable blanks, not zero-dollar prices. The owner
@@ -280,6 +307,136 @@ async function exercisePairedProductToggle(type, controlField) {
     assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, true);
     assert.equal(await rowStatus(page, 'laborPerSqft', label), 'READY');
     assert.equal(await rowStatus(page, 'materialPerSqft', label), 'READY');
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+}
+
+async function exerciseTierOnlyCustomerQuote(controlField) {
+  const type = 'FLOORING_INSTALL';
+  const { input, product, label } = toggleFixture(type);
+  const owner = seed(input, true);
+  const before = loadPricebook(owner).services[0];
+  const { context, page, errors } = await openEditor(owner, type);
+  try {
+    await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
+    await productToggle(page, controlField, label).click();
+    for (const field of PRODUCT_PRICE_FIELDS) {
+      assert.equal(await productToggle(page, field, label).isChecked(), false);
+      await waitForTierOnlyRow(page, field, label);
+    }
+
+    await saveEditor(page);
+    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    const saved = loadPricebook(owner).services[0];
+    assert.equal(Object.hasOwn(saved.pricing.laborPerSqft, product), false);
+    assert.equal(Object.hasOwn(saved.pricing.materialPerSqft, product), false);
+    assert.deepEqual(saved.tiers, before.tiers);
+    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, false);
+
+    // Use the actual owner approval control, then restart the editor before
+    // exercising the production customer-calculation boundary.
+    await approveEditor(page);
+    await page.reload();
+    await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
+    for (const field of PRODUCT_PRICE_FIELDS) {
+      assert.equal(await productToggle(page, field, label).isChecked(), false);
+      await waitForTierOnlyRow(page, field, label);
+    }
+
+    const live = loadPricebook(owner);
+    const quote = bridge.calculateApplicationQuote(live, live.services[0], {
+      serviceId:live.services[0].id,
+      customerInputs:input.customerInputs
+    }, { ownerId:owner, ...date });
+    assert.equal(quote.customerResult.resultType, 'INSTANT_ESTIMATE_READY');
+    assert.deepEqual(quote.internalResult.options.map(option => option.tierName), ['Premium']);
+    assert.equal(quote.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents, 200200);
+    assert.deepEqual(quote.customerResult.options.map(option => option.tierName), ['Premium']);
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+}
+
+function blankProductFixture(type) {
+  const configured = toggleFixture(type);
+  return {
+    ...configured,
+    blankProduct:type === 'SIDING_REPLACEMENT' ? 'fiber_cement' : 'carpet',
+    blankLabel:type === 'SIDING_REPLACEMENT' ? 'Fiber cement' : 'Carpet',
+    added:{ laborPerSqft:235, materialPerSqft:465 }
+  };
+}
+
+async function exerciseBlankProductSaveBlock(type, controlField) {
+  const { input, product, unrelated, blankProduct, blankLabel, added } = blankProductFixture(type);
+  const owner = seed(input, true);
+  const before = loadPricebook(owner).services[0];
+  const { context, page, errors, saveRequests } = await openEditor(owner, type);
+  try {
+    await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
+    for (const field of PRODUCT_PRICE_FIELDS) {
+      assert.equal(await productToggle(page, field, blankLabel).isChecked(), false);
+      assert.equal(await rowStatus(page, field, blankLabel), 'NOT OFFERED');
+    }
+
+    await productToggle(page, controlField, blankLabel).click();
+    for (const field of PRODUCT_PRICE_FIELDS) {
+      assert.equal(await productToggle(page, field, blankLabel).isChecked(), true);
+      assert.equal(await productInput(page, field, blankLabel).inputValue(), '');
+      await waitForRowStatus(page, field, blankLabel, 'NEEDS PRICE');
+    }
+
+    const requestsBeforeBlankSave = saveRequests();
+    await page.getByRole('button', { name:'Save & validate', exact:true }).click();
+    await page.waitForTimeout(250);
+    assert.equal(saveRequests(), requestsBeforeBlankSave, 'a blank enabled product must not reach persistence');
+    await page.getByText(
+      blankLabel+' base pricing is incomplete. Enter the labor and material prices, or turn '+blankLabel+' base pricing off before saving.',
+      { exact:true }
+    ).waitFor();
+    for (const field of PRODUCT_PRICE_FIELDS) {
+      assert.equal(await productToggle(page, field, blankLabel).isChecked(), true);
+      assert.equal(await productInput(page, field, blankLabel).inputValue(), '');
+    }
+
+    // A partial pair remains in the draft and receives a component-specific
+    // explanation; the other products and retained options are not mutated.
+    await productInput(page, controlField, blankLabel).fill(String(added[controlField] / 100));
+    const missingField = controlField === 'laborPerSqft' ? 'materialPerSqft' : 'laborPerSqft';
+    const missingWord = missingField === 'laborPerSqft' ? 'labor' : 'material';
+    await page.getByRole('button', { name:'Save & validate', exact:true }).click();
+    await page.waitForTimeout(250);
+    assert.equal(saveRequests(), requestsBeforeBlankSave, 'a partial enabled product must not reach persistence');
+    await page.getByText(
+      blankLabel+' base pricing is incomplete. Enter the '+missingWord+' price, or turn '+blankLabel+' base pricing off before saving.',
+      { exact:true }
+    ).waitFor();
+    assert.equal(await productInput(page, controlField, blankLabel).inputValue(), String(added[controlField] / 100));
+    assert.equal(await productInput(page, missingField, blankLabel).inputValue(), '');
+
+    await productInput(page, missingField, blankLabel).fill(String(added[missingField] / 100));
+    for (const field of PRODUCT_PRICE_FIELDS) await waitForRowStatus(page, field, blankLabel, 'READY');
+    await saveEditor(page);
+    assert.equal(saveRequests(), requestsBeforeBlankSave + 1);
+    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, false);
+
+    await page.reload();
+    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    for (const field of PRODUCT_PRICE_FIELDS) {
+      assert.equal(await productToggle(page, field, blankLabel).isChecked(), true);
+      assert.equal(await rowStatus(page, field, blankLabel), 'READY');
+    }
+    const stored = loadPricebook(owner).services[0];
+    assert.equal(stored.pricing.laborPerSqft[blankProduct], added.laborPerSqft);
+    assert.equal(stored.pricing.materialPerSqft[blankProduct], added.materialPerSqft);
+    assert.equal(stored.pricing.laborPerSqft[product], before.pricing.laborPerSqft[product]);
+    assert.equal(stored.pricing.materialPerSqft[product], before.pricing.materialPerSqft[product]);
+    assert.equal(stored.pricing.laborPerSqft[unrelated], before.pricing.laborPerSqft[unrelated]);
+    assert.equal(stored.pricing.materialPerSqft[unrelated], before.pricing.materialPerSqft[unrelated]);
+    assert.deepEqual(stored.tiers, before.tiers);
     assert.deepEqual(errors, []);
   } finally {
     await context.close();
@@ -391,6 +548,20 @@ for (const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMEN
   for (const controlField of ['laborPerSqft','materialPerSqft']) {
     test('QE-007 follow-up: '+type+' '+controlField+' toggle coherently disables and re-enables its paired product', async () => {
       await exercisePairedProductToggle(type, controlField);
+    });
+  }
+}
+
+for (const controlField of PRODUCT_PRICE_FIELDS) {
+  test('QE-007 second follow-up: FLOORING_INSTALL '+controlField+' base-off control discloses retained tier availability and still quotes the exact Premium amount after reapproval', async () => {
+    await exerciseTierOnlyCustomerQuote(controlField);
+  });
+}
+
+for (const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT']) {
+  for (const controlField of PRODUCT_PRICE_FIELDS) {
+    test('QE-007 second follow-up: '+type+' '+controlField+' blank product selection is retained in the draft and blocked from disappearing on save', async () => {
+      await exerciseBlankProductSaveBlock(type, controlField);
     });
   }
 }
