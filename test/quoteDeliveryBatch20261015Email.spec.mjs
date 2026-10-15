@@ -2,7 +2,7 @@ import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
-import {mowing} from '../verification/engine-independent/fixtures.mjs';
+import {mowing,custom} from '../verification/engine-independent/fixtures.mjs';
 import {webQuote,phone,quoteEmailFixture,bridge,publicCopy,notice} from './quoteDeliveryBatch20261015Fixture.mjs';
 import {installQuoteEmailRoutes} from '../server/src/quoteEmailRoutes.js';
 
@@ -78,4 +78,13 @@ test('QE-005 owner copy of a historical voice-origin record uses its bound froze
   h.db.prepare('UPDATE quoteSubmissions SET originalSubmissionJson=? WHERE ownerId=? AND requestId=?').run(JSON.stringify(original),h.c.ownerId,row.requestId);
   h.emailService().enqueueSavedQuote({ownerId:h.c.ownerId,quoteId:row.recordId,email:'caller@example.invalid',customerConfirmed:true});
   assert.equal(publicCopy(h.emailService(),h.rows()[0]).copy.narration,p.result.quoteNarration);
+});
+test('QE-005 equal tier midpoints keep their own option labels and distinct saved ranges',()=>{
+  const f=custom();Object.assign(f.ownerPricing.pricing,{customPricingMode:'range',low:9000,high:11000});delete f.ownerPricing.pricing.price;
+  f.ownerPricing.tiers=[{name:'Standard',overrides:{}},{name:'Wider',overrides:{low:8000,high:12000}}];
+  const h=webQuote(f);assert.deepEqual(h.result.options.map(o=>[o.lowEstimate,o.midEstimate,o.highEstimate]),[[90,100,110],[80,100,120]]);
+  h.email.enqueueSavedQuote({ownerId:h.owner,quoteId:h.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
+  const copy=publicCopy(h.email,h.rows()[0]).copy.narration;
+  assert.match(copy,/Standard midpoint estimate: \$100 CAD/);assert.match(copy,/Wider midpoint estimate: \$100 CAD/);
+  assert.match(copy,/Standard: \$90.*\$110/);assert.match(copy,/Wider: \$80.*\$120/);
 });

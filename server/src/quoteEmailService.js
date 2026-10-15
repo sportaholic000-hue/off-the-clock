@@ -170,7 +170,7 @@ function savedQuoteNarration(result,serviceType){
   for(const option of options){
     const context=[option.currency||estimate.currency,option.priceUnit||estimate.priceUnit].filter(Boolean).join(' ');
     parts.push((option.tierName?option.tierName+': ':'')+money.range(option.lowEstimate,option.highEstimate)+(context?' '+context:''));
-    if(Number.isFinite(option.midEstimate)&&option.midEstimate!==option.lowEstimate&&option.midEstimate!==option.highEstimate)parts.push('Midpoint estimate: '+money.amount(option.midEstimate)+(context?' '+context:''));
+    if(Number.isFinite(option.midEstimate)&&option.midEstimate!==option.lowEstimate&&option.midEstimate!==option.highEstimate)parts.push((options.length>1&&option.tierName?option.tierName+' midpoint estimate':'Midpoint estimate')+': '+money.amount(option.midEstimate)+(context?' '+context:''));
     if(option.taxTreatment||estimate.taxTreatment)parts.push(option.taxTreatment||estimate.taxTreatment);
     if(option.skippedAddons?.length)parts.push('Not included'+(options.length>1&&option.tierName?' in '+option.tierName:'')+': '+option.skippedAddons.join('; ')+'.');
     if(option.writtenDisclosure||option.disclaimer)parts.push(option.writtenDisclosure||option.disclaimer);
