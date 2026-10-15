@@ -1,6 +1,7 @@
 # AGENTS.md — Off The Clock AI
 
 ## Specs are law
+Never edit, move, rename, retire, replace or summarize any file in /specs/ unless the task prompt contains the owner's explicit written approval for that exact file and change. If code and a spec disagree, report the difference for an owner ruling; never resolve it by changing the spec.
 All specifications live in /specs/:
   /specs/quote_engine_v2.md        ← wins all conflicts
   /specs/voice_quote_flows.md
