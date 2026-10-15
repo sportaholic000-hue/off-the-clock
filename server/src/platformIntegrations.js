@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import {validateServiceName,SERVICE_NAME_LIMIT} from '../serviceName.js';
 import { installTelephonyOperationsSchema } from './telephonyOperationsMigration.js';
 import {geminiTextModel,TextAIConfigurationError} from './geminiTextModel.js';
 import { GOOGLE_CALENDAR_BOOKING_SCOPES } from './googleCalendarScopes.js';
@@ -167,7 +168,7 @@ const UNIT_OPTIONS = ['flat','per_sqft','per_hour','per_unit','per_LF','per_squa
 function validCustomRange(entry) {
   const validMinimum = entry?.minimumJob === undefined ||
     (Number.isInteger(entry.minimumJob) && Number.isFinite(entry.minimumJob) && entry.minimumJob >= 0);
-  return entry && typeof entry.service === 'string' && entry.service.length > 0 && entry.service.length <= 40 &&
+  return entry && typeof entry.service === 'string' && entry.service.length > 0 && entry.service.length <= SERVICE_NAME_LIMIT &&
     Number.isInteger(entry.low) && Number.isFinite(entry.low) && entry.low >= 0 &&
     Number.isInteger(entry.high) && Number.isFinite(entry.high) && entry.high >= 0 && entry.high > entry.low &&
     UNIT_OPTIONS.includes(entry.unit) && validMinimum;
@@ -236,12 +237,13 @@ export function validateStarterServices(raw, serviceTypes) {
     if (!entry || typeof entry !== 'object') continue;
     const serviceType = entry.serviceType;
     if (!allowed.has(serviceType) || seen.has(serviceType)) continue;
+    const service=validateServiceName(serviceType==='CUSTOM'?entry.service:(entry.service||serviceType));
     if (serviceType === 'CUSTOM') {
       if (!validCustomRange(entry)) continue;
       seen.add(serviceType);
       out.push({
         serviceType,
-        service: entry.service.slice(0, 40),
+        service,
         fields: { low: entry.low, high: entry.high, unit: entry.unit, minimumJob: entry.minimumJob ?? 0 }
       });
       continue;
@@ -256,7 +258,7 @@ export function validateStarterServices(raw, serviceTypes) {
     seen.add(serviceType);
     out.push({
       serviceType,
-      service: String(entry.service || '').slice(0, 40) || serviceType,
+      service,
       fields
     });
   }

@@ -11,6 +11,7 @@ import * as bridge from '../server/src/quoteDoneBridge.js';
 import {loadPricebook} from '../server/priceBookService.js';
 import {db,migrate} from '../server/src/db.js';
 import {removeScopeConfiguration} from '../client/src/pricebookEditing.js';
+import {validateStarterServices} from '../server/src/platformIntegrations.js';
 
 // Written before repairs: 178000 floor + 5*17500 installed stairs +
 // (5*17500*30/100)*10/100 materials tax = 268125 cents.
@@ -20,6 +21,13 @@ const type='ROOFING_REPLACEMENT',path='underlaymentPerSquare.product_0';
 const stairPath='scopeRates.stairs_installed';
 const date={timeZone:'UTC',quoteInstant:'2026-10-15T12:00:00.000Z'};
 const nameError='Enter a service name of 1–80 characters.';
+test('QE-016 owner decision: compatibility starter retains 80 characters and rejects 81 without truncation',()=>{
+  for(const type of ['CUSTOM','FENCING_INSTALL']){
+    const entry=type==='CUSTOM'?{serviceType:type,low:100,high:150,unit:'flat'}:{serviceType:type,fields:{minimumJob:125}};
+    assert.equal(validateStarterServices([{...entry,service:'X'.repeat(80)}],[type])[0]?.service,'X'.repeat(80));
+    assert.throws(()=>validateStarterServices([{...entry,service:'X'.repeat(81)}],[type]),{message:nameError});
+  }
+});
 migrate();
 function owner(){
   const id='synthetic-owner-followup-'+randomUUID(),now=date.quoteInstant;
