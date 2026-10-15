@@ -9,6 +9,7 @@ import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
 import {projectVoiceQuote} from './voiceQuotePresentation.js';
+import {projectVoiceToolResult,VoiceToolDispatchError} from './toolDispatcher.js';
 import {calculateSavedListedPrice} from './listedPriceCalculation.js';
 import {calculateVoiceArea} from './measurementArea.js';
 import crypto from 'node:crypto';
@@ -474,11 +475,24 @@ export function createVoiceToolRuntime({
       const feeAuthority={...scopeAuthority,requiredCustomerFees};
       return {status:'needs_details',resultType:'ESTIMATE_REQUIRES_REVIEW',followUps:requiredCustomerFees.map(fee=>'Should the '+fee+' charge apply? Answer Yes or No.'),questionContract:voiceQuestionContract(service,definition,bound.customerInputs,feeAuthority)};
     }
-    const response = calculated?.customerResult;
+    let response = calculated?.customerResult;
     if (!record(response) || !BOOKABLE_RESULTS.has(response.resultType)) {
       throw runtimeError('INVALID_QUOTE_RESULT');
     }
-    const followUps = safeStringList(prepared?.followUps);
+    let followUps = safeStringList(prepared?.followUps);
+    let presentationReview=false;
+    // Validate the actual customer transport before choosing which records to
+    // save. This pure projection cannot swallow a storage/transaction failure.
+    // Reserve the maximum handle length so issuing the real handle cannot push
+    // an otherwise valid response beyond the byte envelope after persistence.
+    try {
+      projectVoiceToolResult('getQuote',projectVoiceQuote(response,'x'.repeat(200),followUps,{callerMeasurementsEstimated:args.callerMeasurementsEstimated===true}));
+    } catch(error) {
+      if(!(error instanceof TypeError)&&!(error instanceof VoiceToolDispatchError))throw error;
+      presentationReview=true;
+      response={resultType:'ESTIMATE_REQUIRES_REVIEW',customerMessage:'Your pricing request has been saved for review. No price has been confirmed.'};
+      followUps=[];
+    }
     const recordId = stableUuid(secret, 'voice-quote-record', requestFingerprint);
     const createdAt = instant().toISOString();
     const revision = quoteApp.revision(book);
@@ -513,6 +527,7 @@ export function createVoiceToolRuntime({
         voiceVersion: 1,
         voiceFollowUps: followUps,
         ...(args.callerMeasurementsEstimated?{callerMeasurementsEstimated:true}:{}),
+        ...(presentationReview?{voiceDelivery:{status:'REVIEW_REQUIRED',code:'QUOTE_PRESENTATION_UNAVAILABLE'}}:{}),
         applicationOutcome: calculated
       };
       if (RELEASED_RESULTS.has(response.resultType)) {
