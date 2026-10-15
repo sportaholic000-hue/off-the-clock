@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { randomUUID } from 'node:crypto';
 import { build } from 'esbuild';
-import { flooring, siding } from '../verification/engine-independent/fixtures.mjs';
+import { fixture, flooring, siding } from '../verification/engine-independent/fixtures.mjs';
 import { freeFixture, includedFixture } from './quoteEngineVNextFixtures.mjs';
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import { loadPricebook } from '../server/priceBookService.js';
@@ -47,10 +47,18 @@ before(async () => {
 after(async () => { await browser?.close(); });
 
 function applicationFixture(type, mode) {
-  const input = type === 'FLOORING_INSTALL' ? flooring(mode === 'included' ? 'vinyl_plank' : 'tile') : siding();
+  const flooringType = type.startsWith('FLOORING_');
+  let input = flooringType ? flooring(mode === 'included' ? 'vinyl_plank' : 'tile') : siding();
+  if (type === 'FLOORING_REPLACEMENT') {
+    input = fixture('FLOORING_REPLACEMENT', input.ownerPricing.pricing, {
+      ...input.customerInputs,
+      existingFloorType:'vinyl',
+      subfloorIssues:false
+    });
+  }
   input.ownerPricing.service = '[SYNTHETIC] '+mode+' '+type;
   if (mode === 'free') {
-    if (type === 'FLOORING_INSTALL') {
+    if (flooringType) {
       input.ownerPricing.pricing.laborPerSqft.tile = 0;
       input.ownerPricing.pricing.materialPerSqft.tile = 0;
     } else {
@@ -157,6 +165,124 @@ async function rowStatus(page, field, product) {
   return (await row.locator('td.matrix-status').innerText()).trim();
 }
 
+function productToggle(page, field, product) {
+  return productRow(page, field, product).getByRole('checkbox');
+}
+
+function productInput(page, field, product) {
+  return productRow(page, field, product).getByRole('textbox', { name:product+' price', exact:true });
+}
+
+async function waitForRowStatus(page, field, product, expected) {
+  const cell = productRow(page, field, product).locator('td.matrix-status');
+  await cell.getByText(expected, { exact:true }).waitFor();
+  assert.equal((await cell.innerText()).trim(), expected);
+}
+
+async function saveEditor(page) {
+  const response = await Promise.all([
+    page.waitForResponse(item => item.url().endsWith('/api/pricebook/save') && item.request().method() === 'POST'),
+    page.getByRole('button', { name:'Save & validate', exact:true }).click()
+  ]).then(([item]) => item);
+  assert.equal(response.ok(), true, await response.text());
+}
+
+function toggleFixture(type) {
+  const input = applicationFixture(type, 'positive');
+  const product = type === 'SIDING_REPLACEMENT' ? 'vinyl' : 'tile';
+  const unrelated = type === 'SIDING_REPLACEMENT' ? 'wood' : 'hardwood';
+  const p = input.ownerPricing.pricing;
+  p.laborPerSqft[unrelated] = type === 'SIDING_REPLACEMENT' ? 610 : 615;
+  p.materialPerSqft[unrelated] = type === 'SIDING_REPLACEMENT' ? 910 : 915;
+  input.ownerPricing.tiers = [{
+    name:'Premium',
+    overrides:{
+      laborPerSqft:{ [product]:type === 'SIDING_REPLACEMENT' ? 450 : 350, [unrelated]:650 },
+      materialPerSqft:{ [product]:type === 'SIDING_REPLACEMENT' ? 750 : 550, [unrelated]:950 }
+    }
+  }];
+  return { input, product, unrelated, label:product === 'vinyl' ? 'Vinyl' : 'Tile' };
+}
+
+async function exercisePairedProductToggle(type, controlField) {
+  const { input, product, unrelated, label } = toggleFixture(type);
+  const owner = seed(input, true);
+  const before = loadPricebook(owner).services[0];
+  const { context, page, errors } = await openEditor(owner, type);
+  try {
+    await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, label).isChecked(), true);
+      assert.equal(await rowStatus(page, field, label), 'READY');
+    }
+
+    // Either visible control is the switch for the complete product offering.
+    // Turning it off removes both components in one edit.
+    await productToggle(page, controlField, label).click();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, label).isChecked(), false);
+      await waitForRowStatus(page, field, label, 'NOT OFFERED');
+    }
+
+    // The same control must be usable repeatedly, not remain checked while
+    // deleting an already-missing component.
+    await productToggle(page, controlField, label).click();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, label).isChecked(), true);
+      assert.equal(await productInput(page, field, label).inputValue(), '');
+      await waitForRowStatus(page, field, label, 'NEEDS PRICE');
+    }
+    await productToggle(page, controlField, label).click();
+    assert.equal(await productToggle(page, controlField, label).isChecked(), false);
+
+    await saveEditor(page);
+    const disabled = loadPricebook(owner).services[0];
+    assert.equal(Object.hasOwn(disabled.pricing.laborPerSqft, product), false);
+    assert.equal(Object.hasOwn(disabled.pricing.materialPerSqft, product), false);
+    assert.equal(disabled.pricing.laborPerSqft[unrelated], before.pricing.laborPerSqft[unrelated]);
+    assert.equal(disabled.pricing.materialPerSqft[unrelated], before.pricing.materialPerSqft[unrelated]);
+    assert.deepEqual(disabled.tiers, before.tiers);
+    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, false);
+
+    await page.reload();
+    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, label).isChecked(), false);
+      assert.equal(await rowStatus(page, field, label), 'NOT OFFERED');
+    }
+
+    // Re-enabling creates editable blanks, not zero-dollar prices. The owner
+    // must explicitly enter both components before the product is complete.
+    await productToggle(page, controlField, label).click();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, label).isChecked(), true);
+      assert.equal(await productInput(page, field, label).inputValue(), '');
+      await waitForRowStatus(page, field, label, 'NEEDS PRICE');
+    }
+    const laborDollars = before.pricing.laborPerSqft[product] / 100;
+    const materialDollars = before.pricing.materialPerSqft[product] / 100;
+    await productInput(page, 'laborPerSqft', label).fill(String(laborDollars));
+    await productInput(page, 'materialPerSqft', label).fill(String(materialDollars));
+    await waitForRowStatus(page, 'laborPerSqft', label, 'READY');
+    await waitForRowStatus(page, 'materialPerSqft', label, 'READY');
+    await saveEditor(page);
+    await page.reload();
+    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    const restored = loadPricebook(owner).services[0];
+    assert.equal(restored.pricing.laborPerSqft[product], before.pricing.laborPerSqft[product]);
+    assert.equal(restored.pricing.materialPerSqft[product], before.pricing.materialPerSqft[product]);
+    assert.equal(restored.pricing.laborPerSqft[unrelated], before.pricing.laborPerSqft[unrelated]);
+    assert.equal(restored.pricing.materialPerSqft[unrelated], before.pricing.materialPerSqft[unrelated]);
+    assert.deepEqual(restored.tiers, before.tiers);
+    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, false);
+    assert.equal(await rowStatus(page, 'laborPerSqft', label), 'READY');
+    assert.equal(await rowStatus(page, 'materialPerSqft', label), 'READY');
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+}
+
 test('QE-007 browser: approved free flooring product rows survive save/reload and approval invalidates on later edits', async () => {
   const input = applicationFixture('FLOORING_INSTALL', 'free');
   const owner = seed(input, true);
@@ -255,5 +381,90 @@ test('QE-007 browser: approved free and positive siding product rows are disting
     } finally {
       await context.close();
     }
+  }
+});
+
+for (const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT']) {
+  for (const controlField of ['laborPerSqft','materialPerSqft']) {
+    test('QE-007 follow-up: '+type+' '+controlField+' toggle coherently disables and re-enables its paired product', async () => {
+      await exercisePairedProductToggle(type, controlField);
+    });
+  }
+}
+
+test('QE-007 follow-up: a partially configured flooring pair can be turned off from its missing side', async () => {
+  const input = applicationFixture('FLOORING_REPLACEMENT', 'missing');
+  const owner = seed(input, false);
+  const { context, page, errors } = await openEditor(owner, input.serviceType);
+  try {
+    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    assert.equal(await productToggle(page, 'laborPerSqft', 'Tile').isChecked(), true);
+    assert.equal(await productToggle(page, 'materialPerSqft', 'Tile').isChecked(), true);
+    assert.equal(await rowStatus(page, 'laborPerSqft', 'Tile'), 'NEEDS PRICE');
+    assert.equal(await rowStatus(page, 'materialPerSqft', 'Tile'), 'READY');
+
+    await productToggle(page, 'laborPerSqft', 'Tile').click();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, 'Tile').isChecked(), false);
+      await waitForRowStatus(page, field, 'Tile', 'NOT OFFERED');
+    }
+    await saveEditor(page);
+    await page.reload();
+    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    const disabled = loadPricebook(owner).services[0];
+    assert.equal(Object.hasOwn(disabled.pricing.laborPerSqft || {}, 'tile'), false);
+    assert.equal(Object.hasOwn(disabled.pricing.materialPerSqft || {}, 'tile'), false);
+
+    await productToggle(page, 'materialPerSqft', 'Tile').click();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, 'Tile').isChecked(), true);
+      assert.equal(await productInput(page, field, 'Tile').inputValue(), '');
+      await waitForRowStatus(page, field, 'Tile', 'NEEDS PRICE');
+    }
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
+
+test('QE-007 follow-up: re-enabling an approved free pair does not manufacture free zero prices', async () => {
+  const input = applicationFixture('FLOORING_INSTALL', 'free');
+  const owner = seed(input, true);
+  const before = loadPricebook(owner).services[0];
+  const { context, page, errors } = await openEditor(owner, input.serviceType);
+  try {
+    await page.getByText('QUOTING LIVE', { exact:false }).first().waitFor();
+    await productToggle(page, 'materialPerSqft', 'Tile').click();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, 'Tile').isChecked(), false);
+      await waitForRowStatus(page, field, 'Tile', 'NOT OFFERED');
+    }
+
+    await productToggle(page, 'materialPerSqft', 'Tile').click();
+    for (const field of ['laborPerSqft','materialPerSqft']) {
+      assert.equal(await productToggle(page, field, 'Tile').isChecked(), true);
+      assert.equal(await productInput(page, field, 'Tile').inputValue(), '');
+      await waitForRowStatus(page, field, 'Tile', 'NEEDS PRICE');
+    }
+
+    // Exact zero becomes READY only after the owner deliberately enters it;
+    // saving still invalidates the old approval digest.
+    await productInput(page, 'laborPerSqft', 'Tile').fill('0');
+    await productInput(page, 'materialPerSqft', 'Tile').fill('0');
+    await waitForRowStatus(page, 'laborPerSqft', 'Tile', 'READY');
+    await waitForRowStatus(page, 'materialPerSqft', 'Tile', 'READY');
+    await saveEditor(page);
+    await page.reload();
+    await page.getByText('NEEDS PRICING', { exact:false }).first().waitFor();
+    const restored = loadPricebook(owner).services[0];
+    assert.equal(restored.pricing.laborPerSqft.tile, 0);
+    assert.equal(restored.pricing.materialPerSqft.tile, 0);
+    assert.deepEqual(restored.zeroPricePolicy, before.zeroPricePolicy);
+    assert.equal(bridge.bookStatuses(loadPricebook(owner), date)[0].approvalCurrent, false);
+    assert.equal(await rowStatus(page, 'laborPerSqft', 'Tile'), 'READY');
+    assert.equal(await rowStatus(page, 'materialPerSqft', 'Tile'), 'READY');
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
   }
 });
