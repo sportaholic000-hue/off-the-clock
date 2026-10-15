@@ -83,7 +83,7 @@ test('QE-017: complete owner preview shows the authoritative withheld-option not
     const expected='Fewer options are available because one or more configured options need owner review.';
     await opened.page.getByText(expected,{exact:true}).waitFor();
     assert.equal(await opened.page.getByText(expected,{exact:true}).count(),1);
-    await opened.page.getByText('$150.00',{exact:true}).waitFor();
+    await opened.page.getByText('$150',{exact:true}).waitFor();
     assert.equal(opened.lastPreview().optionAvailabilityNotice,expected);
     assert.deepEqual(opened.lastPreview().options.map(option=>option.midEstimate),[150]);
     assert.equal(opened.lastPreview().failedTierDiagnostics.length,2);
@@ -165,7 +165,7 @@ test('QE-019: rendered roof material copy changes completely with accessory mode
     await opened.page.getByRole('button',{name:/Optional prices and add-on charges/}).click();
     const mode=opened.page.locator('#field-accessoryPricingMode select');
     await mode.selectOption('itemized');
-    await opened.page.getByText(/base roofing material price per square/i,{exact:true}).waitFor();
+    await opened.page.getByText('Base roofing material price per square',{exact:true}).waitFor();
     await opened.page.getByText(/EXCLUD(?:E|ING).*starter.*drip edge.*ridge cap.*flashing.*vents/i).waitFor();
     assert.equal(await opened.page.getByText(allIn,{exact:true}).count(),0);
     await save(opened.page);
