@@ -9,11 +9,10 @@ import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
 import {projectVoiceQuote} from './voiceQuotePresentation.js';
-import {projectVoiceToolResult,VoiceToolDispatchError} from './toolDispatcher.js';
 import {calculateSavedListedPrice} from './listedPriceCalculation.js';
 import {calculateVoiceArea} from './measurementArea.js';
 import crypto from 'node:crypto';
-
+import {projectVoiceToolResult,VoiceToolDispatchError} from './toolDispatcher.js';
 import { loadPricebook } from '../../priceBookService.js';
 import {
   applicationServiceMatches,
@@ -475,24 +474,11 @@ export function createVoiceToolRuntime({
       const feeAuthority={...scopeAuthority,requiredCustomerFees};
       return {status:'needs_details',resultType:'ESTIMATE_REQUIRES_REVIEW',followUps:requiredCustomerFees.map(fee=>'Should the '+fee+' charge apply? Answer Yes or No.'),questionContract:voiceQuestionContract(service,definition,bound.customerInputs,feeAuthority)};
     }
-    let response = calculated?.customerResult;
-    if (!record(response) || !BOOKABLE_RESULTS.has(response.resultType)) {
+    const originalResponse = calculated?.customerResult;
+    if (!record(originalResponse) || !BOOKABLE_RESULTS.has(originalResponse.resultType)) {
       throw runtimeError('INVALID_QUOTE_RESULT');
     }
-    let followUps = safeStringList(prepared?.followUps);
-    let presentationReview=false;
-    // Validate the actual customer transport before choosing which records to
-    // save. This pure projection cannot swallow a storage/transaction failure.
-    // Reserve the maximum handle length so issuing the real handle cannot push
-    // an otherwise valid response beyond the byte envelope after persistence.
-    try {
-      projectVoiceToolResult('getQuote',projectVoiceQuote(response,'x'.repeat(200),followUps,{callerMeasurementsEstimated:args.callerMeasurementsEstimated===true}));
-    } catch(error) {
-      if(!(error instanceof TypeError)&&!(error instanceof VoiceToolDispatchError))throw error;
-      presentationReview=true;
-      response={resultType:'ESTIMATE_REQUIRES_REVIEW',customerMessage:'Your pricing request has been saved for review. No price has been confirmed.'};
-      followUps=[];
-    }
+    const {response,followUps,presentationReview}=voiceDeliveryProjection(originalResponse,safeStringList(prepared?.followUps),args.callerMeasurementsEstimated===true);
     const recordId = stableUuid(secret, 'voice-quote-record', requestFingerprint);
     const createdAt = instant().toISOString();
     const revision = quoteApp.revision(book);
@@ -524,10 +510,9 @@ export function createVoiceToolRuntime({
       const customer=resolveCustomer(database,{ownerId:context.ownerId,phone:context.from,createdAt});
       const internal = {
         customerId:customer?.id||null,
-        voiceVersion: 1,
+        voiceVersion: 1, ...(presentationReview?{voiceDelivery:{status:'REVIEW_REQUIRED',code:'QUOTE_PRESENTATION_UNAVAILABLE'}}:{}),
         voiceFollowUps: followUps,
         ...(args.callerMeasurementsEstimated?{callerMeasurementsEstimated:true}:{}),
-        ...(presentationReview?{voiceDelivery:{status:'REVIEW_REQUIRED',code:'QUOTE_PRESENTATION_UNAVAILABLE'}}:{}),
         applicationOutcome: calculated
       };
       if (RELEASED_RESULTS.has(response.resultType)) {
@@ -1255,4 +1240,18 @@ export function createVoiceToolRuntime({
   });
 
   return Object.freeze({ handlers, idempotencyStore, handleStore, context });
+}
+
+// Keep delivery validation pure and before the persistence transaction. Storage
+// and commit failures must propagate, never become an ordinary review outcome.
+function voiceDeliveryProjection(response,followUps,callerMeasurementsEstimated){
+  try {
+    // Reserve the maximum handle length so issuing the actual handle cannot
+    // push an otherwise valid response beyond the transport byte envelope.
+    projectVoiceToolResult('getQuote',projectVoiceQuote(response,'x'.repeat(200),followUps,{callerMeasurementsEstimated}));
+    return {response,followUps,presentationReview:false};
+  } catch(error) {
+    if(!(error instanceof TypeError)&&!(error instanceof VoiceToolDispatchError))throw error;
+    return {response:{resultType:'ESTIMATE_REQUIRES_REVIEW',customerMessage:'Your pricing request has been saved for review. No price has been confirmed.'},followUps:[],presentationReview:true};
+  }
 }
