@@ -78,6 +78,20 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
   const checkCoverage=routes=>assert.deepEqual(routes,expected);
   await t.test('every runtime registered route is covered; new and removed routes fail',()=>{checkCoverage(f.routes);assert.deepEqual(routeSourceInventory(serverRoot),reviewedSources,'Route source changed without explicit matrix review, including disabled feature branches');assert.deepEqual(f.middleware,reviewedMiddleware[production?'production':'preview'],'Global middleware changed without matrix review');});
   const A=f.tenants.A,B=f.tenants.B;
+  await t.test('QE-014 jurisdiction route remains owner-authenticated and tenant-bound',async()=>{
+    const beforeA=await f.rpc('snapshot',{owner:A.owner}),beforeB=await f.rpc('snapshot',{owner:B.owner});
+    const unsigned=await f.request('/api/business/jurisdiction',{method:'POST',body:{country:'US',region:'OR'}});
+    assert.equal(unsigned.status,401,'jurisdiction route accepted an unsigned request');
+    const staff=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.staff.token,body:{country:'US',region:'OR'}});
+    assert.equal(staff.status,403,'jurisdiction route accepted staff credentials');
+    const owner=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.owner.token,body:{country:'US',region:'OR'}});
+    assert.equal(owner.status,200,owner.text);
+    const afterA=await f.rpc('snapshot',{owner:A.owner}),afterB=await f.rpc('snapshot',{owner:B.owner});
+    assert.equal(afterA.book.defaults.currency,beforeA.book.defaults.currency,'jurisdiction route converted established prices');
+    assert.equal(afterA.rows.businessProfiles[0].country,'US');
+    assert.equal(afterA.rows.businessProfiles[0].region,'OR');
+    assert.deepEqual(afterB,beforeB,'jurisdiction route changed the other tenant');
+  });
   for(const {route,policy} of matrix.filter(row=>expected.includes(row.route)))await t.test(route+' ['+policy+']',async()=>{
     const method=route.split(' ')[0],httpMethod=method==='USE'?'GET':method;
     const before=await f.rpc('snapshot',{owner:B.owner});
