@@ -204,6 +204,8 @@ async function saveEditor(page) {
 
 async function approveEditor(page) {
   await page.getByRole('button', { name:'Review saved configuration', exact:true }).click();
+  const legacy = page.getByRole('checkbox', { name:/I confirm these retained legacy settings/ });
+  if (await legacy.count()) await legacy.check();
   await page.getByRole('checkbox', { name:/I confirm these exact saved prices/ }).check();
   const response = await Promise.all([
     page.waitForResponse(item => /\/api\/pricebook\/services\/[^/]+\/approve$/.test(new URL(item.url()).pathname) && item.request().method() === 'POST'),

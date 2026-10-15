@@ -79,6 +79,69 @@ export function shapedPriceRowStatus({service,definition,key,value,offered,statu
 }
 
 const PRODUCT_PRICE_FIELDS=['laborPerSqft','materialPerSqft'];
+const PRODUCT_PRICE_LABELS={laborPerSqft:'labor',materialPerSqft:'material'};
+
+function valueMap(value) {
+  return value&&typeof value==='object'&&!Array.isArray(value)?value:{};
+}
+
+function tierNameList(names) {
+  if(names.length<2)return names[0]||'';
+  if(names.length===2)return names.join(' and ');
+  return names.slice(0,-1).join(', ')+', and '+names.at(-1);
+}
+
+// A cleared base pair does not clear tier overrides. Describe only tier
+// availability that is structurally complete, explicitly classifies zero, and
+// is accepted by the same draft validation that controls quote readiness.
+function productTierAvailability(service,key,status={}) {
+  const policy=service.zeroPricePolicy&&typeof service.zeroPricePolicy==='object'?service.zeroPricePolicy:{};
+  const validNames=Array.isArray(status.validTierNames)?new Set(status.validTierNames):null;
+  const failedNames=new Set((status.failedTierDiagnostics||[]).map(row=>row?.tierName));
+  const available=[],needs=[];
+  for(const tier of Array.isArray(service.tiers)?service.tiers:[]){
+    const maps=Object.fromEntries(PRODUCT_PRICE_FIELDS.map(field=>[field,valueMap(tier?.overrides?.[field])]));
+    if(!PRODUCT_PRICE_FIELDS.some(field=>Object.hasOwn(maps[field],key)))continue;
+    const complete=PRODUCT_PRICE_FIELDS.every(field=>{
+      if(!Object.hasOwn(maps[field],key))return false;
+      const value=maps[field][key];
+      if(typeof value!=='number'||!Number.isFinite(value)||value<0)return false;
+      if(value>0)return true;
+      const path=field+'.'+key;
+      return policy.freeTiers?.includes(tier?.name)||typeof policy.includedPrices?.[path]==='string';
+    });
+    const accepted=!failedNames.has(tier?.name)&&(!validNames||validNames.has(tier?.name));
+    (complete&&accepted?available:needs).push(tier?.name||'Unnamed');
+  }
+  if(!available.length&&!needs.length)return {status:'NOT OFFERED',message:''};
+  const availableMessage=available.length?'Available in '+tierNameList(available)+' price option'+(available.length===1?'':'s')+'.':'';
+  const needsMessage=needs.length?tierNameList(needs)+' price option'+(needs.length===1?' still needs':'s still need')+' complete pricing.':'';
+  return {
+    status:needs.length?'TIER NEEDS PRICE':'TIER ONLY',
+    message:[availableMessage,needsMessage].filter(Boolean).join(' ')
+  };
+}
+
+// Null is the in-memory marker for a newly enabled product component. It is
+// serializable, unlike undefined, but it must never cross the save boundary as
+// a made-up price. Existing legacy partial pairs have no marker and continue to
+// follow the server's ordinary validation/recovery path.
+function enabledProductDraftProblem(book,metadata) {
+  const selectableTypes=new Set((metadata||[]).filter(meta=>PRODUCT_PRICE_FIELDS.every(field=>(meta.fields||[]).some(definition=>definition.field===field&&definition.shapedKeys?.ownerSelectable===true))).map(meta=>meta.serviceType));
+  for(const service of book?.services||[]){
+    if(!selectableTypes.has(service.serviceType))continue;
+    const pricing=servicePricing(service),maps=Object.fromEntries(PRODUCT_PRICE_FIELDS.map(field=>[field,valueMap(pricing[field])]));
+    const markedKeys=new Set(PRODUCT_PRICE_FIELDS.flatMap(field=>Object.keys(maps[field]).filter(key=>maps[field][key]===null)));
+    for(const key of markedKeys){
+      const missing=PRODUCT_PRICE_FIELDS.filter(field=>typeof maps[field][key]!=='number'||!Number.isFinite(maps[field][key]));
+      if(!missing.length)continue;
+      const product=humanPricingKey(key);
+      const needed=missing.length===2?'the labor and material prices':'the '+PRODUCT_PRICE_LABELS[missing[0]]+' price';
+      return product+' base pricing is incomplete. Enter '+needed+', or turn '+product+' base pricing off before saving.';
+    }
+  }
+  return null;
+}
 
 function ShapedMapField({ definition, value, onChange, incompleteOfferings = [], status, onToggleOffering }) {
   const domain = definition.shapedKeys;
@@ -136,8 +199,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
     return (
       <div className="shaped-map">
         <p className="offering-note">
-          Turn on only the {String(domain.keyLabel || 'type').toLowerCase()}s you actually sell.
-          Anything left off is treated as not offered — never as free.
+          These switches control paired base labor and material prices. Turning a base price off keeps Good / Better / Best overrides; a product with complete option pricing remains available through those options. A product with no base or option pricing is not offered — never free.
         </p>
         <div className="matrix-scroll">
           <table className="pricing-matrix">
@@ -164,14 +226,16 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
                 // incomplete-offering diagnostic must not keep it checked
                 // after both price components were removed.
                 const offered = onToggleOffering ? companionOffered : offeredKeys.includes(key)||incomplete||companionOffered;
-                const rowStatus=shapedPriceRowStatus({service,definition,key,value:map[key],offered,status,incomplete});
+                const tierAvailability=onToggleOffering&&!offered?productTierAvailability(service,key,status):{status:'NOT OFFERED',message:''};
+                const rowStatus=offered?shapedPriceRowStatus({service,definition,key,value:map[key],offered,status,incomplete}):tierAvailability.status;
                 return (
-                  <tr key={key} className={offered ? '' : 'row-not-offered'}>
+                  <tr key={key} className={rowStatus==='NOT OFFERED' ? 'row-not-offered' : ''}>
                     <th scope="row">
                       <label className="offered-toggle">
                         <input type="checkbox" checked={offered}
+                          aria-label={`${humanPricingKey(key)} base pricing`}
                           onChange={() => toggleOffered(key, !offered)} />
-                        <span>{humanPricingKey(key)}</span>
+                        <span><span className="matrix-row-title">{humanPricingKey(key)}</span><span className="matrix-row-unit">Base price</span></span>
                       </label>
                     </th>
                     <td>
@@ -183,11 +247,14 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
                             value={map[key]}
                             onChange={number => setLeaf(key, null, number)} />
                         </div>
-                      ) : <span className="matrix-off mono">NOT OFFERED</span>}
+                      ) : rowStatus==='NOT OFFERED' ? <span className="matrix-off mono">NOT OFFERED</span>
+                        : <div><span className="matrix-off mono">BASE PRICE OFF</span><small className="matrix-row-unit">{tierAvailability.message}</small></div>}
                     </td>
                     <td className="matrix-status">
                       {rowStatus==='NOT OFFERED' ? <span className="chip chip-quiet">NOT OFFERED</span>
                         : rowStatus==='NEEDS PRICE' ? <span className="chip chip-need">NEEDS PRICE</span>
+                        : rowStatus==='TIER NEEDS PRICE' ? <span className="chip chip-need">TIER NEEDS PRICE</span>
+                        : rowStatus==='TIER ONLY' ? <span className="chip chip-live">TIER ONLY</span>
                         : <span className="chip chip-live">READY</span>}
                     </td>
                   </tr>
@@ -858,9 +925,10 @@ export default function PriceBook() {
       const map=current&&typeof current==='object'&&!Array.isArray(current)?current:{};
       const prices={...map};
       if(offered){
-        // Undefined keeps the newly enabled row editable in this draft but
-        // cannot masquerade as an explicitly approved free numeric zero.
-        if(!Object.hasOwn(prices,key))prices[key]=undefined;
+        // Null survives an in-memory JSON clone as an explicit incomplete-draft
+        // marker. Save rejects that marker until the owner enters a number or
+        // turns the paired base price back off; it never becomes a free zero.
+        if(!Object.hasOwn(prices,key))prices[key]=null;
       }else delete prices[key];
       next=editServiceField(next,field,Object.keys(prices).length?prices:undefined);
     }
@@ -881,6 +949,8 @@ export default function PriceBook() {
 
   async function save() {
     if (revisionConflict) { await recoverConflict(); return; }
+    const productProblem=enabledProductDraftProblem(book,metadata);
+    if(productProblem){setError(Error(productProblem));return;}
     beginMutation(); setSaving(true); setError(null);
     try {
       if(!contract.engineVersion)validatePricebookNumericDraft(book);else if(document.querySelector('[aria-invalid="true"]'))throw Error('Correct invalid numeric inputs before saving or previewing.');
