@@ -247,7 +247,7 @@ test('QE-013: real remove control saves cleanup while a complete tier remains qu
     const scopeDisclosure=opened.page.getByRole('button',{name:/Additional priced scope/}).first();
     if((await scopeDisclosure.getAttribute('aria-expanded'))!=='true')await scopeDisclosure.click();
     await opened.page.getByRole('button',{name:'Remove Complete stair work configuration and prices',exact:true}).click();
-    await opened.page.getByText(/Independent.*remains available|remains available.*Independent/i).waitFor();
+    await opened.page.getByText(/Independent price option retained: Independent/i).waitFor();
     await save(opened.page);
     const saved=bridge.readApplicationBook(owner),service=saved.services[0];
     assert.equal(service.pricing.scopeDetails?.stairs,undefined);
@@ -258,6 +258,61 @@ test('QE-013: real remove control saves cleanup while a complete tier remains qu
     assert.equal(result.internalResult.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result.internalResult));
     assert.deepEqual(result.internalResult.options.map(option=>option.tierName),['Independent']);
     assert.equal(result.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,265500);
+    assert.deepEqual(opened.errors,[]);
+  }finally{await opened.context.close();}
+});
+
+test('QE-013 follow-up: real removal, reload and owner reapproval preserve inherited materials tax and 268125 cents',async()=>{
+  const input=structuredClone(measuredScopeCases().find(item=>item.id==='stairs-installed').input);
+  input.businessDefaults.taxMode='TAX_MATERIALS';input.businessDefaults.taxPercent=10;
+  input.ownerPricing.pricing.installedLaborPercent={'scopeRates.stairs_installed':70};
+  input.ownerPricing.pricing.installedMaterialsPercent={'scopeRates.stairs_installed':30};
+  input.ownerPricing.tiers=[{name:'Premium',overrides:{scopeDetails:{stairs:structuredClone(input.ownerPricing.pricing.scopeDetails.stairs)},scopeRates:{stairs_installed:17500}}}];
+  const owner=seed(input),opened=await openEditor(owner,'FLOORING_INSTALL');
+  try{
+    const before=loadPricebook(owner),quoted=bridge.calculateApplicationQuote(before,before.services[0],{customerInputs:input.customerInputs,customerFeeSelections:{}},{...date,preparingIntake:true});
+    assert.equal(quoted.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,268125);
+    const disclosure=opened.page.getByRole('button',{name:/Additional priced scope/}).first();
+    if((await disclosure.getAttribute('aria-expanded'))!=='true')await disclosure.click();
+    await opened.page.getByRole('button',{name:'Remove Complete stair work configuration and prices',exact:true}).click();
+    await save(opened.page);
+    let saved=bridge.readApplicationBook(owner);
+    assert.equal(saved.services[0].pricing.scopeDetails.stairs,undefined);
+    assert.equal(saved.services[0].tiers[0].overrides.installedLaborPercent['scopeRates.stairs_installed'],70);
+    assert.equal(saved.services[0].tiers[0].overrides.installedMaterialsPercent['scopeRates.stairs_installed'],30);
+    assert.equal(bridge.bookStatuses(loadPricebook(owner),date)[0].approvalCurrent,false);
+    await opened.context.close();
+    const reopened=await openEditor(owner,'FLOORING_INSTALL');
+    try{
+      await reopened.page.getByRole('button',{name:'Review saved configuration',exact:true}).click();
+      const exact=reopened.page.getByRole('checkbox',{name:/I confirm these exact saved prices/});await exact.waitFor();
+      const legacy=reopened.page.getByRole('checkbox',{name:/I confirm these retained legacy settings/});
+      if(await legacy.count())await legacy.check();
+      await exact.check();
+      const [response]=await Promise.all([reopened.page.waitForResponse(r=>/\/services\/[^/]+\/approve$/.test(new URL(r.url()).pathname)),reopened.page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click()]);
+      assert.equal(response.ok(),true,await response.text());
+      const stored=loadPricebook(owner),quote=bridge.calculateApplicationQuote(stored,stored.services[0],{customerInputs:input.customerInputs,customerFeeSelections:{}},{...date,preparingIntake:true});
+      assert.equal(bridge.bookStatuses(stored,date)[0].approvalCurrent,true);
+      assert.equal(quote.internalResult.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(quote.internalResult));
+      assert.deepEqual(quote.internalResult.options.map(option=>option.tierName),['Premium']);
+      assert.equal(quote.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,268125);
+      assert.deepEqual(reopened.errors,[]);
+    }finally{await reopened.context.close();}
+    assert.deepEqual(opened.errors,[]);
+  }finally{if(opened.context.pages().length)await opened.context.close();}
+});
+
+test('QE-016 owner decision: actual editor rejects 81 characters without truncation and preserves the saved name',async()=>{
+  const input=custom(),original=input.ownerPricing.service,owner=seed(input),opened=await openEditor(owner,'CUSTOM');
+  try{
+    const name=opened.page.getByRole('textbox',{name:'Offering name',exact:true}),tooLong='X'.repeat(81);
+    await name.fill(tooLong);
+    assert.equal(await name.inputValue(),tooLong,'an invalid name must not be silently shortened');
+    await opened.page.getByRole('button',{name:'Save & validate',exact:true}).click();
+    await opened.page.getByText('Enter a service name of 1–80 characters.',{exact:true}).first().waitFor();
+    assert.equal(loadPricebook(owner).services[0].service,original);
+    await name.fill('X'.repeat(80));await save(opened.page);
+    assert.equal(loadPricebook(owner).services[0].service,'X'.repeat(80));
     assert.deepEqual(opened.errors,[]);
   }finally{await opened.context.close();}
 });

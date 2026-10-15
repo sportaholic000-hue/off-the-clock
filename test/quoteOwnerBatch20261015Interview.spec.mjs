@@ -17,7 +17,7 @@ import {loadPricebook} from '../server/priceBookService.js';
 //   39,600 after waste, and a 234,600-cent total.
 // - 1.5 hours at a measured $0.035/hour is 5.25 cents and rounds to 5 cents.
 // - a fixed $125 custom service remains exactly 12,500 cents regardless of
-//   whether its retained identity is 40, 80, or 200 supported characters.
+//   whether its identity is 1, 40, or 80 supported characters (owner ruling 2026-10-15).
 const date={timeZone:'UTC',quoteInstant:'2026-10-15T12:00:00.000Z'};
 
 migrate();
@@ -348,7 +348,7 @@ function namedCustom(name) {
 for(const [label,name] of [
   ['40 characters','C'.repeat(40)],
   ['80 characters','E'.repeat(80)],
-  ['200 retained characters','R'.repeat(200)],
+  ['1 character','R'],
   ['Unicode identity','Réparation de façade 🏠']
 ]) test('QE-016: '+label+' saves, approves, reloads, and quotes without truncation',()=>{
   const observed=saveApproveQuote(namedCustom(name),'qe016-'+label.replaceAll(' ','-'));
@@ -358,18 +358,18 @@ for(const [label,name] of [
   assert.equal(observed.outcome.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,12500);
 });
 
-test('QE-016: 201-character custom identity is rejected specifically and never truncated',()=>{
-  const input=namedCustom('X'.repeat(201));
+test('QE-016: 81-character custom identity is rejected specifically and never truncated',()=>{
+  const input=namedCustom('X'.repeat(81));
   const customerValidation=validateCustomerInputs('CUSTOM',input.customerInputs,input.ownerPricing.pricing,input.ownerPricing);
   assert.equal(customerValidation.ok,false);
   assert.deepEqual(customerValidation.invalidCustomerFields,['service']);
-  assert.match(customerValidation.validationMessages.join(' '),/1-200 characters/i);
+  assert.match(customerValidation.validationMessages.join(' '),/1-80 characters/i);
   const owner='qe016-too-long-'+randomUUID();
   const initial=bridge.readApplicationBook(owner);
   const service=structuredClone(input.ownerPricing);
   delete service.origin;
   const converted=bridge.convertApplicationBook({services:[service],defaults:{currency:'USD',quoteTimeZone:'UTC',...input.businessDefaults}},'toDollars');
   assert.throws(()=>bridge.saveApplicationBook(owner,{...converted,revision:initial.revision},date),error=>
-    error.statusCode===422&&(error.code||error.details?.code)==='INVALID_QUOTE_PRESENTATION'&&/200|name|character/i.test(error.message));
+    error.statusCode===422&&error.message==='Enter a service name of 1–80 characters.');
   assert.equal(bridge.readApplicationBook(owner).services.length,0);
 });

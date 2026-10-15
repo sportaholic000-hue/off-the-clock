@@ -28,6 +28,49 @@ before(async()=>{
 });
 after(async()=>{await browser?.close();});
 
+test('QE-016 owner decision: guided name rejects 81 without saving and resumes an exact 80-character Unicode name',async()=>{
+  migrate();
+  const owner='synthetic-name-browser-'+randomUUID(),now='2026-10-15T12:00:00.000Z';
+  db.prepare(`INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,emailVerifiedAt,timezone,role,createdAt)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?)`).run(owner,owner+'@example.invalid','[SYNTHETIC]','[SYNTHETIC]','[SYNTHETIC]','QuoteDone','active',now,'UTC','owner',now);
+  let draft=onboarding.createInterviewDraft(owner,{serviceTypes:['CUSTOM']});
+  draft=onboarding.saveInterviewDraft(owner,draft.id,{revision:draft.revision,currentField:'CUSTOM.service'});
+  const metadata=[bridge.applicationMetadata().services.find(s=>s.serviceType==='CUSTOM')];
+  const state={account:{id:owner,plan:'QuoteDone'},profile:{businessTypes:['CUSTOM']},preview:{telephonySimulated:true}};
+  const page=await browser.newPage(),errors=[];let saves=0;
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.route('**/*',async route=>{
+    const request=route.request(),url=new URL(request.url());
+    if(url.origin!=='http://owner-batch-interview.test')throw Error('Unexpected browser request '+url.href);
+    if(url.pathname==='/')return route.fulfill({contentType:'text/html',body:'<div id="root"></div><script>'+bundle.replaceAll('</script','<\\/script')+'</script>'});
+    let payload;
+    if(url.pathname==='/api/pricebook/interview'&&request.method()==='GET')payload={drafts:onboarding.listInterviewDrafts(owner)};
+    else if(url.pathname===`/api/pricebook/interview/${draft.id}`&&request.method()==='GET')payload={draft:onboarding.getInterviewDraft(owner,draft.id)};
+    else if(url.pathname===`/api/pricebook/interview/${draft.id}`&&request.method()==='PUT'){
+      saves++;payload={draft:onboarding.saveInterviewDraft(owner,draft.id,JSON.parse(request.postData()))};
+    }else throw Error('Unexpected endpoint '+request.method()+' '+url.pathname);
+    await route.fulfill({contentType:'application/json',body:JSON.stringify(payload)});
+  });
+  try{
+    await page.goto('http://owner-batch-interview.test/');
+    await page.evaluate(props=>window.mount(props),{full:true,mountKey:'name',state,metadata});
+    await page.getByRole('button',{name:'Resume saved draft',exact:true}).click();
+    const field=page.getByRole('textbox',{name:'Offering name',exact:true});
+    await field.fill('X'.repeat(81));
+    await page.getByRole('button',{name:'Read it back',exact:true}).click();
+    await page.getByText('Enter a service name of 1–80 characters.',{exact:true}).waitFor();
+    assert.equal(saves,0);assert.equal(onboarding.getInterviewDraft(owner,draft.id).fields.CUSTOM?.service,undefined);
+    const name='é'.repeat(78)+'🏠';await field.fill(name);
+    await page.getByRole('button',{name:'Read it back',exact:true}).click();
+    await Promise.all([page.waitForResponse(r=>r.request().method()==='PUT'),page.getByRole('button',{name:'Yes, save these settings',exact:true}).click()]);
+    draft=onboarding.getInterviewDraft(owner,draft.id);assert.equal(draft.fields.CUSTOM.service,name);
+    draft=onboarding.saveInterviewDraft(owner,draft.id,{revision:draft.revision,currentField:'CUSTOM.service'});
+    await page.evaluate(props=>window.mount(props),{full:true,mountKey:'resumed-name',state,metadata});
+    await page.getByRole('button',{name:'Resume saved draft',exact:true}).click();
+    assert.equal(await field.inputValue(),name);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 async function open(props,run){
   const page=await browser.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
   try{
