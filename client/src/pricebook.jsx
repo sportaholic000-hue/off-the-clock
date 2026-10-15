@@ -146,8 +146,12 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
             </thead>
             <tbody>
               {keys.map(key => {
-                const offered = offeredKeys.includes(key);
                 const incomplete = incompleteOfferings.includes(key);
+                // A product selected in its companion price map is still
+                // offered when this exact component is missing. Keep that row
+                // editable and label it NEEDS PRICE; a product absent from all
+                // of its required maps remains NOT OFFERED.
+                const offered = offeredKeys.includes(key)||incomplete;
                 const rowStatus=shapedPriceRowStatus({service,definition,key,value:map[key],offered,status,incomplete});
                 return (
                   <tr key={key} className={offered ? '' : 'row-not-offered'}>
@@ -344,7 +348,8 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     // Flat owner-selectable product maps use the product matrix: it is the
     // only editor that distinguishes offered, not-offered, and price status.
     // Nested/open pricing trees keep their established generic editor.
-    const productRows=definition.shapedKeys?.ownerSelectable===true&&!definition.shapedKeys?.nested;
+    const productRows=(service.serviceType.startsWith('FLOORING_')||service.serviceType==='SIDING_REPLACEMENT')&&
+      ['laborPerSqft','materialPerSqft'].includes(definition.field)&&definition.shapedKeys?.ownerSelectable===true;
     control = productRows
       ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} />
       : definition.tree ? <PricingTree value={value} onChange={onChange} definition={definition}/>
