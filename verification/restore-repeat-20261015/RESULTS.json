@@ -1,0 +1,4093 @@
+{
+  "schemaVersion": 1,
+  "verification": "restore-repeat-20261015",
+  "recordedUTC": "2026-10-15T17:39:50.443Z",
+  "application": {
+    "commit": "019ddba0886c8a338db4583f4f069f8751581764",
+    "tag": "rc-20261014n",
+    "candidate": "n"
+  },
+  "workflow": {
+    "id": 38774419447,
+    "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38774419447",
+    "name": "Restore repeat 20261015",
+    "event": "push",
+    "triggerCommit": "be0e9cf970a0a17df821e111318fd75d7d9fbe06",
+    "runAttempt": 1,
+    "rerunOrRetry": false,
+    "createdUTC": "2026-10-15T17:05:30Z",
+    "completedUTC": "2026-10-15T17:17:26Z",
+    "conclusion": "failure",
+    "conclusionReason": "Both verification children intentionally returned 1 because the strict tracked-source byte invariant failed after npm run build; every rehearsal iteration passed and neither job reported an infrastructure failure."
+  },
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "test/backupRestoreRehearsal.spec.mjs"
+  ],
+  "executedSourceSha256": {
+    "test/backupRestoreRehearsal.spec.mjs": "a3be06ce0499d88b8cb3798ec28dcd7df1ceb21debf87a1af85a40323e1309e0",
+    "test/helpers/backupRestoreProcess.mjs": "f2696cf4ee6ea4aa1ac6fe3d364f8d9f88252a66f69efc659aed436f5b020f2f"
+  },
+  "expected": {
+    "iterationsPerJob": 100,
+    "perIteration": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "exitCode": 0,
+    "signal": null,
+    "trackedApplicationBytesIdenticalAtAllCheckpoints": true,
+    "infrastructureFailure": null
+  },
+  "jobs": {
+    "hosted": {
+      "jobId": 116558224254,
+      "environment": "GitHub-hosted ubuntu-latest with actions/setup-node Node 22",
+      "jobConclusion": "failure",
+      "artifact": {
+        "id": 11993726787,
+        "name": "restore-repeat-hosted-20261015-38774419447-1",
+        "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38774419447/artifacts/11993726787",
+        "sizeBytes": 470635,
+        "zipSha256": "54f6c703837b77640260754d942ad9bf266b1c93e8bf929589ebbea0eacbeb2a",
+        "expiresUTC": "2026-11-14T17:17:22Z"
+      },
+      "sequenceExact1Through100": true,
+      "aggregate": {
+        "requestedIterations": 100,
+        "completedIterations": 100,
+        "passedIterations": 100,
+        "failedIterations": 0,
+        "notRunIterations": 0,
+        "tests": 900,
+        "pass": 900,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sourceIntegrityPassed": false,
+      "executedSourceHashesPassed": true,
+      "infrastructureFailure": null,
+      "overallStatus": "FAIL",
+      "iterations": [
+        {
+          "mode": "hosted",
+          "iteration": 1,
+          "startedUTC": "2026-10-15T17:05:56.963040+00:00",
+          "finishedUTC": "2026-10-15T17:06:03.895862+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-001-u4n5xdst"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 2,
+          "startedUTC": "2026-10-15T17:06:03.896929+00:00",
+          "finishedUTC": "2026-10-15T17:06:10.713083+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-002-f7l0lpn9"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 3,
+          "startedUTC": "2026-10-15T17:06:10.713611+00:00",
+          "finishedUTC": "2026-10-15T17:06:17.651035+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-003-z6qvipf5"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 4,
+          "startedUTC": "2026-10-15T17:06:17.651590+00:00",
+          "finishedUTC": "2026-10-15T17:06:24.525861+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-004-gikaahfp"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 5,
+          "startedUTC": "2026-10-15T17:06:24.526388+00:00",
+          "finishedUTC": "2026-10-15T17:06:31.396346+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-005-8eyjc1uj"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 6,
+          "startedUTC": "2026-10-15T17:06:31.396907+00:00",
+          "finishedUTC": "2026-10-15T17:06:38.222576+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-006-5iero9dx"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 7,
+          "startedUTC": "2026-10-15T17:06:38.223137+00:00",
+          "finishedUTC": "2026-10-15T17:06:45.070888+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-007-qzg_qhbq"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 8,
+          "startedUTC": "2026-10-15T17:06:45.071405+00:00",
+          "finishedUTC": "2026-10-15T17:06:51.995055+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-008-wwiwzi9y"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 9,
+          "startedUTC": "2026-10-15T17:06:51.995557+00:00",
+          "finishedUTC": "2026-10-15T17:06:58.882559+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-009-dr_whmmj"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 10,
+          "startedUTC": "2026-10-15T17:06:58.883084+00:00",
+          "finishedUTC": "2026-10-15T17:07:05.725027+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-010-r1chnm33"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 11,
+          "startedUTC": "2026-10-15T17:07:05.725574+00:00",
+          "finishedUTC": "2026-10-15T17:07:12.602076+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-011-2vax4aav"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 12,
+          "startedUTC": "2026-10-15T17:07:12.602633+00:00",
+          "finishedUTC": "2026-10-15T17:07:19.494437+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-012-ngstvnyj"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 13,
+          "startedUTC": "2026-10-15T17:07:19.494998+00:00",
+          "finishedUTC": "2026-10-15T17:07:26.369594+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-013-b3wstm3s"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 14,
+          "startedUTC": "2026-10-15T17:07:26.370124+00:00",
+          "finishedUTC": "2026-10-15T17:07:33.188746+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-014-9huxod9u"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 15,
+          "startedUTC": "2026-10-15T17:07:33.189315+00:00",
+          "finishedUTC": "2026-10-15T17:07:39.997585+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-015-fd8npbyn"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 16,
+          "startedUTC": "2026-10-15T17:07:39.998152+00:00",
+          "finishedUTC": "2026-10-15T17:07:46.866076+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-016-qjl9ss3t"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 17,
+          "startedUTC": "2026-10-15T17:07:46.866582+00:00",
+          "finishedUTC": "2026-10-15T17:07:53.720270+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-017-cj8bcpf5"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 18,
+          "startedUTC": "2026-10-15T17:07:53.720807+00:00",
+          "finishedUTC": "2026-10-15T17:08:00.562259+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-018-j_c9nvfs"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 19,
+          "startedUTC": "2026-10-15T17:08:00.562735+00:00",
+          "finishedUTC": "2026-10-15T17:08:07.480662+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-019-xutuw88b"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 20,
+          "startedUTC": "2026-10-15T17:08:07.481233+00:00",
+          "finishedUTC": "2026-10-15T17:08:14.288409+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-020-2nn_tcc3"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 21,
+          "startedUTC": "2026-10-15T17:08:14.288945+00:00",
+          "finishedUTC": "2026-10-15T17:08:21.119431+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-021-r7g5xyvb"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 22,
+          "startedUTC": "2026-10-15T17:08:21.119955+00:00",
+          "finishedUTC": "2026-10-15T17:08:28.011052+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-022-8vnpe094"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 23,
+          "startedUTC": "2026-10-15T17:08:28.011558+00:00",
+          "finishedUTC": "2026-10-15T17:08:34.857542+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-023-dmt6xneu"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 24,
+          "startedUTC": "2026-10-15T17:08:34.858131+00:00",
+          "finishedUTC": "2026-10-15T17:08:41.673836+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-024-xtgfp8av"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 25,
+          "startedUTC": "2026-10-15T17:08:41.674381+00:00",
+          "finishedUTC": "2026-10-15T17:08:48.580756+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-025-_syb5ep7"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 26,
+          "startedUTC": "2026-10-15T17:08:48.581305+00:00",
+          "finishedUTC": "2026-10-15T17:08:55.473546+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-026-dpl1kud_"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 27,
+          "startedUTC": "2026-10-15T17:08:55.474078+00:00",
+          "finishedUTC": "2026-10-15T17:09:02.310959+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-027-k3pmfh16"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 28,
+          "startedUTC": "2026-10-15T17:09:02.311475+00:00",
+          "finishedUTC": "2026-10-15T17:09:09.160328+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-028-ddq3acej"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 29,
+          "startedUTC": "2026-10-15T17:09:09.160871+00:00",
+          "finishedUTC": "2026-10-15T17:09:16.014871+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-029-z9jyckqp"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 30,
+          "startedUTC": "2026-10-15T17:09:16.015414+00:00",
+          "finishedUTC": "2026-10-15T17:09:22.837577+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-030-qp3oha9e"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 31,
+          "startedUTC": "2026-10-15T17:09:22.838117+00:00",
+          "finishedUTC": "2026-10-15T17:09:29.708176+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-031-lfhlqmyt"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 32,
+          "startedUTC": "2026-10-15T17:09:29.708672+00:00",
+          "finishedUTC": "2026-10-15T17:09:36.525170+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-032-ax0rlbcy"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 33,
+          "startedUTC": "2026-10-15T17:09:36.525723+00:00",
+          "finishedUTC": "2026-10-15T17:09:43.366005+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-033-b_zoqbn2"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 34,
+          "startedUTC": "2026-10-15T17:09:43.366510+00:00",
+          "finishedUTC": "2026-10-15T17:09:50.198797+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-034-ukiziqpq"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 35,
+          "startedUTC": "2026-10-15T17:09:50.199345+00:00",
+          "finishedUTC": "2026-10-15T17:09:57.039129+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-035-w42y1s_d"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 36,
+          "startedUTC": "2026-10-15T17:09:57.039671+00:00",
+          "finishedUTC": "2026-10-15T17:10:03.840547+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-036-egsi41rd"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 37,
+          "startedUTC": "2026-10-15T17:10:03.841098+00:00",
+          "finishedUTC": "2026-10-15T17:10:10.780830+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-037-n5e3s2z2"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 38,
+          "startedUTC": "2026-10-15T17:10:10.781372+00:00",
+          "finishedUTC": "2026-10-15T17:10:17.602315+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-038-u1pqq8o9"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 39,
+          "startedUTC": "2026-10-15T17:10:17.602873+00:00",
+          "finishedUTC": "2026-10-15T17:10:24.447924+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-039-7wwdc7wu"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 40,
+          "startedUTC": "2026-10-15T17:10:24.448447+00:00",
+          "finishedUTC": "2026-10-15T17:10:31.310821+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-040-4p1zc6iu"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 41,
+          "startedUTC": "2026-10-15T17:10:31.311349+00:00",
+          "finishedUTC": "2026-10-15T17:10:38.219550+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-041-ju8jwxku"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 42,
+          "startedUTC": "2026-10-15T17:10:38.220075+00:00",
+          "finishedUTC": "2026-10-15T17:10:45.075411+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-042-2ue5h0zm"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 43,
+          "startedUTC": "2026-10-15T17:10:45.075963+00:00",
+          "finishedUTC": "2026-10-15T17:10:51.887306+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-043-odnfyiow"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 44,
+          "startedUTC": "2026-10-15T17:10:51.887822+00:00",
+          "finishedUTC": "2026-10-15T17:10:58.692885+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-044-o54vvi7c"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 45,
+          "startedUTC": "2026-10-15T17:10:58.693398+00:00",
+          "finishedUTC": "2026-10-15T17:11:05.474384+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-045-ght_zqba"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 46,
+          "startedUTC": "2026-10-15T17:11:05.474914+00:00",
+          "finishedUTC": "2026-10-15T17:11:12.329927+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-046-gts5igk9"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 47,
+          "startedUTC": "2026-10-15T17:11:12.330430+00:00",
+          "finishedUTC": "2026-10-15T17:11:19.168896+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-047-k4sit18i"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 48,
+          "startedUTC": "2026-10-15T17:11:19.169385+00:00",
+          "finishedUTC": "2026-10-15T17:11:26.050921+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-048-al4z0h4b"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 49,
+          "startedUTC": "2026-10-15T17:11:26.051482+00:00",
+          "finishedUTC": "2026-10-15T17:11:32.889188+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-049-yojerald"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 50,
+          "startedUTC": "2026-10-15T17:11:32.889678+00:00",
+          "finishedUTC": "2026-10-15T17:11:39.731809+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-050-eg3vrf3q"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 51,
+          "startedUTC": "2026-10-15T17:11:39.732317+00:00",
+          "finishedUTC": "2026-10-15T17:11:46.520169+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-051-y36ik8s1"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 52,
+          "startedUTC": "2026-10-15T17:11:46.520660+00:00",
+          "finishedUTC": "2026-10-15T17:11:53.314139+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-052-5fx3lgse"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 53,
+          "startedUTC": "2026-10-15T17:11:53.314643+00:00",
+          "finishedUTC": "2026-10-15T17:12:00.176463+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-053-7vtfgxwq"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 54,
+          "startedUTC": "2026-10-15T17:12:00.176987+00:00",
+          "finishedUTC": "2026-10-15T17:12:07.066291+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-054-n3nc1a5d"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 55,
+          "startedUTC": "2026-10-15T17:12:07.066873+00:00",
+          "finishedUTC": "2026-10-15T17:12:13.942894+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-055-hi6c6ojj"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 56,
+          "startedUTC": "2026-10-15T17:12:13.943379+00:00",
+          "finishedUTC": "2026-10-15T17:12:20.787044+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-056-54vh13il"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 57,
+          "startedUTC": "2026-10-15T17:12:20.787532+00:00",
+          "finishedUTC": "2026-10-15T17:12:27.617873+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-057-d6_eovd3"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 58,
+          "startedUTC": "2026-10-15T17:12:27.618443+00:00",
+          "finishedUTC": "2026-10-15T17:12:34.468647+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-058-sy_u93qe"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 59,
+          "startedUTC": "2026-10-15T17:12:34.469168+00:00",
+          "finishedUTC": "2026-10-15T17:12:41.345875+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-059-dfikamuk"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 60,
+          "startedUTC": "2026-10-15T17:12:41.346410+00:00",
+          "finishedUTC": "2026-10-15T17:12:48.197387+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-060-7x59ics3"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 61,
+          "startedUTC": "2026-10-15T17:12:48.197931+00:00",
+          "finishedUTC": "2026-10-15T17:12:55.029618+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-061-6vk2g0n5"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 62,
+          "startedUTC": "2026-10-15T17:12:55.030168+00:00",
+          "finishedUTC": "2026-10-15T17:13:01.913464+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-062-581__ep7"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 63,
+          "startedUTC": "2026-10-15T17:13:01.913967+00:00",
+          "finishedUTC": "2026-10-15T17:13:08.796781+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-063-eutqz4kc"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 64,
+          "startedUTC": "2026-10-15T17:13:08.797309+00:00",
+          "finishedUTC": "2026-10-15T17:13:15.640071+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-064-6bw69td4"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 65,
+          "startedUTC": "2026-10-15T17:13:15.640623+00:00",
+          "finishedUTC": "2026-10-15T17:13:22.434221+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-065-u0_cj5v_"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 66,
+          "startedUTC": "2026-10-15T17:13:22.434731+00:00",
+          "finishedUTC": "2026-10-15T17:13:29.329447+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-066-nv5k1iym"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 67,
+          "startedUTC": "2026-10-15T17:13:29.329951+00:00",
+          "finishedUTC": "2026-10-15T17:13:36.212519+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-067-617ks9dz"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 68,
+          "startedUTC": "2026-10-15T17:13:36.213073+00:00",
+          "finishedUTC": "2026-10-15T17:13:43.081805+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-068-5d_ko3jm"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 69,
+          "startedUTC": "2026-10-15T17:13:43.082284+00:00",
+          "finishedUTC": "2026-10-15T17:13:50.007599+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-069-xff8v0_a"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 70,
+          "startedUTC": "2026-10-15T17:13:50.008119+00:00",
+          "finishedUTC": "2026-10-15T17:13:56.892217+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-070-zrrmhjxy"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 71,
+          "startedUTC": "2026-10-15T17:13:56.892821+00:00",
+          "finishedUTC": "2026-10-15T17:14:03.758262+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-071-rapbm30_"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 72,
+          "startedUTC": "2026-10-15T17:14:03.758788+00:00",
+          "finishedUTC": "2026-10-15T17:14:10.528549+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-072-l282mlxg"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 73,
+          "startedUTC": "2026-10-15T17:14:10.529059+00:00",
+          "finishedUTC": "2026-10-15T17:14:17.370218+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-073-d9ztpxw7"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 74,
+          "startedUTC": "2026-10-15T17:14:17.370718+00:00",
+          "finishedUTC": "2026-10-15T17:14:24.171879+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-074-7i0kq_le"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 75,
+          "startedUTC": "2026-10-15T17:14:24.172383+00:00",
+          "finishedUTC": "2026-10-15T17:14:30.944196+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-075-5naepm8d"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 76,
+          "startedUTC": "2026-10-15T17:14:30.944744+00:00",
+          "finishedUTC": "2026-10-15T17:14:37.816827+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-076-rbhlks9h"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 77,
+          "startedUTC": "2026-10-15T17:14:37.817390+00:00",
+          "finishedUTC": "2026-10-15T17:14:44.613962+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-077-xfd_ghrp"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 78,
+          "startedUTC": "2026-10-15T17:14:44.614475+00:00",
+          "finishedUTC": "2026-10-15T17:14:51.462133+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-078-1fyb10ut"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 79,
+          "startedUTC": "2026-10-15T17:14:51.462672+00:00",
+          "finishedUTC": "2026-10-15T17:14:58.331508+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-079-43o_06dm"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 80,
+          "startedUTC": "2026-10-15T17:14:58.332068+00:00",
+          "finishedUTC": "2026-10-15T17:15:05.171071+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-080-yt66sbzp"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 81,
+          "startedUTC": "2026-10-15T17:15:05.171601+00:00",
+          "finishedUTC": "2026-10-15T17:15:12.009510+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-081-nv33q9r4"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 82,
+          "startedUTC": "2026-10-15T17:15:12.010019+00:00",
+          "finishedUTC": "2026-10-15T17:15:18.828212+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-082-00o2g1nd"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 83,
+          "startedUTC": "2026-10-15T17:15:18.828701+00:00",
+          "finishedUTC": "2026-10-15T17:15:25.630143+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-083-hs_mc7r0"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 84,
+          "startedUTC": "2026-10-15T17:15:25.630622+00:00",
+          "finishedUTC": "2026-10-15T17:15:32.475200+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-084-eemi7ydh"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 85,
+          "startedUTC": "2026-10-15T17:15:32.475684+00:00",
+          "finishedUTC": "2026-10-15T17:15:39.307991+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-085-odlxxgfs"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 86,
+          "startedUTC": "2026-10-15T17:15:39.308515+00:00",
+          "finishedUTC": "2026-10-15T17:15:46.151963+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-086-hbc96gb7"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 87,
+          "startedUTC": "2026-10-15T17:15:46.152452+00:00",
+          "finishedUTC": "2026-10-15T17:15:52.966336+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-087-m015sg70"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 88,
+          "startedUTC": "2026-10-15T17:15:52.966914+00:00",
+          "finishedUTC": "2026-10-15T17:15:59.837128+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-088-5qkul68l"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 89,
+          "startedUTC": "2026-10-15T17:15:59.837615+00:00",
+          "finishedUTC": "2026-10-15T17:16:06.691689+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-089-ja8znyx6"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 90,
+          "startedUTC": "2026-10-15T17:16:06.692274+00:00",
+          "finishedUTC": "2026-10-15T17:16:13.615917+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-090-w41wo8km"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 91,
+          "startedUTC": "2026-10-15T17:16:13.616488+00:00",
+          "finishedUTC": "2026-10-15T17:16:20.448845+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-091-z6ibel6w"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 92,
+          "startedUTC": "2026-10-15T17:16:20.449332+00:00",
+          "finishedUTC": "2026-10-15T17:16:27.327326+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-092-qhyvqqti"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 93,
+          "startedUTC": "2026-10-15T17:16:27.327851+00:00",
+          "finishedUTC": "2026-10-15T17:16:34.172941+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-093-x6q94vvp"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 94,
+          "startedUTC": "2026-10-15T17:16:34.173450+00:00",
+          "finishedUTC": "2026-10-15T17:16:41.067458+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-094-kqbatxp1"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 95,
+          "startedUTC": "2026-10-15T17:16:41.068018+00:00",
+          "finishedUTC": "2026-10-15T17:16:47.931486+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-095-acp_pzu9"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 96,
+          "startedUTC": "2026-10-15T17:16:47.932043+00:00",
+          "finishedUTC": "2026-10-15T17:16:54.722048+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-096-yefrj3hb"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 97,
+          "startedUTC": "2026-10-15T17:16:54.722577+00:00",
+          "finishedUTC": "2026-10-15T17:17:01.611392+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-097-qdil8vq3"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 98,
+          "startedUTC": "2026-10-15T17:17:01.611937+00:00",
+          "finishedUTC": "2026-10-15T17:17:08.490337+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-098-2ew0yeg6"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 99,
+          "startedUTC": "2026-10-15T17:17:08.490891+00:00",
+          "finishedUTC": "2026-10-15T17:17:15.283698+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-099-bq930vhv"
+        },
+        {
+          "mode": "hosted",
+          "iteration": 100,
+          "startedUTC": "2026-10-15T17:17:15.284198+00:00",
+          "finishedUTC": "2026-10-15T17:17:22.144939+00:00",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "temporaryDirectory": "/tmp/restore-repeat-hosted-100-92yjxnau"
+        }
+      ]
+    },
+    "docker": {
+      "jobId": 116558223987,
+      "environment": "node:22-bookworm-slim; one fresh named Docker volume mounted at /data per iteration",
+      "jobConclusion": "failure",
+      "artifact": {
+        "id": 11994195226,
+        "name": "restore-repeat-docker-20261015-38774419447-1",
+        "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/38774419447/artifacts/11994195226",
+        "sizeBytes": 618412,
+        "zipSha256": "bf890d9111b0b0330ccb5cb5f09b6c0deb855dcb8c86fe0137db4d32d7d2f480",
+        "expiresUTC": "2026-11-14T17:13:45Z"
+      },
+      "sequenceExact1Through100": true,
+      "aggregate": {
+        "requestedIterations": 100,
+        "completedIterations": 100,
+        "passedIterations": 100,
+        "failedIterations": 0,
+        "notRunIterations": 0,
+        "tests": 900,
+        "pass": 900,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sourceIntegrityPassed": false,
+      "executedSourceHashesPassed": true,
+      "infrastructureFailure": null,
+      "overallStatus": "FAIL",
+      "iterations": [
+        {
+          "mode": "docker",
+          "iteration": 1,
+          "startedUTC": "2026-10-15T17:06:05.273Z",
+          "finishedUTC": "2026-10-15T17:06:09.584Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-001",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 2,
+          "startedUTC": "2026-10-15T17:06:09.958Z",
+          "finishedUTC": "2026-10-15T17:06:14.246Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-002",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 3,
+          "startedUTC": "2026-10-15T17:06:14.607Z",
+          "finishedUTC": "2026-10-15T17:06:18.915Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-003",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 4,
+          "startedUTC": "2026-10-15T17:06:19.273Z",
+          "finishedUTC": "2026-10-15T17:06:23.578Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-004",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 5,
+          "startedUTC": "2026-10-15T17:06:23.950Z",
+          "finishedUTC": "2026-10-15T17:06:28.272Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-005",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 6,
+          "startedUTC": "2026-10-15T17:06:28.618Z",
+          "finishedUTC": "2026-10-15T17:06:32.894Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-006",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 7,
+          "startedUTC": "2026-10-15T17:06:33.257Z",
+          "finishedUTC": "2026-10-15T17:06:37.449Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-007",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 8,
+          "startedUTC": "2026-10-15T17:06:37.818Z",
+          "finishedUTC": "2026-10-15T17:06:42.031Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-008",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 9,
+          "startedUTC": "2026-10-15T17:06:42.446Z",
+          "finishedUTC": "2026-10-15T17:06:46.752Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-009",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 10,
+          "startedUTC": "2026-10-15T17:06:47.125Z",
+          "finishedUTC": "2026-10-15T17:06:51.332Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-010",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 11,
+          "startedUTC": "2026-10-15T17:06:51.692Z",
+          "finishedUTC": "2026-10-15T17:06:55.880Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-011",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 12,
+          "startedUTC": "2026-10-15T17:06:56.248Z",
+          "finishedUTC": "2026-10-15T17:07:00.530Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-012",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 13,
+          "startedUTC": "2026-10-15T17:07:00.970Z",
+          "finishedUTC": "2026-10-15T17:07:05.264Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-013",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 14,
+          "startedUTC": "2026-10-15T17:07:05.640Z",
+          "finishedUTC": "2026-10-15T17:07:09.935Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-014",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 15,
+          "startedUTC": "2026-10-15T17:07:10.315Z",
+          "finishedUTC": "2026-10-15T17:07:14.647Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-015",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 16,
+          "startedUTC": "2026-10-15T17:07:15.014Z",
+          "finishedUTC": "2026-10-15T17:07:19.248Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-016",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 17,
+          "startedUTC": "2026-10-15T17:07:19.614Z",
+          "finishedUTC": "2026-10-15T17:07:23.892Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-017",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 18,
+          "startedUTC": "2026-10-15T17:07:24.260Z",
+          "finishedUTC": "2026-10-15T17:07:28.584Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-018",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 19,
+          "startedUTC": "2026-10-15T17:07:29.026Z",
+          "finishedUTC": "2026-10-15T17:07:33.429Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-019",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 20,
+          "startedUTC": "2026-10-15T17:07:33.811Z",
+          "finishedUTC": "2026-10-15T17:07:38.231Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-020",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 21,
+          "startedUTC": "2026-10-15T17:07:38.596Z",
+          "finishedUTC": "2026-10-15T17:07:42.954Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-021",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 22,
+          "startedUTC": "2026-10-15T17:07:43.321Z",
+          "finishedUTC": "2026-10-15T17:07:47.582Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-022",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 23,
+          "startedUTC": "2026-10-15T17:07:47.935Z",
+          "finishedUTC": "2026-10-15T17:07:52.183Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-023",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 24,
+          "startedUTC": "2026-10-15T17:07:52.549Z",
+          "finishedUTC": "2026-10-15T17:07:56.737Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-024",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 25,
+          "startedUTC": "2026-10-15T17:07:57.100Z",
+          "finishedUTC": "2026-10-15T17:08:01.238Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-025",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 26,
+          "startedUTC": "2026-10-15T17:08:01.613Z",
+          "finishedUTC": "2026-10-15T17:08:05.785Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-026",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 27,
+          "startedUTC": "2026-10-15T17:08:06.162Z",
+          "finishedUTC": "2026-10-15T17:08:10.240Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-027",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 28,
+          "startedUTC": "2026-10-15T17:08:10.583Z",
+          "finishedUTC": "2026-10-15T17:08:14.667Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-028",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 29,
+          "startedUTC": "2026-10-15T17:08:15.040Z",
+          "finishedUTC": "2026-10-15T17:08:19.176Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-029",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 30,
+          "startedUTC": "2026-10-15T17:08:19.530Z",
+          "finishedUTC": "2026-10-15T17:08:23.720Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-030",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 31,
+          "startedUTC": "2026-10-15T17:08:24.091Z",
+          "finishedUTC": "2026-10-15T17:08:28.306Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-031",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 32,
+          "startedUTC": "2026-10-15T17:08:28.688Z",
+          "finishedUTC": "2026-10-15T17:08:32.982Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-032",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 33,
+          "startedUTC": "2026-10-15T17:08:33.369Z",
+          "finishedUTC": "2026-10-15T17:08:37.458Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-033",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 34,
+          "startedUTC": "2026-10-15T17:08:37.804Z",
+          "finishedUTC": "2026-10-15T17:08:41.935Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-034",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 35,
+          "startedUTC": "2026-10-15T17:08:42.289Z",
+          "finishedUTC": "2026-10-15T17:08:46.432Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-035",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 36,
+          "startedUTC": "2026-10-15T17:08:46.803Z",
+          "finishedUTC": "2026-10-15T17:08:51.023Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-036",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 37,
+          "startedUTC": "2026-10-15T17:08:51.396Z",
+          "finishedUTC": "2026-10-15T17:08:55.511Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-037",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 38,
+          "startedUTC": "2026-10-15T17:08:55.880Z",
+          "finishedUTC": "2026-10-15T17:09:00.090Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-038",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 39,
+          "startedUTC": "2026-10-15T17:09:00.483Z",
+          "finishedUTC": "2026-10-15T17:09:04.761Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-039",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 40,
+          "startedUTC": "2026-10-15T17:09:05.273Z",
+          "finishedUTC": "2026-10-15T17:09:09.674Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-040",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 41,
+          "startedUTC": "2026-10-15T17:09:10.062Z",
+          "finishedUTC": "2026-10-15T17:09:14.373Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-041",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 42,
+          "startedUTC": "2026-10-15T17:09:14.755Z",
+          "finishedUTC": "2026-10-15T17:09:19.654Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-042",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 43,
+          "startedUTC": "2026-10-15T17:09:20.013Z",
+          "finishedUTC": "2026-10-15T17:09:24.136Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-043",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 44,
+          "startedUTC": "2026-10-15T17:09:24.510Z",
+          "finishedUTC": "2026-10-15T17:09:28.641Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-044",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 45,
+          "startedUTC": "2026-10-15T17:09:29.010Z",
+          "finishedUTC": "2026-10-15T17:09:33.293Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-045",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 46,
+          "startedUTC": "2026-10-15T17:09:33.681Z",
+          "finishedUTC": "2026-10-15T17:09:37.876Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-046",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 47,
+          "startedUTC": "2026-10-15T17:09:38.289Z",
+          "finishedUTC": "2026-10-15T17:09:42.473Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-047",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 48,
+          "startedUTC": "2026-10-15T17:09:42.852Z",
+          "finishedUTC": "2026-10-15T17:09:46.922Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-048",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 49,
+          "startedUTC": "2026-10-15T17:09:47.295Z",
+          "finishedUTC": "2026-10-15T17:09:51.406Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-049",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 50,
+          "startedUTC": "2026-10-15T17:09:51.789Z",
+          "finishedUTC": "2026-10-15T17:09:55.915Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-050",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 51,
+          "startedUTC": "2026-10-15T17:09:56.311Z",
+          "finishedUTC": "2026-10-15T17:10:00.435Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-051",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 52,
+          "startedUTC": "2026-10-15T17:10:00.793Z",
+          "finishedUTC": "2026-10-15T17:10:04.885Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-052",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 53,
+          "startedUTC": "2026-10-15T17:10:05.253Z",
+          "finishedUTC": "2026-10-15T17:10:09.357Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-053",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 54,
+          "startedUTC": "2026-10-15T17:10:09.729Z",
+          "finishedUTC": "2026-10-15T17:10:13.940Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-054",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 55,
+          "startedUTC": "2026-10-15T17:10:14.316Z",
+          "finishedUTC": "2026-10-15T17:10:18.410Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-055",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 56,
+          "startedUTC": "2026-10-15T17:10:18.801Z",
+          "finishedUTC": "2026-10-15T17:10:22.972Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-056",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 57,
+          "startedUTC": "2026-10-15T17:10:23.347Z",
+          "finishedUTC": "2026-10-15T17:10:27.459Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-057",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 58,
+          "startedUTC": "2026-10-15T17:10:27.820Z",
+          "finishedUTC": "2026-10-15T17:10:31.926Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-058",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 59,
+          "startedUTC": "2026-10-15T17:10:32.374Z",
+          "finishedUTC": "2026-10-15T17:10:36.540Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-059",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 60,
+          "startedUTC": "2026-10-15T17:10:36.930Z",
+          "finishedUTC": "2026-10-15T17:10:41.138Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-060",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 61,
+          "startedUTC": "2026-10-15T17:10:41.510Z",
+          "finishedUTC": "2026-10-15T17:10:45.658Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-061",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 62,
+          "startedUTC": "2026-10-15T17:10:46.030Z",
+          "finishedUTC": "2026-10-15T17:10:50.147Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-062",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 63,
+          "startedUTC": "2026-10-15T17:10:50.528Z",
+          "finishedUTC": "2026-10-15T17:10:54.718Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-063",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 64,
+          "startedUTC": "2026-10-15T17:10:55.094Z",
+          "finishedUTC": "2026-10-15T17:10:59.290Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-064",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 65,
+          "startedUTC": "2026-10-15T17:10:59.728Z",
+          "finishedUTC": "2026-10-15T17:11:04.009Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-065",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 66,
+          "startedUTC": "2026-10-15T17:11:04.391Z",
+          "finishedUTC": "2026-10-15T17:11:08.432Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-066",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 67,
+          "startedUTC": "2026-10-15T17:11:08.804Z",
+          "finishedUTC": "2026-10-15T17:11:12.967Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-067",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 68,
+          "startedUTC": "2026-10-15T17:11:13.337Z",
+          "finishedUTC": "2026-10-15T17:11:17.433Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-068",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 69,
+          "startedUTC": "2026-10-15T17:11:17.794Z",
+          "finishedUTC": "2026-10-15T17:11:21.883Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-069",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 70,
+          "startedUTC": "2026-10-15T17:11:22.238Z",
+          "finishedUTC": "2026-10-15T17:11:26.425Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-070",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 71,
+          "startedUTC": "2026-10-15T17:11:26.794Z",
+          "finishedUTC": "2026-10-15T17:11:31.021Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-071",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 72,
+          "startedUTC": "2026-10-15T17:11:31.399Z",
+          "finishedUTC": "2026-10-15T17:11:35.587Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-072",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 73,
+          "startedUTC": "2026-10-15T17:11:35.967Z",
+          "finishedUTC": "2026-10-15T17:11:40.127Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-073",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 74,
+          "startedUTC": "2026-10-15T17:11:40.514Z",
+          "finishedUTC": "2026-10-15T17:11:44.671Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-074",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 75,
+          "startedUTC": "2026-10-15T17:11:45.029Z",
+          "finishedUTC": "2026-10-15T17:11:49.228Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-075",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 76,
+          "startedUTC": "2026-10-15T17:11:49.615Z",
+          "finishedUTC": "2026-10-15T17:11:53.895Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-076",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 77,
+          "startedUTC": "2026-10-15T17:11:54.285Z",
+          "finishedUTC": "2026-10-15T17:11:58.405Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-077",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 78,
+          "startedUTC": "2026-10-15T17:11:58.798Z",
+          "finishedUTC": "2026-10-15T17:12:02.918Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-078",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 79,
+          "startedUTC": "2026-10-15T17:12:03.307Z",
+          "finishedUTC": "2026-10-15T17:12:07.392Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-079",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 80,
+          "startedUTC": "2026-10-15T17:12:07.756Z",
+          "finishedUTC": "2026-10-15T17:12:11.958Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-080",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 81,
+          "startedUTC": "2026-10-15T17:12:12.339Z",
+          "finishedUTC": "2026-10-15T17:12:16.470Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-081",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 82,
+          "startedUTC": "2026-10-15T17:12:16.848Z",
+          "finishedUTC": "2026-10-15T17:12:20.969Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-082",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 83,
+          "startedUTC": "2026-10-15T17:12:21.345Z",
+          "finishedUTC": "2026-10-15T17:12:25.587Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-083",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 84,
+          "startedUTC": "2026-10-15T17:12:25.959Z",
+          "finishedUTC": "2026-10-15T17:12:30.150Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-084",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 85,
+          "startedUTC": "2026-10-15T17:12:30.537Z",
+          "finishedUTC": "2026-10-15T17:12:34.902Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-085",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 86,
+          "startedUTC": "2026-10-15T17:12:35.304Z",
+          "finishedUTC": "2026-10-15T17:12:39.564Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-086",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 87,
+          "startedUTC": "2026-10-15T17:12:39.973Z",
+          "finishedUTC": "2026-10-15T17:12:44.302Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-087",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 88,
+          "startedUTC": "2026-10-15T17:12:44.692Z",
+          "finishedUTC": "2026-10-15T17:12:49.066Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-088",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 89,
+          "startedUTC": "2026-10-15T17:12:49.560Z",
+          "finishedUTC": "2026-10-15T17:12:53.835Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-089",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 90,
+          "startedUTC": "2026-10-15T17:12:54.226Z",
+          "finishedUTC": "2026-10-15T17:12:58.461Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-090",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 91,
+          "startedUTC": "2026-10-15T17:12:58.847Z",
+          "finishedUTC": "2026-10-15T17:13:03.087Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-091",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 92,
+          "startedUTC": "2026-10-15T17:13:03.545Z",
+          "finishedUTC": "2026-10-15T17:13:07.712Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-092",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 93,
+          "startedUTC": "2026-10-15T17:13:08.101Z",
+          "finishedUTC": "2026-10-15T17:13:12.310Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-093",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 94,
+          "startedUTC": "2026-10-15T17:13:12.678Z",
+          "finishedUTC": "2026-10-15T17:13:16.797Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-094",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 95,
+          "startedUTC": "2026-10-15T17:13:17.180Z",
+          "finishedUTC": "2026-10-15T17:13:21.296Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-095",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 96,
+          "startedUTC": "2026-10-15T17:13:21.660Z",
+          "finishedUTC": "2026-10-15T17:13:25.792Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-096",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 97,
+          "startedUTC": "2026-10-15T17:13:26.164Z",
+          "finishedUTC": "2026-10-15T17:13:30.355Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-097",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 98,
+          "startedUTC": "2026-10-15T17:13:30.732Z",
+          "finishedUTC": "2026-10-15T17:13:35.094Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-098",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 99,
+          "startedUTC": "2026-10-15T17:13:35.476Z",
+          "finishedUTC": "2026-10-15T17:13:39.683Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-099",
+          "dockerMount": "/data"
+        },
+        {
+          "mode": "docker",
+          "iteration": 100,
+          "startedUTC": "2026-10-15T17:13:40.046Z",
+          "finishedUTC": "2026-10-15T17:13:44.165Z",
+          "summary": {
+            "tests": 9,
+            "pass": 9,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "status": "PASS",
+          "dockerVolume": "restore-repeat-38774419447-docker-repeat-100",
+          "dockerMount": "/data"
+        }
+      ]
+    }
+  },
+  "combined": {
+    "requestedIterations": 200,
+    "completedIterations": 200,
+    "passedIterations": 200,
+    "failedIterations": 0,
+    "notRunIterations": 0,
+    "tests": 1800,
+    "pass": 1800,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "restoreReappearanceObserved": false
+  },
+  "deviations": [
+    {
+      "requirement": "Tracked application bytes identical before install, after build, and after all iterations",
+      "hostedObserved": false,
+      "dockerObserved": false,
+      "phase": "npm run build",
+      "persistedThroughIterations": true,
+      "jobImpact": "Strict runner overallStatus FAIL and job exit 1 in both jobs",
+      "testImpact": "None; every one of the 200 rehearsal processes passed 9/9 and exited 0 without a signal",
+      "diagnosticOnly": {
+        "environment": "Separate local Node 24/npm 11 build probe using an archive of the same application commit and npm ci --ignore-scripts; not substituted for hosted Node 22 evidence",
+        "trackedPathsReproduced": [
+          {
+            "path": "client/dist/index.html",
+            "before": {
+              "type": "file",
+              "size": 401,
+              "sha256": "b300a3c07711bf74c8742a87ef5e425834b972f64c3c29067a6bc5305daf3f1d"
+            },
+            "after": {
+              "type": "file",
+              "size": 401,
+              "sha256": "65b3a5d7c603cd2767e536e12548344aa94f36b0c29fd224d256cb5195edfdc5"
+            }
+          },
+          {
+            "path": "client/dist/assets/index-Cwi6Aiz2.css",
+            "before": {
+              "type": "file",
+              "size": 53473,
+              "sha256": "a79bbb1dff1691e45bcafb8746a05b7ec320ea5a38e7f6c5698bedb0339072cd"
+            },
+            "after": {
+              "type": "missing"
+            }
+          },
+          {
+            "path": "client/dist/assets/index-DdcfYsVT.js",
+            "before": {
+              "type": "file",
+              "size": 636708,
+              "sha256": "30c046006597a93f674ea2c3f62668416871af48774e8e7f59e86f22e2d26080"
+            },
+            "after": {
+              "type": "missing"
+            }
+          }
+        ],
+        "note": "The authoritative Node 22 before/after manifests are retained in each GitHub artifact. This diagnostic names the build-output mechanism without changing candidate n."
+      }
+    }
+  ],
+  "failingIterations": [],
+  "failureFilesystemInventoriesRequired": 0,
+  "notes": [
+    "No iteration failed, timed out, was cancelled, skipped, or marked TODO, so no failing-iteration TAP/stderr/TMPDIR inventory exists or was required.",
+    "The red workflow conclusion is a reported expectation deviation, not a restore-test failure and not an infrastructure failure.",
+    "Detailed per-iteration TAP files, stderr files, preparation records, and authoritative source manifests remain in the two GitHub artifacts."
+  ]
+}
+
