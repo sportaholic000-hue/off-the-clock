@@ -497,10 +497,15 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [suggestions, setSuggestions] = useState(null);
   const [suggesting,setSuggesting] = useState(false);
   const [error, setError] = useState(null);
-  const interviewFields = useMemo(
-    () => available.flatMap(service => [...service.fields,...(service.interviewFields||[])].filter(field=>['number','json','select','boolean','offering_configuration','scope_configuration','offering_registry'].includes(field.type)).map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
+  const allInterviewFields = useMemo(
+    () => available.flatMap(service => [...service.fields,...(service.interviewFields||[])]
+      .filter(field=>['number','json','select','boolean','offering_configuration','scope_configuration','offering_registry'].includes(field.type))
+      .map((field,index) => ({ ...field, serviceType:service.serviceType, serviceName:service.name,metadataIndex:index }))
+      .sort((left,right)=>(left.interviewPriority??2)-(right.interviewPriority??2)||left.metadataIndex-right.metadataIndex)),
     [available]
   );
+  const fieldsFor=loaded=>allInterviewFields.filter(field=>!field.applicableWhen||loaded?.fields?.[field.serviceType]?.[field.applicableWhen.field]===field.applicableWhen.equals);
+  const interviewFields=fieldsFor(draft);
   const current = interviewDefinition(interviewFields[position],draft?.fields?.[interviewFields[position]?.serviceType]);
   // What the owner is looking at right now; an AI reading must match it to apply.
   const assistTarget = useRef(null);
@@ -519,12 +524,13 @@ function PriceBookStep({ state, metadata, back, next }) {
   }
 
   function positionFor(loaded) {
+    const fields=fieldsFor(loaded);
     if (loaded.currentField) {
-      const index = interviewFields.findIndex(field => `${field.serviceType}.${field.field}` === loaded.currentField);
+      const index = fields.findIndex(field => `${field.serviceType}.${field.field}` === loaded.currentField);
       if (index >= 0) return index;
     }
-    const index = interviewFields.findIndex(field => !(loaded.confirmedFields?.[field.serviceType] || []).includes(field.field));
-    return index >= 0 ? index : interviewFields.length;
+    const index = fields.findIndex(field => !(loaded.confirmedFields?.[field.serviceType] || []).includes(field.field));
+    return index >= 0 ? index : fields.length;
   }
 
   async function assistAnswer() {
@@ -546,9 +552,10 @@ function PriceBookStep({ state, metadata, back, next }) {
     setError(null);
     try {
       const result = await api('/api/pricebook/interview', { method:'POST', body:{ mode, serviceTypes:activeTypes } });
+      const fields=fieldsFor(result.draft);
       setDraft(result.draft);
       setPosition(0);
-      setRawValue(interviewFields[0]?.type === 'json'||CONFIGURATION_FIELDS.includes(interviewFields[0]?.field)&&interviewFields[0]?.field!=='offeringMode' ? {} : '');
+      setRawValue(fields[0]?.type === 'json'||CONFIGURATION_FIELDS.includes(fields[0]?.field)&&fields[0]?.field!=='offeringMode' ? {} : '');
       setReadBack(null);
     } catch (nextError) { setError(nextError); }
   }
@@ -556,7 +563,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   // Restore whatever was already captured for a field, so resuming mid-question
   // brings back a partially completed structured answer instead of a blank.
   function savedValueFor(loadedDraft, index) {
-    const field = interviewFields[index];
+    const field = fieldsFor(loadedDraft)[index];
     if (!field) return '';
     const stored = loadedDraft?.fields?.[field.serviceType]?.[field.field];
     if (field.type === 'json'||CONFIGURATION_FIELDS.includes(field.field)&&field.field!=='offeringMode') {
@@ -620,7 +627,7 @@ function PriceBookStep({ state, metadata, back, next }) {
           revision:draft.revision,
           fields:{ [current.serviceType]:{ [current.field]:value } },
           confirmedFields:{ [current.serviceType]:[...new Set([...existingConfirmed, current.field])] },
-          currentField:interviewFields[position + 1] ? `${interviewFields[position + 1].serviceType}.${interviewFields[position + 1].field}` : null
+          currentField:null
         }
       });
       if (assistTarget.current?.draftId !== asked.draftId) return;
@@ -628,10 +635,10 @@ function PriceBookStep({ state, metadata, back, next }) {
       // The saved answer is retained, but a newer on-screen edit stays on its question and the owner is told.
       if (!sameAssistTarget(asked, assistTarget.current)) { setAiNotice(STALE_CONFIRM_NOTICE); return; }
       setAnswer('');setAiNotice('');
-      const nextField = interviewFields[position + 1];
-      setRawValue(nextField?.type === 'json'||CONFIGURATION_FIELDS.includes(nextField?.field)&&nextField?.field!=='offeringMode' ? {} : '');
+      const nextPosition=positionFor(result.draft);
+      setRawValue(savedValueFor(result.draft,nextPosition));
       setReadBack(null);
-      setPosition(Math.min(interviewFields.length, position + 1));
+      setPosition(nextPosition);
     } catch (nextError) {
       if (assistTarget.current?.draftId !== asked.draftId) return;
       setError(nextError);
@@ -748,7 +755,7 @@ function PriceBookStep({ state, metadata, back, next }) {
                   <ExactNumericInput key={current.serviceType+'.'+current.field} value={rawValue} kind={current.moneyKind} wholeCents={current.wholeCents} onChange={editValue} />
                 )}
               </Field>
-              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={aiBusy || confirmBusy || !!draftConflict || (current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0 : rawValue === '' || rawValue === undefined || rawValue === null)}>Read it back</Button>}
+              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={aiBusy || confirmBusy || !!draftConflict || (current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0&&!current.tree?.allowEmpty : rawValue === '' || rawValue === undefined || rawValue === null)}>Read it back</Button>}
               {readBack && (
                 <div className="readback-confirm">
                   <p className="mono">READ BACK: {readBack.spoken}</p>

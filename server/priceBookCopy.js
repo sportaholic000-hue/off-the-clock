@@ -7,9 +7,14 @@ const copy = (label, help) => ({ label, help });
 // Units, inclusions, exclusions and pricing meaning are unchanged.
 const titled = (title, authoritativeLabel, help) => ({ label: authoritativeLabel, title, help });
 
+export const ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE = {
+  per_square_allin:titled('All-in roofing material price per square','Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.','Material charge for each waste-adjusted roofing square when accessories are included in the all-in price.'),
+  itemized:titled('Base roofing material price per square','Your base roofing material price per square, EXCLUDING separately itemized starter, drip edge, and ridge cap, and INCLUDING flashing and vents.','Material charge for each waste-adjusted roofing square. Starter, drip edge, and ridge cap are charged separately; flashing and vents remain included in this base price.')
+};
+
 export const OWNER_FIELD_COPY = {
   laborPerSquare: copy('Roof installation labor price per roofing square', 'Labor charge for each 100 square feet of roof area before pitch and story adjustments.'),
-  materialCostPerSquare: titled('All-in roofing material price per square', 'Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.', 'Material charge for each waste-adjusted roofing square when accessories are included in the all-in price.'),
+  materialCostPerSquare: ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE.per_square_allin,
   tearOffPerSquare: copy('Roof tear-off price per existing roofing square', 'Removal labor for each roofing square and each existing layer, adjusted for pitch and stories.'),
   underlaymentPerSquare: copy('Underlayment material price per roofing square', 'Material price applied to each waste-adjusted roofing square.'),
   accessoryPricingMode: copy('Roof accessory pricing method', 'Choose whether starter, drip edge, and ridge cap are included in the all-in material price or priced separately.'),
@@ -229,11 +234,26 @@ export function ownerFieldCopy(serviceType, field) {
   return OWNER_FIELD_COPY[`${serviceType}.${field}`] || OWNER_FIELD_COPY[field] || copy('Required pricing information', 'Complete this pricing value before the service can quote.');
 }
 
-export function class2FieldCopy(serviceType, field) {
+function firstNumericLeaf(value) {
+  if(typeof value==='number'&&Number.isFinite(value))return value;
+  if(value&&typeof value==='object')for(const child of Object.values(value)){const found=firstNumericLeaf(child);if(found!==undefined)return found;}
+}
+
+export function class2FieldCopy(serviceType, field, defaultValue) {
   const value = CLASS2_COPY[`${serviceType}.${field}`] || CLASS2_COPY[field];
+  if(/WasteFactor$/.test(field)){
+    const stored=firstNumericLeaf(defaultValue)??0.10,entered=stored*100;
+    return {
+      ...(value||copy('Material waste allowance','Adds material for cuts, fitting, or ordering waste.')),
+      help:`Enter ${Number.isInteger(entered)?entered:String(entered)} for ${Number.isInteger(entered)?entered:String(entered)}%; the saved calculation factor is ${stored.toFixed(2)}.`,
+      unit:'decimal fraction',ownerInputUnit:'percent'
+    };
+  }
+  const fraction=['wasteFactorByComplexity','wasteFactorByType','patternWasteAdder'].includes(field);
   return {
     ...(value || copy('Quantity adjustment', 'Adjusts the quantity or labor used for this service.')),
-    unit: CLASS2_UNITS[field] || CLASS2_UNITS.default
+    unit: fraction?'decimal fraction':CLASS2_UNITS[field] || CLASS2_UNITS.default,
+    ownerInputUnit:fraction?'fraction':'native'
   };
 }
 

@@ -18,6 +18,9 @@ import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './p
 import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
+import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
+import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
+import {describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 const PricingContext = createContext({});
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
@@ -410,9 +413,13 @@ function StructuredFactorField({ value, defaultValue, onChange, unit, wastePerce
 
 function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [], status, onToggleOffering }) {
   const service = useContext(PricingContext);
+  const pricing=servicePricing(service);
+  if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
+  const modeCopy=definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode];
+  if(modeCopy)definition={...definition,...modeCopy};
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
-    ? moneyKindForField(service.serviceType, definition.field, servicePricing(service))
-    : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, servicePricing(service));
+    ? moneyKindForField(service.serviceType, definition.field, pricing)
+    : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
   let control;
   if (definition.type === 'boolean') {
     control = <Toggle checked={Boolean(value)} onChange={onChange} label={value ? 'YES' : 'NO'} />;
@@ -438,6 +445,10 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       : definition.tree ? <PricingTree value={value} onChange={onChange} definition={definition}/>
       : definition.shapedKeys ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} />
       : <JsonEditor value={value} onChange={onChange} />;
+  } else if(definition.type==='preserved_configuration') {
+    let summary;
+    try{summary=describeInterviewConfiguration(service.serviceType,definition.field,value,pricing);}catch{summary='Retained structured configuration. Remove this override explicitly if it no longer applies.';}
+    control=<div className="owner-field-preserved" role="note">{summary}</div>;
   } else {
     control = <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} wholeCents={definition.wholeCents} />;
   }
@@ -473,6 +484,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
 
 function TierBuilder({ tiers, definitions, onChange }) {
   const service = useContext(PricingContext);
+  const definitionsFor=tier=>typeof definitions==='function'?definitions(tier.overrides||{}):definitions;
   function addTier() {
     if (tiers.length >= 3) return;
     onChange(addPriceTier(tiers));
@@ -485,13 +497,13 @@ function TierBuilder({ tiers, definitions, onChange }) {
   }
   function addOverride(index) {
     const tier = tiers[index];
-    const field = definitions.find(item => !Object.hasOwn(tier.overrides || {}, item.field))?.field;
+    const field = definitionsFor(tier).find(item => item.type!=='preserved_configuration'&&!Object.hasOwn(tier.overrides || {}, item.field))?.field;
     if (!field) return;
     patchTier(index, { overrides:{ ...(tier.overrides || {}), [field]:undefined } });
   }
   function renameOverride(index, oldField, nextField) {
     const tier = tiers[index];
-    if(!definitions.some(item=>item.field===nextField))return;
+    if(!definitionsFor(tier).some(item=>item.field===nextField&&item.type!=='preserved_configuration'))return;
     const next = renameTierOverride(tier.overrides||{},oldField,nextField);
     patchTier(index, { overrides:next });
   }
@@ -514,8 +526,9 @@ function TierBuilder({ tiers, definitions, onChange }) {
       </div>
       {!tiers.length && <Notice>One default option will use the base service prices.</Notice>}
       <div className="tier-list">
-        {tiers.map((tier, index) => (
-          <PricingContext.Provider key={index} value={{ ...service, pricing:{ ...servicePricing(service), ...tier.overrides } }}>
+        {tiers.map((tier, index) => {
+          const tierDefinitions=definitionsFor(tier),effective=mergePricingVNext(servicePricing(service),tier.overrides||{});
+          return <PricingContext.Provider key={index} value={{ ...service, pricing:effective }}>
           <article className="tier-row">
             <div className="tier-heading">
               <TextInput value={tier.name} onChange={event => patchTier(index, { name:event.target.value })} aria-label={`Tier ${index + 1} name`} />
@@ -523,11 +536,12 @@ function TierBuilder({ tiers, definitions, onChange }) {
             </div>
             <div className="override-list">
               {Object.entries(tier.overrides || {}).map(([field,value]) => {
-                const definition = definitions.find(item => item.field === field) || definitions[0];
+                const definition = tierDefinitions.find(item => item.field === field)||{field,label:'Retained '+humanPricingKey(field),type:'preserved_configuration',help:'This retained structured override has no current direct editor. It remains unchanged unless you remove it explicitly.'};
                 return (
                   <div className="override-row" key={field}>
-                    <Select value={field} onChange={event => renameOverride(index, field, event.target.value)}>
-                      {definitions.map(item => <option key={item.field} value={item.field} disabled={item.field!==field&&Object.hasOwn(tier.overrides||{},item.field)}>{item.label}</option>)}
+                    <Select value={field} disabled={definition.type==='preserved_configuration'} onChange={event => renameOverride(index, field, event.target.value)}>
+                      {!tierDefinitions.some(item=>item.field===field)&&<option value={field}>{definition.label}</option>}
+                      {tierDefinitions.map(item => <option key={item.field} value={item.field} disabled={item.field!==field&&(item.type==='preserved_configuration'||Object.hasOwn(tier.overrides||{},item.field))}>{item.label}</option>)}
                     </Select>
                     {definition && <OwnerField definition={definition} value={value} onChange={next => setOverride(index, field, next)} compact />}
                     <Button icon={X} variant="icon" aria-label="Remove override" title="Remove override" onClick={() => removeOverride(index, field)} />
@@ -537,8 +551,8 @@ function TierBuilder({ tiers, definitions, onChange }) {
             </div>
             <Button icon={Plus} variant="quiet" onClick={() => addOverride(index)}>Override a field</Button>
           </article>
-          </PricingContext.Provider>
-        ))}
+          </PricingContext.Provider>;
+        })}
       </div>
     </section>
   );
@@ -619,6 +633,7 @@ function Preview({ preview, loading, status, plan }) {
                 ))}
               </div>
             )}
+            {(estimate.optionAvailabilityNotice||preview.optionAvailabilityNotice)&&<Notice tone="warning">{estimate.optionAvailabilityNotice||preview.optionAvailabilityNotice}</Notice>}
 
             <div className="quote-range">
               <div className="mono quote-range-label">RANGE YOUR CUSTOMER GETS</div>
@@ -1113,7 +1128,7 @@ export default function PriceBook() {
                     </span>
                   </div>
 
-                  <Field label="Offering name" help="Use a distinct name for each height, product or scope you offer."><TextInput aria-label="Offering name" maxLength={40} value={selected.service||''} onChange={event=>replaceSelected({...selected,service:event.target.value})}/></Field>
+                  <Field label="Offering name" help="Use a distinct name for each height, product or scope you offer. Names may contain up to 200 characters and are never silently shortened."><TextInput aria-label="Offering name" maxLength={200} value={selected.service||''} onChange={event=>replaceSelected({...selected,service:event.target.value})}/></Field>
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
                   <ServiceStatusNotices status={selectedStatus}/>
                   {selectedStatus.productCoverage?.some(product=>!product.configurationComplete)&&<section className="scope-coverage" aria-label={selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}>
@@ -1226,7 +1241,7 @@ export default function PriceBook() {
                     </div>
                     {(selectedMeta.class2Fields || []).map(definition => {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);
-                      const wastePercent=/WasteFactor$|^wasteFactor$/.test(definition.field);
+                      const wastePercent=definition.ownerInputUnit==='percent';
                       const isStructured = definition.defaultValue && typeof definition.defaultValue === 'object';
                       if (isStructured) {
                         return (
@@ -1273,7 +1288,7 @@ export default function PriceBook() {
                   summaryChip={(selected.tiers || []).length ? `${(selected.tiers || []).length} SET` : 'NOT USED'}
                   defaultOpen={(selected.tiers || []).length > 0}
                 >
-                  <TierBuilder tiers={selected.tiers || []} definitions={offeringTierFields(selectedMeta,selected)}
+                  <TierBuilder tiers={selected.tiers || []} definitions={overrides=>offeringTierFields(selectedMeta,selected,overrides)}
                     onChange={tiers => replaceSelected(editServiceTiers(selected, tiers))} />
                 </Disclosure>
 

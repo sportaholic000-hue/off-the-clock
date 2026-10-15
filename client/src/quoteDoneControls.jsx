@@ -22,8 +22,8 @@ export function PricingTree({value,onChange,definition,level=1,label=definition.
  const allowed=treeKeysAt(tree,level),required=requiredTreeKeysAt(tree,level);
  const keys=[...new Set([...Object.keys(map),...required])];
  const available=allowed?.filter(key=>!own(map,key)&&!required.includes(key));
- const update=(key,item)=>{const next={...map};if(item===undefined)delete next[key];else next[key]=item;onChange(item===undefined&&!Object.keys(next).length?undefined:next);};
- return <div className="field-stack">{keys.map(key=><div key={key}>
+ const update=(key,item)=>{const next={...map};if(item===undefined)delete next[key];else next[key]=item;onChange(item===undefined&&!Object.keys(next).length&&!tree.allowEmpty?undefined:next);};
+ return <div className="field-stack">{tree.allowEmpty&&!keys.length&&<small>{available?.length?'No allocation percentages entered. Add a listed installed price only when you want to classify its labor or materials portion; this empty allocation map can be saved explicitly.':'No installed prices currently need a materials or labor allocation. This empty allocation map can be saved explicitly.'}</small>}{keys.map(key=><div key={key}>
   {level<depth?<><strong>{treeLabel(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+treeLabel(key)}/></>:
    <Field label={tree.leafLabels?.[key]||treeLabel(key)}>{tree.leafType==='enum'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
     tree.leafType==='boolean'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]===undefined?'':String(map[key])} onChange={e=>update(key,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>:

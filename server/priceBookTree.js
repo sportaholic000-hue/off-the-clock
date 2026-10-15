@@ -10,14 +10,18 @@ export function treeKeysAt(tree, level) {
 }
 export function requiredTreeKeysAt(tree, level) {
   return [...new Set([...(level === 1 ? tree.requiredRootKeys || [] : []),
-    ...(level === (tree.depth || 1) ? tree.leafKeys || [] : [])])];
+    ...(level === (tree.depth || 1) && !tree.optionalLeafKeys ? tree.leafKeys || [] : [])])];
 }
 export function validatePriceBookTree(value, definition, {numbersOnly=false,normalizeNames=false}={}) {
   const tree=definition.tree, depth=tree.depth||1;
   const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
   let count=0;
   function visit(map,level,path) {
-    if(!record(map)||!Object.keys(map).length)throw Error(path+': enter a non-empty price map.');
+    if(!record(map))throw Error(path+': enter a price map.');
+    if(!Object.keys(map).length){
+      if(level===1&&tree.allowEmpty===true)return {};
+      throw Error(path+': enter a non-empty price map.');
+    }
     const allowed=treeKeysAt(tree,level),normalized={};
     for(const [rawKey,leaf] of Object.entries(map)) {
       // Fixed field names (including camelCase money keys) are identities,
@@ -37,6 +41,7 @@ export function validatePriceBookTree(value, definition, {numbersOnly=false,norm
       else {
         if(numbersOnly&&(typeof leaf!=='number'||!Number.isFinite(leaf)||leaf>Number.MAX_SAFE_INTEGER))throw Error(at+': enter a finite numeric value.');
         const number=parseOwnerNumericInput(leaf,{kind:tree.leafMoneyKinds?.[key]??definition.moneyKind,wholeCents:definition.wholeCents,path:at});
+        if((tree.leafMin!==undefined&&number<tree.leafMin)||(tree.leafMax!==undefined&&number>tree.leafMax))throw Error(at+': enter a percentage from '+String(tree.leafMin??0)+' to '+String(tree.leafMax??100)+'.');
         if(tree.positiveLeafKeys?.includes(key)&&!(number>0))throw Error(at+': must be more than zero.');
       }
       normalized[key]=leaf;

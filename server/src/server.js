@@ -285,6 +285,7 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requirePriceBookP
   const ownerId = req.tenantOwnerId;
   const country = String(req.body?.country || '').toUpperCase();
   const region = String(req.body?.region || '').toUpperCase();
+  const defaultCurrency = { CA: 'CAD', US: 'USD' }[country];
   let resolved = resolveJurisdiction(country, region);
 
   // Jurisdiction lookup supplies a prefill. Explicit owner settings must be
@@ -313,8 +314,9 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requirePriceBookP
       ...(book.defaults || {}),
       taxMode: resolved.taxMode,
       taxPercent: resolved.taxPercent,
-      // The business country chosen in onboarding sets the currency of its prices.
-      ...({ CA: 'CAD', US: 'USD' }[country] ? { currency: { CA: 'CAD', US: 'USD' }[country] } : {})
+      // The first business country supplies a denomination only when the book
+      // does not already have one. Revisiting jurisdiction never converts prices.
+      ...(!book.defaults?.currency&&defaultCurrency?{currency:defaultCurrency}:{})
     }
   });
   });

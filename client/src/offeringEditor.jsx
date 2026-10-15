@@ -7,29 +7,33 @@ import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,chooseFenceType,removeGateOffering} from './pricebookEditing.js';
 import {productKeyFromName,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
+import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 
 export function offeringPreviewFields(meta,service) {
   return customerQuoteFields(service,servicePricing(service));
 }
 
-export function offeringTierFields(meta,service) {
-  const p=servicePricing(service),mode=p.offeringMode;
+export function offeringTierFields(meta,service,overrides={}) {
+  const p=mergePricingForValidationVNext(servicePricing(service),overrides),mode=p.offeringMode;
   const scopeRates=scopeRateDefinitions(service.serviceType,p);
   const scopeFields=Object.keys(scopeRates).length?[{field:'scopeRates',label:'Additional scope prices',type:'json',tree:{depth:1,leafKeys:Object.keys(scopeRates),leafMoneyKinds:Object.fromEntries(Object.entries(scopeRates).map(([key,f])=>[key,f.moneyKind]))}}]:[];
-  const fields=!mode?meta.fields.filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)):
-    [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices — '+offeringPriceBaseline(service.serviceType).condition,type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{}),leafMoneyKinds:Object.fromEntries(Object.entries(offeringRateDefinitions(service.serviceType,p)).map(([key,f])=>[key,f.moneyKind]))}}].filter(Boolean);
+  const replaced=new Set(['installedLaborPercent','installedMaterialsPercent','scopeRates','scopeDetails']);
+  const fields=(!mode?meta.fields.filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)):
+    [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices — '+offeringPriceBaseline(service.serviceType).condition,type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{}),leafMoneyKinds:Object.fromEntries(Object.entries(offeringRateDefinitions(service.serviceType,p)).map(([key,f])=>[key,f.moneyKind]))}}].filter(Boolean));
+  const baseFields=fields.filter(field=>!replaced.has(field.field));
   const installedPaths=[...new Set([
     ...Object.keys(installedPriceDefinitions(service.serviceType,p)),
     ...Object.keys(p.installedLaborPercent||{}),
     ...Object.keys(p.installedMaterialsPercent||{})
   ])].sort();
   const shareFields=installedPaths.length?['installedLaborPercent','installedMaterialsPercent'].map(field=>{
-    const existing=meta.fields.find(item=>item.field===field)||{};
+    const existing=[...(meta.fields||[]),...(meta.interviewFields||[])].find(item=>item.field===field)||{};
     return {...existing,field,type:'json',requiredAtBase:false,
       label:existing.label||(field==='installedLaborPercent'?'Labor portion of installed prices':'Materials share of installed prices'),
       tree:{...(existing.tree||{}),depth:1,leafKeys:installedPaths}};
   }):[];
-  return [...fields,...shareFields,...scopeFields];
+  const detailFields=Object.keys(p.scopeDetails||{}).length?[{field:'scopeDetails',label:'Additional scope definitions',type:'preserved_configuration',help:'This structured scope definition is retained for the price option and displayed read-only here. Edit the base scope or remove this tier override explicitly; it is never replaced with an unrelated numeric field.'}]:[];
+  return [...baseFields,...shareFields,...scopeFields,...detailFields];
 }
 
 export function OfferingEditor({service,meta,onChange}) {

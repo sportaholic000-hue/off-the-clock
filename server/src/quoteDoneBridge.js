@@ -21,6 +21,7 @@ import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLo
 import { missingPricebookServiceId } from '../priceBookStructure.js';
 import { convertPricebookMoney, moneyKindForField, wholeCentsForPricingField, validatePricebookNumericDraft, pricingMapField } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
+import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE} from '../priceBookCopy.js';
 
 // The engine sorts a measured affected area into these bands
 // (repairSizeFromAffectedArea). Owners see the same limits on each price box.
@@ -384,12 +385,18 @@ function applicationScopeReview(raw,submission,options) {
   const quoteId=crypto.randomUUID();
   return {customerResult:sanitizeForCustomerVNext({resultType:'ESTIMATE_REQUIRES_REVIEW',quoteId}),applicationReview:{reason:issues.join(' '),issues,quoteId,stage:'whole_request_scope'},request:null,internalResult:null,leadEnvelope:null};
 }
+const interviewPriority=field=>{
+  if(['offeringMode','unit','customPricingMode','customChargeClassification','accessoryPricingMode','underlaymentPriceBasis','vinylPlankUnderlaymentRule'].includes(field))return 0;
+  if(['offeringDetails','scopeDetails','knownOfferings','materialAccessoryBasis'].includes(field))return 1;
+  if(['installedLaborPercent','installedMaterialsPercent'].includes(field))return 3;
+  return 2;
+};
 export function applicationMetadata() {
   const legacy=getServiceMetadata();
   return {engineVersion:ENGINE_VERSION,categories:PRICE_BASIS_CATEGORIES,feeNames:FEE_NAMES,feeModes:FEE_RULE_MODES,defaultFields:DEFAULT_FIELDS,services:getVNextPriceBookMetadata().map(meta=>{
     const old=legacy.find(row=>row.serviceType===meta.serviceType);
     const requiresOffering=['EXTERIOR_PAINTING','FENCING_INSTALL','FENCING_REPLACEMENT'].includes(meta.serviceType);
-    const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)).filter(field=>!requiresOffering||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates'].includes(field.field));
+    const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)).filter(field=>!requiresOffering||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
@@ -401,8 +408,8 @@ export function applicationMetadata() {
     };
     const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
-      const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
-      if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1},requiredAtBase:false});
+      const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind,interviewPriority:interviewPriority(field.field)};
+      if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100},requiredAtBase:false});
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
       if(requiresOffering&&field.field==='minimumJob')Object.assign(info,{label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; enter zero when there is no service minimum.',reviewOnly:false});
       if(quoteDoneWholeCents(meta.serviceType,field.field))info.wholeCents=true;
@@ -413,6 +420,8 @@ export function applicationMetadata() {
       const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});
+      if(meta.serviceType==='ROOFING_REPLACEMENT'&&['materialAccessoryBasis','starterPerLF','dripEdgePerLF','ridgeCapPerLF'].includes(field.field))info.applicableWhen={field:'accessoryPricingMode',equals:'itemized'};
+      if(meta.serviceType==='ROOFING_REPLACEMENT'&&field.field==='materialCostPerSquare')info.copyByAccessoryPricingMode=structuredClone(ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE);
       if(['repairHours','repairMaterialAllowance','patchRepairHours','patchMaterialAllowance'].includes(field.field)||meta.serviceType==='SIDING_REPAIR'&&field.field==='materialAllowance')Object.assign(info,{type:'json',tree:{depth:3,leafKeys:['small','medium','large'],leafLabels:repairSizeLabels(meta.serviceType)}});
       if(field.field==='postsIncludedInMaterial')Object.assign(info,{type:'json',tree:{leafType:'boolean'}});
       if(info.tree){
@@ -422,6 +431,12 @@ export function applicationMetadata() {
       if(meta.serviceType==='LANDSCAPING_CLEANUP'&&field.field==='debrisPricing')info.tree={depth:2,rootKeys:['light','moderate','heavy'],requiredRootKeys:['light','moderate','heavy'],leafKeys:['laborMultiplier','disposalFlat'],leafMoneyKinds:{disposalFlat:'fixed_amount'},positiveLeafKeys:['laborMultiplier']};
       return info;
     });
-    return {...old,...meta,name:meta.service,requiresOffering,fields,interviewFields:Object.values(MEASUREMENT_CONTRACTS[meta.serviceType].fields).some(f=>f.type==='slug')?[{field:'knownOfferings',label:'Products you explicitly offer',type:'offering_registry'}]:[],legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>({...field,field:field.name})),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
+    const allocationInterviewFields=requiresOffering?fields.filter(field=>['installedLaborPercent','installedMaterialsPercent'].includes(field.field)):[];
+    const ownerFields=requiresOffering?fields.filter(field=>!['installedLaborPercent','installedMaterialsPercent'].includes(field.field)):fields;
+    const offeringRegistryFields=Object.values(MEASUREMENT_CONTRACTS[meta.serviceType].fields).some(f=>f.type==='slug')?[{field:'knownOfferings',label:'Products you explicitly offer',type:'offering_registry',interviewPriority:1}]:[];
+    return {...old,...meta,name:meta.service,requiresOffering,fields:ownerFields,interviewFields:[...offeringRegistryFields,...allocationInterviewFields],legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>{
+      const inputCopy=class2FieldCopy(meta.serviceType,field.name,field.defaultValue),percent=inputCopy.ownerInputUnit==='percent';
+      return {...field,...(percent?{help:inputCopy.help,unit:inputCopy.unit}:{}),ownerInputUnit:inputCopy.ownerInputUnit,field:field.name};
+    }),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
   })};
 }

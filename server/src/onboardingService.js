@@ -465,11 +465,28 @@ function nextDraftTimestamp(previous) {
   return Number.isFinite(parsed) ? new Date(parsed + 1).toISOString() : now + '.1';
 }
 const dependencyPriority = field => {
-  if (['offeringRates','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field)) return 3;
-  if (['offeringDetails','scopeDetails','knownOfferings'].includes(field)) return 2;
-  if (['offeringMode','unit','customPricingMode','customChargeClassification','accessoryPricingMode','underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule'].includes(field)) return 1;
-  return 0;
+  if (['offeringMode','unit','customPricingMode','customChargeClassification','accessoryPricingMode','underlaymentPriceBasis','vinylPlankUnderlaymentRule'].includes(field)) return 0;
+  if (['offeringDetails','scopeDetails','knownOfferings','materialAccessoryBasis'].includes(field)) return 1;
+  if (['installedLaborPercent','installedMaterialsPercent'].includes(field)) return 3;
+  return 2;
 };
+
+export function interviewFieldApplies(serviceType,field,pricing={}) {
+  if(serviceType==='ROOFING_REPLACEMENT'&&['materialAccessoryBasis','starterPerLF','dripEdgePerLF','ridgeCapPerLF'].includes(field))return pricing.accessoryPricingMode==='itemized';
+  return true;
+}
+function changedInterviewDependencies(serviceType,incoming,before,after) {
+  const changed=new Set();
+  const context=(field,dependents)=>{
+    if(Object.hasOwn(incoming,field)&&JSON.stringify(before[field])!==JSON.stringify(after[field]))for(const dependent of dependents)changed.add(dependent);
+  };
+  if(serviceType==='CUSTOM'){
+    context('unit',['price','low','high']);
+    context('customPricingMode',['price','low','high']);
+  }
+  if(serviceType==='ROOFING_REPLACEMENT')context('accessoryPricingMode',['materialCostPerSquare','materialAccessoryBasis','starterPerLF','dripEdgePerLF','ridgeCapPerLF']);
+  return changed;
+}
 
 export function createInterviewDraft(ownerId, input) {
   const mode = ['phone','browser'].includes(input.mode) ? input.mode : 'browser';
@@ -483,7 +500,7 @@ export function createInterviewDraft(ownerId, input) {
     confirmedFieldsJson, currentField, createdAt, updatedAt
   ) VALUES (?, ?, 'DRAFT', ?, ?, '{}', '{}', ?, ?, ?)`).run(
     id, ownerId, mode, JSON.stringify(serviceTypes),
-    `${serviceTypes[0]}.${definitions.find(service=>service.serviceType===serviceTypes[0]).fields.find(field=>['number','json','select','boolean'].includes(field.type))?.field || ''}`,
+    `${serviceTypes[0]}.${definitions.find(service=>service.serviceType===serviceTypes[0]).fields.filter(field=>['number','json','select','boolean'].includes(field.type)).sort((a,b)=>(a.interviewPriority??2)-(b.interviewPriority??2)).find(field=>interviewFieldApplies(serviceTypes[0],field.field,{}))?.field || ''}`,
     now, now
   );
   return getInterviewDraft(ownerId, id);
@@ -511,6 +528,7 @@ export function saveInterviewDraft(ownerId, id, input) {
   const draft = getInterviewDraft(ownerId, id);
   if (!draft) { const error = new Error('Draft not found'); error.statusCode = 404; throw error; }
   const fail = message => { throw Object.assign(new Error(message), {statusCode:422}); };
+  const validateCaptured=(serviceType,field,value,pricing)=>{try{return validateInterviewValue(serviceType,field,value,pricing);}catch(error){if(error.statusCode===400)fail(error.message);throw error;}};
   const conflict = () => { throw Object.assign(new Error('This interview draft changed. Review the newest saved answers before trying again.'), {statusCode:409}); };
   if (!record(input) || Object.keys(input).some(key=>!['fields','confirmedFields','currentField','revision'].includes(key))) fail('Unsupported interview update. Your saved draft was not changed.');
   if (input.revision !== draft.revision) conflict();
@@ -522,21 +540,29 @@ export function saveInterviewDraft(ownerId, id, input) {
   for (const serviceType of draft.serviceTypes) {
     const incoming = input.fields?.[serviceType] ?? {};
     if (!record(incoming)) fail('Enter supported price-book fields.');
-    nextFields[serviceType] = { ...(nextFields[serviceType] || {}) };
+    const beforeFields={...(nextFields[serviceType]||{})};
+    nextFields[serviceType] = { ...beforeFields };
     const confirmed = new Set(nextConfirmed[serviceType] || []);
     const ordered = Object.entries(incoming).map(([field,value],index)=>({field,value,index}))
       .sort((left,right)=>dependencyPriority(left.field)-dependencyPriority(right.field)||left.index-right.index);
     for (const {field,value} of ordered) {
-      const validated = validateInterviewValue(serviceType,field,value,nextFields[serviceType]);
+      const validated = validateCaptured(serviceType,field,value,nextFields[serviceType]);
       if (JSON.stringify(validated) !== JSON.stringify(nextFields[serviceType][field])) confirmed.delete(field);
       nextFields[serviceType][field] = validated;
+    }
+    const changedDependencies=changedInterviewDependencies(serviceType,incoming,beforeFields,nextFields[serviceType]);
+    for(const field of changedDependencies){
+      if(Object.hasOwn(nextFields[serviceType],field))validateCaptured(serviceType,field,nextFields[serviceType][field],nextFields[serviceType]);
+      if(!Object.hasOwn(incoming,field))confirmed.delete(field);
     }
     const explicit = input.confirmedFields?.[serviceType];
     if (explicit !== undefined) {
       if (!Array.isArray(explicit) || explicit.some(field=>typeof field!=='string'||!Object.hasOwn(nextFields[serviceType],field))) fail('Confirm only values captured in this draft.');
       for (const field of explicit) interviewField(serviceType,field);
-      nextConfirmed[serviceType] = [...new Set(explicit)];
-    } else nextConfirmed[serviceType] = [...confirmed];
+      const requested=new Set(explicit);
+      for(const field of changedDependencies)if(!Object.hasOwn(incoming,field))requested.delete(field);
+      nextConfirmed[serviceType] = [...requested].filter(field=>interviewFieldApplies(serviceType,field,nextFields[serviceType]));
+    } else nextConfirmed[serviceType] = [...confirmed].filter(field=>interviewFieldApplies(serviceType,field,nextFields[serviceType]));
   }
   if (input.currentField != null) {
     if (typeof input.currentField!=='string') fail('Choose a supported interview question.');
@@ -560,7 +586,8 @@ export function draftReviewPayload(ownerId, id) {
   const draft = getInterviewDraft(ownerId, id);
   if (!draft) { const error = new Error('Draft not found'); error.statusCode = 404; throw error; }
   const services = draft.serviceTypes.map(serviceType => {
-    const fields = draft.fields[serviceType] || {};
+    const storedFields = draft.fields[serviceType] || {};
+    const fields=Object.fromEntries(Object.entries(storedFields).filter(([field])=>interviewFieldApplies(serviceType,field,storedFields)));
     const confirmed = new Set(draft.confirmedFields[serviceType] || []);
     const unconfirmedFields = Object.keys(fields).filter(field => !confirmed.has(field));
     const captured=materializeInterviewFields(serviceType,fields,()=>crypto.randomUUID());

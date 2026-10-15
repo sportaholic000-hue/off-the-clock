@@ -1,6 +1,9 @@
 import { productKeyFromName } from './pricebookFormatting.js';
 import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../../server/priceBookMetadata.js';
 import { allowedPricingFields } from '../../server/quote-engine-vnext/contracts.js';
+import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
+import {scopeStructureDiagnostics} from '../../server/quote-engine-vnext/scopePricing.js';
+import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 
 function sameValue(left, right) {
   if (Object.is(left, right)) return true;
@@ -191,5 +194,47 @@ export function removeGateOffering(service, key) {
     if(['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)&&service.confirmedFields?.[field]===true)next.confirmedFields={...next.confirmedFields,[field]:false};
   }
   if(service.tiers)next=editServiceTiers(next,service.tiers.map(tier=>({...tier,overrides:clean(tier.overrides||{})})));
+  return next;
+}
+
+function scopeRateNames(type,pricing,key,includeInactive=false) {
+  return Object.entries(scopeRateDefinitions(type,pricing,includeInactive)).filter(([,definition])=>definition.scopeKey===key).map(([name])=>name);
+}
+function tierOwnsCompleteScope(service,key,tier) {
+  const overrides=tier?.overrides||{},detail=overrides.scopeDetails?.[key];
+  if(!detail||typeof detail!=='object'||Array.isArray(detail))return false;
+  const base=servicePricing(service),support=Object.fromEntries(Object.entries(base).filter(([field])=>!['scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field)));
+  const candidate={...support,scopeDetails:{[key]:structuredClone(detail)},scopeRates:{...(overrides.scopeRates||{})}};
+  const rates=scopeRateNames(service.serviceType,candidate,key);
+  if(!rates.length||rates.some(name=>!Object.hasOwn(overrides.scopeRates||{},name)))return false;
+  return !scopeStructureDiagnostics(service.serviceType,candidate).some(diagnostic=>diagnostic.path===`scopeDetails.${key}`||diagnostic.path.startsWith(`scopeDetails.${key}.`)||rates.some(name=>diagnostic.path===`scopeRates.${name}`));
+}
+export function independentScopeTierNames(service,key) {
+  return (service.tiers||[]).filter(tier=>tierOwnsCompleteScope(service,key,tier)).map(tier=>tier.name).filter(Boolean);
+}
+export function removeScopeConfiguration(service,key) {
+  const effective=servicePricing(service),baseRates=scopeRateNames(service.serviceType,effective,key,true);
+  const without=(map,entry)=>Object.fromEntries(Object.entries(map||{}).filter(([name])=>name!==entry));
+  const clean=(pricing,rateNames)=>{
+    const next={...pricing};
+    if(pricing.scopeDetails&&Object.hasOwn(pricing.scopeDetails,key))next.scopeDetails=without(pricing.scopeDetails,key);
+    if(pricing.scopeRates)next.scopeRates=Object.fromEntries(Object.entries(pricing.scopeRates).filter(([name])=>!rateNames.includes(name)));
+    for(const field of ['installedLaborPercent','installedMaterialsPercent'])if(pricing[field])next[field]=Object.fromEntries(Object.entries(pricing[field]).filter(([path])=>!rateNames.some(name=>path===`scopeRates.${name}`)));
+    return next;
+  };
+  let next=service;
+  const root=clean(service,baseRates),nested=service.pricing?clean(service.pricing,baseRates):null;
+  for(const field of ['scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent']){
+    const changedRoot=root[field]!==service[field],changedNested=nested&&nested[field]!==service.pricing[field];
+    if(!changedRoot&&!changedNested)continue;
+    next={...next,...(changedRoot?{[field]:root[field]}:{}),...(changedNested?{pricing:{...next.pricing,[field]:nested[field]}}:{})};
+    if(['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)&&service.confirmedFields?.[field]===true)next.confirmedFields={...next.confirmedFields,[field]:false};
+  }
+  if(service.tiers)next=editServiceTiers(next,service.tiers.map(tier=>{
+    if(tierOwnsCompleteScope(service,key,tier))return tier;
+    const tierEffective=mergePricingForValidationVNext(effective,tier.overrides||{});
+    const rates=[...new Set([...baseRates,...scopeRateNames(service.serviceType,tierEffective,key,true)])];
+    return {...tier,overrides:clean(tier.overrides||{},rates)};
+  }));
   return next;
 }

@@ -1,6 +1,7 @@
 import {validatePriceBookTree} from '../../server/priceBookTree.js';
 import {moneyKindForField,parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import { humanPricingKey } from './pricebookFormatting.js';
+import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 
 // Pure helpers for structured interview answers: shape detection, validation
 // and human-readable descriptions. Kept free of JSX so they are directly
@@ -50,6 +51,7 @@ export function describeStructuredValue(value, domain, fieldLabel, definition) {
       }
     }
     visit(value);
+    if(!parts.length&&definition.tree.allowEmpty)return fieldLabel+' — No allocation percentages entered.';
     return fieldLabel+' — '+parts.join('; ');
   }
   const shape = structuredShape(domain);
@@ -164,6 +166,12 @@ export function parseInterviewScalar(raw, definition) {
 // never inferred from the amount or from a different service's answers.
 export function interviewDefinition(definition, pricing={}) {
   if(!definition)return definition;
-  return definition.serviceType==='CUSTOM'&&['price','low','high'].includes(definition.field)
-    ? {...definition,moneyKind:moneyKindForField('CUSTOM',definition.field,pricing)} : definition;
+  const modeCopy=definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode];
+  const resolved=modeCopy?{...definition,...modeCopy}:definition;
+  if(['installedLaborPercent','installedMaterialsPercent'].includes(resolved.field))return {
+    ...resolved,
+    tree:{...(resolved.tree||{}),leafKeys:Object.keys(installedPriceDefinitions(resolved.serviceType,pricing)).sort()}
+  };
+  return resolved.serviceType==='CUSTOM'&&['price','low','high'].includes(resolved.field)
+    ? {...resolved,moneyKind:moneyKindForField('CUSTOM',resolved.field,pricing)} : resolved;
 }

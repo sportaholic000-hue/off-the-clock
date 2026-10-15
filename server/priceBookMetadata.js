@@ -305,7 +305,7 @@ export function shapedFieldKeys(serviceType, field) {
 
 function class2Definitions(serviceType) {
   return Object.entries(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}).map(([field, defaultValue]) => {
-    const fieldCopy = class2FieldCopy(serviceType, field);
+    const fieldCopy = class2FieldCopy(serviceType, field, defaultValue);
     return { field, ...fieldCopy, defaultValue };
   });
 }
