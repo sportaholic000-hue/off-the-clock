@@ -25,6 +25,7 @@ after(async()=>{await browser?.close();});
 function seed(input,{approve=true}={}) {
   const owner='synthetic-owner-batch-'+randomUUID();
   const service=structuredClone(input.ownerPricing);
+  service.validationInputs=structuredClone(input.customerInputs||{});
   const policy=service.zeroPricePolicy;
   delete service.origin;delete service.approvedValues;delete service.quoteDoneApproval;delete service.zeroPricePolicy;
   const initial=bridge.readApplicationBook(owner);
@@ -124,7 +125,8 @@ test('QE-018: percent-entry waste help, conversion, save/reload, and concrete am
     const waste=opened.page.getByLabel('Concrete ordering waste allowance',{exact:true});
     await waste.waitFor();
     assert.equal(await waste.inputValue(),'10');
-    await opened.page.getByText(/Enter 10 for 10%.*saved calculation factor is 0\.10/i).waitFor();
+    const wasteRow=waste.locator('xpath=ancestor::div[contains(@class,"assumption-row")]');
+    await wasteRow.getByText(/Enter 10 for 10%.*saved calculation factor is 0\.10/i).waitFor();
     await waste.fill('12');
     await save(opened.page);
     const stored=bridge.readApplicationBook(owner);
@@ -160,6 +162,7 @@ test('QE-019: rendered roof material copy changes completely with accessory mode
   try{
     const allIn='Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.';
     await opened.page.getByText(allIn,{exact:true}).waitFor();
+    await opened.page.getByRole('button',{name:/Optional prices and add-on charges/}).click();
     const mode=opened.page.locator('#field-accessoryPricingMode select');
     await mode.selectOption('itemized');
     await opened.page.getByText(/base roofing material price per square/i,{exact:true}).waitFor();
@@ -174,6 +177,7 @@ test('QE-019: rendered roof material copy changes completely with accessory mode
     const reloaded=await openEditor(owner,'ROOFING_REPLACEMENT');
     try{
       await reloaded.page.getByText(/EXCLUD(?:E|ING).*starter.*drip edge.*ridge cap.*flashing.*vents/i).waitFor();
+      await reloaded.page.getByRole('button',{name:/Optional prices and add-on charges/}).click();
       const reloadedMode=reloaded.page.locator('#field-accessoryPricingMode select');
       await reloadedMode.selectOption('per_square_allin');
       await reloaded.page.getByText(allIn,{exact:true}).waitFor();
@@ -202,8 +206,8 @@ test('QE-011/QE-012: tier allocations use exact paths and structured scope never
     await opened.page.getByText('[SYNTHETIC] Premium stairs',{exact:false}).waitFor();
     assert.equal(await opened.page.getByText('[object Object]',{exact:false}).count(),0);
     assert.equal(await opened.page.getByText(/enter a decimal/i).count(),0);
-    const labor=opened.page.getByLabel(/Labor portion of installed prices.*Scope rates stairs installed/i);
-    const materials=opened.page.getByLabel(/Materials share of installed prices.*Scope rates stairs installed/i);
+    const labor=opened.page.getByLabel(/Labor portion of installed prices.*Scope rates\.stairs installed/i);
+    const materials=opened.page.getByLabel(/Materials share of installed prices.*Scope rates\.stairs installed/i);
     await labor.waitFor();await materials.waitFor();
     assert.equal(await labor.inputValue(),'65');
     assert.equal(await materials.inputValue(),'35');
@@ -214,8 +218,8 @@ test('QE-011/QE-012: tier allocations use exact paths and structured scope never
     await opened.context.close();
     const reloaded=await openEditor(owner,'FLOORING_INSTALL');
     try{
-      assert.equal(await reloaded.page.getByLabel(/Labor portion of installed prices.*Scope rates stairs installed/i).inputValue(),'60');
-      assert.equal(await reloaded.page.getByLabel(/Materials share of installed prices.*Scope rates stairs installed/i).inputValue(),'40');
+      assert.equal(await reloaded.page.getByLabel(/Labor portion of installed prices.*Scope rates\.stairs installed/i).inputValue(),'60');
+      assert.equal(await reloaded.page.getByLabel(/Materials share of installed prices.*Scope rates\.stairs installed/i).inputValue(),'40');
       const book=bridge.readApplicationBook(owner),service=book.services[0];
       bridge.approveApplicationService(owner,service.id,{revision:book.revision,confirmConfiguration:true,confirmLegacySettings:true},date);
       const stored=loadPricebook(owner),result=bridge.calculateApplicationQuote(stored,stored.services[0],{customerInputs:input.customerInputs,customerFeeSelections:{}},{...date,preparingIntake:true});
@@ -242,7 +246,7 @@ test('QE-013: real remove control saves cleanup while a complete tier remains qu
   try{
     const scopeDisclosure=opened.page.getByRole('button',{name:/Additional priced scope/}).first();
     if((await scopeDisclosure.getAttribute('aria-expanded'))!=='true')await scopeDisclosure.click();
-    await opened.page.getByRole('button',{name:'Remove Stair installation configuration and prices',exact:true}).click();
+    await opened.page.getByRole('button',{name:'Remove Complete stair work configuration and prices',exact:true}).click();
     await opened.page.getByText(/Independent.*remains available|remains available.*Independent/i).waitFor();
     await save(opened.page);
     const saved=bridge.readApplicationBook(owner),service=saved.services[0];

@@ -533,6 +533,15 @@ function PriceBookStep({ state, metadata, back, next }) {
     return index >= 0 ? index : fields.length;
   }
 
+  function nextPositionFor(loaded, answered) {
+    const fields=fieldsFor(loaded);
+    const index=fields.findIndex(field=>field.serviceType===answered.serviceType&&field.field===answered.field);
+    // Continue the owner's visible sequence, as before, but against the newly
+    // applicable question list. This skips questions removed by a selector
+    // without jumping backward or unexpectedly ending a conflict retry.
+    return index>=0?Math.min(fields.length,index+1):positionFor(loaded);
+  }
+
   async function assistAnswer() {
     if (!draft || !current || aiBusy || confirmFlight.current || draftConflict) return;
     const asked={serviceType:current.serviceType,field:current.field,rawValue};
@@ -635,7 +644,7 @@ function PriceBookStep({ state, metadata, back, next }) {
       // The saved answer is retained, but a newer on-screen edit stays on its question and the owner is told.
       if (!sameAssistTarget(asked, assistTarget.current)) { setAiNotice(STALE_CONFIRM_NOTICE); return; }
       setAnswer('');setAiNotice('');
-      const nextPosition=positionFor(result.draft);
+      const nextPosition=nextPositionFor(result.draft,asked);
       setRawValue(savedValueFor(result.draft,nextPosition));
       setReadBack(null);
       setPosition(nextPosition);

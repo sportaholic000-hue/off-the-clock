@@ -163,7 +163,9 @@ test('QE-009: full guided interview switches roof modes without confirming or re
     await route.fulfill({contentType:'application/json',body:JSON.stringify(payload)});
   });
   const saveMode=async(value)=>{
-    const select=page.getByLabel(modeDefinition.label,{exact:true});
+    await page.getByText(modeDefinition.label,{exact:true}).waitFor();
+    const select=page.locator('.interview-field select');
+    assert.equal(await select.count(),1,'the accessory-mode question has one choice control');
     await select.selectOption(value);
     await page.getByRole('button',{name:'Read it back',exact:true}).click();
     await Promise.all([
