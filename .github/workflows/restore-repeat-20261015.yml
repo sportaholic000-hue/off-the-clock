@@ -1,0 +1,107 @@
+name: Restore repeat 20261015
+
+on:
+  push:
+    branches: [codex/restore-repeat-20261015]
+    paths:
+      - verification/restore-repeat-20261015/ACTIVATE
+  workflow_dispatch:
+    inputs:
+      application_commit:
+        description: Immutable application commit to rehearse
+        required: true
+        type: string
+        default: &application_commit 019ddba0886c8a338db4583f4f069f8751581764
+
+permissions:
+  contents: read
+
+env:
+  DEFAULT_APPLICATION_COMMIT: *application_commit
+
+jobs:
+  hosted-repeat:
+    if: github.run_attempt == 1 && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[restore-repeat-run]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout verification checkpoint
+        uses: actions/checkout@v4
+        with:
+          path: control
+          persist-credentials: false
+      - name: Require activation marker commit
+        shell: bash
+        run: |
+          git -C control log -1 --format=%B | grep -F '[restore-repeat-run]'
+      - name: Checkout immutable application detached
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.application_commit || env.DEFAULT_APPLICATION_COMMIT }}
+          path: application
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Established Node 22 setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run 100 hosted rehearsals
+        env:
+          APPLICATION_COMMIT: ${{ inputs.application_commit || env.DEFAULT_APPLICATION_COMMIT }}
+          RESTORE_REPEAT_OUTPUT: ${{ runner.temp }}/restore-repeat-hosted
+        run: >-
+          python3 control/verification/restore-repeat-20261015/run.py
+          hosted
+          --application "${{ github.workspace }}/application"
+          --output "$RESTORE_REPEAT_OUTPUT"
+          --application-commit "$APPLICATION_COMMIT"
+          --iterations 100
+      - name: Publish hosted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restore-repeat-hosted-20261015-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/restore-repeat-hosted
+          if-no-files-found: error
+          retention-days: 30
+
+  docker-repeat:
+    if: github.run_attempt == 1 && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[restore-repeat-run]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout verification checkpoint
+        uses: actions/checkout@v4
+        with:
+          path: control
+          persist-credentials: false
+      - name: Require activation marker commit
+        shell: bash
+        run: |
+          git -C control log -1 --format=%B | grep -F '[restore-repeat-run]'
+      - name: Checkout immutable application detached
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.application_commit || env.DEFAULT_APPLICATION_COMMIT }}
+          path: application
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Run 100 Docker rehearsals
+        env:
+          APPLICATION_COMMIT: ${{ inputs.application_commit || env.DEFAULT_APPLICATION_COMMIT }}
+          RESTORE_REPEAT_OUTPUT: ${{ runner.temp }}/restore-repeat-docker
+        run: >-
+          python3 control/verification/restore-repeat-20261015/run.py
+          docker
+          --application "${{ github.workspace }}/application"
+          --output "$RESTORE_REPEAT_OUTPUT"
+          --application-commit "$APPLICATION_COMMIT"
+          --iterations 100
+      - name: Publish Docker evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restore-repeat-docker-20261015-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/restore-repeat-docker
+          if-no-files-found: error
+          retention-days: 30
