@@ -1,3 +1,4 @@
+import {trimComponentPricing,trimPreparationNeeded} from './quote-engine-vnext/surfacePricing.js';
 export const BASIC_PAINT_PREPARATION_NOTICE='Fair or poor walls go to review until you use itemized pricing with preparation rates.';
 export const basicInteriorPainting=(type,p={})=>type==='INTERIOR_PAINTING'&&!['itemized','installed'].includes(p.offeringMode);
 export const scopeVisibleInEditor=(type,p,key)=>!(basicInteriorPainting(type,p)&&key==='paint_prep');
@@ -55,7 +56,7 @@ export function scopeDefinitions(type,p={}){
   out.exposed_aggregate=rule('Additional exposed-aggregate finishing',{...common,mode:modes,category,basePriceExcludesFinish:bool('The base labor and concrete prices exclude these additional finishing charges')},'exposedAggregateScopeConfirmed');
  }
  if(type==='FLAT_ROOF_REPLACEMENT')out.insulation=rule('Roof insulation and coverboard',{...common,mode:modes,category,insulationSystem:string('Insulation system and thickness'),coverboardSystem:string('Coverboard system and thickness'),baseRoofLaborExcludesInstallation:bool('Base roof labor excludes separately priced insulation and coverboard installation')},'insulationScopeConfirmed',{insulationAreaSqft:area('Measured insulation area'),coverboardAreaSqft:area('Measured coverboard area')});
- if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type))for(const [key,label]of Object.entries({paint_wall:'Wall finish materials',paint_primer:'Wall primer materials',paint_prep:'Preparation materials',paint_ceiling:'Ceiling finish materials',paint_ceiling_primer:'Ceiling primer materials',paint_trim:'Complete trim coating materials'}))out[key]=rule(label,key==='paint_trim'?{...purchase,coverage:{...purchase.coverage,unit:'linear feet'}}:purchase,'paintProductsConfirmed');
+ if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type))for(const [key,label]of Object.entries({paint_wall:'Wall finish materials',paint_primer:'Wall primer materials',paint_prep:'Preparation materials',paint_ceiling:'Ceiling finish materials',paint_ceiling_primer:'Ceiling primer materials',paint_trim:'Complete trim coating materials',paint_trim_primer:'Trim primer materials',paint_trim_prep:'Trim preparation materials'}))out[key]=rule(label,key.startsWith('paint_trim')?{...purchase,coverage:{...purchase.coverage,unit:'linear feet'}}:purchase,'paintProductsConfirmed');
  for(const key of Object.keys(p.scopeDetails||{})){const base=scopeBaseKey(key);if(base!==key&&slug(key)&&own(out,base))out[key]={...out[base],baseKey:base};}
  if(cacheable){const definitions=freezeDefinition(structuredClone(out));frozenScopeDefinitions.set(p,{type,definitions});return definitions;}
  return out;
@@ -79,6 +80,11 @@ export function scopeKeysForRequest(type,c,p={},rules={}){
    if(d.primerCoats>0)keys.push('paint_primer');keys.push('paint_prep');
    if(c.ceilingsIncluded){keys.push('paint_ceiling');if(d.ceilingPrimerCoats>0)keys.push('paint_ceiling_primer');}
   }else{if(c.ceilingsIncluded)keys.push('paint_ceiling');if(c.trimIncluded)keys.push('paint_trim');}
+  if(!p.offeringMode&&p.paintingSettings?.primerCoats>0)keys.push('paint_primer');
+  if(!p.offeringMode&&c.ceilingsIncluded&&p.paintingSettings?.ceilingPrimerCoats>0)keys.push('paint_ceiling_primer');
+  if(p.offeringMode==='itemized'&&c.trimIncluded&&trimComponentPricing(p))keys.push('paint_trim');
+  if(c.trimIncluded&&(!p.offeringMode||trimComponentPricing(p))&&trimPreparationNeeded(c,p))keys.push('paint_trim_prep');
+  if(c.trimIncluded&&p.paintingSettings?.trimPrimerCoats>0)keys.push('paint_trim_primer');
  }
  return keys.flatMap(base=>{if(!MULTI_SCOPE_KEYS.includes(base))return [base];const matched=scopeEntriesFor(p,base).filter(([key,d])=>scopeMatchesRequest(key,d,c));return matched.length?matched.map(([key])=>key):[base];});
 }
@@ -90,7 +96,7 @@ export function scopeRateDefinitions(type,p={},allModes=false){
   const add=(rateKey,label,category,unit,priceBasis,kind='unit_rate')=>out[rateKey]={scopeKey:key,label,category,unit,...(priceBasis?{priceBasis}:{}),moneyKind:base==='stairs'?'fixed_amount':kind,...(key==='insulation'?{layer:rateKey.split('_')[0]}:{})};
   const base=scopeBaseKey(key),label=catalog[key].label;
   if(key.startsWith('floor_underlayment_')&&d.mode==='included_in_floor_price'&&!allModes)continue;
-  if(key.includes('underlayment')||key.startsWith('paint_')){add(key,label,'material',d.mode==='package_cost'?'purchased packages':key==='paint_trim'?'linear feet':'installed square feet',d.mode==='package_cost'?'cost':'sell_price',d.mode==='package_cost'?'fixed_amount':'unit_rate');continue;}
+  if(key.includes('underlayment')||key.startsWith('paint_')){add(key,label,'material',d.mode==='package_cost'?'purchased packages':key.startsWith('paint_trim')?'linear feet':'installed square feet',d.mode==='package_cost'?'cost':'sell_price',d.mode==='package_cost'?'fixed_amount':'unit_rate');continue;}
   const installed=d.mode==='installed',basis=installed?'sell_price':undefined;
   if(key==='insulation'){
    for(const layer of ['insulation','coverboard']){

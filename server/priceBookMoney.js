@@ -4,6 +4,7 @@ import {allowedPricingFields,CLASS2_DEFINITIONS} from './quote-engine-vnext/cont
 import {offeringMoneyKind,offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {mergePricingForValidationVNext} from './quote-engine-vnext/pricingMerge.js';
+import {PAINTING_RATES,surfaceExtraDefinitions} from './quote-engine-vnext/surfacePricing.js';
 import {fenceType,fenceRowsDiagnostics} from './quote-engine-vnext/fencePricing.js';
 
 // Monetary semantics are declared once here and consumed by every dollar/cent
@@ -46,9 +47,9 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'largeRepairMaxSqft','installedMaterialsPercent','installedLaborPercent',
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
-  'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows'
+  'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','paintingSettings','sidingSettings'
 ]);
-const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates']);
+const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates','paintingRates','surfaceExtraRates']);
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);
 // Current product-price maps supplement the retained legacy field definitions.
 // The editor and draft validator must use the same shapes.
@@ -299,7 +300,7 @@ function offeringDefinitions(serviceType, pricing) {
 function convertDynamicMoneyMap(value, serviceType, field, effectivePricing, direction, path) {
   if (absentValue(value)) return value;
   if (!isRecord(value)) failure(path, `${field} must be a map of named prices.`);
-  const definitions = field === 'offeringRates'
+  const definitions = field === 'paintingRates'?Object.fromEntries(Object.entries(PAINTING_RATES).map(([key,label])=>[key,{label,moneyKind:'unit_rate'}])):field==='surfaceExtraRates'?Object.fromEntries(Object.entries(surfaceExtraDefinitions(serviceType,effectivePricing)).map(([key,d])=>[key,{...d,moneyKind:d.integer?'fixed_amount':'unit_rate'}])):field === 'offeringRates'
     ? offeringDefinitions(serviceType, effectivePricing)
     : scopeRateDefinitions(serviceType, effectivePricing, true);
   return Object.fromEntries(Object.entries(value).map(([key, amount]) => {

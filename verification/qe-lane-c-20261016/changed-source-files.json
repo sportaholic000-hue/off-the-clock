@@ -1,0 +1,94 @@
+[
+  {
+    "path": "client/src/offeringEditor.jsx",
+    "sha256": "ab44399e6b8abc680833742e867afd513042f4b54dd6c5e672b925c87fd2b212"
+  },
+  {
+    "path": "client/src/pricebook.jsx",
+    "sha256": "47b277306092bca18e86ba3fccd05aae05ce6312d495a8eacc092882dfa18763"
+  },
+  {
+    "path": "client/src/quoteDoneControls.jsx",
+    "sha256": "9a46fc2fe345e858857579669b815557f3863ebf4b975a4b3178daf2d4086d82"
+  },
+  {
+    "path": "client/src/surfacePricingEditor.jsx",
+    "sha256": "36a03eca81348a8f8acfec58359774ac39771197d3e25b0612a5461baa72b169"
+  },
+  {
+    "path": "server/priceBookMoney.js",
+    "sha256": "108cd578611819e0a36f93f1f2110aef32a58a096d0a6a08ad5511d8c41e2657"
+  },
+  {
+    "path": "server/quote-engine-vnext/configuredOfferings.js",
+    "sha256": "d6929169c3953f651cd692da9125e2914099dc4c89a235a9ab755a373653d65d"
+  },
+  {
+    "path": "server/quote-engine-vnext/contracts.js",
+    "sha256": "7b476bc08ab9d8e32134ed481b43048598a63dadf9c663ef873fe4affb489335"
+  },
+  {
+    "path": "server/quote-engine-vnext/engine.js",
+    "sha256": "04b4861b2288fc748d7bf51ebc37a095e9be04371d9c292872fee49745f97cca"
+  },
+  {
+    "path": "server/quote-engine-vnext/priceBook.js",
+    "sha256": "d804cddc47d7ee0524cdd775a11ffe1984e0c7ffb13d376dc05580407a8f2e63"
+  },
+  {
+    "path": "server/quote-engine-vnext/scopePricing.js",
+    "sha256": "9b7c26b0f6341af61930e482c0b2cb1d9a56c2db96bd28199a32768488997c6e"
+  },
+  {
+    "path": "server/quote-engine-vnext/surfacePricing.js",
+    "sha256": "afcfd9d7add11b8ed9d6da1e96127c24303a1c4c44bfc8e646e395addb150542"
+  },
+  {
+    "path": "server/quote-engine-vnext/templates.js",
+    "sha256": "eb52936367afdc5b18028c2b22a0e6bff99c2de209a962f03c0734c2229d2437"
+  },
+  {
+    "path": "server/quote-engine-vnext/tradeAdjustments.js",
+    "sha256": "d9b9a661ff39b9436dcebccf456458b8ea22ef2d68f5f699d606fcd9a62af31e"
+  },
+  {
+    "path": "server/scopeConfiguration.js",
+    "sha256": "12f2fc3503a02c6552064c11752d103fa0f2be45da791a13fe8a6d208bbf178f"
+  },
+  {
+    "path": "server/src/quoteDoneBridge.js",
+    "sha256": "66d9d3ba819a0619804bed326ff76b40b132882096d14c8f6f6013034986171f"
+  },
+  {
+    "path": "server/src/quoteIntake.js",
+    "sha256": "e00c975e75ee801026739f318e159d3021700bcabdfb6f06f3fa940019c2d74c"
+  },
+  {
+    "path": "server/src/quoteScopeDisclosure.js",
+    "sha256": "5f2fa616218243c167a754718ce39af0c53ed6b72e562bdb5671b63523c30bb6"
+  },
+  {
+    "path": "server/src/voice/voicePromptCompiler.js",
+    "sha256": "5668d7702154e8268b8326132d1c23e45c897344c96dcb09dbd8277915aa3c1b"
+  },
+  {
+    "path": "server/src/voice/voiceQuoteContract.js",
+    "sha256": "0d4d8f9aab6141592893467db6296252073701478c077629f422af995060a796"
+  },
+  {
+    "path": "test/customerMeasurementChoices20261008.spec.mjs",
+    "sha256": "0c3e51304250ee2708d961e310962093479c0ced591b3812fac0d703880fe51e"
+  },
+  {
+    "path": "test/surfacePricing20261016.dom.spec.mjs",
+    "sha256": "dd678505690a38bda74de0f9ffe15bbfacd0441e7fad088b1ea4eb82a904e2e6"
+  },
+  {
+    "path": "test/surfacePricing20261016.spec.mjs",
+    "sha256": "4930bf81cf93e7556fd7b1445238b9a2563578671a835d53d8b8aa3df328bc86"
+  },
+  {
+    "path": "test/voiceSurfacePricing20261016.spec.mjs",
+    "sha256": "b9af63394cee12ce935227cd0b97e64334bc4ae89445d38ae05d6f12db560956"
+  }
+]

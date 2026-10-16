@@ -1,0 +1,9 @@
+[
+  {
+    "command": "ps -eo pid,ppid,etime,comm,args",
+    "purpose": "Inspect active test process after a quiet interval",
+    "result": "Error, do this: mount -t proc proc /proc",
+    "exitCode": 1,
+    "classification": "Local diagnostic environment limitation; no mount attempted. Tests continued."
+  }
+]

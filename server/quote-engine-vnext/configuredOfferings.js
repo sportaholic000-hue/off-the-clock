@@ -1,5 +1,6 @@
-import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal} from './exactMath.js';
+import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal,exactToNumber} from './exactMath.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
+import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES} from './surfacePricing.js';
 import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION} from './fencePricing.js';
 export {exactFenceHeight} from './fencePricing.js';
 
@@ -132,6 +133,8 @@ export function offeringStructureDiagnostics(type,p) {
       check('trimOffered',v=>typeof v==='boolean','State whether trim painting is offered.');
       if(d.ceilingsOffered){check('ceilingCoats',v=>p.offeringMode==='itemized'&&v===undefined||integer(v,1,3),'Define ceiling finish coats.');check('ceilingPrimerCoats',v=>integer(v,0,3),'Define ceiling primer coats.');}
       if(d.trimOffered)check('trimDescription',text,'Define the trim preparation, finish coats and primer included.');
+      for(const key of ['ceilingSurfaceCondition','trimSurfaceCondition'])check(key,v=>v===undefined||['good','fair','poor'].includes(v),'Choose the condition covered for this surface.');
+      check('trimFinishCoats',v=>v===undefined||integer(v,1,3),'Define the finish coats covered by the installed trim price.');
     } else check('stories',v=>v===undefined||[1,2,3].includes(v),'Choose the building stories covered by these prices.');
   }
   // Switching an explicit option off preserves its saved definition. Validate
@@ -201,6 +204,10 @@ export function offeringContract(type,p,rules={}) {
       if(c.oldFenceRemoval===false&&c.removalLengthLF!==undefined)bad('removalLengthLF','Removal length cannot be supplied when removal is excluded.');
     } else {
       if(installed){equal('coats',d.finishCoats);equal('surfaceCondition',d.surfaceCondition);}
+      if(installed&&c.ceilingsIncluded){equal('ceilingCoats',d.ceilingCoats);equal('ceilingSurfaceCondition',d.ceilingSurfaceCondition??d.surfaceCondition);}
+      if(c.trimIncluded&&(installed||!trimComponentPricing(p))){
+        equal('trimCoats',d.trimFinishCoats);equal('trimSurfaceCondition',d.trimSurfaceCondition);
+      }
       if(c.wallScopeUniform===false)bad('wallScopeUniform','Price differing wall zones as their separate measured offerings.');
       if(c.ceilingsIncluded===true&&!d.ceilingsOffered)bad('ceilingsIncluded','Ceilings are not offered in this configuration.');
       if(c.trimIncluded===true&&!d.trimOffered)bad('trimIncluded','Trim is not offered in this configuration.');
@@ -312,7 +319,13 @@ export function formatFenceHeight(feet){
 export function offeringLines(type,c,p) {
   const d=p.offeringDetails||{},installed=p.offeringMode==='installed',definitions=offeringRateDefinitions(type,p),lines=[];
   const add=(key,quantity,derivation,multipliers)=>{const def=definitions[key];lines.push({key,quantity,...def,ratePath:'offeringRates.'+key,rateCents:p.offeringRates?.[key],...(derivation?{derivation}:{}),...(multipliers?.length?{multipliers}:{})});};
-  const coated=(key,area,coats)=>add(key,exactMultiply(area,coats),{formula:'measuredAreaSqft * definedCoats',inputs:{measuredAreaSqft:area,definedCoats:coats}});
+  const coated=(key,area,coats)=>add(key,exactMultiply(area,coats),{formula:'measuredAreaSqft * definedCoats',inputs:{measuredAreaSqft:exactToNumber(exactDecimal(area)),definedCoats:coats}});
+  const labor=(key,area,coats,ratio)=>{
+    for(const part of coatLaborParts(area,coats,p.paintingSettings?.[ratio])){
+      add(key,part.quantity,undefined,part.multipliers);
+      lines.at(-1).label+=part.suffix;
+    }
+  };
   if(fence(type)) {
     if(installed)add('installedFencePerLF',c.linearFeet);
     else {
@@ -339,21 +352,54 @@ export function offeringLines(type,c,p) {
     if(record(c.gates))for(const [key,count] of Object.entries(c.gates))if(count>0)add('gate_'+key,count);
     if(c.oldFenceRemoval===true)add('removalPerLF',c.removalLengthLF);
   } else {
-    const area=c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'];
-    if(installed)add('installedWallPerSqft',area);
+    const area=c._surfaceGeometry?.labor??c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'],ceilingArea=c._surfaceGeometry?.ceiling??c.ceilingAreaSqft;
+    const paintArea=c._surfaceGeometry?.paint??area;
+    const groups=c._surfaceGeometry?.groups||[{area,ceiling:c.ceilingAreaSqft,height:c.wallHeight}];
+    const heightLines=(key,quantity,coats,ratio,height)=>{
+      const at=lines.length;labor(key,quantity,coats,ratio);
+      if(type==='INTERIOR_PAINTING')for(const line of lines.slice(at))line.multipliers=[...(line.multipliers||[]),{name:'Wall-height labor',path:'wallHeightLaborMultiplier.'+height,value:p.wallHeightLaborMultiplier[height]}];
+    };
+    if(installed){for(const group of groups){add('installedWallPerSqft',group.area);if(type==='INTERIOR_PAINTING')lines.at(-1).surfaceHeightBand=group.height;}}
     else {
-      for(const key of ['wallLaborPerSqftPerCoat','wallMaterialPerSqftPerCoat'])coated(key,area,c.coats);
-      if(d.primerCoats>0)for(const key of ['primerLaborPerSqftPerCoat','primerMaterialPerSqftPerCoat'])coated(key,area,d.primerCoats);
-      for(const category of ['Labor','Material'])add(prepRateKey(p,category,c.surfaceCondition),exactAdd(area,c.ceilingsIncluded?c.ceilingAreaSqft:0),{formula:'measured walls + selected measured ceilings',inputs:{wallArea:area,ceilingArea:c.ceilingsIncluded?c.ceilingAreaSqft:0,surfaceCondition:c.surfaceCondition}});
-    }
-    if(c.ceilingsIncluded) {
-      if(installed)add('installedCeilingPerSqft',c.ceilingAreaSqft);
-      else {
-        for(const key of ['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat'])coated(key,c.ceilingAreaSqft,c.coats);
-        if(d.ceilingPrimerCoats>0)for(const key of ['ceilingPrimerLaborPerSqftPerCoat','ceilingPrimerMaterialPerSqftPerCoat'])coated(key,c.ceilingAreaSqft,d.ceilingPrimerCoats);
+      for(const group of groups)heightLines('wallLaborPerSqftPerCoat',group.area,c.coats,'wallAdditionalCoatRatio',group.height);
+      coated('wallMaterialPerSqftPerCoat',paintArea,c.coats);
+      if(d.primerCoats>0){for(const group of groups)heightLines('primerLaborPerSqftPerCoat',group.area,d.primerCoats,'primerAdditionalCoatRatio',group.height);coated('primerMaterialPerSqftPerCoat',paintArea,d.primerCoats);}
+      for(const category of ['Labor','Material']){
+        if(category==='Labor'&&type==='INTERIOR_PAINTING'&&groups.length>1){
+          for(const group of groups){
+            const same=!c.ceilingsIncluded||c.ceilingSurfaceCondition===undefined||c.ceilingSurfaceCondition===c.surfaceCondition;
+            const multiplier=[{name:'Wall-height labor',path:'wallHeightLaborMultiplier.'+group.height,value:p.wallHeightLaborMultiplier[group.height]}];
+            add(prepRateKey(p,category,c.surfaceCondition),exactAdd(group.area,same&&c.ceilingsIncluded?group.ceiling:0),undefined,multiplier);
+            if(!same)add(prepRateKey(p,category,c.ceilingSurfaceCondition),group.ceiling,undefined,multiplier);
+          }
+          continue;
+        }
+        if(c.ceilingsIncluded&&c.ceilingSurfaceCondition!==undefined&&c.ceilingSurfaceCondition!==c.surfaceCondition){
+          add(prepRateKey(p,category,c.surfaceCondition),area);
+          add(prepRateKey(p,category,c.ceilingSurfaceCondition),ceilingArea);lines.at(-1).label+=' — ceilings';
+        }else add(prepRateKey(p,category,c.surfaceCondition),exactAdd(area,c.ceilingsIncluded?ceilingArea:0),{formula:'measured walls + selected measured ceilings',inputs:{wallArea:exactToNumber(exactDecimal(area)),ceilingArea:c.ceilingsIncluded?exactToNumber(exactDecimal(ceilingArea)):0,surfaceCondition:c.surfaceCondition}});
       }
     }
-    if(c.trimIncluded)add('installedTrimPerLF',c.trimLengthLF);
+    if(c.ceilingsIncluded) {
+      if(installed){for(const group of groups){add('installedCeilingPerSqft',group.ceiling);lines.at(-1).surfaceHeightBand=group.height;}}
+      else {
+        for(const group of groups)heightLines('ceilingLaborPerSqftPerCoat',group.ceiling,c.ceilingCoats??c.coats,'ceilingAdditionalCoatRatio',group.height);
+        coated('ceilingMaterialPerSqftPerCoat',ceilingArea,c.ceilingCoats??c.coats);
+        if(d.ceilingPrimerCoats>0){for(const group of groups)heightLines('ceilingPrimerLaborPerSqftPerCoat',group.ceiling,d.ceilingPrimerCoats,'ceilingPrimerAdditionalCoatRatio',group.height);coated('ceilingPrimerMaterialPerSqftPerCoat',ceilingArea,d.ceilingPrimerCoats);}
+      }
+    }
+    if(c.trimIncluded){
+      if(!installed&&trimComponentPricing(p)){
+        const trim=(key,quantity,category,multipliers=[],suffix='')=>lines.push({key,label:PAINTING_RATES[key]+suffix,quantity,category,unit:'trim linear-foot coats',ratePath:'paintingRates.'+key,rateCents:p.paintingRates[key],multipliers});
+        for(const part of coatLaborParts(c.trimLengthLF,c.trimCoats??1,p.paintingSettings?.trimAdditionalCoatRatio))trim('trimLaborPerLFPerCoat',part.quantity,'labor',part.multipliers,part.suffix);
+        trim('trimMaterialPerLFPerCoat',exactMultiply(c.trimLengthLF,c.trimCoats??1),'material');
+        if(trimPreparationNeeded(c,p))for(const category of ['Labor','Material'])trim('trimPrep'+category+'PerLF_'+c.trimSurfaceCondition,c.trimLengthLF,category==='Labor'?'prep':'material');
+        if(p.paintingSettings?.trimPrimerCoats>0){
+          for(const part of coatLaborParts(c.trimLengthLF,p.paintingSettings.trimPrimerCoats,p.paintingSettings.trimPrimerAdditionalCoatRatio))trim('trimPrimerLaborPerLFPerCoat',part.quantity,'labor',part.multipliers);
+          trim('trimPrimerMaterialPerLFPerCoat',exactMultiply(c.trimLengthLF,p.paintingSettings.trimPrimerCoats),'material');
+        }
+      }else add('installedTrimPerLF',c.trimLengthLF);
+    }
   }
   return lines;
 }
@@ -370,9 +416,9 @@ export function offeringRequirements(type,c,p) {
     if(key.startsWith('gate_'))return c.gates?.[key.slice(5)]>0;
     if(key==='removalPerLF')return c.oldFenceRemoval===true;
     if(/^(?:installedCeiling|ceiling)/.test(key))return c.ceilingsIncluded===true;
-    if(key==='installedTrimPerLF')return c.trimIncluded===true;
-    if(key.startsWith('prepLabor'))return key===prepRateKey(p,'Labor',c.surfaceCondition);
-    if(key.startsWith('prepMaterial'))return key===prepRateKey(p,'Material',c.surfaceCondition);
+    if(key==='installedTrimPerLF')return c.trimIncluded===true&&!(p.offeringMode==='itemized'&&trimComponentPricing(p));
+    if(key.startsWith('prepLabor'))return key===prepRateKey(p,'Labor',c.surfaceCondition)||c.ceilingsIncluded&&key===prepRateKey(p,'Labor',c.ceilingSurfaceCondition??c.surfaceCondition);
+    if(key.startsWith('prepMaterial'))return key===prepRateKey(p,'Material',c.surfaceCondition)||c.ceilingsIncluded&&key===prepRateKey(p,'Material',c.ceilingSurfaceCondition??c.surfaceCondition);
     return true;
   });
   return [{path:'minimumJob',label:'Minimum job price',kind:'minimum'},...names.map(key=>({path:'offeringRates.'+key,label:definitions[key].label,kind:definitions[key].moneyKind==='fixed_amount'?'non_negative_money':'non_negative_number'}))];
@@ -387,7 +433,7 @@ export function offeringDisclosures(type,p,c) {
     if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.'));
   } else {
     out.push('Surface and coating: '+d.substrate+'; '+d.coating,`${p.offeringMode==='itemized'?c.coats:d.finishCoats} wall finish coat(s); ${d.primerCoats} wall primer coat(s).`,'Preparation: '+d.preparation);
-    if(c.ceilingsIncluded)out.push(`${p.offeringMode==='itemized'?c.coats:d.ceilingCoats} ceiling finish coat(s); ${d.ceilingPrimerCoats} ceiling primer coat(s).`);
+    if(c.ceilingsIncluded)out.push(`${p.offeringMode==='itemized'?(c.ceilingCoats??c.coats):d.ceilingCoats} ceiling finish coat(s); ${d.ceilingPrimerCoats} ceiling primer coat(s).`);
     if(c.trimIncluded)out.push('Trim: '+d.trimDescription);
   }
   return out.filter(text);

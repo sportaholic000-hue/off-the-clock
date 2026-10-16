@@ -15,10 +15,13 @@ export function tradeAdjustment(type,c,p,line) {
     if(path==='stampedMaterialPerSqft')wastePath='stampedMaterialWasteFactor';
   }
   if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type)){
+    if(/^paintingRates\.trimMaterial/.test(path))wastePath='paintWasteFactor';
+    if(/^paintingRates\.(?:primerMaterial|ceilingPrimerMaterial|trimPrimerMaterial)/.test(path))wastePath='primerWasteFactor';
+    if(/^paintingRates\.trimPrepMaterial/.test(path))wastePath='prepMaterialWasteFactor';
     if(['materialPerWallSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimMaterialPerLF','materialPerSqftPerCoat'].includes(path)||/^offeringRates.(wallMaterial|ceilingMaterial)/.test(path))wastePath='paintWasteFactor';
     if(/^offeringRates.(primerMaterial|ceilingPrimerMaterial)/.test(path))wastePath='primerWasteFactor';
     if(/^offeringRates.prepMaterial/.test(path))wastePath='prepMaterialWasteFactor';
-    if((line.category==='labor'||line.category==='prep')&&(path.startsWith('offeringRates.')||path==='ceilingLaborPerSqftPerCoat')){
+    if((line.category==='labor'||line.category==='prep')&&(path.startsWith('offeringRates.')||path==='ceilingLaborPerSqftPerCoat'||/^paintingRates\.(?:primerLabor|ceilingPrimerLabor)/.test(path))){
       if(type==='EXTERIOR_PAINTING')factorPath='storyMultiplier.'+c.stories;
       else if(!line.calculation.multipliers.some(m=>m.path?.startsWith('wallHeightLaborMultiplier.')))factorPath='wallHeightLaborMultiplier.'+c.wallHeight;
     }

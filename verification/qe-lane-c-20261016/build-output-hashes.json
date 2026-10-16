@@ -1,0 +1,42 @@
+[
+  {
+    "path": "client/dist/assets/index-CsPCz-PJ.js",
+    "bytes": 764152,
+    "sha256": "47f4d90e1f4e072a7bdd6eecfc6a18b08e6915c016fa0ba949918516be1382b2"
+  },
+  {
+    "path": "client/dist/assets/index-Cwi6Aiz2.css",
+    "bytes": 53473,
+    "sha256": "a79bbb1dff1691e45bcafb8746a05b7ec320ea5a38e7f6c5698bedb0339072cd"
+  },
+  {
+    "path": "client/dist/assets/index-CyuhH7zT.js",
+    "bytes": 765154,
+    "sha256": "4a80e95990f5eb6146323323aaf35883b74aaf36d14f0e877bccb0da45c9d0c7"
+  },
+  {
+    "path": "client/dist/assets/index-DdcfYsVT.js",
+    "bytes": 636708,
+    "sha256": "30c046006597a93f674ea2c3f62668416871af48774e8e7f59e86f22e2d26080"
+  },
+  {
+    "path": "client/dist/assets/index-RRevNfiB.css",
+    "bytes": 54443,
+    "sha256": "da227114b0b8fea2161e0f97aea291ac00886348fb2228762c140d6464265ccb"
+  },
+  {
+    "path": "client/dist/index.html",
+    "bytes": 401,
+    "sha256": "ab57c07390ebce6f55289c576ba0e3a97db20298feb7d995bdd0e7031e9d94f3"
+  },
+  {
+    "path": "client/dist/widget-app.js",
+    "bytes": 524111,
+    "sha256": "43114ca427201eabf41afb7d44829aabef38644c3d29e659e9d6e3dec4bcacac"
+  },
+  {
+    "path": "client/dist/widget.js",
+    "bytes": 6042,
+    "sha256": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376"
+  }
+]

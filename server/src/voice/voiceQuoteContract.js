@@ -7,9 +7,10 @@ const record = value => value !== null && typeof value === 'object' && !Array.is
   [Object.prototype, null].includes(Object.getPrototypeOf(value));
 const FIELD = /^[a-zA-Z][a-zA-Z0-9_]{0,99}$/;
 const FEES = ['travel', 'disposal', 'permit', 'overhead'];
-const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'integer_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs']);
+const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'integer_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs','surface_rows']);
 const safeText = (value, max = 240) => typeof value === 'string' && value.trim() && value.length <= max ? value.trim() : null;
 const human = value => String(value).replaceAll('_', ' ');
+const rowDetails=fields=>Object.entries(fields||{}).map(([key,d])=>key+' = '+(d.type==='surface_rows'?'optional array of rows ('+rowDetails(d.rowFields)+')':d.label+' ('+d.unit+')')).join('; ');
 
 function publicCondition(value, depth = 0) {
   if (depth > 4) return undefined;
@@ -76,6 +77,9 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
       if (values.length > 32) question.moreChoicesAvailable = true;
     }
     if (field.type === 'slug') question.productConfirmationRequired = true;
+    if(field.type==='surface_rows'){
+      question.details=[...(question.details||[]),'Supply an array of rows. Each row contains: '+rowDetails(field.rowFields)+'. Use an empty array only when there are none.'];
+    }
     if(field.type==='fence_runs'){
       question.details=[field.closedQuestion,field.sectionQuestion].map(v=>{if(!safeText(v,4000))throw new TypeError('Invalid fence measurement question.');return v;});
       question.choices=(field.gateChoices||[]).slice(0,32).map(g=>{

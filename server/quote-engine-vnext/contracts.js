@@ -1,4 +1,5 @@
 import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
+import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surfaceCustomerContract,surfaceRowsIssue,surfaceOwnerDiagnostics,PAINTING_RATES} from './surfacePricing.js';
 import {validPricebookServiceId} from '../priceBookStructure.js';
 import {productIdentityRequired} from '../productNames.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
@@ -854,6 +855,7 @@ function missing(value) {
 }
 
 function validateFieldValue(definition, value) {
+  if(definition.type==='surface_rows')return surfaceRowsIssue(definition,value);
   if(definition.type==='fence_runs')return Array.isArray(value)&&value.length>0?null:'must contain the measured runs and sections';
   if(definition.type==='offering_counts') {
     if(!isRecord(value)||Object.keys(value).some(key=>!definition.values.includes(key)))return 'must contain only offered gate selections';
@@ -1155,7 +1157,7 @@ const ALLOWED_PRICING_FIELDS = {
 };
 
 export function customerContractForVNext(type,p={},rules={}) {
- const base=configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type];
+ const base=surfaceCustomerContract(type,p,configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type]);
  // A confirmation for another offered option is evidence, not extra measured
  // work. Accept only its registered confirmation boolean here. All quantities,
  // selections and scope checks remain specific to the option being priced.
@@ -1168,7 +1170,7 @@ export function customerContractForVNext(type,p={},rules={}) {
 }
 
 export function allowedPricingFields(serviceType) {
-  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
+  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[]),...(paintingType(serviceType)?['paintingSettings','paintingRates','surfaceExtraRates']:serviceType==='SIDING_REPLACEMENT'?['sidingSettings','surfaceExtraRates']:[])];
 }
 
 const AI_CONFIRMABLE_SERVICE_FIELDS = [
@@ -1260,7 +1262,25 @@ export function valueAtPath(source, path) {
   return value;
 }
 
-export function ownerRequirements(type,c={},p={},rules={}) { return [...baseOwnerRequirements(type,c,p).filter(item=>!scopesSuppressPrice(type,c,p,rules,item.path)),...scopeRequirements(type,c,p,rules)]; }
+export function ownerRequirements(type,c={},p={},rules={}) {
+ const extra=[];
+ if(type==='SIDING_REPLACEMENT'&&c.areaInputMethod==='building_dimensions')extra.push({path:'sidingSettings.areaConventionByType.'+c.sidingType,label:'Area convention for this siding rate',kind:'enum',values:['openings_left_in','openings_subtracted']});
+ if(paintingType(type)&&p.offeringMode!=='installed'){
+  const settings=p.paintingSettings||{};
+  if(!configuredOffering(type,p))for(const prefix of ['primer','ceilingPrimer'])if(settings[prefix==='primer'?'primerCoats':'ceilingPrimerCoats']>0&&(prefix==='primer'||c.ceilingsIncluded))for(const category of ['Labor','Material'])extra.push(requirement('paintingRates.'+prefix+category+'PerSqftPerCoat',PAINTING_RATES[prefix+category+'PerSqftPerCoat']));
+  if(c.trimIncluded&&p.offeringMode==='itemized'&&trimComponentPricing(p)){
+   for(const category of ['Labor','Material'])extra.push(requirement('paintingRates.trim'+category+'PerLFPerCoat',PAINTING_RATES['trim'+category+'PerLFPerCoat']));
+   if(trimPreparationNeeded(c,p))for(const category of ['Labor','Material'])extra.push(requirement('paintingRates.trimPrep'+category+'PerLF_'+c.trimSurfaceCondition,'Trim preparation price for '+c.trimSurfaceCondition+' trim'));
+   if(settings.trimPrimerCoats>0)for(const category of ['Labor','Material'])extra.push(requirement('paintingRates.trimPrimer'+category+'PerLFPerCoat','Trim primer '+category.toLowerCase()));
+  }
+  if(c.trimIncluded&&!configuredOffering(type,p)){
+   if(trimComponentPricing(p))for(const category of ['Labor','Material'])extra.push(requirement('paintingRates.trim'+category+'PerLFPerCoat',PAINTING_RATES['trim'+category+'PerLFPerCoat']));
+   if(trimPreparationNeeded(c,p))for(const category of ['Labor','Material'])extra.push(requirement('paintingRates.trimPrep'+category+'PerLF_'+c.trimSurfaceCondition,'Trim preparation price for '+c.trimSurfaceCondition+' trim'));
+   if(settings.trimPrimerCoats>0)for(const category of ['Labor','Material'])extra.push(requirement('paintingRates.trimPrimer'+category+'PerLFPerCoat','Trim primer '+category.toLowerCase()));
+  }
+ }
+ return [...baseOwnerRequirements(type,c,p),...extra].filter(item=>!(type==='INTERIOR_PAINTING'&&!p.offeringMode&&c.trimIncluded&&trimComponentPricing(p)&&['trimLaborPerLF','trimMaterialPerLF'].includes(item.path))&&!scopesSuppressPrice(type,c,p,rules,item.path)).concat(scopeRequirements(type,c,p,rules));
+}
 
 const requirement = (path, label, options = {}) => ({ path, label, kind: fixedPriceField(path.split('.')[0])?'non_negative_money':'non_negative_number', ...options });
 
@@ -1561,6 +1581,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     `Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`
   )];
   p = snapshot.value;
+  diagnostics.push(...surfaceOwnerDiagnostics(serviceType,p));
   for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
     if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
     else for(const [key,value] of Object.entries(p[field])){
@@ -2032,7 +2053,7 @@ export function validateBusinessDefaults(defaults = {}) {
 export function contractMetadata() {
   return SERVICE_TYPES.map(serviceType => ({
     serviceType,
-    customerFields: Object.entries(MEASUREMENT_CONTRACTS[serviceType].fields).map(([name, definition]) => ({ name, ...structuredClone(definition) })),
+    customerFields: Object.entries(surfaceCustomerContract(serviceType,{},MEASUREMENT_CONTRACTS[serviceType]).fields).map(([name, definition]) => ({ name, ...structuredClone(definition) })),
     class2Fields: Object.entries(CLASS2_DEFINITIONS[serviceType] || {}).map(([name, definition]) => ({ name, ...structuredClone(definition) })),
     allowedPricingFields: allowedPricingFields(serviceType)
   }));
@@ -2169,6 +2190,7 @@ function supportedIncludedPricePath(serviceType, path, pricing = {}) {
     LANDSCAPING_MULCH:['mulchMaterialPerYard'], LANDSCAPING_PLANTING:['mulchMaterialPerYard']
   };
   if (parts.length === 2) {
+    if(root==='paintingRates'&&paintingType(serviceType))return Object.hasOwn(PAINTING_RATES,key);
     if(root==='scopeRates'&&SCOPE_TYPES.includes(serviceType))return Object.hasOwn(scopeRateDefinitions(serviceType,pricing),key);
     if(root==='offeringRates'&&configuredOffering(serviceType,pricing))return Object.hasOwn(offeringRateDefinitions(serviceType,pricing),key);
     if (openMaps[serviceType]?.includes(root)) return CANONICAL_SLUG.test(key);

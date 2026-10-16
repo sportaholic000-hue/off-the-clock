@@ -1,0 +1,750 @@
+[
+  {
+    "label": "npm-ci",
+    "argv": [
+      "npm",
+      "ci"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:50:14.967269+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:50:38.839264+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "build",
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:50:52.626082+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:50:59.243427+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "playwright-install",
+    "argv": [
+      "npm",
+      "install",
+      "--no-save",
+      "--no-audit",
+      "--no-fund",
+      "playwright@1.56.0"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:51:08.436313+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:51:14.923513+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "focused-first",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/surfacePricing20261016.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:51:38.517667+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:51:38.846773+00:00",
+    "printedTAPCounts": {
+      "tests": 19,
+      "suites": 0,
+      "pass": 15,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "focused-serialization-fix",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/surfacePricing20261016.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:52:15.609238+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:52:15.929217+00:00",
+    "printedTAPCounts": {
+      "tests": 19,
+      "suites": 0,
+      "pass": 18,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "baseline-controls",
+    "argv": [
+      "node",
+      "verification/qe-lane-c-20261016/baseline-controls.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:53:14.141611+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:53:14.283111+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "compatibility-corrected",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "--test-name-pattern=legacy.no-new-input",
+      "test/surfacePricing20261016.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:54:19.319694+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:54:19.532436+00:00",
+    "printedTAPCounts": {
+      "tests": 1,
+      "suites": 0,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "chromium-install",
+    "argv": [
+      "npx",
+      "playwright",
+      "install",
+      "chromium"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:56:06.870026+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:57:32.744714+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "existing-paint-regressions",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/configuredOfferings.spec.mjs",
+      "test/componentPricingRepairs.spec.mjs",
+      "test/quoteOfferingScopeIsolation.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T07:56:08.341335+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T07:56:09.690174+00:00",
+    "printedTAPCounts": {
+      "tests": 78,
+      "suites": 0,
+      "pass": 78,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "focused-expanded",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/surfacePricing20261016.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:02:41.005033+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:02:41.585578+00:00",
+    "printedTAPCounts": {
+      "tests": 30,
+      "suites": 0,
+      "pass": 29,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "persistence-corrected",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "--test-name-pattern=new.settings.persist",
+      "test/surfacePricing20261016.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:04:04.563527+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:04:05.109807+00:00",
+    "printedTAPCounts": {
+      "tests": 1,
+      "suites": 0,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "chromium-launch",
+    "argv": [
+      "node",
+      "--input-type=module",
+      "-e",
+      "import {chromium} from \"playwright\"; const browser=await chromium.launch({headless:true,args:[\"--no-sandbox\"]}); await browser.close();"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:04:06.417438+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC",
+      "PLAYWRIGHT_BROWSERS_PATH": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/browsers"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:04:06.710742+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "surface-ui-voice",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/surfacePricing20261016.dom.spec.mjs",
+      "test/surfacePricing20261016.voice.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:07:33.992977+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:07:35.142311+00:00",
+    "printedTAPCounts": {
+      "tests": 4,
+      "suites": 0,
+      "pass": 3,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "voice-cause",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "--test-name-pattern=confirmed estimated",
+      "test/surfacePricing20261016.voice.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:11:14.737317+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:11:15.426511+00:00",
+    "printedTAPCounts": {
+      "tests": 1,
+      "suites": 0,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "focused-final",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/surfacePricing20261016.spec.mjs",
+      "test/surfacePricing20261016.dom.spec.mjs",
+      "test/surfacePricing20261016.voice.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:12:33.669580+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 34,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:12:34.844155+00:00",
+    "printedTAPCounts": {
+      "tests": 36,
+      "suites": 0,
+      "pass": 36,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "final-build",
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:12:57.157581+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC",
+      "PLAYWRIGHT_BROWSERS_PATH": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/browsers"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:13:02.673088+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "quote-gate",
+    "argv": [
+      "npm",
+      "run",
+      "test:quote"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:13:32.884813+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC",
+      "PLAYWRIGHT_BROWSERS_PATH": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/browsers"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:20:57.791015+00:00",
+    "printedTAPCounts": {
+      "tests": 4563,
+      "suites": 0,
+      "pass": 4443,
+      "fail": 120,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "focused-review-fixes",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "test/surfacePricing20261016.spec.mjs",
+      "test/surfacePricing20261016.dom.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/customerMeasurementChoices20261008.spec.mjs",
+      "test/auditFixes20261003.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:22:16.480917+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 37,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:22:28.075919+00:00",
+    "printedTAPCounts": {
+      "tests": 131,
+      "suites": 0,
+      "pass": 131,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "corrected-build",
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:22:41.638994+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC",
+      "PLAYWRIGHT_BROWSERS_PATH": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/browsers"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:22:47.408686+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "full-suite",
+    "argv": [
+      "npm",
+      "test"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:23:03.054632+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC",
+      "PLAYWRIGHT_BROWSERS_PATH": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/browsers"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 1,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:31:47.240760+00:00",
+    "printedTAPCounts": {
+      "tests": 5546,
+      "suites": 0,
+      "pass": 5442,
+      "fail": 104,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "label": "release-build",
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:33:18.528887+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC",
+      "PLAYWRIGHT_BROWSERS_PATH": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/browsers"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 34,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:33:24.613657+00:00",
+    "printedTAPCounts": null
+  },
+  {
+    "label": "release-focused",
+    "argv": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/surfacePricing20261016.spec.mjs",
+      "test/surfacePricing20261016.dom.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/customerMeasurementChoices20261008.spec.mjs",
+      "test/auditFixes20261003.spec.mjs",
+      "test/configuredOfferings.spec.mjs",
+      "test/componentPricingRepairs.spec.mjs",
+      "test/quoteOfferingScopeIsolation.spec.mjs"
+    ],
+    "cwd": "/workspace/scratch/63b8cb6aa9ed/qe-lane-c",
+    "startedUTC": "2026-10-16T08:33:46.444625+00:00",
+    "versions": {
+      "node": "v22.23.3",
+      "npm": "11.9.0",
+      "git": "git version 2.51.1",
+      "python": "Python 3.12.14"
+    },
+    "configuration": {
+      "TMPDIR": "/workspace/scratch/63b8cb6aa9ed/lane-c-runtime/tmp",
+      "TZ": "UTC"
+    },
+    "head": "92a5510a31381cf308c3262b5a07bd2094c38aad",
+    "pid": 33,
+    "exitCode": 0,
+    "signal": null,
+    "finishedUTC": "2026-10-16T08:34:04.421037+00:00",
+    "printedTAPCounts": {
+      "tests": 214,
+      "suites": 0,
+      "pass": 214,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  }
+]

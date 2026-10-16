@@ -1,3 +1,4 @@
+import {SurfaceRowsInput} from './surfacePricingEditor.jsx';
 import {registeredProductKey} from '../../server/productNames.js';
 import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations} from '../../server/scopeConfiguration.js';
 import React,{useEffect,useRef,useState} from 'react';
@@ -85,6 +86,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  const measuredRuns=value.fenceRuns||Array.from({length:Number.isSafeInteger(value.fenceRunCount)&&value.fenceRunCount>0&&value.fenceRunCount<=1000?value.fenceRunCount:1},()=>({sections:[{}]}));
  const layoutChange=(runs,{removedRun=false}={})=>{const next={...value,fenceRuns:runs,fenceRunCount:removedRun||value.fenceRunCount===undefined?runs.length:value.fenceRunCount};for(const k of ['linearFeet','gates','cornerCount','lfMethod'])delete next[k];onChange(clearChangedScopeConfirmations(scopeFields,value,next));};
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
+  if(name==='areaInputMethod'&&next!==value.areaInputMethod&&fields.some(f=>f.type==='surface_rows'))for(const key of ['wallAreaSqft','exteriorAreaSqft','sidingAreaSqft','rooms','buildingPerimeterFeet','doorCount','windowCount','garageDoorCount','garageDoorWidthFeet','garageDoorHeightFeet','garageOpenings','gables','largeOpenings','ceilingAreaSqft','wallHeightFeet'])delete updated[key];
   if(sectionMode&&name==='fenceRunCount'){
    if(Number.isSafeInteger(next)&&next>=1&&next<=1000)updated.fenceRuns=Array.from({length:Math.max(next,measuredRuns.length)},(_,i)=>measuredRuns[i]||{sections:[{}]});
    for(const k of ['linearFeet','gates','cornerCount','lfMethod'])delete updated[k];
@@ -97,6 +99,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
    f.type==='enum'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:f.values.find(v=>String(v)===e.target.value))}><option value="">Unknown / not supplied</option>{(f.values||[]).map(v=><option key={v} value={v}>{f.optionLabels?.[v]||human(v)}</option>)}</Select>:
    f.type==='integer_or_unknown'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='unknown'?'unknown':Number(e.target.value))}><option value="">Not supplied</option><option value="unknown">Unknown — requires review</option>{Array.from({length:f.max-f.min+1},(_,i)=>f.min+i).map(n=><option key={n} value={n}>{n}</option>)}</Select>:
    f.type==='orthogonal_outline'?<MeasuredOutline field={f} value={value[f.name]} onChange={v=>update(f.name,v)}/>:
+   f.type==='surface_rows'?<SurfaceRowsInput field={f} value={value[f.name]} onChange={v=>update(f.name,v)}/>:
    f.type==='fence_runs'?<FenceRunsInput field={f} runs={measuredRuns} runCount={value.fenceRunCount} onChange={layoutChange}/>:
    f.type==='string'?<TextInput aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value||undefined)}/>:
    f.type==='offering_counts'?<>{(f.values||[]).map(key=><Field key={key} label={f.options?.[key]||human(key)}><ExactNumericInput aria-label={'Gate count '+key} value={value[f.name]?.[key]} onChange={v=>{const next={...(value[f.name]||{})};if(v===undefined)delete next[key];else next[key]=v;update(f.name,next);}}/></Field>)}<Button variant="secondary" onClick={()=>update(f.name,{})}>No gates</Button>{value[f.name]&&Object.values(value[f.name]).every(n=>n===0)&&<span>No gates selected</span>}</>:

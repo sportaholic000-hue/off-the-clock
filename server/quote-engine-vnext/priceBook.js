@@ -6,6 +6,7 @@ import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefi
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
 import {exactCompare} from './exactMath.js';
 import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants} from './fencePricing.js';
+import {surfaceActivationInput} from './surfacePricing.js';
 import {boundaryMeasurements,repairBoundaryMeasurements} from './activationBoundaries.js';
 import {
   CLASS2_DEFINITIONS,
@@ -293,9 +294,9 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   }
   if (serviceType === 'INTERIOR_PAINTING') {
     const wallHeight = greatestConfiguredKey(p.wallHeightLaborMultiplier, ['standard', 'high', 'vaulted'], 'high');
-    const base={areaInputMethod:'wall_sqft',wallAreaSqft:2_000_000,wallHeight,wallScopeUniform:true,surfaceCondition:'good',coats:3,ceilingsIncluded:false,trimIncluded:false};
-    const extras=optionalPricingRequests(service,base).filter(row=>completeOptionalPricing(service,{...base,...row.changes}));
-    return [base,...extras.map(row=>({...base,...row.changes})),...(extras.length>1?[Object.assign({},base,...extras.map(row=>row.changes))]:[])];
+    const base=surfaceActivationInput(serviceType,p,{areaInputMethod:'wall_sqft',wallAreaSqft:2_000_000,wallHeight,wallScopeUniform:true,surfaceCondition:'good',coats:3,ceilingsIncluded:false,trimIncluded:false});
+    const extras=optionalPricingRequests(service,base).filter(row=>completeOptionalPricing(service,surfaceActivationInput(serviceType,p,{...base,...row.changes})));
+    return [base,...extras.map(row=>surfaceActivationInput(serviceType,p,{...base,...row.changes})),...(extras.length>1?[surfaceActivationInput(serviceType,p,Object.assign({},base,...extras.map(row=>row.changes)))]:[])];
   }
   if (serviceType === 'EXTERIOR_PAINTING') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
@@ -392,7 +393,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
 
 export function activationScenarios(service,confirmedService=service,tierName=null,selection=null,includeOptionalScopes=true,defaults=null) {
  const p=pricingOf(service),type=service.serviceType,extra=[];
- const scenarios=baseActivationScenarios(service,confirmedService,selection).map(input=>({...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
+ const scenarios=baseActivationScenarios(service,confirmedService,selection).map(input=>surfaceActivationInput(type,p,{...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
   if(!configuredOffering(type,p))return true;
   const additional=input.ceilingsIncluded||input.trimIncluded||input.oldFenceRemoval||Object.values(input.gates||{}).some(count=>count>0);
   return !additional||completeOptionalPricing(confirmedService,input,p,tierName,defaults);
@@ -1262,6 +1263,7 @@ export function reviewOnlyScopesVNext(serviceType) {
 }
 
 function fieldCopy(serviceType, field) {
+  if(['paintingSettings','paintingRates','surfaceExtraRates','sidingSettings'].includes(field))return {label:{paintingSettings:'Painting coats and height bands',paintingRates:'Additional painting component prices',surfaceExtraRates:'Optional surface work prices',sidingSettings:'Siding measurement conventions'}[field],type:'surface_configuration',help:'Optional owner-entered settings. No starting ratios or prices are supplied.'};
   if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};
   if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};

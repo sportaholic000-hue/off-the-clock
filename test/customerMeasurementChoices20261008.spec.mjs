@@ -30,6 +30,8 @@ const removed = {
   CONCRETE_PATIO_SLAB: {dimensionMethod: ['area_only', 'assumption']}
 };
 const forbidden = [...new Set(Object.values(removed).flatMap(fields => Object.values(fields).flat()))];
+// October16 owner ruling adds dimension methods with actual numeric facts.
+// Legacy room-count/floor-area/homesize shortcuts remain forbidden below.
 const retained = {
   roofSizeMethod: ['roof_measured'], sqftMethod: ['exact'], lfMethod: ['exact'],
   dimensionMethod: ['exact', 'measured_area_perimeter', 'measured_outline']
@@ -60,7 +62,7 @@ function assertChoices(service, fields, label) {
     const field = fields.find(item => item.name === name);
     assert.ok(field, `${label} retains ${name}`);
     for (const value of values) assert.ok(!field.values.includes(value), `${label}.${name} offers ${value}`);
-    const expected = name === 'areaInputMethod' ? [service.serviceType === 'SIDING_REPLACEMENT' ? 'sqft' : 'wall_sqft'] : retained[name];
+    const expected = name === 'areaInputMethod' ? (service.serviceType === 'INTERIOR_PAINTING' ? ['wall_sqft','room_dimensions'] : [service.serviceType === 'SIDING_REPLACEMENT' ? 'sqft' : 'wall_sqft','building_dimensions']) : retained[name];
     assert.deepEqual(field.values, expected, `${label}.${name} preserves measured choices`);
     for (const value of expected) assert.ok(html.includes(`value="${value}"`), `${label} renders ${value}`);
     assert.ok(html.includes('Unknown / not supplied'), `${label} allows unknown measurements to be left blank`);

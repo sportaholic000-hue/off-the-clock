@@ -84,6 +84,10 @@ export function validIntakeConfirmation(ownerId,revision,submission,options={}) 
 
 const display = value => typeof value==='boolean' ? (value?'Yes':'No')
   : value===null||value===undefined ? 'Not supplied' : typeof value==='object' ? JSON.stringify(value) : String(value);
+function surfaceRowsSummary(field,value){
+ if(!Array.isArray(value))return display(value);
+ return value.map((row,index)=>(index+1)+': '+Object.entries(field.rowFields||{}).filter(([key,d])=>!d.optional||row?.[key]!==undefined).map(([key,d])=>d.type==='surface_rows'?d.label+': '+surfaceRowsSummary(d,row?.[key]):d.label+' '+display(row?.[key])+' '+d.unit).join(', ')).join('; ')||'None';
+}
 export function customerJobSummary(service,definition,submission,revision) {
   const labels=new Map((definition?.customerFields||[]).map(field=>[field.name,field]));
   // Identified-offering receipts are internal evidence. The corresponding
@@ -92,6 +96,7 @@ export function customerJobSummary(service,definition,submission,revision) {
   const facts=Object.entries(record(submission.customerInputs)?submission.customerInputs:{}).filter(([key])=>labels.get(key)?.type!=='confirmed_facts').map(([key,value])=>{
     const storedField=labels.get(key),field=storedField?customerFieldForInputs(storedField,submission.customerInputs):undefined;
     let formatted=customerSummaryValue(field,value,display);
+    if(field?.type==='surface_rows'&&Array.isArray(value))formatted=surfaceRowsSummary(field,value);
     if(field?.type==='offering_counts'&&record(value)&&Object.entries(value).every(([name,count])=>field.values.includes(name)&&Number.isInteger(count)&&count>=0)) {
       formatted=Object.entries(value).filter(([,count])=>count>0).map(([name,count])=>count+' × '+(field.options?.[name]||name.replaceAll('_',' '))).join('; ')||'No gates';
     }
