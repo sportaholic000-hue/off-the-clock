@@ -84,7 +84,9 @@ test('lane A Chromium: owner package, freshness, validity and source controls sa
   const owner=seed(sod()),opened=await openOwner(owner,'LANDSCAPING_SOD');
   try{
     await opened.page.getByRole('button',{name:/Optional prices and add-on charges/}).click();
-    const pallet=opened.page.getByLabel('Sod pallet coverage',{exact:true});await pallet.fill('450');
+    const palletField=opened.page.locator('#field-sodPalletSizeSqft');
+    await palletField.getByText('Sod pallet coverage',{exact:true}).waitFor();
+    const pallet=palletField.locator('input');await pallet.fill('450');
     await opened.page.getByRole('button',{name:/Price dates and sources/}).click();
     await opened.page.getByLabel(/Sod material per sqft price source/i).fill('[SYNTHETIC] Supplier Q-21');
     await opened.page.getByRole('button',{name:/Price freshness and quote validity/}).click();
@@ -101,7 +103,7 @@ test('lane A Chromium: owner package, freshness, validity and source controls sa
     const reloaded=await openOwner(owner,'LANDSCAPING_SOD');
     try{
       await reloaded.page.getByRole('button',{name:/Optional prices and add-on charges/}).click();
-      assert.equal(await reloaded.page.getByLabel('Sod pallet coverage',{exact:true}).inputValue(),'450');
+      assert.equal(await reloaded.page.locator('#field-sodPalletSizeSqft input').inputValue(),'450');
       await reloaded.page.getByRole('button',{name:/Price freshness and quote validity/}).click();
       assert.equal(await reloaded.page.getByLabel('Flag prices older than days',{exact:true}).inputValue(),'90');
       assert.equal(await reloaded.page.getByLabel('Quotes valid for days',{exact:true}).inputValue(),'30');
@@ -121,14 +123,15 @@ test('lane A Chromium: an unchanged confirmed AI number stays marked until This 
     await opened.page.getByText('AI placeholder prices',{exact:true}).waitFor();
     await opened.page.getByText(/Confirmation does not verify cost/i).waitFor();
     await opened.page.getByRole('button',{name:/Price dates and sources/}).click();
-    const source=opened.page.getByLabel(/Sod material per sqft price source/i),row=source.locator('xpath=ancestor::div[contains(@class,"owner-field")]');
+    const source=opened.page.getByLabel(/Sod material per sqft price source/i),row=opened.page.locator('.owner-field').filter({has:source});
     await row.getByRole('button',{name:'This is my price',exact:true}).click();
     await save(opened.page);
     assert.equal(loadPricebook(owner).services[0].priceMetadata.sodMaterialPerSqft.aiPlaceholder,false);
     const reloaded=await openOwner(owner,'LANDSCAPING_SOD');
     try{
       await reloaded.page.getByRole('button',{name:/Price dates and sources/}).click();
-      const adopted=reloaded.page.getByLabel(/Sod material per sqft price source/i).locator('xpath=ancestor::div[contains(@class,"owner-field")]');
+      const adoptedSource=reloaded.page.getByLabel(/Sod material per sqft price source/i);
+      const adopted=reloaded.page.locator('.owner-field').filter({has:adoptedSource});
       assert.equal(await adopted.getByRole('button',{name:'This is my price',exact:true}).count(),0);
       assert.ok((await reloaded.page.getByText('AI placeholder prices',{exact:true}).count())===1,'other unchanged AI prices remain visibly marked');
       assert.deepEqual(reloaded.errors,[]);
@@ -149,6 +152,7 @@ test('lane A Chromium: widget and actual public page show frozen validity, while
   await page.getByText(statement,{exact:false}).waitFor();
   await page.goto(`http://127.0.0.1:${server.address().port}/quote-copy/${saved.owner}/${token}`);await page.getByText(statement,{exact:false}).waitFor();
   const blank=webQuote(flooring('tile',200),[],date.quoteInstant);
+  await page.goto('about:blank');
   await page.setContent('<div id="root"></div>');await page.addScriptTag({content:resultBundle});await page.evaluate(result=>window.mount(result),blank.result);
   assert.equal(await page.getByText(/quote is valid for/i).count(),0);
 });
