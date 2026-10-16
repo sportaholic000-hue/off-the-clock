@@ -77,13 +77,13 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
         !EMAIL.test(environment.EMAIL_FROM||''))fail('EMAIL_NOT_CONFIGURED');
       const requestId='saved-quote:'+quoteId,prior=row(ownerId,requestId);
       if(prior)return state(prior);
-      const money=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate])),
-        narration=typeof result.quoteNarration==='string'&&result.quoteNarration.trim()?result.quoteNarration:
-          [saved.serviceType||'Saved quote',...options.flatMap(option=>[
-            (option.tierName?option.tierName+': ':'')+money.range(option.lowEstimate,option.highEstimate)+
-              (option.priceUnit||estimate.priceUnit?' '+(option.priceUnit||estimate.priceUnit):''),
-            option.taxTreatment||estimate.taxTreatment,option.disclaimer||estimate.disclaimer]),
-            'This is a preliminary estimate. The business will confirm the job details on site.'].filter(Boolean).join('\n');
+      // Prefer the frozen script already presented on the bound call.
+      const presented=saved.callId?q(`SELECT n.narration FROM voiceQuoteNarrations n
+        JOIN quoteSubmissions s ON s.ownerId=n.ownerId AND s.requestId=n.requestId
+        JOIN calls c ON c.ownerId=n.ownerId AND c.callSid=n.callSid
+        WHERE n.ownerId=? AND s.recordId=? AND c.id=?`).get(ownerId,quoteId,saved.callId):null;
+      const narration=presented?.narration||
+        (typeof result.quoteNarration==='string'&&result.quoteNarration.trim()?result.quoteNarration:savedQuoteNarration(result,saved.serviceType));
       const id=randomUUID(),token=randomBytes(32).toString('base64url'),at=iso();
       const url=quoteEmailOrigin(environment)+'/quote-copy/'+encodeURIComponent(ownerId)+'/'+token;
       const message={from:JSON.stringify(owner.businessName)+' <'+environment.EMAIL_FROM+'>',to:email,replyTo:owner.email,
@@ -150,4 +150,36 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
     return async()=>{stopped=true;clearTimeout(timer);await running;};
   }
   return {prepare,enqueue,enqueueSavedQuote,publicQuote,processOne,dispatchOnce,start,state:(ownerId,requestId)=>{const r=row(ownerId,requestId);if(!r)fail('QUOTE_EMAIL_NOT_FOUND',404);return state(r);}};
+}
+
+// Render only frozen customer fields. No current book, input inference, owner
+// financial record or calculator participates in a saved quote's written copy.
+function savedQuoteNarration(result,serviceType){
+  const partial=result.resultType==='PARTIAL_ESTIMATE_READY',estimate=partial?result.pricedEstimate:result;
+  const options=estimate.options?.length?estimate.options:[estimate];
+  const amounts=options.flatMap(option=>[option.lowEstimate,option.highEstimate,...(Number.isFinite(option.midEstimate)?[option.midEstimate]:[])]);
+  const money=quoteMoneyFormatter(amounts),scope=result.pricedScope;
+  const parts=[scope?.service||serviceType||'Saved quote'];
+  if(partial)parts.push('This is a partial estimate for the priced scope only. Separate additional work is excluded. A total for all requested work is not available.');
+  parts.push('This is a preliminary estimate for the described work. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it.');
+  if(Array.isArray(scope?.facts)&&scope.facts.length){
+    parts.push('Priced scope: '+scope.facts.map(fact=>fact.label+': '+String(fact.value)).join('; ')+'.');
+    const details=[...new Set(scope.facts.flatMap(fact=>fact.details||[]))];
+    if(details.length)parts.push('Scope details: '+details.join('; ')+'.');
+  }
+  for(const option of options){
+    const context=[option.currency||estimate.currency,option.priceUnit||estimate.priceUnit].filter(Boolean).join(' ');
+    parts.push((option.tierName?option.tierName+': ':'')+money.range(option.lowEstimate,option.highEstimate)+(context?' '+context:''));
+    if(Number.isFinite(option.midEstimate)&&option.midEstimate!==option.lowEstimate&&option.midEstimate!==option.highEstimate)parts.push((options.length>1&&option.tierName?option.tierName+' midpoint estimate':'Midpoint estimate')+': '+money.amount(option.midEstimate)+(context?' '+context:''));
+    if(option.taxTreatment||estimate.taxTreatment)parts.push(option.taxTreatment||estimate.taxTreatment);
+    if(option.skippedAddons?.length)parts.push('Not included'+(options.length>1&&option.tierName?' in '+option.tierName:'')+': '+option.skippedAddons.join('; ')+'.');
+    if(option.writtenDisclosure||option.disclaimer)parts.push(option.writtenDisclosure||option.disclaimer);
+  }
+  if(estimate.skippedAddons?.length)parts.push('Not included: '+estimate.skippedAddons.join('; ')+'.');
+  if(estimate.writtenDisclosure||estimate.disclaimer)parts.push(estimate.writtenDisclosure||estimate.disclaimer);
+  if(estimate.optionAvailabilityNotice)parts.push(estimate.optionAvailabilityNotice);
+  if(result.additionalWork?.length)parts.push('Separately unpriced work: '+result.additionalWork.map(item=>typeof item==='string'?item:item.description).join('; ')+'.');
+  if(result.customerMessage)parts.push(result.customerMessage);
+  if(result.scopeNotice)parts.push(result.scopeNotice);
+  return [...new Set(parts.filter(Boolean))].join('\n');
 }

@@ -420,7 +420,7 @@ function calculateRoofReplacement(c, p, ctx) {
       name: 'selectedRoofAreaSqft',
       formula: 'roofSizeInput * partialPercent / 100',
       inputs: { roofSizeInput: c.roofSizeInput, partialPercent: c.partialPercent },
-      result: areaSqft,
+      result: exactAreaSqft,
       unit: 'square feet',
       usedBy: ['roofSquares']
     });
