@@ -114,7 +114,7 @@ test('surface Oct16: widget and voice expose the same room and per-surface names
  const f=basic(),contract=customerContractForVNext(f.serviceType,f.ownerPricing.pricing);
  const definition={customerFields:Object.entries(contract.fields).map(([name,d])=>({name,...d}))};
  const voice=voiceQuestionContract(f.ownerPricing,definition);
- for(const name of ['rooms','ceilingCoats','ceilingSurfaceCondition','trimCoats','trimSurfaceCondition','paintDoorSides'])assert.ok(voice.fields.some(q=>q.field===name));
+ for(const name of ['rooms','ceilingCoats','ceilingSurfaceCondition','trimCoats','trimSurfaceCondition','surfaceOptionalItems'])assert.ok(voice.fields.some(q=>q.field===name));
  assert.match(voice.fields.find(q=>q.field==='rooms').details.join(' '),/lengthFeet.*widthFeet.*heightFeet/);
  assert.equal(JSON.stringify(voice).includes('wallAdditionalCoatRatio'),false);assert.equal(JSON.stringify(voice).includes('laborPerWallSqftPerCoat'),false);
 });
@@ -159,7 +159,7 @@ for(const unit of ['square_feet','linear_feet'])test('surface Oct16: optional si
  const f=siding();Object.assign(f.customerInputs,{soffitQuantity:200,fasciaLengthLF:140});Object.assign(f.ownerPricing.pricing,{sidingSettings:{soffitUnit:unit},surfaceExtraRates:{soffit:500,fascia:800}});
  const q=quote(f);assert.deepEqual(amounts(q,'surfaceExtraRates.soffit'),[100000]);assert.deepEqual(amounts(q,'surfaceExtraRates.fascia'),[112000]);
 });
-test('surface Oct16: differing garage openings subtract only openings over100 from painting labor',()=>{
+test('surface Oct16: differing garage openings subtract qualifying openings from painting labor',()=>{
  // Gross1640, normal190, garage112+90=202: labor1528, net1248.
  const f=offeringFixture('EXTERIOR_PAINTING','itemized'),c={...f.customerInputs,...house,garageDoorCount:2,garageOpenings:[{widthFeet:16,heightFeet:7},{widthFeet:10,heightFeet:9}]};
  delete c.exteriorAreaSqft;delete c.garageDoorWidthFeet;delete c.garageDoorHeightFeet;
@@ -207,9 +207,9 @@ test('surface Oct16: large room openings use their own room height instead of an
  const f=basic(),p=f.ownerPricing.pricing;p.paintingSettings={heightBands:{standardMaxFeet:8,highMaxFeet:10,vaultedMaxFeet:20}};
  for(const name of ['wallAreaSqft','wallHeight','wallScopeUniform'])delete f.customerInputs[name];
  Object.assign(f.customerInputs,{areaInputMethod:'room_dimensions',coats:1,rooms:[8,10].map(heightFeet=>({lengthFeet:10,widthFeet:10,heightFeet,doorCount:0,windowCount:0}))});
- f.customerInputs.rooms[0].largeOpenings=[{areaSqft:120}];
+ f.customerInputs.rooms[0].largeOpenings=[{widthFeet:15,heightFeet:8,runsFloorToCeiling:false}];
  const g=surfaceGeometry(f.serviceType,f.customerInputs,p);assert.equal(exactToNumber(g.paint),600);assert.equal(sum(amounts(quote(f),'laborPerWallSqftPerCoat')),64000);
- delete f.customerInputs.rooms[0].largeOpenings;f.customerInputs.largeOpenings=[{areaSqft:120}];
+ delete f.customerInputs.rooms[0].largeOpenings;f.customerInputs.largeOpenings=[{widthFeet:15,heightFeet:8,runsFloorToCeiling:false}];
  assert.equal(validateCustomerInputs(f.serviceType,f.customerInputs,p).ok,false);
 });
 test('surface Oct16: direct wall area can retain labor openings and subtract net paint',()=>{
@@ -242,14 +242,14 @@ test('surface Oct16: basic explicit trim components replace retained prices and 
 test('surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs',async()=>{
  // Presentation expectation written before execution in EXPECTED.md.
  const {customerJobSummary}=await import('../server/src/quoteIntake.js');
- const f=basic(),c={areaInputMethod:'room_dimensions',rooms:[{lengthFeet:12,widthFeet:12,heightFeet:8,doorCount:1,windowCount:2,largeOpenings:[{areaSqft:120}]}]},before=structuredClone(c);
+ const f=basic(),c={areaInputMethod:'room_dimensions',rooms:[{lengthFeet:12,widthFeet:12,heightFeet:8,doorCount:1,windowCount:2,largeOpenings:[{widthFeet:15,heightFeet:8,runsFloorToCeiling:false}]}]},before=structuredClone(c);
  const definition={customerFields:Object.entries(customerContractForVNext(f.serviceType,f.ownerPricing.pricing).fields).map(([name,d])=>({name,...d}))};
  const value=customerJobSummary(f.ownerPricing,definition,{customerInputs:c},'synthetic-revision').facts.find(row=>row.label==='Room measurements').value;
- assert.match(value,/Large room openings: 1: Opening area 120 square feet/);assert.doesNotMatch(value,/areaSqft| null/);assert.deepEqual(c,before);
+ assert.match(value,/Large room openings: 1: Opening width 15 feet, Opening height 8 feet, Runs floor to ceiling\? No/);assert.doesNotMatch(value,/areaSqft| null/);assert.deepEqual(c,before);
 });
 test('surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding',()=>{
  const f=siding();f.customerInputs.soffitQuantity=200;
- const field=customerContractForVNext(f.serviceType,f.ownerPricing.pricing).fields.soffitQuantity;assert.equal(field.unit,'units (owner must confirm)');
+ const field=customerContractForVNext(f.serviceType,f.ownerPricing.pricing).fields.soffitQuantity;assert.equal(field.unit,null);assert.equal(field.evidenceOnly,true);assert.deepEqual(field.visibleWhen,[]);
  const q=sanitizeForCustomerVNext(quote(f));assert.equal(q.midEstimate,11700);assert.deepEqual(q.options[0].skippedAddons,['Soffit']);
 });
 test('surface Oct16: zero net paint uses zero packages while labor still quotes',()=>{

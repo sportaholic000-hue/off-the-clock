@@ -51,7 +51,44 @@ test('surface DOM Oct16: a large opening stays bound to its room',async t=>{
  await waitFor(()=>w.__inputs.areaInputMethod==='room_dimensions');[...d.querySelectorAll('button')].find(b=>b.textContent==='Add room measurements').click();await waitFor(()=>w.__inputs.rooms?.length===1);
  for(const [label,value] of [['Room length','12'],['Room width','12'],['Ceiling height','8'],['Door openings','1'],['Window openings','2']])await input(w,d,'Room measurements 1 '+label,value);
  const add=[...d.querySelectorAll('button')].find(b=>b.textContent==='Add room measurements 1 — large room openings');assert.ok(add);add.click();await waitFor(()=>w.__inputs.rooms[0].largeOpenings?.length===1);
- await input(w,d,'Room measurements 1 — Large room openings 1 Opening area','120');
+ await input(w,d,'Room measurements 1 — Large room openings 1 Opening width','15');
+ await input(w,d,'Room measurements 1 — Large room openings 1 Opening height','8');
  const f=fixture('INTERIOR_PAINTING',{laborPerWallSqftPerCoat:100,materialPerWallSqftPerCoat:30,minimumJob:0},JSON.parse(JSON.stringify(w.__inputs)));f.ownerPricing.priceBasisByCategory.material='sell_price';
  const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(q.midEstimate,669.24);assert.deepEqual(errors,[]);
+});
+
+test('surface DOM Oct16: optional selector hides unpriced quantities and selection survives submission',async t=>{
+ //Before execution: one four-choice selector, no optional quantities; walls106400c,
+ //selected door sides excluded. A priced4-side request adds46000c; deselection clears it.
+ const {w,d,errors}=await setup(t);
+ assert.equal(d.querySelectorAll('fieldset[aria-label="Which optional painting items would you like?"]').length,1);
+ for(const label of ['Door sides to paint','Door frames to paint','Windows to paint','Cabinet doors or drawer faces to paint'])assert.equal(d.querySelector('[aria-label="'+label+'"]'),null);
+ d.querySelector('input[aria-label="Door sides"]').click();await waitFor(()=>w.__inputs.surfaceOptionalItems?.includes('doorSides'));
+ assert.equal(d.querySelector('[aria-label="Door sides to paint"]'),null);
+ const f=fixture('INTERIOR_PAINTING',{laborPerWallSqftPerCoat:100,materialPerWallSqftPerCoat:30,minimumJob:0},JSON.parse(JSON.stringify(w.__inputs)));f.ownerPricing.priceBasisByCategory.material='sell_price';
+ const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1064);assert.deepEqual(q.options[0].skippedAddons,['Door sides']);
+ await input(w,d,'Door sides — complete installed price per each','115');await waitFor(()=>d.querySelector('[aria-label="Door sides to paint"]'));
+ await input(w,d,'Door sides to paint','4');assert.equal(w.__inputs.paintDoorSides,4);
+ d.querySelector('input[aria-label="Door sides"]').click();await waitFor(()=>!w.__inputs.surfaceOptionalItems.includes('doorSides'));
+ assert.equal(w.__inputs.paintDoorSides,undefined);assert.equal(d.querySelector('[aria-label="Door sides to paint"]'),null);assert.deepEqual(errors,[]);
+});
+
+test('surface DOM Oct16: floor-to-ceiling answer changes labor but not paint',async t=>{
+ //Before execution:630 gross,54 opening; checked labor576x120x2=138240c,
+ //unchecked labor630x120x2=151200c. Both paint576x30x2x1.1=38016c.
+ const {w,d,errors}=await setup(t),method=d.querySelector('[aria-label="Wall area measurement method"]');
+ method.value='room_dimensions';method.dispatchEvent(new w.Event('change',{bubbles:true}));await waitFor(()=>w.__inputs.areaInputMethod==='room_dimensions');
+ [...d.querySelectorAll('button')].find(b=>b.textContent==='Add room measurements').click();await waitFor(()=>w.__inputs.rooms?.length===1);
+ for(const [label,value] of [['Room length','20'],['Room width','15'],['Ceiling height','9'],['Door openings','0'],['Window openings','0']])await input(w,d,'Room measurements 1 '+label,value);
+ [...d.querySelectorAll('button')].find(b=>b.textContent==='Add room measurements 1 — large room openings').click();await waitFor(()=>w.__inputs.rooms[0].largeOpenings?.length===1);
+ await input(w,d,'Room measurements 1 — Large room openings 1 Opening width','6');await input(w,d,'Room measurements 1 — Large room openings 1 Opening height','9');
+ const choice=d.querySelector('[aria-label="Room measurements 1 — Large room openings 1 Runs floor to ceiling?"]');assert.ok(choice);
+ for(const [answer,cents] of [['true',138240],['false',151200]]){
+  choice.value=answer;choice.dispatchEvent(new w.Event('change',{bubbles:true}));await waitFor(()=>w.__inputs.rooms[0].largeOpenings[0].runsFloorToCeiling===(answer==='true'));
+  const f=fixture('INTERIOR_PAINTING',{laborPerWallSqftPerCoat:120,materialPerWallSqftPerCoat:30,minimumJob:0},JSON.parse(JSON.stringify(w.__inputs)));f.ownerPricing.priceBasisByCategory.material='sell_price';
+  const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');
+  const amounts=path=>q.options[0].lineItems.filter(l=>l.calculation.ratePath===path).map(l=>l.amountCents);
+  assert.deepEqual(amounts('laborPerWallSqftPerCoat'),[cents]);assert.deepEqual(amounts('materialPerWallSqftPerCoat'),[38016]);
+ }
+ assert.deepEqual(errors,[]);
 });

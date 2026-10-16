@@ -856,6 +856,7 @@ function missing(value) {
 
 function validateFieldValue(definition, value) {
   if(definition.type==='surface_rows')return surfaceRowsIssue(definition,value);
+  if(definition.type==='multi_enum')return Array.isArray(value)&&new Set(value).size===value.length&&value.every(item=>definition.values.includes(item))?null:'must contain distinct choices from the listed optional items';
   if(definition.type==='fence_runs')return Array.isArray(value)&&value.length>0?null:'must contain the measured runs and sections';
   if(definition.type==='offering_counts') {
     if(!isRecord(value)||Object.keys(value).some(key=>!definition.values.includes(key)))return 'must contain only offered gate selections';

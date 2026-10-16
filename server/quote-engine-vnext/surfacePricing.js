@@ -22,7 +22,9 @@ const conditions=select('Surface condition',['good','fair','poor']);
 const when=(name,value=true)=>[[[name,'eq',value]]];
 const dimensionalWhen=[...when('areaInputMethod','room_dimensions'),...when('areaInputMethod','building_dimensions')];
 const rows=(label,rowFields,minRows=0)=>({label,type:'surface_rows',unit:null,rowFields,minRows,maxRows:100});
-export const ROOM_FIELDS={lengthFeet:num('Room length','feet',0.01,10000),widthFeet:num('Room width','feet',0.01,10000),heightFeet:num('Ceiling height','feet',0.01,1000),doorCount:num('Door openings','doors',0,10000,{integer:true}),windowCount:num('Window openings','windows',0,10000,{integer:true}),largeOpenings:{...rows('Large room openings',{areaSqft:num('Opening area','square feet',0.01,2_000_000)}),optional:true,details:['Only openings not counted as doors or windows. Openings over 100 square feet are removed from labor; all listed openings are removed from paint quantity.']}};
+export const INTERIOR_OPENING_FIELDS={widthFeet:num('Opening width','feet',0.01,10000),heightFeet:num('Opening height','feet',0.01,1000),runsFloorToCeiling:{label:'Runs floor to ceiling?',type:'boolean',unit:null,optional:true}};
+const INTERIOR_OPENING_HELP='Only openings not counted as doors or windows. Openings 100 square feet or larger, or openings that run floor to ceiling and are wider than 5 feet, are removed from labor. All listed openings are removed from paint quantity.';
+export const ROOM_FIELDS={lengthFeet:num('Room length','feet',0.01,10000),widthFeet:num('Room width','feet',0.01,10000),heightFeet:num('Ceiling height','feet',0.01,1000),doorCount:num('Door openings','doors',0,10000,{integer:true}),windowCount:num('Window openings','windows',0,10000,{integer:true}),largeOpenings:{...rows('Large room openings',INTERIOR_OPENING_FIELDS),optional:true,details:[INTERIOR_OPENING_HELP]}};
 export const GABLE_FIELDS={widthFeet:num('Gable width','feet',0.01,10000),heightFeet:num('Gable height','feet',0.01,1000)};
 export const GARAGE_FIELDS={widthFeet:num('Garage opening width','feet',0.01,10000),heightFeet:num('Garage opening height','feet',0.01,1000)};
 export const OPENING_FIELDS={areaSqft:num('Other opening area not counted above','square feet',0.01,2_000_000)};
@@ -31,7 +33,7 @@ export function surfaceExtraDefinitions(type,p={}){
  const each=(label,field)=>({label,field,unit:'each',integer:true});
  if(type==='INTERIOR_PAINTING')return {doorSides:each('Door sides','paintDoorSides'),doorFrames:each('Door frames','paintDoorFrames'),windows:each('Windows','paintWindows'),cabinetFaces:each('Cabinet doors or drawer faces','paintCabinetFaces')};
  if(type==='EXTERIOR_PAINTING')return {windows:each('Windows','paintWindows'),doors:each('Doors','paintDoors'),shutters:each('Shutters','paintShutters'),garageDoors:each('Garage doors','paintGarageDoors'),exteriorTrim:{label:'Exterior trim',field:'exteriorTrimLengthLF',unit:'linear feet'},soffit:{label:'Soffit',field:'soffitQuantity',unit:'linear feet'},fascia:{label:'Fascia',field:'fasciaLengthLF',unit:'linear feet'},powerWashing:{label:'Power washing',field:'powerWashingAreaSqft',unit:'square feet'}};
- if(type==='SIDING_REPLACEMENT')return {soffit:{label:'Soffit',field:'soffitQuantity',unit:p.sidingSettings?.soffitUnit==='square_feet'?'square feet':p.sidingSettings?.soffitUnit==='linear_feet'?'linear feet':'units (owner must confirm)'},fascia:{label:'Fascia',field:'fasciaLengthLF',unit:'linear feet'}};
+ if(type==='SIDING_REPLACEMENT')return {soffit:{label:'Soffit',field:'soffitQuantity',unit:p.sidingSettings?.soffitUnit==='square_feet'?'square feet':p.sidingSettings?.soffitUnit==='linear_feet'?'linear feet':null},fascia:{label:'Fascia',field:'fasciaLengthLF',unit:'linear feet'}};
  return {};
 }
 
@@ -80,6 +82,7 @@ export function surfaceRowsIssue(def,value){
   for(const [key,f] of Object.entries(def.rowFields)){
    if(row[key]===undefined&&f.optional)continue;
    if(f.type==='surface_rows'){const issue=surfaceRowsIssue(f,row[key]);if(issue)return key+' '+issue;}
+   else if(f.type==='boolean'){if(typeof row[key]!=='boolean')return key+' must be true or false';}
    else if(typeof row[key]!=='number'||!Number.isFinite(row[key])||row[key]<f.min||row[key]>f.max||f.integer&&!Number.isInteger(row[key]))return key+' must be a finite '+(f.integer?'whole ':'')+'number from '+f.min+' to '+f.max;
   }
  }
@@ -97,14 +100,17 @@ function heightBand(feet,p,fallback){
  fail('wallHeightFeet','This height is outside the owner-priced height bands.');
 }
 const total=(items,fn)=>exactAdd(...items.map(fn));
+const interiorOpeningArea=opening=>exactMultiply(opening.widthFeet,opening.heightFeet);
+const deductibleInteriorOpening=opening=>exactCompare(interiorOpeningArea(opening),100)>=0||opening.runsFloorToCeiling===true&&opening.widthFeet>5;
 
 export function surfaceGeometry(type,c,p={}){
  const interior=type==='INTERIOR_PAINTING',siding=type==='SIDING_REPLACEMENT',method=c.areaInputMethod;
  const key=siding?'sidingAreaSqft':interior?'wallAreaSqft':'exteriorAreaSqft';
  const gableRows=array(c,'gables',rows('Gables',GABLE_FIELDS));
  const gables=total(gableRows,r=>exactDivide(exactMultiply(r.widthFeet,r.heightFeet),2));
- const other=array(c,'largeOpenings',rows('Other openings',OPENING_FIELDS));
- const otherArea=total(other,r=>r.areaSqft),largeOther=total(other.filter(r=>r.areaSqft>100),r=>r.areaSqft);
+ const other=array(c,'largeOpenings',rows('Other openings',interior?INTERIOR_OPENING_FIELDS:OPENING_FIELDS));
+ const openingArea=interior?interiorOpeningArea:r=>r.areaSqft;
+ const otherArea=total(other,openingArea),largeOther=total(other.filter(interior?deductibleInteriorOpening:r=>r.areaSqft>=100),openingArea);
  let groups=[],gross,doors=0,windows=0,garage=0,largeGarage=0,ceiling=0,roomOpenings=0,largeRoomOpenings=0;
  if(method==='room_dimensions'){
   if(!interior)fail('areaInputMethod','Room dimensions apply only to interior painting.');
@@ -112,7 +118,7 @@ export function surfaceGeometry(type,c,p={}){
   const roomRows=array(c,'rooms',rows('Rooms',ROOM_FIELDS,1));
   groups=roomRows.map(r=>{
    const gross=exactMultiply(2,exactAdd(r.lengthFeet,r.widthFeet),r.heightFeet),openings=r.largeOpenings||[];
-   const all=total(openings,o=>o.areaSqft),large=total(openings.filter(o=>o.areaSqft>100),o=>o.areaSqft);
+   const all=total(openings,interiorOpeningArea),large=total(openings.filter(deductibleInteriorOpening),interiorOpeningArea);
    if(exactCompare(exactSubtract(gross,exactAdd(all,exactMultiply(r.doorCount,20),exactMultiply(r.windowCount,15))),0)<0||exactCompare(gross,large)<=0)fail('rooms','The openings must fit within their own room wall area.');
    roomOpenings=exactAdd(roomOpenings,all);largeRoomOpenings=exactAdd(largeRoomOpenings,large);
    return {gross,area:exactSubtract(gross,large),ceiling:exactMultiply(r.lengthFeet,r.widthFeet),height:heightBand(r.heightFeet,p,c.wallHeight)};
@@ -137,8 +143,8 @@ export function surfaceGeometry(type,c,p={}){
    if(openings.length!==n)fail('garageOpenings','List one opening for each garage door.');
    if(c.garageDoorWidthFeet!==undefined||c.garageDoorHeightFeet!==undefined)fail('garageOpenings','Use individual garage openings or the shared opening dimensions, not both.');
    garage=total(openings,r=>exactMultiply(r.widthFeet,r.heightFeet));
-   largeGarage=total(openings.filter(r=>exactCompare(exactMultiply(r.widthFeet,r.heightFeet),100)>0),r=>exactMultiply(r.widthFeet,r.heightFeet));
-  }else if(n>0){garage=exactMultiply(n,amount(c,'garageDoorWidthFeet'),amount(c,'garageDoorHeightFeet'));if(exactCompare(exactMultiply(c.garageDoorWidthFeet,c.garageDoorHeightFeet),100)>0)largeGarage=garage;}
+   largeGarage=total(openings.filter(r=>exactCompare(exactMultiply(r.widthFeet,r.heightFeet),100)>=0),r=>exactMultiply(r.widthFeet,r.heightFeet));
+  }else if(n>0){garage=exactMultiply(n,amount(c,'garageDoorWidthFeet'),amount(c,'garageDoorHeightFeet'));if(exactCompare(exactMultiply(c.garageDoorWidthFeet,c.garageDoorHeightFeet),100)>=0)largeGarage=garage;}
  }
  const openings=exactAdd(exactMultiply(doors,20),exactMultiply(windows,15),garage,otherArea,roomOpenings);
  let labor=exactSubtract(gross,exactAdd(largeGarage,largeOther,largeRoomOpenings)),paint=exactSubtract(gross,openings);
@@ -146,7 +152,7 @@ export function surfaceGeometry(type,c,p={}){
   const convention=p.sidingSettings?.areaConventionByType?.[c.sidingType];
   if(method==='building_dimensions'){
    if(!convention)fail('sidingType','The owner must choose the area convention for this siding rate before dimension-based quoting.');
-   labor=convention==='openings_left_in'?exactSubtract(gross,exactDivide(exactAdd(largeGarage,largeOther),2)):paint;
+   labor=convention==='openings_left_in'?exactSubtract(gross,exactDivide(exactAdd(garage,otherArea),2)):paint;
   }else labor=gross; // Direct area is entered using the owner's stated convention.
   paint=labor;
  }
@@ -195,11 +201,11 @@ export function surfaceCustomerContract(type,p,base){
   fields.garageDoorHeightFeet={...num('Height of each garage-door opening','feet',0.01),visibleWhen:[[['garageDoorCount','gt',0]]]};
   fields.garageOpenings={...rows('Individual garage-door openings',GARAGE_FIELDS,1),details:['Use this list when opening sizes differ; otherwise enter the shared width and height above. Do not use both.'],visibleWhen:[[['garageDoorCount','gt',0]]]};
  }
- fields.largeOpenings={...rows('Other openings',OPENING_FIELDS),details:['Only openings not already counted as doors, windows or garage doors. Openings over 100 square feet are removed from painting labor; all listed openings are removed from paint quantity.'],visibleWhen:paintingType(type)?[...dimensionalWhen,...when('areaInputMethod','wall_sqft')]:dimensionalWhen};
+ fields.largeOpenings={...rows('Other openings',interior?INTERIOR_OPENING_FIELDS:OPENING_FIELDS),details:[interior?INTERIOR_OPENING_HELP:siding?'Only openings not already counted as doors, windows or garage doors. Openings left in subtracts half the area of every garage door and every listed other opening, whatever its size; ordinary windows and doors stay in. Openings subtracted removes their full area.':'Only openings not already counted as doors, windows or garage doors. Openings 100 square feet or larger are removed from painting labor; all listed openings are removed from paint quantity.'],visibleWhen:paintingType(type)?[...dimensionalWhen,...when('areaInputMethod','wall_sqft')]:dimensionalWhen};
  if(interior)for(const [name,label]of [['doorCount','Door openings'],['windowCount','Window openings']])fields[name]={...num(label,'openings',0,10000,{integer:true}),visibleWhen:when('areaInputMethod','wall_sqft')};
  if(type==='EXTERIOR_PAINTING')for(const name of ['doorCount','windowCount','garageDoorCount'])fields[name].visibleWhen=[...when('areaInputMethod','building_dimensions'),...when('areaInputMethod','wall_sqft')];
  const areaKey=siding?'sidingAreaSqft':interior?'wallAreaSqft':'exteriorAreaSqft';
- fields[areaKey]={...fields[areaKey],visibleWhen:when('areaInputMethod',siding?'sqft':'wall_sqft'),...(siding?{details:['Use the convention saved for the selected siding rate. Gable triangles entered separately are added once.'],presentationVariants:Object.entries(convention||{}).map(([value,basis])=>({label:'Siding wall area — '+SIDING_CONVENTIONS[basis],details:[basis==='openings_left_in'?'Leave ordinary door and window openings in. Subtract half the area of openings over 100 square feet, including large garage openings.':'Subtract 15 square feet per window, 20 per door and the full area of garage doors and other openings.','Include gable area (width × height ÷ 2), or enter its triangle separately below and leave it out of this direct area.'],visibleWhen:when('sidingType',value)}))}:{})};
+ fields[areaKey]={...fields[areaKey],visibleWhen:when('areaInputMethod',siding?'sqft':'wall_sqft'),...(siding?{details:['Use the convention saved for the selected siding rate. Gable triangles entered separately are added once.'],presentationVariants:Object.entries(convention||{}).map(([value,basis])=>({label:'Siding wall area — '+SIDING_CONVENTIONS[basis],details:[basis==='openings_left_in'?'Leave ordinary door and window openings in. Subtract half the area of every garage door and every listed other opening, whatever its size.':'Subtract 15 square feet per window, 20 per door and the full area of garage doors and other openings.','Include gable area (width × height ÷ 2), or enter its triangle separately below and leave it out of this direct area.'],visibleWhen:when('sidingType',value)}))}:{})};
  if(!interior||p.paintingSettings?.heightBands)fields.wallHeightFeet={...num(interior?'Wall height':'Wall height to the eaves','feet',0.01,1000),visibleWhen:interior?when('areaInputMethod','wall_sqft'):when('areaInputMethod','building_dimensions')};
  if(paintingType(type)){
   fields.coats={...fields.coats,label:'Wall finish coats'};
@@ -214,7 +220,13 @@ export function surfaceCustomerContract(type,p,base){
    fields.ceilingAreaSqft={...fields.ceilingAreaSqft,visibleWhen:[[['areaInputMethod','eq','wall_sqft'],['ceilingsIncluded','eq',true]]]};
   }
  }
- for(const def of Object.values(surfaceExtraDefinitions(type,p)))fields[def.field]=num(def.label==='Power washing'?'Power-washing area':def.label+' to '+(siding?'install':'paint'),def.unit,0,1_000_000,{...(def.integer?{integer:true}:{}),details:['Optional. If the owner has not priced this work, it is excluded and needs a separate estimate.']});
+ const extras=surfaceExtraDefinitions(type,p);
+ fields.surfaceOptionalItems={label:siding?'Which optional siding items would you like?':'Which optional painting items would you like?',type:'multi_enum',unit:null,values:Object.keys(extras),optionLabels:Object.fromEntries(Object.entries(extras).map(([key,def])=>[key,def.label])),details:['Select all that apply, or leave all unchecked for none. We ask for quantities only for selected items with a saved price. Unpriced items are excluded from this quote and need a separate estimate.']};
+ for(const [key,def] of Object.entries(extras)){
+  const priced=p.surfaceExtraRates?.[key]!==undefined&&def.unit!==null;
+  fields[def.field]=num(def.label==='Power washing'?'Power-washing area':def.label+' to '+(siding?'install':'paint'),def.unit,0,1_000_000,{...(def.integer?{integer:true}:{}),optionalItemKey:key,evidenceOnly:!priced,visibleWhen:priced?[[['surfaceOptionalItems','contains',key]]]:[],details:[(def.integer?'Enter your best estimate of the number of items.':'Enter your best estimate in '+def.unit+'.')+' The business will confirm it on site.']});
+  if(!priced)delete fields[def.field].details;
+ }
  if(paintingType(type))fields[areaKey].details=['If you supply opening counts or areas, enter wall area before subtracting those openings. Without opening inputs, your existing directly entered area is used unchanged.'];
  const geometryErrors=c=>{
   const errors=[];
@@ -237,6 +249,7 @@ export function surfaceCustomerContract(type,p,base){
   if((c.garageDoorCount??0)>0&&c.garageOpenings===undefined)out.push('garageDoorWidthFeet','garageDoorHeightFeet');
   if(modern&&paintingType(type)&&c.ceilingsIncluded)out.push('ceilingCoats','ceilingSurfaceCondition');
   if(modern&&paintingType(type)&&c.trimIncluded)out.push('trimCoats','trimSurfaceCondition');
+  for(const [key,def] of Object.entries(extras))if(Array.isArray(c.surfaceOptionalItems)&&c.surfaceOptionalItems.includes(key)&&p.surfaceExtraRates?.[key]!==undefined&&def.unit!==null)out.push(def.field);
   return [...new Set(out)];
  },crossValidate:c=>[...(base.crossValidate?.(forLegacy(c),p)||[]),...geometryErrors(c)],inspection:c=>interior&&!p.offeringMode&&c.ceilingsIncluded&&['fair','poor'].includes(c.ceilingSurfaceCondition)?'Ceiling preparation for this condition requires itemized painting preparation prices.':base.inspection?.(forLegacy(c),p)};
 }
@@ -257,5 +270,5 @@ export function trimPreparationNeeded(c,p){
 }
 
 export function requestedSurfaceExtras(type,c,p={}){
- return Object.entries(surfaceExtraDefinitions(type,p)).filter(([,d])=>c[d.field]>0).map(([key,def])=>({key,...def,quantity:c[def.field],ratePath:'surfaceExtraRates.'+key,rateCents:p.surfaceExtraRates?.[key]}));
+ return Object.entries(surfaceExtraDefinitions(type,p)).filter(([key,d])=>Array.isArray(c.surfaceOptionalItems)?c.surfaceOptionalItems.includes(key)&&(p.surfaceExtraRates?.[key]===undefined||c[d.field]>0):c[d.field]>0).map(([key,def])=>({key,...def,quantity:c[def.field],ratePath:'surfaceExtraRates.'+key,rateCents:p.surfaceExtraRates?.[key]}));
 }

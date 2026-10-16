@@ -1216,7 +1216,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
       }
       if(['room_dimensions','building_dimensions'].includes(customerInputs.areaInputMethod)){
         const geometry=customerInputs._surfaceGeometry;
-        recordQuantityDerivation(result,{name:'Wall area from supplied dimensions',formula:customerInputs.areaInputMethod==='room_dimensions'?'sum(2 * (room length + room width) * room height) minus openings over 100 square feet':'perimeter * wall height + sum(gable width * gable height / 2), with the selected opening convention',inputs:{method:customerInputs.areaInputMethod},result:geometry.labor,unit:'square feet',usedBy:['Wall labor','Siding labor']});
+        recordQuantityDerivation(result,{name:'Wall area from supplied dimensions',formula:customerInputs.areaInputMethod==='room_dimensions'?'sum(2 * (room length + room width) * room height) minus openings 100 square feet or larger, or floor-to-ceiling openings wider than 5 feet':'perimeter * wall height + sum(gable width * gable height / 2), with the selected opening convention',inputs:{method:customerInputs.areaInputMethod},result:geometry.labor,unit:'square feet',usedBy:['Wall labor','Siding labor']});
       }
     }
     const extra=scopeLines(serviceType,customerInputs,pricing,serviceRules);

@@ -7,10 +7,10 @@ const record = value => value !== null && typeof value === 'object' && !Array.is
   [Object.prototype, null].includes(Object.getPrototypeOf(value));
 const FIELD = /^[a-zA-Z][a-zA-Z0-9_]{0,99}$/;
 const FEES = ['travel', 'disposal', 'permit', 'overhead'];
-const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'integer_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs','surface_rows']);
+const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'multi_enum', 'integer_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs','surface_rows']);
 const safeText = (value, max = 240) => typeof value === 'string' && value.trim() && value.length <= max ? value.trim() : null;
 const human = value => String(value).replaceAll('_', ' ');
-const rowDetails=fields=>Object.entries(fields||{}).map(([key,d])=>key+' = '+(d.type==='surface_rows'?'optional array of rows ('+rowDetails(d.rowFields)+')':d.label+' ('+d.unit+')')).join('; ');
+const rowDetails=fields=>Object.entries(fields||{}).map(([key,d])=>key+' = '+(d.type==='surface_rows'?'optional array of rows ('+rowDetails(d.rowFields)+')':d.label+(d.type==='boolean'?' (true or false)':d.unit?' ('+d.unit+')':''))).join('; ');
 
 function publicCondition(value, depth = 0) {
   if (depth > 4) return undefined;
@@ -39,7 +39,7 @@ function scopeToken(service, field, inputs, authority) {
 
 export function voiceQuestionContract(service, definition, inputs = {}, authority) {
   const fields = (Array.isArray(definition?.customerFields) ? definition.customerFields : [])
-    .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly);
+    .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly && (!field.optionalItemKey||customerFieldVisible(field,inputs)));
   if (fields.length > 64) throw new TypeError('Voice measurement contract exceeds its bounded field limit.');
   const questions = fields.map(original => {
     const field=customerFieldForInputs(original,inputs);
@@ -77,6 +77,7 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
       if (values.length > 32) question.moreChoicesAvailable = true;
     }
     if (field.type === 'slug') question.productConfirmationRequired = true;
+    if(field.type==='multi_enum')question.details=[...(question.details||[]),'Supply an array of selected choice values, or an empty array for none.'];
     if(field.type==='surface_rows'){
       question.details=[...(question.details||[]),'Supply an array of rows. Each row contains: '+rowDetails(field.rowFields)+'. Use an empty array only when there are none.'];
     }
@@ -109,6 +110,7 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
     if (!fields.some(field => field.name === key && field.type === 'slug')) followUps.push('Confirm only a product requested for this service.');
   }
   for (const field of fields) {
+    if(field.optionalItemKey&&customerFieldVisible(field,customerInputs)&&(!own(customerInputs,field.name)||customerInputs[field.name]===null||customerInputs[field.name]===''))followUps.push('Check '+field.label+'.');
     if (!own(customerInputs, field.name) || customerInputs[field.name] === null || customerInputs[field.name] === '') continue;
     if (field.type === 'slug') {
       if (!productIdentityRequired(field.name, customerInputs[field.name])) continue;
