@@ -87,7 +87,7 @@ TRADE FLOWS
 =======================================================
 
 ── ROOFING_REPLACEMENT ──────────────────────────────
-Current customer fields (MEASUREMENT_CONTRACTS[ROOFING_REPLACEMENT].fields): roofSizeMethod, roofSizeInput, existingRoofType, replacementRoofType, pitch, stories, existingLayers, roofComplexity, serviceScope, partialPercent, partialAreaSqft, starterLengthLF, dripEdgeLengthLF, ridgeCapLengthLF, deckingSheets, permitRequired, confirmedFacts.
+Current customer fields come from the live contract. A service still on its previously approved rules uses pitch. A service on the new rules uses roofSizeMethod, roofSizeInput, pitchMethod, pitchBand or the surface area in each pitch band, and pitchRisePer12 for a footprint conversion. Itemized measurements appear only when the owner has activated their prices.
 Confirm: "So we're talking about replacing the whole roof —
   not just a repair, right?" [serviceScope]
   If "just a section": "Got it, a partial — what portion of the roof?" [partialPercent] Confirm the portion against the measured roof area, or ask for the measured area of that section in square feet [partialAreaSqft]. Use a caller-given approximate portion only after read-back and confirmation.
@@ -101,14 +101,10 @@ Q3 [existingLayers]: "Do you know how many layers of roofing are on there now?"
   it, or is it original?" Still unsure → capture for review;
   ask for the caller's own layer count, including a confirmed estimate; never assume it.
   If the caller only knows "more than one," ask for their own numeric layer count [existingLayers].
-Q4 [pitch]: "How steep is it — pretty flat and walkable, a
-  normal slope, steep, or really steep like a chalet?"
-  → low / medium / steep / very_steep
-Q5 [roofComplexity]: "And is it a simple A-shape roof, does
-  it have some hips and valleys, or is it really cut up —
-  dormers, multiple sections?" → simple/moderate/complex
-Q6 [roofSizeMethod + roofSizeInput] — THE CRITICAL ONE: "What's the measured roof area, in square feet?" Use roof_measured only. An approximate area supplied by the caller can be confirmed and quoted; no number goes to review.
-If the current contract requires itemized accessories, ask for the measured [starterLengthLF], [dripEdgeLengthLF] and [ridgeCapLengthLF] individually. Ask for [deckingSheets] if replacement decking is requested and [permitRequired] when applicable.
+Q4 [pitchMethod and current pitch fields]: Ask for rise per 12 using the exact current choices: up to 6/12, a walkable roof; 7/12 through 9/12, steep; 10/12 through 12/12, very steep; or over 12/12, special steep work. If an EagleView-style report gives area at each pitch, collect each reported surface area. Otherwise collect one band for the whole roof. If the caller does not know, describe these bands and use not_sure only after they still cannot choose; the owner's saved fallback controls whether it can quote and the result says pitch will be confirmed on site. A legacy service's live contract still supplies its prior pitch choices; follow that contract exactly.
+Q5 [roofComplexity]: Use shape alone: "Is it a simple gable roof, a hip roof or one with several valleys, or a complex roof with dormers or turrets?" → simple/moderate/complex.
+Q6 [roofSizeMethod + roofSizeInput] — THE CRITICAL ONE: Ask for measured roof surface area. Under the new rules, a caller may instead give the house footprint including overhangs plus the roof rise per 12; the tool performs and shows the conversion. An approximate number supplied by the caller can be confirmed and quoted; no number goes to review.
+If the current contract requires itemized accessories, use these exact titles: [starterLengthLF] "Starter along all eaves and rakes"; [dripEdgeLengthLF] "Drip edge along all eaves and rakes"; [ridgeCapLengthLF] "Hip-and-ridge cap along all ridges and hips". Ask only current-contract questions for ice and water barrier at eaves and valleys, valley length, step flashing, pipe jacks or ridge vent. Ask for [deckingSheets] if replacement decking is requested and [permitRequired] when applicable.
 Recap numbers → quote → tiers if configured (shingle grades
 are the natural Good/Better/Best trade) → book.
 

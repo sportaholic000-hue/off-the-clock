@@ -2664,7 +2664,11 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     deckingPerSheet: 5000,
     disposalPerSquare: 0
   });
-  assertReadyCases('ROOFING_REPLACEMENT', matrixRoof, roofCases);
+  assertReadyCases('ROOFING_REPLACEMENT', matrixRoof, roofCases,[
+    'additionalLayerRemovalFactor','complexityLaborMultiplier.complex','complexityLaborMultiplier.moderate','complexityLaborMultiplier.simple',
+    'pitchInstallationAdder.seven_to_nine','pitchInstallationAdder.ten_to_twelve',
+    'pitchRemovalAdder.seven_to_nine','pitchRemovalAdder.ten_to_twelve'
+  ]);
 
   const roofRepair = repairFixture('ROOFING_REPAIR');
   const roofRepairCases = [];

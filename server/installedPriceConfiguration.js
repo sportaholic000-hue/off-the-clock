@@ -12,6 +12,7 @@ export function installedPriceDefinitions(type,p={}) {
     if(active&&positiveInstalledPrice(p.offeringRates[key]))fields['offeringRates.'+key]=offeringRateDefinitions(type,p)[key]?.label||key.replaceAll('_',' ');
   }
   if(type==='ROOFING_REPLACEMENT')for(const [key,basis] of Object.entries(p.underlaymentPriceBasis||{}))if(basis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSquare?.[key]))fields['underlaymentPerSquare.'+key]=key.replaceAll('_',' ')+' installed roof underlayment';
+  if(type==='ROOFING_REPLACEMENT'&&p.deckingPriceBasis==='installed'&&positiveInstalledPrice(p.deckingPerSheet))fields.deckingPerSheet='Installed decking replacement';
   // Zero rates still need valid free/included classification at the pricing
   // boundary. They carry no separate installed amount to allocate for tax.
   if(type.startsWith('FLOORING_')&&p.underlaymentPriceBasis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSqft))fields.underlaymentPerSqft='Installed vinyl-plank underlayment';

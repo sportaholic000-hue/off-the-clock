@@ -9,6 +9,7 @@ import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scope
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringBaselineConfirmation} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
+import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 
 // Readiness validates many selections against one immutable tier. Only private,
 // fully snapshotted and deeply frozen copies are eligible for this reuse. Caller
@@ -109,12 +110,16 @@ const CANONICAL_SLUG = /^[a-z][a-z0-9_]*$/;
 
 const field = (label, unit, type, extra = {}) => ({ label, unit, type, ...extra });
 const numberField = (label, unit, min, max, extra = {}) => field(label, unit, 'number', { min, max, ...extra });
-const enumField = (label, values) => field(label, null, 'enum', { values });
+const enumField = (label, values, extra={}) => field(label, null, 'enum', { values,...extra });
 const booleanField = label => field(label, null, 'boolean');
 const slugField = label => field(label, null, 'slug');
 
 const measuredArea = numberField('Measured area', 'square feet', 1, 1_000_000);
 const measuredLength = numberField('Confirmed measured length', 'linear feet', 0, 1_000_000);
+const ROOF_RULE_GROUP='roofing_replacement_20261016';
+export function usesNewRoofReplacementRulesVNext(rules={}){
+  return ['new','adopted'].includes(rules?.startingValueAdoptions?.[ROOF_RULE_GROUP]?.mode);
+}
 
 function commonContract({ fields, required, inspection, crossValidate }) {
   return { fields: { ...fields, permitRequired: booleanField('Permit required for this measured project') }, required, inspection, crossValidate };
@@ -134,9 +139,9 @@ export const MEASUREMENT_CONTRACTS = {
       serviceScope: enumField('Replacement scope', ['full', 'partial']),
       partialPercent: numberField('Confirmed affected portion', 'percent', 0.1, 100),
       partialAreaSqft: numberField('Measured affected roof area', 'square feet', 1, 1_000_000),
-      starterLengthLF: measuredLength,
-      dripEdgeLengthLF: measuredLength,
-      ridgeCapLengthLF: measuredLength,
+      starterLengthLF: numberField('Starter along all eaves and rakes', 'linear feet', 0, 1_000_000),
+      dripEdgeLengthLF: numberField('Drip edge along all eaves and rakes', 'linear feet', 0, 1_000_000),
+      ridgeCapLengthLF: numberField('Hip-and-ridge cap along all ridges and hips', 'linear feet', 0, 1_000_000),
       deckingSheets: numberField('Confirmed decking sheets to replace', 'sheets', 0, 100_000, { integer: true })
     },
     required(c, p) {
@@ -722,6 +727,34 @@ export const CLASS2_DEFINITIONS = {
   CUSTOM: {}
 };
 
+const roofStarting=(defaultValue,label,source,assumption,min=0,max=5)=>({
+  defaultValue,label,unit:'decimal addition',min,max,startingValue:structuredClone(defaultValue),
+  startingValueLabel:label,startingValueSource:source,startingValueAssumption:assumption,
+  startingValueGroup:ROOF_RULE_GROUP
+});
+Object.assign(CLASS2_DEFINITIONS.ROOFING_REPLACEMENT,{
+  pitchInstallationAdder:roofStarting(
+    {seven_to_nine:0.20,ten_to_twelve:0.31},'Steep-roof installation additions',
+    'Foxhaven reports labor surcharges above 6/12 of 10-25% and steep-roof labor of 20-40%; SquareDash reports $50-$100 per square on about $200 labor, and Xactimate samples set the upper band at 1.57 times the lower band.',
+    "Assumes your crew's productivity changes in line with these published steep-roof figures."
+  ),
+  pitchRemovalAdder:roofStarting(
+    {seven_to_nine:0.26,ten_to_twelve:0.41},'Steep-roof removal additions',
+    'Three NEDES Xactimate samples price 7/12-9/12 removal at 25-28% of tear-off, haul and disposal; two price 10/12-12/12 at 40-43%, with the upper charge 1.57 times the lower charge.',
+    'Assumes your removal productivity and disposal handling change in line with these published samples.'
+  ),
+  complexityLaborMultiplier:roofStarting(
+    {simple:1,moderate:1.20,complex:1.40},'Roof-shape labor adjustment',
+    'SquareDash places a hip roof about 1.23 times a simple gable at published midpoints; RoofVista lists multiple valleys at +15-25% and dormers or turrets at +30-45%, separately from pitch.',
+    "Assumes your crew's labor productivity changes in line with these published roof-shape ranges.",0.1,5
+  ),
+  additionalLayerRemovalFactor:roofStarting(
+    0.70,'Additional tear-off layer factor',
+    "SupplementSnap's approximately $45 additional-layer removal is about 70-73% of first-layer removal in separate Symbility and GAF Xactimate samples.",
+    'The figures come from different price lists and dates; replace this approximation with your own additional-layer removal factor.'
+  )
+});
+
 // October 3 owner-approved material quantities and labor adjustments.
 const waste = label => factor(0.10,label,'decimal fraction',0,0.5);
 CLASS2_DEFINITIONS.ROOFING_REPLACEMENT.accessoryWasteFactor=factorMap({starterPerLF:0.10,dripEdgePerLF:0.10,ridgeCapPerLF:0.10},'Starter strip, drip edge and ridge cap waste','decimal fraction',0,0.5);
@@ -1123,7 +1156,7 @@ export function validateClass2Factors(serviceType, pricing = {}) {
 }
 
 const ALLOWED_PRICING_FIELDS = {
-  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob', 'bundlesPerSquare'],
+  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'deckingPriceBasis', 'iceWaterBarrierUnit', 'iceWaterBarrierPerSqft', 'iceWaterBarrierPerLF', 'valleyPerLF', 'stepFlashingPerLF', 'pipeJackEach', 'ridgeVentPerLF', 'pitchInstallationAdderOverTwelve', 'pitchRemovalAdderOverTwelve', 'unknownPitchBand', 'disposalPerSquare', 'minimumJob', 'bundlesPerSquare'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance', 'largeRepairMaxSqft'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge', 'largeRepairMaxSqft'],
@@ -1146,7 +1179,54 @@ const ALLOWED_PRICING_FIELDS = {
 };
 
 export function customerContractForVNext(type,p={},rules={}) {
- const base=configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type];
+ let base=configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type];
+ if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(rules)){
+  const materialKeys=Object.keys(rules?.pricing?.materialCostPerSquare||p.materialCostPerSquare||{});
+  const dependentActive=materialKeys.length>0&&materialKeys.every(key=>dependentLineEnabledVNext({...rules,pricing:rules?.pricing||p},roofFlashingVentDefinitionVNext(key)));
+  const legacy=base,fields={...legacy.fields,
+   roofSizeMethod:enumField('Roof area method',['roof_measured','footprint']),
+   roofSizeInput:numberField('Measured roof surface area or footprint including overhangs','square feet',50,1_000_000),
+   pitchMethod:enumField('How the roof pitch is supplied',['whole_roof','area_by_pitch','not_sure']),
+   pitchBand:enumField('Rise per 12 for the whole roof',['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],{optionLabels:{up_to_six:'Up to 6/12 — walkable roof',seven_to_nine:'7/12-9/12 — steep roof',ten_to_twelve:'10/12-12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'}}),
+   pitchRisePer12:numberField('Roof rise per 12 inches of run','inches',0,100),
+   pitchAreaUpTo6Sqft:numberField('Roof surface area up to 6/12 — walkable','square feet',0,1_000_000),
+   pitchArea7To9Sqft:numberField('Roof surface area at 7/12-9/12 — steep','square feet',0,1_000_000),
+   pitchArea10To12Sqft:numberField('Roof surface area at 10/12-12/12 — very steep','square feet',0,1_000_000),
+   pitchAreaOver12Sqft:numberField('Roof surface area over 12/12 — special steep work','square feet',0,1_000_000),
+   roofComplexity:enumField('Roof shape',['simple','moderate','complex'],{optionLabels:{simple:'Simple — a gable roof',moderate:'Moderate — a hip roof or several valleys',complex:'Complex — dormers or turrets'}}),
+   ...(dependentActive?{iceWaterBarrierSqft:numberField('Ice and water barrier at eaves and valleys','square feet',0,1_000_000),
+   iceWaterBarrierLengthLF:numberField('Ice and water barrier at eaves and valleys','linear feet',0,1_000_000),
+   valleyLengthLF:numberField('Valley length','linear feet',0,1_000_000),
+   stepFlashingLengthLF:numberField('Step flashing length','linear feet',0,1_000_000),
+   pipeJackCount:numberField('Pipe jacks','each',0,100_000,{integer:true}),
+   ridgeVentLengthLF:numberField('Ridge vent length','linear feet',0,1_000_000)}:{})
+  };
+  delete fields.pitch;
+  base={...legacy,fields,
+   required(c){
+    const out=['roofSizeMethod','roofSizeInput','existingRoofType','replacementRoofType','pitchMethod','stories','existingLayers','roofComplexity','serviceScope'];
+    if(c.roofSizeMethod==='footprint')out.push('pitchRisePer12');
+    if(c.pitchMethod==='whole_roof')out.push('pitchBand');
+    if(c.pitchMethod==='area_by_pitch'&&['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].every(name=>c[name]===undefined))out.push('pitchAreaUpTo6Sqft');
+    if(c.serviceScope==='partial'&&c.partialPercent===undefined&&c.partialAreaSqft===undefined)out.push('partialAreaSqft');
+    if(p.accessoryPricingMode==='itemized')out.push('starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF');
+    return out;
+   },inspection(){return null;},crossValidate(c){
+    const errors=[];
+    if(c.roofSizeMethod==='footprint'&&c.pitchMethod!=='whole_roof')errors.push({field:'pitchMethod',message:'A footprint conversion requires one rise-per-12 pitch for the whole roof.'});
+    if(c.pitchMethod==='whole_roof'&&Number.isFinite(c.pitchRisePer12)){
+      const band=c.pitchRisePer12<=6?'up_to_six':c.pitchRisePer12<=9?'seven_to_nine':c.pitchRisePer12<=12?'ten_to_twelve':'over_twelve';
+      if(c.pitchBand!==band)errors.push({field:'pitchBand',message:'The selected pitch band must match the supplied rise per 12 inches.'});
+    }
+    if(c.pitchMethod==='area_by_pitch'){
+      const sum=['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].reduce((n,name)=>n+(c[name]||0),0);
+      if(c.roofSizeMethod==='roof_measured'&&c.serviceScope==='full'&&Number.isFinite(c.roofSizeInput)&&exactCompare(sum,c.roofSizeInput)!==0)errors.push({field:'pitchAreaUpTo6Sqft',message:'Areas by pitch must add up to the measured roof surface area.'});
+    }
+    if(c.serviceScope==='full'&&(c.partialPercent!==undefined||c.partialAreaSqft!==undefined))errors.push({field:c.partialAreaSqft!==undefined?'partialAreaSqft':'partialPercent',message:'Partial measurements apply only to a partial roof replacement.'});
+    if(c.iceWaterBarrierSqft!==undefined&&c.iceWaterBarrierLengthLF!==undefined)errors.push({field:'iceWaterBarrierSqft',message:'Supply ice and water barrier in only the unit selected by the owner.'});
+    return errors;
+   }};
+ }
  // A confirmation for another offered option is evidence, not extra measured
  // work. Accept only its registered confirmation boolean here. All quantities,
  // selections and scope checks remain specific to the option being priced.
@@ -1219,7 +1299,7 @@ function monthListIssue(value) {
 const nonNegativeMoney = value => Number.isSafeInteger(value) && value >= 0;
 
 const SCALAR_MONEY_FIELDS = {
-  ROOFING_REPLACEMENT: ['starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
+  ROOFING_REPLACEMENT: ['starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'iceWaterBarrierPerSqft', 'iceWaterBarrierPerLF', 'valleyPerLF', 'stepFlashingPerLF', 'pipeJackEach', 'ridgeVentPerLF', 'disposalPerSquare', 'minimumJob'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum'],
   FLAT_ROOF_REPLACEMENT: ['minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'pondingWaterSurcharge'],
@@ -1282,7 +1362,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     add('minimumJob', 'Minimum roof replacement job price', { kind: 'minimum' });
     out.push({ path: 'accessoryPricingMode', label: 'Roof accessory pricing method', kind: 'enum', values: ['per_square_allin', 'itemized'] });
     if (p.accessoryPricingMode === 'itemized') {
-      out.push({path:'materialAccessoryBasis',label:'Base material excludes separately itemized starter, drip edge, and ridge cap',kind:'enum',values:['excludes_itemized_accessories']});
+      out.push({path:'materialAccessoryBasis',label:'Base material exclusion wording',kind:'enum',values:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents']});
       if (c.starterLengthLF > 0) add('starterPerLF', 'Starter strip price per linear foot');
       if (c.dripEdgeLengthLF > 0) add('dripEdgePerLF', 'Drip edge price per linear foot');
       if (c.ridgeCapLengthLF > 0) add('ridgeCapPerLF', 'Ridge cap price per linear foot');
@@ -1558,7 +1638,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
     if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
     else for(const [key,value] of Object.entries(p[field])){
-      if(!/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft)$/.test(key)||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
+      if(!/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
       else if(field==='installedMaterialsPercent'&&typeof p.installedLaborPercent?.[key]==='number'&&Number.isFinite(p.installedLaborPercent[key])&&p.installedLaborPercent[key]>=0&&p.installedLaborPercent[key]<=100&&exactCompare(exactAdd(value,p.installedLaborPercent[key]),100)>0)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Materials and labor portions cannot total more than 100%.');
     }
   }
@@ -1577,7 +1657,11 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   if (serviceType === 'CUSTOM' && p.customChargeClassification !== undefined && !PRICE_BASIS_CATEGORIES.includes(p.customChargeClassification)) structureDiagnostic(diagnostics, 'invalid', 'customChargeClassification', 'Choose the configured line category for this custom service.');
 
   if (serviceType === 'ROOFING_REPLACEMENT') {
-    if(p.materialAccessoryBasis!==undefined && (p.materialAccessoryBasis!=='excludes_itemized_accessories'||p.accessoryPricingMode!=='itemized'))structureDiagnostic(diagnostics,'invalid','materialAccessoryBasis','Accessory exclusion declaration requires itemized mode and the exact excludes_itemized_accessories value.');
+    if(p.materialAccessoryBasis!==undefined && (!['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'].includes(p.materialAccessoryBasis)||p.accessoryPricingMode!=='itemized'))structureDiagnostic(diagnostics,'invalid','materialAccessoryBasis','Accessory exclusion declaration requires itemized mode and a supported exclusion wording.');
+    if(p.deckingPriceBasis!==undefined&&!['material_only','installed'].includes(p.deckingPriceBasis))structureDiagnostic(diagnostics,'invalid','deckingPriceBasis','Choose material only or installed decking pricing.');
+    if(p.iceWaterBarrierUnit!==undefined&&!['square_feet','linear_feet'].includes(p.iceWaterBarrierUnit))structureDiagnostic(diagnostics,'invalid','iceWaterBarrierUnit','Choose square feet or linear feet for ice and water barrier.');
+    if(p.unknownPitchBand!==undefined&&!['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'].includes(p.unknownPitchBand))structureDiagnostic(diagnostics,'invalid','unknownPitchBand','Choose a supported rise-per-12 band for an unknown pitch.');
+    for(const field of ['pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve'])if(p[field]!==undefined&&(!nonNegative(p[field])||p[field]>5))structureDiagnostic(diagnostics,'invalid',field,field+' must be a decimal addition from 0 to 5.');
     for (const name of ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
     inspectPriceMap(diagnostics, p, 'underlaymentPriceBasis', { predicate: value => ['installed_area_sell_price', 'cost'].includes(value), canonicalKeys: true });
     inspectPriceMap(diagnostics, p, 'bundlesPerSquare', { predicate: positive, canonicalKeys: true });
@@ -1875,7 +1959,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   ownerPricing = canonicalServiceIdentityVNext(snapshot.value);
   serviceType ||= ownerPricing.serviceType;
   const diagnostics = [];
-  const supportedRoot = new Set(['active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','id','origin','zeroPricePolicy','knownOfferings','startingValueState','dependentLineState']);
+  const supportedRoot = new Set(['active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','id','origin','zeroPricePolicy','knownOfferings','startingValueState','startingValueAdoptions','dependentLineState']);
   for(const key of Object.keys(ownerPricing)) if(!supportedRoot.has(key) && !ALL_PRICING_FIELDS.has(key) && !BUSINESS_DEFAULT_FIELDS.includes(key)) diagnostics.push(ownerDiagnostic('unsupported','service_root',key,'Unsupported service setting; migrate or explicitly configure its VNext contract before quoting.'));
   if(ownerPricing.disposalScope!==undefined && (serviceType!=='LANDSCAPING_SOD'||ownerPricing.disposalScope!=='separate_project_debris')) diagnostics.push(ownerDiagnostic('invalid','service_rule','disposalScope','Only explicitly separate sod-project debris is supported.'));
   const nestedPricing = ownerPricing.pricing;

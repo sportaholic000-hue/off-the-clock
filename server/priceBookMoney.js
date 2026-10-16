@@ -11,7 +11,7 @@ import {mergePricingForValidationVNext} from './quote-engine-vnext/pricingMerge.
 // conversion path.
 const UNIT_RATE_FIELDS = new Set([
   'laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare',
-  'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','disposalPerSquare',
+  'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','disposalPerSquare',
   'laborHourlyRate','laborPerFloorSqft','materialPerFloorSqft2Coats',
   'ceilingLaborPerFloorSqft','trimLaborPerLF','trimMaterialPerLF',
   'exteriorLaborPerSqft','materialPerSqftPerCoat','laborPerSqft','materialPerSqft',
@@ -46,7 +46,8 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
   'scopeDetails','roomSizeThresholds','sodPalletSizeSqft','cartonCoverageSqft',
-  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards'
+  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',
+  'deckingPriceBasis','iceWaterBarrierUnit','unknownPitchBand','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates']);
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);

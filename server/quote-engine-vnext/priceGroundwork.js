@@ -38,6 +38,7 @@ export function startingValueDefinitionsVNext(definitions={}){
       out.push({
         path,value:leaf.value,label:definition.startingValueLabel||definition.label||path,
         source:definition.startingValueSource,assumption:definition.startingValueAssumption,
+        ...(definition.startingValueGroup?{group:definition.startingValueGroup}:{}),
         definitionSignature:signature({path,value:leaf.value,source:definition.startingValueSource,assumption:definition.startingValueAssumption,label:definition.startingValueLabel||definition.label||path})
       });
     }
@@ -52,10 +53,15 @@ export function startingValueDefinitionsVNext(definitions={}){
 export function synchronizeStartingValuesVNext(service,definitions={},options={}){
   if(!record(service))throw new TypeError('A service is required.');
   const next=clone(service);next.pricing=record(next.pricing)?next.pricing:{};
-  const state=record(next.startingValueState)?clone(next.startingValueState):{};
+  const state=record(next.startingValueState)?clone(next.startingValueState):{},adoptions=record(next.startingValueAdoptions)?clone(next.startingValueAdoptions):{};
   const confirm=new Set(options.confirmPaths||[]),ownerEntered=new Set(options.ownerEnteredPaths||[]);
+  const legacyGroups=new Set(options.legacyGroups||[]),newGroups=new Set(options.newGroups||[]),adoptGroups=new Set(options.adoptGroups||[]);
   const now=typeof options.now==='string'?options.now:new Date().toISOString();
   const definitionRows=startingValueDefinitionsVNext(definitions),definitionPaths=new Set(definitionRows.map(item=>item.path));
+  for(const group of new Set(definitionRows.map(item=>item.group).filter(Boolean))){
+    if(!adoptions[group]&&legacyGroups.has(group))adoptions[group]={mode:'legacy',introducedAt:now};
+    else if(!adoptions[group]&&newGroups.has(group))adoptions[group]={mode:'new',introducedAt:now};
+  }
   for(const path of Object.keys(state))if(!definitionPaths.has(path))delete state[path];
   for(const item of definitionRows){
     const current=getPath(next.pricing,item.path),prior=state[item.path];
@@ -81,7 +87,19 @@ export function synchronizeStartingValuesVNext(service,definitions={},options={}
       state[item.path]={...row,confirmed:true,confirmedAt:now,ownerId};
     }
   }
+  for(const group of adoptGroups){
+    const rows=definitionRows.filter(item=>item.group===group);
+    if(!rows.length)throw new TypeError('The requested starting-value group is not defined for this service.');
+    const ownerId=options.ownerId||next.origin?.ownerId;
+    if(typeof ownerId!=='string'||!ownerId.trim()||next.origin?.ownerId&&ownerId!==next.origin.ownerId)throw new TypeError('Starting-value adoption must match the service owner.');
+    for(const item of rows){
+      const row=state[item.path];
+      if(row&&row.definitionSignature===item.definitionSignature&&Object.is(getPath(next.pricing,item.path),item.value))state[item.path]={...row,confirmed:true,confirmedAt:now,ownerId};
+    }
+    adoptions[group]={mode:'adopted',adoptedAt:now,ownerId};
+  }
   if(Object.keys(state).length)next.startingValueState=state;else delete next.startingValueState;
+  if(Object.keys(adoptions).length)next.startingValueAdoptions=adoptions;else delete next.startingValueAdoptions;
   return next;
 }
 
@@ -100,11 +118,15 @@ function evidencePaths(template){
 
 export function unconfirmedStartingValueUsesVNext(service,template){
   const used=evidencePaths(template),state=record(service?.startingValueState)?service.startingValueState:{};
-  return Object.entries(state).filter(([path,row])=>used.has(path)&&(!record(row)||row.confirmed!==true)).map(([path,row])=>({
+  return Object.entries(state).filter(([path,row])=>used.has(path)&&(!record(row)||row.confirmed!==true)&&(!row?.group||service?.startingValueAdoptions?.[row.group]?.mode!=='legacy')).map(([path,row])=>({
     path:'startingValueState.'+path,
     factorPath:path,
     message:'Confirm the starting value for '+String(record(row)&&row.label||path).toLowerCase()+' in your price book.'
   }));
+}
+
+export function startingValueGroupsVNext(definitions={}){
+  return [...new Set(startingValueDefinitionsVNext(definitions).map(item=>item.group).filter(Boolean))];
 }
 
 function dependentSignature(definition){
@@ -150,4 +172,14 @@ export function activeDependentLinesVNext(lines,service,definitions=[]){
     const definition=definitionsById.get(line.dependentLineId);
     return Boolean(definition)&&dependentLineEnabledVNext(service,definition);
   });
+}
+
+export function roofFlashingVentDefinitionVNext(materialType){
+  if(typeof materialType!=='string'||!/^[a-z][a-z0-9_]*$/.test(materialType))throw new TypeError('A canonical roof material type is required.');
+  return {
+    id:'roofing_flashing_vents.'+materialType,
+    label:'Itemized roof flashing and vent lines',
+    basePricePath:'materialCostPerSquare.'+materialType,
+    basePriceNewWording:'Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.'
+  };
 }

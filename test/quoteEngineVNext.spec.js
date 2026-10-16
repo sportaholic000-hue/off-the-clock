@@ -436,9 +436,9 @@ test('area and perimeter shortcuts are inspection-first, never customer-ready', 
   assert.equal(quote({ ...mowing, customerInputs: { ...mowing.customerInputs, sqftMethod: 'assumption' } }).inspectionFirst, true);
 });
 
-test('itemized roofing has no square-root geometry and uses each measured length independently', () => {
+test('itemized roofing uses square-root geometry only for the approved footprint conversion and keeps measured accessory lengths independent', () => {
   const source = readFileSync('server/quote-engine-vnext/templates.js', 'utf8');
-  assert.equal(source.includes('Math.sqrt'), false);
+  assert.match(source,/roofSizeInput\*Math\.sqrt\(1\+\(c\.pitchRisePer12\/12\)\*\*2\)/);
   const entry = happyCases[0];
   const changed = quote({ ...entry, customerInputs: { ...entry.customerInputs, dripEdgeLengthLF: 125 } });
   assert.equal(lineMap(changed)['Drip edge'], 27500);
