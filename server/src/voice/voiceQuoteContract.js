@@ -40,6 +40,7 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
   const carpetRoomMode=service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&(inputs.carpetMeasurementMethod==='rooms'||Array.isArray(inputs.carpetRooms));
   const fields = (Array.isArray(definition?.customerFields) ? definition.customerFields : [])
     .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly)
+    .filter(field => !(service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&field.name==='layoutPattern'))
     .filter(field => !carpetRoomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name)&&!(field.name==='carpetConnectedAreas'&&!(inputs.carpetRooms?.length>1)));
   if (fields.length > 64) throw new TypeError('Voice measurement contract exceeds its bounded field limit.');
   const questions = fields.map(original => {

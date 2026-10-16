@@ -82,7 +82,7 @@ function ProductMeasurement({field,value,registered,update,onChange}) {
 
 export function customerMeasurementVisible(field,values={}){
  const roomMode=values.newFlooringType==='carpet'&&(values.carpetMeasurementMethod==='rooms'||values.carpetRooms!==undefined);
- return (!roomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name))&&(field.type!=='carpet_connections'||values.carpetRooms?.length>1)&&customerFieldVisible(field,values);
+ return (values.newFlooringType!=='carpet'||field.name!=='layoutPattern')&&(!roomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name))&&(field.type!=='carpet_connections'||values.carpetRooms?.length>1)&&customerFieldVisible(field,values);
 }
 
 export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onChange,knownOfferings={}}) {
@@ -92,7 +92,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  const measuredRuns=value.fenceRuns||Array.from({length:Number.isSafeInteger(value.fenceRunCount)&&value.fenceRunCount>0&&value.fenceRunCount<=1000?value.fenceRunCount:1},()=>({sections:[{}]}));
  const layoutChange=(runs,{removedRun=false}={})=>{const next={...value,fenceRuns:runs,fenceRunCount:removedRun||value.fenceRunCount===undefined?runs.length:value.fenceRunCount};for(const k of ['linearFeet','gates','cornerCount','lfMethod'])delete next[k];onChange(clearChangedScopeConfirmations(scopeFields,value,next));};
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
-  if(name==='newFlooringType'&&next!=='carpet')for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];
+  if(name==='newFlooringType'){if(next==='carpet')delete updated.layoutPattern;else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
   if(name==='carpetMeasurementMethod'){
    if(next==='area_only'){delete updated.carpetRooms;delete updated.carpetConnectedAreas;}
    else if(next==='rooms')for(const key of ['sqft','sqftMethod','roomCount','layoutPattern'])delete updated[key];

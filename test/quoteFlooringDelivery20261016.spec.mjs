@@ -34,6 +34,8 @@ test('carpet resolved phone questions use room dimensions without requesting a d
   const fields=voiceQuestionContract(f.ownerPricing,def,{...f.customerInputs,carpetMeasurementMethod:'rooms'}).fields.map(f=>f.field);
   for(const key of ['sqft','sqftMethod','roomCount','layoutPattern','carpetConnectedAreas'])assert.equal(fields.includes(key),false,key);
   assert.ok(fields.includes('carpetRooms'));
+  const areaOnly=voiceQuestionContract(f.ownerPricing,def,{newFlooringType:'carpet',carpetMeasurementMethod:'area_only'}).fields.map(f=>f.field);
+  assert.equal(areaOnly.includes('layoutPattern'),false);assert.ok(areaOnly.includes('sqft'));
 });
 
 test('flooring carpet caller-confirmed about 12 by 14 quotes, persists rooms and keeps site qualifications in phone/email/public copy',async t=>{

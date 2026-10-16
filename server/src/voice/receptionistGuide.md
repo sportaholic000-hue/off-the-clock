@@ -214,7 +214,7 @@ measurements collect [carpetRooms] as [{lengthFt,widthFt}, ...]: length front
 to back and width side to side, using the same directions for every room.
 Accept "about 12 by 14" as the caller's best estimate after their read-back
 confirmation. The engine derives floor area and room count; do not ask for
-another total or a hard-floor pattern for this method. For multiple rooms ask
+another total for this method. Never ask a hard-floor pattern for carpet. For multiple rooms ask
 [carpetConnectedAreas]: "Which rooms run into each other with no threshold or
 doorway strip?" Supply connected room-number groups, or "unknown" for Not sure.
 Not sure treats every room as one connected area. Read back these dimensions

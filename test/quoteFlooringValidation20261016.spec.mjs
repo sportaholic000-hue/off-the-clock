@@ -28,6 +28,17 @@ test('carpet never silently drops a stated room when fewer room dimensions are s
   delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1456.08);
 });
 
+test('new area-only carpet layouts add no hard-floor pattern allowance, while the legacy pattern request keeps its cents',()=>{
+  // Expected before execution:200sqft, $3 labor/material, .10 product waste,
+  // medium rooms =>66,000 labor+66,000 material+200 underlay=132,200c.
+  // Retained diagonal_or_pattern request:79,200+70,200+200=149,600c.
+  const f=carpet([{lengthFt:10,widthFt:20}]);delete f.customerInputs.carpetRooms;delete f.customerInputs.carpetConnectedAreas;
+  for(const layoutPattern of ['diagonal','herringbone_or_chevron']){
+    const q=generateQuoteVNext({...f,customerInputs:{...f.customerInputs,layoutPattern}});assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1322);
+  }
+  const legacy=generateQuoteVNext({...f,customerInputs:{...f.customerInputs,layoutPattern:'diagonal_or_pattern'}});assert.equal(legacy.midEstimate,1496);
+});
+
 test('flooring optional zero prices ask no questions and do not add new cents',()=>{
   // Expected before execution: 200*300*1.10+200*1.12*500=178,000c;
   // explicit zero for any new optional line behaves like blank.

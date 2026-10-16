@@ -38,7 +38,7 @@ export function flooringLayoutValue(c,p,kind){
   if(pattern==='straight')return {value:p[legacy]?.straight,path:legacy+'.straight'};
   // Area-only legacy carpet requests retain their exact old pricing. The new
   // carpet room/roll method above never uses hard-floor pattern allowances.
-  if(type==='carpet')return {value:p[legacy]?.diagonal_or_pattern,path:legacy+'.diagonal_or_pattern'};
+  if(type==='carpet')return pattern==='diagonal_or_pattern'?{value:p[legacy]?.diagonal_or_pattern,path:legacy+'.diagonal_or_pattern'}:{value:kind==='waste'?0:1,path:null};
   const diagonal=kind==='waste'?'diagonalWasteAdderByType':'diagonalLaborMultiplierByType';
   const herring=kind==='waste'?'herringboneWasteAdderByType':'herringboneLaborMultiplierByType';
   if(pattern==='herringbone_or_chevron'&&present(p[herring]?.[type]))return {value:p[herring][type],path:herring+'.'+type};
