@@ -2,15 +2,17 @@
 
 ## Broken, skipped or not run
 
+**GitHub push failed** with `fatal: could not read Username for 'https://github.com': No such device or address` (exit 128). No alternative push route was attempted. **Hosted CI was not run**: there is no pushed commit/run ID for this work. The requested verified bundle is the delivery route.
+
 Local Chromium cannot complete launch: the workspace-installed Playwright 1.56.0 headless shell exits with `SIGTRAP`. Browser results are not locally verified. The initial Node 24 clean install also failed compiling `better-sqlite3`; subsequent installs and builds use Node 22.23.3. Earlier failed test attempts and their repairs are retained below rather than counted as passes.
 
-The first strict quote gate failed: **4,555 passed, 119 failed, 0 skipped** (4,674 tests; cancelled 0, todo 0). One failure was the new shared field lookup calling `startsWith` on an absent service type; this is repaired. One was an existing catalog timing assertion (2,096/2,098 ms against its budget). The other failures were Chromium launch failures, including the new browser tests. The full suite also failed locally: **5,536 passed, 118 failed, 0 skipped** (5,654 tests; cancelled 0, todo 0). Its 117 Chromium failures and one different catalog timing assertion remain in the original log. The repaired persistence test passed. The isolated catalog rerun subsequently passed **8/8**, with no failures or skips. All 35 new non-browser tests passed in the full run. Hosted-CI verification is reported with the exact final SHA in the delivery message; it is not inferred from these local results. No production deployment or live telephone/audio test is part of this change.
+The first strict quote gate failed: **4,555 passed, 119 failed, 0 skipped** (4,674 tests; cancelled 0, todo 0). One failure was the new shared field lookup calling `startsWith` on an absent service type; this is repaired. One was an existing catalog timing assertion (2,096/2,098 ms against its budget). The other failures were Chromium launch failures, including the new browser tests. The full suite also failed locally: **5,536 passed, 118 failed, 0 skipped** (5,654 tests; cancelled 0, todo 0). Its 117 Chromium failures and one different catalog timing assertion remain in the original log. The repaired persistence test passed. The isolated catalog rerun subsequently passed **8/8**, with no failures or skips. All 35 new non-browser tests passed in the full run. The final bundle hash and SHA-256 are supplied in the delivery message after bundle verification. Browser interaction remains unverified because the push failed and hosted CI was unavailable. No production deployment or live telephone/audio test is part of this change.
 
 ## Branch and final revision
 
 Branch: `codex/qe-concrete-landscape-20261016`.
 
-Exact starting commit: `8b53169b2d6019e6769481b5c0551aca42a91f42`, verified against `origin/codex/qe-flooring-20261016`. No main merge. The final delivery message supplies the final SHA returned by `git ls-remote`, or the verified bundle and SHA-256 if the requested push fails. A commit cannot contain its own hash; the recorded remote check is delivery evidence.
+Exact starting commit: `8b53169b2d6019e6769481b5c0551aca42a91f42`, verified against `origin/codex/qe-flooring-20261016`. No main merge. Source/test commit `bf191bc0249b446fa45e57341d0fab5737e46da0` is preserved. A documentation-only commit records the push failure and bundle delivery. The final delivery message supplies that bundle HEAD and SHA-256. `git ls-remote` verification for the new branch was not run because no push succeeded. The verified bundle HEAD and checksum are delivery evidence.
 
 ## Files changed
 
@@ -106,7 +108,7 @@ Evidence packaging uses Python gzip with a fixed timestamp on all raw execution 
 
 The first `git commit -m "Add optional concrete and landscape pricing controls"` failed because this checkout had no author identity. The retry uses the one-command identity `git -c user.name=Codex -c user.email=codex@openai.com commit`, without changing global Git settings. No test counts are printed.
 
-Final `git add`, `git commit`, `git push -u origin HEAD:refs/heads/codex/qe-concrete-landscape-20261016`, and `git ls-remote origin refs/heads/codex/qe-concrete-landscape-20261016` results are reported in delivery evidence. If push fails, the prescribed `git bundle create concrete-landscape.bundle 8b53169b2d6019e6769481b5c0551aca42a91f42..HEAD`, `git bundle verify concrete-landscape.bundle`, and `sha256sum concrete-landscape.bundle` replace remote publication; no alternative push route is attempted.
+`git add` and the one-command Codex-identity commit succeeded. `git push -u origin HEAD:refs/heads/codex/qe-concrete-landscape-20261016` exited 128 because credentials were unavailable; `git ls-remote` for the new branch was therefore not run. No test counts were printed. The prescribed `git bundle create concrete-landscape.bundle 8b53169b2d6019e6769481b5c0551aca42a91f42..HEAD`, `git bundle verify concrete-landscape.bundle`, and `sha256sum concrete-landscape.bundle` replace remote publication; no alternative push route was attempted. Their exact final hash/checksum and verification outcome are in the delivery message.
 
 ## Proposed labels and wording
 
