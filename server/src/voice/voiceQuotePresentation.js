@@ -27,23 +27,44 @@ export function voiceConfigurationIssues(service, definition) {
   const details=[...new Set(fields.flatMap(field=>(field.presentationVariants||[]).flatMap(variant=>variant.details||[])))];
   const labels=fields.flatMap(field=>[field.label,...(field.presentationVariants||[]).map(variant=>variant.label)]).filter(Boolean);
   const names=[service.service,...(Array.isArray(service.tiers)?service.tiers:[]).map(tier=>tier?.name)].filter(value=>value!==undefined);
+  const gateChoices=fields.filter(field=>field.type==='offering_counts').flatMap(field=>Object.values(field.options||{}));
   const disclaimer=service.disclaimer||'';
   const issues=[];
   if(names.some(value=>typeof value!=='string'||value.length>200))issues.push('Keep service and price option names within 200 characters for the call and saved quote.');
   if(fields.length>64||labels.some(value=>typeof value!=='string'||value.length>VOICE_SCOPE_FACT_LIMIT)||details.length>VOICE_SCOPE_DETAIL_COUNT||details.some(value=>typeof value!=='string'||!value.trim()||value.length>VOICE_SCOPE_FACT_LIMIT))issues.push('The configured scope details exceed the complete call and saved-quote presentation limits. Split this work into separate services.');
+  if(gateChoices.some(value=>typeof value!=='string'||!value.trim()||value.length>VOICE_SCOPE_FACT_LIMIT))issues.push('The complete gate choices exceed the call presentation limits. Shorten them or split this work into separate services; nothing will be truncated.');
   if(typeof disclaimer==='string'){
     const ownerText=[...details,...(definition?.offeringSummary||[])];
-    const written=[...ownerText,...ownerText,...ownerText,...ownerText,...labels,...names,disclaimer,disclaimer,disclaimer,disclaimer].join(' ');
+    // Selected gates appear in both the measured scope and its qualification.
+    // Include every offered choice, not just the preview's one-gate scenarios.
+    const written=[...ownerText,...ownerText,...ownerText,...ownerText,...gateChoices,...gateChoices,...labels,...names,disclaimer,disclaimer,disclaimer,disclaimer].join(' ');
     if(written.length+16_384>VOICE_WRITTEN_LIMIT||Buffer.byteLength(written,'utf8')*3+65_536>VOICE_RESULT_BYTES)issues.push('The complete scope details and quote qualifications are too long for the call and saved quote. Shorten them or split this work into separate services; nothing will be truncated.');
   }
   return issues;
 }
-const scopeFacts = scope => {
+const scopeLines = scope => {
   if(!record(scope)||!Array.isArray(scope.facts)||scope.facts.length>64)throw new TypeError('Invalid saved scope.');
-  return [scope.service,...scope.facts.map(fact=>{
+  return [text(scope.service,VOICE_SCOPE_FACT_LIMIT),...scope.facts.map(fact=>{
     if(!record(fact)||!text(fact.label,VOICE_SCOPE_FACT_LIMIT)||!['string','number','boolean'].includes(typeof fact.value))throw new TypeError('Invalid saved scope fact.');
-    return text(fact.label+': '+String(fact.value),VOICE_SCOPE_FACT_LIMIT);
+    return text(fact.label+': '+String(fact.value));
   })].filter(Boolean);
+};
+const scopeFacts = scope => {
+  const parts=scopeLines(scope).flatMap(line=>{
+    const chunks=[];
+    for(let start=0;start<line.length;){
+      let end=Math.min(start+VOICE_SCOPE_FACT_LIMIT,line.length);
+      // The transport trims each string. Break inside text, away from spaces
+      // and UTF-16 pairs, so it cannot discard a boundary character.
+      while(end<line.length&&end>start&&
+        (!line[end-1].trim()||!line[end].trim()||/[\uD800-\uDBFF]/.test(line[end-1])&&/[\uDC00-\uDFFF]/.test(line[end])))end--;
+      if(end===start)throw new TypeError('Saved scope cannot be split without losing text.');
+      chunks.push(line.slice(start,end));start=end;
+    }
+    return chunks;
+  });
+  if(parts.length>65)throw new TypeError('Saved scope exceeds the voice fact count.');
+  return parts;
 };
 const scopeDetails = scope => {
   const details=[...new Set(scope.facts.flatMap(fact=>fact.details||[]))];
@@ -178,7 +199,9 @@ export function projectSavedQuoteContext(response) {
 function quoteNarration(projected,response) {
   if (projected.status !== 'quoted') return 'Your pricing request has been saved for review. No price has been confirmed.';
   const parts = [projected.voiceSummary];
-  if (projected.pricedScope?.length) parts.push('Priced scope: ' + projected.pricedScope.join('; ') + '.');
+  // The transport may split a long fact; the frozen script keeps its exact
+  // original text without inserting punctuation inside a gate description.
+  if (projected.pricedScope?.length) parts.push('Priced scope: ' + scopeLines(response.pricedScope).join('; ') + '.');
   if (projected.scopeDetails?.length) parts.push('Scope details: ' + projected.scopeDetails.join('; ') + '.');
   if (projected.additionalWork?.length) parts.push('Separately unpriced work: ' + projected.additionalWork.join('; ') + '.');
   if (projected.customerMessage) parts.push(projected.customerMessage);

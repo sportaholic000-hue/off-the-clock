@@ -63,7 +63,16 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
     const values = field.type === 'slug' ? [...new Set([...exemptValues, ...Object.keys(service.knownOfferings?.[field.name] || {})])] : field.values;
     if (Array.isArray(values)) {
       question.choices = values.slice(0, 32).filter(value => typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
-        .map(value => ({ value, label: safeText(field.options?.[value]) || safeText(field.optionLabels?.[value]) || human(value) }));
+        .map(value => {
+          if(field.name!=='gates'||field.type!=='offering_counts'){
+            return {value,label:safeText(field.options?.[value])||safeText(field.optionLabels?.[value])||human(value)};
+          }
+          // Width and installation scope are part of a gate's identity. The
+          // supported question transport accepts complete 4,000-char labels.
+          const label=field.options?.[value]??field.optionLabels?.[value];
+          if(label!==undefined&&!safeText(label,4000))throw new TypeError('Invalid complete voice choice.');
+          return {value,label:safeText(label,4000)||human(value)};
+        });
       if (values.length > 32) question.moreChoicesAvailable = true;
     }
     if (field.type === 'slug') question.productConfirmationRequired = true;
