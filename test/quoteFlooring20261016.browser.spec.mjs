@@ -59,9 +59,15 @@ test('flooring Chromium customer: estimated room dimensions replace area questio
 test('flooring Chromium customer: connection selection supports Not sure, separate and manually grouped rooms',async t=>{
  // Expected BEFORE execution:connected/Not sure426 boughtsqft;separate348.
  // Switching from Not sure into manual groups must retain the incomplete draft.
+ // Adding a5x6 room clears every old connection choice. Choosing Not sure
+ // then buys426+12*5.5=492sqft, with310sqft measured floor area.
  const f=carpet([{lengthFt:10,widthFt:14},{lengthFt:14,widthFt:10}]);f.customerInputs.carpetMeasurementMethod='rooms';const page=await customerPage(t,f);
  await page.getByLabel('Carpet room connections',{exact:true}).selectOption('separate');let inputs=await output(page);assert.deepEqual(inputs.carpetConnectedAreas,[[1],[2]]);assert.equal(generateQuoteVNext({...f,customerInputs:inputs}).lineItems.find(l=>l.name==='Flooring materials').calculation.quantity,348);
  await page.getByLabel('Carpet room connections',{exact:true}).selectOption('unknown');await page.getByLabel('Carpet room connections',{exact:true}).selectOption('groups');await page.getByLabel('Room 1 connected area',{exact:true}).selectOption('1');await page.getByLabel('Room 2 connected area',{exact:true}).selectOption('1');inputs=await output(page);assert.deepEqual(inputs.carpetConnectedAreas,[[1,2]]);assert.equal(generateQuoteVNext({...f,customerInputs:inputs}).lineItems.find(l=>l.name==='Flooring materials').calculation.quantity,426);
+ await page.getByRole('button',{name:'Add room',exact:true}).click();
+ for(const n of [1,2,3])assert.equal(await page.getByLabel('Room '+n+' connected area',{exact:true}).inputValue(),'');
+ assert.equal((await output(page)).carpetConnectedAreas,undefined);
+ await page.getByLabel('Room 3 length, front to back',{exact:true}).fill('5');await page.getByLabel('Room 3 width, side to side',{exact:true}).fill('6');await page.getByLabel('Carpet room connections',{exact:true}).selectOption('unknown');inputs=await output(page);assert.equal(inputs.sqft,310);assert.equal(generateQuoteVNext({...f,customerInputs:inputs}).lineItems.find(l=>l.name==='Flooring materials').calculation.quantity,492);
 });
 
 test('flooring Chromium actual widget and saved public page keep the carpet seaming qualification',async t=>{
