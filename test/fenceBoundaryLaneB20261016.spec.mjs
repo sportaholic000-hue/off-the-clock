@@ -63,7 +63,10 @@ test('Oct16 exact spans do not add a post on binary decimal boundaries: 0.3 ft /
 test('Oct16 new total-only rows require the run count instead of assuming one run',()=>{
  const f=fenceFixture();delete f.customerInputs.fenceRunCount;const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.missingCustomerFields.includes('fenceRunCount'));
 });
-test('Oct16 a quarter-foot measured section stays measurable: 2 terminal posts, 0 line posts, total 6800 cents',()=>{
- // 0.25*$10 + 0.25*1.10*$20 + 2*($20+$4+$6) = $68.00.
- const f=layout();f.customerInputs.fenceRuns=[{closed:false,sections:[{lengthLF:0.25}]}];const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(total(q),6800);
+test('Oct16 quarter-foot sections preserve the 1 ft project minimum: 0.25 ft reviews; 0.25+0.75 ft quotes 3 terminal posts / 12200 cents',()=>{
+ // 1*$10 + 1*1.10*$20 + 3*($20+$4+$6) = $122.00. The corner is shared.
+ const f=layout();f.customerInputs.fenceRuns=[{closed:false,sections:[{lengthLF:0.25}]}];
+ assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ f.customerInputs.fenceRuns[0].sections.push({lengthLF:0.75});const q=generateQuoteVNext(f);
+ assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(total(q),12200);
 });
