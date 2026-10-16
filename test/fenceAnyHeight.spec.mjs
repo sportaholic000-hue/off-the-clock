@@ -39,7 +39,7 @@ function live(service) {
   return inputs => bridge.calculateApplicationQuote(book, book.services[0], { serviceId:book.services[0].id, customerInputs:inputs }, { ownerId });
 }
 const fenceId = crypto.randomUUID();
-const confirm = inputs => ({ ...inputs, confirmedFacts:{ fenceType:{ status:'identified', field:'fenceType', value:'wood', offeringId:fenceId } } });
+const confirm = inputs => ({ fenceRunCount:1,...inputs, confirmedFacts:{ fenceType:{ status:'identified', field:'fenceType', value:'wood', offeringId:fenceId } } });
 
 test('explicit itemized height rows quote 2, 5 ft 3.65 in, 6, 9 and 13 ft without scaling any component', () => {
   const quote = live({ serviceType:'FENCING_INSTALL', service:'Wood privacy', knownOfferings:{ fenceType:{ wood:fenceId } }, pricing:{ minimumJob:0, offeringMode:'itemized',

@@ -43,7 +43,7 @@ const total = r => r.options[0].calculationRecord.scenarios.mid.finalTotalCents;
 const fid = crypto.randomUUID();
 const fenceSvc = (extra = {}, details = {}) => ({ serviceType:'FENCING_INSTALL', service:'Fence', knownOfferings:{ fenceType:{ wood:fid } }, pricing:{ minimumJob:0, offeringMode:'installed',
   offeringDetails:{ description:'Fence', fenceType:'wood', fenceHeight:6, postFootingDescription:'Posts', gates:{}, ...details }, offeringRates:{ installedFencePerLF:39.5 }, ...extra } });
-const job = (o = {}) => ({ linearFeet:95.01, lfMethod:'exact', fenceType:'wood', fenceHeight:6, terrainSlope:'flat', gates:{}, cornerCount:0,
+const job = (o = {}) => ({ linearFeet:95.01, lfMethod:'exact', fenceType:'wood', fenceHeight:6, terrainSlope:'flat', gates:{}, cornerCount:0,fenceRunCount:1,
   confirmedFacts:{ fenceType:{ status:'identified', field:'fenceType', value:'wood', offeringId:fid } }, ...o });
 const shares = (materials, labor) => ({ installedMaterialsPercent:{ 'offeringRates.installedFencePerLF':materials }, installedLaborPercent:{ 'offeringRates.installedFencePerLF':labor } });
 
