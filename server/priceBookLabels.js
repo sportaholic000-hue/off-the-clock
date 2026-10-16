@@ -28,6 +28,7 @@ export function humanPricingKey(key) {
 
 export function reviewLabel(path,service,meta={},p=service.pricing||service) {
  const parts=path.replace(/^pricing\./,'').split('.'),root=parts.shift();
+ if(service.serviceType==='LANDSCAPING_PLANTING'&&['plantSizes','plantingLaborPerPlant','plantMaterialAllowance'].includes(root)&&p.plantSizes?.[parts[0]])return [meta.fields?.find(f=>f.field===root)?.label||humanPricingKey(root),p.plantSizes[parts[0]].name,...parts.slice(1).map(humanPricingKey)].join(' · ');
  if(root==='fenceOfferings'){
   const type=parts.shift(),offer=p.fenceOfferings?.[type]||{};
   return humanPricingKey(type)+' · '+reviewLabel(parts.join('.'),service,meta,offer);

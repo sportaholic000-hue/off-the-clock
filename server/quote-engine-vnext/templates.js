@@ -1,4 +1,5 @@
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
+import {present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
 import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,pricePresent,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
@@ -868,10 +869,40 @@ function calculateConcrete(serviceType, c, p) {
     ]
   }));
   add(out, makeLine({ name: 'Ready-mix concrete', category: 'material', quantity: exactYards, unit: 'waste-adjusted cubic yards', rateCents: p.concreteCostPerCubicYard, ratePath: 'concreteCostPerCubicYard' }));
+  if((present(p.shortLoadPerYard)||present(p.shortLoadFlatFee))&&exactCompare(exactYards,p.shortLoadThresholdCubicYards)<0){
+    const short=exactSubtract(p.shortLoadThresholdCubicYards,exactYards);
+    recordQuantityDerivation(out,{name:'shortLoadMissingYards',formula:'shortLoadThresholdCubicYards - orderedConcreteYards',inputs:{shortLoadThresholdCubicYards:p.shortLoadThresholdCubicYards,orderedConcreteYards:yards},result:short,unit:'cubic yards',usedBy:['Supplier short-load charge']});
+    add(out,present(p.shortLoadFlatFee)?fixedLine('Supplier short-load charge','material',p.shortLoadFlatFee,'shortLoadFlatFee'):makeLine({name:'Supplier short-load charge',category:'material',quantity:short,unit:'cubic yards short of supplier threshold',rateCents:p.shortLoadPerYard,ratePath:'shortLoadPerYard'}));
+  }
+  if(p.controlJointPricing==='excluded'){
+    if(present(p.sawCutPerLF)){
+      const joints=controlJointLength(c,dimensions.exactAreaSqft,p.controlJointSpacingFt);
+      recordQuantityDerivation(out,{name:'controlJointLengthLF',formula:joints.rectangle?'(ceil(length / spacing) - 1) * width + (ceil(width / spacing) - 1) * length':'roundTo0.01((ceil(sqrt(areaSqft) / spacing) - 1) * sqrt(areaSqft) * 2)',inputs:{areaSqft:dimensions.areaSqft,length:joints.length,width:joints.width,spacing:p.controlJointSpacingFt},result:joints.quantity,unit:'linear feet',usedBy:['Saw-cut control joints']});
+      if(exactCompare(joints.quantity,0)>0)add(out,makeLine({name:'Saw-cut control joints',category:'labor',quantity:joints.quantity,unit:'linear feet',rateCents:p.sawCutPerLF,ratePath:'sawCutPerLF',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
+      if(!joints.rectangle)out.disclosures.push(`Control-joint length allowance: ${exactToNumber(joints.quantity).toFixed(2)} linear feet. ${JOINT_SITE_NOTE}`);
+    }else out.disclosures.push(JOINT_EXTRA_NOTE);
+  }
+  const placement=placementFor(c,p);
+  if(placement){
+    if(present(p.placementFlat?.[placement]))add(out,fixedLine(`${PLACEMENT_LABELS[placement]} placement per pour`,'addon',p.placementFlat[placement],`placementFlat.${placement}`));
+    if(present(p.placementPerCubicYard?.[placement]))add(out,makeLine({name:`${PLACEMENT_LABELS[placement]} placement by volume`,category:'addon',quantity:exactYards,unit:'cubic yards ordered',rateCents:p.placementPerCubicYard[placement],ratePath:`placementPerCubicYard.${placement}`}));
+    if(c.chuteAccess==='unknown')out.disclosures.push(PLACEMENT_SITE_NOTE);
+  }else if(c.chuteAccess==='unknown')out.disclosures.push(PLACEMENT_EXTRA_NOTE);
   const openEdges=exactSubtract(dimensions.exactPerimeterLF,c.adjoinsExistingConcrete?c.adjoiningEdgeLF:0);
   recordQuantityDerivation(out,{name:'formworkLF',formula:'measured perimeter minus edges adjoining foundation or existing concrete',inputs:{perimeterLF:dimensions.perimeterLF,adjoiningEdgeLF:c.adjoinsExistingConcrete?c.adjoiningEdgeLF:0},result:openEdges,unit:'linear feet',usedBy:['Formwork']});
   add(out, makeLine({ name: 'Formwork', category: 'material', quantity: openEdges, allowZeroQuantity:true, unit: 'measured linear feet', rateCents: p.formworkPerLF, ratePath: 'formworkPerLF', customerDriver: `${exactToNumber(openEdges)} measured linear feet of formwork` }));
-  if (c.baseNeeded) add(out, makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft' }));
+  if (c.baseNeeded) {
+    if(!separateBase(p))add(out, makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft' }));
+    else {
+      out.disclosures.push(`Base preparation is priced for ${p.baseDepthInches} inches of compacted base depth.`);
+      if(present(p.baseGravelPerCubicYard)){
+        const gravel=exactMultiply(exactDivide(exactMultiply(dimensions.exactAreaSqft,p.baseDepthInches),324),exactAdd(1,p.baseCompactionAllowance));
+        recordQuantityDerivation(out,{name:'baseGravelCubicYards',formula:'areaSqft * baseDepthInches / 324 * (1 + baseCompactionAllowance)',inputs:{areaSqft:dimensions.areaSqft,baseDepthInches:p.baseDepthInches,baseCompactionAllowance:p.baseCompactionAllowance},result:gravel,unit:'cubic yards',usedBy:['Base gravel']});
+        add(out,makeLine({name:'Base gravel',category:'material',quantity:gravel,unit:'cubic yards',rateCents:p.baseGravelPerCubicYard,ratePath:'baseGravelPerCubicYard'}));
+      }
+      if(present(p.baseExcavationGradingPerSqft))add(out,makeLine({name:'Base excavation and grading',category:'labor',quantity:dimensions.exactAreaSqft,unit:'square feet',rateCents:p.baseExcavationGradingPerSqft,ratePath:'baseExcavationGradingPerSqft',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
+    }
+  }
   if (c.reinforcement === 'wire_mesh') add(out, makeLine({ name: 'Wire mesh reinforcement', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.wireReinforcementPerSqft, ratePath: 'wireReinforcementPerSqft' }));
   if (c.reinforcement === 'rebar') add(out, makeLine({ name: 'Rebar reinforcement', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.rebarReinforcementPerSqft, ratePath: 'rebarReinforcementPerSqft' }));
   if (c.finishType === 'stamped') add(out, makeLine({ name: 'Stamped finish materials', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.stampedMaterialPerSqft, ratePath: 'stampedMaterialPerSqft' }));
@@ -968,14 +999,24 @@ function calculateSod(c, p, ctx) {
   add(out, makeLine({ name: 'Sod material', category: 'material', quantity: exactSodOrderSqft, unit: 'waste-adjusted square feet', rateCents: p.sodMaterialPerSqft, ratePath: 'sodMaterialPerSqft', customerDriver: `${sqft} measured square feet of sod` }));
   add(out, makeLine({ name: 'Sod installation labor', category: 'labor', quantity: sqft, unit: 'measured square feet', rateCents: p.sodInstallLaborPerSqft, ratePath: 'sodInstallLaborPerSqft', multipliers: [{ name: 'slope', value: slope, path: `slopeMultiplier.${c.slope}` }, { name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }] }));
   if (c.groundPrepNeeded) {
-    add(out, makeLine({ name: 'Ground preparation', category: 'prep', quantity: sqft, unit: 'measured square feet', rateCents: p.groundPrepPerSqft, ratePath: 'groundPrepPerSqft' }));
+    if(!separateSodPrep(p))add(out, makeLine({ name: 'Ground preparation', category: 'prep', quantity: sqft, unit: 'measured square feet', rateCents: p.groundPrepPerSqft, ratePath: 'groundPrepPerSqft' }));
+    else {
+      for(const [ratePath,name] of [['sodRemovalPerSqft','Old-lawn removal with disposal'],['sodGradingPerSqft','Sod grading']])if(present(p[ratePath]))add(out,makeLine({name,category:'labor',quantity:sqft,unit:'square feet',rateCents:p[ratePath],ratePath,multipliers:[{name:'slope',value:slope,path:`slopeMultiplier.${c.slope}`},{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
+      if(present(p.topsoilPerCubicYard)){
+        const soil=topsoilQuantity(c,p);
+        recordQuantityDerivation(out,{name:'topsoilCubicYards',formula:soil.unknown?'sodSqft * topsoilTypicalImportDepthInches / 324':'sodSqft * max(0, topsoilTargetDepthInches - usableTopsoilDepthInches) / 324',inputs:{sodSqft:sqft,importDepthInches:exactToNumber(soil.depth),...(soil.unknown?{topsoilTypicalImportDepthInches:p.topsoilTypicalImportDepthInches}:{topsoilTargetDepthInches:p.topsoilTargetDepthInches,usableTopsoilDepthInches:c.usableTopsoilDepthInches})},result:soil.quantity,unit:'cubic yards',usedBy:['Imported topsoil']});
+        if(exactCompare(soil.quantity,0)>0)add(out,makeLine({name:'Imported topsoil',category:'material',quantity:soil.quantity,unit:'cubic yards',rateCents:p.topsoilPerCubicYard,ratePath:'topsoilPerCubicYard'}));
+        out.disclosures.push(`Topsoil import depth: ${exactToNumber(soil.depth)} inches.`);
+        if(soil.unknown)out.disclosures.push(TOPSOIL_SITE_NOTE);
+      }
+    }
   }
   const separate = ctx.ownerPricing?.disposalScope === 'separate_project_debris';
   if(separate && typeof c.separateDisposalSelected!=='boolean')throw new QuoteReviewError('Confirm whether separate project-debris disposal is selected.',{missingCustomerFields:['separateDisposalSelected']});
   if(!separate && c.separateDisposalSelected!==undefined)throw new QuoteReviewError('Separate disposal requires an explicit owner scope declaration.',{invalidCustomerFields:['separateDisposalSelected']});
   out.feeScope.disposal = separate && c.separateDisposalSelected===true;
   if((c.groundPrepNeeded || separate) && !out.feeScope.disposal)out.replacedCommonFees.push('disposal');
-  recordRuleApplication(out,{name:'sodDisposalOwnership',rule:'Ground preparation includes old-lawn haul-away. With ground preparation or a declared separate disposal scope, common disposal covers only explicitly selected separate project debris. Without ground preparation or a separate disposal scope, the configured common fee rule applies.',inputs:{groundPrepNeeded:c.groundPrepNeeded,disposalScope:ctx.ownerPricing?.disposalScope??null,separateDisposalSelected:c.separateDisposalSelected??null},result:{oldLawnDisposalOwner:c.groundPrepNeeded?'groundPrepPerSqft':null,commonDisposalScope:out.feeScope.disposal?'separate_project_debris':!c.groundPrepNeeded&&!separate?'common_fee_rule':null},usedBy:['Ground preparation','Disposal']});
+  recordRuleApplication(out,{name:'sodDisposalOwnership',rule:(separateSodPrep(p)?'Separately priced old-lawn removal includes old-lawn haul-away.':'Ground preparation includes old-lawn haul-away.')+' With ground preparation or a declared separate disposal scope, common disposal covers only explicitly selected separate project debris. Without ground preparation or a separate disposal scope, the configured common fee rule applies.',inputs:{groundPrepNeeded:c.groundPrepNeeded,disposalScope:ctx.ownerPricing?.disposalScope??null,separateDisposalSelected:c.separateDisposalSelected??null},result:{oldLawnDisposalOwner:c.groundPrepNeeded?(separateSodPrep(p)?present(p.sodRemovalPerSqft)?'sodRemovalPerSqft':null:'groundPrepPerSqft'):null,commonDisposalScope:out.feeScope.disposal?'separate_project_debris':!c.groundPrepNeeded&&!separate?'common_fee_rule':null},usedBy:separateSodPrep(p)?['Old-lawn removal with disposal','Disposal']:['Ground preparation','Disposal']});
   recordMeasurement(out, 'sodAreaSqft', sqft, 'square feet');
   out.priceDrivers.push(`${sqft} measured square feet of sod`, c.groundPrepNeeded ? 'Existing-ground preparation included' : `Slope: ${c.slope}`);
   return out;
@@ -984,12 +1025,14 @@ function calculateSod(c, p, ctx) {
 function calculatePlanting(c, p) {
   const out = baseOutput('LANDSCAPING_PLANTING');
   let totalPlants = 0;
-  for (const size of ['small', 'medium', 'large']) {
-    const plantCount = c.plantsBySize[size];
+  for (const size of plantSizeKeys(p)) {
+    const plantCount = c.plantsBySize[size]||0;
     totalPlants += plantCount;
     if (plantCount <= 0) continue;
-    add(out, makeLine({ name: `${size[0].toUpperCase()}${size.slice(1)} plant installation labor`, category: 'labor', quantity: plantCount, unit: `${size} plants`, rateCents: valueAtPath(p, `plantingLaborPerPlant.${size}`), ratePath: `plantingLaborPerPlant.${size}` }));
-    add(out, makeLine({ name: `${size[0].toUpperCase()}${size.slice(1)} plant material allowance`, category: 'material', quantity: plantCount, unit: `${size} plants`, rateCents: valueAtPath(p, `plantMaterialAllowance.${size}`), ratePath: `plantMaterialAllowance.${size}` }));
+    const label=plantSizeLabel(p,size),unit=customPlantSizes(p)?label:`${size} plants`;
+    add(out, makeLine({ name: `${label} plant installation labor`, category: 'labor', quantity: plantCount, unit, rateCents: valueAtPath(p, `plantingLaborPerPlant.${size}`), ratePath: `plantingLaborPerPlant.${size}` }));
+    add(out, makeLine({ name: `${label} plant material allowance`, category: 'material', quantity: plantCount, unit, rateCents: valueAtPath(p, `plantMaterialAllowance.${size}`), ratePath: `plantMaterialAllowance.${size}` }));
+    if(customPlantSizes(p))out.disclosures.push(`${plantCount} × ${label}.`);
   }
   if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}` }));
   if (c.mulchNeeded) {

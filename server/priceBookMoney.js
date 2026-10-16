@@ -6,6 +6,7 @@ import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {mergePricingForValidationVNext} from './quote-engine-vnext/pricingMerge.js';
 import {fenceType,fenceRowsDiagnostics} from './quote-engine-vnext/fencePricing.js';
 import {FLOORING_PATTERN_FIELDS} from './quote-engine-vnext/flooringPricing.js';
+import {CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS} from './quote-engine-vnext/concreteLandscapePricing.js';
 
 // Monetary semantics are declared once here and consumed by every dollar/cent
 // boundary. A field that the active pricing metadata exposes cannot silently
@@ -253,6 +254,9 @@ export function canonicalPeakMonths(value, path = 'peakMonths') {
 }
 
 export function moneyKindForField(serviceType, field, pricing = {}) {
+  if(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')&&CONCRETE_FIELDS.includes(field))return ['shortLoadFlatFee','placementFlat'].includes(field)?'fixed_amount':[...CONCRETE_MONEY_FIELDS,'placementPerCubicYard'].includes(field)?'unit_rate':null;
+  if(serviceType==='LANDSCAPING_SOD'&&SOD_FIELDS.includes(field))return SOD_MONEY_FIELDS.includes(field)?'unit_rate':null;
+  if(serviceType==='LANDSCAPING_PLANTING'&&field==='plantSizes')return null;
   if(serviceType.startsWith('FLOORING_')&&field==='furnitureMovingPrice'&&pricing.furnitureMovingPriceUnit==='flat')return 'fixed_amount';
   if (serviceType === 'CUSTOM' && ['price', 'low', 'high'].includes(field)) {
     if (CUSTOM_RATE_UNITS.has(pricing.unit)) return 'unit_rate';

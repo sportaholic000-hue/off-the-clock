@@ -24,6 +24,8 @@ import {installedPriceDefinitions} from '../../server/installedPriceConfiguratio
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 import {FLOORING_PATTERN_FIELDS} from '../../server/quote-engine-vnext/flooringPricing.js';
+import {customPlantSizes} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
+import {PlantSizesEditor,PlantSizePrices} from './PlantSizesEditor.jsx';
 const PricingContext = createContext({});
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
@@ -427,7 +429,13 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     ? moneyKindForField(service.serviceType, definition.field, pricing)
     : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
   let control;
-  if (definition.type === 'boolean') {
+  if(typeof service.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&['placementFlat','placementPerCubicYard'].includes(definition.field)){
+    control=<div className="field-stack">{definition.tree.rootKeys.map(method=><Field key={method} label={definition.tree.leafLabels[method]}><ExactNumericInput aria-label={definition.label+' '+definition.tree.leafLabels[method]} value={value?.[method]} kind={kind} wholeCents={definition.wholeCents} onChange={v=>{const next={...(value||{})};if(v===undefined)delete next[method];else next[method]=v;onChange(Object.keys(next).length?next:undefined);}}/></Field>)}</div>;
+  } else if(definition.field==='plantSizes'){
+    control=<PlantSizesEditor value={value} onChange={onChange}/>;
+  } else if(service.serviceType==='LANDSCAPING_PLANTING'&&customPlantSizes(pricing)&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(definition.field)){
+    control=<PlantSizePrices pricing={pricing} field={definition} value={value} onChange={onChange}/>;
+  } else if (definition.type === 'boolean') {
     control = <Toggle checked={Boolean(value)} onChange={onChange} label={value ? 'YES' : 'NO'} />;
   } else if (definition.type === 'select') {
     control = (
@@ -1066,7 +1074,7 @@ export default function PriceBook() {
   // activation field list, so this mirrors real activation requirements.
   const configuredMode=servicePricing(selected||{}).offeringMode;
   const offeringSetup=!!configuredMode||selectedMeta?.requiresOffering;
-  const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&!['offering_configuration','scope_configuration'].includes(field.type)&&(!offeringSetup||field.field==='minimumJob')).map(field=>offeringSetup&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
+  const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&(!['offering_configuration','scope_configuration'].includes(field.type)||field.field==='plantSizes')&&(!offeringSetup||field.field==='minimumJob')).map(field=>offeringSetup&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
   const requiredFields = allFields.filter(field => field.requiredAtBase);
   const optionalFields = allFields.filter(field => !field.requiredAtBase);
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);

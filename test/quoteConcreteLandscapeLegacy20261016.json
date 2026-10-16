@@ -1,0 +1,863 @@
+{
+  "baseline": "8b53169b2d6019e6769481b5c0551aca42a91f42",
+  "rows": [
+    {
+      "index": 0,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 153000,
+          "quantity": 8.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 763000
+    },
+    {
+      "index": 1,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 153000,
+          "quantity": 8.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 853000
+    },
+    {
+      "index": 2,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 297000,
+          "quantity": 16.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 907000
+    },
+    {
+      "index": 3,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 297000,
+          "quantity": 16.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 997000
+    },
+    {
+      "index": 4,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 882000,
+          "quantity": 49
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 1492000
+    },
+    {
+      "index": 5,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 882000,
+          "quantity": 49
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 1582000
+    },
+    {
+      "index": 6,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 153000,
+          "quantity": 8.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 868000
+    },
+    {
+      "index": 7,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 153000,
+          "quantity": 8.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 958000
+    },
+    {
+      "index": 8,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 297000,
+          "quantity": 16.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 1012000
+    },
+    {
+      "index": 9,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 297000,
+          "quantity": 16.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 1102000
+    },
+    {
+      "index": 10,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 882000,
+          "quantity": 49
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 1597000
+    },
+    {
+      "index": 11,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 882000,
+          "quantity": 49
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 1687000
+    },
+    {
+      "index": 12,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 153000,
+          "quantity": 8.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 763000
+    },
+    {
+      "index": 13,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 153000,
+          "quantity": 8.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 853000
+    },
+    {
+      "index": 14,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 297000,
+          "quantity": 16.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 907000
+    },
+    {
+      "index": 15,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 297000,
+          "quantity": 16.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 997000
+    },
+    {
+      "index": 16,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 882000,
+          "quantity": 49
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 1492000
+    },
+    {
+      "index": 17,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 882000,
+          "quantity": 49
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        }
+      ],
+      "cents": 1582000
+    },
+    {
+      "index": 18,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 153000,
+          "quantity": 8.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 868000
+    },
+    {
+      "index": 19,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 153000,
+          "quantity": 8.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 958000
+    },
+    {
+      "index": 20,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 297000,
+          "quantity": 16.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 1012000
+    },
+    {
+      "index": 21,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 297000,
+          "quantity": 16.5
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 1102000
+    },
+    {
+      "index": 22,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 360000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 882000,
+          "quantity": 49
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 1597000
+    },
+    {
+      "index": 23,
+      "lines": [
+        {
+          "name": "Concrete labor",
+          "cents": 450000
+        },
+        {
+          "name": "Ready-mix concrete",
+          "cents": 882000,
+          "quantity": 49
+        },
+        {
+          "name": "Formwork",
+          "cents": 250000,
+          "quantity": 100
+        },
+        {
+          "name": "Base preparation",
+          "cents": 105000,
+          "quantity": 600
+        }
+      ],
+      "cents": 1687000
+    },
+    {
+      "index": 24,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 100000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 205000
+    },
+    {
+      "index": 25,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 125000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 230000
+    },
+    {
+      "index": 26,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 115000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 220000
+    },
+    {
+      "index": 27,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 143750,
+          "quantity": 1000
+        }
+      ],
+      "cents": 248750
+    },
+    {
+      "index": 28,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 135000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 240000
+    },
+    {
+      "index": 29,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 168750,
+          "quantity": 1000
+        }
+      ],
+      "cents": 273750
+    },
+    {
+      "index": 30,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 100000,
+          "quantity": 1000
+        },
+        {
+          "name": "Ground preparation",
+          "cents": 150000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 355000
+    },
+    {
+      "index": 31,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 125000,
+          "quantity": 1000
+        },
+        {
+          "name": "Ground preparation",
+          "cents": 150000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 380000
+    },
+    {
+      "index": 32,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 115000,
+          "quantity": 1000
+        },
+        {
+          "name": "Ground preparation",
+          "cents": 150000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 370000
+    },
+    {
+      "index": 33,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 143750,
+          "quantity": 1000
+        },
+        {
+          "name": "Ground preparation",
+          "cents": 150000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 398750
+    },
+    {
+      "index": 34,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 135000,
+          "quantity": 1000
+        },
+        {
+          "name": "Ground preparation",
+          "cents": 150000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 390000
+    },
+    {
+      "index": 35,
+      "lines": [
+        {
+          "name": "Sod material",
+          "cents": 105000,
+          "quantity": 1050
+        },
+        {
+          "name": "Sod installation labor",
+          "cents": 168750,
+          "quantity": 1000
+        },
+        {
+          "name": "Ground preparation",
+          "cents": 150000,
+          "quantity": 1000
+        }
+      ],
+      "cents": 423750
+    },
+    {
+      "index": 36,
+      "lines": [
+        {
+          "name": "Small plant installation labor",
+          "cents": 18000,
+          "quantity": 4
+        },
+        {
+          "name": "Small plant material allowance",
+          "cents": 12000,
+          "quantity": 4
+        }
+      ],
+      "cents": 30000
+    },
+    {
+      "index": 37,
+      "lines": [
+        {
+          "name": "Small plant installation labor",
+          "cents": 22500,
+          "quantity": 4
+        },
+        {
+          "name": "Small plant material allowance",
+          "cents": 12000,
+          "quantity": 4
+        }
+      ],
+      "cents": 34500
+    },
+    {
+      "index": 38,
+      "lines": [
+        {
+          "name": "Medium plant installation labor",
+          "cents": 36000,
+          "quantity": 4
+        },
+        {
+          "name": "Medium plant material allowance",
+          "cents": 28000,
+          "quantity": 4
+        }
+      ],
+      "cents": 64000
+    },
+    {
+      "index": 39,
+      "lines": [
+        {
+          "name": "Medium plant installation labor",
+          "cents": 45000,
+          "quantity": 4
+        },
+        {
+          "name": "Medium plant material allowance",
+          "cents": 28000,
+          "quantity": 4
+        }
+      ],
+      "cents": 73000
+    },
+    {
+      "index": 40,
+      "lines": [
+        {
+          "name": "Large plant installation labor",
+          "cents": 100000,
+          "quantity": 4
+        },
+        {
+          "name": "Large plant material allowance",
+          "cents": 72000,
+          "quantity": 4
+        }
+      ],
+      "cents": 172000
+    },
+    {
+      "index": 41,
+      "lines": [
+        {
+          "name": "Large plant installation labor",
+          "cents": 125000,
+          "quantity": 4
+        },
+        {
+          "name": "Large plant material allowance",
+          "cents": 72000,
+          "quantity": 4
+        }
+      ],
+      "cents": 197000
+    }
+  ]
+}

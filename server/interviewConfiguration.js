@@ -4,8 +4,9 @@ import {MEASUREMENT_CONTRACTS} from './quote-engine-vnext/contracts.js';
 import { scopeDefinitions, scopeRateDefinitions, scopeOverlapDiagnostics, MULTI_SCOPE_KEYS } from './scopeConfiguration.js';
 import { offeringRateDefinitions } from './quote-engine-vnext/configuredOfferings.js';
 import { parseOwnerNumericInput } from './priceBookMoney.js';
+import {STOCK_LABELS,concreteLandscapeDiagnostics} from './quote-engine-vnext/concreteLandscapePricing.js';
 
-export const CONFIGURATION_FIELDS=['offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','knownOfferings'];
+export const CONFIGURATION_FIELDS=['offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','knownOfferings','plantSizes'];
 const text=label=>({type:'string',label});
 const choice=(label,values)=>({type:'enum',label,values});
 const bool=label=>({type:'boolean',label});
@@ -14,6 +15,7 @@ const object=(label,fields)=>({type:'object',label,fields});
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 
 export function interviewConfigurationSchema(type,field,pricing={},value){
+ if(field==='plantSizes')return {type:'map',label:'Owner-defined plant sizes',entry:object('Plant size',{name:text('Customer size name'),plantType:choice('Plant type',['shrub','tree']),stockType:choice('Stock type',Object.keys(STOCK_LABELS)),containerNumber:number('Container number','container number',1,1000),caliperInches:number('Tree caliper (inches)','inches',Number.MIN_VALUE,1000),heightFt:number('Tree height (feet)','feet',Number.MIN_VALUE,1000)})};
  if(field==='knownOfferings')return object('Products you explicitly offer',Object.fromEntries(Object.entries(MEASUREMENT_CONTRACTS[type]?.fields||{}).filter(([,f])=>f.type==='slug').map(([name,f])=>[name,{type:'map',label:f.label,entry:choice('This product is offered',[true])}])));
  if(field==='offeringMode')return choice('Offering pricing',['installed','itemized']);
  if(field==='scopeDetails'){
@@ -69,6 +71,7 @@ export function validateInterviewConfiguration(type,field,value,pricing={}){
   return v;
  }
  value=visit(value,interviewConfigurationSchema(type,field,pricing,value),field);
+ if(field==='plantSizes'){const errors=concreteLandscapeDiagnostics(type,{plantSizes:value});if(errors.length)fail(errors[0].message);}
  if(field==='scopeDetails'){const errors=scopeOverlapDiagnostics(type,{...pricing,scopeDetails:value});if(errors.length)fail(errors[0].message);}
  return structuredClone(value);
 }

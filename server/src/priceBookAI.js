@@ -1,6 +1,6 @@
 import {validateServiceName,SERVICE_NAME_LIMIT} from '../serviceName.js';
 import {CONFIGURATION_FIELDS,interviewConfigurationSchema,validateInterviewConfiguration} from '../interviewConfiguration.js';
-import {applicationMetadata, quoteDoneMoneyKind} from './quoteDoneBridge.js';
+import {applicationMetadata,quoteDoneMoneyKind,customPlantSizes,plantSizeKeys,CONCRETE_FIELDS,SOD_FIELDS} from './quoteDoneBridge.js';
 import {parseOwnerNumericInput} from '../priceBookMoney.js';
 import {validatePriceBookTree} from '../priceBookTree.js';
 import {verifyExactJson} from './exactJson.js';
@@ -35,7 +35,8 @@ export function interviewField(type, field) {
   return definition;
 }
 export function starterFields(type) {
-  return (serviceFor(type)?.fields || []).filter(def => !CONFIGURATION_FIELDS.includes(def.field) && (def.type === 'number' ||
+  const blankFields=typeof type==='string'&&type.startsWith('CONCRETE_')?CONCRETE_FIELDS:type==='LANDSCAPING_SOD'?SOD_FIELDS:[];
+  return (serviceFor(type)?.fields || []).filter(def => !blankFields.includes(def.field) && !CONFIGURATION_FIELDS.includes(def.field) && (def.type === 'number' ||
     (def.type === 'json' && Array.isArray(def.shapedKeys?.keys) && !def.tree?.leafType &&
       (!def.tree?.depth || (def.tree.depth === 1 && !def.shapedKeys.nested) || (def.tree.depth===2&&def.tree.rootKeys&&def.tree.leafKeys)))));
 }
@@ -44,6 +45,7 @@ export function starterFields(type) {
 // There is no guessed market-price ceiling and no conversion of strings to numbers.
 export function validateInterviewValue(type, field, value, pricing = {}) {
   let def = interviewField(type, field);
+  if(type==='LANDSCAPING_PLANTING'&&customPlantSizes(pricing)&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(field))def={...def,tree:{...def.tree,rootKeys:plantSizeKeys(pricing),requiredRootKeys:plantSizeKeys(pricing)}};
   if(field==='service')return validateServiceName(value);
   const allocation=['installedLaborPercent','installedMaterialsPercent'].includes(field);
   if(allocation)def={...def,tree:{...(def.tree||{}),leafKeys:Object.keys(installedPriceDefinitions(type,pricing)).sort()}};
