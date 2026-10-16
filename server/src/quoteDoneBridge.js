@@ -76,7 +76,11 @@ function projection(raw) {
   for(const field of Object.keys(raw))if(!ROOT_FIELDS.includes(field)&&!fields.includes(field)&&!legacy.has(field)&&!applicationFields.has(field))out[field]=clone(raw[field]);
   // Never translate a floor-area price into a wall-area price or derive a new
   // category. Legacy settings remain on the saved record and are disclosed.
-  out.tiers=(raw.tiers||[]).map(tier=>({...clone(tier),overrides:clone(tier.overrides||{})}));
+  out.tiers=(raw.tiers||[]).map(tier=>{
+    const projected=clone(tier);
+    delete projected.priceMetadata;
+    return {...projected,overrides:clone(tier.overrides||{})};
+  });
   // Known legacy pricing fields and their historic confirmations stay in the
   // saved record. They cannot masquerade as confirmations of the new measured
   // contract, and must not block an explicit approval of its actual fields.

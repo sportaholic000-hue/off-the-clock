@@ -64,7 +64,10 @@ function seedApprovedCopies(template,book,count){
  return Array.from({length:count},()=>{
   const copy=structuredClone(template);copy.id=crypto.randomUUID();copy.origin.serviceId=copy.id;copy.quoteDoneApproval.serviceId=copy.id;
   const {quoteDoneApproval,...raw}=copy;const service=materializeVNextService(raw);delete service.active;delete service.confirmedFields;delete service.approvedValues;
-  copy.quoteDoneApproval.contentDigest=digest({service,businessDefaults:book.defaults,legacySettings:[],ownerFeeSelections:{}});
+  delete service.priceMetadata;delete service.startingValueState;delete service.dependentLineState;
+  for(const tier of service.tiers||[])delete tier.priceMetadata;
+  const businessDefaults=structuredClone(book.defaults);delete businessDefaults.laborHourlyRate;delete businessDefaults.stalePriceThresholdDays;
+  copy.quoteDoneApproval.contentDigest=digest({service,businessDefaults,legacySettings:[],ownerFeeSelections:{}});
   return copy;
  });
 }

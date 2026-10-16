@@ -76,7 +76,10 @@ export function applyPriceMetadata(nextBook,previousBook,now){
       if(sourceNote!==undefined)row.sourceNote=sourceNote;
       if(aiPlaceholder===true)row.aiPlaceholder=true;
       else if(AI_SOURCES.has(service.source)||prior.aiPlaceholder===true)row.aiPlaceholder=false;
-      metadataTarget(service,entry)[entry.path]=row;
+      // An unchanged legacy manual price has no recorded date or provenance.
+      // Keep that absence intact instead of adding an empty metadata shell;
+      // status still reports it as "Date not recorded" through the entry view.
+      if(Object.keys(row).length)metadataTarget(service,entry)[entry.path]=row;
     }
     cleanEmptyMetadata(service);
   }

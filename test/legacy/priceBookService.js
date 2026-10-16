@@ -313,7 +313,7 @@ function validateOwnerFieldValue(serviceType, field, value, path) {
 
 const SERVICE_METADATA_FIELDS = new Set([
   'id','service','serviceType','pricing','tiers','active','taxable',
-  'source','confirmedFields','validationInputs','starterSuggestion'
+  'source','confirmedFields','validationInputs','starterSuggestion','priceMetadata'
 ]);
 const SERVICE_QUOTE_FIELDS = new Set(['peakMonths','peakSurchargePercent','disclaimer']);
 
@@ -379,7 +379,8 @@ function validateServiceShape(service, index) {
 const SUPPORTED_DEFAULT_FIELDS = new Set([
   'markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee',
   'disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent',
-  'quoteTimeZone','currency','laborHourlyRate','peakMonths','peakSurchargePercent','markupApplies'
+  'quoteTimeZone','currency','laborHourlyRate','peakMonths','peakSurchargePercent','markupApplies',
+  'stalePriceThresholdDays','quoteValidityDays'
 ]);
 const MARKUP_CATEGORIES = new Set([
   'labor','material','removal','prep','addon','equipment','travel',

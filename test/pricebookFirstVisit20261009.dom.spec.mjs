@@ -50,7 +50,7 @@ function draftState(window){
  for(let i=0;i<3&&h;i++)h=h.next;
  return {book:h?.memoizedState,change:h?.queue.dispatch};
 }
-async function changeDraft(h,change){const next=h.window.structuredClone(draftState(h.window).book);change(next);draftState(h.window).change(next);await waitFor(()=>draftState(h.window).book===next,'draft update');}
+async function changeDraft(h,change){const edited=h.window.structuredClone(draftState(h.window).book);change(edited);const next=h.window.structuredClone(edited);draftState(h.window).change(next);await waitFor(()=>draftState(h.window).book===next,'draft update');}
 function rawKeys(node){
  const walker=node.ownerDocument.createTreeWalker(node,4);const parts=[];while(walker.nextNode())parts.push(walker.currentNode.textContent);const text=parts.join(" ");
  // Ignore actual URLs/emails and the approved product name QuoteDone. Do not

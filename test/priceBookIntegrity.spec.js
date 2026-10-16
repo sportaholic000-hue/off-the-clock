@@ -1,5 +1,5 @@
 import './pricebookTestEnv.mjs';
-import { parseOwnerNumericInput, validatePricebookNumericDraft } from '../server/priceBookMoney.js';
+import { ownerMoneyEntries, parseOwnerNumericInput, validatePricebookNumericDraft } from '../server/priceBookMoney.js';
 import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices } from '../client/src/pricebookEditing.js';
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -58,6 +58,24 @@ function withoutTimestamp(value) {
   const copy = structuredClone(value);
   delete copy.updatedAt;
   return copy;
+}
+function withoutPriceMetadata(value) {
+  if (Array.isArray(value)) return value.map(withoutPriceMetadata);
+  if (!value || typeof value !== 'object') return value;
+  return Object.fromEntries(Object.entries(value)
+    .filter(([key]) => key !== 'priceMetadata')
+    .map(([key, child]) => [key, withoutPriceMetadata(child)]));
+}
+function assertRecordedPriceMetadata(service) {
+  const entries = ownerMoneyEntries(service);
+  assert.ok(entries.length > 0, 'fixture must contain an owner money field');
+  for (const entry of entries) {
+    assert.match(entry.metadata?.changedAt || '', /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/, `${entry.displayPath} needs a server change date`);
+  }
+}
+function assertNewPriceMetadata(actualServices, expectedServices) {
+  for (const service of actualServices) assertRecordedPriceMetadata(service);
+  assert.deepEqual(withoutPriceMetadata(actualServices), expectedServices);
 }
 function saveAndRead(ownerId, request) {
   const frozen = structuredClone(request);
@@ -148,7 +166,7 @@ test('pricebook integrity: fractional unit rates remain distinct through real pe
     const result = saveAndRead(ownerId, request);
     assertSameDecimal(result.persisted.services[0].mowingBaseRatePerSqft, cents);
     assertSameDecimal(result.dollars.services[0].mowingBaseRatePerSqft, JSON.stringify(dollars));
-    assert.deepEqual(result.dollars.services, request.services);
+    assertNewPriceMetadata(result.dollars.services, request.services);
     expectedBaseCents(result.persisted.services[0].mowingBaseRatePerSqft, 10000, base);
     checkedCandidateBase(result.persisted.services[0], base);
     for (let cycle = 0; cycle < 3; cycle++) {
@@ -164,7 +182,7 @@ test('pricebook integrity: ordinary rates and an existing whole-cent book surviv
     const request = book([mowing(dollars)]);
     const first = saveAndRead('ordinary-' + cents, request);
     assert.equal(first.persisted.services[0].mowingBaseRatePerSqft, cents);
-    assert.deepEqual(first.dollars.services, request.services);
+    assertNewPriceMetadata(first.dollars.services, request.services);
     const second = saveAndRead('ordinary-' + cents, first.dollars);
     assert.deepEqual(withoutTimestamp(first.persisted), withoutTimestamp(second.persisted));
   }
@@ -195,9 +213,10 @@ test('pricebook integrity: nested product-rate maps and tier overrides preserve 
   const stored = result.persisted.services[0], reloaded = result.dollars.services[0];
   assert.deepEqual(stored.pricing, { ...structuredClone(CLASS2_DEFAULTS_BY_SERVICE.SIDING_REPLACEMENT), ...pricing, laborPerSqft:{ vinyl:0.5 },
     materialPerSqft:{ vinyl:0.49 }, removalPerSqft:0.51, trimPerLinearFoot:123 });
-  assert.deepEqual(stored.tiers, [{ name:'Alternate', overrides:{ laborPerSqft:{ vinyl:0.51 }, materialPerSqft:{ vinyl:0.5 } } }]);
+  assertRecordedPriceMetadata(stored);
+  assert.deepEqual(withoutPriceMetadata(stored.tiers), [{ name:'Alternate', overrides:{ laborPerSqft:{ vinyl:0.51 }, materialPerSqft:{ vinyl:0.5 } } }]);
   assert.deepEqual(reloaded.pricing, { ...structuredClone(CLASS2_DEFAULTS_BY_SERVICE.SIDING_REPLACEMENT), ...pricing });
-  assert.deepEqual(reloaded.tiers, service.tiers);
+  assert.deepEqual(withoutPriceMetadata(reloaded.tiers), service.tiers);
   for (const field of ['id','serviceType','service','source','active']) assert.equal(reloaded[field], service[field]);
   const repeated = saveAndRead('nested-book', result.dollars);
   assert.deepEqual(withoutTimestamp(repeated.persisted), withoutTimestamp(result.persisted));
@@ -225,7 +244,7 @@ test('pricebook integrity: monetary-looking keys inside factors quantities and r
     assert.deepEqual(result.dollars.services[0][field], repair[field], field);
   }
   assert.deepEqual(result.persisted.services[0].tiers, repair.tiers);
-  assert.deepEqual(result.dollars.services, request.services);
+  assertNewPriceMetadata(result.dollars.services, request.services);
   assert.deepEqual(result.persisted.defaults, request.defaults);
 });
 
@@ -292,6 +311,9 @@ test('pricebook integrity: explicit disable survives actual saves reloads unrela
   const second = saveAndRead('disabled-book', changed);
   assert.deepEqual(second.persisted.services[0], first.persisted.services[0]);
   const expectedOther = { ...first.persisted.services[1], laborPerLinearFoot:1401 };
+  expectedOther.priceMetadata = { ...expectedOther.priceMetadata,
+    laborPerLinearFoot:structuredClone(second.persisted.services[1].priceMetadata.laborPerLinearFoot) };
+  assertRecordedPriceMetadata(second.persisted.services[1]);
   assert.deepEqual(second.persisted.services[1], expectedOther);
   const previewRequest = { service:second.dollars.services[0], defaults:second.dollars.defaults };
   const frozen = structuredClone(previewRequest);
@@ -389,7 +411,7 @@ test('pricebook integrity: owner edits target the original pricing container and
     if (original.pricing) assert.equal(Object.hasOwn(edited, 'mowingBaseRatePerSqft'), false);
     const stored = saveAndRead(original.pricing ? 'nested-edited' : 'flat-edited', book([edited]));
     assert.equal(servicePricing(stored.persisted.services[0]).mowingBaseRatePerSqft, 0.51);
-    assert.deepEqual(servicePricing(stored.dollars.services[0]), servicePricing(edited));
+    assert.deepEqual(withoutPriceMetadata(servicePricing(stored.dollars.services[0])), servicePricing(edited));
     assert.equal(stored.persisted.services[0].active, edited.active);
   }
 });
@@ -462,7 +484,7 @@ test('pricebook integrity: CUSTOM tier unit changes validate inherited amounts w
   assert.equal(initial.persisted.services[0].low, 0.5);
   assert.equal(initial.persisted.services[0].high, 1);
   assert.deepEqual(initial.persisted.services[0].tiers, service.tiers);
-  assert.deepEqual(initial.dollars.services, [service]);
+  assertNewPriceMetadata(initial.dollars.services, [service]);
   const flatTier = structuredClone(initial.dollars);
   flatTier.services[0].tiers[0].overrides.unit = 'flat';
   assert.throws(() => saveValidatedPricebook('custom-unit', flatTier), /whole.cent|fixed|cent/i);
@@ -600,6 +622,8 @@ test('pricebook integrity: equal duplicate containers survive and contradictory 
   const expectedStored = structuredClone(equivalent.persisted.services[0]);
   expectedStored.laborPerLinearFoot = 1402;
   expectedStored.pricing.laborPerLinearFoot = 1402;
+  expectedStored.priceMetadata.laborPerLinearFoot = structuredClone(resolved.persisted.services[0].priceMetadata.laborPerLinearFoot);
+  assertRecordedPriceMetadata(resolved.persisted.services[0]);
   assert.deepEqual(resolved.persisted.services[0], expectedStored);
 });
 
@@ -670,13 +694,17 @@ test('pricebook integrity: two saved CUSTOM services retain separate identities 
   assert.deepEqual(initial.persisted.services.map(service => service.active), [false, true]);
   assert.notEqual(initial.saved.statuses[0].status, 'QUOTING LIVE');
   assert.equal(initial.saved.statuses[1].status, 'QUOTING LIVE');
-  assert.deepEqual(initial.dollars.services, frozen);
+  assertNewPriceMetadata(initial.dollars.services, frozen);
   const edited = editServiceField(initial.dollars.services[0], 'low', 125.5);
-  assert.deepEqual(edited, { ...first, low:125.5 });
-  assert.deepEqual(initial.dollars.services[1], second);
+  assert.deepEqual(edited, { ...initial.dollars.services[0], low:125.5 });
+  assert.deepEqual(withoutPriceMetadata(initial.dollars.services[1]), second);
   const result = saveAndRead('two-custom-services', { ...initial.dollars, services:[edited, initial.dollars.services[1]] });
   assert.deepEqual(result.persisted.services[1], initial.persisted.services[1]);
-  assert.deepEqual(result.persisted.services[0], { ...initial.persisted.services[0], low:12550 });
+  const expectedFirst = { ...initial.persisted.services[0], low:12550,
+    priceMetadata:{ ...initial.persisted.services[0].priceMetadata,
+      low:structuredClone(result.persisted.services[0].priceMetadata.low) } };
+  assertRecordedPriceMetadata(result.persisted.services[0]);
+  assert.deepEqual(result.persisted.services[0], expectedFirst);
   assert.deepEqual(result.persisted.services.map(service => service.active), [false, true]);
   assert.notEqual(result.saved.statuses[0].status, 'QUOTING LIVE');
   assert.equal(result.saved.statuses[1].status, 'QUOTING LIVE');
