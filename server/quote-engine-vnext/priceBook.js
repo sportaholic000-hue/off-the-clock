@@ -5,6 +5,7 @@ import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPr
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics,scopeCustomerErrors} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
 import {exactCompare} from './exactMath.js';
+import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants} from './fencePricing.js';
 import {boundaryMeasurements,repairBoundaryMeasurements} from './activationBoundaries.js';
 import {
   CLASS2_DEFINITIONS,
@@ -950,11 +951,23 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   // drafts cannot become live through a product calculation. Owner diagnostics
   // still evaluate the saved draft when detailed coverage is requested.
   if(options.firstLiveProduct&&diagnostics.length)return statusFromDiagnostics(service,diagnostics);
-  const tierEntries = Array.isArray(service.tiers) && service.tiers.length
+  if(fenceType(service.serviceType)&&fenceCatalog(pricing)){
+    const structure=validatePricingStructuresDetailed(service.serviceType,pricing);
+    if(structure.length)return statusFromDiagnostics(service,[...diagnostics,...structure]);
+  }
+  const fenceVariants=fenceType(service.serviceType)&&fenceCatalog(pricing)?fenceCatalogVariants(pricing):null;
+  const tierEntries = fenceVariants?fenceVariants.map((fenceVariant,index)=>({tier:{name:fenceVariant.tierName,overrides:{}},index,fenceVariant})):Array.isArray(service.tiers) && service.tiers.length
     ? service.tiers.map((tier, index) => ({ tier, index }))
     : [{ tier: { name: null, overrides: {} }, index: null }];
-  const variants = tierEntries.map(({ tier, index }) => {
+  const variants = tierEntries.map(({ tier, index, fenceVariant }) => {
     try {
+      if(fenceVariant){
+        const {fenceOfferings,heightRows,...base}=fenceVariant.pricing;
+        const selected={...base,heightRows:{[fenceVariant.rowKey]:fenceVariant.row}};
+        const scenarios=offeringActivationScenarios(service.serviceType,selected,service);
+        const result=evaluateActivationVariant(service,selected,tier.name,index,defaultValidation.ok?businessDefaults:null,{...options,productScenarios:scenarios});
+        return {...result,products:[{...result,selection:{fenceType:fenceVariant.type,fenceHeight:fenceVariant.height}}]};
+      }
       return evaluateActivationVariant(service, mergePricingForValidationVNext(pricing, tier.overrides || {}), tier.name, index, defaultValidation.ok ? businessDefaults : null, options);
     } catch {
       const path = index === null ? 'pricing' : `tiers.${index}.overrides`;
@@ -984,7 +997,8 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
     validationMessages: variant.diagnostics.map(item => item.message)
   }));
   if (!validVariants.length) diagnostics.push(...statusVariants.flatMap(variant => variant.diagnostics));
-  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product)))};
+  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product))),
+    ...(fenceType(service.serviceType)&&configuredOffering(service.serviceType,pricing)&&!fenceCatalog(pricing)&&!pricing.heightRows?{fenceHeightNotice:'Only the saved fence height is priced. Add rows for the other heights you build.'}:{})};
 }
 function serviceIdentity(service) {
   if (!isPlainRecord(service)) return null;
@@ -1033,7 +1047,9 @@ export function vNextPricebookStatuses(pricebook) {
   const duplicateIds = duplicateServiceIdDiagnostics(services);
   return Array.from(services, (service, index) => {
     const status = vNextServiceStatus(service, defaultSource);
-    const duplicateDiagnostics = identities[index] && counts.get(identities[index]) > 1
+    const fenceNames=fenceType(service?.serviceType)?fenceOfferingEntries(service.pricing||{}).map(([key])=>key):null;
+    const ambiguous=fenceNames?services.some((other,i)=>i!==index&&other.serviceType===service.serviceType&&fenceOfferingEntries(other.pricing||{}).some(([key])=>fenceNames.includes(key))):identities[index]&&counts.get(identities[index])>1;
+    const duplicateDiagnostics = ambiguous
       ? [{ type: 'invalid', kind: 'duplicate_service', path: `services.${index}`, message: 'Price book contains an ambiguous duplicate service definition.' }]
       : [];
     const diagnostics = uniqueStatusDiagnostics([...status.ownerDiagnostics, ...defaultDiagnostics, ...duplicateDiagnostics, ...duplicateIds.filter(d=>d.path===`services.${index}.id`)]);
@@ -1171,7 +1187,7 @@ export function quoteFromVNextPricebook(input = {}) {
   const requestedCustomService = isPlainRecord(customerInputs) && typeof customerInputs.service === 'string' ? customerInputs.service : '';
   const requestedCustomName = requestedCustomService.trim().toLowerCase();
   const matches = builtIn
-    ? services.filter(entry => entry?.serviceType === serviceType)
+    ? services.filter(entry => entry?.serviceType === serviceType&&(!fenceType(serviceType)||!customerInputs?.fenceType||fenceOfferingEntries(entry.pricing||{}).some(([type])=>type===customerInputs.fenceType)))
     : services.filter(entry => entry?.serviceType === 'CUSTOM' && typeof entry.service === 'string' && entry.service.trim().toLowerCase() === requestedCustomName);
   if (matches.length === 0) {
     const description = builtIn ? serviceType : `custom service "${requestedCustomService}"`;

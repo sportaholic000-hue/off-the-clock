@@ -98,7 +98,7 @@ export function ServiceStatusNotices({status}) {
  if(status.status==='DISABLED')return null;
  // A null tier is the engine's synthetic base offering, not a price option.
  const failedOptions=(status.failedTierDiagnostics||[]).filter(option=>option.tierName);
- return <>{status.statusNotices?.map(notice=><Notice key={notice}>{notice}</Notice>)}{!!failedOptions.length&&<section className="scope-coverage" aria-label="Price options not offered to customers"><h3>Price options not offered to customers</h3><ul>{failedOptions.map((option,index)=><li key={index}><strong>{option.tierName||'Unnamed option'}</strong><span>{option.ownerFieldLabels?.join('; ')||'Saved price option settings'}. {withheldOptionReason(option)}</span></li>)}</ul></section>}</>;
+ return <>{status.fenceHeightNotice&&<Notice>{status.fenceHeightNotice}</Notice>}{status.statusNotices?.map(notice=><Notice key={notice}>{notice}</Notice>)}{!!failedOptions.length&&<section className="scope-coverage" aria-label="Price options not offered to customers"><h3>Price options not offered to customers</h3><ul>{failedOptions.map((option,index)=><li key={index}><strong>{option.tierName||'Unnamed option'}</strong><span>{option.ownerFieldLabels?.join('; ')||'Saved price option settings'}. {withheldOptionReason(option)}</span></li>)}</ul></section>}</>;
 }
 
 function withheldOptionReason(option) {

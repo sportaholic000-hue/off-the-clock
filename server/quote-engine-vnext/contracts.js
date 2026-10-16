@@ -9,6 +9,7 @@ import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scope
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringBaselineConfirmation} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
+import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing} from './fencePricing.js';
 
 // Readiness validates many selections against one immutable tier. Only private,
 // fully snapshotted and deeply frozen copies are eligible for this reuse. Caller
@@ -853,6 +854,7 @@ function missing(value) {
 }
 
 function validateFieldValue(definition, value) {
+  if(definition.type==='fence_runs')return Array.isArray(value)&&value.length>0?null:'must contain the measured runs and sections';
   if(definition.type==='offering_counts') {
     if(!isRecord(value)||Object.keys(value).some(key=>!definition.values.includes(key)))return 'must contain only offered gate selections';
     if(Object.values(value).some(count=>!Number.isInteger(count)||count<0||count>10_000))return 'must contain whole gate counts from zero to 10,000';
@@ -927,6 +929,13 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     reviewReason: `Pricing context must contain only plain data objects; ${pricingNonPlainPath} is not plain data.`
   };
   pricing = pricingSnapshot.value;
+  if(fenceType(serviceType)&&configuredOffering(serviceType,pricing)&&customerInputs.fenceRuns!==undefined){
+    try{
+      const selected=resolvedFencePricing(pricing,customerInputs),layout=fenceLayout(customerInputs,selected);
+      customerInputs={...customerInputs,...layout,lfMethod:'exact'};delete customerInputs.openRuns;
+      pricing=selected;
+    }catch(error){return {ok:false,missingCustomerFields:[],invalidCustomerFields:[error.fenceField||'fenceRuns'],reviewReason:error.message,validationMessages:[error.message]};}
+  }
   if(configuredOffering(serviceType,pricing))contract=offeringContract(serviceType,pricing);
   const rules = validationSnapshotVNext(serviceRules, 'serviceRules');
   if (!rules.ok || rules.nonPlainPaths.length) return { ok: false, missingCustomerFields: [], invalidCustomerFields: [], invalidOwnerFields: ['serviceRules'], reviewReason: 'Service rules must be plain data.' };
@@ -1159,7 +1168,7 @@ export function customerContractForVNext(type,p={},rules={}) {
 }
 
 export function allowedPricingFields(serviceType) {
-  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
+  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
 }
 
 const AI_CONFIRMABLE_SERVICE_FIELDS = [
@@ -1748,6 +1757,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   const customerNonPlainPath = firstNonPlainPath(customerSnapshot, 'customerInputs');
   if (customerNonPlainPath) return blockedOwnerValidation(customerNonPlainPath, `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`);
   customerInputs = customerSnapshot.value;
+  if(fenceType(serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,customerInputs);}catch(error){return blockedOwnerValidation(error.fenceField||'heightRows',error.message);}
   const rulesSnapshot = validationSnapshotVNext(serviceRules, 'serviceRules');
   if (!rulesSnapshot.ok) return blockedOwnerValidation(rulesSnapshot.errorPath, `Service rules could not be read safely: ${rulesSnapshot.reason}.`);
   const rulesNonPlainPath = firstNonPlainPath(rulesSnapshot, 'serviceRules');

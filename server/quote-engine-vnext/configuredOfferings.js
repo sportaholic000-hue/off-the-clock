@@ -1,4 +1,6 @@
 import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal} from './exactMath.js';
+import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION} from './fencePricing.js';
+export {exactFenceHeight} from './fencePricing.js';
 
 // Opt-in owner offerings. Existing pricing fields retain their original meaning.
 // Rates contain money only; details contain scope and units only. Approval of the
@@ -13,7 +15,7 @@ const slug = v => typeof v === 'string' && /^[a-z][a-z0-9_]*$/.test(v);
 const rate = v => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= Number.MAX_SAFE_INTEGER;
 const integer = (v,min,max) => Number.isInteger(v) && v >= min && v <= max;
 const fence = type => type.startsWith('FENCING_');
-export const configuredOffering = (type,p) => OFFERING_TYPES.includes(type) && OFFERING_FIELDS.some(k=>own(p,k));
+export const configuredOffering = (type,p) => OFFERING_TYPES.includes(type) && (OFFERING_FIELDS.some(k=>own(p,k))||fence(type)&&fenceHasRows(p));
 export const offeringRatePath = path => typeof path === 'string' && path.startsWith('offeringRates.');
 const number = (label,unit,min=0,max=1_000_000,extra={}) => ({label,unit,type:'number',min,max,...extra});
 const choice = (label,values) => ({label,unit:null,type:'enum',values});
@@ -33,7 +35,7 @@ export function offeringBaselineConfirmation(type,p={}) {
   return {path:'offeringDetails.baselinePricesConfirmed',kind:'offering_price_baseline',message:`This offering was saved for ${saved}. Offering prices now cover ${baseline.condition}, with ${baseline.adjustment.toLowerCase()} adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed.`};
 }
 
-export const offeringMoneyKind=key=>key.startsWith('gate_')||['postMaterialEach','footingLaborEach','footingMaterialEach'].includes(key)?'fixed_amount':'unit_rate';
+export const offeringMoneyKind=key=>key.startsWith('gate_')||own(FENCE_POST_RATES,key)||['postMaterialEach','footingLaborEach','footingMaterialEach'].includes(key)?'fixed_amount':'unit_rate';
 
 export function offeringRateDefinitions(type,p={}) {
   const installed=p.offeringMode==='installed', d=p.offeringDetails||{}, out={};
@@ -46,6 +48,7 @@ export function offeringRateDefinitions(type,p={}) {
       add('postMaterialEach','Separately priced post materials','material','calculated posts');
       add('footingLaborEach','Post-hole and footing labor','labor','calculated posts');
       add('footingMaterialEach','Footing materials','material','calculated posts');
+      for(const [key,[label,category]] of Object.entries(FENCE_POST_RATES))add(key,label,category,key.startsWith('terminal')?'terminal posts':'line posts');
     }
     if(record(d.gates))for(const key of Object.keys(d.gates))if(slug(key))add('gate_'+key,'Installed gate: '+key.replaceAll('_',' '),'addon','gates','sell_price');
     if(type==='FENCING_REPLACEMENT'&&d.removalOffered===true)add('removalPerLF','Fence removal','addon','removed fence linear feet','sell_price');
@@ -77,6 +80,17 @@ export function offeringRateDefinitions(type,p={}) {
 
 export function offeringStructureDiagnostics(type,p) {
   if(!configuredOffering(type,p))return [];
+  if(fence(type)&&fenceCatalog(p))return fenceCatalogDiagnostics(type,p);
+  if(fence(type)&&record(p.heightRows)){
+    const errors=fenceRowsDiagnostics(p,'pricing');
+    for(const [key,row] of Object.entries(p.heightRows))if(record(row)){
+      const {heightRows,fenceOfferings,...base}=p;
+      const at={...base,...row,offeringDetails:{...p.offeringDetails,fenceHeight:row.exactHeight??row.maximumHeight}};
+      for(const name of ['exactHeight','minimumHeight','maximumHeight'])delete at[name];
+      errors.push(...offeringStructureDiagnostics(type,at).map(d=>({...d,path:'heightRows.'+key+'.'+d.path})));
+    }
+    return errors;
+  }
   const errors=[],add=(path,message,kind='invalid')=>errors.push({type:kind,kind:'offering_configuration',path,message});
   if(!['installed','itemized'].includes(p.offeringMode))add('offeringMode','Choose installed or itemized pricing for this offering.');
   if(!record(p.offeringDetails)){add('offeringDetails','Define what this offering includes.');return errors;}
@@ -138,13 +152,15 @@ export function offeringStructureDiagnostics(type,p) {
 // A gate key identifies a measured opening, not a tier-specific measurement.
 // The saved base definition wins; a tier-only gate takes its first definition.
 export function offeringGateDefinitions(p={},rules={}) {
-  const base=record(rules.pricing)?rules.pricing:record(rules.offeringDetails)?rules:p;
+  const source=record(rules.pricing)?rules.pricing:record(rules.offeringDetails)?rules:p;
+  const base=source.fenceOfferings?.[p.offeringDetails?.fenceType]||source;
   const gates={...(base.offeringDetails?.gates||{})};
-  for(const tier of Array.isArray(rules.tiers)?rules.tiers:[])for(const [key,gate] of Object.entries(tier.overrides?.offeringDetails?.gates||{}))if(!own(gates,key))gates[key]={...gate};
+  for(const tier of Array.isArray(base.tiers)?base.tiers:Array.isArray(rules.tiers)?rules.tiers:[])for(const [key,gate] of Object.entries(tier.overrides?.offeringDetails?.gates||{}))if(!own(gates,key))gates[key]={...gate};
   return gates;
 }
 
 export function offeringContract(type,p,rules={}) {
+  if(fence(type)&&fenceCatalog(p))return fenceCatalogContract(type,p,rules);
   const d=p.offeringDetails||{}, installed=p.offeringMode==='installed';
   const fields={permitRequired:bool('Permit required for this measured project')};
   if(fence(type))Object.assign(fields,{
@@ -154,6 +170,8 @@ export function offeringContract(type,p,rules={}) {
     terrainSlope:choice('Terrain slope',['flat','moderate','steep']),
     gates:{label:'Gates by measured opening width',type:'offering_counts',unit:'gates',values:record(d.gates)?Object.keys(d.gates):[],options:record(d.gates)?Object.fromEntries(Object.entries(d.gates).map(([k,v])=>[k,`${k.replaceAll('_',' ')} — ${typeof v?.widthLF==='number'?v.widthLF:'undefined'} ft opening; ${typeof v?.description==='string'?v.description:''}`])):{}},
     confirmedFacts:{label:'Affirmatively identified owner offerings',type:'confirmed_facts',unit:null},
+    fenceRunCount:number(FENCE_RUN_QUESTION,'runs',1,1_000_000,{integer:true,required:true}),
+    fenceRuns:{label:FENCE_SECTION_QUESTION,type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${value.replaceAll('_',' ')} — ${g.widthLF} ft opening; ${g.description}`})):[]},
     cornerCount:number('Fence corners','corners',0,1_000_000,{integer:true}),
     ...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:bool('Old fence removal included'),removalLengthLF:number('Measured old fence length to remove','linear feet',0.1)}:{})
   });
@@ -164,15 +182,16 @@ export function offeringContract(type,p,rules={}) {
     ...(type==='INTERIOR_PAINTING'?{wallHeight:choice('Wall height',['standard','high','vaulted']),wallScopeUniform:bool('All wall area shares the confirmed height, access, and finish-coat count'),ceilingsIncluded:bool('Ceiling painting included'),ceilingAreaSqft:number('Measured ceiling area','square feet',1,2_000_000),trimIncluded:bool('Trim painting included'),trimLengthLF:number('Measured trim length','linear feet',0.1)}:{stories:choice('Building stories',[1,2,3])})
   });
   return {fields,required:c=>{
-    if(fence(type))return ['linearFeet','lfMethod','fenceType','fenceHeight','terrainSlope','gates','cornerCount',...(type==='FENCING_REPLACEMENT'?['oldFenceRemoval',...(c.oldFenceRemoval?['removalLengthLF']:[])]:[])];
+    if(fence(type))return [...(c.fenceRuns!==undefined?['fenceRunCount','fenceRuns']:['linearFeet','lfMethod','gates','cornerCount']),'fenceType','fenceHeight','terrainSlope',...(type==='FENCING_REPLACEMENT'?['oldFenceRemoval',...(c.oldFenceRemoval?['removalLengthLF']:[])]:[])];
     return ['areaInputMethod',type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft','coats','surfaceCondition',...(type==='INTERIOR_PAINTING'?['wallHeight','wallScopeUniform','ceilingsIncluded','trimIncluded',...(c.ceilingsIncluded?['ceilingAreaSqft']:[]),...(c.trimIncluded?['trimLengthLF']:[])]:['stories'])];
-  },inspection:c=>fence(type)?c.lfMethod!=='exact'?'Measured fence length is required.':null:c.areaInputMethod!=='wall_sqft'?'Measured paintable wall area is required.':null,
+  },inspection:c=>fence(type)?c.lfMethod!=='exact'&&c.fenceRuns===undefined?'Measured fence length is required.':positive(c.fenceHeight)&&c.fenceType===d.fenceType?fenceSelection(p,c).error||null:null:c.areaInputMethod!=='wall_sqft'?'Measured paintable wall area is required.':null,
   crossValidate:c=>{
     const errors=[],bad=(field,message)=>errors.push({field,message});
     const equal=(field,expected)=>{if(c[field]!==undefined&&c[field]!==expected)bad(field,'This detail does not match the selected owner offering.');};
     if(fence(type)) {
-      // Any positive height is quotable (owner ruling, Oct 3): only the fence type must match.
       equal('fenceType',d.fenceType);
+      if(positive(c.fenceHeight)&&c.fenceType===d.fenceType){const selected=fenceSelection(p,c);if(selected.error)bad(selected.field,selected.error);}
+      if(c.fenceRuns!==undefined)try{fenceLayout(c,p);}catch(error){bad('fenceRuns',error.message);}
       const confirmedGates=offeringGateDefinitions(p,rules);
       for(const [key,count] of Object.entries(c.gates||{}))if(count>0&&positive(d.gates?.[key]?.widthLF)&&positive(confirmedGates[key]?.widthLF)&&exactCompare(d.gates[key].widthLF,confirmedGates[key].widthLF)!==0)bad('gates.'+key,'This option changes the confirmed gate-opening width. Choose an offering for the measured opening.');
       if(c.fenceHeight!==undefined&&typeof c.fenceHeight==='number'&&Number.isFinite(c.fenceHeight)&&c.fenceHeight>0&&!fenceHeightWithinPrecision(c.fenceHeight))bad('fenceHeight',FENCE_HEIGHT_PRECISION_MESSAGE);
@@ -191,17 +210,59 @@ export function offeringContract(type,p,rules={}) {
   }};
 }
 
+function fenceCatalogDiagnostics(type,p){
+  const errors=fenceRowsDiagnostics(p,'pricing');
+  if(!Object.keys(p.fenceOfferings).length)errors.push({type:'missing',kind:'fence_offerings',path:'fenceOfferings',message:'Add an offering for each fence type you build.'});
+  for(const [name,offer] of Object.entries(p.fenceOfferings)){
+    const at='fenceOfferings.'+name;
+    if(!record(offer))continue;
+    for(const field of Object.keys(offer))if(!['offeringMode','offeringDetails','heightRows','tiers','installedLaborPercent','installedMaterialsPercent','minimumJob'].includes(field))errors.push({type:'unsupported',kind:'fence_offerings',path:at+'.'+field,message:'Unsupported fence offering field.'});
+    if(offer.offeringDetails?.fenceType!==name)errors.push({type:'invalid',kind:'fence_offerings',path:at+'.offeringDetails.fenceType',message:'The offering key must match its registered fence type.'});
+    const variants=[{name:null,overrides:{}},...(Array.isArray(offer.tiers)?offer.tiers:[])];
+    for(const [index,tier] of variants.entries()){
+      if(!record(tier)||!record(tier.overrides))continue;
+      if(own(tier.overrides,'fenceOfferings')||own(tier.overrides,'tiers')){errors.push({type:'unsupported',kind:'fence_offerings',path:at+'.tiers',message:'A fence tier may change its own height rows and details, not another offering or its tiers.'});continue;}
+      const effective=mergePricingForRows(offer,tier.overrides);
+      const {fenceOfferings,heightRows,tiers,...common}=p;
+      const {tiers:unused,...settings}=effective;
+      const prefix=at+(index?'.tiers.'+(index-1)+'.overrides':'');
+      errors.push(...offeringStructureDiagnostics(type,{...common,...settings}).map(d=>({...d,path:prefix+'.'+d.path})));
+    }
+  }
+  return errors;
+}
+function mergePricingForRows(base,overrides){
+  // Height-row maps merge by stable key; a tier inherits unedited row settings.
+  const merge=(a,b)=>{const out={...a};for(const [k,v] of Object.entries(b||{}))out[k]=record(v)&&record(a?.[k])?merge(a[k],v):v;return out;};
+  return merge(base,overrides);
+}
+function fenceCatalogContract(type,p,rules){
+  let variants=[];
+  try{variants=fenceCatalogVariants(p,rules.tiers);}catch{}
+  const single=v=>{const {fenceOfferings,...pricing}=v;return pricing;};
+  const fallback={offeringMode:'itemized',offeringDetails:{gates:{}},heightRows:{}};
+  const base=offeringContract(type,variants[0]?single(variants[0].pricing):fallback,rules);
+  const choices=variants.map(v=>{
+    const contract=offeringContract(type,single(v.pricing),rules),row=v.row;
+    const conditions=[['fenceType','eq',v.type],...(row.exactHeight!==undefined?[['fenceHeight','eq',row.exactHeight]]:[['fenceHeight','gt',row.minimumHeight],['fenceHeight','lte',row.maximumHeight]])];
+    return {visibleWhen:[conditions],values:contract.fields.gates.values,options:contract.fields.gates.options,gateChoices:contract.fields.fenceRuns.gateChoices};
+  });
+  base.fields.gates={...base.fields.gates,values:[...new Set(choices.flatMap(v=>v.values))],choiceVariants:choices};
+  base.fields.fenceRuns={...base.fields.fenceRuns,choiceVariants:choices};
+  const selected=c=>{
+    try{return offeringContract(type,single(resolvedFencePricing(p,c)),rules);}catch{return null;}
+  };
+  return {...base,required:c=>selected(c)?.required(c)||base.required(c),
+    inspection:c=>positive(c.fenceHeight)&&typeof c.fenceType==='string'?fenceSelection(p,c).error||selected(c)?.inspection(c):base.inspection(c),
+    crossValidate:c=>{const s=fenceSelection(p,c);return s.error&&positive(c.fenceHeight)&&typeof c.fenceType==='string'?[{field:s.field,message:s.error}]:selected(c)?.crossValidate(c)||[];}};
+}
+
 function prepRateKey(p,category,condition) {
  const key='prep'+category+'PerSqft_'+condition;
  return own(p.offeringRates,key)||condition!==p.offeringDetails?.surfaceCondition?key:'prep'+category+'PerSqft';
 }
 export function calculatedFencePosts(c,p) {
- const ratio=exactDecimal(exactDivide(c.linearFeet,p.postSpacingLF));
- const spans=(ratio.numerator+ratio.denominator-1n)/ratio.denominator;
- const gatePosts=Object.entries(c.gates||{}).reduce((sum,[key,count])=>sum+(p.offeringDetails.gates[key]?.postsAndFootingsIncluded?0:count*2),0);
- const count=Number(spans)+1+c.cornerCount+gatePosts;
- if(!Number.isSafeInteger(count)||count<1)throw new RangeError('Fence post quantity is outside the supported range.');
- return count;
+ return fencePostQuantities(c,p).total;
 }
 // Fence prices are entered for the offering's height. Any other requested height
 // is priced in proportion to height (price per square foot of fence face): fence
@@ -222,17 +283,6 @@ export function fenceHeightWithinPrecision(feet){
   if(typeof feet!=='number'||!Number.isFinite(feet)||feet<=0)return false;
   for(let k=0;k<=2;k++){const scale=12*10**k,scaled=feet*scale,whole=Math.round(scaled);if(Number.isSafeInteger(whole)&&whole>0&&Math.abs(scaled-whole)<=Math.abs(scaled)*1e-12)return true;}
   return false;
-}
-export function exactFenceHeight(feet){
-  for(let k=0;k<=6;k++){
-    const scale=12*10**k,scaled=feet*scale,whole=Math.round(scaled);
-    if(Number.isSafeInteger(whole)&&whole>0&&Math.abs(scaled-whole)<=Math.abs(scaled)*1e-12)return exactDivide(whole,scale);
-  }
-  return exactDecimal(feet);
-}
-export function fenceHeightFactor(c,d){
-  const ratio=exactDivide(exactFenceHeight(c.fenceHeight),exactFenceHeight(d.fenceHeight));
-  return exactCompare(ratio,1)===0?null:ratio;
 }
 // Exact decimal text of a rational that terminates within maxDigits, else null.
 function decimalText(numerator,denominator,maxDigits=6){
@@ -262,10 +312,16 @@ export function offeringLines(type,c,p) {
   const add=(key,quantity,derivation,multipliers)=>{const def=definitions[key];lines.push({key,quantity,...def,ratePath:'offeringRates.'+key,rateCents:p.offeringRates?.[key],...(derivation?{derivation}:{}),...(multipliers?.length?{multipliers}:{})});};
   const coated=(key,area,coats)=>add(key,exactMultiply(area,coats),{formula:'measuredAreaSqft * definedCoats',inputs:{measuredAreaSqft:area,definedCoats:coats}});
   if(fence(type)) {
-    const factor=fenceHeightFactor(c,d),height=factor?[{name:'Fence height adjustment (requested height / priced height)',path:'offeringDetails.fenceHeight',value:factor}]:[];
-    if(installed)add('installedFencePerLF',c.linearFeet,undefined,height);
-    else {add('fenceLaborPerLF',c.linearFeet,undefined,height);add('fenceMaterialPerLF',c.linearFeet,undefined,height);for(const key of ['postMaterialEach','footingLaborEach','footingMaterialEach'])add(key,calculatedFencePosts(c,p),{formula:'ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices',inputs:{linearFeet:c.linearFeet,postSpacingLF:p.postSpacingLF,cornerCount:c.cornerCount,gates:c.gates}},height);}
-    if(record(c.gates))for(const [key,count] of Object.entries(c.gates))if(count>0)add('gate_'+key,count,undefined,height);
+    if(installed)add('installedFencePerLF',c.linearFeet);
+    else {
+      add('fenceLaborPerLF',c.linearFeet);add('fenceMaterialPerLF',c.linearFeet);
+      const posts=fencePostQuantities(c,p),split=Object.keys(FENCE_POST_RATES).some(key=>own(p.offeringRates,key));
+      const keys=split?Object.keys(FENCE_POST_RATES):['postMaterialEach','footingLaborEach','footingMaterialEach'];
+      for(const key of keys){const quantity=split?(key.startsWith('terminal')?posts.terminal:posts.line):posts.total;
+        if(quantity>0)add(key,quantity,{formula:posts.method==='sections'?'sum(ceil(section / spacing)) + gates + open runs - included gate posts':'ceil(total length / spacing) + 1 + corners + separate gate posts + 2 * (runs - 1)',inputs:{...posts.inputs,postSpacingLF:p.postSpacingLF,terminal:posts.terminal,line:posts.line}});
+      }
+    }
+    if(record(c.gates))for(const [key,count] of Object.entries(c.gates))if(count>0)add('gate_'+key,count);
     if(c.oldFenceRemoval===true)add('removalPerLF',c.removalLengthLF);
   } else {
     const area=c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'];
@@ -291,6 +347,11 @@ export function offeringRequirements(type,c,p) {
   // Quantity construction can be incomplete while diagnosing missing customer
   // facts. Required price paths are selected independently from arithmetic.
   const d=p.offeringDetails||{}, definitions=offeringRateDefinitions(type,p), names=Object.keys(definitions).filter(key=>{
+    if(fence(type)&&(['postMaterialEach','footingLaborEach','footingMaterialEach'].includes(key)||own(FENCE_POST_RATES,key))){
+      const split=Object.keys(FENCE_POST_RATES).some(name=>own(p.offeringRates,name));
+      if(split!==own(FENCE_POST_RATES,key))return false;
+      if(split&&c.linearFeet!==undefined)try{const n=fencePostQuantities(c,p);return key.startsWith('terminal')?n.terminal>0:n.line>0;}catch{}
+    }
     if(key.startsWith('gate_'))return c.gates?.[key.slice(5)]>0;
     if(key==='removalPerLF')return c.oldFenceRemoval===true;
     if(/^(?:installedCeiling|ceiling)/.test(key))return c.ceilingsIncluded===true;
@@ -306,7 +367,7 @@ export function offeringDisclosures(type,p,c) {
   const d=p.offeringDetails||{}, out=[d.description];
   if(fence(type)) {
     out.push('Standard posts and footings: '+d.postFootingDescription,'Fence length excludes gate openings.');
-    if(fenceHeightFactor(c,d))out.push(`Priced from this business's ${formatFenceHeight(d.fenceHeight)} fence prices, scaled to the requested ${formatFenceHeight(c.fenceHeight)} height.`);
+    if(c.fenceRuns===undefined)out.push('Post quantities use the total-length allowance for '+(c.fenceRunCount??1)+' separate fence run(s).');
     for(const [key,count] of Object.entries(c.gates||{}))if(count>0){const g=d.gates[key];out.push(`${count} ${g.widthLF} ft gate(s): ${g.description}${/[.!?]$/.test(g.description.trim())?'':'.'} Gate posts and footings ${g.postsAndFootingsIncluded?'included in the gate price':'included in the calculated post total'}.`);}
     if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.'));
   } else {
@@ -318,6 +379,10 @@ export function offeringDisclosures(type,p,c) {
 }
 
 export function offeringActivationScenarios(type,p,rules={}) {
+  if(fence(type)&&fenceHasRows(p))return fenceCatalogVariants(p,rules.tiers).flatMap(v=>{
+    const {fenceOfferings,heightRows,...single}=v.pricing;
+    return offeringActivationScenarios(type,single,rules).map(c=>({...c,fenceHeight:v.height,fenceRunCount:1}));
+  });
   const d=p.offeringDetails||{};
   if(fence(type)) {
     const base={linearFeet:100,lfMethod:'exact',fenceType:d.fenceType,fenceHeight:d.fenceHeight,terrainSlope:'flat',gates:{},cornerCount:0,...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:false}:{})};

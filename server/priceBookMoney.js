@@ -4,6 +4,7 @@ import {allowedPricingFields,CLASS2_DEFINITIONS} from './quote-engine-vnext/cont
 import {offeringMoneyKind,offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {mergePricingForValidationVNext} from './quote-engine-vnext/pricingMerge.js';
+import {fenceType,fenceRowsDiagnostics} from './quote-engine-vnext/fencePricing.js';
 
 // Monetary semantics are declared once here and consumed by every dollar/cent
 // boundary. A field that the active pricing metadata exposes cannot silently
@@ -45,7 +46,7 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'largeRepairMaxSqft','installedMaterialsPercent','installedLaborPercent',
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
-  'scopeDetails','roomSizeThresholds'
+  'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates']);
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);
@@ -324,7 +325,34 @@ function convertPricingContainer(container, serviceType, effectivePricing, direc
   const output = cloneData(container);
   for (const [field, value] of Object.entries(container)) {
     const fieldPath = `${location}.${field}`;
-    if (DYNAMIC_MONEY_MAPS.has(field)) output[field] = convertDynamicMoneyMap(value, serviceType, field, effectivePricing, direction, fieldPath);
+    if(fenceType(serviceType)&&field==='fenceOfferings'){
+      if(!isRecord(value))failure(fieldPath,'Fence offerings must be a map keyed by fence type.');
+      output[field]=Object.fromEntries(Object.entries(value).map(([key,offer])=>{
+        if(!isRecord(offer))failure(fieldPath+'.'+key,'A fence offering must be an object.');
+        const effective=mergePricingForValidationVNext(effectivePricing.fenceOfferings?.[key]||{},offer);
+        const converted=convertPricingContainer(offer,serviceType,effective,direction,fieldPath+'.'+key);
+        if(Array.isArray(offer.tiers))converted.tiers=offer.tiers.map((tier,i)=>{
+          if(!isRecord(tier)||!isRecord(tier.overrides))return cloneData(tier);
+          const tierPricing=mergePricingForValidationVNext(effective,tier.overrides);
+          if(direction==='toCents')convertPricingContainer(tierPricing,serviceType,tierPricing,direction,fieldPath+'.'+key+'.tiers['+i+'].effectivePricing');
+          return {...cloneData(tier),overrides:convertPricingContainer(tier.overrides,serviceType,tierPricing,direction,fieldPath+'.'+key+'.tiers['+i+'].overrides')};
+        });
+        return [key,converted];
+      }));
+    }
+    else if(fenceType(serviceType)&&field==='heightRows'){
+      if(!isRecord(value))failure(fieldPath,'Fence height rows must be a map.');
+      if(direction==='toCents'){
+        const overlap=fenceRowsDiagnostics({heightRows:effectivePricing.heightRows||value,offeringDetails:{fenceType:'height_validation'}},fieldPath).find(d=>d.kind==='fence_height_overlap');
+        if(overlap)failure(overlap.path,overlap.message);
+      }
+      output[field]=Object.fromEntries(Object.entries(value).map(([key,row])=>{
+        if(!isRecord(row))failure(fieldPath+'.'+key,'A fence height row must be an object.');
+        const effective={...effectivePricing,...effectivePricing.heightRows?.[key],...row};
+        return [key,convertPricingContainer(row,serviceType,effective,direction,fieldPath+'.'+key)];
+      }));
+    }
+    else if (DYNAMIC_MONEY_MAPS.has(field)) output[field] = convertDynamicMoneyMap(value, serviceType, field, effectivePricing, direction, fieldPath);
     else if (field === 'debrisPricing') output[field] = convertDebrisPricing(value, direction, fieldPath);
     else {
       const kind = moneyKindForField(serviceType, field, effectivePricing);

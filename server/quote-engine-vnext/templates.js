@@ -5,6 +5,7 @@ import {tradeAdjustment} from './tradeAdjustments.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
+import {fenceType,fenceHasRows,resolvedFencePricing} from './fencePricing.js';
 import {
   validationSnapshotVNext,
   SERVICE_TYPES,
@@ -1135,6 +1136,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     throw new QuoteReviewError(`Pricing could not be read safely: ${reason}.`, { invalidOwnerFields: [path] });
   }
   pricing = pricingSnapshot.value;
+  if(fenceType(serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,customerInputs);}catch(error){throw new QuoteReviewError(error.message,{invalidCustomerFields:[error.fenceField||'fenceHeight']});}
   const serviceRules = serviceRulesFromContext(ctx);
   const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, serviceRules);
   if (!customerValidation.ok) {

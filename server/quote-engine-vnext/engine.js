@@ -6,6 +6,7 @@ import {customerFieldForInputs} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
+import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -218,8 +219,15 @@ export function validateTierDefinitionsDetailedVNext(ownerPricing, serviceType) 
   if (!SERVICE_TYPES.includes(serviceType)) {
     return [{ type: 'invalid', kind: 'tier_definition', path: 'serviceType', message: 'Service type is unsupported.' }];
   }
-  if (ownerPricing.tiers === undefined) return [];
   const diagnostics = [];
+  if(fenceType(serviceType)&&fenceCatalog(ownerPricing.pricing)){
+    if(ownerPricing.tiers?.length)diagnostics.push({type:'invalid',kind:'fence_tier_definition',path:'tiers',message:'Fence price tiers belong to each fence-type offering, not the whole service.'});
+    for(const [key,offer] of Object.entries(ownerPricing.pricing.fenceOfferings))if(offer&&typeof offer==='object'){
+      const nested=validateTierDefinitionsDetailedVNext({tiers:offer.tiers},serviceType);
+      diagnostics.push(...nested.map(d=>({...d,path:'fenceOfferings.'+key+'.'+d.path})));
+    }
+  }
+  if (ownerPricing.tiers === undefined) return diagnostics;
   if (!Array.isArray(ownerPricing.tiers)) return [{ type: 'invalid', kind: 'tier_definition', path: 'tiers', message: 'tiers must be an array containing at most three options.' }];
   const arrayIssue = denseArrayIssue(ownerPricing.tiers);
   if (arrayIssue) {
@@ -1104,6 +1112,10 @@ function exclusionsMatch(options) {
 
 function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited, validation }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
+  if(fenceType(serviceType)&&fenceHasRows(pricing)){
+    try{pricing=resolvedFencePricing(pricing,customerInputs);validation=null;}
+    catch(error){throw new QuoteReviewError(error.message,{invalidCustomerFields:[error.fenceField||'fenceHeight'],inspectionFirst:true});}
+  }
   const customerValidation = validation ? validation.customer(customerInputs) : validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing);
   if (!customerValidation.ok) {
     const normalizedScope = customerValidation.normalized ? structuredClone(customerValidation.normalized) : null;
@@ -1424,7 +1436,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   }
   if (!Number.isInteger(currentMonth) || currentMonth < 1 || currentMonth > 12) return finishReview({ reviewReason: 'Quote month is invalid.', invalidCustomerFields: ['currentMonth'] });
 
-  const tiers = Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
+  const tiers = fenceType(serviceType)&&fenceCatalog(basePricing)?fenceQuoteTiers(basePricing,customerInputs):Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
     ? ownerPricing.tiers
     : [{ name: null, overrides: {} }];
   const options = [];
@@ -1745,11 +1757,13 @@ function rootCalculationRecordMatches(result) {
   if(!isPlainObject(configuration)||configuration.active!==true||identityDiagnosticsVNext(configuration, result.serviceType).length)return false;
   for (const option of result.options) {
     const inputs=option.calculationRecord.normalizedCustomerInputs;
-    if (!plainDataEqual(inputs,canonicalCustomerIdentityVNext(result.submittedCustomerInputs))) return false;
-    const tier=option.tierName===null?null:configuration.tiers?.find(t=>t.name===option.tierName);
+    const tiers=fenceType(result.serviceType)&&fenceCatalog(configuration.pricing)?fenceQuoteTiers(configuration.pricing,result.submittedCustomerInputs):configuration.tiers;
+    const tier=option.tierName===null?null:tiers?.find(t=>t.name===option.tierName);
     if (option.tierName!==null && !tier) return false;
-    const pricing=tier?mergePricingVNext(configuration.pricing,tier.overrides):configuration.pricing;
-    if (!validateCustomerInputs(result.serviceType,inputs,pricing,configuration).ok ||
+    let pricing=tier?mergePricingVNext(configuration.pricing,tier.overrides):configuration.pricing;
+    if(fenceType(result.serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,inputs);}catch{return false;}
+    const normalized=fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
+    if (!plainDataEqual(inputs,normalized)||!validateCustomerInputs(result.serviceType,inputs,pricing,configuration).ok ||
         !validateOwnerPricing(result.serviceType,inputs,pricing,configuration,option.tierName).ok) return false;
     const free = freeOfferingVNext(configuration, option.tierName);
     if (option.calculationRecord.freeOffering !== free || (option.calculationRecord.range.highCents === 0) !== free) return false;
