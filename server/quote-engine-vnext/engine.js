@@ -1835,7 +1835,7 @@ export function customerFieldClassesVNext(serviceType){
     const known=new Set(),measurements=new Set();
     for(const [name,field] of entries){
       known.add(name);
-      if(SIZE_METHOD_FIELDS.has(name)||field?.type==='orthogonal_outline'||(field?.type==='number'&&SIZE_UNITS.has(field.unit)))measurements.add(name);
+      if(SIZE_METHOD_FIELDS.has(name)||['orthogonal_outline','fence_runs'].includes(field?.type)||(field?.type==='number'&&SIZE_UNITS.has(field.unit)))measurements.add(name);
     }
     customerFieldIndex.set(serviceType,{known,measurements});
   }

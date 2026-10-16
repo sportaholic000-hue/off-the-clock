@@ -28,12 +28,27 @@ test('Oct16 Chromium: two separate 9 ft runs enter the verbatim questions and qu
  const c=await output(page);assert.equal(c.fenceRunCount,2);assert.deepEqual(c.fenceRuns,[{closed:false,sections:[{lengthLF:9}]},{closed:false,sections:[{lengthLF:9}]}]);
  assert.equal(await page.getByLabel('Fence corners',{exact:true}).count(),0);assert.equal(c.cornerCount,undefined);assert.equal(c.linearFeet,undefined);
  const q=generateQuoteVNext({...f,customerInputs:c});assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,75600);
+ // Reducing the number cannot erase a previously measured run. Removing the
+ // chosen run explicitly leaves 9 LF and 3 posts: 9000+19800+9000=37800 cents.
+ await page.getByLabel('How many separate fence runs?',{exact:true}).fill('1');let edited=await output(page);
+ assert.equal(edited.fenceRuns.length,2);assert.equal(generateQuoteVNext({...f,customerInputs:edited}).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ await page.getByRole('button',{name:'Remove run 2',exact:true}).click();edited=await output(page);assert.equal(edited.fenceRuns.length,1);assert.equal(edited.fenceRunCount,1);
+ assert.equal(generateQuoteVNext({...f,customerInputs:edited}).options[0].calculationRecord.scenarios.mid.finalTotalCents,37800);
 });
 test('Oct16 Chromium: one gate between 7 and 9 ft sections quotes 5 posts / 91200 cents; total-only fallback asks runs',async t=>{
  const f=fenceFixture(),page=await pageFor(t,f);await page.getByLabel('How many separate fence runs?',{exact:true}).fill('1');await page.getByLabel('Does this run connect back to where it starts? — run 1',{exact:true}).selectOption('false');
  await page.getByLabel('Length of each straight section, in feet, between ends, corners and gates — run 1, section 1',{exact:true}).fill('7');await page.getByRole('button',{name:'Add straight section',exact:true}).click();
  await page.getByLabel('Length of each straight section, in feet, between ends, corners and gates — run 1, section 2',{exact:true}).fill('9');await page.getByLabel('Gate after run 1, section 1',{exact:true}).selectOption('walk');
  const c=await output(page),q=generateQuoteVNext({...f,customerInputs:c});assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,91200);
+ // Opening a loop cannot erase its closing gate; removing a section cannot
+ // erase a gate on the section that remains. Both conflicts require review.
+ const closure=page.getByLabel('Does this run connect back to where it starts? — run 1',{exact:true});
+ await closure.selectOption('true');await page.getByLabel('Gate after run 1, section 2',{exact:true}).selectOption('walk');await closure.selectOption('false');
+ let edited=await output(page);assert.equal(edited.fenceRuns[0].sections[1].gateAfter,'walk');assert.equal(generateQuoteVNext({...f,customerInputs:edited}).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ await page.getByLabel('Gate after run 1, section 2',{exact:true}).selectOption('');
+ await page.getByRole('button',{name:'Remove section 2',exact:true}).click();edited=await output(page);assert.equal(edited.fenceRuns[0].sections[0].gateAfter,'walk');assert.equal(generateQuoteVNext({...f,customerInputs:edited}).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ await page.getByRole('button',{name:'Add straight section',exact:true}).click();await page.getByLabel('Length of each straight section, in feet, between ends, corners and gates — run 1, section 2',{exact:true}).fill('9');
+ assert.equal(generateQuoteVNext({...f,customerInputs:await output(page)}).options[0].calculationRecord.scenarios.mid.finalTotalCents,91200);
  await page.getByRole('button',{name:'I only know the total length',exact:true}).click();assert.equal((await output(page)).fenceRuns,undefined);assert.equal(await page.getByLabel('Fence corners',{exact:true}).count(),1);assert.equal(await page.getByLabel('How many separate fence runs?',{exact:true}).count(),1);
 });
 test('Oct16 Chromium: four fence offerings retain twelve tiers; editing aluminum eight changes only its row spacing',async t=>{

@@ -324,7 +324,7 @@ export function offeringLines(type,c,p) {
         if(combined.has(key))continue;
         let quantity=split?(key.startsWith('terminal')?posts.terminal:posts.line):posts.total;
         const pair=split&&pairs.find(([terminal])=>terminal===key);
-        const equal=pair&&posts.terminal>0&&posts.line>0&&typeof p.offeringRates?.[key]==='number'&&p.offeringRates[key]===p.offeringRates[pair[1]];
+        const equal=pair&&posts.terminal>0&&posts.line>0&&typeof p.offeringRates?.[key]==='number'&&p.offeringRates[key]>0&&p.offeringRates[key]===p.offeringRates[pair[1]];
         if(equal){quantity=posts.total;combined.add(pair[1]);}
         const totalFormula=posts.method==='sections'?'sum(ceil(section / spacing)) + gates + open runs - included gate posts':'ceil(total length / spacing) + 1 + corners + separate gate posts + 2 * (runs - 1)';
         const formula=!split||equal?totalFormula:key.startsWith('terminal')?(posts.method==='sections'?'2 * open runs + corners + 2 * gates without included posts':'2 * runs + corners + 2 * gates without included posts'):(posts.method==='sections'?'sum(ceil(section / spacing) - 1)':'ceil(total length / spacing) - 1');

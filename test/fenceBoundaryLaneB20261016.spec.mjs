@@ -17,7 +17,8 @@ for(const [name,change]of [
  ['unknown zero gate',c=>c.gates={walk:1,unknown:0}],
  ['contradictory gates',c=>c.gates={}],['extra section input',c=>c.fenceRuns[0].sections[0].postCount=2],
  ])test('Oct16 layout refuses '+name+' with no released price',()=>{
-  const f=layout();change(f.customerInputs);const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(sanitizeForCustomerVNext(q).midEstimate,undefined);
+  const f=layout();change(f.customerInputs);const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');const view=sanitizeForCustomerVNext(q);assert.equal(view.midEstimate,undefined);
+  if(['zero section','negative section','text total'].includes(name))assert.match(view.customerMessage,/measurement/i);
  });
 for(const [height,expected]of [[4,null],[6,400000],[6.01,600000],[7,600000],[8,600000],[9,null]])test('Oct16 exclusive/inclusive row boundary '+height+' ft: '+(expected??'review'),()=>{
   const f=fenceFixture('installed');f.customerInputs.fenceHeight=height;const q=generateQuoteVNext(f);
@@ -48,6 +49,12 @@ test('Oct16 explicit zero classification is local to its height row: 16 LF strai
  const zero=q.options[0].lineItems.find(l=>l.calculation.ratePath==='offeringRates.terminalPostMaterialEach');assert.equal(zero.noChargeReason,'included_in_another_price');
  const wrong=structuredClone(f);wrong.ownerPricing.zeroPricePolicy.includedPrices[prefix+'terminalPostMaterialEach']='fenceOfferings.wood.heightRows.eight.offeringRates.fenceMaterialPerLF';
  assert.equal(generateQuoteVNext(wrong).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ // Both post prices zero: infill 51200 + footing labor/material 3000 =54200.
+ // Keep each included zero's own classification instead of merging its proof.
+ f.ownerPricing.pricing.fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach=0;
+ f.ownerPricing.zeroPricePolicy.includedPrices[prefix+'linePostMaterialEach']=prefix+'fenceMaterialPerLF';
+ const both=generateQuoteVNext(f);assert.equal(both.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(both));assert.equal(total(both),54200);
+ const zeros=both.lineItems.filter(l=>/^(Terminal|Line) post materials$/.test(l.name));assert.equal(zeros.length,2);assert.ok(zeros.every(l=>l.noChargeReason==='included_in_another_price'));
 });
 test('Oct16 free tiers are scoped to a fence type: aluminum Good can be zero; wood Good remains its positive 100000-cent offering',()=>{
  const f=fourTypes();f.ownerPricing.pricing.fenceOfferings.aluminum.tiers[0].overrides.heightRows.six.offeringRates.installedFencePerLF=0;
