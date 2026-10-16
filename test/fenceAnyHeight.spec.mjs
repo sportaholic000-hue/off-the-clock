@@ -6,11 +6,9 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
-// Owner ruling (October 3): a fence quote must work for any height the customer
-// asks for (2 ft, 9 ft, 13 ft, fractional inches). Prices are entered for one
-// height; other heights scale every height-dependent price by
-// requested height / priced height. Removal of an old fence is not scaled.
-// Expected values are computed here with exact fractions, independently of the engine.
+// Owner ruling (October 16): prices belong to explicit height rows; height
+// never multiplies a rate. Preserve open height intake and exact inches.
+// The expected line cents below are written independently before execution.
 process.env.PRICEBOOK_PATH = fs.mkdtempSync(path.join(os.tmpdir(), 'otc-fence-height-'));
 const bridge = await import('../server/src/quoteDoneBridge.js');
 const store = await import('../server/priceBookService.js');
@@ -43,48 +41,46 @@ function live(service) {
 const fenceId = crypto.randomUUID();
 const confirm = inputs => ({ ...inputs, confirmedFacts:{ fenceType:{ status:'identified', field:'fenceType', value:'wood', offeringId:fenceId } } });
 
-test('a 6 ft itemized wood fence quotes 2, 5 ft 3.65 in, 9 and 13 ft requests in exact proportion', () => {
+test('explicit itemized height rows quote 2, 5 ft 3.65 in, 6, 9 and 13 ft without scaling any component', () => {
   const quote = live({ serviceType:'FENCING_INSTALL', service:'Wood privacy', knownOfferings:{ fenceType:{ wood:fenceId } }, pricing:{ minimumJob:0, offeringMode:'itemized',
     offeringDetails:{ description:'Wood privacy fence', fenceType:'wood', fenceHeight:6, postFootingDescription:'Posts set in concrete',
       gates:{ walk:{ widthLF:4, description:'Walk gate', postsAndFootingsIncluded:false } } },
     offeringRates:{ fenceLaborPerLF:9.5, fenceMaterialPerLF:14.25, postMaterialEach:28.75, footingLaborEach:22, footingMaterialEach:9.4, gate_walk:385 },
-    installedLaborPercent:{ 'offeringRates.gate_walk':40 } } });
+    installedLaborPercent:{ 'offeringRates.gate_walk':40 },heightRows:Object.fromEntries([2,5+3.65/12,6,9,13].map((height,i)=>['height_'+i,{exactHeight:height,postSpacingLF:8,offeringRates:{fenceLaborPerLF:9.5,fenceMaterialPerLF:14.25,postMaterialEach:28.75,footingLaborEach:22,footingMaterialEach:9.4,gate_walk:385}}])) } });
   const posts = 30n; // ceil(187 / 8) + 1 end + 3 corners + 2 walk-gate posts
   const exactHeights = { '5 ft 3.65 in': div(dec('63.65'), dec(12)) };
   for (const [height, label] of [[2, '2 ft'], [5 + 3.65 / 12, '5 ft 3.65 in'], [6, '6 ft'], [9, '9 ft'], [13, '13 ft']]) {
     const result = quote(confirm({ linearFeet:187, lfMethod:'exact', fenceType:'wood', fenceHeight:height, terrainSlope:'moderate', gates:{ walk:1 }, cornerCount:3 }));
     assert.equal(result.internalResult.resultType, 'INSTANT_ESTIMATE_READY', label);
-    const f = div(exactHeights[label] || dec(height), dec(6)), terrain = dec('1.15');
-    const expected = [cents(mul(dec(187), dec(950), f, terrain)), cents(mul(dec(187), dec('1.1'), dec(1425), f)), cents(mul([posts, 1n], dec(2875), f)),
-      cents(mul([posts, 1n], dec(2200), f, terrain)), cents(mul([posts, 1n], dec(940), f)),
-      // Installed gate: 40% labor share with the 1.15 terrain factor: 1 + 0.40 x 0.15 = 1.06.
-      cents(mul(dec(38500), f, dec('1.06')))];
+    // 187 LF; 30 posts; terrain 1.15 on labor and 40% of the installed gate.
+    const expected = [204298,293123,86250,75900,28200,40810];
     const lines = result.internalResult.options[0].lineItems.map(line => line.amountCents);
     assert.deepEqual([...lines].sort((a, b) => a - b), [...expected].sort((a, b) => a - b), label);
     assert.ok(result.customerResult.priceDrivers.some(text => text.includes(label + ' wood fencing')), label + ' driver');
-    if (height !== 6) assert.match(result.customerResult.disclaimer, new RegExp("Priced from this business's 6 ft fence prices, scaled to the requested " + label + ' height'));
-    else assert.doesNotMatch(result.customerResult.disclaimer, /scaled to the requested/);
+    assert.doesNotMatch(result.customerResult.disclaimer, /scaled to the requested/);
   }
 });
 
-test('a 4 ft installed fence quotes 2 and 13 ft; removal of the old fence is not scaled', () => {
+test('installed rows have independent 2, 4 and 13 ft prices; removal stays per measured foot', () => {
   const quote = live({ serviceType:'FENCING_REPLACEMENT', service:'Chain link', knownOfferings:{ fenceType:{ wood:fenceId } }, pricing:{ minimumJob:0, offeringMode:'installed',
     offeringDetails:{ description:'Chain link', fenceType:'wood', fenceHeight:4, postFootingDescription:'Line posts in concrete', gates:{},
       removalOffered:true, removalDescription:'Remove old fence', removalIncludesDisposal:true },
-    offeringRates:{ installedFencePerLF:38.5, removalPerLF:3.2 } } });
-  for (const height of [2, 4, 13]) {
+    offeringRates:{ installedFencePerLF:38.5, removalPerLF:3.2 },heightRows:Object.fromEntries([[2,43],[4,38.5],[13,51]].map(([h,rate],i)=>['height_'+i,{exactHeight:h,postSpacingLF:8,offeringRates:{installedFencePerLF:rate,removalPerLF:3.2}}])) } });
+  for (const [height,expected] of [[2,650000],[4,587000],[13,762000]]) {
     const result = quote(confirm({ linearFeet:140, lfMethod:'exact', fenceType:'wood', fenceHeight:height, terrainSlope:'flat', gates:{}, cornerCount:2, oldFenceRemoval:true, removalLengthLF:150 }));
     const total = result.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents;
-    assert.equal(total, cents(mul(dec(140), dec(3850), div(dec(height), dec(4)))) + 150 * 320, height + ' ft');
+    assert.equal(total, expected, height + ' ft');
   }
 });
 
-test('the fence type must still match; height never limits the quote; the metadata offers no fixed height list', () => {
+test('type and explicit height coverage both matter; metadata still offers no fixed height list', () => {
   const quote = live({ serviceType:'FENCING_INSTALL', service:'Wood privacy', knownOfferings:{ fenceType:{ wood:fenceId } }, pricing:{ minimumJob:0, offeringMode:'installed',
     offeringDetails:{ description:'Wood privacy fence', fenceType:'wood', fenceHeight:6, postFootingDescription:'Posts set in concrete', gates:{} },
     offeringRates:{ installedFencePerLF:40 } } });
   const ok = quote(confirm({ linearFeet:100, lfMethod:'exact', fenceType:'wood', fenceHeight:0.75, terrainSlope:'flat', gates:{}, cornerCount:0 }));
-  assert.equal(ok.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents, 50000, '9 in fence at $40 per foot for 6 ft');
+  assert.equal(ok.internalResult.resultType,'ESTIMATE_REQUIRES_REVIEW','9 in has no saved height row');
+  const covered=quote(confirm({linearFeet:100,lfMethod:'exact',fenceType:'wood',fenceHeight:6,terrainSlope:'flat',gates:{},cornerCount:0}));
+  assert.equal(covered.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,400000);
   const wrongType = quote({ linearFeet:100, lfMethod:'exact', fenceType:'vinyl', fenceHeight:6, terrainSlope:'flat', gates:{}, cornerCount:0 });
   assert.equal(wrongType.internalResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   for (const type of ['FENCING_INSTALL', 'FENCING_REPLACEMENT']) {
@@ -94,20 +90,20 @@ test('the fence type must still match; height never limits the quote; the metada
   }
 });
 
-test('a feet-and-inches height is priced exactly as entered and shown as entered (Astra reproduction)', () => {
-  // 100 ft at $45 per foot priced for 6 ft; request 5 ft 3.65 in = 63.65/12 ft.
-  // Exact: 100 x 4500 x (63.65/12) / 6 = 397,812.5 cents, which rounds half up to $3,978.13.
+test('an exact feet-and-inches row retains its own fractional unit price and exact display', () => {
+  // $45.00005/LF * 100 LF = 450000.5 cents -> 450001 cents.
+  // Height is exactly 5 ft 3.65 in; no height multiplier participates.
+  const sent=5+3.65/12;
   const quote = live({ serviceType:'FENCING_INSTALL', service:'Wood privacy', knownOfferings:{ fenceType:{ wood:fenceId } }, pricing:{ minimumJob:0, offeringMode:'installed',
-    offeringDetails:{ description:'Wood privacy fence', fenceType:'wood', fenceHeight:6, postFootingDescription:'Posts set in concrete', gates:{} },
-    offeringRates:{ installedFencePerLF:45 } } });
-  const sent = 5 + 3.65 / 12; // exactly what the shared feet-and-inches control sends
+    offeringDetails:{ description:'Wood privacy fence', fenceType:'wood', fenceHeight:sent, postFootingDescription:'Posts set in concrete', gates:{} },
+    offeringRates:{ installedFencePerLF:45.00005 } } });
   const result = quote(confirm({ linearFeet:100, lfMethod:'exact', fenceType:'wood', fenceHeight:sent, terrainSlope:'flat', gates:{}, cornerCount:0 }));
-  assert.equal(cents(mul(dec(100), dec(4500), div(div(dec('63.65'), dec(12)), dec(6)))), 397813);
-  assert.equal(result.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents, 397813);
-  assert.equal(result.customerResult.midEstimate, 3978.13);
+  assert.equal(cents(mul(dec(100),dec('4500.005'))),450001);
+  assert.equal(result.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents, 450001);
+  assert.equal(result.customerResult.midEstimate, 4500.01);
   assert.deepEqual(result.customerResult.pricedScope.facts.find(fact => fact.label === 'Fence height'), { label:'Fence height', value:'5 ft 3.65 in' });
   assert.ok(result.customerResult.priceDrivers.includes('100 measured linear feet of 5 ft 3.65 in wood fencing'));
-  assert.match(result.customerResult.disclaimer, /scaled to the requested 5 ft 3\.65 in height\./);
+  assert.doesNotMatch(result.customerResult.disclaimer,/scaled to the requested/);
 });
 
 test('entered heights are recovered exactly; arbitrary numbers are used as given; wording no longer limits height', () => {

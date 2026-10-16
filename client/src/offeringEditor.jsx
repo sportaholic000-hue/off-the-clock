@@ -3,6 +3,7 @@ import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
 import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 import {offeringPriceBaseline,offeringBaselineConfirmation,offeringRateDefinitions} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import React,{useState} from 'react';
+import {FenceOfferingEditor} from './FenceOfferingEditor.jsx';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,chooseFenceType,removeGateOffering} from './pricebookEditing.js';
@@ -36,7 +37,10 @@ export function offeringTierFields(meta,service,overrides={}) {
   return [...baseFields,...shareFields,...scopeFields,...detailFields];
 }
 
-export function OfferingEditor({service,meta,onChange}) {
+export function OfferingEditor(props) {
+  return props.service.serviceType.startsWith('FENCING_')?<FenceOfferingEditor {...props}/>:<PaintingOfferingEditor {...props}/>;
+}
+function PaintingOfferingEditor({service,meta,onChange}) {
   const p=servicePricing(service),mode=p.offeringMode,d=p.offeringDetails||{},rates=p.offeringRates||{},fence=service.serviceType.startsWith('FENCING_'),interior=service.serviceType==='INTERIOR_PAINTING';
   const [gateName,setGateName]=useState(''),[gateError,setGateError]=useState(''),[typeName,setTypeName]=useState(''),[typeError,setTypeError]=useState('');
   const fenceTypes=service.knownOfferings?.fenceType||{};
@@ -70,30 +74,12 @@ export function OfferingEditor({service,meta,onChange}) {
       {confirmation&&<Notice tone="warning">{confirmation.message}</Notice>}
       {legacyCondition&&<label><input type="checkbox" checked={d.baselinePricesConfirmed===true} onChange={e=>detail('baselinePricesConfirmed',e.target.checked)}/> I confirm these are baseline prices for {baseline.condition}</label>}
       {input('description','Included job description')}
-      {fence?<>
-        <Field key="fenceType" label="Offered fence type" help="Choose a fence type from Registered products, or name a new one. The same name is used for its prices and for quoting."><Select aria-label="Offered fence type" value={d.fenceType??''} onChange={e=>detail('fenceType',e.target.value||undefined)}><option value="">Choose a fence type</option>{Object.keys(fenceTypes).map(key=><option key={key} value={key}>{humanPricingKey(key)}</option>)}{d.fenceType&&!Object.hasOwn(fenceTypes,d.fenceType)&&<option value={d.fenceType}>{d.fenceType} (not registered: add it again below)</option>}</Select><TextInput aria-label="New fence type name" value={typeName} onChange={e=>{setTypeName(e.target.value);setTypeError('');}}/><Button variant="secondary" onClick={()=>useFenceType(typeName)}>Use this fence type</Button>{typeError&&<span className="field-error" role="alert">{typeError}</span>}</Field><Field label="Height these prices are for" help="Customers can ask for any height. Other heights are priced in proportion to height: per-foot, post, footing and gate prices scale by the requested height divided by this height (a 9 ft request from 6 ft prices is 1.5 times). Old-fence removal is not adjusted."><FenceHeightInput label="Height these prices are for" value={d.fenceHeight} onChange={value=>detail('fenceHeight',value)}/></Field>
-        {input('postFootingDescription','Standard posts, footings and digging included')}
-        <Notice>{mode==='installed'?'The per-foot installed price includes the defined standard posts and footings. Gate prices include their own posts and footings.':'Infill is priced by fence length. Posts and footings are calculated from fence length, your post spacing, corners and gate counts. Posts included in gate prices are excluded.'} Fence length excludes gate openings.</Notice>
-        <h3>Offered gates</h3>
-        {d.gates===undefined&&<Button variant="secondary" onClick={()=>detail('gates',{})}>No gates offered</Button>}
-        {Object.entries(d.gates||{}).map(([key,gate])=>{
-          const change=(field,value)=>detail('gates',{...d.gates,[key]:{...gate,[field]:value}});
-          return <div className="editor-section" key={key}><h4>{key.replaceAll('_',' ')}</h4>
-            <Field label="Gate opening width (ft)"><ExactNumericInput aria-label={'Gate opening width '+key} value={gate.widthLF} onChange={value=>change('widthLF',value)}/></Field>
-            <Field label="Gate, hardware and installation included"><Textarea aria-label={'Gate description '+key} value={gate.description||''} onChange={e=>change('description',e.target.value)}/></Field>
-            <Field label="Gate price includes gate posts and footings"><Select aria-label={'Gate posts included '+key} value={gate.postsAndFootingsIncluded===undefined?'':String(gate.postsAndFootingsIncluded)} onChange={e=>change('postsAndFootingsIncluded',e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false" disabled={mode==='installed'}>No — counted and priced separately</option></Select></Field>
-            <Button variant="quiet" onClick={()=>onChange(removeGateOffering(service,key))}>Remove gate offering</Button>
-          </div>;
-        })}
-        <Field label="New gate name"><TextInput aria-label="New gate name" value={gateName} onChange={e=>{setGateName(e.target.value);setGateError('');}}/></Field>
-        <Button variant="secondary" onClick={()=>{const {key,error}=productKeyFromName(gateName);if(error){setGateError(error);return;}if(Object.hasOwn(d.gates||{},key)){setGateError(DUPLICATE_NAME_MESSAGE);return;}detail('gates',{...(d.gates||{}),[key]:{description:gateName.trim()}});setGateName('');setGateError('');}}>Add gate offering</Button>{gateError&&<span className="field-error" role="alert">{gateError}</span>}
-        {service.serviceType==='FENCING_REPLACEMENT'&&<>{input('removalOffered','Offer fence removal','boolean')}{d.removalOffered&&<>{input('removalDescription','Removal work included')}{input('removalIncludesDisposal','Removal price includes disposal','boolean')}</>}</>}
-      </>:<>
+      <>
         {input('substrate','Paintable surface covered')}{input('coating','Coating and product system')}{mode==='installed'&&input('finishCoats','Wall finish coats','select',[1,2,3])}
         {(mode==='installed'||rates.prepLaborPerSqft!==undefined||rates.prepMaterialPerSqft!==undefined)&&input('surfaceCondition',mode==='installed'?'Surface condition covered':'Condition for retained preparation prices','select',['good','fair','poor'])}{input('preparation','Preparation work included')}{input('primerCoats','Wall primer coats included','select',[0,1,2,3])}
         <Notice>{mode==='installed'?'The installed wall price includes the defined finish coats, preparation and primer over the quoted area.':'Finish paint uses the requested coat count. Preparation covers the entire measured painted area at your price for the reported surface condition. Material quantities include the waste settings below. For owner material costs, configure products, package coverage and purchase prices under Additional priced scope.'}</Notice>
         {interior?<>{input('ceilingsOffered','Offer ceiling painting','boolean')}{d.ceilingsOffered&&<>{mode==='installed'&&input('ceilingCoats','Ceiling finish coats','select',[1,2,3])}{input('ceilingPrimerCoats','Ceiling primer coats','select',[0,1,2,3])}</>}{input('trimOffered','Offer trim painting','boolean')}{d.trimOffered&&input('trimDescription','Trim coats, preparation and primer included')}</>:null}
-      </>}
+      </>
       <h3>Owner prices for this offering — {baseline.condition}</h3>
       {Object.entries(definitions).map(([key,field])=><Field key={key} label={field.label+(key==='installedTrimPerLF'?'':' — '+baseline.condition)+' ($ per '+field.unit+')'} help={(key==='installedTrimPerLF'?'Trim is priced by measured length. Wall height does not adjust this price.':baselineNote)+' '+(field.priceBasis==='sell_price'?'Complete selling price; no additional markup is applied.':'Uses the configured price basis and tax treatment for '+field.category+'.')}><ExactNumericInput aria-label={field.label+' ($ per '+field.unit+')'} kind={field.moneyKind} value={rates[key]??(key.endsWith('_'+d.surfaceCondition)?rates[key.slice(0,-d.surfaceCondition.length-1)]:undefined)} onChange={value=>{const next={...rates};if(value===undefined){delete next[key];if(key.endsWith('_'+d.surfaceCondition))delete next[key.slice(0,-d.surfaceCondition.length-1)];}else next[key]=value;set('offeringRates',next);}}/></Field>)}
       {!!unused.length&&<><h3>Prices outside this selection</h3><p>These saved prices are retained and do not contribute to this selection. Remove them if they no longer belong to this offering.</p>{unused.map(key=><div key={key}>{key}: {String(rates[key])} <Button variant="quiet" onClick={()=>removeRate(key)}>Remove unused price</Button></div>)}</>}

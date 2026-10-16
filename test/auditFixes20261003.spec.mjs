@@ -144,14 +144,15 @@ test('D03: the default settings a quote uses are saved with the service and show
 });
 
 test('D10: inches are accepted to two decimal places; finer values are refused, never silently rounded; exact parts never show 12 inches', () => {
-  const svc = live(fenceSvc({ offeringRates:{ installedFencePerLF:36 } }));
+  // Oct16: an explicit (0,6] row has $36/LF at every covered height.
+  const svc = live(fenceSvc({offeringRates:{installedFencePerLF:36},heightRows:{six:{minimumHeight:0,maximumHeight:6,postSpacingLF:8,offeringRates:{installedFencePerLF:36}}}}));
   const tooFine = svc.quote(job({ linearFeet:100000, fenceHeight:5 + 3.0000001 / 12 }));
   assert.equal(tooFine.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.ok(JSON.stringify(tooFine).includes(offer.FENCE_HEIGHT_PRECISION_MESSAGE));
   const threeDecimals = svc.quote(job({ linearFeet:100, fenceHeight:5 + 3.001 / 12 }));
   assert.equal(threeDecimals.resultType, 'ESTIMATE_REQUIRES_REVIEW', 'three decimal places of an inch are refused');
   const fine = svc.quote(job({ linearFeet:100000, fenceHeight:5 + 3.65 / 12 }));
-  assert.equal(total(fine), cents(mul(D(100000), D(3600), div(div(D('63.65'), D(12)), D(6)))));
+  assert.equal(total(fine),360000000,'100000 LF * 3600 cents, without height scaling');
   assert.deepEqual(offer.fenceHeightParts(5 + 3.65 / 12), { feet:'5', inches:'3.65' });
   assert.deepEqual(offer.fenceHeightParts(5.999999999), { feet:'6', inches:'0' });
   const owner = live(fenceSvc({}, { fenceHeight:5 + 3.0000001 / 12 }));

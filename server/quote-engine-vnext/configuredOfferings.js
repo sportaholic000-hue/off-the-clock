@@ -1,5 +1,5 @@
 import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal} from './exactMath.js';
-import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION} from './fencePricing.js';
+import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION} from './fencePricing.js';
 export {exactFenceHeight} from './fencePricing.js';
 
 // Opt-in owner offerings. Existing pricing fields retain their original meaning.
@@ -80,6 +80,7 @@ export function offeringRateDefinitions(type,p={}) {
 
 export function offeringStructureDiagnostics(type,p) {
   if(!configuredOffering(type,p))return [];
+  if(fence(type)&&['fenceOfferings','heightRows'].some(k=>own(p,k)&&!record(p[k])))return [{type:'invalid',kind:'fence_height_rows',path:'heightRows',message:'Fence offerings and height rows must be named maps.'}];
   if(fence(type)&&fenceCatalog(p))return fenceCatalogDiagnostics(type,p);
   if(fence(type)&&record(p.heightRows)){
     const errors=fenceRowsDiagnostics(p,'pricing');
@@ -280,9 +281,7 @@ export function calculatedFencePosts(c,p) {
 // than silently rounded; no real fence is measured that finely.
 export const FENCE_HEIGHT_PRECISION_MESSAGE='Enter inches with no more than 2 decimal places, for example 5 ft 3.65 in.';
 export function fenceHeightWithinPrecision(feet){
-  if(typeof feet!=='number'||!Number.isFinite(feet)||feet<=0)return false;
-  for(let k=0;k<=2;k++){const scale=12*10**k,scaled=feet*scale,whole=Math.round(scaled);if(Number.isSafeInteger(whole)&&whole>0&&Math.abs(scaled-whole)<=Math.abs(scaled)*1e-12)return true;}
-  return false;
+  return fenceHeightPrecision(feet);
 }
 // Exact decimal text of a rational that terminates within maxDigits, else null.
 function decimalText(numerator,denominator,maxDigits=6){

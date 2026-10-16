@@ -7,7 +7,7 @@ const record = value => value !== null && typeof value === 'object' && !Array.is
   [Object.prototype, null].includes(Object.getPrototypeOf(value));
 const FIELD = /^[a-zA-Z][a-zA-Z0-9_]{0,99}$/;
 const FEES = ['travel', 'disposal', 'permit', 'overhead'];
-const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'integer_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts']);
+const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'integer_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs']);
 const safeText = (value, max = 240) => typeof value === 'string' && value.trim() && value.length <= max ? value.trim() : null;
 const human = value => String(value).replaceAll('_', ' ');
 
@@ -76,6 +76,14 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
       if (values.length > 32) question.moreChoicesAvailable = true;
     }
     if (field.type === 'slug') question.productConfirmationRequired = true;
+    if(field.type==='fence_runs'){
+      question.details=[field.closedQuestion,field.sectionQuestion].map(v=>{if(!safeText(v,4000))throw new TypeError('Invalid fence measurement question.');return v;});
+      question.choices=(field.gateChoices||[]).slice(0,32).map(g=>{
+        if(!safeText(g.value)||!safeText(g.label,4000))throw new TypeError('Invalid complete fence gate choice.');
+        return {value:g.value,label:g.label};
+      });
+      if((field.gateChoices||[]).length>32)question.moreChoicesAvailable=true;
+    }
     if (exemptValues.length) question.productConfirmationExemptValues = exemptValues;
     return question;
   });
@@ -109,9 +117,10 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
       customerInputs[field.name] = key;
       confirmedFacts[field.name] = { status: 'identified', field: field.name, value: key, offeringId: registered[key] };
     } else if (field.type === 'offering_counts' && record(customerInputs[field.name])) {
+      const selected=customerFieldForInputs(field,customerInputs);
       const normalized = {};
       for (const [name, count] of Object.entries(customerInputs[field.name])) {
-        const key = registeredProductKey(name, field.values || []);
+        const key = registeredProductKey(name, selected.values || []);
         if (!key || own(normalized, key)) { followUps.push('Confirm each distinct gate offering and its count.'); continue; }
         normalized[key] = count;
       }
@@ -119,6 +128,13 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
     } else if (field.type === 'enum' && typeof customerInputs[field.name] === 'string') {
       const key = registeredProductKey(customerInputs[field.name], (field.values || []).filter(value => typeof value === 'string'));
       if (key) customerInputs[field.name] = key;
+    }
+  }
+  for(const field of fields)if(field.type==='fence_runs'&&Array.isArray(customerInputs[field.name])){
+    const choices=customerFieldForInputs(field,customerInputs).gateChoices||[];
+    for(const run of customerInputs[field.name])if(record(run)&&Array.isArray(run.sections))for(const section of run.sections)if(record(section)&&own(section,'gateAfter')){
+      const key=registeredProductKey(section.gateAfter,choices.map(g=>g.value));
+      if(key)section.gateAfter=key;else followUps.push('Identify the offered gate at each measured section boundary.');
     }
   }
   const scopeConfirmations=record(args.scopeConfirmations)?args.scopeConfirmations:{};

@@ -1151,7 +1151,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
   const feeValidation=validateFeeSelectionRequest(ownerPricing,feeSelections,template.replacedCommonFees,true);
   if(feeValidation.invalidOwnerFields.length||feeValidation.invalidCustomerFields.length)throw new QuoteReviewError('Common fee selection is missing or invalid.',feeValidation);
-  const freeOffering = freeOfferingVNext(ownerPricing, tierName);
+  const freeOffering = freeOfferingVNext(ownerPricing, tierName, pricing);
   const mid = runScenario({ variant: 'mid', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering });
   const hasIntrinsicRange = template.lineItems.some(line => line.rangeAmountCents);
   let range;
@@ -1765,7 +1765,7 @@ function rootCalculationRecordMatches(result) {
     const normalized=fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
     if (!plainDataEqual(inputs,normalized)||!validateCustomerInputs(result.serviceType,inputs,pricing,configuration).ok ||
         !validateOwnerPricing(result.serviceType,inputs,pricing,configuration,option.tierName).ok) return false;
-    const free = freeOfferingVNext(configuration, option.tierName);
+    const free = freeOfferingVNext(configuration, option.tierName, pricing);
     if (option.calculationRecord.freeOffering !== free || (option.calculationRecord.range.highCents === 0) !== free) return false;
   }
   if(['AI_SUGGESTED','AI_INTERVIEW'].includes(configuration.source)){

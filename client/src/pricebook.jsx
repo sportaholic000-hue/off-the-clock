@@ -1284,7 +1284,7 @@ export default function PriceBook() {
 
                 {!!selectedMeta.legacyClass2Fields?.length&&<Disclosure title="Retained legacy settings" subtitle="These values retain their saved meaning and location. They are not used by current quoting rules.">{selectedMeta.legacyClass2Fields.filter(d=>serviceFieldValue(selected,d.field)!==undefined).map(d=><Field key={d.field} label={d.label}><ExactNumericInput value={serviceFieldValue(selected,d.field)} onChange={v=>updateField(d.field,v)}/></Field>)}</Disclosure>}
                 {/* GOOD / BETTER / BEST — collapsed until the owner opts in. */}
-                <Disclosure
+                {!selected.serviceType.startsWith('FENCING_')&&<Disclosure
                   title="Good / Better / Best tiers"
                   subtitle="Offer up to three options on one quote."
                   summaryChip={(selected.tiers || []).length ? `${(selected.tiers || []).length} SET` : 'NOT USED'}
@@ -1292,7 +1292,7 @@ export default function PriceBook() {
                 >
                   <TierBuilder tiers={selected.tiers || []} definitions={overrides=>offeringTierFields(selectedMeta,selected,overrides)}
                     onChange={tiers => replaceSelected(editServiceTiers(selected, tiers))} />
-                </Disclosure>
+                </Disclosure>}
 
                 {/* BUSINESS-WIDE — must not compete with service pricing. */}
                 <div className="business-wide">

@@ -375,6 +375,12 @@ export function applicationServiceDefinition(raw) {
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
   const customerFields=customerQuoteFields(raw,p);
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
+  if(raw.serviceType.startsWith('FENCING_')&&p.fenceOfferings){
+    const offeringSummary=Object.values(p.fenceOfferings).filter(value=>value&&typeof value==='object').flatMap(offer=>{
+      const d=offer.offeringDetails||{};return [d.description,'Standard posts and footings: '+(d.postFootingDescription||'')];
+    }).filter(value=>typeof value==='string'&&value.trim());
+    return {...definition,customerFields,offeringSummary:[...offeringSummary,'Fence length excludes gate openings.']};
+  }
   const d=p.offeringDetails||{};
   const summary=[d.description];
   if(raw.serviceType.startsWith('FENCING_'))summary.push('Standard posts and footings: '+(d.postFootingDescription||''),'Fence length excludes gate openings.');

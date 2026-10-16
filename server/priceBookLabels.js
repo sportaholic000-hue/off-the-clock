@@ -10,6 +10,7 @@ const SPECIAL_LABELS = {
   installedLaborPercent:'Labor portion (%)', installedMaterialsPercent:'Materials share (%)',
   priceBasisByCategory:'Price meaning by category', taxabilityByCategory:'Tax treatment by category',
   feeRules:'Fixed charge rules', knownOfferings:'Registered products', offeringDetails:'Work included', offeringRates:'Offering prices',
+  fenceOfferings:'Fence offerings',heightRows:'Height rows',minimumHeight:'Height over (ft)',maximumHeight:'Height up to and including',exactHeight:'Exact fence height',postSpacingLF:'Post spacing (ft)',
   TAX_NONE:'No tax', TAX_ALL:'Tax entire job', TAX_MATERIALS:'Tax materials only'
 };
 
@@ -26,6 +27,15 @@ export function humanPricingKey(key) {
 
 export function reviewLabel(path,service,meta={},p=service.pricing||service) {
  const parts=path.replace(/^pricing\./,'').split('.'),root=parts.shift();
+ if(root==='fenceOfferings'){
+  const type=parts.shift(),offer=p.fenceOfferings?.[type]||{};
+  return humanPricingKey(type)+' · '+reviewLabel(parts.join('.'),service,meta,offer);
+ }
+ if(root==='heightRows'){
+  const row=parts.shift(),settings=p.heightRows?.[row]||{};
+  return humanPricingKey(row)+' · '+reviewLabel(parts.join('.'),service,meta,{...p,...settings});
+ }
+
  const definitions=root==='scopeRates'?scopeRateDefinitions(service.serviceType,p,true):root==='offeringRates'?offeringRateDefinitions(service.serviceType,{...p,offeringDetails:{...p.offeringDetails,primerCoats:1,ceilingsOffered:true,ceilingPrimerCoats:1,trimOffered:true,removalOffered:true}}):{};
  if(['installedLaborPercent','installedMaterialsPercent'].includes(root))return humanPricingKey(root)+' — '+reviewLabel(parts.join('.'),service,meta,p);
  if(definitions[parts.join('.')]){const field=definitions[parts.join('.')];return field.label+' (per '+field.unit+')';}

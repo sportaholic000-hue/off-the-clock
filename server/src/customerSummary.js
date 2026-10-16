@@ -3,6 +3,11 @@ import { formatFenceHeight } from '../quote-engine-vnext/configuredOfferings.js'
 const measurement = {exact:'Measured area',assumption:'Estimated area',roof_measured:'Measured roof area',home_floor_area:'Home floor area'};
 const grass = {maintained:'Regularly maintained',overgrown:'Overgrown',severe:'Severely overgrown'};
 export function customerSummaryValue(field, value, fallback) {
+  if(field?.type==='fence_runs'&&Array.isArray(value))return value.map((run,i)=>{
+    if(!run||!Array.isArray(run.sections))return 'Run '+(i+1)+': Not supplied';
+    const sections=run.sections.map((s,j)=>'Section '+(j+1)+': '+fallback(s.lengthLF)+' ft'+(s.gateAfter?'; gate: '+(field.gateChoices?.find(g=>g.value===s.gateAfter)?.label||s.gateAfter.replaceAll('_',' ')):'')).join('; ');
+    return 'Run '+(i+1)+'; connects back: '+(run.closed===true?'Yes':run.closed===false?'No':'Not supplied')+'; '+sections;
+  }).join(' | ');
   // Fence heights read the way they were entered ("5 ft 3.65 in"), never as a long decimal.
   if (field?.name === 'fenceHeight' && typeof value === 'number' && Number.isFinite(value) && value > 0) return formatFenceHeight(value);
   if (typeof value === 'number' && Number.isFinite(value) && field?.unit) return fallback(value) + ' ' + field.unit;

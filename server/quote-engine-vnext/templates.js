@@ -5,7 +5,7 @@ import {tradeAdjustment} from './tradeAdjustments.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
-import {fenceType,fenceHasRows,resolvedFencePricing} from './fencePricing.js';
+import {fenceType,fenceHasRows,resolvedFencePricing,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {
   validationSnapshotVNext,
   SERVICE_TYPES,
@@ -1217,7 +1217,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
       if(adjustment.wastePath)recordQuantityDerivation(result,{name:line.name+' material quantity',formula:'measured quantity * (1 + owner material waste)',inputs:{measuredQuantity:adjustment.originalQuantity,wasteFactor:adjustment.waste,wastePath:adjustment.wastePath},result:adjustment.quantity,unit:line.calculation.unit,usedBy:[line.name]});
       return rebuilt;
     });
-    return recordNoChargeClassification(result,serviceRules);
+    return recordNoChargeClassification(result,serviceRules,pricing);
   };
   if(configuredOffering(serviceType,pricing)) {
     const out=baseOutput(serviceType);
@@ -1271,7 +1271,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
 
 // Included prices retain the category and basis of the concrete billed
 // components. An allocation across categories or bases is never inferred.
-function recordNoChargeClassification(result, rules) {
+function recordNoChargeClassification(result, rules, pricing) {
   const entries=[];
   for(const line of result.lineItems){
     const components=line.calculation.evidenceVariant==='composite'?line.calculation.components:null;
@@ -1281,7 +1281,8 @@ function recordNoChargeClassification(result, rules) {
   for(const entry of entries){
     const {holder,calculation,path}=entry;
     if(holder.amountCents!==0)continue;
-    const includedIn=rules.zeroPricePolicy?.includedPrices?.[path];
+    const classified=rules.zeroPricePolicy?.includedPrices?.[qualifiedFenceRatePath(pricing,path)]??rules.zeroPricePolicy?.includedPrices?.[path];
+    const includedIn=fenceType(rules.serviceType)?localFenceRatePath(pricing,classified):classified;
     if(calculation.quantity===0){holder.noCharge=true;holder.noChargeReason='zero_physical_scope';continue;}
     // A composite component's amountCents is rounded output, not its configured price.
     const zeroConfiguredPrice = calculation.rateCents === 0 ||

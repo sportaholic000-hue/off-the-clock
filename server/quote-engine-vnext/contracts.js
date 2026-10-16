@@ -6,10 +6,10 @@ import {fixedPriceField} from '../pricePrecision.js';
 import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
-import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringBaselineConfirmation} from './configuredOfferings.js';
+import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringMoneyKind, offeringBaselineConfirmation} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
-import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing} from './fencePricing.js';
+import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 
 // Readiness validates many selections against one immutable tier. Only private,
 // fully snapshotted and deeply frozen copies are eligible for this reuse. Caller
@@ -1785,7 +1785,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     if (missing(value)) {
       missingOwnerFields.push(item.path);
       ownerDiagnostics.push(ownerDiagnostic('missing', item.kind, item.path, `${item.label} is required.`));
-    } else if (value === 0 && corePriceRequirementVNext(item) && !freeOfferingVNext(serviceRules, tierName) &&
+    } else if (value === 0 && corePriceRequirementVNext(item) && !freeOfferingVNext(serviceRules, tierName, pricing) &&
         !includedCorePriceVNext(serviceRules, pricing, requiredPrices, item.path)) {
       missingOwnerFields.push(item.path);
       ownerDiagnostics.push(ownerDiagnostic('missing', 'unclassified_zero_core_price', item.path, item.label + ' is zero without an explicit free offering or included-price classification.'));
@@ -2150,6 +2150,12 @@ export function identityDiagnosticsVNext(service, requestedType = service?.servi
 function supportedIncludedPricePath(serviceType, path, pricing = {}) {
   if (typeof path !== 'string' || !SERVICE_TYPES.includes(serviceType)) return false;
   const parts = path.split('.'), [root, key, leaf, size] = parts;
+  if(fenceType(serviceType)&&root==='fenceOfferings'&&parts.length===6&&parts[2]==='heightRows'&&parts[4]==='offeringRates'){
+    const offer=pricing.fenceOfferings?.[key],row=offer?.heightRows?.[parts[3]];
+    return !!row&&supportedIncludedPricePath(serviceType,parts.slice(4).join('.'),{...offer,offeringRates:row.offeringRates});
+  }
+  if(fenceType(serviceType)&&root==='heightRows'&&parts.length===4&&leaf==='offeringRates')return !!pricing.heightRows?.[key]&&supportedIncludedPricePath(serviceType,parts.slice(2).join('.'),{...pricing,offeringRates:pricing.heightRows[key].offeringRates});
+
   if (!allowedPricingFields(serviceType).includes(root)) return false;
   if (parts.length === 1) return (
     scalarMoneyFields(serviceType).includes(root) && !['minimumJob','repairMinimum','minimumServiceCharge'].includes(root)
@@ -2188,12 +2194,14 @@ function includedPathDiagnosticsVNext(service, pricing) {
 function computeIncludedPathDiagnostics(service, pricing) {
   const mappings = service.zeroPricePolicy?.includedPrices;
   if (!isRecord(mappings)) return [];
-  const variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>mergePricingForValidationVNext(service.pricing||{},t?.overrides||{}))];
+  let variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>mergePricingForValidationVNext(service.pricing||{},t?.overrides||{}))];
+  if(fenceType(service.serviceType)&&fenceHasRows(service.pricing))try{variants.push(...fenceCatalogVariants(service.pricing,service.tiers).map(v=>v.pricing));}catch{}
   const supported=(path,p)=>supportedIncludedPricePath(service.serviceType,path,p);
   const out = [], configured = path => variants.some(p=>supported(path,p)&&valueAtPath(p,path)!==undefined);
   const validPrice = (path, value) => {
-    const [root,key]=path.split('.');
-    const fractional=root==='offeringRates'?offeringRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate':root==='scopeRates'?scopeRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate':!fixedPriceField(root,pricing);
+    const parts=path.split('.'),index=parts.indexOf('offeringRates');
+    const [root,key]=index>=0?parts.slice(index):parts;
+    const fractional=root==='offeringRates'?(fenceType(service.serviceType)?offeringMoneyKind(key)==='unit_rate':offeringRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate'):root==='scopeRates'?scopeRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate':!fixedPriceField(root,pricing);
     return fractional ? nonNegative(value)&&value<=Number.MAX_SAFE_INTEGER : nonNegativeMoney(value);
   };
   const cycleSources=new Set();
@@ -2242,15 +2250,15 @@ function computeZeroPolicyDiagnostics(service) {
   const valid = isRecord(p) && Object.keys(p).length === 7 && validServiceIdVNext(p.serviceId) && sameServiceIdVNext(p.serviceId, service.id) &&
     auditText(p.ownerId) && p.ownerId === service.origin?.ownerId && auditText(p.operationId) && auditTime(p.approvedAt) &&
     typeof p.freeCompleteService === 'boolean' && Array.isArray(p.freeTiers) && !denseArrayIssue(p.freeTiers) &&
-    p.freeTiers.every(name => auditText(name) && name === name.trim() && Array.isArray(service.tiers) && service.tiers.some(t => t?.name === name)) &&
+    p.freeTiers.every(name => auditText(name) && name === name.trim() && (fenceCatalog(service.pricing)?fenceTierKeys(service.pricing).some(t=>t.key===name):Array.isArray(service.tiers)&&service.tiers.some(t=>t?.name===name))) &&
     new Set(p.freeTiers).size === p.freeTiers.length && isRecord(p.includedPrices) &&
     Object.entries(p.includedPrices).every(([path, includedIn]) => auditText(path) && auditText(includedIn) && path !== includedIn);
   return valid ? includedPathDiagnosticsVNext(service) : [ownerDiagnostic('invalid', 'zero_price_policy', 'zeroPricePolicy', 'Zero-price policy must explicitly bind the persisted service, owner approval, free offerings, and included-price paths.')];
 }
-export function freeOfferingVNext(service, tierName = null) {
+export function freeOfferingVNext(service, tierName = null, pricing = service.pricing) {
   const p = service.zeroPricePolicy;
   return p !== undefined && zeroPolicyDiagnosticsVNext(service).length === 0 &&
-    (tierName === null ? p.freeCompleteService : p.freeTiers.includes(tierName));
+    (tierName === null ? p.freeCompleteService : p.freeTiers.includes(fenceCatalog(service.pricing)?pricing?.offeringDetails?.fenceType+'/'+tierName:tierName));
 }
 function corePriceRequirementVNext(item) {
   return ['non_negative_money', 'non_negative_number'].includes(item.kind) &&
@@ -2258,7 +2266,9 @@ function corePriceRequirementVNext(item) {
 }
 function includedCorePriceVNext(service, pricing, required, path) {
   if (zeroPolicyDiagnosticsVNext(service).length) return false;
-  const includedIn = service.zeroPricePolicy?.includedPrices?.[path];
+  const mappings=service.zeroPricePolicy?.includedPrices;
+  const included= mappings?.[qualifiedFenceRatePath(pricing,path)]??mappings?.[path];
+  const includedIn=fenceType(service.serviceType)?localFenceRatePath(pricing,included):included;
   return typeof includedIn === 'string' && required.some(item => item.path === includedIn && corePriceRequirementVNext(item)) &&
     valueAtPath(pricing, includedIn) > 0;
 }

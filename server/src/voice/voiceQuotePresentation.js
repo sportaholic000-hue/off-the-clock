@@ -26,8 +26,8 @@ export function voiceConfigurationIssues(service, definition) {
   const fields=definition?.customerFields||[];
   const details=[...new Set(fields.flatMap(field=>(field.presentationVariants||[]).flatMap(variant=>variant.details||[])))];
   const labels=fields.flatMap(field=>[field.label,...(field.presentationVariants||[]).map(variant=>variant.label)]).filter(Boolean);
-  const names=[service.service,...(Array.isArray(service.tiers)?service.tiers:[]).map(tier=>tier?.name)].filter(value=>value!==undefined);
-  const gateChoices=fields.filter(field=>field.type==='offering_counts').flatMap(field=>Object.values(field.options||{}));
+  const names=[service.service,...(Array.isArray(service.tiers)?service.tiers:[]).map(tier=>tier?.name),...Object.values(service.pricing?.fenceOfferings||{}).flatMap(offer=>(offer.tiers||[]).map(t=>t?.name))].filter(value=>value!==undefined);
+  const gateChoices=[...new Set(fields.filter(field=>field.type==='offering_counts').flatMap(field=>[...Object.values(field.options||{}),...(field.choiceVariants||[]).flatMap(v=>Object.values(v.options||{}))]))];
   const disclaimer=service.disclaimer||'';
   const issues=[];
   if(names.some(value=>typeof value!=='string'||value.length>200))issues.push('Keep service and price option names within 200 characters for the call and saved quote.');

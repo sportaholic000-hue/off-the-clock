@@ -20,6 +20,11 @@ export const FENCE_POST_RATES={
 };
 export const fenceCatalog=p=>record(p?.fenceOfferings);
 export const fenceHasRows=p=>own(p,'fenceOfferings')||own(p,'heightRows');
+export function fenceHeightPrecision(feet){
+  if(!positive(feet))return false;
+  for(let k=0;k<=2;k++){const scaled=feet*12*10**k,whole=Math.round(scaled);if(Number.isSafeInteger(whole)&&whole>0&&Math.abs(scaled-whole)<=Math.abs(scaled)*1e-12)return true;}
+  return false;
+}
 
 export function exactFenceHeight(feet){
   for(let k=0;k<=6;k++){
@@ -59,6 +64,7 @@ export function fenceRowsDiagnostics(p,path='pricing'){
         !(typeof row.minimumHeight==='number'&&Number.isFinite(row.minimumHeight)&&row.minimumHeight>=0&&positive(row.maximumHeight)&&exactCompare(exactFenceHeight(row.minimumHeight),exactFenceHeight(row.maximumHeight))<0)){
         bad(r,'Set an exact height, or a maximum height greater than the exclusive lower height.');continue;
       }
+      if((exact?[row.exactHeight]:[row.minimumHeight,row.maximumHeight]).some(v=>v!==0&&!fenceHeightPrecision(v)))bad(r,'Enter height limits in feet and inches with inches to at most 2 decimal places.');
       if(!positive(row.postSpacingLF))bad(r+'.postSpacingLF','Enter the post spacing for this height row.');
       if(!record(row.offeringRates))bad(r+'.offeringRates','Enter the prices for this height row.');
       for(const name of Object.keys(row))if(!['exactHeight','minimumHeight','maximumHeight','postSpacingLF','offeringRates','installedLaborPercent','installedMaterialsPercent'].includes(name))bad(r+'.'+name,'Unsupported fence height-row field.');
@@ -93,6 +99,17 @@ export function resolvedFencePricing(p,c){
     installedLaborPercent:{...(offer.installedLaborPercent||{}),...(row.installedLaborPercent||{})},
     installedMaterialsPercent:{...(offer.installedMaterialsPercent||{}),...(row.installedMaterialsPercent||{})},
     ...(heightRows?{heightRows}:{}),...(fenceCatalog(p)?{fenceOfferings:p.fenceOfferings}:{})};
+}
+// Selected-row paths keep explicit zero classifications local to that row.
+export function fenceRatePrefix(p){
+  if(!fenceHasRows(p)||!p.offeringDetails?.fenceType)return '';
+  const selected=fenceSelection(p,{fenceType:p.offeringDetails.fenceType,fenceHeight:p.offeringDetails.fenceHeight});
+  return selected.error?'':(fenceCatalog(p)?'fenceOfferings.'+selected.type+'.':'')+'heightRows.'+selected.rowKey+'.';
+}
+export const qualifiedFenceRatePath=(p,path)=>path?.startsWith('offeringRates.')?fenceRatePrefix(p)+path:path;
+export const localFenceRatePath=(p,path)=>fenceRatePrefix(p)&&path?.startsWith(fenceRatePrefix(p))?path.slice(fenceRatePrefix(p).length):path;
+export function fenceTierKeys(p){
+  return fenceCatalog(p)?Object.entries(p.fenceOfferings).flatMap(([type,o])=>(Array.isArray(o?.tiers)?o.tiers:[]).map(t=>({key:type+'/'+t.name,label:type.replaceAll('_',' ')+' — '+t.name}))):[];
 }
 export function fenceQuoteTiers(p,c,legacyTiers=[]){
   if(!fenceCatalog(p))return Array.isArray(legacyTiers)&&legacyTiers.length?legacyTiers:[{name:null,overrides:{}}];
@@ -174,5 +191,5 @@ export function fenceOfferingFromLegacy(p,tiers=[]){
     }
   }
   delete offer.offeringDetails.fenceHeight;
-  return {...offer,heightRows:p.heightRows||{saved_height:row},tiers:tiers.map(t=>({name:t.name,overrides:{heightRows:fenceOfferingFromLegacy(mergePricingForValidationVNext(p,t.overrides||{})).heightRows}}))};
+  return {...offer,...(own(p,'minimumJob')?{minimumJob:p.minimumJob}:{}),heightRows:p.heightRows||{saved_height:row},tiers:tiers.map(t=>{const {tiers:unused,...effective}=fenceOfferingFromLegacy(mergePricingForValidationVNext(p,t.overrides||{}));return {name:t.name,overrides:effective};})};
 }
