@@ -14,7 +14,9 @@ export function CarpetRoomsInput({rooms,onChange}){
 
 export function CarpetConnectionsInput({value,rooms=[],onChange}){
   const infer=value==='unknown'?'unknown':Array.isArray(value)?value.every(g=>g.length===1)?'separate':'groups':'';
-  const [mode,setMode]=useState(infer),[assignments,setAssignments]=useState([]);
+  const [mode,setMode]=useState(infer),[assignmentDraft,setAssignmentDraft]=useState({roomCount:rooms.length,values:[]});
+  const assignments=assignmentDraft.roomCount===rooms.length?assignmentDraft.values:[];
+  const setAssignments=values=>setAssignmentDraft({roomCount:rooms.length,values});
   useEffect(()=>{if(value===undefined){setAssignments([]);return;}setMode(infer);if(Array.isArray(value))setAssignments(rooms.map((_,i)=>{const n=value.findIndex(g=>g.includes(i+1));return n<0?'':String(n+1);}));},[value,rooms.length]);
   function choose(mode){setMode(mode);if(mode==='unknown')onChange('unknown');else if(mode==='separate')onChange(rooms.map((_,i)=>[i+1]));else{setAssignments(rooms.map(()=>''));onChange(undefined);}}
   function assign(i,area){const next=rooms.map((_,j)=>j===i?area:assignments[j]||'');setAssignments(next);if(next.some(v=>!v)){onChange(undefined);return;}
