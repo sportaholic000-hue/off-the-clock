@@ -19,6 +19,7 @@ import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
 import { moneyKindForField, validatePricebookNumericDraft, ownerMoneyEntries } from '../../server/priceBookMoney.js';
+import {markEditedPriceMetadata} from './pricebookPriceMetadata.js';
 import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
@@ -31,24 +32,6 @@ import { AssumptionRow, BlockerChecklist, Disclosure } from './reference.jsx';
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
-}
-
-function moneyEntryKey(entry) {
-  return `${entry.scope}:${entry.tierName??entry.tierIndex??''}:${entry.identity||entry.path}`;
-}
-
-function markEditedPriceMetadata(previous,next) {
-  const before=new Map(ownerMoneyEntries(previous).flatMap(entry=>[[moneyEntryKey(entry),entry],[moneyEntryKey({...entry,identity:undefined}),entry]]));
-  const output=clone(next);
-  for(const entry of ownerMoneyEntries(output)){
-    const prior=before.get(moneyEntryKey(entry))||before.get(moneyEntryKey({...entry,identity:undefined}));
-    const target=entry.scope==='tier'?output.tiers[entry.tierIndex]:output;
-    if(entry.identity)target.priceMetadata={...(target.priceMetadata||{}),[entry.path]:{...(prior?.metadata||entry.metadata||{}),identity:entry.identity}};
-    if(prior&&Object.is(prior.value,entry.value))continue;
-    target.priceMetadata={...(target.priceMetadata||{}),[entry.path]:{...(target.priceMetadata?.[entry.path]||{}),aiPlaceholder:false}};
-    delete target.priceMetadata[entry.path].acceptedAsOwnerPrice;
-  }
-  return output;
 }
 
 function JsonEditor({value,onChange}) {
