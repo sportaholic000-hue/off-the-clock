@@ -301,7 +301,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
                     <td key={nestedKey}>
                       <div className="matrix-input">
                         <span className="matrix-prefix mono">
-                          {domain.nestedCopy?.[nestedKey]?.unit === 'hours' ? 'h' : '$'}
+                          {definition.field==='debrisPricing'?(nestedKey==='disposalFlat'?'$':nestedKey==='sqftPerLoad'?'sq ft':'×'):domain.nestedCopy?.[nestedKey]?.unit === 'hours' ? 'h' : '$'}
                         </span>
                         <ExactNumericInput kind={definition.field === 'debrisPricing' && nestedKey === 'disposalFlat' ? 'fixed_amount' : kind}
                           aria-label={`${humanPricingKey(key)} ${domain.nestedCopy?.[nestedKey]?.label || nestedKey}`}

@@ -20,7 +20,7 @@ for(const [type,mode,terrain,expected]of [
  const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,expected);
  assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).fenceHeightNotice,'Only the saved fence height is priced. Add rows for the other heights you build.');
  assert.deepEqual(f.ownerPricing,before,'reads and quotes do not rewrite saved prices');f.customerInputs.fenceHeight=8;
- const unpriced=generateQuoteVNext(f);assert.equal(unpriced.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(unpriced.reviewReason,/No price is set for a 8 ft fence/);
+ const unpriced=generateQuoteVNext(f);assert.equal(unpriced.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(unpriced.reviewReason,'No price is set for a fence at 8 ft.');
 });
 test('Oct16 explicit legacy migration keeps its rounding boundary: 24 LF, 4 posts, moderate terrain = 109205 cents before and after',()=>{
  // Infill 27600+52800; posts 8000; footing labor 4*4001*1.15=18404.6 ->18405;

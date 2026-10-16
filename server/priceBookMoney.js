@@ -34,7 +34,7 @@ const FIXED_AMOUNT_FIELDS = new Set([
   'repairMinimum','repairMaterialAllowance','minimumJob','minimumServiceCharge',
   'disposalFlat','haulAwayFee','materialAllowance','patchMaterialAllowance',
   'pondingWaterSurcharge','travelFee','disposalFee','permitFee','overheadFixed',
-  'minimumJobPrice'
+  'minimumJobPrice','mowingVisitCharge','disposalPerBag','disposalPerLoad'
 ]);
 const DEFAULT_MONEY_FIELDS = new Set([
   'travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice','laborHourlyRate'

@@ -9,6 +9,7 @@ import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scope
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringMoneyKind, offeringBaselineConfirmation} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
+import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 
 // Readiness validates many selections against one immutable tier. Only private,
@@ -484,10 +485,13 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_CLEANUP = commonContract({
     sqftMethod: enumField('Cleanup area method', ['exact']),
     debrisLevel: enumField('Debris level', ['light', 'moderate', 'heavy']),
     slope: enumField('Terrain slope', SLOPES),
-    haulAway: booleanField('Additional haul-away selected')
+    haulAway: booleanField('Additional haul-away selected'),
+    wasteBags: {...numberField('About how many bags of yard waste?', 'bags', 0, 1_000_000),type:'number_or_unknown',integer:true,required:false},
+    wasteLoads: {...numberField('About how many pickup-truck loads?', 'pickup-truck loads', 0, 1_000_000),type:'number_or_unknown',required:false}
   },
   required: () => ['yardSqft', 'sqftMethod', 'debrisLevel', 'slope', 'haulAway'],
-  inspection: c => c.sqftMethod === 'assumption' ? 'Measured cleanup area is required for a customer-ready quote.' : null
+  inspection: c => c.sqftMethod === 'assumption' ? 'Measured cleanup area is required for a customer-ready quote.' : null,
+  crossValidate:c=>typeof c.wasteBags==='number'&&typeof c.wasteLoads==='number'?[{field:'wasteLoads',message:'Supply a bag count or a pickup-truck load count, not both.'}]:[]
 });
 
 MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
@@ -861,7 +865,8 @@ function validateFieldValue(definition, value) {
     return null;
   }
   if (definition.type === 'orthogonal_outline') { try { measuredOutlineVNext(value); return null; } catch(error) { return error.message; } }
-  if (definition.type === 'number') {
+  if(definition.type==='number_or_unknown'&&value==='unknown')return null;
+  if (definition.type === 'number'||definition.type==='number_or_unknown') {
     if (typeof value !== 'number' || !Number.isFinite(value)) return 'must be a finite number';
     if (value < definition.min || value > definition.max) return `must be between ${definition.min} and ${definition.max} ${definition.unit || ''}`.trim();
     if (definition.integer && !Number.isInteger(value)) return 'must be a whole number';
@@ -1144,11 +1149,11 @@ const ALLOWED_PRICING_FIELDS = {
   FENCING_REPLACEMENT: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob', 'removalPerLinearFoot', 'disposalPerLF'],
   CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
   CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
-  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee'],
+  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee', 'disposalPerBag', 'disposalPerLoad'],
   LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot'],
   LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft'],
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard'],
-  LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot'],
+  LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot', 'mowingVisitCharge'],
   SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance', 'largeRepairMaxSqft'],
   CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
@@ -1237,11 +1242,11 @@ const SCALAR_MONEY_FIELDS = {
   FENCING_REPLACEMENT: ['concretePerPost', 'minimumJob', 'disposalPerLF'],
   CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
   CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
-  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'minimumServiceCharge', 'haulAwayFee'],
+  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'minimumServiceCharge', 'haulAwayFee', 'disposalPerBag', 'disposalPerLoad'],
   LANDSCAPING_MULCH: ['mulchInstallLaborPerYard', 'minimumServiceCharge', 'edgingPerLinearFoot'],
   LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft'],
   LANDSCAPING_PLANTING: ['minimumServiceCharge', 'mulchInstallLaborPerYard'],
-  LANDSCAPING_MOWING: ['minimumServiceCharge', 'edgingPerLinearFoot'],
+  LANDSCAPING_MOWING: ['minimumServiceCharge', 'edgingPerLinearFoot', 'mowingVisitCharge'],
   SIDING_REPLACEMENT: ['minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum'],
   CUSTOM: ['price', 'low', 'high', 'minimumJob']
@@ -1369,6 +1374,9 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     add('cleanupBaseRatePerSqft', 'Cleanup labor price per measured square foot');
     add(`debrisPricing.${c.debrisLevel}.laborMultiplier`, 'Cleanup labor multiplier for selected debris level', { kind: 'positive_number' });
     add(`debrisPricing.${c.debrisLevel}.disposalFlat`, 'Cleanup disposal charge for selected debris level', { kind: 'non_negative_money' });
+    const disposal=cleanupDisposalPlan(c,p);
+    if(disposal.ratePath)add(disposal.ratePath,'Cleanup disposal price for the selected quantity unit',{kind:'non_negative_money'});
+    if(disposal.coveragePath)add(disposal.coveragePath,'Cleanup square feet per pickup-truck load for selected debris level',{kind:'positive_number'});
     add('minimumServiceCharge', 'Minimum cleanup service charge', { kind: 'minimum' });
     if (c.haulAway) add('haulAwayFee', 'Additional haul-away charge');
   } else if (serviceType === 'LANDSCAPING_MULCH') {
@@ -1398,6 +1406,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     add('minimumServiceCharge', 'Minimum mowing service charge', { kind: 'minimum' });
     add(`frequencyMultipliers.${c.serviceFrequency}`, 'Mowing frequency multiplier', { kind: 'positive_number' });
     add(`overgrowthMultipliers.${c.grassCondition}`, 'Grass condition multiplier', { kind: 'positive_number' });
+    if(c.serviceFrequency!=='one_time')add('overgrowthMultipliers.maintained','Maintained recurring grass condition multiplier',{kind:'positive_number'});
     // Bagging and mowing edging are ADDONs under spec STEP 2b.
   } else if (serviceType === 'SIDING_REPLACEMENT') {
     add(`laborPerSqft.${c.sidingType}`, 'Siding labor price for the selected siding type');
@@ -1573,6 +1582,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   diagnostics.push(...scopeStructureDiagnostics(serviceType,p));
 
   for (const name of scalarMoneyFields(serviceType)) {
+    if(['mowingVisitCharge','disposalPerBag','disposalPerLoad'].includes(name)&&!optionalPricePresent(p[name]))continue;
     if (!fixedPriceField(name,p)) {
       if (p[name] !== undefined && (!nonNegative(p[name]) || p[name] > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a finite non-negative unit rate in cents.`);
       continue;
@@ -1646,7 +1656,8 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
           structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}`, `debrisPricing.${level} is required.`);
           continue;
         }
-        for (const key of Object.keys(row)) if (!['laborMultiplier', 'disposalFlat'].includes(key)) structureDiagnostic(diagnostics, 'unsupported', `debrisPricing.${level}.${key}`, `debrisPricing.${level}.${key} is not supported.`);
+        for (const key of Object.keys(row)) if (!['laborMultiplier', 'disposalFlat', 'sqftPerLoad'].includes(key)) structureDiagnostic(diagnostics, 'unsupported', `debrisPricing.${level}.${key}`, `debrisPricing.${level}.${key} is not supported.`);
+        if(optionalPricePresent(row.sqftPerLoad)&&!positive(row.sqftPerLoad))structureDiagnostic(diagnostics,'invalid',`debrisPricing.${level}.sqftPerLoad`,'Enter a positive cleanup area per pickup-truck load.');
         if (!Object.hasOwn(row, 'laborMultiplier')) structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}.laborMultiplier`, `debrisPricing.${level}.laborMultiplier is required.`);
         else if (!positive(row.laborMultiplier)) structureDiagnostic(diagnostics, 'invalid', `debrisPricing.${level}.laborMultiplier`, `debrisPricing.${level}.laborMultiplier must be positive.`);
         if (!Object.hasOwn(row, 'disposalFlat')) structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}.disposalFlat`, `debrisPricing.${level}.disposalFlat is required.`);
@@ -2262,7 +2273,7 @@ export function freeOfferingVNext(service, tierName = null, pricing = service.pr
 }
 function corePriceRequirementVNext(item) {
   return ['non_negative_money', 'non_negative_number'].includes(item.kind) &&
-    !['haulAwayFee', 'edgingPerLinearFoot', 'baggingSurchargePercent', 'pondingWaterSurcharge'].includes(item.path) && !item.path.endsWith('.disposalFlat');
+    !['haulAwayFee', 'edgingPerLinearFoot', 'baggingSurchargePercent', 'pondingWaterSurcharge', 'disposalPerBag', 'disposalPerLoad'].includes(item.path) && !item.path.endsWith('.disposalFlat');
 }
 function includedCorePriceVNext(service, pricing, required, path) {
   if (zeroPolicyDiagnosticsVNext(service).length) return false;

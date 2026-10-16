@@ -45,12 +45,17 @@ function resultMoney(value){if(typeof value==='number'&&Number.isFinite(value)&&
 function resultTextList(value,maxItems=30){if(!Array.isArray(value)||value.length>maxItems)fail('INVALID_TOOL_RESULT',502);return value.map(item=>resultText(item,1000));}
 function scopeTextList(value,maxItems){if(!Array.isArray(value)||value.length>maxItems)fail('INVALID_TOOL_RESULT',502);return value.map(item=>resultText(item,4000));}
 function copyIf(result,output,key,reader){if(Object.hasOwn(result,key))output[key]=reader(result[key]);}
+function savedPriceProjection(value,allowFirst=true){
+ assertClosed(value,['tierName','currency','lowEstimate','midEstimate','highEstimate','priceUnit','taxTreatment','skippedAddons','writtenDisclosure',...(allowFirst?['firstVisit']:[])],[],'INVALID_TOOL_RESULT');
+ return Object.fromEntries(Object.entries(value).map(([name,item])=>[name,name==='firstVisit'?savedPriceProjection(item,false):/Estimate$/.test(name)?resultMoney(item):name==='skippedAddons'?resultTextList(item):resultText(item,name==='writtenDisclosure'?VOICE_WRITTEN_LIMIT:2000)]));
+}
 function baseResult(result){assertPlainObject(result,'INVALID_TOOL_RESULT');scanCustomerSafe(result);if(Buffer.byteLength(JSON.stringify(result),'utf8')>VOICE_RESULT_BYTES)fail('UNSAFE_TOOL_RESULT',502);return {status:resultText(result.status,80)};}
 function publicQuestionContract(value){
   assertClosed(value,['fields','customerFees'],['fields','customerFees'],'INVALID_TOOL_RESULT');
   if(!Array.isArray(value.fields)||value.fields.length>64||!Array.isArray(value.customerFees)||value.customerFees.length>4)fail('INVALID_TOOL_RESULT',502);
   const fields=value.fields.map(field=>{
-    assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','visibleWhen','details','scopeConfirmationRequired','confirmationToken','choices','moreChoicesAvailable','productConfirmationRequired','productConfirmationExemptValues'],['field','label','type'],'INVALID_TOOL_RESULT');
+    assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','visibleWhen','details','scopeConfirmationRequired','confirmationToken','choices','moreChoicesAvailable','productConfirmationRequired','productConfirmationExemptValues','unknownAllowed','unknownLabel','integer'],['field','label','type'],'INVALID_TOOL_RESULT');
+    if(field.unknownAllowed!==undefined&&(field.type!=='number_or_unknown'||field.unknownAllowed!==true||field.unknownLabel!=='Not sure'||field.integer!==undefined&&field.integer!==true))fail('INVALID_TOOL_RESULT',502);
     if (field.productConfirmationExemptValues !== undefined && (field.field !== 'existingFloorType' || field.type !== 'slug' || !Array.isArray(field.productConfirmationExemptValues) || field.productConfirmationExemptValues.length !== 1 || field.productConfirmationExemptValues[0] !== 'none')) fail('INVALID_TOOL_RESULT',502);
     for(const key of ['field','label','type'])resultText(field[key],4000);
     if(field.details!==undefined){if(!Array.isArray(field.details)||field.details.length>100)fail('INVALID_TOOL_RESULT',502);field.details.forEach(value=>resultText(value,4000));}
@@ -93,6 +98,7 @@ const PROJECTORS=Object.freeze({
     copyIf(result,output,'quoteNarration',value=>resultText(value,VOICE_WRITTEN_LIMIT));
     try{
       if(result.options!==undefined)output.options=projectVoiceOptions(result.options);
+      if(result.firstVisit!==undefined)output.firstVisit=projectVoiceOptions([result.firstVisit])[0];
       const written=result.writtenDisclosure??result.disclaimer;if(written!==undefined){resultText(written,VOICE_WRITTEN_LIMIT);output.writtenDisclosure=written;}
       output.voiceSummary=conciseVoiceSummary(output);output.disclaimer=output.voiceSummary;
     }catch(error){if(error instanceof VoiceToolDispatchError)throw error;fail('INVALID_TOOL_RESULT',502);}
@@ -118,9 +124,10 @@ const PROJECTORS=Object.freeze({
   getCustomerContext(result){const output=baseResult(result);copyIf(result,output,'customerHandle',resultHandle);copyIf(result,output,'greetingName',value=>resultText(value,120));copyIf(result,output,'address',value=>{assertClosed(value,['line1','line2','city','region','postalCode','country'],['line1','city','region','postalCode','country'],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(value).map(([key,text])=>[key,text===''&&key==='line2'?'':resultText(text,500)]));});
     for(const key of ['openLeads','recentQuotes','quoteRequests'])copyIf(result,output,key,value=>{
       if(!Array.isArray(value)||value.length>5)fail('INVALID_TOOL_RESULT',502);
-      return value.map(row=>{assertClosed(row,key==='recentQuotes'?['status','serviceType','createdAt','resultType','lowEstimate','midEstimate','highEstimate','currency','tierName','options','priceUnit','taxTreatment','writtenDisclosure','skippedAddons','pricedScope','additionalWork','additionalWorkStatus','customerMessage','scopeNotice','scopeDetails','optionAvailabilityNotice','fullJobTotal']:key==='openLeads'?['description','status','createdAt']:['description','createdAt'],[],'INVALID_TOOL_RESULT');
+      return value.map(row=>{assertClosed(row,key==='recentQuotes'?['status','serviceType','createdAt','resultType','lowEstimate','midEstimate','highEstimate','currency','tierName','options','priceUnit','taxTreatment','writtenDisclosure','skippedAddons','pricedScope','additionalWork','additionalWorkStatus','customerMessage','scopeNotice','scopeDetails','optionAvailabilityNotice','fullJobTotal','firstVisit']:key==='openLeads'?['description','status','createdAt']:['description','createdAt'],[],'INVALID_TOOL_RESULT');
         const safe={};for(const [field,item] of Object.entries(row)){
-          if(field==='options'){if(!Array.isArray(item)||item.length>5)fail('INVALID_TOOL_RESULT',502);safe.options=item.map(option=>{assertClosed(option,['tierName','currency','lowEstimate','midEstimate','highEstimate','priceUnit','taxTreatment','skippedAddons','writtenDisclosure'],[],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(option).map(([name,value])=>[name,/Estimate$/.test(name)?resultMoney(value):name==='skippedAddons'?resultTextList(value):resultText(value,name==='writtenDisclosure'?VOICE_WRITTEN_LIMIT:2000)]));});}
+          if(field==='options'){if(!Array.isArray(item)||item.length>5)fail('INVALID_TOOL_RESULT',502);safe.options=item.map(option=>savedPriceProjection(option));}
+          else if(field==='firstVisit')safe.firstVisit=savedPriceProjection(item,false);
           else if(field==='pricedScope'||field==='scopeDetails')safe[field]=scopeTextList(item,field==='pricedScope'?65:100);
           else if(['skippedAddons','additionalWork'].includes(field))safe[field]=resultTextList(item);
           else if(field==='fullJobTotal'){if(item!==null)fail('INVALID_TOOL_RESULT',502);safe[field]=null;}

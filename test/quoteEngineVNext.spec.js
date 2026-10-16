@@ -747,7 +747,7 @@ const precisionCategories = {
   'Small plant installation labor':'labor','Small plant material allowance':'material',
   'Medium plant installation labor':'labor','Medium plant material allowance':'material',
   'Large plant installation labor':'labor','Large plant material allowance':'material',
-  'Mowing labor':'labor','Clipping bagging and disposal':'disposal','Lawn edging':'addon',
+  'Mowing labor':'labor','Clipping bagging and disposal':'disposal','Lawn edging':'labor',
   'Siding labor':'labor','Siding materials':'material','Siding repair labor':'labor','Siding repair materials':'material'
 };
 const precisionEntries = happyCases.map(original => {

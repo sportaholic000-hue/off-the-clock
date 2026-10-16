@@ -34,7 +34,7 @@ test('Oct16 legacy exact height: 6 ft keeps $4,500; unpriced 8 ft goes to review
   assert.equal(generateQuoteVNext(f).midEstimate,4500);
   f.customerInputs.fenceHeight=8;
   const result=generateQuoteVNext(f);assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW');
-  assert.match(result.reviewReason,/No price is set for (?:an? )?8 ft fence/i);
+  assert.equal(result.reviewReason,'No price is set for a fence at 8 ft.');
 });
 test('Oct16 row spacing: 80 ft straight is 11 posts at 6 ft and 21 at 8 ft; installed cents 320000/480000',()=>{
   const f=fenceFixture('installed');f.customerInputs.linearFeet=80;
@@ -52,7 +52,7 @@ test('Oct16 row gate prices: 8 ft and 7 ft use the $400 gate; 9 ft is unpriced',
     assert.equal(q.lineItems.find(line=>line.name==='Installed gate: walk').amountCents,40000);
     assert.equal(q.midEstimate,5200); // 80 * $60 + $400.
   }
-  f.customerInputs.fenceHeight=9;const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,/No price is set for a 9 ft fence/);
+  f.customerInputs.fenceHeight=9;const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.reviewReason,'No price is set for a fence at 9 ft.');
 });
 test('Oct16 terminal/line prices: 2 terminals + 7 lines = posts 36500, footing labor 6200, footing material 3800 cents',()=>{
   const f=fenceFixture(),row=f.ownerPricing.pricing.fenceOfferings.wood.heightRows.six;

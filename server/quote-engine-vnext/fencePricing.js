@@ -84,7 +84,7 @@ export function fenceSelection(p,c={}){
   const offer=fenceCatalog(p)?p.fenceOfferings[c.fenceType]:p;
   if(!record(offer)||offer.offeringDetails?.fenceType!==c.fenceType)return {error:'No offering is set for '+String(c.fenceType||'the requested fence type').replaceAll('_',' ')+'.',field:'fenceType'};
   const matches=Object.entries(fenceHeightRows(offer)).filter(([,r])=>fenceRowCovers(r,c.fenceHeight));
-  if(matches.length!==1)return {error:matches.length?'More than one price covers this fence height. Review the overlapping height rows.':`No price is set for a ${c.fenceHeight} ft fence.`,field:'fenceHeight'};
+  if(matches.length!==1)return {error:matches.length?'More than one price covers this fence height. Review the overlapping height rows.':`No price is set for a fence at ${c.fenceHeight} ft.`,field:'fenceHeight'};
   return {type:c.fenceType,offer,rowKey:matches[0][0],row:matches[0][1]};
 }
 // Selection never borrows another height's or another fence type's prices.

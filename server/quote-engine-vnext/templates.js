@@ -1,3 +1,4 @@
+import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice} from './scopePricing.js';
@@ -857,7 +858,21 @@ function calculateCleanup(c, p) {
   const debrisMultiplier = quantityFactor(debris.laborMultiplier, `debrisPricing.${c.debrisLevel}.laborMultiplier`);
   const slope = quantityFactor(p.slopeMultiplier[c.slope], `slopeMultiplier.${c.slope}`);
   add(out, makeLine({ name: 'Cleanup labor', category: 'labor', quantity: area, unit: 'measured square feet', rateCents: p.cleanupBaseRatePerSqft, ratePath: 'cleanupBaseRatePerSqft', multipliers: [{ name: 'debris level', value: debrisMultiplier, path: `debrisPricing.${c.debrisLevel}.laborMultiplier` }, { name: 'slope', value: slope, path: `slopeMultiplier.${c.slope}` }], customerDriver: `${area} measured square feet` }));
-  add(out, fixedLine('Debris disposal', 'disposal', debris.disposalFlat, `debrisPricing.${c.debrisLevel}.disposalFlat`, undefined, { allowZero: true }));
+  const plan=cleanupDisposalPlan(c,p),minimum=money(debris.disposalFlat,`debrisPricing.${c.debrisLevel}.disposalFlat`);
+  let disposal=fixedLine('Debris disposal','disposal',minimum,`debrisPricing.${c.debrisLevel}.disposalFlat`,undefined,{allowZero:true});
+  if(plan.mode!=='flat'){
+    let quantity=plan.quantity;
+    if(plan.mode==='area'){
+      const coverage=quantityFactor(debris.sqftPerLoad,plan.coveragePath),ratio=exactDecimal(exactDivide(area,coverage));
+      quantity=Number((ratio.numerator+ratio.denominator-1n)/ratio.denominator);
+      out.disclosures.push('The load count is estimated from yard size and will be confirmed on site.');
+    }
+    if(typeof quantity!=='number'||!Number.isFinite(quantity)||quantity<0||(plan.mode!=='loads'&&!Number.isSafeInteger(quantity)))throw new QuoteReviewError('Cleanup disposal quantity is unsafe.',plan.mode==='area'?{invalidOwnerFields:[plan.coveragePath]}:{invalidCustomerFields:[plan.mode==='bags'?'wasteBags':'wasteLoads']});
+    const rate=money(p[plan.ratePath],plan.ratePath),amount=exactRound(exactMultiply(quantity,rate));
+    if(amount>=minimum&&quantity>0)disposal=makeLine({name:'Debris disposal',category:'disposal',quantity,unit:plan.mode==='bags'?'bags':'pickup-truck loads',rateCents:rate,ratePath:plan.ratePath});
+    recordQuantityDerivation(out,{name:'Cleanup disposal quantity',formula:plan.mode==='area'?'ceil(cleanup area / square feet per load)':'customer stated quantity',inputs:{mode:plan.mode,yardSqft:area,...(plan.coveragePath?{sqftPerLoad:debris.sqftPerLoad}:{}),minimumDisposalCents:minimum,ratePath:plan.ratePath},result:quantity,unit:plan.mode==='bags'?'bags':'pickup-truck loads',usedBy:['Debris disposal']});
+  }
+  add(out,disposal);
   if (c.haulAway) add(out, fixedLine('Additional haul-away', 'disposal', p.haulAwayFee, 'haulAwayFee'));
   out.feeScope.disposal = true;
   out.replacedCommonFees.push('disposal');
@@ -965,9 +980,11 @@ function calculateMowing(c, p, ctx) {
   const out = baseOutput('LANDSCAPING_MOWING');
   const sqft = measured(c.yardSqft, 'yardSqft');
   const frequency = quantityFactor(p.frequencyMultipliers[c.serviceFrequency], `frequencyMultipliers.${c.serviceFrequency}`);
-  const overgrowth = quantityFactor(p.overgrowthMultipliers[c.grassCondition], `overgrowthMultipliers.${c.grassCondition}`);
-  const labor = makeLine({ name: 'Mowing labor', category: 'labor', quantity: sqft, unit: 'measured mowable square feet', rateCents: p.mowingBaseRatePerSqft, ratePath: 'mowingBaseRatePerSqft', multipliers: [{ name: 'frequency', value: frequency, path: `frequencyMultipliers.${c.serviceFrequency}` }, { name: 'grass condition', value: overgrowth, path: `overgrowthMultipliers.${c.grassCondition}` }], customerDriver: `${sqft} measured mowable square feet` });
+  const condition=c.serviceFrequency!=='one_time'&&ctx.mowingVisit!=='first'?'maintained':c.grassCondition;
+  const overgrowth = quantityFactor(p.overgrowthMultipliers[condition], `overgrowthMultipliers.${condition}`);
+  const labor = makeLine({ name: 'Mowing labor', category: 'labor', quantity: sqft, unit: 'measured mowable square feet', rateCents: p.mowingBaseRatePerSqft, ratePath: 'mowingBaseRatePerSqft', multipliers: [{ name: 'frequency', value: frequency, path: `frequencyMultipliers.${c.serviceFrequency}` }, { name: 'grass condition', value: overgrowth, path: `overgrowthMultipliers.${condition}` }], customerDriver: `${sqft} measured mowable square feet` });
   add(out, labor);
+  if(optionalPricePresent(p.mowingVisitCharge)&&p.mowingVisitCharge>0)add(out,fixedLine('Mowing per-visit charge','labor',p.mowingVisitCharge,'mowingVisitCharge'));
   let baggingPriced = false;
   if (c.bagClippings) {
     const percent = addonPercent(p.baggingSurchargePercent, 'baggingSurchargePercent');
@@ -1006,7 +1023,7 @@ function calculateMowing(c, p, ctx) {
   if (c.edgingIncluded) {
     const rate = addonMoney(p.edgingPerLinearFoot, 'edgingPerLinearFoot');
     if (rate === undefined) ctx.skipAddon('Lawn edging');
-    else add(out, makeLine({ name: 'Lawn edging', category: 'addon', quantity: c.edgingLengthLF, unit: 'measured linear feet', rateCents: rate, ratePath: 'edgingPerLinearFoot', customerDriver: `${c.edgingLengthLF} measured linear feet of edging`, allowZeroRate: true }));
+    else add(out, makeLine({ name: 'Lawn edging', category: 'labor', quantity: c.edgingLengthLF, unit: 'measured linear feet', rateCents: rate, ratePath: 'edgingPerLinearFoot', customerDriver: `${c.edgingLengthLF} measured linear feet of edging`, allowZeroRate: true }));
   }
   out.feeScope.disposal = baggingPriced;
   recordMeasurement(out, 'mowableAreaSqft', sqft, 'square feet');
@@ -1248,7 +1265,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   if (serviceType === 'LANDSCAPING_MULCH') return finalize(calculateMulch(customerInputs, pricing));
   if (serviceType === 'LANDSCAPING_SOD') return finalize(calculateSod(customerInputs, pricing, ctx));
   if (serviceType === 'LANDSCAPING_PLANTING') return finalize(calculatePlanting(customerInputs, pricing));
-  if (serviceType === 'LANDSCAPING_MOWING') return finalize(calculateMowing(customerInputs, pricing, addonContext));
+  if (serviceType === 'LANDSCAPING_MOWING') return finalize(calculateMowing(customerInputs, pricing, {...addonContext,mowingVisit:ownDataValue(ctx,'mowingVisit').value}));
   if (serviceType === 'SIDING_REPLACEMENT') return finalize(calculateSidingReplacement(customerInputs, pricing));
   if (serviceType === 'SIDING_REPAIR') return finalize(calculateSidingRepair(customerInputs, pricing));
   const out = baseOutput('CUSTOM');

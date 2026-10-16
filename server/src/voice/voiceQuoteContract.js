@@ -7,7 +7,7 @@ const record = value => value !== null && typeof value === 'object' && !Array.is
   [Object.prototype, null].includes(Object.getPrototypeOf(value));
 const FIELD = /^[a-zA-Z][a-zA-Z0-9_]{0,99}$/;
 const FEES = ['travel', 'disposal', 'permit', 'overhead'];
-const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'integer_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs']);
+const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'integer_or_unknown', 'number_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs']);
 const safeText = (value, max = 240) => typeof value === 'string' && value.trim() && value.length <= max ? value.trim() : null;
 const human = value => String(value).replaceAll('_', ' ');
 
@@ -54,6 +54,7 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
     }
     if (safeText(field.unit, 160)) question.unit = field.unit;
     if (typeof field.required === 'boolean') question.required = field.required;
+    if(field.type==='number_or_unknown'){question.unknownAllowed=true;question.unknownLabel='Not sure';if(field.integer)question.integer=true;}
     for (const name of ['min', 'max']) if (typeof field[name] === 'number' && Number.isFinite(field[name])) question[name] = field[name];
     for (const name of ['showWhen', 'requiredWhen', 'applicableWhen', 'visibleWhen']) {
       const condition = publicCondition(field[name]);
@@ -98,6 +99,14 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
   }
   const customerInputs = structuredClone(args.customerInputs);
   const fields = Array.isArray(definition?.customerFields) ? definition.customerFields : [];
+  // "exact" selects numeric input rather than a size-category allowance. It
+  // does not certify a survey. Retain the caller's estimate flag separately.
+  if(args.customerConfirmed===true&&args.callerMeasurementsEstimated===true){
+    for(const field of fields)if(customerInputs[field.name]==='assumption'&&field.type==='enum'){
+      if(field.values?.includes('exact'))customerInputs[field.name]='exact';
+      else if(field.name==='roofSizeMethod'&&field.values?.includes('roof_measured'))customerInputs[field.name]='roof_measured';
+    }
+  }
   const confirmations = record(args.productConfirmations) ? args.productConfirmations : {};
   const confirmedFacts = {};
   const followUps = [];
@@ -106,6 +115,7 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
   }
   for (const field of fields) {
     if (!own(customerInputs, field.name) || customerInputs[field.name] === null || customerInputs[field.name] === '') continue;
+    if(field.type==='number_or_unknown'&&typeof customerInputs[field.name]==='string'&&['not sure','unknown'].includes(customerInputs[field.name].trim().toLowerCase()))customerInputs[field.name]='unknown';
     if (field.type === 'slug') {
       if (!productIdentityRequired(field.name, customerInputs[field.name])) continue;
       const registered = service.knownOfferings?.[field.name] || {};

@@ -38,6 +38,7 @@ function shownValue(path,value,service,meta,group,prices){
  // Preserve descriptions and free text exactly; only named enum values get friendly labels.
  if(typeof value==='string'&&!/^[A-Za-z][A-Za-z0-9_]*$/.test(value))shown=value;
  if(typeof value==='string'&&/description|preparation|coating|substrate|service$|disclaimer/i.test(path))shown=value;
+ if(numeric&&root==='debrisPricing')return path.endsWith('.disposalFlat')?displayAmount(value):path.endsWith('.sqftPerLoad')?String(value)+' sq ft per load':String(value)+' ×';
  const priceRoot=(meta.fields||[]).some(field=>field.field===root&&field.money)||['offeringRates','scopeRates'].includes(root)||Boolean(moneyKindForField(service.serviceType,root,servicePricing(service)));
  if(numeric&&(prices.has(path.replace(/^pricing\./,''))||priceRoot||group==='Business settings'&&defaultMoney.has(root)))shown=displayAmount(value);
  else if(numeric&&(/Percent$/.test(root)||root==='installedLaborPercent'||root==='installedMaterialsPercent'||/(^|\.)installed(?:Labor|Materials)Percent\./.test(path)))shown=String(value)+'%';

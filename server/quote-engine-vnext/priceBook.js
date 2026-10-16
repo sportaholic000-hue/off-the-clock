@@ -89,7 +89,12 @@ const NEW_FIELD_COPY = {
   offeringMode:{label:'Offering pricing',help:'Choose complete installed pricing or itemized measured components for this owner offering.'},
   offeringDetails:{label:'What this offering includes',help:'Define the covered fence or painting scope, with explicit inclusions and separately offered extras.'},
   offeringRates:{label:'Prices for this offering',help:'Owner-entered unit prices. Installed packages and gates are final selling prices. Itemized paint materials use measured-area selling prices.'},
-  baggingSurchargePercent: {label:'Clipping bagging and disposal surcharge (%)',help:'Optional extra. Missing pricing keeps the main quote and explicitly excludes clipping bagging and disposal from that option. An explicit zero percentage means this optional scope is free; a positive percentage applies to mowing labor once and replaces common disposal.'},
+  mowingVisitCharge:{label:'Mowing per-visit charge',help:'Optional fixed service charge added to every mowing visit, including the first visit. Frequency and grass-condition factors apply only to the area price. Bagging is calculated from that visit’s area mowing labor. Blank means no per-visit charge.'},
+  disposalPerBag:{label:'Debris disposal price per bag',help:'Optional price for each stated bag of cleanup yard waste. The debris-level minimum disposal charge still applies.'},
+  disposalPerLoad:{label:'Debris disposal price per pickup-truck load',help:'Optional price for each stated or area-estimated pickup-truck load of cleanup yard waste. The debris-level minimum disposal charge still applies.'},
+  debrisPricing:{label:'Debris labor, disposal minimum and load coverage',help:'Debris disposal covers collecting, loading and disposing of yard waste from this cleanup. The flat amount for the debris level is a minimum; bag or load pricing may increase it. Do not charge Additional haul-away again for the same yard waste. Enter square feet per pickup-truck load for each debris level to estimate unknown counts.'},
+  haulAwayFee:{label:'Additional haul-away fixed charge',help:'Additional haul-away covers a separate removal trip or extra items beyond the yard waste already covered by Debris disposal. Select it only for that additional scope; do not charge twice for the same yard waste.'},
+  baggingSurchargePercent: {label:'Clipping bagging and disposal surcharge (%)',help:'Optional extra. Missing pricing keeps the main quote and explicitly excludes clipping bagging and disposal from that option. An explicit zero percentage means this optional scope is free; a positive percentage applies to the area mowing labor of its own visit and replaces common disposal. Recurring and first visits use their own labor basis.'},
   edgingPerLinearFoot: {label:'Landscape edging labor price per measured linear foot',help:'Mowing edging is an optional extra: missing pricing keeps the main quote and explicitly excludes lawn edging from that option. Mulch edging remains required scope. An explicit zero rate means the extra is free; a positive rate uses the confirmed edging length.'},
   pondingWaterSurcharge: {label:'Selected ponding-water treatment fixed price',help:'Optional extra. Missing pricing keeps the main quote and explicitly excludes ponding-water treatment from that option. An explicit zero price means this optional scope is free; a positive fixed price is charged once.'},
 
@@ -347,7 +352,9 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
     const slope = greatestConfiguredKey(p.slopeMultiplier, ['flat', 'moderate', 'steep'], 'moderate');
     return ['light','moderate','heavy'].flatMap(debrisLevel=>{
       const base={yardSqft:10_000_000,sqftMethod:'exact',debrisLevel,slope,haulAway:false},extra={...base,haulAway:true};
-      return [base,...(completeOptionalPricing(service,extra)?[extra]:[])];
+      const volumePrices=typeof p.disposalPerBag==='number'||typeof p.disposalPerLoad==='number';
+      const quantities=volumePrices?[...(typeof p.disposalPerLoad==='number'&&typeof p.debrisPricing?.[debrisLevel]?.sqftPerLoad==='number'&&p.debrisPricing[debrisLevel].sqftPerLoad>0?[{}]:[]),...(typeof p.disposalPerBag==='number'?[{wasteBags:1_000_000}]:[]),...(typeof p.disposalPerLoad==='number'?[{wasteLoads:1_000_000}]:[])]:[{}];
+      return quantities.flatMap(counts=>[{...base,...counts},...(completeOptionalPricing(service,extra)?[{...extra,...counts}]:[])]);
     });
   }
   if (serviceType === 'LANDSCAPING_MULCH') return keysOf(p.mulchMaterialPerYard,'standard').flatMap(mulchType=>['sqft','yards'].flatMap(inputMethod=>{

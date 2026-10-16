@@ -89,7 +89,7 @@ export function customerJobSummary(service,definition,submission,revision) {
   // Identified-offering receipts are internal evidence. The corresponding
   // customer-visible selection is already present (for example, fence type).
   // This presentation view never changes the saved input or signed submission.
-  const facts=Object.entries(record(submission.customerInputs)?submission.customerInputs:{}).filter(([key])=>labels.get(key)?.type!=='confirmed_facts').map(([key,value])=>{
+  const facts=Object.entries(record(submission.customerInputs)?submission.customerInputs:{}).filter(([key])=>labels.get(key)?.type!=='confirmed_facts'&&key!=='lfMethod').map(([key,value])=>{
     const storedField=labels.get(key),field=storedField?customerFieldForInputs(storedField,submission.customerInputs):undefined;
     let formatted=customerSummaryValue(field,value,display);
     if(field?.type==='offering_counts'&&record(value)&&Object.entries(value).every(([name,count])=>field.values.includes(name)&&Number.isInteger(count)&&count>=0)) {

@@ -290,7 +290,7 @@ export const SHAPED_FIELD_KEYS = {
   'SIDING_REPAIR.materialAllowance': { keys:null, nested:['small','medium','large'], customerField:'damageLevel', sizeBreakpoints:[20,80] },
   'FLAT_ROOF_REPAIR.patchRepairHours': { keys:null, nested:['small','medium','large'], customerField:'repairType', sizeBreakpoints:[20,80] },
   'FLAT_ROOF_REPAIR.patchMaterialAllowance': { keys:null, nested:['small','medium','large'], customerField:'repairType', sizeBreakpoints:[20,80] },
-  'LANDSCAPING_CLEANUP.debrisPricing': { keys:['light','moderate','heavy'], nested:['laborMultiplier','disposalFlat'], customerField:'debrisLevel', consumeAllNested:true },
+  'LANDSCAPING_CLEANUP.debrisPricing': { keys:['light','moderate','heavy'], nested:['laborMultiplier','disposalFlat','sqftPerLoad'], customerField:'debrisLevel', consumeAllNested:true },
   'LANDSCAPING_MULCH.mulchMaterialPerYard': { keys:null, customerField:'mulchType' },
   'LANDSCAPING_PLANTING.plantingLaborPerPlant': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
   'LANDSCAPING_PLANTING.plantMaterialAllowance': { keys:['small','medium','large','mixed'], customerField:'plantSize' },

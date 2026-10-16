@@ -82,6 +82,7 @@ function optionProjection(option, index, parent = {}) {
     const value = text(option[key], 200) || text(parent?.[key], 200);
     if (value) output[key] = value;
   }
+  if(option.firstVisit!==undefined){if(!record(option.firstVisit)||Object.hasOwn(option.firstVisit,'firstVisit'))throw new TypeError('Invalid first-visit quote.');output.firstVisit=optionProjection(option.firstVisit,index,parent);}
   output.skippedAddons = list(option.skippedAddons);
   const written = text(option.writtenDisclosure ?? option.disclaimer);
   if (written) output.writtenDisclosure = option.writtenDisclosure ?? option.disclaimer;
@@ -91,16 +92,18 @@ function optionProjection(option, index, parent = {}) {
 export function conciseVoiceSummary(result) {
   const options = result.options?.length ? result.options : money(result.lowEstimate) && money(result.highEstimate) ? [result] : [];
   if (!options.length) return text(result.customerMessage, VOICE_SUMMARY_LIMIT) || 'The business needs to check the job details before giving an estimate.';
-  const format=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate]));
+  const format=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate,...(option.firstVisit?[option.firstVisit.lowEstimate,option.firstVisit.highEstimate]:[])]));
   const clean=value=>String(value||'').trim().replace(/[.!?]+$/, '');
   const sentence=value=>clean(value)?clean(value)+'.':'';
   const parts = options.map((option, index) => {
     const name = options.length > 1 ? (option.tierName || 'Option ' + (index + 1)) + ': ' : '';
-    const price=[name+format.range(option.lowEstimate,option.highEstimate,' to '),clean(option.currency||result.currency),clean(option.priceUnit||result.priceUnit)].filter(Boolean).join(' ');
+    const price=[name+(option.firstVisit?'Recurring: ':'')+format.range(option.lowEstimate,option.highEstimate,' to '),clean(option.currency||result.currency),clean(option.priceUnit||result.priceUnit)].filter(Boolean).join(' ');
     const tax=sentence(option.taxTreatment||result.taxTreatment);
     const exclusions=option.skippedAddons?.length?sentence('Not included: '+option.skippedAddons.map(clean).join('; ')):'';
-    return [sentence(price),tax,exclusions].filter(Boolean).join(' ');
+    const first=option.firstVisit,firstPrice=first?sentence(['First visit: '+format.range(first.lowEstimate,first.highEstimate,' to '),clean(first.currency||option.currency||result.currency)].filter(Boolean).join(' ')):'';
+    return [sentence(price),firstPrice,tax,exclusions].filter(Boolean).join(' ');
   });
+  if(options.some(option=>String(option.writtenDisclosure||option.disclaimer||'').includes('The load count is estimated from yard size')))parts.push('The load count is estimated from yard size and will be confirmed on site.');
   if(result.callerMeasurementsEstimated===true)parts.push('This price is based on the measurements you gave us. The business will confirm them on site.');
   parts.push('This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it.');
   if(result.optionAvailabilityNotice)parts.push(result.optionAvailabilityNotice);
@@ -124,6 +127,7 @@ export function projectVoiceQuote(response, quoteHandle, followUps = [], {caller
       if (estimate.options.length > 3) throw new TypeError('At most three quote options are supported.');
       output.options = estimate.options.map((option, index) => optionProjection(option, index, estimate));
     }
+    if(estimate?.firstVisit!==undefined)output.firstVisit=optionProjection(estimate.firstVisit,0,estimate);
     output.priceDrivers = list(estimate?.priceDrivers);
     output.skippedAddons = list(estimate?.skippedAddons);
   }
@@ -165,6 +169,7 @@ export function projectSavedQuoteContext(response) {
     for(const key of ['currency','tierName','taxTreatment','priceUnit']){
       const item=text(value[key],key==='taxTreatment'?2000:200);if(item)view[key]=item;
     }
+    if(value.firstVisit!==undefined){if(!record(value.firstVisit)||Object.hasOwn(value.firstVisit,'firstVisit'))throw new TypeError('Invalid saved first visit.');view.firstVisit=prices(value.firstVisit);}
     if(value.skippedAddons!==undefined)view.skippedAddons=list(value.skippedAddons);
     const written=value.writtenDisclosure??value.disclaimer;
     if(text(written))view.writtenDisclosure=written;

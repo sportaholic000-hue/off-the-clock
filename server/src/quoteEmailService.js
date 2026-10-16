@@ -157,7 +157,7 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
 function savedQuoteNarration(result,serviceType){
   const partial=result.resultType==='PARTIAL_ESTIMATE_READY',estimate=partial?result.pricedEstimate:result;
   const options=estimate.options?.length?estimate.options:[estimate];
-  const amounts=options.flatMap(option=>[option.lowEstimate,option.highEstimate,...(Number.isFinite(option.midEstimate)?[option.midEstimate]:[])]);
+  const amounts=options.flatMap(option=>[option.lowEstimate,option.highEstimate,...(Number.isFinite(option.midEstimate)?[option.midEstimate]:[]),...(option.firstVisit?[option.firstVisit.lowEstimate,option.firstVisit.highEstimate]:[])]);
   const money=quoteMoneyFormatter(amounts),scope=result.pricedScope;
   const parts=[scope?.service||serviceType||'Saved quote'];
   if(partial)parts.push('This is a partial estimate for the priced scope only. Separate additional work is excluded. A total for all requested work is not available.');
@@ -169,8 +169,9 @@ function savedQuoteNarration(result,serviceType){
   }
   for(const option of options){
     const context=[option.currency||estimate.currency,option.priceUnit||estimate.priceUnit].filter(Boolean).join(' ');
-    parts.push((option.tierName?option.tierName+': ':'')+money.range(option.lowEstimate,option.highEstimate)+(context?' '+context:''));
+    parts.push((option.tierName?option.tierName+': ':'')+(option.firstVisit?'Recurring: ':'')+money.range(option.lowEstimate,option.highEstimate)+(context?' '+context:''));
     if(Number.isFinite(option.midEstimate)&&option.midEstimate!==option.lowEstimate&&option.midEstimate!==option.highEstimate)parts.push((options.length>1&&option.tierName?option.tierName+' midpoint estimate':'Midpoint estimate')+': '+money.amount(option.midEstimate)+(context?' '+context:''));
+    if(option.firstVisit){const first=option.firstVisit;parts.push('First visit: '+money.range(first.lowEstimate,first.highEstimate)+(option.currency||estimate.currency?' '+(option.currency||estimate.currency):''));if(first.disclaimer)parts.push(first.disclaimer);}
     if(option.taxTreatment||estimate.taxTreatment)parts.push(option.taxTreatment||estimate.taxTreatment);
     if(option.skippedAddons?.length)parts.push('Not included'+(options.length>1&&option.tierName?' in '+option.tierName:'')+': '+option.skippedAddons.join('; ')+'.');
     if(option.writtenDisclosure||option.disclaimer)parts.push(option.writtenDisclosure||option.disclaimer);

@@ -200,7 +200,8 @@ export const SHAPED_FIELD_COPY = {
     keyLabel:'Debris level',
     nestedCopy:{
       laborMultiplier:{ label:'Labor multiplier', unit:'multiplier' },
-      disposalFlat:{ label:'Flat disposal charge', unit:'$ fixed charge' }
+      disposalFlat:{ label:'Minimum debris disposal charge', unit:'$ fixed charge' },
+      sqftPerLoad:{label:'Cleanup area per pickup-truck load',unit:'square feet per load'}
     }
   },
   'LANDSCAPING_MULCH.mulchMaterialPerYard': { keyLabel:'Mulch type', leafUnit:'$ per cubic yard' },

@@ -7731,8 +7731,9 @@ test('handoff A: high markup preserves category tax fee and tier arithmetic', ()
   const p=handoffMowing(), c=handoffLawn({bagClippings:true,edgingIncluded:true,edgingLengthLF:10});
   p.feeRules.travel='always';p.taxabilityByCategory.addon=true;p.taxabilityByCategory.disposal=true;
   // Labor10000 + bagging1000 + edging1000 + travel500 =12500; markup1200%=150000.
-  // TAX_MATERIALS configured taxable extras2000 + their markup24000 =>2600 tax.
-  for(const [taxMode,total] of [['TAX_NONE',162500],['TAX_MATERIALS',165100],['TAX_ALL',178750]]) {
+  // TAX_MATERIALS: edging is labor. Only configured taxable disposal1000
+  // plus its markup12000 is taxable:13000*10%=1300 tax, total163800.
+  for(const [taxMode,total] of [['TAX_NONE',162500],['TAX_MATERIALS',163800],['TAX_ALL',178750]]) {
     const r=currentInspect(generateQuoteVNext(handoffRequest(p,c,{markupPercent:1200,travelFee:500,taxMode,taxPercent:taxMode==='TAX_NONE'?0:10})));
     handoffTotal(r,total);assert.equal(lineAmount(r,'Travel'),500);
     assert.equal(lineAmount(r,'Clipping bagging and disposal'),1000);assert.equal(lineAmount(r,'Lawn edging'),1000);

@@ -39,9 +39,9 @@ test('Oct16 production section flow: widget, phone, persistence, and public copy
     assert.deepEqual(JSON.parse(row.originalSubmissionJson).customerInputs.fenceRuns,f.customerInputs.fenceRuns);
     assert.equal(JSON.parse(row.customerResponseJson).midEstimate,912);
   }
-  assert.match(p.result.quoteNarration,/Section 1: 7 ft; gate: walk/);assert.match(p.result.quoteNarration,/Section 2: 9 ft/);
+  assert.match(p.result.quoteNarration,/Run 1: sections of 7 ft and 9 ft; does not connect back/);assert.match(p.result.quoteNarration,/gate walk.*between sections 1 and 2/);
   web.email.enqueueSavedQuote({ownerId:web.owner,quoteId:web.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
-  const {copy}=publicCopy(web.email,web.rows()[0]);assert.match(copy.narration,/\$912 CAD/);assert.match(copy.narration,/Section 1: 7 ft; gate: walk/);
+  const {copy}=publicCopy(web.email,web.rows()[0]);assert.match(copy.narration,/\$912 CAD/);assert.match(copy.narration,/Run 1: sections of 7 ft and 9 ft; does not connect back/);assert.match(copy.narration,/gate walk.*between sections 1 and 2/);
 });
 test('Oct16 four fence types: phone aluminum has its own three 400000/410000/420000-cent options',async t=>{
   const h=quoteEmailFixture(t),p=await phone(h,fourTypes());

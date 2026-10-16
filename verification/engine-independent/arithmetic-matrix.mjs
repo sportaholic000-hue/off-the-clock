@@ -4,7 +4,7 @@ import {generateQuoteVNext} from '../../server/quote-engine-vnext/index.js';
 const dir=path.resolve(process.argv[2]);if(fs.existsSync(dir))throw Error('Fresh directory required');fs.mkdirSync(dir,{recursive:true});
 // Independent hand-derived base amounts, cents. Do not read calculated engine line amounts to derive expectations.
 const bases=[
- ['mowing-priced-extras-control',[['labor',10000],['disposal',1000],['addon',5000]]],
+ ['mowing-priced-extras-control',[['labor',10000],['disposal',1000],['labor',5000]]],
  ['floor-tile-200-control',[['labor',66000],['material',112000]]],
  ['concrete-base-control',[['labor',120000],['material',48889],['material',150000],['prep',35000]]],
  ['FENCING_INSTALL-itemized-control',[['labor',105600],['material',236400],['addon',50000,'sell_price']]],

@@ -49,7 +49,7 @@ export function offeringRateDefinitions(type,p={}) {
       add('postMaterialEach','Separately priced post materials','material','calculated posts');
       add('footingLaborEach','Post-hole and footing labor','labor','calculated posts');
       add('footingMaterialEach','Footing materials','material','calculated posts');
-      for(const [key,[label,category]] of Object.entries(FENCE_POST_RATES))add(key,label,category,key.startsWith('terminal')?'terminal posts':'line posts');
+      for(const [key,[label,category]] of Object.entries(FENCE_POST_RATES))add(key,label,category,key.startsWith('terminal')?'terminal post':'line post');
     }
     if(record(d.gates))for(const key of Object.keys(d.gates))if(slug(key))add('gate_'+key,'Installed gate: '+key.replaceAll('_',' '),'addon','gates','sell_price');
     if(type==='FENCING_REPLACEMENT'&&d.removalOffered===true)add('removalPerLF','Fence removal','addon','removed fence linear feet','sell_price');
@@ -172,8 +172,8 @@ export function offeringContract(type,p,rules={}) {
     terrainSlope:choice('Terrain slope',['flat','moderate','steep']),
     gates:{label:'Gates by measured opening width',type:'offering_counts',unit:'gates',values:record(d.gates)?Object.keys(d.gates):[],options:record(d.gates)?Object.fromEntries(Object.entries(d.gates).map(([k,v])=>[k,`${k.replaceAll('_',' ')} — ${typeof v?.widthLF==='number'?v.widthLF:'undefined'} ft opening; ${typeof v?.description==='string'?v.description:''}`])):{}},
     confirmedFacts:{label:'Affirmatively identified owner offerings',type:'confirmed_facts',unit:null},
-    fenceRunCount:number(FENCE_RUN_QUESTION,'runs',1,1_000_000,{integer:true,required:true}),
-    fenceRuns:{label:FENCE_SECTION_QUESTION,type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${value.replaceAll('_',' ')} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
+    fenceRunCount:{...number(FENCE_RUN_QUESTION,'runs',1,1_000_000,{integer:true,required:true}),summaryLabel:'Fence runs'},
+    fenceRuns:{label:FENCE_SECTION_QUESTION,summaryLabel:'Fence layout',type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${value.replaceAll('_',' ')} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
     cornerCount:number('Fence corners','corners',0,1_000_000,{integer:true}),
     ...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:bool('Old fence removal included'),removalLengthLF:number('Measured old fence length to remove','linear feet',0.1)}:{})
   });

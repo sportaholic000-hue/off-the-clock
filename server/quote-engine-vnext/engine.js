@@ -1,3 +1,4 @@
+import {hasFirstMowingVisit} from './landscapePricing.js';
 import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {recordedQuoteDateDiagnostic,monthForRecordedQuoteDate,quoteDefaultsForTimeZone} from '../src/quoteDate.js';
 export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
@@ -1110,7 +1111,7 @@ function exclusionsMatch(options) {
   return options.every(option => JSON.stringify(option.skippedAddons) === first);
 }
 
-function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited, validation }) {
+function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited, validation, mowingVisit }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
   if(fenceType(serviceType)&&fenceHasRows(pricing)){
     try{pricing=resolvedFencePricing(pricing,customerInputs);validation=null;}
@@ -1141,6 +1142,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   const ctx = {
     ownerPricing,
     tierName,
+    mowingVisit,
     priceBasisByCategory: ownerPricing.priceBasisByCategory,
     skipAddon(name) {
       if (!skippedAddons.includes(name)) skippedAddons.push(name);
@@ -1168,7 +1170,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   assertRangeIntegrity(range);
   if ((!freeOffering && range.highCents === 0) || (freeOffering && range.highCents !== 0)) throw new QuoteReviewError('A zero total requires an explicit free complete offering; a free offering cannot contain a positive charge.', { invalidOwnerFields: ['zeroPricePolicy'] });
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
-  const priceLabels = customerPriceLabels(serviceType, defaults);
+  const priceLabels = {...customerPriceLabels(serviceType, defaults),...(mowingVisit==='first'?{priceUnit:'for the first visit'}:{})};
   const optionDisclaimer = disclaimer(baseDisclaimer, [...template.disclosures, ...priceLabelDisclosures(priceLabels)], skippedAddons);
   const rankedFinancialDrivers = unique(
     mid.lines
@@ -1182,6 +1184,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     engineVersion: ENGINE_VERSION,
     serviceId: ownerPricing.id ?? null,
     freeOffering,
+    ...(mowingVisit==='first'?{mowingVisit:'first'}:{}),
     serviceType,
     tierName,
     normalizedCustomerInputs: structuredClone(customerInputs),
@@ -1446,7 +1449,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     let pricing = basePricing;
     try {
       pricing = reuseActivation(prepared, 'pricing:' + tierIndex, () => mergePricingForValidationVNext(basePricing, tier.overrides || {}));
-      options.push(optionRun({
+      const run={
         validation: prepared ? reuseActivation(prepared, 'validation:' + tierIndex, () => createActivationValidationVNext(serviceType, pricing, ownerPricing, tier.name)) : null,
         serviceType,
         customerInputs,
@@ -1457,7 +1460,14 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         feeSelections,
         month: currentMonth,
         inherited: { appliedRules, urgencyFlags }
-      }));
+      };
+      const option=optionRun(run);
+      if(hasFirstMowingVisit(serviceType,customerInputs)){
+        option.firstVisit=optionRun({...run,mowingVisit:'first',inherited:{appliedRules:[],urgencyFlags}});
+        option.calculationRecord.firstVisit=structuredClone(option.firstVisit.calculationRecord);
+        option.calculationRecord.customerProjection.firstVisit=customerOptionProjection(option.firstVisit);
+      }
+      options.push(option);
     } catch (error) {
       if (!(error instanceof QuoteReviewError)) {
         const tierPath = Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
@@ -1529,6 +1539,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     lowEstimate: first.lowEstimate,
     midEstimate: first.midEstimate,
     highEstimate: first.highEstimate,
+    ...(first.firstVisit?{firstVisit:structuredClone(first.firstVisit)}:{}),
     options,
     priceDrivers: first.priceDrivers,
     priceUnit: first.priceUnit,
@@ -1564,6 +1575,10 @@ const CUSTOMER_OPTION_FIELDS = [
   'tierName', 'lowEstimate', 'midEstimate', 'highEstimate',
   'priceDrivers', 'skippedAddons', 'disclaimer', 'priceUnit', 'taxTreatment'
 ];
+
+function customerOptionProjection(option){
+  return {...pickOwn(option,CUSTOMER_OPTION_FIELDS),...(option.firstVisit?{firstVisit:pickOwn(option.firstVisit,CUSTOMER_OPTION_FIELDS)}:{})};
+}
 
 function hasOwnValue(source, key) {
   return isPlainObject(source) && Object.hasOwn(source, key) && source[key] !== undefined;
@@ -1749,6 +1764,10 @@ function validCustomerOption(option, expectedServiceType) {
   if (projection.priceUnit !== option.priceUnit || projection.taxTreatment !== option.taxTreatment) return false;
   if (!plainDataEqual(projection.priceDrivers, option.priceDrivers)) return false;
   if (!plainDataEqual(projection.skippedAddons, option.skippedAddons)) return false;
+  if(Object.hasOwn(option,'firstVisit')){
+    if(expectedServiceType!=='LANDSCAPING_MOWING'||Object.hasOwn(option.firstVisit||{},'firstVisit')||!validCustomerOption(option.firstVisit,expectedServiceType))return false;
+    if(!plainDataEqual(record.firstVisit,option.firstVisit.calculationRecord)||!plainDataEqual(projection.firstVisit,customerOptionProjection(option.firstVisit)))return false;
+  }else if(Object.hasOwn(record,'firstVisit')||Object.hasOwn(projection,'firstVisit'))return false;
   return true;
 }
 
@@ -1797,7 +1816,7 @@ function configuredCalculationMatches(result) {
   const reproduced=generateQuoteVNext({serviceType:result.serviceType,customerInputs:result.submittedCustomerInputs,ownerPricing:result.calculationRecord.ownerConfiguration,...inputs,callerType:'owner'});
   if(reproduced.resultType!=='INSTANT_ESTIMATE_READY'||reproduced.customerEligible!==true)return false;
   return plainDataEqual(reproduced.options,result.options) &&
-    ['lowEstimate','midEstimate','highEstimate','rangeBufferUsed','effectiveRangeBufferPercent','priceDrivers','lineItems','disclaimer','optionAvailabilityNotice','priceUnit','taxTreatment','currency'].every(k=>plainDataEqual(reproduced[k],result[k]));
+    ['lowEstimate','midEstimate','highEstimate','rangeBufferUsed','effectiveRangeBufferPercent','priceDrivers','lineItems','disclaimer','optionAvailabilityNotice','priceUnit','taxTreatment','currency','firstVisit'].every(k=>plainDataEqual(reproduced[k],result[k]));
 }
 
 function customerProjectionMatchesFirstOption(result) {
@@ -1807,6 +1826,7 @@ function customerProjectionMatchesFirstOption(result) {
   }
   if (!plainDataEqual(result.priceDrivers, first.priceDrivers)) return false;
   if (result.priceUnit !== first.priceUnit || result.taxTreatment !== first.taxTreatment) return false;
+  if(!plainDataEqual(result.firstVisit,first.firstVisit))return false;
   if (!plainDataEqual(result.lineItems, first.lineItems)) return false;
   if (exclusionsMatch(result.options) && result.disclaimer !== first.disclaimer) return false;
   const tierNames = result.options.map(option => option.tierName);
@@ -1889,7 +1909,8 @@ export function sanitizeForCustomerVNext(result) {
     if (!validReady) return customerReviewPayload(result,true);
     return structuredClone({
       ...pickOwn(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice', 'priceUnit', 'taxTreatment', 'currency']),
-      options: result.options.map(option => pickOwn(option, CUSTOMER_OPTION_FIELDS))
+      ...(result.firstVisit?{firstVisit:customerOptionProjection(result.firstVisit)}:{}),
+      options: result.options.map(customerOptionProjection)
     });
   } catch {
     return customerReviewPayload(result);
