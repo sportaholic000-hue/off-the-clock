@@ -28,6 +28,7 @@ function seedHistoricalRoof(){
   },{roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'very_steep',stories:3,existingLayers:1,roofComplexity:'moderate',serviceScope:'full'});
   const service=structuredClone(input.ownerPricing);service.id=randomUUID();service.origin={...service.origin,ownerId:owner,serviceId:service.id};
   service.source='MANUAL';service.active=true;delete service.startingValueAdoptions;delete service.startingValueState;
+  for(const field of ['pitchInstallationAdder','pitchRemovalAdder','complexityLaborMultiplier','additionalLayerRemovalFactor'])delete service.pricing[field];
   const book={ownerId:owner,services:[service],defaults:{currency:'USD',...input.businessDefaults}};
   service.quoteDoneApproval={ownerId:owner,serviceId:service.id,operationId:randomUUID(),approvedAt:'2026-10-15T12:00:00.000Z',engineVersion:bridge.ENGINE_VERSION,moneyUnitVersion:'roof-minimum-cents-v1',operation:'owner_confirmed_quotedone_registration',contentDigest:bridge.digest(bridge.approvalContent(service,book,{forceLegacyStartingValues:true}))};
   savePricebook(owner,book);return {owner,serviceId:service.id};

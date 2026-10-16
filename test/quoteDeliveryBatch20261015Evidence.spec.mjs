@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/index.js';
 import {roofingDisplayFixture} from './quoteDisplayFixtures20261006.mjs';
-import {webQuote,db} from './quoteDeliveryBatch20261015Fixture.mjs';
+import {webQuote,db,at} from './quoteDeliveryBatch20261015Fixture.mjs';
 import {flatRoof} from '../verification/engine-independent/fixtures.mjs';
 
 // Independent base-10 rational oracle: no production exact-math helper is used.
@@ -28,12 +28,27 @@ for(const [area,percent] of [[999999.9,33.33333333333333],[50,2],[1000,0.1],[100
   assert.equal(sanitizeForCustomerVNext(JSON.parse(JSON.stringify(q))).resultType,'INSTANT_ESTIMATE_READY');
 });
 test('QE-020 extreme independent oracle and unchanged whole-cent charges persist/replay at application boundary',()=>{
-  const f=roof(999999.9,33.33333333333333),h=webQuote(f),internal=JSON.parse(db.prepare('SELECT resultJson FROM quotes WHERE ownerId=? AND id=?').get(h.owner,h.row.recordId).resultJson),q=internal.internalResult;
+  const f=roof(999999.9,33.33333333333333),h=webQuote(f,[],at,{roofRuleMode:'legacy'}),internal=JSON.parse(db.prepare('SELECT resultJson FROM quotes WHERE ownerId=? AND id=?').get(h.owner,h.row.recordId).resultJson),q=internal.internalResult;
   assert.deepEqual(selected(q).exactResult,{numerator:'33333329999999996666667',denominator:'100000000000000000'});
   // Before execution, hand round each extended charge once: labor
   // 24,999,997; materials 43,999,996; tear-off 9,999,999; underlayment
   // 4,999,999 cents = 83,999,991 cents. No formula/rounding change is allowed.
   assert.deepEqual(q.lineItems.map(x=>x.amountCents),[24999997,43999996,9999999,4999999]);
+  assert.equal(q.midEstimate,839999.91);assert.equal(h.result.midEstimate,839999.91);assert.equal(h.submit().response.midEstimate,839999.91);
+  assert.deepEqual(JSON.parse(h.row.internalOutcomeJson).internalResult.calculationRecord,q.calculationRecord);
+});
+test('QE-020 new-rule application boundary preserves the exact partial-area oracle and whole-cent charges',()=>{
+  // Written before execution: a confirmed new-rule service at the walkable
+  // pitch keeps the independent rational area and the exact legacy controls:
+  // 24,999,997 + 43,999,996 + 9,999,999 + 4,999,999 = 83,999,991 cents.
+  const f=roof(999999.9,33.33333333333333);
+  delete f.customerInputs.pitch;Object.assign(f.customerInputs,{pitchMethod:'whole_roof',pitchBand:'up_to_six'});
+  f.ownerPricing.pricing.unknownPitchBand='up_to_six';
+  for(const field of ['pitchInstallationAdder','pitchRemovalAdder','complexityLaborMultiplier','additionalLayerRemovalFactor'])delete f.ownerPricing.pricing[field];
+  const h=webQuote(f,[],at,{roofRuleMode:'new'}),internal=JSON.parse(db.prepare('SELECT resultJson FROM quotes WHERE ownerId=? AND id=?').get(h.owner,h.row.recordId).resultJson),q=internal.internalResult;
+  assert.deepEqual(selected(q).exactResult,{numerator:'33333329999999996666667',denominator:'100000000000000000'});
+  assert.deepEqual(q.lineItems.map(x=>x.amountCents),[24999997,43999996,9999999,4999999]);
+  assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,83999991);
   assert.equal(q.midEstimate,839999.91);assert.equal(h.result.midEstimate,839999.91);assert.equal(h.submit().response.midEstimate,839999.91);
   assert.deepEqual(JSON.parse(h.row.internalOutcomeJson).internalResult.calculationRecord,q.calculationRecord);
 });

@@ -530,6 +530,22 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const waste=quantityFactor(p.wasteFactorByComplexity[c.roofComplexity],`wasteFactorByComplexity.${c.roofComplexity}`,{allowZero:true});
   const bundles=p.bundlesPerSquare?.[c.replacementRoofType],purchase=purchasedQuantityVNext(squares,waste,bundles===undefined?undefined:exactDivide(1,bundles));
   const layers=count(c.existingLayers,'existingLayers'),story=quantityFactor(p.storyMultiplier[c.stories],`storyMultiplier.${c.stories}`),complexity=quantityFactor(p.complexityLaborMultiplier[c.roofComplexity],`complexityLaborMultiplier.${c.roofComplexity}`);
+  const exactTearOffSquares=exactMultiply(squares,layers);
+  if(c.serviceScope==='partial'&&c.partialAreaSqft===undefined)recordQuantityDerivation(out,{
+    name:'selectedRoofAreaSqft',formula:(c.roofSizeMethod==='footprint'?'roofSurfaceAreaSqft':'roofSizeInput')+' * partialPercent / 100',
+    inputs:{[c.roofSizeMethod==='footprint'?'roofSurfaceAreaSqft':'roofSizeInput']:exactToNumber(totalArea),partialPercent:c.partialPercent},result:exactAreaSqft,unit:'square feet',usedBy:['roofSquares']
+  });
+  recordQuantityDerivation(out,{name:'roofSquares',formula:'areaSqft / 100',inputs:{areaSqft},result:squares,unit:'roofing squares',usedBy:['Roofing labor','Underlayment']});
+  recordQuantityDerivation(out,{
+    name:'materialSquares',formula:bundles===undefined?'roofSquares * (1 + wasteFactor)':'ceil(roofSquares * (1 + wasteFactor) * bundlesPerSquare) / bundlesPerSquare',
+    inputs:{roofSquares:squareNumber,wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:purchase.purchasedQuantity,unit:'roofing squares',usedBy:['Field materials']
+  });
+  recordQuantityDerivation(out,{name:'tearOffSquares',formula:'roofSquares * existingLayers',inputs:{roofSquares:squareNumber,existingLayers:layers},result:exactTearOffSquares,unit:'existing-layer roofing squares',usedBy:['Tear-off','Roofing disposal']});
+  recordRuleApplication(out,{
+    name:'roofAreaSelection',rule:'full scope uses measured total area; partial measured area takes precedence when supplied; otherwise confirmed partial percent derives area',
+    inputs:{serviceScope:c.serviceScope,totalAreaSqft:exactToNumber(totalArea),partialAreaSqft:c.partialAreaSqft??null,partialPercent:c.partialPercent??null},
+    result:{areaSqft,source:c.serviceScope!=='partial'?'measured_total_area':c.partialAreaSqft!==undefined?'measured_partial_area':'confirmed_partial_percent'},usedBy:['roofSquares']
+  });
   const laborPath=`laborPerSquare.${c.replacementRoofType}`,tearPath=`tearOffPerSquare.${c.existingRoofType}`;
   const laborRate=valueAtPath(p,laborPath),tearRate=valueAtPath(p,tearPath),disposalRate=optionalMoney(p.disposalPerSquare,'disposalPerSquare')??0;
   add(out,makeLine({name:'Roofing labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,customerDriver:`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`}));
@@ -570,9 +586,17 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     ];
     for(const [name,input,rate,unit] of optional)if(c[input]!==undefined&&c[input]>0)add(out,makeLine({name,category:'material',quantity:c[input],unit,rateCents:p[rate],ratePath:rate}));
   }
-  if(c.deckingSheets!==undefined)add(out,makeLine({name:'Decking replacement',category:'material',quantity:c.deckingSheets,allowZeroQuantity:true,unit:'confirmed sheets',rateCents:p.deckingPerSheet,ratePath:'deckingPerSheet'}));
+  const deckingUnitPrice=optionalMoney(p.deckingPerSheet,'deckingPerSheet');
+  if(deckingUnitPrice!==undefined){
+    out.priceDrivers.push('Any additional decking is priced per sheet and confirmed on site.');
+    if(c.deckingSheets!==undefined)out.priceDrivers.push(c.deckingSheets>0?`${c.deckingSheets} decking sheet${c.deckingSheets===1?'':'s'} included`:'No decking replacement is included in the confirmed scope.');
+  }
+  if(c.deckingSheets!==undefined){
+    recordMeasurement(out,'deckingSheets',c.deckingSheets,'confirmed sheets');
+    if(c.deckingSheets>0||deckingUnitPrice!==undefined)add(out,makeLine({name:'Decking replacement',category:'material',quantity:c.deckingSheets,allowZeroQuantity:true,unit:'confirmed sheets',rateCents:deckingUnitPrice,ratePath:'deckingPerSheet',...(c.deckingSheets>0?{customerDriver:`${c.deckingSheets} decking sheet${c.deckingSheets===1?'':'s'} included`}:{})}));
+  }
   out.feeScope.disposal=layers>0;
-  if(disposalRate||p.disposalPerSquare===0)addDisposalOverride(out,p,'disposalPerSquare',exactMultiply(squares,layers),'existing-layer roofing squares','Roofing disposal');
+  if(disposalRate||p.disposalPerSquare===0)addDisposalOverride(out,p,'disposalPerSquare',exactTearOffSquares,'existing-layer roofing squares','Roofing disposal');
   recordMeasurement(out,'roofAreaSqft',areaSqft,'square feet');recordMeasurement(out,'existingLayers',layers,'layers');
   out.priceDrivers.push(`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`,`${layers} existing layer${layers===1?'':'s'}`);
   return out;

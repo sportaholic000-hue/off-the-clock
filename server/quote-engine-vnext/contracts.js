@@ -1183,6 +1183,15 @@ export function customerContractForVNext(type,p={},rules={}) {
  if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(rules)){
   const materialKeys=Object.keys(rules?.pricing?.materialCostPerSquare||p.materialCostPerSquare||{});
   const dependentActive=materialKeys.length>0&&materialKeys.every(key=>dependentLineEnabledVNext({...rules,pricing:rules?.pricing||p},roofFlashingVentDefinitionVNext(key)));
+  const pitchAreaError=c=>{
+   if(c.pitchMethod!=='area_by_pitch'||c.roofSizeMethod!=='roof_measured'||!Number.isFinite(c.roofSizeInput))return null;
+   const sum=['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].reduce((n,name)=>exactAdd(n,c[name]||0),0);
+   const selectedArea=c.serviceScope==='partial'
+    ? (Number.isFinite(c.partialAreaSqft)?c.partialAreaSqft:(Number.isFinite(c.partialPercent)?exactDivide(exactMultiply(c.roofSizeInput,c.partialPercent),100):undefined))
+    : c.roofSizeInput;
+   if(selectedArea===undefined||exactCompare(sum,selectedArea)===0)return null;
+   return {field:'pitchAreaUpTo6Sqft',message:c.serviceScope==='partial'?'Areas by pitch must add up to the roof area being replaced.':'Areas by pitch must add up to the measured roof surface area.'};
+  };
   const legacy=base,fields={...legacy.fields,
    roofSizeMethod:enumField('Roof area method',['roof_measured','footprint']),
    roofSizeInput:numberField('Measured roof surface area or footprint including overhangs','square feet',50,1_000_000),
@@ -1211,18 +1220,25 @@ export function customerContractForVNext(type,p={},rules={}) {
     if(c.serviceScope==='partial'&&c.partialPercent===undefined&&c.partialAreaSqft===undefined)out.push('partialAreaSqft');
     if(p.accessoryPricingMode==='itemized')out.push('starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF');
     return out;
-   },inspection(){return null;},crossValidate(c){
+   },inspection(c){return pitchAreaError(c)?.message||null;},crossValidate(c){
     const errors=[];
     if(c.roofSizeMethod==='footprint'&&c.pitchMethod!=='whole_roof')errors.push({field:'pitchMethod',message:'A footprint conversion requires one rise-per-12 pitch for the whole roof.'});
     if(c.pitchMethod==='whole_roof'&&Number.isFinite(c.pitchRisePer12)){
       const band=c.pitchRisePer12<=6?'up_to_six':c.pitchRisePer12<=9?'seven_to_nine':c.pitchRisePer12<=12?'ten_to_twelve':'over_twelve';
       if(c.pitchBand!==band)errors.push({field:'pitchBand',message:'The selected pitch band must match the supplied rise per 12 inches.'});
     }
-    if(c.pitchMethod==='area_by_pitch'){
-      const sum=['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].reduce((n,name)=>n+(c[name]||0),0);
-      if(c.roofSizeMethod==='roof_measured'&&c.serviceScope==='full'&&Number.isFinite(c.roofSizeInput)&&exactCompare(sum,c.roofSizeInput)!==0)errors.push({field:'pitchAreaUpTo6Sqft',message:'Areas by pitch must add up to the measured roof surface area.'});
-    }
+    const pitchError=pitchAreaError(c);if(pitchError)errors.push(pitchError);
+    if(p.accessoryPricingMode!=='itemized')for(const fieldName of ['starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF'])if(c[fieldName]!==undefined)errors.push({field:fieldName,message:`${fieldName} is only valid with itemized roof accessory pricing.`});
     if(c.serviceScope==='full'&&(c.partialPercent!==undefined||c.partialAreaSqft!==undefined))errors.push({field:c.partialAreaSqft!==undefined?'partialAreaSqft':'partialPercent',message:'Partial measurements apply only to a partial roof replacement.'});
+    if(c.serviceScope==='partial'){
+      const totalArea=c.roofSizeMethod==='footprint'&&Number.isFinite(c.roofSizeInput)&&Number.isFinite(c.pitchRisePer12)
+        ? Math.round(c.roofSizeInput*Math.sqrt(1+(c.pitchRisePer12/12)**2)*100)/100:c.roofSizeInput;
+      if([totalArea,c.partialPercent,c.partialAreaSqft].every(Number.isFinite)&&exactCompare(exactMultiply(totalArea,c.partialPercent),exactMultiply(c.partialAreaSqft,100))!==0)errors.push({field:'partialAreaSqft',message:'Measured partial area and affected percentage do not agree.'});
+      for(const name of ['partialAreaSqft','partialPercent'])if(Number.isFinite(c[name])&&Number.isFinite(totalArea)){
+        const area=name==='partialPercent'?exactDivide(exactMultiply(totalArea,c[name]),100):c[name];
+        if(exactCompare(area,totalArea)>=0)errors.push({field:name,message:'Partial area must be strictly smaller than the total roof area.'});
+      }
+    }
     if(c.iceWaterBarrierSqft!==undefined&&c.iceWaterBarrierLengthLF!==undefined)errors.push({field:'iceWaterBarrierSqft',message:'Supply ice and water barrier in only the unit selected by the owner.'});
     return errors;
    }};

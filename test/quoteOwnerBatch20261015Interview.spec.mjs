@@ -10,7 +10,7 @@ import {installedPriceDefinitions} from '../server/installedPriceConfiguration.j
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import * as onboarding from '../server/src/onboardingService.js';
 import {db,migrate} from '../server/src/db.js';
-import {loadPricebook} from '../server/priceBookService.js';
+import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 
 // Expected outcomes were written before the production repair:
 // - explicitly supplied 100/100/20 LF produces 36,000 cents before waste,
@@ -42,7 +42,7 @@ function approvalInput(service) {
   };
 }
 
-function saveApproveQuote(input,prefix) {
+function saveApproveQuote(input,prefix,{roofRuleMode}={}) {
   const owner=prefix+'-'+randomUUID();
   const service=structuredClone(input.ownerPricing);
   const approval=approvalInput(service);
@@ -57,6 +57,18 @@ function saveApproveQuote(input,prefix) {
   },'toDollars');
   bridge.saveApplicationBook(owner,{...converted,revision:initial.revision},date);
   let book=bridge.readApplicationBook(owner);
+  if(service.serviceType==='ROOFING_REPLACEMENT'&&roofRuleMode==='legacy'){
+    const historical=loadPricebook(owner);
+    historical.services[0].startingValueAdoptions={roofing_replacement_20261016:{mode:'legacy'}};
+    savePricebook(owner,historical);
+    book=bridge.readApplicationBook(owner);
+  }
+  if(service.serviceType==='ROOFING_REPLACEMENT'&&roofRuleMode==='new'){
+    const current=book.services[0];
+    current.startingValueActions={confirmPaths:Object.keys(current.startingValueState||{})};
+    bridge.saveApplicationBook(owner,{...book,services:[current],revision:book.revision},date);
+    book=bridge.readApplicationBook(owner);
+  }
   bridge.approveApplicationService(owner,book.services[0].id,{...approval,revision:book.revision},date);
   book=bridge.readApplicationBook(owner);
   const stored=loadPricebook(owner),storedService=stored.services[0];
@@ -265,6 +277,15 @@ function roofInput(customerOverrides={}) {
   return input;
 }
 
+function newRoofInput(customerOverrides={}){
+  const input=roofInput(customerOverrides);
+  delete input.customerInputs.pitch;
+  Object.assign(input.customerInputs,{pitchMethod:'whole_roof',pitchBand:'up_to_six'});
+  input.ownerPricing.pricing.unknownPitchBand='up_to_six';
+  for(const field of ['pitchInstallationAdder','pitchRemovalAdder','complexityLaborMultiplier','additionalLayerRemovalFactor'])delete input.ownerPricing.pricing[field];
+  return input;
+}
+
 test('QE-009: itemized roofing retains its measured-length gate and honors exact supplied lengths',()=>{
   const absent=roofInput();
   const validation=validateCustomerInputs(absent.serviceType,absent.customerInputs,absent.ownerPricing.pricing,absent.ownerPricing);
@@ -284,22 +305,53 @@ test('QE-009: itemized roofing retains its measured-length gate and honors exact
   assert.equal(zeroPhysicalScope.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(zeroPhysicalScope));
   assert.equal(zeroPhysicalScope.options[0].calculationRecord.scenarios.mid.finalTotalCents,195000);
 
-  const persisted=saveApproveQuote(exact,'qe009-roof');
+  const persisted=saveApproveQuote(exact,'qe009-roof',{roofRuleMode:'legacy'});
   assert.equal(persisted.status.status,'QUOTING LIVE',JSON.stringify(persisted.status));
   assert.equal(persisted.outcome.internalResult.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(persisted.outcome.internalResult));
   assert.equal(persisted.outcome.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,234600);
+});
+
+test('QE-009: new-rule itemized roofing reaches live readiness and retains the same measured-length amounts',()=>{
+  // Written before execution: after confirming the starting values, missing
+  // itemized lengths still block; exact 100/100/20 LF still adds 39,600 cents
+  // to the 195,000-cent base for a 234,600-cent total.
+  const exact=newRoofInput({starterLengthLF:100,dripEdgeLengthLF:100,ridgeCapLengthLF:20});
+  const persisted=saveApproveQuote(exact,'qe009-roof-new',{roofRuleMode:'new'});
+  assert.equal(persisted.status.status,'QUOTING LIVE',JSON.stringify(persisted.status));
+  assert.equal(persisted.outcome.internalResult.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(persisted.outcome.internalResult));
+  assert.equal(persisted.outcome.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,234600);
+  const missing=structuredClone(exact.customerInputs);
+  for(const field of ['starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF'])delete missing[field];
+  const validation=validateCustomerInputs('ROOFING_REPLACEMENT',missing,persisted.service.pricing,persisted.service);
+  assert.equal(validation.ok,false,JSON.stringify(validation));
+  assert.deepEqual(validation.missingCustomerFields,['starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF']);
 });
 
 test('QE-009: all-in roofing activates and quotes without itemized declarations or accessory double charging',()=>{
   const input=roofInput(),pricing=input.ownerPricing.pricing;
   pricing.accessoryPricingMode='per_square_allin';
   for(const field of ['materialAccessoryBasis','starterPerLF','dripEdgePerLF','ridgeCapPerLF'])delete pricing[field];
-  const observed=saveApproveQuote(input,'qe009-all-in');
+  const observed=saveApproveQuote(input,'qe009-all-in',{roofRuleMode:'legacy'});
   assert.equal(observed.status.status,'QUOTING LIVE',JSON.stringify(observed.status));
   assert.equal(observed.outcome.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,195000);
   const contradictory=structuredClone(input);
   contradictory.customerInputs.starterLengthLF=100;
   const validation=validateCustomerInputs(contradictory.serviceType,contradictory.customerInputs,pricing,contradictory.ownerPricing);
+  assert.equal(validation.ok,false);
+  assert.ok(validation.invalidCustomerFields.includes('starterLengthLF'));
+});
+
+test('QE-009: new-rule all-in roofing reaches live readiness without itemized declarations or double charging',()=>{
+  // Written before execution: all-in field material on the new rules keeps
+  // the same 195,000-cent total and rejects contradictory accessory lengths.
+  const input=newRoofInput(),pricing=input.ownerPricing.pricing;
+  pricing.accessoryPricingMode='per_square_allin';
+  for(const field of ['materialAccessoryBasis','starterPerLF','dripEdgePerLF','ridgeCapPerLF'])delete pricing[field];
+  const observed=saveApproveQuote(input,'qe009-all-in-new',{roofRuleMode:'new'});
+  assert.equal(observed.status.status,'QUOTING LIVE',JSON.stringify(observed.status));
+  assert.equal(observed.outcome.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,195000);
+  const contradictory=structuredClone(input.customerInputs);contradictory.starterLengthLF=100;
+  const validation=validateCustomerInputs('ROOFING_REPLACEMENT',contradictory,observed.service.pricing,observed.service);
   assert.equal(validation.ok,false);
   assert.ok(validation.invalidCustomerFields.includes('starterLengthLF'));
 });

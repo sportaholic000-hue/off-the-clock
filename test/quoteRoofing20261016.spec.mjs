@@ -12,6 +12,8 @@ import {CLASS2_DEFINITIONS} from '../server/quote-engine-vnext/contracts.js';
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import {savePricebook,loadPricebook} from '../server/priceBookService.js';
 import {customerQuoteFields} from '../server/customerQuoteFields.js';
+import {webQuote,phone,at} from './quoteDeliveryBatch20261015Fixture.mjs';
+import {quoteEmailFixture} from './quoteEmailFixture.mjs';
 
 const line=(result,name)=>result.lineItems.find(item=>item.name===name);
 const total=result=>result.lineItems.reduce((sum,item)=>sum+item.amountCents,0);
@@ -36,6 +38,14 @@ function roof(customer={},pricing={}){
     complexityLaborMultiplier:{simple:1,moderate:1.20,complex:1.40},
     additionalLayerRemovalFactor:0.70
   });
+  return input;
+}
+
+function newApplicationRoof(customer={}){
+  const input=roof(customer);
+  delete input.ownerPricing.startingValueAdoptions;delete input.ownerPricing.startingValueState;
+  for(const field of ['pitchInstallationAdder','pitchRemovalAdder','complexityLaborMultiplier','additionalLayerRemovalFactor'])delete input.ownerPricing.pricing[field];
+  input.ownerPricing.pricing.unknownPitchBand='seven_to_nine';
   return input;
 }
 
@@ -221,4 +231,92 @@ test('application adoption keeps a historically approved roof live, then atomica
   assert.ok(Object.values(saved.services[0].startingValueState).every(row=>row.confirmed===true));
   preview=bridge.previewApplicationQuote(owner,{revision:bridge.bookRevision(saved),serviceId:raw.id,customerInputs:{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:'ten_to_twelve',stories:3,existingLayers:1,roofComplexity:'moderate',serviceScope:'full',confirmedFacts:input.customerInputs.confirmedFacts}});
   assert.equal(preview.midEstimate,4668.21);
+});
+
+test('new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band',()=>{
+  // Written before execution: after all four starting definitions (eight
+  // leaves) are explicitly confirmed and the owner's not-sure band is set,
+  // readiness must exercise the new customer contract and report QUOTING
+  // LIVE. Twenty 7/12-9/12 squares then quote rather than review.
+  const owner='roof-new-live-'+crypto.randomUUID(),input=roof({pitchMethod:'whole_roof',pitchBand:'seven_to_nine'}),service=structuredClone(input.ownerPricing);
+  delete service.origin;delete service.quoteDoneApproval;delete service.startingValueAdoptions;delete service.startingValueState;
+  for(const field of ['pitchInstallationAdder','pitchRemovalAdder','complexityLaborMultiplier','additionalLayerRemovalFactor'])delete service.pricing[field];
+  service.source='MANUAL';service.pricing.unknownPitchBand='seven_to_nine';
+  const initial=bridge.readApplicationBook(owner),draft=bridge.convertApplicationBook({services:[service],defaults:{currency:'USD',...input.businessDefaults}},'toDollars');
+  bridge.saveApplicationBook(owner,{...draft,revision:initial.revision});
+  let display=bridge.readApplicationBook(owner),saved=display.services[0];
+  saved.startingValueActions={confirmPaths:Object.keys(saved.startingValueState)};
+  bridge.saveApplicationBook(owner,{...display,services:[saved],revision:display.revision});
+  display=bridge.readApplicationBook(owner);
+  bridge.approveApplicationService(owner,display.services[0].id,{revision:display.revision,confirmConfiguration:true,confirmLegacySettings:true});
+  const stored=loadPricebook(owner),status=bridge.bookStatuses(stored)[0];
+  assert.equal(status.status,'QUOTING LIVE',JSON.stringify(status));
+  const outcome=bridge.calculateApplicationQuote(stored,stored.services[0],{customerInputs:input.customerInputs,customerFeeSelections:{}},{preparingIntake:true});
+  assert.equal(outcome.internalResult.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(outcome.internalResult));
+
+  // The public application boundary must reach the same ready outcome, not
+  // merely the direct bridge calculation above.
+  const webInput=newApplicationRoof({pitchMethod:'whole_roof',pitchBand:'seven_to_nine'});
+  delete webInput.customerInputs.pitchAreaUpTo6Sqft;delete webInput.customerInputs.pitchArea7To9Sqft;
+  const web=webQuote(webInput,[],at,{roofRuleMode:'new'});
+  assert.equal(web.result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(web.result));
+});
+
+test('new roofing decking exactly preserves the established optional-line and customer-note behavior',()=>{
+  // Written before execution: without a decking price, a confirmed zero sheet
+  // count has no line and no decking-price note. At $90 per sheet, five sheets
+  // cost exactly 45,000 cents and both established customer notes appear.
+  const none=roof({deckingSheets:0});delete none.ownerPricing.pricing.deckingPerSheet;delete none.ownerPricing.pricing.deckingPriceBasis;
+  let result=generateQuoteVNext(none);
+  assert.equal(result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result));
+  assert.equal(line(result,'Decking replacement'),undefined);
+  assert.equal(result.priceDrivers.some(value=>/decking/i.test(value)),false);
+  const priced=roof({deckingSheets:5},{deckingPerSheet:9000,deckingPriceBasis:'installed',installedLaborPercent:{deckingPerSheet:60},installedMaterialsPercent:{deckingPerSheet:40}});
+  result=generateQuoteVNext(priced);
+  assert.equal(result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result));
+  assert.equal(line(result,'Decking replacement').amountCents,45000);
+  assert.ok(result.priceDrivers.includes('Any additional decking is priced per sheet and confirmed on site.'));
+  assert.ok(result.priceDrivers.includes('5 decking sheets included'));
+});
+
+test('new roofing partial pitch areas describe only the replaced area and reject whole-roof totals',()=>{
+  // Written before execution: a 1,000-sq-ft partial replacement with 600 sq ft
+  // at up to 6/12 and 400 sq ft at 8/12 applies 20% steep labor to four
+  // $200 squares: 4 * 20,000 * 0.20 = 16,000 cents. Pitch areas totaling the
+  // full 2,000-sq-ft roof contradict that job scope and request correction.
+  const valid=roof({roofSizeInput:2000,serviceScope:'partial',partialAreaSqft:1000,pitchAreaUpTo6Sqft:600,pitchArea7To9Sqft:400});
+  let result=generateQuoteVNext(valid);
+  assert.equal(result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result));
+  assert.equal(line(result,'Steep-pitch installation').amountCents,16000);
+  const invalid=roof({roofSizeInput:2000,serviceScope:'partial',partialAreaSqft:1000,pitchAreaUpTo6Sqft:1200,pitchArea7To9Sqft:800});
+  result=generateQuoteVNext(invalid);
+  assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.ok(result.invalidCustomerFields.includes('pitchAreaUpTo6Sqft'));
+  assert.match(result.reviewReason,/areas by pitch.*area being replaced/i);
+});
+
+test('partial pitch-area contradictions ask for correction at the widget application boundary',()=>{
+  // Written before execution: a partial 1,000-sq-ft job cannot accept pitch
+  // areas totaling the 2,000-sq-ft whole roof. The production intake boundary
+  // must return needs_details and identify the pitch-area field for correction.
+  const valid=newApplicationRoof({roofSizeInput:2000,serviceScope:'partial',partialAreaSqft:1000,pitchAreaUpTo6Sqft:600,pitchArea7To9Sqft:400});
+  const web=webQuote(valid,[],at,{roofRuleMode:'new'});
+  const submission=structuredClone(web.body);
+  submission.requestId=crypto.randomUUID();delete submission.intakeConfirmation;
+  Object.assign(submission.customerInputs,{pitchAreaUpTo6Sqft:1200,pitchArea7To9Sqft:800});
+  const prepared=bridge.prepareApplicationIntake(web.owner,submission,{timeZone:'UTC',quoteInstant:at});
+  assert.equal(prepared.status,'needs_details',JSON.stringify(prepared));
+  assert.ok(prepared.followUps.some(value=>/pitch|6\/12/i.test(value)),JSON.stringify(prepared.followUps));
+});
+
+test('partial pitch-area contradictions ask for correction through the receptionist',async t=>{
+  // Written before execution: the same contradiction returns needs_details on
+  // the production voice tool and repeats a pitch-area correction prompt; it
+  // never presents a price based on the whole-roof areas.
+  const h=quoteEmailFixture(t),invalid=newApplicationRoof({roofSizeInput:2000,serviceScope:'partial',partialAreaSqft:1000,pitchAreaUpTo6Sqft:1200,pitchArea7To9Sqft:800});
+  const observed=await phone(h,invalid,{applicationOptions:{roofRuleMode:'new'}});
+  assert.equal(observed.result.status,'needs_details',JSON.stringify(observed.result));
+  assert.equal(observed.result.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.ok(observed.result.followUps.some(value=>/pitch|6\/12/i.test(value)),JSON.stringify(observed.result.followUps));
+  assert.equal(observed.result.quoteNarration,undefined);
 });

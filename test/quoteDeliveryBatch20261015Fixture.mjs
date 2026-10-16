@@ -2,7 +2,7 @@ import './pricebookTestEnv.mjs';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import * as bridge from '../server/src/quoteDoneBridge.js';
-import {loadPricebook} from '../server/priceBookService.js';
+import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {quoteEmailFixture,environment} from './quoteEmailFixture.mjs';
 import {fixture,at,secret} from './leadCaptureRepair20261006Fixture.mjs';
@@ -16,10 +16,18 @@ process.env.JWT_SECRET='SYNTHETIC_QUOTE_DELIVERY_20261015_NEVER_LIVE';
 export {bridge,loadPricebook,quoteEmailFixture,fixture,at,secret,db};
 export const date={timeZone:'UTC',quoteInstant:at};
 export const notice='Fewer options are available because one or more configured options need owner review.';
-export function publish(owner,f){
+export function publish(owner,f,{roofRuleMode}={}){
   const service=structuredClone(f.ownerPricing);delete service.origin;
   const draft=bridge.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'CAD',quoteTimeZone:'UTC'}},'toDollars');
   bridge.saveApplicationBook(owner,{...draft,revision:bridge.readApplicationBook(owner).revision},date);
+  if(service.serviceType==='ROOFING_REPLACEMENT'&&roofRuleMode==='legacy'){
+    const historical=loadPricebook(owner);historical.services[0].startingValueAdoptions={roofing_replacement_20261016:{mode:'legacy'}};savePricebook(owner,historical);
+  }
+  if(service.serviceType==='ROOFING_REPLACEMENT'&&roofRuleMode==='new'){
+    const current=bridge.readApplicationBook(owner),saved=current.services[0];
+    saved.startingValueActions={confirmPaths:Object.keys(saved.startingValueState||{})};
+    bridge.saveApplicationBook(owner,{...current,services:[saved],revision:current.revision},date);
+  }
   bridge.approveApplicationService(owner,service.id,{revision:bridge.readApplicationBook(owner).revision,confirmConfiguration:true,confirmLegacySettings:true},date);
   const book=loadPricebook(owner);assert.equal(bridge.bookStatuses(book,date)[0].status,'QUOTING LIVE');
   return {book,service:book.services[0],definition:bridge.applicationServiceDefinition(book.services[0])};
@@ -43,8 +51,8 @@ export function runtime(h,quoteApplication={}){
   const dispatch=createVoiceToolDispatcher({handlers:r.handlers,callContext:h.c,idempotencyStore:r.idempotencyStore}).dispatch;
   return {r,tool:(name,args,id=randomUUID())=>dispatch({name,args,toolCallId:id})};
 }
-export async function phone(h,f,{quoteApplication={},additionalWork=[]}={}){
-  const a=publish(h.c.ownerId,f),v=Object.keys(quoteApplication).length?runtime(h,quoteApplication):h;
+export async function phone(h,f,{quoteApplication={},additionalWork=[],applicationOptions={}}={}){
+  const a=publish(h.c.ownerId,f,applicationOptions),v=Object.keys(quoteApplication).length?runtime(h,quoteApplication):h;
   const match=await v.tool('matchService',{query:f.ownerPricing.service});assert.equal(match.status,'matched');
   const customerInputs=structuredClone(f.customerInputs);delete customerInputs.confirmedFacts;
   const args={serviceHandle:match.serviceHandle,customerInputs,customerConfirmed:true,additionalWork,
@@ -56,12 +64,12 @@ export async function phone(h,f,{quoteApplication={},additionalWork=[]}={}){
   }
   return {...v,...a,match,args,result};
 }
-export function webQuote(f,additionalWork=[],quoteInstant=at){
+export function webQuote(f,additionalWork=[],quoteInstant=at,applicationOptions={}){
   migrate();const owner='synthetic-delivery-'+randomUUID();
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic Delivery','QuoteDone','active','UTC','owner',?)")
     .run(owner,owner+'@example.invalid',at);
   db.prepare("INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,updatedAt) VALUES(?,'{}',?)").run(owner,at);
-  const a=publish(owner,f);
+  const a=publish(owner,f,applicationOptions);
   db.prepare("INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,enabled,updatedAt) VALUES(?,?,'SYNTHETIC','site_visit_first',0,?)").run(owner,a.service.id,at);
   const body={requestId:randomUUID(),serviceId:a.service.id,serviceRequest:a.service.service,
     customerInputs:structuredClone(f.customerInputs),customerFeeSelections:{},additionalWork,
