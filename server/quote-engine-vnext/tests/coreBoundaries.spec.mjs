@@ -8,7 +8,11 @@ import {floor,fixture,slab,stairs,demolition} from './coreFixtures.mjs';
 // Handwritten amounts and band conventions are in CORE_FIXES_20261005.md.
 const ready=(f,expected)=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(q.midEstimate,expected);return q;};
 
-for(const [sqft,expected,band] of [[449.97,989.93,'small'],[450,990,'small'],[450.03,945.06,'medium'],[899.97,1889.94,'medium'],[900,1890,'medium'],[900.03,1800.06,'large']])test(`core 1 room boundary: ${sqft}/3 is ${band} ($${expected})`,()=>{
+// Oct16 owner ruling, expected before execution: $1 labor/$1 material, no
+// waste. At450.03sqft labor stays3*150*100*1.20=54,000c plus45,003c
+// material=99,003c. At900.03 labor stays3*300*100*1.10=99,000c
+// plus90,003c material=189,003c. Inclusive band identities are unchanged.
+for(const [sqft,expected,band] of [[449.97,989.93,'small'],[450,990,'small'],[450.03,990.03,'medium'],[899.97,1889.94,'medium'],[900,1890,'medium'],[900.03,1890.03,'large']])test(`core 1 room boundary: ${sqft}/3 is ${band} ($${expected})`,()=>{
  const f=floor(sqft,3),q=ready(f,expected);
  assert.ok(q.options[0].calculationRecord.ruleApplications.some(r=>r.rule?.includes('averageRoomSqft')&&r.result===band));
 });

@@ -23,6 +23,7 @@ import {markEditedPriceMetadata} from './pricebookPriceMetadata.js';
 import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
+import {FLOORING_PATTERN_FIELDS} from '../../server/quote-engine-vnext/flooringPricing.js';
 const PricingContext = createContext({});
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
@@ -447,6 +448,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       PRODUCT_PRICE_FIELDS.includes(definition.field)&&definition.shapedKeys?.ownerSelectable===true;
     control = productRows
       ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} onToggleOffering={onToggleOffering} />
+      : FLOORING_PATTERN_FIELDS.includes(definition.field) ? <ShapedMapField definition={definition} value={value} onChange={onChange}/>
       : definition.tree ? <PricingTree value={value} onChange={onChange} definition={definition}/>
       : definition.shapedKeys ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} status={status} />
       : <JsonEditor value={value} onChange={onChange} />;
