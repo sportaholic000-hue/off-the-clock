@@ -2,6 +2,7 @@ import {scopeDefinitions,scopeRateDefinitions} from './scopeConfiguration.js';
 import {offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 
 const SPECIAL_LABELS = {
+  diagonal_or_pattern:'Diagonal',herringbone_or_chevron:'Herringbone or chevron',
   disposalFlat: 'Flat disposal charge ($)',
   addon:'Additional work', customer_selectable_addon:'Customer can select this extra',
   customer_selected:'Customer chooses', owner_selected:'Owner chooses', when_scope_selected:'When the matching work is selected',

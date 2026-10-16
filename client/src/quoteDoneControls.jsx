@@ -4,6 +4,8 @@ import React,{useEffect,useRef,useState} from 'react';
 import {Field,Select,TextInput,Button,Notice,Textarea,ErrorMessage} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {FenceRunsInput} from './FenceRunsInput.jsx';
+import {CarpetRoomsInput,CarpetConnectionsInput} from './CarpetMeasurements.jsx';
+import {normalizeFlooringInputs} from '../../server/quote-engine-vnext/flooringPricing.js';
 import {fenceCatalog,fenceTierKeys} from '../../server/quote-engine-vnext/fencePricing.js';
 import {treeKeysAt,requiredTreeKeysAt} from '../../server/priceBookTree.js';
 import {humanPricingKey,productKeyFromName,DUPLICATE_NAME_MESSAGE} from './pricebookFormatting.js';
@@ -78,6 +80,11 @@ function ProductMeasurement({field,value,registered,update,onChange}) {
  </>;
 }
 
+export function customerMeasurementVisible(field,values={}){
+ const roomMode=values.newFlooringType==='carpet'&&(values.carpetMeasurementMethod==='rooms'||values.carpetRooms!==undefined);
+ return (!roomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name))&&(field.type!=='carpet_connections'||values.carpetRooms?.length>1)&&customerFieldVisible(field,values);
+}
+
 export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onChange,knownOfferings={}}) {
  const fencing=fields.some(f=>f.type==='fence_runs');
  const [totalOnly,setTotalOnly]=useState(value.fenceRuns===undefined&&value.linearFeet!==undefined);
@@ -85,6 +92,15 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  const measuredRuns=value.fenceRuns||Array.from({length:Number.isSafeInteger(value.fenceRunCount)&&value.fenceRunCount>0&&value.fenceRunCount<=1000?value.fenceRunCount:1},()=>({sections:[{}]}));
  const layoutChange=(runs,{removedRun=false}={})=>{const next={...value,fenceRuns:runs,fenceRunCount:removedRun||value.fenceRunCount===undefined?runs.length:value.fenceRunCount};for(const k of ['linearFeet','gates','cornerCount','lfMethod'])delete next[k];onChange(clearChangedScopeConfirmations(scopeFields,value,next));};
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
+  if(name==='newFlooringType'&&next!=='carpet')for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];
+  if(name==='carpetMeasurementMethod'){
+   if(next==='area_only'){delete updated.carpetRooms;delete updated.carpetConnectedAreas;}
+   else if(next==='rooms')for(const key of ['sqft','sqftMethod','roomCount','layoutPattern'])delete updated[key];
+  }
+  if(name==='carpetRooms'){
+   if(next?.length!==value.carpetRooms?.length)delete updated.carpetConnectedAreas;
+   try{Object.assign(updated,normalizeFlooringInputs({...updated,newFlooringType:'carpet'}));}catch{for(const key of ['sqft','sqftMethod','roomCount'])delete updated[key];}
+  }
   if(sectionMode&&name==='fenceRunCount'){
    if(Number.isSafeInteger(next)&&next>=1&&next<=1000)updated.fenceRuns=Array.from({length:Math.max(next,measuredRuns.length)},(_,i)=>measuredRuns[i]||{sections:[{}]});
    for(const k of ['linearFeet','gates','cornerCount','lfMethod'])delete updated[k];
@@ -92,13 +108,15 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
   if(own(updated.confirmedFacts,name)){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts[name];if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}
   onChange(clearChangedScopeConfirmations(scopeFields,value,updated));
  };
- return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerFieldVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}
+ return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerMeasurementVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}
   {f.type==='boolean'?<Select aria-label={f.label} value={value[f.name]===undefined?'':String(value[f.name])} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='true')}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select>:
-   f.type==='enum'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:f.values.find(v=>String(v)===e.target.value))}><option value="">Unknown / not supplied</option>{(f.values||[]).map(v=><option key={v} value={v}>{f.optionLabels?.[v]||human(v)}</option>)}</Select>:
+   f.type==='enum'?<Select aria-label={f.label} value={f.aliases?.[value[f.name]]??value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:f.values.find(v=>String(v)===e.target.value))}><option value="">Unknown / not supplied</option>{(f.values||[]).map(v=><option key={v} value={v}>{f.optionLabels?.[v]||human(v)}</option>)}</Select>:
    f.type==='number_or_unknown'?<><ExactNumericInput aria-label={f.label} value={value[f.name]==='unknown'?undefined:value[f.name]} onChange={v=>update(f.name,v)}/><label><input type="checkbox" aria-label={'Not sure — '+f.label} checked={value[f.name]==='unknown'} onChange={e=>update(f.name,e.target.checked?'unknown':undefined)}/> Not sure</label></>:
    f.type==='integer_or_unknown'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='unknown'?'unknown':Number(e.target.value))}><option value="">Not supplied</option><option value="unknown">Unknown — requires review</option>{Array.from({length:f.max-f.min+1},(_,i)=>f.min+i).map(n=><option key={n} value={n}>{n}</option>)}</Select>:
    f.type==='orthogonal_outline'?<MeasuredOutline field={f} value={value[f.name]} onChange={v=>update(f.name,v)}/>:
    f.type==='fence_runs'?<FenceRunsInput field={f} runs={measuredRuns} runCount={value.fenceRunCount} onChange={layoutChange}/>:
+   f.type==='carpet_rooms'?<CarpetRoomsInput rooms={value[f.name]} onChange={v=>update(f.name,v)}/>:
+   f.type==='carpet_connections'?<CarpetConnectionsInput value={value[f.name]} rooms={value.carpetRooms} onChange={v=>update(f.name,v)}/>:
    f.type==='string'?<TextInput aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value||undefined)}/>:
    f.type==='offering_counts'?<>{(f.values||[]).map(key=><Field key={key} label={f.options?.[key]||human(key)}><ExactNumericInput aria-label={'Gate count '+key} value={value[f.name]?.[key]} onChange={v=>{const next={...(value[f.name]||{})};if(v===undefined)delete next[key];else next[key]=v;update(f.name,next);}}/></Field>)}<Button variant="secondary" onClick={()=>update(f.name,{})}>No gates</Button>{value[f.name]&&Object.values(value[f.name]).every(n=>n===0)&&<span>No gates selected</span>}</>:
    f.type==='plant_counts'?<>{['small','medium','large'].map(size=><Field key={size} label={human(size)}><ExactNumericInput aria-label={f.label+' '+human(size)} value={value[f.name]?.[size]} onChange={v=>{const next={...(value[f.name]||{})};if(v===undefined)delete next[size];else next[size]=v;update(f.name,next);}}/></Field>)}</>:

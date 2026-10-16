@@ -25,6 +25,7 @@ import { convertPricebookMoney, moneyKindForField, wholeCentsForPricingField, va
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE} from '../priceBookCopy.js';
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
+import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
 
 // The engine sorts a measured affected area into these bands
 // (repairSizeFromAffectedArea). Owners see the same limits on each price box.
@@ -211,7 +212,8 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContex
   else if(!approval.current&&!staleEngineApproval)issues.push('Confirm this exact saved configuration before enabling customer quotes.');
   const stalePrices=staleOwnerPrices(raw,book.defaults?.stalePriceThresholdDays,dateContext.quoteInstant);
   const placeholders=aiPlaceholderPrices(raw);
-  return {...withOwnerLabels({...status,ownerDiagnostics:[...(status.ownerDiagnostics||[]),...approvalDiagnostics]},service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approval.current,confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
+  const disposalNotice=service.serviceType==='LANDSCAPING_CLEANUP'?[service.pricing,...(service.tiers||[]).map(t=>mergePricingVNext(service.pricing,t.overrides||{}))].map(cleanupDisposalWarning).find(Boolean):null;
+  return {...withOwnerLabels({...status,...(disposalNotice?{statusNotices:[...(status.statusNotices||[]),disposalNotice]}:{}),ownerDiagnostics:[...(status.ownerDiagnostics||[]),...approvalDiagnostics]},service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approval.current,confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
 }
 export function bookRevision(book) { return digest(book); }
 function synchronizedStartingService(raw,now){
@@ -485,8 +487,8 @@ export function applicationMetadata() {
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
       ROOFING_REPLACEMENT:['bundlesPerSquare'],
-      FLOORING_INSTALL:['cartonCoverageSqft'],
-      FLOORING_REPLACEMENT:['cartonCoverageSqft'],
+      FLOORING_INSTALL:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS],
+      FLOORING_REPLACEMENT:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft')],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
       CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
       LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot','mulchOrderIncrementCubicYards'],
@@ -506,8 +508,9 @@ export function applicationMetadata() {
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
       if(pricingMapField(meta.serviceType,field.field))Object.assign(info,{type:'json',tree:{depth:1}});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
-      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES};
+      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
+      if(field.field==='furnitureMovingPriceUnit')info.optionLabels={per_room:'Per room',flat:'Flat per job'};
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});
       if(meta.serviceType==='ROOFING_REPLACEMENT'&&['materialAccessoryBasis','starterPerLF','dripEdgePerLF','ridgeCapPerLF'].includes(field.field))info.applicableWhen={field:'accessoryPricingMode',equals:'itemized'};
       if(meta.serviceType==='ROOFING_REPLACEMENT'&&field.field==='materialCostPerSquare')info.copyByAccessoryPricingMode=structuredClone(ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE);

@@ -3,6 +3,8 @@ import { formatFenceHeight } from '../quote-engine-vnext/configuredOfferings.js'
 const measurement = {exact:'Measured area',assumption:'Estimated area',roof_measured:'Measured roof area',home_floor_area:'Home floor area'};
 const grass = {maintained:'Regularly maintained',overgrown:'Overgrown',severe:'Severely overgrown'};
 export function customerSummaryValue(field, value, fallback) {
+  if(field?.type==='carpet_rooms'&&Array.isArray(value))return value.map((room,i)=>'Room '+(i+1)+': '+fallback(room?.lengthFt)+' ft front to back by '+fallback(room?.widthFt)+' ft side to side').join('; ');
+  if(field?.type==='carpet_connections')return value==='unknown'?'Not sure; all rooms treated as one connected area':Array.isArray(value)?value.map(group=>'Rooms '+group.join(' and ')).join('; '):fallback(value);
   if(field?.name==='fenceRunCount'&&typeof value==='number')return value+' fence '+(value===1?'run':'runs');
   if(field?.type==='number_or_unknown'&&value==='unknown')return 'Not sure';
   if(field?.type==='fence_runs'&&Array.isArray(value))return value.map((run,i)=>{

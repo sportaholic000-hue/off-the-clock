@@ -45,8 +45,10 @@ test('malformed optional prices and missing main-job rates still require correct
  assert.equal(generateQuoteVNext(request).resultType,review);
 });
 test('flooring default thresholds follow the owner-decided inclusive 150 small / 300 medium maxima',()=>{
- // tile material = area * 1.12 * 500; labor = area * 300 * room multiplier.
- for(const [area,cents,band] of [[149,137080,'small'],[150,138000,'small'],[151,134390,'medium'],[299,266110,'medium'],[300,267000,'medium'],[301,258860,'large']]){
+ // Tile material = area * 1.12 * 500. Labor keeps the previous boundary
+ // minimum after a size limit: 151 ->54,000 labor +84,560=138,560;
+ // 301 ->99,000 labor +168,560=267,560. Bands themselves are unchanged.
+ for(const [area,cents,band] of [[149,137080,'small'],[150,138000,'small'],[151,138560,'medium'],[299,266110,'medium'],[300,267000,'medium'],[301,267560,'large']]){
   const r=total(flooring('tile',area),cents);assert.equal(r.options[0].calculationRecord.ruleApplications.find(x=>x.name==='averageRoomComplexityBand').result,band);
  }
  const twoRooms=flooring('tile',300);twoRooms.customerInputs.roomCount=2;total(twoRooms,276000);

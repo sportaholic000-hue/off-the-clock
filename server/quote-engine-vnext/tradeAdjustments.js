@@ -1,4 +1,5 @@
 import {exactAdd,exactMultiply,exactFromEvidence} from './exactMath.js';
+import {flooringLayoutValue} from './flooringPricing.js';
 
 // Adjust the measured component before its one line-level cent rounding. Fixed
 // allowances, installed prices and purchased package quantities are excluded.
@@ -23,7 +24,8 @@ export function tradeAdjustment(type,c,p,line) {
       else if(!line.calculation.multipliers.some(m=>m.path?.startsWith('wallHeightLaborMultiplier.')))factorPath='wallHeightLaborMultiplier.'+c.wallHeight;
     }
   }
-  if(type.startsWith('FLOORING_')&&path?.startsWith('laborPerSqft.'))factorPath='layoutLaborMultiplier.'+c.layoutPattern;
+  const flooringFactor=type.startsWith('FLOORING_')&&path?.startsWith('laborPerSqft.')?flooringLayoutValue(c,p,'labor'):null;
+  if(flooringFactor)factorPath=flooringFactor.path;
   if(type.startsWith('FENCING_')&&line.category==='labor')factorPath='terrainLaborMultiplier.'+c.terrainSlope;
   if(['FLAT_ROOF_REPAIR','LANDSCAPING_MULCH','LANDSCAPING_PLANTING'].includes(type)&&line.category==='labor')factorPath='accessMultiplier.'+c.accessDifficulty;
   if(!wastePath&&!factorPath)return null;

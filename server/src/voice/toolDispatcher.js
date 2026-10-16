@@ -55,7 +55,7 @@ function publicQuestionContract(value){
   if(!Array.isArray(value.fields)||value.fields.length>64||!Array.isArray(value.customerFees)||value.customerFees.length>4)fail('INVALID_TOOL_RESULT',502);
   const fields=value.fields.map(field=>{
     assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','visibleWhen','details','scopeConfirmationRequired','confirmationToken','choices','moreChoicesAvailable','productConfirmationRequired','productConfirmationExemptValues','unknownAllowed','unknownLabel','integer'],['field','label','type'],'INVALID_TOOL_RESULT');
-    if(field.unknownAllowed!==undefined&&(field.type!=='number_or_unknown'||field.unknownAllowed!==true||field.unknownLabel!=='Not sure'||field.integer!==undefined&&field.integer!==true))fail('INVALID_TOOL_RESULT',502);
+    if(field.unknownAllowed!==undefined&&(!['number_or_unknown','carpet_connections'].includes(field.type)||field.unknownAllowed!==true||field.unknownLabel!=='Not sure'||field.integer!==undefined&&(field.type!=='number_or_unknown'||field.integer!==true)))fail('INVALID_TOOL_RESULT',502);
     if (field.productConfirmationExemptValues !== undefined && (field.field !== 'existingFloorType' || field.type !== 'slug' || !Array.isArray(field.productConfirmationExemptValues) || field.productConfirmationExemptValues.length !== 1 || field.productConfirmationExemptValues[0] !== 'none')) fail('INVALID_TOOL_RESULT',502);
     for(const key of ['field','label','type'])resultText(field[key],4000);
     if(field.details!==undefined){if(!Array.isArray(field.details)||field.details.length>100)fail('INVALID_TOOL_RESULT',502);field.details.forEach(value=>resultText(value,4000));}

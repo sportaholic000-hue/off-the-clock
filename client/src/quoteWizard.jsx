@@ -1,7 +1,7 @@
 import {customerFieldVisible,customerFieldForInputs} from '../../server/scopeConfiguration.js';
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Field, Notice, Select, Textarea, TextInput} from './ui.jsx';
-import {CustomerMeasurements} from './quoteDoneControls.jsx';
+import {CustomerMeasurements,customerMeasurementVisible} from './quoteDoneControls.jsx';
 
 const show = value => value == null ? '' : typeof value === 'object' ? JSON.stringify(value) : String(value);
 const addressLabels = {addressLine1:'Project location',addressLine2:'Address line 2',city:'City',region:'State / province',postalCode:'Postal / ZIP code',country:'Country'};
@@ -12,7 +12,7 @@ export function QuoteWizard({pricingOnly=false,services, service, values, change
   const steps = [
     {id:'service', title:'What can we help with?'},
     ...(values.requestedService === undefined ? [] : [{id:'requested',title:'Requested work'}]),
-    ...(service?.customerFields || []).filter(field => field.type !== 'confirmed_facts' && customerFieldVisible(field,values.inputs)).map(field=>customerFieldForInputs(field,values.inputs)).map(field => ({id:'field:'+field.name,title:field.label,field})),
+    ...(service?.customerFields || []).filter(field => field.type !== 'confirmed_facts' && customerMeasurementVisible(field,values.inputs)).map(field=>customerFieldForInputs(field,values.inputs)).map(field => ({id:'field:'+field.name,title:field.label,field})),
     ...(service?.customerFees || []).map(fee => ({id:'fee:'+fee,title:'Select '+fee+' charge',fee})),
     {id:'details',title:'Anything we should know about this job?'},
     {id:'additional',title:'Additional work for on-site estimate'},

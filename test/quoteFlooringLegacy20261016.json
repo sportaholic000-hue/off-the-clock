@@ -1,0 +1,1327 @@
+{
+  "synthetic": true,
+  "integrationSha": "b682c443869e718d66907d5be86d81da9029fa97",
+  "note": "Expected cents frozen before production edits. These 60 areas/room counts do not invoke the new labor floor.",
+  "rows": [
+    {
+      "type": "tile",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 82800,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 50400,
+          "quantity": 100.8
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 92430,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 53550,
+          "quantity": 107.1
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 82800,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 50400,
+          "quantity": 100.8
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 92430,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 53550,
+          "quantity": 107.1
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 178000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 66000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 112000,
+          "quantity": 224
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 198200,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 79200,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 119000,
+          "quantity": 238
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 184000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 72000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 112000,
+          "quantity": 224
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 205400,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 86400,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 119000,
+          "quantity": 238
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 430000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 150000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 280000,
+          "quantity": 560
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 477500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 180000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 297500,
+          "quantity": 595
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 445000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 165000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 280000,
+          "quantity": 560
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 495500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 198000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 297500,
+          "quantity": 595
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 81000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 48600,
+          "quantity": 97.2
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 90630,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 51750,
+          "quantity": 103.5
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 81000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 48600,
+          "quantity": 97.2
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 90630,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 51750,
+          "quantity": 103.5
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 174000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 66000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 108000,
+          "quantity": 216
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 194200,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 79200,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 115000,
+          "quantity": 230
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 180000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 72000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 108000,
+          "quantity": 216
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 201400,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 86400,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 115000,
+          "quantity": 230
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 420000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 150000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 270000,
+          "quantity": 540
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 467500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 180000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 287500,
+          "quantity": 575
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 435000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 165000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 270000,
+          "quantity": 540
+        }
+      ]
+    },
+    {
+      "type": "vinyl_plank",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 485500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 198000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 287500,
+          "quantity": 575
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 81090,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 48600,
+          "quantity": 97.2
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 90720,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 51750,
+          "quantity": 103.5
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 81090,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 48600,
+          "quantity": 97.2
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 90720,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 51750,
+          "quantity": 103.5
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 174200,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 66000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 108000,
+          "quantity": 216
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 194400,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 79200,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 115000,
+          "quantity": 230
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 180200,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 72000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 108000,
+          "quantity": 216
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 201600,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 86400,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 115000,
+          "quantity": 230
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 420500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 150000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 270000,
+          "quantity": 540
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 468000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 180000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 287500,
+          "quantity": 575
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 435500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 165000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 270000,
+          "quantity": 540
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "laminate",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 486000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 198000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 287500,
+          "quantity": 575
+        },
+        {
+          "name": "laminate underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 81990,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 49500,
+          "quantity": 99
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 91620,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 52650,
+          "quantity": 105.3
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 81990,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 49500,
+          "quantity": 99
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 91620,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 52650,
+          "quantity": 105.3
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 176200,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 66000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 110000,
+          "quantity": 220
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 196400,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 79200,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 117000,
+          "quantity": 234
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 182200,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 72000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 110000,
+          "quantity": 220
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 203600,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 86400,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 117000,
+          "quantity": 234
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 425500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 150000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 275000,
+          "quantity": 550
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 473000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 180000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 292500,
+          "quantity": 585
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 440500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 165000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 275000,
+          "quantity": 550
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "hardwood",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 491000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 198000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 292500,
+          "quantity": 585
+        },
+        {
+          "name": "hardwood underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 81990,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 49500,
+          "quantity": 99
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 90,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 91620,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 52650,
+          "quantity": 105.3
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 81990,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 32400,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 49500,
+          "quantity": 99
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 90,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 91620,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 38880,
+          "quantity": 90
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 52650,
+          "quantity": 105.3
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 90,
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 176200,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 66000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 110000,
+          "quantity": 220
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 200,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 196400,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 79200,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 117000,
+          "quantity": 234
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 182200,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 72000,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 110000,
+          "quantity": 220
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 200,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 203600,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 86400,
+          "quantity": 200
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 117000,
+          "quantity": 234
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 200,
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "straight",
+      "cents": 425500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 150000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 275000,
+          "quantity": 550
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 500,
+      "roomCount": 1,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 473000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 180000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 292500,
+          "quantity": 585
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "cents": 440500,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 165000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 275000,
+          "quantity": 550
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    },
+    {
+      "type": "carpet",
+      "sqft": 500,
+      "roomCount": 2,
+      "layoutPattern": "diagonal_or_pattern",
+      "cents": 491000,
+      "lines": [
+        {
+          "name": "Flooring labor",
+          "cents": 198000,
+          "quantity": 500
+        },
+        {
+          "name": "Flooring materials",
+          "cents": 292500,
+          "quantity": 585
+        },
+        {
+          "name": "carpet underlayment",
+          "cents": 500,
+          "quantity": 500
+        }
+      ]
+    }
+  ]
+}

@@ -1791,7 +1791,8 @@ function rootCalculationRecordMatches(result) {
     if (option.tierName!==null && !tier) return false;
     let pricing=tier?mergePricingVNext(configuration.pricing,tier.overrides):configuration.pricing;
     if(fenceType(result.serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,inputs);}catch{return false;}
-    const normalized=fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
+    const derivedMeasurements=result.serviceType.startsWith('FLOORING_')||fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined;
+    const normalized=derivedMeasurements?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
     if (!plainDataEqual(inputs,normalized)||!validateCustomerInputs(result.serviceType,inputs,pricing,configuration).ok ||
         !validateOwnerPricing(result.serviceType,inputs,pricing,configuration,option.tierName).ok) return false;
     const free = freeOfferingVNext(configuration, option.tierName, pricing);

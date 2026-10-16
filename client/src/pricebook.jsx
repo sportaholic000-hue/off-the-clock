@@ -354,10 +354,12 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
                 <td>
                   <div className="matrix-input">
                     {money&&<span className="matrix-prefix mono">$</span>}
-                    <ExactNumericInput kind={kind}
+                    {definition.ownerInputUnit==='percent'?<WastePercentInput
+                      aria-label={`${humanPricingKey(key)} ${definition.label}`}
+                      value={map[key]} onChange={number=>setLeaf(key,null,number)}/>:<ExactNumericInput kind={kind}
                       aria-label={`${humanPricingKey(key)} ${money?'price':definition.label}`}
                       value={map[key]}
-                      onChange={number => setLeaf(key, null, number)} />
+                      onChange={number => setLeaf(key, null, number)} />}
                   </div>
                 </td>
                 {!fixed && (

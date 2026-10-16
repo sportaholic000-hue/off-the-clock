@@ -141,7 +141,7 @@ const CLASS2_COPY = {
   ceilingMaterialFactor: copy('Ceiling paint material factor', 'Material quantity for ceilings relative to the two-coat wall material rate.'),
   paintableAreaMap: copy('Estimated paintable wall area by home size and stories', 'Square-foot assumptions used when exterior wall area is not measured.'),
   wasteFactorByType: copy('Material waste allowance by product type', 'Material quantity added for cuts, breakage, and layout waste for each product type.'),
-  patternWasteAdder: copy('Flooring pattern waste addition', 'Extra material quantity added for straight or diagonal/pattern layouts.'),
+  patternWasteAdder: copy('Flooring pattern waste addition', 'Legacy fallback material additions for straight and diagonal layouts. Optional per-type pattern values take precedence. Room/roll carpet uses its roll cuts and repeat allowance instead.'),
   roomComplexityMultiplier: copy('Room-size labor multiplier', 'Average room area at or below the small maximum uses small; above small and at or below the medium maximum uses medium; above medium uses large.'),
   roomSizeThresholds: copy('Flooring average-room size thresholds', 'Inclusive maximums: up to and including 150 square feet is small, over 150 through 300 is medium, and over 300 is large unless you set different maxima.'),
   heightMultiplierLabor: copy('Fence-height labor multiplier', 'Adjusts fence labor for 4-foot, 6-foot, and 8-foot installations.'),

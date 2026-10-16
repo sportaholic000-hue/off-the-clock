@@ -46,6 +46,7 @@ import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 import { ownerFieldCopy } from '../priceBookCopy.js';
 import {synchronizeStartingValuesVNext} from './priceGroundwork.js';
+import {FLOORING_FIELD_COPY,FLOORING_ADDONS,pricePresent} from './flooringPricing.js';
 
 const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
 const PRICEBOOK_QUOTE_REQUEST_FIELDS = new Set([
@@ -123,7 +124,7 @@ const NEW_FIELD_COPY = {
   trimPerLinearFoot: { label: 'Siding trim installation price per measured linear foot', help: 'Held for owner review until labor and material are separately priced or an explicit category and allocation rule is approved.' },
   subfloorAllowancePerSqft: { label: 'Subfloor repair allowance per measured affected square foot', help: 'Applied only when subfloor issues are reported and only to the measured affected area.' },
   deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied to confirmed replacement sheets. Only confirmed sell-price units may be disclosed; raw cost units are never customer prices.' },
-  roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Average room area at or below the small maximum uses the small-room labor factor; above it and at or below the medium maximum uses medium. Above the medium maximum uses large. Defaults: up to and including 150, over 150 through 300, and over 300 square feet.' },
+  roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Room bands use your limits, with defaults of 150 and 300 square feet. After a limit is passed, the previous band’s boundary labor remains a minimum, so a larger room cannot reduce labor. Other labor adjustments apply afterward.' },
   bundlesPerSquare: {label:'Roof field-material bundles per square',unit:'bundles per square',help:'Optional bundle count by roof material. Field material rounds up to a whole bundle; blank keeps the exact waste-adjusted roofing-square quantity. Enter the manufacturer coverage for each product.'},
   cartonCoverageSqft: {label:'Flooring carton coverage',unit:'square feet per carton',help:'Optional carton coverage by flooring product, except carpet. Material rounds up to whole cartons; installation labor remains on measured installed square feet.'},
   readyMixOrderIncrementCubicYards: {label:'Ready-mix order increment',unit:'cubic yards',help:'Optional supplier order increment. Ready-mix material rounds up to this increment; concrete labor remains on measured slab area.'},
@@ -321,6 +322,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
       sqft: roomBand.sqft, sqftMethod: 'exact', newFlooringType: flooringType,
       existingFloorType, removalNeeded, ...(removalNeeded?{removalAreaSqft:roomBand.sqft}:{}),
       roomCount: roomBand.roomCount, layoutPattern, stairSteps: 0,
+      ...Object.fromEntries(FLOORING_ADDONS.filter(a=>pricePresent(p[a.rate])).map(a=>a.rate==='floorLevelingPerSqft'?['floorLevelingNeeded',false]:a.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?['furnitureMovingNeeded',false]:[a.input,0])),
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon' ? { underlaymentSelected: false } : {}),
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' ? { subfloorCondition: 'does_not_require_underlayment' } : {}),
       ...(replacement ? { subfloorIssues: false } : {})
@@ -1281,6 +1283,7 @@ export function reviewOnlyScopesVNext(serviceType) {
 }
 
 function fieldCopy(serviceType, field) {
+  if(serviceType.startsWith('FLOORING_')&&FLOORING_FIELD_COPY[field])return {...FLOORING_FIELD_COPY[field]};
   if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};
   if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};

@@ -5,6 +5,7 @@ import {offeringMoneyKind,offeringRateDefinitions} from './quote-engine-vnext/co
 import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {mergePricingForValidationVNext} from './quote-engine-vnext/pricingMerge.js';
 import {fenceType,fenceRowsDiagnostics} from './quote-engine-vnext/fencePricing.js';
+import {FLOORING_PATTERN_FIELDS} from './quote-engine-vnext/flooringPricing.js';
 
 // Monetary semantics are declared once here and consumed by every dollar/cent
 // boundary. A field that the active pricing metadata exposes cannot silently
@@ -28,7 +29,7 @@ const UNIT_RATE_FIELDS = new Set([
   'disposalPerSqft','demolitionPerSqft','trimPerLinearFoot',
   'laborPerWallSqftPerCoat','materialPerWallSqftPerCoat',
   'ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat',
-  'exteriorLaborPerSqftPerCoat'
+  'exteriorLaborPerSqftPerCoat','baseboardReinstallPerLF','transitionPriceEach','furnitureMovingPrice','toiletPullResetEach','floorLevelingPerSqft'
 ]);
 const FIXED_AMOUNT_FIELDS = new Set([
   'repairMinimum','repairMaterialAllowance','minimumJob','minimumServiceCharge',
@@ -47,7 +48,7 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
   'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft',
-  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards'
+  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates']);
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);
@@ -56,8 +57,8 @@ const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square'])
 const PRICING_MAP_FIELDS = {
   ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare','bundlesPerSquare'],
   FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
-  FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft'],
-  FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft'],
+  FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft',...FLOORING_PATTERN_FIELDS],
+  FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft',...FLOORING_PATTERN_FIELDS],
   FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
   FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
   SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft'],
@@ -252,6 +253,7 @@ export function canonicalPeakMonths(value, path = 'peakMonths') {
 }
 
 export function moneyKindForField(serviceType, field, pricing = {}) {
+  if(serviceType.startsWith('FLOORING_')&&field==='furnitureMovingPrice'&&pricing.furnitureMovingPriceUnit==='flat')return 'fixed_amount';
   if (serviceType === 'CUSTOM' && ['price', 'low', 'high'].includes(field)) {
     if (CUSTOM_RATE_UNITS.has(pricing.unit)) return 'unit_rate';
     return ['flat','per_unit'].includes(pricing.unit) ? 'fixed_amount' : 'unresolved_unit';
@@ -380,6 +382,7 @@ function moneyLeafEntries(value,kind,path,category){
 function ordinaryMoneyCategory(field,serviceType,effectivePricing){
   if(serviceType==='CUSTOM'&&['price','low','high'].includes(field))return effectivePricing.customChargeClassification||null;
   const exact={
+    baseboardReinstallPerLF:'labor',furnitureMovingPrice:'labor',toiletPullResetEach:'labor',floorLevelingPerSqft:'prep',transitionPriceEach:'addon',
     cleanupBaseRatePerSqft:'labor',mowingBaseRatePerSqft:'labor',
     pondingWaterSurcharge:'addon',perStepPrice:'addon',
     subfloorAllowancePerSqft:'prep',haulAwayFee:'disposal',

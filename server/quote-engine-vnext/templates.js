@@ -1,4 +1,5 @@
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
+import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,pricePresent,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
@@ -673,12 +674,23 @@ function calculateFlooring(serviceType, c, p, ctx) {
   if (thresholds.smallMaxSqft >= thresholds.mediumMaxSqft) throw new QuoteReviewError('Flooring room-size thresholds are inconsistent.', { invalidOwnerFields: ['roomSizeThresholds'] });
   const roomBand = exactCompare(exactAverageRoom, thresholds.smallMaxSqft) <= 0 ? 'small' : exactCompare(exactAverageRoom, thresholds.mediumMaxSqft) <= 0 ? 'medium' : 'large';
   const roomMultiplier = quantityFactor(p.roomComplexityMultiplier[roomBand], `roomComplexityMultiplier.${roomBand}`);
+  let laborEquivalentSqft=exactMultiply(sqft,roomMultiplier),laborFactorBand=roomBand;
+  for(const [limit,band] of [[thresholds.smallMaxSqft,'small'],[thresholds.mediumMaxSqft,'medium']])if(exactCompare(exactAverageRoom,limit)>0){
+    const candidate=exactMultiply(roomCount,limit,quantityFactor(p.roomComplexityMultiplier[band],`roomComplexityMultiplier.${band}`));
+    if(exactCompare(candidate,laborEquivalentSqft)>0){laborEquivalentSqft=candidate;laborFactorBand=band;}
+  }
+  const exactRoomLaborFactor=exactDivide(laborEquivalentSqft,sqft);
   const productWasteFactor = quantityFactor(p.wasteFactorByType[c.newFlooringType], `wasteFactorByType.${c.newFlooringType}`, { allowZero: true });
-  const patternWasteAdder = quantityFactor(p.patternWasteAdder[c.layoutPattern], `patternWasteAdder.${c.layoutPattern}`, { allowZero: true });
+  const patternWaste=flooringLayoutValue(c,p,'waste');
+  const patternWasteAdder = quantityFactor(patternWaste.value,patternWaste.path, { allowZero: true });
   const exactWaste = exactAdd(productWasteFactor, patternWasteAdder);
   const waste = exactToNumber(exactWaste);
   const cartonCoverage=c.newFlooringType==='carpet'?undefined:p.cartonCoverageSqft?.[c.newFlooringType];
-  const flooringPurchase=purchasedQuantityVNext(sqft,exactWaste,cartonCoverage);
+  let carpetPurchase=null;
+  if(c.newFlooringType==='carpet'&&c.carpetRooms!==undefined){
+    try{carpetPurchase=carpetRollPurchase(c,p);}catch(error){throw new QuoteReviewError(error.message,error.flooringOwnerField?{missingOwnerFields:[error.flooringOwnerField]}:{invalidCustomerFields:[error.flooringField||'carpetRooms']});}
+  }
+  const flooringPurchase=carpetPurchase||purchasedQuantityVNext(sqft,exactWaste,cartonCoverage);
   const exactMaterialSqft = flooringPurchase.purchasedQuantity;
   const materialSqft = exactToNumber(exactMaterialSqft);
   recordQuantityDerivation(out, {
@@ -688,11 +700,12 @@ function calculateFlooring(serviceType, c, p, ctx) {
     usedBy: ['average-room complexity rule']
   });
   recordQuantityDerivation(out, {
-    name: 'flooringMaterialSqft', formula: cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
-    inputs: { floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
+    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(pieces * rollWidthFt * cutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; least common direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
+    inputs: carpetPurchase?{floorAreaSqft:sqft,rollWidthFt:carpetPurchase.rollWidthFt,repeatFt:carpetPurchase.repeatFt,cuts:carpetPurchase.cuts,connectedAreaDirections:carpetPurchase.areaChoices}:{ floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
     result: exactMaterialSqft, unit: 'square feet',
     usedBy: ['Flooring materials']
   });
+  recordQuantityDerivation(out,{name:'flooringPatternWasteAddition',formula:'selected owner pattern waste addition',inputs:{factorPath:patternWaste.path},result:patternWasteAdder,unit:'decimal fraction',usedBy:['Flooring materials']});
   recordRuleApplication(out, {
     name: 'averageRoomComplexityBand',
     rule: 'averageRoomSqft <= smallMaxSqft => small; averageRoomSqft <= mediumMaxSqft => medium; otherwise large',
@@ -700,8 +713,22 @@ function calculateFlooring(serviceType, c, p, ctx) {
     result: roomBand,
     usedBy: ['Flooring labor']
   });
-  add(out, makeLine({ name: 'Flooring labor', category: 'labor', quantity: sqft, unit: 'measured square feet', rateCents: valueAtPath(p, `laborPerSqft.${c.newFlooringType}`), ratePath: `laborPerSqft.${c.newFlooringType}`, multipliers: [{ name: 'average-room complexity', value: roomMultiplier, path: `roomComplexityMultiplier.${roomBand}` }], customerDriver: `${sqft} measured square feet` }));
-  add(out, makeLine({ name: 'Flooring materials', category: 'material', quantity: exactMaterialSqft, unit: 'waste-adjusted square feet', rateCents: valueAtPath(p, `materialPerSqft.${c.newFlooringType}`), ratePath: `materialPerSqft.${c.newFlooringType}`, customerDriver: `Flooring type: ${c.newFlooringType.replaceAll('_', ' ')}` }));
+  recordQuantityDerivation(out,{name:'roomSizeAdjustedLaborArea',formula:'max(floor area * room factor, rooms * each passed limit * its smaller-room factor)',inputs:{floorAreaSqft:sqft,roomCount,roomFactorPath:`roomComplexityMultiplier.${laborFactorBand}`,smallLimit:thresholds.smallMaxSqft,mediumLimit:thresholds.mediumMaxSqft},result:laborEquivalentSqft,unit:'labor-equivalent square feet',usedBy:['Flooring labor']});
+  add(out, makeLine({ name: 'Flooring labor', category: 'labor', quantity: sqft, unit: 'measured square feet', rateCents: valueAtPath(p, `laborPerSqft.${c.newFlooringType}`), ratePath: `laborPerSqft.${c.newFlooringType}`, multipliers: [{ name: 'average-room complexity with boundary labor floor', value: exactToNumber(exactRoomLaborFactor),exactValue:exactEvidence(exactRoomLaborFactor), path: `roomComplexityMultiplier.${laborFactorBand}` }], customerDriver: `${sqft} measured square feet` }));
+  add(out, makeLine({ name: 'Flooring materials', category: 'material', quantity: exactMaterialSqft, unit: carpetPurchase?'purchased carpet square feet':'waste-adjusted square feet', rateCents: valueAtPath(p, `materialPerSqft.${c.newFlooringType}`), ratePath: `materialPerSqft.${c.newFlooringType}`, customerDriver: `Flooring type: ${c.newFlooringType.replaceAll('_', ' ')}` }));
+  if(c.newFlooringType==='carpet')out.disclosures.push(CARPET_QUANTITY_NOTE);
+  for(const addon of FLOORING_ADDONS){
+    if(addon.rate==='floorLevelingPerSqft'&&serviceType!=='FLOORING_INSTALL')continue;
+    let quantity=c[addon.input];
+    if(addon.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat')quantity=c.furnitureMovingNeeded?1:0;
+    if(addon.rate==='floorLevelingPerSqft'){
+      if(!c.floorLevelingNeeded)continue;
+      if(quantity==='unknown'){ctx.skipAddon(addon.label);out.disclosures.push(LEVELING_UNKNOWN_NOTE);continue;}
+    }
+    if(!(typeof quantity==='number'&&quantity>0))continue;
+    if(!pricePresent(p[addon.rate])){ctx.skipAddon(addon.label);continue;}
+    add(out,makeLine({name:addon.label,category:addon.category,quantity,unit:addon.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?'job':addon.unit,rateCents:p[addon.rate],ratePath:addon.rate,...(addon.installed?{priceBasis:'sell_price'}:{})}));
+  }
   if (c.removalNeeded) add(out, makeLine({ name: 'Existing flooring removal', category: 'removal', quantity: c.removalAreaSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `removalPerSqft.${c.existingFloorType}`), ratePath: `removalPerSqft.${c.existingFloorType}` }));
   const underlaymentApplies = vinylUnderlaymentApplies(c, p);
   if (c.newFlooringType === 'vinyl_plank') {

@@ -182,7 +182,9 @@ const happyCases = [
       laborPerSqft: { vinyl_plank: 300 }, materialPerSqft: { vinyl_plank: 500 },
       minimumJob: 0, vinylPlankUnderlaymentRule: 'never_included'
     }),
-    expected: { lines: { 'Flooring labor': 90000, 'Flooring materials': 162000 }, low: 2270, mid: 2520, high: 2770 }
+    // Custom medium limit 299: boundary labor=299*300*1.10=98,670;
+    // material162,000 =>260,670 cents, preserving a monotone room-size price.
+    expected: { lines: { 'Flooring labor': 98670, 'Flooring materials': 162000 }, low: 2346, mid: 2607, high: 2868 }
   },
   {
     name: 'flooring replacement prices measured removal and subfloor scope',
@@ -193,7 +195,9 @@ const happyCases = [
       removalPerSqft: { vinyl: 100 }, perStepPrice: 10000,
       subfloorAllowancePerSqft: 200, vinylPlankUnderlaymentRule: 'never_included'
     }),
-    expected: { lines: { 'Flooring labor': 99000, 'Flooring materials': 168000, 'Existing flooring removal': 30000, 'Subfloor repair allowance': 6000 }, low: 2910, mid: 3230, high: 3550 }
+    // Two rooms past custom small limit149:2*149*300*1.20=107,280;
+    // +168,000material+30,000removal+6,000repair=311,280 cents.
+    expected: { lines: { 'Flooring labor': 107280, 'Flooring materials': 168000, 'Existing flooring removal': 30000, 'Subfloor repair allowance': 6000 }, low: 2801, mid: 3113, high: 3425 }
   },
   {
     name: 'fencing installation defers the mixed concrete-and-digging allocation',

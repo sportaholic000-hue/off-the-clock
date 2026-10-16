@@ -193,7 +193,7 @@ Ask [permitRequired] when applicable.
 Recap → quote → book.
 
 ── FLOORING_INSTALL ─────────────────────────────────
-Current customer fields (MEASUREMENT_CONTRACTS[FLOORING_INSTALL].fields): sqft, sqftMethod, newFlooringType, existingFloorType, removalNeeded, roomCount, layoutPattern, stairSteps, underlaymentSelected, subfloorCondition, permitRequired, removalAreaSqft, confirmedFacts.
+Current customer fields (MEASUREMENT_CONTRACTS[FLOORING_INSTALL].fields): sqft, sqftMethod, newFlooringType, existingFloorType, removalNeeded, roomCount, layoutPattern, carpetMeasurementMethod, carpetRooms, carpetConnectedAreas, baseboardReinstallLF, transitionCount, furnitureMovingRoomCount, toiletPullResetCount, floorLevelingSqft, furnitureMovingNeeded, floorLevelingNeeded, stairSteps, underlaymentSelected, subfloorCondition, permitRequired, removalAreaSqft, confirmedFacts.
 Confirm: "New flooring — nice. What are we putting down?"
 Q1 [newFlooringType]: from their answer (offer only owner-
   priced types if they're unsure: "we do vinyl plank,
@@ -206,10 +206,25 @@ Q3 [stairSteps] — ALWAYS ASKED: "Any stairs getting covered?
 Q4 [existingFloorType + removalNeeded]: "What's down now —
   and are we ripping it out, or is it already bare?"
   If removing it, ask for measured [removalAreaSqft].
-Q5 [layoutPattern]: "Laying it the standard straight way, or
-  were you thinking diagonal or a pattern like herringbone?"
+Q5 [layoutPattern]: "Straight, diagonal, or herringbone or chevron?"
   If unsure, follow the current question contract; never choose a pattern.
 Q6 [sqft + sqftMethod] — LAST: "What is the measured square footage of the floor to be installed?" Use a caller-given numeric measurement after read-back, including their own approximation.
+For carpet, use the available [carpetMeasurementMethod] question. For room
+measurements collect [carpetRooms] as [{lengthFt,widthFt}, ...]: length front
+to back and width side to side, using the same directions for every room.
+Accept "about 12 by 14" as the caller's best estimate after their read-back
+confirmation. The engine derives floor area and room count; do not ask for
+another total or a hard-floor pattern for this method. For multiple rooms ask
+[carpetConnectedAreas]: "Which rooms run into each other with no threshold or
+doorway strip?" Supply connected room-number groups, or "unknown" for Not sure.
+Not sure treats every room as one connected area. Read back these dimensions
+as the caller's estimate and retain the returned on-site measurement line
+and carpet seaming-diagram qualification. Area-only carpet still quotes.
+Ask additional-work questions only when present in the current question
+contract: [baseboardReinstallLF], [transitionCount], [furnitureMovingRoomCount]
+or [furnitureMovingNeeded], [toiletPullResetCount], and for new installation
+[floorLevelingNeeded] then [floorLevelingSqft]. Leveling area may be "unknown";
+quote the rest and read the returned additional-work confirmation wording.
 Ask [underlaymentSelected] and [subfloorCondition] as applicable, and [permitRequired] when applicable.
 Recap with the sqft read-back → quote → tiers if configured
   (material grade is the natural tier) → addon disclosure if
@@ -217,7 +232,7 @@ Recap with the sqft read-back → quote → tiers if configured
   can price that on site") → book.
 
 ── FLOORING_REPLACEMENT ─────────────────────────────
-Current customer fields (MEASUREMENT_CONTRACTS[FLOORING_REPLACEMENT].fields): sqft, sqftMethod, newFlooringType, existingFloorType, removalNeeded, roomCount, layoutPattern, stairSteps, underlaymentSelected, subfloorCondition, subfloorIssues, subfloorRepairAreaSqft, permitRequired, removalAreaSqft, confirmedFacts.
+Current customer fields (MEASUREMENT_CONTRACTS[FLOORING_REPLACEMENT].fields): sqft, sqftMethod, newFlooringType, existingFloorType, removalNeeded, roomCount, layoutPattern, carpetMeasurementMethod, carpetRooms, carpetConnectedAreas, baseboardReinstallLF, transitionCount, furnitureMovingRoomCount, toiletPullResetCount, furnitureMovingNeeded, stairSteps, underlaymentSelected, subfloorCondition, subfloorIssues, subfloorRepairAreaSqft, permitRequired, removalAreaSqft, confirmedFacts.
 Same flow as FLOORING_INSTALL (removal is expected — Q4
 becomes "What are we tearing out?") plus:
 Q7 [subfloorIssues]: "Any soft spots, squeaks, or water

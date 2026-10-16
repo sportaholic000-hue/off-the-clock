@@ -4214,7 +4214,9 @@ test('repair 62: inherited properties and prototype-shaped tier overrides cannot
     currentMonth: 1
   });
   assert.equal(cleanQuote.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(cleanQuote));
-  assert.equal(lineAmount(cleanQuote, 'Flooring labor'), 233100);
+  // The valid custom 299-sq-ft medium boundary is now a labor floor:
+  // round(299*777*1.10)=255,555 cents. Prototype rejection checks above stay.
+  assert.equal(lineAmount(cleanQuote, 'Flooring labor'), 255555);
   assert.equal(lineAmount(cleanQuote, 'Flooring materials'), 335664);
 
   const inheritedDefaults = Object.create(defaults);

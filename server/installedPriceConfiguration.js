@@ -1,5 +1,6 @@
 import {offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 import {scopeRateDefinitions} from './scopeConfiguration.js';
+import {FLOORING_ADDONS,pricePresent} from './quote-engine-vnext/flooringPricing.js';
 
 // Installed bundles, not ordinary material selling rates or package purchases.
 export function installedPriceDefinitions(type,p={}) {
@@ -15,6 +16,7 @@ export function installedPriceDefinitions(type,p={}) {
   // Zero rates still need valid free/included classification at the pricing
   // boundary. They carry no separate installed amount to allocate for tax.
   if(type.startsWith('FLOORING_')&&p.underlaymentPriceBasis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSqft))fields.underlaymentPerSqft='Installed vinyl-plank underlayment';
+  if(type.startsWith('FLOORING_'))for(const addon of FLOORING_ADDONS)if(addon.installed&&pricePresent(p[addon.rate]))fields[addon.rate]=addon.label;
   for(const [key,definition] of Object.entries(scopeRateDefinitions(type,p)))if((key.endsWith('_installed')||p.scopeDetails?.[definition.scopeKey]?.mode==='installed_area_sell_price')&&positiveInstalledPrice(p.scopeRates?.[key]))fields['scopeRates.'+key]=definition.label;
   return fields;
 }
