@@ -1,15 +1,17 @@
-run 38977508123 sha 70408fde2ea419c1567cb175711e0fa48a1a0538
+run 38980066651 sha 5db3d9ecbfd749dae6b71e19a543f9fb95881f39
 Earlier gate outcomes: install=success; build=success; browser=success; quote=success
-Full-suite outcome: failure; checker outcome: skipped
-Checker output unavailable: test-check.txt was not created (checker skipped; an earlier failed/skipped stage may have prevented it). No checker pass is inferred.
+Full-suite outcome: success; checker outcome: success
+Checker output:
+Summary: {"tests":5477,"suites":0,"pass":5477,"fail":0,"cancelled":0,"skipped":0,"todo":0}
+Known failures still failing: 0/0
 Available TAP failures (including nested subtests):
-not ok 4366 - receptionist 2 all twenty live flows use measured inputs and open fence height
+[none recorded; absence alone is not a pass]
 Available TAP summary:
 # tests 5477
-# pass 5476
-# fail 1
+# pass 5477
+# fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 718857.90382
+# duration_ms 623576.021761
 This summary does not override the original gate outcomes.
