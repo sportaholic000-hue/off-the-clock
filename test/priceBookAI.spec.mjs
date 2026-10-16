@@ -82,7 +82,10 @@ test('widget summary uses customer words and preserves original measurements',()
 test('every catalog enum is displayed using customer words rather than snake case',()=>{
  for(const service of applicationMetadata().services)for(const field of service.customerFields.filter(f=>f.type==='enum'))for(const value of field.values){
   const summary=customerJobSummary({service:service.service},service,{customerInputs:{[field.name]:value}},'synthetic');
-  assert.ok(!summary.facts[0].value.includes('_'),service.serviceType+'.'+field.name+': '+value);
+  // Expected: the internal fence method is omitted; every other enum retains
+  // exactly one human-readable fact, with no snake-case key.
+  if(field.name==='lfMethod')assert.deepEqual(summary.facts,[]);
+  else{assert.equal(summary.facts.length,1);assert.ok(!summary.facts[0].value.includes('_'),service.serviceType+'.'+field.name+': '+value);}
  }
 });
 

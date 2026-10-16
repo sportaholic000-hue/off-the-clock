@@ -135,7 +135,7 @@ function approvalReceiptDiagnostics(raw,evaluation) {
   if(!record(receipt)||evaluation.current)return [];
   const {content,actualDigest,checks}=evaluation;
   return checks.filter(([,ok])=>!ok).map(([receiptCheck])=>{
-    const diagnostic={type:'invalid',kind:'approval_receipt',path:'quoteDoneApproval.'+receiptCheck,receiptCheck,
+    const diagnostic={type:'info',kind:'approval_receipt',path:'quoteDoneApproval.'+receiptCheck,receiptCheck,
       message:'Saved approval receipt check failed: '+receiptCheck+'. Confirm the current saved configuration.'};
     if(receiptCheck==='contentDigest'){
       const current=approvalSectionDigests(content),prior=receipt.sectionDigests;
@@ -478,7 +478,12 @@ export function applicationMetadata() {
         Object.assign(info.tree,pricingMapDomainVNext(meta.serviceType,field.field));
         if(info.tree.rootKeys)info.shapedKeys={...info.shapedKeys,keys:info.tree.rootKeys,ownerSelectable:!info.tree.requiredRootKeys};
       }
-      if(meta.serviceType==='LANDSCAPING_CLEANUP'&&field.field==='debrisPricing')info.tree={depth:2,rootKeys:['light','moderate','heavy'],requiredRootKeys:['light','moderate','heavy'],leafKeys:['laborMultiplier','disposalFlat','sqftPerLoad'],optionalLeafKeys:['sqftPerLoad'],leafMoneyKinds:{disposalFlat:'fixed_amount'},positiveLeafKeys:['laborMultiplier','sqftPerLoad']};
+      if(meta.serviceType==='LANDSCAPING_CLEANUP'&&field.field==='debrisPricing'){
+        info.tree={depth:2,rootKeys:['light','moderate','heavy'],requiredRootKeys:['light','moderate','heavy'],leafKeys:['laborMultiplier','disposalFlat','sqftPerLoad'],optionalLeafKeys:['sqftPerLoad'],leafMoneyKinds:{disposalFlat:'fixed_amount'},positiveLeafKeys:['laborMultiplier','sqftPerLoad']};
+        // Extend the active editor only. Historical calculators still consume
+        // the original two required leaves from shared legacy metadata.
+        info.shapedKeys={...info.shapedKeys,nested:[...info.tree.leafKeys]};
+      }
       return info;
     });
     const allocationInterviewFields=requiresOffering?fields.filter(field=>['installedLaborPercent','installedMaterialsPercent'].includes(field.field)):[];

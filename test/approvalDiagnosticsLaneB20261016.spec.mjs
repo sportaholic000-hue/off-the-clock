@@ -10,7 +10,7 @@ const saved=f=>publish('SYNTHETIC-approval-diagnostics-'+randomUUID(),f).book;
 const status=book=>bridge.applicationStatus(book.services[0],book,date);
 const diagnostic=(book,check)=>{
  const s=status(book);assert.equal(s.approvalCurrent,false);const d=s.ownerDiagnostics.find(d=>d.kind==='approval_receipt'&&d.receiptCheck===check);
- assert.ok(d,JSON.stringify(s.ownerDiagnostics));assert.match(d.message,new RegExp(check));return d;
+ assert.ok(d,JSON.stringify(s.ownerDiagnostics));assert.equal(d.type,'info');assert.match(d.message,new RegExp(check));return d;
 };
 test('Oct16 follow-up diagnostic section hashes are not additional approval requirements and never enter customer responses',()=>{
  // Expected BEFORE execution: changing diagnostic-only hashes keeps approval

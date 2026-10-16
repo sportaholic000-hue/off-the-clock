@@ -1061,7 +1061,11 @@ test('customer eligibility is enforced before quote generation', () => {
   const active=calculate.indexOf('service.active=raw.active===true&&ready');
   assert.ok(eligibility>=0&&active>eligibility&&active<calculate.indexOf('generateQuoteVNext(request)'));
   assert.match(calculate,/const ready=eligibility.status==='QUOTING LIVE'/);
-  assert.match(bridge.slice(bridge.indexOf('export function applicationStatus'),bridge.indexOf('export function bookRevision')),/approvalCurrent\(raw,book\)/);
+  const approvalStatus=bridge.slice(bridge.indexOf('export function applicationStatus'),bridge.indexOf('export function bookRevision'));
+  // Expected: one receipt evaluation supplies both eligibility and diagnostics.
+  assert.equal((approvalStatus.match(/approvalEvaluation\(raw,book\)/g)||[]).length,1);
+  assert.match(approvalStatus,/approvalCurrent:approval.current/);
+  assert.match(approvalStatus,/!approval.current&&!staleEngineApproval/);
   assert.match(calculate,/sanitizeForCustomerVNext\(internalResult\)/);
   assert.doesNotMatch(calculate,/submission\.callerType|generateQuote\(/);
   const routes=readFileSync('server/src/quoteDoneRoutes.js','utf8');

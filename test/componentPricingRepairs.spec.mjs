@@ -69,7 +69,7 @@ test('component permit decisions are owner-controlled; legacy customer rules nee
 test('component arbitrary fence heights retain exact offering matching',()=>{
  const f=offeringFixture('FENCING_INSTALL','itemized');f.ownerPricing.pricing.offeringDetails.fenceHeight=5+3.65/12;f.customerInputs.fenceHeight=5+3.65/12;ready(f);f.customerInputs.fenceHeight=6;
  // Owner ruling (Oct16): an existing offering covers only its saved height.
- const unpriced=generateQuoteVNext(f);assert.equal(unpriced.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(unpriced.reviewReason,/No price is set for a 6 ft fence/);
+ const unpriced=generateQuoteVNext(f);assert.equal(unpriced.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(unpriced.reviewReason,'No price is set for a fence at 6 ft.');
  assert.equal(sanitizeForCustomerVNext(unpriced).midEstimate,undefined);
 });
 test('component retired scalar prices no longer appear in the current entry list',()=>{
