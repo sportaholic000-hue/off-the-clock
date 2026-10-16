@@ -1,6 +1,15 @@
-run 38921282126 sha 4144640fb1d2002f6395044ddab635bf4c6bc347
-Earlier gate outcomes: install=success; build=success; browser=success; quote=failure
-Full-suite outcome: skipped; checker outcome: skipped
+run 38977508123 sha 70408fde2ea419c1567cb175711e0fa48a1a0538
+Earlier gate outcomes: install=success; build=success; browser=success; quote=success
+Full-suite outcome: failure; checker outcome: skipped
 Checker output unavailable: test-check.txt was not created (checker skipped; an earlier failed/skipped stage may have prevented it). No checker pass is inferred.
-TAP unavailable: test-results.tap was not created (full suite skipped; an earlier stage may have failed). Tests are NOT RUN/unverified, not passed.
+Available TAP failures (including nested subtests):
+not ok 4366 - receptionist 2 all twenty live flows use measured inputs and open fence height
+Available TAP summary:
+# tests 5477
+# pass 5476
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 718857.90382
 This summary does not override the original gate outcomes.
