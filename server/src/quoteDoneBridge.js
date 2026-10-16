@@ -3,7 +3,7 @@ import {settingError,validatePricebookReceptionistSettings} from './voice/recept
 import {reviewLabel} from '../priceBookLabels.js';
 import {customerQuoteFields} from '../customerQuoteFields.js';
 import crypto from 'node:crypto';
-import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,resolvedQuoteTimeZone} from './quoteDate.js';
+import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,resolvedQuoteTimeZone,peakSurchargeConfigured} from './quoteDate.js';
 import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
@@ -17,12 +17,14 @@ import {
   PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES, MEASUREMENT_CONTRACTS,
   configuredOffering, mergePricingVNext
 } from '../quote-engine-vnext/index.js';
+import {synchronizeStartingValuesVNext} from '../quote-engine-vnext/priceGroundwork.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
 import { missingPricebookServiceId } from '../priceBookStructure.js';
 import { convertPricebookMoney, moneyKindForField, wholeCentsForPricingField, validatePricebookNumericDraft, pricingMapField } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE} from '../priceBookCopy.js';
+import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 
 // The engine sorts a measured affected area into these bands
 // (repairSizeFromAffectedArea). Owners see the same limits on each price box.
@@ -33,8 +35,8 @@ const repairSizeLabels=type=>type==='ROOFING_REPAIR'
 // The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
-export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
-const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
+export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
+const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','dependentLineState'];
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
@@ -70,7 +72,7 @@ function projection(raw) {
     if(fields.includes(field)) {if(has(nested,field))pricing[field]=clone(nested[field]);else if(has(raw,field))pricing[field]=clone(raw[field]);}
   }
   const out={...pick(raw,ROOT_FIELDS),pricing};
-  const applicationFields=new Set(['pricing','validationInputs','quoteDoneApproval','ownerFeeSelections','starterSuggestion','createdAt','updatedAt']);
+  const applicationFields=new Set(['pricing','validationInputs','quoteDoneApproval','ownerFeeSelections','starterSuggestion','createdAt','updatedAt','priceMetadata','startingValueActions','dependentLineActions']);
   for(const field of Object.keys(raw))if(!ROOT_FIELDS.includes(field)&&!fields.includes(field)&&!legacy.has(field)&&!applicationFields.has(field))out[field]=clone(raw[field]);
   // Never translate a floor-area price into a wall-area price or derive a new
   // category. Legacy settings remain on the saved record and are disclosed.
@@ -97,7 +99,10 @@ function legacySettings(raw,book,includeRetired=false) {
 }
 function approvalContent(raw,book) {
   const service=projection(raw);delete service.active;delete service.confirmedFields;delete service.approvedValues;
-  return {service,businessDefaults:defaultsProjection(book),legacySettings:legacySettings(raw,book),ownerFeeSelections:raw.ownerFeeSelections||{}};
+  delete service.startingValueState;delete service.dependentLineState;
+  for(const tier of service.tiers||[])delete tier.priceMetadata;
+  const businessDefaults=defaultsProjection(book);delete businessDefaults.stalePriceThresholdDays;
+  return {service,businessDefaults,legacySettings:legacySettings(raw,book),ownerFeeSelections:raw.ownerFeeSelections||{}};
 }
 const ROOF_MINIMUM_MONEY_VERSION='roof-minimum-cents-v1';
 function roofMinimumNeedsConfirmation(raw) {
@@ -160,12 +165,20 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContex
   if(staleEngineApproval)issues.push('Pricing rules changed — review and re-approve this service before customer quotes resume.');
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approvalCurrent(raw,book)&&!staleEngineApproval)issues.push('Confirm this exact saved configuration before enabling customer quotes.');
-  return {...withOwnerLabels(status,service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),validationErrors:[...(status.validationErrors||[]),...issues]};
+  const stalePrices=staleOwnerPrices(raw,book.defaults?.stalePriceThresholdDays,dateContext.quoteInstant);
+  const placeholders=aiPlaceholderPrices(raw);
+  return {...withOwnerLabels(status,service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
 }
 export function bookRevision(book) { return digest(book); }
+function synchronizedStartingService(raw,now){
+  const introducedAt=typeof now==='string'&&Number.isFinite(Date.parse(now))?now:
+    typeof raw?.origin?.createdAt==='string'&&Number.isFinite(Date.parse(raw.origin.createdAt))?raw.origin.createdAt:'1970-01-01T00:00:00.000Z';
+  return synchronizeStartingValuesVNext(raw,CLASS2_DEFINITIONS[raw?.serviceType]||{},{now:introducedAt});
+}
 export function readApplicationBook(ownerId) {
   const book=loadPricebook(ownerId);
-  return {...convertApplicationBook(book,'toDollars'),revision:bookRevision(book),quoteDoneVersion:ENGINE_VERSION};
+  const display={...book,services:(book.services||[]).map(service=>synchronizedStartingService(service,book.updatedAt))};
+  return {...convertApplicationBook(display,'toDollars'),revision:bookRevision(book),quoteDoneVersion:ENGINE_VERSION};
 }
 // Readiness also depends on the current profile zone when the book zone is
 // missing or invalid. Include the effective zone in its cache key; profile
@@ -180,8 +193,19 @@ function statusCacheIdentity(raw,book) {
 }
 function cachedStatus(raw,book,{quick=false,...dateContext},revision) {
   dateContext=applicationDateContext(book.ownerId,dateContext);
-  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|'+revision+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
-  if(statusCache.has(key)){statusCacheCounts.hits++;return clone(statusCache.get(key));}
+  // Activation uses the request month when seasonal pricing is enabled and
+  // validates a recorded quote date when validity wording is configured. A
+  // revision-only key would otherwise reuse readiness across those contexts.
+  const dateSensitive=book.defaults?.quoteValidityDays!==undefined||peakSurchargeConfigured(raw,book.defaults);
+  const quoteMonth=dateSensitive?applicationQuoteMonth(raw,book.defaults,dateContext):'static';
+  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|month:'+quoteMonth+'|'+revision+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
+  if(statusCache.has(key)){
+    statusCacheCounts.hits++;
+    const cached=clone(statusCache.get(key));
+    cached.stalePrices=staleOwnerPrices(raw,book.defaults?.stalePriceThresholdDays,dateContext.quoteInstant);
+    cached.aiPlaceholderPrices=aiPlaceholderPrices(raw);
+    return cached;
+  }
   statusCacheCounts.misses++;
   const status=applicationStatus(raw,book,{...dateContext,firstLiveProduct:quick});
   statusCache.set(key,clone(status));
@@ -203,10 +227,14 @@ export function validateApplicationDraft(ownerId,input,dateContext={}) {
   const incoming=convertApplicationBook(input,'toCents');
   for(const service of incoming.services) {
     const id=typeof service.id==='string'?service.id.toLowerCase():null;
-    const old=id?saved.services.find(s=>typeof s.id==='string'&&s.id.toLowerCase()===id):undefined;
-    for(const field of ['origin','source','approvedValues','confirmedFields','quoteDoneApproval','zeroPricePolicy']) {
+    const stored=id?saved.services.find(s=>typeof s.id==='string'&&s.id.toLowerCase()===id):undefined;
+    const old=stored?synchronizedStartingService(stored,saved.updatedAt):undefined;
+    for(const field of ['origin','source','approvedValues','confirmedFields','quoteDoneApproval','zeroPricePolicy','startingValueState','dependentLineState']) {
       if(old&&has(old,field))service[field]=clone(old[field]);else if(field!=='source')delete service[field];
     }
+    const actions=record(input.services.find(candidate=>candidate.id?.toLowerCase()===id)?.startingValueActions)?input.services.find(candidate=>candidate.id?.toLowerCase()===id).startingValueActions:{};
+    const synchronized=synchronizeStartingValuesVNext(service,CLASS2_DEFINITIONS[service.serviceType]||{},{ownerId,confirmPaths:Array.isArray(actions.confirmPaths)?actions.confirmPaths:[],ownerEnteredPaths:Array.isArray(actions.ownerEnteredPaths)?actions.ownerEnteredPaths:[]});
+    Object.assign(service,synchronized);if(!has(synchronized,'startingValueState'))delete service.startingValueState;delete service.startingValueActions;
     if(old)service.serviceType=old.serviceType;
   }
   const statuses=bookStatuses({...saved,...incoming,ownerId},dateContext);
@@ -225,27 +253,31 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
     validatePricebookReceptionistSettings(input);
     validateApplicationNumericDraft(input);
     const incoming=convertApplicationBook(input,'toCents');
-    const ids=new Set();
-    for(const service of incoming.services) {
+    const ids=new Set(),now=new Date().toISOString();
+    for(const [serviceIndex,service] of incoming.services.entries()) {
+      const submitted=input.services[serviceIndex],startingActions=record(submitted?.startingValueActions)?submitted.startingValueActions:{};
       if(missingPricebookServiceId(service.id))service.id=crypto.randomUUID();
       if(!validServiceIdVNext(service.id)||ids.has(service.id.toLowerCase()))throw problem('Every service must have its own valid UUID.');
       ids.add(service.id.toLowerCase());
-      const old=previous.services.find(s=>s.id?.toLowerCase()===service.id.toLowerCase());
+      const stored=previous.services.find(s=>s.id?.toLowerCase()===service.id.toLowerCase());
+      const old=stored?synchronizedStartingService(stored,previous.updatedAt):undefined;
       if(old) {
         if(old.serviceType!==service.serviceType||old.source!==service.source)throw problem('Service type and source cannot change on an existing service ID.',409);
-        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy']) {
+        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy','startingValueState','dependentLineState']) {
           if(has(service,field)&&!same(service[field],old[field]))throw problem('Use the explicit owner confirmation operation to change protected '+field+'.',409);
           if(has(old,field))service[field]=clone(old[field]);else delete service[field];
         }
         service.confirmedFields=clone(old.confirmedFields||{});
       } else {
         if(!['MANUAL','AI_SUGGESTED','AI_INTERVIEW'].includes(service.source))throw problem('Declare whether this new service was entered manually or originated from an AI draft.');
-        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy'])if(has(service,field))throw problem('Creation and approval receipts are generated by the server.');
+        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy','startingValueState','dependentLineState'])if(has(service,field))throw problem('Creation and approval receipts are generated by the server.');
         service.confirmedFields={};
         // Creation identifies this saved service; customer quoting still needs
         // a separate, explicit approval of the saved configuration.
-        service.origin={serviceId:service.id,serviceType:service.serviceType,source:service.source,ownerId,operationId:crypto.randomUUID(),createdAt:new Date().toISOString()};
+        service.origin={serviceId:service.id,serviceType:service.serviceType,source:service.source,ownerId,operationId:crypto.randomUUID(),createdAt:now};
       }
+      const synchronized=synchronizeStartingValuesVNext(service,CLASS2_DEFINITIONS[service.serviceType]||{},{ownerId,now,confirmPaths:Array.isArray(startingActions.confirmPaths)?startingActions.confirmPaths:[],ownerEnteredPaths:Array.isArray(startingActions.ownerEnteredPaths)?startingActions.ownerEnteredPaths:[]});
+      Object.assign(service,synchronized);if(!has(synchronized,'startingValueState'))delete service.startingValueState;delete service.startingValueActions;
       const effective=projection(service);
       const presentationIssues=applicationPresentationIssues(service);
       if(presentationIssues.length)throw problem(presentationIssues.join(' '),422,{code:'INVALID_QUOTE_PRESENTATION',issues:presentationIssues});
@@ -401,11 +433,14 @@ export function applicationMetadata() {
     const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)).filter(field=>!requiresOffering||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
-      CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
-      CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
-      LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot'],
+      ROOFING_REPLACEMENT:['bundlesPerSquare'],
+      FLOORING_INSTALL:['cartonCoverageSqft'],
+      FLOORING_REPLACEMENT:['cartonCoverageSqft'],
+      CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
+      CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
+      LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot','mulchOrderIncrementCubicYards'],
       LANDSCAPING_CLEANUP:['haulAwayFee'],
-      LANDSCAPING_SOD:['groundPrepPerSqft'],
+      LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft'],
       LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard']
     };
     const fields=setupFields.map(field=>{
@@ -428,7 +463,7 @@ export function applicationMetadata() {
       if(field.field==='postsIncludedInMaterial')Object.assign(info,{type:'json',tree:{leafType:'boolean'}});
       if(info.tree){
         Object.assign(info.tree,pricingMapDomainVNext(meta.serviceType,field.field));
-        if(info.tree.rootKeys)info.shapedKeys={...info.shapedKeys,keys:info.tree.rootKeys,ownerSelectable:!info.tree.requiredRootKeys};
+        if(info.tree.rootKeys)info.shapedKeys={...info.shapedKeys,keys:info.tree.rootKeys,ownerSelectable:info.tree.ownerSelectable??!info.tree.requiredRootKeys,...(info.tree.keyLabel?{keyLabel:info.tree.keyLabel}:{}),...(info.tree.leafUnit?{leafUnit:info.tree.leafUnit}:{})};
       }
       if(meta.serviceType==='LANDSCAPING_CLEANUP'&&field.field==='debrisPricing')info.tree={depth:2,rootKeys:['light','moderate','heavy'],requiredRootKeys:['light','moderate','heavy'],leafKeys:['laborMultiplier','disposalFlat'],leafMoneyKinds:{disposalFlat:'fixed_amount'},positiveLeafKeys:['laborMultiplier']};
       return info;

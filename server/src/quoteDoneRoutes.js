@@ -111,7 +111,7 @@ function allowedTierNames(response) {
     .map(option=>typeof option?.tierName==='string'?option.tierName.trim():'')
     .filter(Boolean))];
 }
-export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=process.env.BOOKING_SLOT_TOKEN_SECRET}={}) {
+export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=process.env.BOOKING_SLOT_TOKEN_SECRET,clock=()=>new Date()}={}) {
   if(!object(body)||!uuid(body.requestId))throw problem('A stable request UUID is required.');
   const contentDigest=digest(body);
   return db.transaction(()=>{
@@ -141,13 +141,14 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
       throw problem('The job details or business pricing changed. Check the current details before submitting.',409);
     }
     let calculated;
+    const quoteInstant=clock();
     if(!service)calculated=unresolvedResult('The requested saved service is missing or has a duplicate ID. Resolve its identity and verify the complete supplied service request.');
     else {
-      try { calculated=calculateApplicationQuote(book,service,body,{ownerId,...quoteDateContext(db,ownerId)}); }
+      try { calculated=calculateApplicationQuote(book,service,body,{ownerId,...quoteDateContext(db,ownerId,quoteInstant)}); }
       catch(error) { calculated=unresolvedResult(error.message); }
     }
     const response=calculated.customerResult;
-    const recordId=crypto.randomUUID(),createdAt=new Date().toISOString();
+    const recordId=crypto.randomUUID(),createdAt=new Date(quoteInstant).toISOString();
     const customer=resolveCustomer(db,{ownerId,phone:body.contact?.phone,createdAt});
     const internal={ownerId,customerId:customer?.id??null,selectedServiceId:service?.id??null,requestedServiceId:body.serviceId??null,bookRevision:bookRevision(book),bookSnapshot:book,originalSubmission:body,...calculated};
     const contact=object(body.contact)?body.contact:{};

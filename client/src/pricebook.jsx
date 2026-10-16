@@ -18,7 +18,7 @@ import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './p
 import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
-import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
+import { moneyKindForField, validatePricebookNumericDraft, ownerMoneyEntries } from '../../server/priceBookMoney.js';
 import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
@@ -31,6 +31,23 @@ import { AssumptionRow, BlockerChecklist, Disclosure } from './reference.jsx';
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function moneyEntryKey(entry) {
+  return `${entry.scope}:${entry.tierName??entry.tierIndex??''}:${entry.path}`;
+}
+
+function markEditedPriceMetadata(previous,next) {
+  const before=new Map(ownerMoneyEntries(previous).map(entry=>[moneyEntryKey(entry),entry]));
+  const output=clone(next);
+  for(const entry of ownerMoneyEntries(output)){
+    const prior=before.get(moneyEntryKey(entry));
+    if(prior&&Object.is(prior.value,entry.value))continue;
+    const target=entry.scope==='tier'?output.tiers[entry.tierIndex]:output;
+    target.priceMetadata={...(target.priceMetadata||{}),[entry.path]:{...(target.priceMetadata?.[entry.path]||{}),aiPlaceholder:false}};
+    delete target.priceMetadata[entry.path].acceptedAsOwnerPrice;
+  }
+  return output;
 }
 
 function JsonEditor({value,onChange}) {
@@ -152,6 +169,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
   const service = useContext(PricingContext);
   const pricing = servicePricing(service);
   const kind = definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
+  const money=Boolean(kind),valueHeading=money?'Price':'Value',valueUnit=domain.leafUnit||(money?'$':definition.unit||'number');
   const map = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   const fixed = Array.isArray(domain.keys);
   const selectable = domain.ownerSelectable === true;
@@ -341,7 +359,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
           <thead>
             <tr>
               <th scope="col">{domain.keyLabel || 'Type'}</th>
-              <th scope="col">Price ({domain.leafUnit || '$'})</th>
+              <th scope="col">{valueHeading} ({valueUnit})</th>
               {!fixed && <th scope="col" className="matrix-status" />}
             </tr>
           </thead>
@@ -351,9 +369,9 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
                 <th scope="row">{humanPricingKey(key)}</th>
                 <td>
                   <div className="matrix-input">
-                    <span className="matrix-prefix mono">$</span>
+                    {money&&<span className="matrix-prefix mono">$</span>}
                     <ExactNumericInput kind={kind}
-                      aria-label={`${humanPricingKey(key)} price`}
+                      aria-label={`${humanPricingKey(key)} ${money?'price':definition.label}`}
                       value={map[key]}
                       onChange={number => setLeaf(key, null, number)} />
                   </div>
@@ -397,7 +415,7 @@ function StructuredFactorField({ value, defaultValue, onChange, unit, wastePerce
               unit={unit}
               wastePercent={wastePercent}
               label={label+' '+humanPricingKey(key)}
-              onChange={child => onChange({ ...current, [key]:child })}
+              onChange={(child,path) => onChange({ ...current, [key]:child },[key,...path])}
             />
           </div>
         ))}
@@ -406,7 +424,7 @@ function StructuredFactorField({ value, defaultValue, onChange, unit, wastePerce
   }
   return (
     <div className="factor-value">
-      {wastePercent?<WastePercentInput aria-label={label} value={value === undefined ? defaultValue : value} onChange={onChange}/>:<ExactNumericInput aria-label={label} value={value === undefined ? defaultValue : value} onChange={onChange} />}
+      {wastePercent?<WastePercentInput aria-label={label} value={value === undefined ? defaultValue : value} onChange={next=>onChange(next,[])}/>:<ExactNumericInput aria-label={label} value={value === undefined ? defaultValue : value} onChange={next=>onChange(next,[])} />}
       <small>{wastePercent?'%':unit}</small>
     </div>
   );
@@ -930,8 +948,26 @@ export default function PriceBook() {
 
   const aiSourced = selected && ['AI_SUGGESTED','AI_INTERVIEW'].includes(selected.source);
 
-  function updateField(field, value) {
-    replaceSelected(editServiceField(selected, field, value));
+  function updateField(field, value, ownerEnteredPath=field) {
+    let next=markEditedPriceMetadata(selected,editServiceField(selected, field, value));
+    const paths=Object.keys(selected.startingValueState||{}).filter(path=>path===ownerEnteredPath||path.startsWith(ownerEnteredPath+'.'));
+    if(paths.length){
+      const actions=next.startingValueActions||{};
+      next={...next,startingValueActions:{...actions,ownerEnteredPaths:[...new Set([...(actions.ownerEnteredPaths||[]),...paths])],confirmPaths:(actions.confirmPaths||[]).filter(path=>!paths.includes(path))}};
+    }
+    replaceSelected(next);
+  }
+
+  function confirmStartingValue(path) {
+    const actions=selected.startingValueActions||{};
+    replaceSelected({...selected,startingValueActions:{...actions,confirmPaths:[...new Set([...(actions.confirmPaths||[]),path])],ownerEnteredPaths:(actions.ownerEnteredPaths||[]).filter(item=>item!==path)}});
+  }
+
+  function updatePriceMetadata(entry,patch) {
+    const next=clone(selected);
+    const target=entry.scope==='tier'?next.tiers[entry.tierIndex]:next;
+    target.priceMetadata={...(target.priceMetadata||{}),[entry.path]:{...(target.priceMetadata?.[entry.path]||{}),...patch}};
+    replaceSelected(next);
   }
 
   function toggleProductOffering(key, offered) {
@@ -960,7 +996,7 @@ export default function PriceBook() {
   }
 
   function resetClass2(field) {
-    updateField(field, clone(selectedMeta.class2Defaults[field]));
+    replaceSelected(editServiceField(selected,field,clone(selectedMeta.class2Defaults[field])));
   }
 
   async function save() {
@@ -1051,6 +1087,7 @@ export default function PriceBook() {
   const optionalSet = optionalFields.filter(field => serviceFieldValue(selected, field.field) !== undefined).length;
   const class2Overridden = (selectedMeta?.class2Fields || []).filter(field =>
     JSON.stringify(serviceFieldValue(selected, field.field) === undefined ? field.defaultValue : serviceFieldValue(selected, field.field)) !== JSON.stringify(field.defaultValue)).length;
+  const selectedMoneyFields=selected?ownerMoneyEntries(selected):[];
 
   const markup = Number(book.defaults.markupPercent || 0);
   const equivalence = book.defaults.markupMode === 'markup'
@@ -1133,6 +1170,8 @@ export default function PriceBook() {
                   <Field label="Offering name" help="Use a distinct name for each height, product or scope you offer. Names may contain up to 80 characters and are never silently shortened."><TextInput aria-label="Offering name" aria-invalid={!!serviceNameProblem(selected.service)} value={selected.service||''} onChange={event=>replaceSelected({...selected,service:event.target.value})}/>{serviceNameProblem(selected.service)&&<Notice tone="warning">{serviceNameProblem(selected.service)}</Notice>}</Field>
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
                   <ServiceStatusNotices status={selectedStatus}/>
+                  {!!selectedStatus.stalePrices?.length&&<Notice tone="warning" title="Prices to check"><ul>{selectedStatus.stalePrices.map(row=><li key={row.displayPath}><strong>{humanPricingKey(row.path)}</strong>{row.tierName?' · '+row.tierName:''}: {row.dateLabel}{row.sourceNote?' · '+row.sourceNote:''}</li>)}</ul></Notice>}
+                  {!!selectedStatus.aiPlaceholderPrices?.length&&<Notice tone="warning" title="AI placeholder prices"><p>Confirmation does not verify cost. These values remain marked until you enter a different number or choose “This is my price.”</p><ul>{selectedStatus.aiPlaceholderPrices.map(row=><li key={row.displayPath}>{humanPricingKey(row.path)}{row.tierName?' · '+row.tierName:''} — AI placeholder</li>)}</ul></Notice>}
                   {selectedStatus.productCoverage?.some(product=>!product.configurationComplete)&&<section className="scope-coverage" aria-label={selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}>
                     <h3>{selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}</h3>
                     <ul>{selectedStatus.productCoverage.map((product,index)=><li key={index}>
@@ -1191,6 +1230,20 @@ export default function PriceBook() {
                       </div>
                     ))}
                   </div>
+                  {!!selectedMoneyFields.length&&<Disclosure title="Price dates and sources" subtitle="See when each price last changed and optionally record its supplier or quote reference." summaryChip={`${selectedMoneyFields.length} PRICES`}>
+                    <div className="field-stack">
+                      {selectedMoneyFields.map(entry=>{
+                        const adopted=entry.metadata?.acceptedAsOwnerPrice===true,placeholder=(entry.metadata?.aiPlaceholder===true||(aiSourced&&entry.metadata?.aiPlaceholder!==false))&&!adopted;
+                        const date=entry.metadata?.changedAt?new Intl.DateTimeFormat('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'}).format(new Date(entry.metadata.changedAt)):'Date not recorded';
+                        return <div className="owner-field" key={(entry.scope==='tier'?'tier-'+entry.tierIndex+'-':'base-')+entry.path}>
+                          <span className="owner-field-title">{entry.tierName?entry.tierName+' · ':''}{humanPricingKey(entry.path)}</span>
+                          <span className="owner-field-definition">Last changed: {date}{placeholder?' · AI placeholder':''}</span>
+                          <Field label="Price source (optional)" help="Supplier name, quote number, or another short reference."><TextInput aria-label={(entry.tierName?entry.tierName+' ':'')+humanPricingKey(entry.path)+' price source'} value={entry.metadata?.sourceNote||''} onChange={event=>updatePriceMetadata(entry,{sourceNote:event.target.value})}/></Field>
+                          {placeholder&&<Button variant="secondary" onClick={()=>updatePriceMetadata(entry,{acceptedAsOwnerPrice:true})}>This is my price</Button>}
+                        </div>;
+                      })}
+                    </div>
+                  </Disclosure>}
                 </section>
 
                 {selectedMeta.supportsScopeConfiguration&&<div className="editor-optional" data-editor-section="scope"><Disclosure key={'scope-'+selectedType} title="Additional priced scope" subtitle="Set up removal, preparation and other measured work you offer." summaryChip={selectedStatus.scopeCoverage?.some(scope=>!scope.configurationComplete)?'SETUP NEEDED':'REVIEW SCOPE'}><ScopeEditor service={selected} onChange={replaceSelected}/></Disclosure></div>}
@@ -1245,6 +1298,16 @@ export default function PriceBook() {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);
                       const wastePercent=definition.ownerInputUnit==='percent';
                       const isStructured = definition.defaultValue && typeof definition.defaultValue === 'object';
+                      const startingEntries=Object.entries(selected.startingValueState||{}).filter(([path])=>path===definition.field||path.startsWith(definition.field+'.'));
+                      const startingNotice=startingEntries.length?<div className="starting-value-note">
+                        <strong>{startingEntries.every(([,row])=>row.confirmed===true)?'Starting value — confirmed':'Starting value — waiting for your confirmation'}</strong>
+                        <p><strong>Source:</strong> {definition.startingValueSource||startingEntries[0][1].source}</p>
+                        <p><strong>Assumption:</strong> {definition.startingValueAssumption||startingEntries[0][1].assumption}</p>
+                        {startingEntries.map(([path,row])=>{
+                          const queued=selected.startingValueActions?.confirmPaths?.includes(path),confirmed=row.confirmed===true;
+                          return <Button key={path} variant="secondary" disabled={confirmed||queued} onClick={()=>confirmStartingValue(path)}>{confirmed?'CONFIRMED':queued?'CONFIRM ON SAVE':'Confirm '+humanPricingKey(path.split('.').at(-1))}</Button>;
+                        })}
+                      </div>:null;
                       if (isStructured) {
                         return (
                           <div className="assumption-row" key={definition.field}>
@@ -1260,14 +1323,14 @@ export default function PriceBook() {
                               unit={definition.unit}
                               wastePercent={wastePercent}
                               label={definition.label}
-                              onChange={value => updateField(definition.field, value)}
+                              onChange={(value,path) => updateField(definition.field,value,[definition.field,...path].join('.'))}
                             />
+                            {startingNotice}
                           </div>
                         );
                       }
-                      return (
+                      return (<React.Fragment key={definition.field}>
                         <AssumptionRow
-                          key={definition.field}
                           label={definition.label}
                           explanation={definition.help}
                           unit={wastePercent?'%':definition.unit}
@@ -1277,7 +1340,8 @@ export default function PriceBook() {
                           inputControl={wastePercent?<WastePercentInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field,value)}/>:<ExactNumericInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field, value)} />}
                           onReset={() => resetClass2(definition.field)}
                         />
-                      );
+                        {startingNotice}
+                      </React.Fragment>);
                     })}
                   </Disclosure>
                 )}
@@ -1291,7 +1355,7 @@ export default function PriceBook() {
                   defaultOpen={(selected.tiers || []).length > 0}
                 >
                   <TierBuilder tiers={selected.tiers || []} definitions={overrides=>offeringTierFields(selectedMeta,selected,overrides)}
-                    onChange={tiers => replaceSelected(editServiceTiers(selected, tiers))} />
+                    onChange={tiers => replaceSelected(markEditedPriceMetadata(selected,editServiceTiers(selected, tiers)))} />
                 </Disclosure>
 
                 {/* BUSINESS-WIDE — must not compete with service pricing. */}
@@ -1332,6 +1396,10 @@ export default function PriceBook() {
                       </Field>
                     )}
                     <Notice>Tax materials uses the categories you explicitly mark taxable in Quote configuration, except installed prices with a materials share: their materials share is taxed whatever their category, and the rest is not. Tax entire job taxes all categories. Review these selections before approval. Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
+                  </Disclosure>
+                  <Disclosure title="Price freshness and quote validity" subtitle="Optional reminders and customer validity wording." summaryChip={book.defaults.stalePriceThresholdDays||book.defaults.quoteValidityDays?'SET':'OFF'}>
+                    <Field label="Flag prices older than (days)" help="Leave blank to turn this reminder off. Material and cost-basis prices with no recorded date are also flagged."><ExactNumericInput aria-label="Flag prices older than days" value={book.defaults.stalePriceThresholdDays} onChange={value=>updateDefault('stalePriceThresholdDays',value)}/></Field>
+                    <Field label="Quotes valid for (days)" help="Leave blank for no validity statement. The end date is counted from the quote date in your business time zone."><ExactNumericInput aria-label="Quotes valid for days" value={book.defaults.quoteValidityDays} onChange={value=>updateDefault('quoteValidityDays',value)}/></Field>
                   </Disclosure>
                 </div>
               </div>

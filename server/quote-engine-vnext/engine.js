@@ -43,6 +43,8 @@ import {
   exactToNumber
 } from './exactMath.js';
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
+import {unconfirmedStartingValueUsesVNext} from './priceGroundwork.js';
+import {quoteValidityStatementVNext} from './quoteValidity.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
 export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';
@@ -1085,9 +1087,9 @@ function customerPriceLabels(serviceType, defaults) {
     ...(['CAD','USD'].includes(defaults.currency) ? { currency: defaults.currency } : {}) };
 }
 
-function priceLabelDisclosures(labels) {
+function priceLabelDisclosures(labels,validityStatement=null) {
   const currency = { CAD:'Prices are in Canadian dollars (CAD).', USD:'Prices are in US dollars (USD).' }[labels.currency];
-  return [...(labels.priceUnit ? ['Price is ' + labels.priceUnit + '.'] : []), labels.taxTreatment, ...(currency ? [currency] : [])];
+  return [...(labels.priceUnit ? ['Price is ' + labels.priceUnit + '.'] : []), labels.taxTreatment, ...(currency ? [currency] : []),...(validityStatement?[validityStatement]:[])];
 }
 
 function disclaimer(base, disclosures, skippedAddons) {
@@ -1102,7 +1104,7 @@ function exclusionsMatch(options) {
   return options.every(option => JSON.stringify(option.skippedAddons) === first);
 }
 
-function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited, validation }) {
+function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
   const customerValidation = validation ? validation.customer(customerInputs) : validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing);
   if (!customerValidation.ok) {
@@ -1137,6 +1139,11 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
+  const unconfirmedStarting=unconfirmedStartingValueUsesVNext(ownerPricing,template);
+  if(unconfirmedStarting.length)throw new QuoteReviewError(unconfirmedStarting[0].message,{
+    missingOwnerFields:unconfirmedStarting.map(item=>item.path),
+    ownerDiagnostics:unconfirmedStarting.map(item=>({type:'missing',kind:'starting_value_confirmation',path:item.path,message:item.message}))
+  });
   const feeValidation=validateFeeSelectionRequest(ownerPricing,feeSelections,template.replacedCommonFees,true);
   if(feeValidation.invalidOwnerFields.length||feeValidation.invalidCustomerFields.length)throw new QuoteReviewError('Common fee selection is missing or invalid.',feeValidation);
   const freeOffering = freeOfferingVNext(ownerPricing, tierName);
@@ -1157,7 +1164,9 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   if ((!freeOffering && range.highCents === 0) || (freeOffering && range.highCents !== 0)) throw new QuoteReviewError('A zero total requires an explicit free complete offering; a free offering cannot contain a positive charge.', { invalidOwnerFields: ['zeroPricePolicy'] });
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
   const priceLabels = customerPriceLabels(serviceType, defaults);
-  const optionDisclaimer = disclaimer(baseDisclaimer, [...template.disclosures, ...priceLabelDisclosures(priceLabels)], skippedAddons);
+  let validityStatement=null;
+  try{validityStatement=quoteValidityStatementVNext(defaults,quoteDate);}catch(error){throw new QuoteReviewError(error.message,{missingOwnerFields:['businessDefaults.quoteTimeZone']});}
+  const optionDisclaimer = disclaimer(baseDisclaimer, [...template.disclosures, ...priceLabelDisclosures(priceLabels,validityStatement)], skippedAddons);
   const rankedFinancialDrivers = unique(
     mid.lines
       .filter(line => line.amountCents > 0 && CUSTOMER_DRIVER_LINE_CATEGORIES.has(line.category) && customerSafeDriverCopy(line.customerDriver))
@@ -1444,6 +1453,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         tierName: tier.name,
         feeSelections,
         month: currentMonth,
+        quoteDate,
         inherited: { appliedRules, urgencyFlags }
       }));
     } catch (error) {

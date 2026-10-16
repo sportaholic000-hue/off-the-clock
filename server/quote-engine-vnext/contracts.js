@@ -1123,21 +1123,21 @@ export function validateClass2Factors(serviceType, pricing = {}) {
 }
 
 const ALLOWED_PRICING_FIELDS = {
-  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
+  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob', 'bundlesPerSquare'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance', 'largeRepairMaxSqft'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge', 'largeRepairMaxSqft'],
   INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
-  FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule'],
-  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft'],
+  FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'cartonCoverageSqft'],
+  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft', 'cartonCoverageSqft'],
   FENCING_INSTALL: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob'],
   FENCING_REPLACEMENT: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob', 'removalPerLinearFoot', 'disposalPerLF'],
-  CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
-  CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
+  CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards'],
+  CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards'],
   LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee'],
-  LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot'],
-  LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft'],
+  LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot', 'mulchOrderIncrementCubicYards'],
+  LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft', 'sodPalletSizeSqft'],
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard'],
   LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot'],
   SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
@@ -1173,6 +1173,8 @@ const AI_CONFIRMABLE_SERVICE_FIELDS = [
 
 export function pricingMapDomainVNext(type, field) {
   if(type.startsWith('FLOORING_')&&['laborPerSqft','materialPerSqft'].includes(field))return {rootKeys:[...FLOORING_TYPES]};
+  if(type.startsWith('FLOORING_')&&field==='cartonCoverageSqft')return {rootKeys:FLOORING_TYPES.filter(key=>key!=='carpet'),ownerSelectable:false,keyLabel:'Flooring product',leafUnit:'sq ft/carton'};
+  if(type==='ROOFING_REPLACEMENT'&&field==='bundlesPerSquare')return {};
   if(type==='SIDING_REPLACEMENT'&&['laborPerSqft','materialPerSqft'].includes(field)||type==='SIDING_REPAIR'&&['repairHours','materialAllowance'].includes(field))return {rootKeys:[...SIDING_TYPES]};
   if(['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'].includes(type)&&field==='bedPrepLaborPerSqft')return {rootKeys:['needs_weeding','overgrown'],requiredRootKeys:['needs_weeding','overgrown']};
   if(type==='LANDSCAPING_PLANTING'&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(field))return {rootKeys:[...SIZE_KEYS],requiredRootKeys:[...SIZE_KEYS]};
@@ -1195,7 +1197,8 @@ const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedP
 const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
   'travelFee', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
-  'rangeBufferPercent', 'markupApplies', 'peakMonths', 'peakSurchargePercent'
+  'rangeBufferPercent', 'markupApplies', 'peakMonths', 'peakSurchargePercent',
+  'stalePriceThresholdDays', 'quoteValidityDays'
 ];
 
 const nonNegative = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
@@ -1577,6 +1580,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     if(p.materialAccessoryBasis!==undefined && (p.materialAccessoryBasis!=='excludes_itemized_accessories'||p.accessoryPricingMode!=='itemized'))structureDiagnostic(diagnostics,'invalid','materialAccessoryBasis','Accessory exclusion declaration requires itemized mode and the exact excludes_itemized_accessories value.');
     for (const name of ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
     inspectPriceMap(diagnostics, p, 'underlaymentPriceBasis', { predicate: value => ['installed_area_sell_price', 'cost'].includes(value), canonicalKeys: true });
+    inspectPriceMap(diagnostics, p, 'bundlesPerSquare', { predicate: positive, canonicalKeys: true });
     const replacementKeys=new Set(['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis'].flatMap(name=>isRecord(p[name])?Object.keys(p[name]):[]));
     for(const key of replacementKeys)for(const name of ['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis']){
       if(name==='underlaymentPerSquare'&&p.underlaymentPriceBasis?.[key]==='cost'&&p.scopeDetails?.['roof_underlayment_'+key])continue;
@@ -1608,6 +1612,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     inspectPriceMap(diagnostics, p, 'laborPerSqft', { allowedKeys: FLOORING_TYPES });
     inspectPriceMap(diagnostics, p, 'materialPerSqft', { allowedKeys: FLOORING_TYPES });
     inspectPriceMap(diagnostics, p, 'removalPerSqft', { canonicalKeys: true });
+    inspectPriceMap(diagnostics, p, 'cartonCoverageSqft', { allowedKeys: FLOORING_TYPES.filter(key=>key!=='carpet'), predicate: positive });
     inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'materialPerSqft'], 'Flooring labor and material maps');
     if(p.vinylPlankUnderlaymentRule!==undefined&&!['always_included','never_included','customer_selectable_addon','subfloor_condition','owner_review'].includes(p.vinylPlankUnderlaymentRule))structureDiagnostic(diagnostics,'invalid','vinylPlankUnderlaymentRule','Vinyl-plank underlayment rule is invalid.');
     if (p.underlaymentPriceBasis !== undefined && !['installed_area_sell_price', 'cost'].includes(p.underlaymentPriceBasis)) structureDiagnostic(diagnostics, 'invalid', 'underlaymentPriceBasis', 'underlaymentPriceBasis must be installed_area_sell_price or cost.');
@@ -1646,6 +1651,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     }
   }
   if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'mulchMaterialPerYard', { canonicalKeys: true });
+  if (serviceType === 'LANDSCAPING_MULCH') inspectPriceMap(diagnostics, p, 'mulchOrderIncrementCubicYards', { canonicalKeys: true, predicate: positive });
   if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'bedPrepLaborPerSqft', { allowedKeys: ['needs_weeding', 'overgrown'], requireAll: p.bedPrepLaborPerSqft !== undefined });
   if (serviceType === 'LANDSCAPING_PLANTING') {
     inspectPriceMap(diagnostics, p, 'plantingLaborPerPlant', { allowedKeys: SIZE_KEYS, requireAll: true });
@@ -1661,6 +1667,8 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     inspectPriceMap(diagnostics, p, 'frequencyMultipliers', { allowedKeys: ['weekly', 'biweekly', 'monthly', 'one_time'], requireAll: true, predicate: positive });
     inspectPriceMap(diagnostics, p, 'overgrowthMultipliers', { allowedKeys: ['maintained', 'overgrown', 'severe'], requireAll: true, predicate: positive });
   }
+  if (serviceType === 'LANDSCAPING_SOD' && p.sodPalletSizeSqft !== undefined && !positive(p.sodPalletSizeSqft)) structureDiagnostic(diagnostics,'invalid','sodPalletSizeSqft','Sod pallet coverage must be a positive number of square feet.');
+  if (serviceType.startsWith('CONCRETE_') && p.readyMixOrderIncrementCubicYards !== undefined && !positive(p.readyMixOrderIncrementCubicYards)) structureDiagnostic(diagnostics,'invalid','readyMixOrderIncrementCubicYards','Ready-mix order increment must be a positive number of cubic yards.');
   if (serviceType === 'SIDING_REPLACEMENT') {
     inspectPriceMap(diagnostics, p, 'laborPerSqft', { allowedKeys: SIDING_TYPES });
     inspectPriceMap(diagnostics, p, 'materialPerSqft', { allowedKeys: SIDING_TYPES });
@@ -1867,7 +1875,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   ownerPricing = canonicalServiceIdentityVNext(snapshot.value);
   serviceType ||= ownerPricing.serviceType;
   const diagnostics = [];
-  const supportedRoot = new Set(['active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','id','origin','zeroPricePolicy','knownOfferings']);
+  const supportedRoot = new Set(['active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','id','origin','zeroPricePolicy','knownOfferings','startingValueState','dependentLineState']);
   for(const key of Object.keys(ownerPricing)) if(!supportedRoot.has(key) && !ALL_PRICING_FIELDS.has(key) && !BUSINESS_DEFAULT_FIELDS.includes(key)) diagnostics.push(ownerDiagnostic('unsupported','service_root',key,'Unsupported service setting; migrate or explicitly configure its VNext contract before quoting.'));
   if(ownerPricing.disposalScope!==undefined && (serviceType!=='LANDSCAPING_SOD'||ownerPricing.disposalScope!=='separate_project_debris')) diagnostics.push(ownerDiagnostic('invalid','service_rule','disposalScope','Only explicitly separate sod-project debris is supported.'));
   const nestedPricing = ownerPricing.pricing;
@@ -1940,7 +1948,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency'].includes(field));
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays'].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -2004,6 +2012,7 @@ export function validateBusinessDefaults(defaults = {}) {
     if (issue) invalid(path, `${path} ${issue.message}.`);
   }
   if (!missing(defaults.peakSurchargePercent) && (!nonNegative(defaults.peakSurchargePercent) || defaults.peakSurchargePercent > 500)) invalid('peakSurchargePercent', 'peakSurchargePercent must be from 0 to 500.');
+  for(const [field,label] of [['stalePriceThresholdDays','Price age threshold'],['quoteValidityDays','Quote validity']])if(!missing(defaults[field])&&(!Number.isSafeInteger(defaults[field])||defaults[field]<=0||defaults[field]>36500))invalid(field,`${label} must be a positive whole number of days, up to 36500.`);
   const finalDiagnostics = uniqueDiagnostics(diagnostics);
   const errors = [...new Set(finalDiagnostics.filter(item => item.type !== 'missing').map(item => item.message))];
   const finalMissing = [...new Set(missingFields)];

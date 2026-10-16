@@ -1,6 +1,6 @@
 import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
-import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,peakSurchargeConfigured,MISSING_PEAK_TIME_ZONE} from '../src/quoteDate.js';
+import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,peakSurchargeConfigured,MISSING_PEAK_TIME_ZONE,monthForRecordedQuoteDate} from '../src/quoteDate.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics,scopeCustomerErrors} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
@@ -44,6 +44,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 import { ownerFieldCopy } from '../priceBookCopy.js';
+import {synchronizeStartingValuesVNext} from './priceGroundwork.js';
 
 const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
 const PRICEBOOK_QUOTE_REQUEST_FIELDS = new Set([
@@ -117,6 +118,11 @@ const NEW_FIELD_COPY = {
   subfloorAllowancePerSqft: { label: 'Subfloor repair allowance per measured affected square foot', help: 'Applied only when subfloor issues are reported and only to the measured affected area.' },
   deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied to confirmed replacement sheets. Only confirmed sell-price units may be disclosed; raw cost units are never customer prices.' },
   roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Average room area at or below the small maximum uses the small-room labor factor; above it and at or below the medium maximum uses medium. Above the medium maximum uses large. Defaults: up to and including 150, over 150 through 300, and over 300 square feet.' },
+  bundlesPerSquare: {label:'Roof field-material bundles per square',unit:'bundles per square',help:'Optional bundle count by roof material. Field material rounds up to a whole bundle; blank keeps the exact waste-adjusted roofing-square quantity. Enter the manufacturer coverage for each product.'},
+  cartonCoverageSqft: {label:'Flooring carton coverage',unit:'square feet per carton',help:'Optional carton coverage by flooring product, except carpet. Material rounds up to whole cartons; installation labor remains on measured installed square feet.'},
+  readyMixOrderIncrementCubicYards: {label:'Ready-mix order increment',unit:'cubic yards',help:'Optional supplier order increment. Ready-mix material rounds up to this increment; concrete labor remains on measured slab area.'},
+  mulchOrderIncrementCubicYards: {label:'Mulch order increment',unit:'cubic yards',help:'Optional purchase increment by mulch product. Material rounds up after configured overage; installation labor remains on installed or customer-stated yards.'},
+  sodPalletSizeSqft: {label:'Sod pallet coverage',unit:'square feet per pallet',help:'Optional pallet size. Sod material rounds up to whole pallets after waste; installation labor remains on measured installed square feet.'},
 
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
@@ -756,12 +762,18 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
   return {ok:!!reference,tierName,tierIndex,products:rows,diagnostics,reviewReason:diagnostics[0]?.message||null};
 }
 function activationPipelineRequest(service, pricing, tierName, businessDefaults, options) {
+  let quoteDate;
+  if(businessDefaults.quoteValidityDays!==undefined&&options.dateContext){
+    const instant=options.dateContext.quoteInstant instanceof Date?options.dateContext.quoteInstant:new Date(options.dateContext.quoteInstant);
+    quoteDate={timeZone:businessDefaults.quoteTimeZone??null,quoteInstant:Number.isFinite(instant.getTime())?instant.toISOString():null};
+  }
   return {
     serviceType: service.serviceType,
     ownerPricing: { ...service, active: true },
     businessDefaults, callerType: 'owner',
     feeSelections: activationFeeSelections(service, options),
-    currentMonth: activationMonth(service, businessDefaults),
+    currentMonth: quoteDate&&quoteDate.quoteInstant?monthForRecordedQuoteDate(quoteDate):activationMonth(service, businessDefaults),
+    ...(quoteDate?{quoteDate}:{}),
     allowInactiveOwnerPreview: true
   };
 }
@@ -1300,8 +1312,9 @@ export function materializeVNextService(service) {
   if (!isPlainRecord(service)) throw new TypeError('Service must be an object.');
   if (!SERVICE_TYPES.includes(service.serviceType)) throw new TypeError('Service type is unsupported.');
   if (service.pricing !== undefined && !isPlainRecord(service.pricing)) throw new TypeError('Service pricing must be an object.');
-  const next = canonicalServiceIdentityVNext(service);
+  let next = canonicalServiceIdentityVNext(service);
   next.pricing ||= {};
+  next=synchronizeStartingValuesVNext(next,CLASS2_DEFINITIONS[next.serviceType]||{});
   for (const [field, definition] of Object.entries(CLASS2_DEFINITIONS[next.serviceType] || {})) {
     if (next.pricing[field] === undefined) next.pricing[field] = structuredClone(definition.defaultValue);
   }

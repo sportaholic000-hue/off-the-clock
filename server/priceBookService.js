@@ -10,6 +10,7 @@ import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerField
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
 import { pricebookStructureIssue, validPricebookServiceId, missingPricebookServiceId } from './priceBookStructure.js';
 import {db as applicationDb,ownerQuery} from './src/db.js';
+import {applyPriceMetadata} from './priceMetadata.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export function pricebookDirectory() {
@@ -233,8 +234,8 @@ export function withPricebookLock(ownerId, work) {
   } finally { heldSaves.delete(ownerKey); closeSaveMutex(mutex); }
 }
 
-export function savePricebook(ownerId, data) {
-  if (!heldSaves.has(String(ownerId))) return withPricebookLock(ownerId, () => savePricebook(ownerId, data));
+export function savePricebook(ownerId, data, {clock=()=>new Date()}={}) {
+  if (!heldSaves.has(String(ownerId))) return withPricebookLock(ownerId, () => savePricebook(ownerId, data, {clock}));
   const invalid = reason => Object.assign(new Error(`The price book was not saved: ${reason}.`), { code:'PRICEBOOK_INVALID', statusCode:400 });
   const issue = pricebookStructureIssue(data);
   if (issue) throw invalid(issue);
@@ -251,18 +252,30 @@ export function savePricebook(ownerId, data) {
   const dir = pricebookDirectory();
   const target = resolve(dir, `${ownerId}.json`);
   const creationRecorded = pricebookCreationRecorded(ownerId);
+  let previous={ownerId,services:[],defaults:{}};
   if (!existsSync(target)) {
     if (creationRecorded) throw missingCreatedPricebook(ownerId);
     if (pricebookSaveUnconfirmed(ownerId)) throw missingUnconfirmedPricebook(ownerId);
+  } else {
+    let stored;
+    try { stored=JSON.parse(readFileSync(target,'utf8')); }
+    catch { throw unreadablePricebook(ownerId,'the existing file is not valid JSON'); }
+    const storedIssue=pricebookStructureIssue(stored);
+    if(!stored||typeof stored!=='object'||Array.isArray(stored)||storedIssue||Object.hasOwn(stored,'ownerId')&&stored.ownerId!==ownerId)
+      throw unreadablePricebook(ownerId,storedIssue||'the existing file is not a usable price book');
+    previous=stored;
   }
   if (!creationRecorded) assertCreationConfirmationBoundary();
   mkdirSync(dir, { recursive: true });
-  const next = {
+  const instant=clock();
+  if(!(instant instanceof Date)||!Number.isFinite(instant.getTime()))throw invalid('the server clock did not provide a valid save time');
+  const updatedAt=instant.toISOString();
+  const next = applyPriceMetadata({
     ...data,
     ownerId,
-    updatedAt: new Date().toISOString(),
+    updatedAt,
     services
-  };
+  },previous,updatedAt);
   const confirmCreation = creationRecorded ? null : () => confirmCreationRecord(ownerId,next.updatedAt);
   writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2), defaultFileOps, null, confirmCreation);
   return { success: true, pricebook: next };

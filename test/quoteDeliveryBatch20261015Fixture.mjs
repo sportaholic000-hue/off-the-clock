@@ -56,7 +56,7 @@ export async function phone(h,f,{quoteApplication={},additionalWork=[]}={}){
   }
   return {...v,...a,match,args,result};
 }
-export function webQuote(f,additionalWork=[]){
+export function webQuote(f,additionalWork=[],quoteInstant=at){
   migrate();const owner='synthetic-delivery-'+randomUUID();
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic Delivery','QuoteDone','active','UTC','owner',?)")
     .run(owner,owner+'@example.invalid',at);
@@ -66,9 +66,10 @@ export function webQuote(f,additionalWork=[]){
   const body={requestId:randomUUID(),serviceId:a.service.id,serviceRequest:a.service.service,
     customerInputs:structuredClone(f.customerInputs),customerFeeSelections:{},additionalWork,
     contact:{email:'caller@example.invalid'},intakeFlow:'job-details-v1',context:'',explicitUnknowns:'',urgency:'flexible'};
-  const prepared=bridge.prepareApplicationIntake(owner,body);assert.equal(prepared.status,'ready',JSON.stringify(prepared));
+  const dateContext={timeZone:'UTC',quoteInstant};
+  const prepared=bridge.prepareApplicationIntake(owner,body,dateContext);assert.equal(prepared.status,'ready',JSON.stringify(prepared));
   body.intakeConfirmation=prepared.confirmation;
-  const saved=submitQuote(owner,body);assert.equal(saved.status,201);
+  const saved=submitQuote(owner,body,{clock:()=>new Date(quoteInstant)});assert.equal(saved.status,201);
   const row=db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(owner,body.requestId);
   let sends=0;const messages=new Map(),provider={send:async message=>{const id='SYNTHETIC-'+(++sends);messages.set(id,message);return {accepted:true,id};},read:async id=>{const m=messages.get(id);return {id,to:[m.to],from:m.from,subject:m.subject,last_event:'delivered'};}};
   const email=createQuoteEmailService({database:db,ownerQuery,environment,provider});

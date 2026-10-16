@@ -21,7 +21,7 @@ test('a partial operating-system write failure leaves the previous price book in
 });
 test('a corrected save reloads complete exact values and disabled intent',()=>{
  const next={...original,defaults:{markupPercent:99.9,markupMode:'margin'}};
- const result=savePricebook(ownerId,next);assert.equal(result.success,true);const loaded=loadPricebook(ownerId);assert.deepEqual(loaded,result.pricebook);assert.deepEqual(loaded.services,original.services);assert.deepEqual(loaded.defaults,next.defaults);assert.equal(fs.readdirSync(root).length,1);
+ const result=savePricebook(ownerId,next);assert.equal(result.success,true);const loaded=loadPricebook(ownerId);assert.deepEqual(loaded,result.pricebook);assert.deepEqual(loaded.services,[{...original.services[0],priceMetadata:saved.services[0].priceMetadata}]);assert.deepEqual(loaded.defaults,next.defaults);assert.equal(fs.readdirSync(root).length,1);
 });
 
 test('a failed replacement preserves the accepted file and removes only its own temporary file',()=>{

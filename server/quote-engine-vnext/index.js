@@ -44,3 +44,11 @@ export {
 export { approveVNextValues, editVNextService } from './contracts.js';
 export {configuredOffering, offeringContract, offeringRateDefinitions} from './configuredOfferings.js';
 export {scopeDefinitions,scopeRateDefinitions,scopeCustomerFields} from './scopePricing.js';
+export {
+  synchronizeStartingValuesVNext,
+  synchronizeDependentLinesVNext,
+  dependentLineEnabledVNext,
+  activeDependentLinesVNext,
+  startingValueDefinitionsVNext,
+  unconfirmedStartingValueUsesVNext
+} from './priceGroundwork.js';
