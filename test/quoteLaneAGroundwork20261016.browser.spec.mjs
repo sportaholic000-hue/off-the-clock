@@ -126,14 +126,18 @@ test('lane A Chromium: an unchanged confirmed AI number stays marked until This 
     const source=opened.page.getByLabel(/Sod material per square foot price source/i),row=opened.page.locator('.owner-field').filter({has:source});
     await row.getByRole('button',{name:'This is my price',exact:true}).click();
     await save(opened.page);
-    assert.equal(loadPricebook(owner).services[0].priceMetadata.sodMaterialPerSqft.aiPlaceholder,false);
+    const stored=loadPricebook(owner).services[0];
+    assert.equal(stored.priceMetadata.sodMaterialPerSqft.aiPlaceholder,false);
+    assert.equal(stored.priceMetadata.sodInstallLaborPerSqft.aiPlaceholder,true);
     const reloaded=await openOwner(owner,'LANDSCAPING_SOD');
     try{
       await reloaded.page.getByRole('button',{name:/Price dates and sources/}).click();
       const adoptedSource=reloaded.page.getByLabel(/Sod material per square foot price source/i);
       const adopted=reloaded.page.locator('.owner-field').filter({has:adoptedSource});
       assert.equal(await adopted.getByRole('button',{name:'This is my price',exact:true}).count(),0);
-      assert.ok((await reloaded.page.getByText('AI placeholder prices',{exact:true}).count())===1,'other unchanged AI prices remain visibly marked');
+      const unchangedSource=reloaded.page.getByLabel(/Sod install labor per square foot price source/i);
+      const unchanged=reloaded.page.locator('.owner-field').filter({has:unchangedSource});
+      assert.equal(await unchanged.getByRole('button',{name:'This is my price',exact:true}).count(),1);
       assert.deepEqual(reloaded.errors,[]);
     }finally{await reloaded.context.close();}
   }finally{if(opened.context.pages().length)await opened.context.close();}
