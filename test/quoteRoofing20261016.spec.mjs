@@ -79,18 +79,24 @@ test('adopted upper pitch, story and complexity additions do not multiply',()=>{
   delete input.customerInputs.pitchAreaUpTo6Sqft;delete input.customerInputs.pitchArea7To9Sqft;
   const result=generateQuoteVNext(input);
   assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');
+  assert.equal(line(result,'Roofing labor').amountCents,200000);
+  assert.equal(line(result,'Story labor adjustment').amountCents,40000);
+  assert.equal(line(result,'Roof-shape labor adjustment').amountCents,40000);
+  assert.equal(line(result,'Steep-pitch installation').amountCents,62000);
   assert.equal(['Roofing labor','Story labor adjustment','Roof-shape labor adjustment','Steep-pitch installation'].reduce((sum,name)=>sum+line(result,name).amountCents,0),342000);
   assert.equal(line(result,'Tear-off').amountCents+line(result,'Story tear-off adjustment').amountCents,72000);
   assert.equal(line(result,'Steep-pitch removal').amountCents,32800);
 });
 
 test('adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit',()=>{
-  // Written before execution: 1,500*sqrt(1+(8/12)^2) rounds to 1,802.78 sq ft.
+  // Written before execution: 1,500*sqrt(1+(8/12)^2) rounds to 1,802.78 sq ft,
+  // and 18.0278 roofing squares at $200 produce 360,556 cents of base labor.
   let input=roof({roofSizeMethod:'footprint',roofSizeInput:1500,pitchRisePer12:8,pitchMethod:'whole_roof',pitchBand:'seven_to_nine'});
   delete input.customerInputs.pitchAreaUpTo6Sqft;delete input.customerInputs.pitchArea7To9Sqft;
   let result=generateQuoteVNext(input);
   assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');
   assert.equal(line(result,'Roofing labor').calculation.quantity*100,1802.78);
+  assert.equal(line(result,'Roofing labor').amountCents,360556);
 
   // Two layers on ten squares: first removal 60,000c; additional layer
   // 10*$60*70%=42,000c. Disposal remains every layer: 20*$20=40,000c.
