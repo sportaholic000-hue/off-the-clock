@@ -42,7 +42,27 @@ const defaults = { markupPercent:0, markupMode:'markup', taxMode:'TAX_NONE', tax
   rangeBufferPercent:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
   overheadFixed:0, peakMonths:[], peakSurchargePercent:0 };
 const copy = value => structuredClone(value);
-const withoutTimestamp = value => { const next=copy(value); delete next.updatedAt; return next; };
+function withoutTimestamp(value) {
+  const next=copy(value);
+  function normalize(node) {
+    if (!node || typeof node !== 'object') return;
+    for (const [key,child] of Object.entries(node)) {
+      if (key === 'updatedAt') delete node[key];
+      else if (key === 'changedAt') {
+        assert.match(child,/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,'price change time must be a server ISO instant');
+        node[key]='[server time]';
+      } else normalize(child);
+    }
+  }
+  normalize(next);
+  return next;
+}
+function expectEditedAiPrice(book,path,{serviceIndex=0,tierIndex=null}={}) {
+  const target=tierIndex===null?book.services[serviceIndex]:book.services[serviceIndex].tiers[tierIndex];
+  assert.equal(target.priceMetadata?.[path]?.aiPlaceholder,true,`${path} must begin as an AI placeholder`);
+  target.priceMetadata[path].aiPlaceholder=false;
+  return book;
+}
 const ids = ['8f6a5772-4bf5-43ca-833c-1db52b7ae2b0','039c9b10-f3b7-4929-bda5-8b3e6af21121'];
 function siding(placement='root', factor=0.23, index=0) {
   const pricing = { ...copy(CLASS2_DEFAULTS_BY_SERVICE.SIDING_REPLACEMENT),
@@ -237,7 +257,7 @@ test('editor D2: conflicting minima survive no-edit focus blur preview switches 
     const back=await capture('conflict-switched-back');check(()=>assert.deepEqual(back.book,initial));
     await page.locator('#field-laborPerSqft').getByRole('textbox',{name:'Vinyl price',exact:true}).fill('2.01');
     const changed=await capture('unrelated-price-edit',true);
-    const expected=copy(initial);expected.services[0].pricing.laborPerSqft.vinyl=2.01;expected.services[0].confirmedFields.laborPerSqft=false;
+    const expected=expectEditedAiPrice(copy(initial),'laborPerSqft.vinyl');expected.services[0].pricing.laborPerSqft.vinyl=2.01;expected.services[0].confirmedFields.laborPerSqft=false;
     check(()=>assert.deepEqual(changed.book,expected));
     const rejected=await save('still-rejected');check(()=>assert.match(rejected.error || '',/conflict/i));
     check(()=>assert.equal(h.savedRequests().length,0));
@@ -251,13 +271,14 @@ test('editor D2: deliberate 14.02 resolves both minima and only its own AI confi
   await scenario('D2-explicit-resolution',[conflict],async h=>{
     await h.page.locator('#field-minimumJob input').fill('14.02');
     await h.blur(h.page.locator('#field-minimumJob input'));
-    const changed=await h.capture('explicit-14-02',true),expected=copy(h.initial);
+    const changed=await h.capture('explicit-14-02',true),expected=expectEditedAiPrice(copy(h.initial),'minimumJob');
     expected.services[0].minimumJob=14.02;expected.services[0].pricing.minimumJob=14.02;
     expected.services[0].confirmedFields.minimumJob=false;
     h.check(()=>assert.deepEqual(changed.book,expected));
     await h.save();h.check(()=>assert.deepEqual(h.savedRequests().at(-1)?.body,expected));
     const expectedStored=copy(JSON.parse(h.snapshots[0].stored));
     expectedStored.services[0].minimumJob=1402;expectedStored.services[0].pricing.minimumJob=1402;expectedStored.services[0].confirmedFields.minimumJob=false;
+    expectEditedAiPrice(expectedStored,'minimumJob');
     h.check(()=>assert.deepEqual(withoutTimestamp(h.stored()),withoutTimestamp(expectedStored)));
     await h.reopen();
     await h.page.locator('#field-minimumJob').getByRole('switch').click();
@@ -276,7 +297,7 @@ for(const [text,cents,base] of [['0.0049',0.49,4900],['0.0050',0.5,5000],['0.005
       await field.fill(text);await h.blur(field);
       const entered=await h.capture('typed-rate',true),expected=copy(h.initial);
       expected.services[0].mowingBaseRatePerSqft=Number(text);
-      if(Number(text)!==0.005)expected.services[0].confirmedFields.mowingBaseRatePerSqft=false;
+      if(Number(text)!==0.005){expected.services[0].confirmedFields.mowingBaseRatePerSqft=false;expectEditedAiPrice(expected,'mowingBaseRatePerSqft');}
       h.check(()=>assert.deepEqual(entered.book,expected));
       await h.save();h.check(()=>assert.deepEqual(h.savedRequests().at(-1)?.body,expected));
       h.check(()=>assert.equal(h.stored().services[0].mowingBaseRatePerSqft,cents));
@@ -300,7 +321,7 @@ test('editor locked invalid text: lossless rejection survives blur same-type swi
     await h.page.locator('.service-pick').filter({hasText:'Synthetic mowing'}).click();
     const back=await h.capture('invalid-back',true),value=await input.inputValue(),invalid=await input.getAttribute('aria-invalid');
     h.check(()=>assert.equal(value,text));h.check(()=>assert.equal(invalid,'true'));
-    const expected=copy(h.initial);expected.services[0].mowingBaseRatePerSqft=text;expected.services[0].confirmedFields.mowingBaseRatePerSqft=false;
+    const expected=expectEditedAiPrice(copy(h.initial),'mowingBaseRatePerSqft');expected.services[0].mowingBaseRatePerSqft=text;expected.services[0].confirmedFields.mowingBaseRatePerSqft=false;
     h.check(()=>assert.deepEqual(back.book,expected));
     await h.save('invalid-save-rejected');h.check(()=>assert.equal(h.savedRequests().length,0));
     h.check(()=>assert.deepEqual(h.stored(),JSON.parse(h.snapshots[0].stored)));
@@ -313,12 +334,13 @@ test('editor locked maps tiers and explicit enablement stay separate for two sam
     const {page,check,capture}=h,expected=copy(h.initial);
     // The frequency multiplier is a shaped non-money map. A same-value blur
     // preserves approval; a real edit invalidates only that map confirmation.
-    const map=page.locator('#field-frequencyMultipliers').getByRole('textbox',{name:'Weekly price',exact:true});
+    const map=page.locator('#field-frequencyMultipliers').getByRole('textbox',{name:'Weekly Mowing service-frequency labor multipliers',exact:true});
     await h.blur(map);const same=await capture('unchanged-map');check(()=>assert.deepEqual(same.book,expected));
     await map.fill('1.01');expected.services[0].frequencyMultipliers.weekly=1.01;expected.services[0].confirmedFields.frequencyMultipliers=false;
     const changed=await capture('changed-map');check(()=>assert.deepEqual(changed.book,expected));
     const tier=page.locator('.override-row input').first();await tier.fill('0.0049');
     expected.services[0].tiers[0].overrides.mowingBaseRatePerSqft=0.0049;expected.services[0].confirmedFields.mowingBaseRatePerSqft=false;
+    expectEditedAiPrice(expected,'mowingBaseRatePerSqft',{tierIndex:0});
     const tierChanged=await capture('changed-tier',true);check(()=>assert.deepEqual(tierChanged.book,expected));
     await h.save();check(()=>assert.deepEqual(h.stored().services[1],JSON.parse(h.snapshots[0].stored).services[1]));
     check(()=>assert.equal(h.stored().services[0].tiers[0].overrides.mowingBaseRatePerSqft,0.49));
@@ -369,7 +391,7 @@ test('editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adj
       const input=h.page.locator('#field-minimumJob input');await input.fill(text);await h.blur(input);
       const entered=await h.capture('entered-fixed',true),expected=copy(h.initial);
       expected.services[0].pricing.minimumJob=cents===null ? text : Number(text);
-      if(text!=='14.00')expected.services[0].confirmedFields.minimumJob=false;
+      if(text!=='14.00'){expected.services[0].confirmedFields.minimumJob=false;expectEditedAiPrice(expected,'minimumJob');}
       h.check(()=>assert.deepEqual(entered.book,expected));
       await h.save();
       if(cents===null) {
@@ -378,6 +400,7 @@ test('editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adj
         h.check(()=>assert.deepEqual(h.savedRequests().at(-1)?.body,expected));
         const expectedStored=copy(JSON.parse(h.snapshots[0].stored));expectedStored.services[0].pricing.minimumJob=cents;
         expectedStored.services[0].confirmedFields=copy(expected.services[0].confirmedFields);
+        if(text!=='14.00')expectEditedAiPrice(expectedStored,'minimumJob');
         h.check(()=>assert.deepEqual(withoutTimestamp(h.stored()),withoutTimestamp(expectedStored)));
         const loaded=await h.reopen();h.check(()=>assert.deepEqual(withoutTimestamp(loaded.book),withoutTimestamp(expected)));
       }

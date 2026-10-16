@@ -1,7 +1,7 @@
 import './pricebookTestEnv.mjs';
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
-import {chromium} from 'playwright';
+import {createRequire} from 'node:module';
 import {build} from 'esbuild';
 import express from 'express';
 import {gates,webQuote,publicCopy,quoteEmailFixture,phone} from './quoteDeliveryBatch20261015Fixture.mjs';
@@ -10,6 +10,7 @@ import {installQuoteEmailRoutes} from '../server/src/quoteEmailRoutes.js';
 
 let browser,script;
 before(async()=>{
+  const {chromium}=createRequire(import.meta.url)(process.env.PRICEBOOK_BROWSER_MODULE||'playwright');
   browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});
   const bundle=await build({bundle:true,write:false,format:'iife',define:{'process.env.NODE_ENV':'"production"','import.meta.env':'{}'},stdin:{loader:'jsx',resolveDir:process.cwd(),contents:`
 import React,{useState} from 'react';import {createRoot} from 'react-dom/client';

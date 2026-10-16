@@ -46,21 +46,22 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'largeRepairMaxSqft','installedMaterialsPercent','installedLaborPercent',
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
-  'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows'
+  'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft',
+  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates']);
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);
 // Current product-price maps supplement the retained legacy field definitions.
 // The editor and draft validator must use the same shapes.
 const PRICING_MAP_FIELDS = {
-  ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare'],
+  ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare','bundlesPerSquare'],
   FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
-  FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft'],
-  FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft'],
+  FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft'],
+  FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft'],
   FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
   FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
   SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft'],
-  LANDSCAPING_MULCH:['mulchMaterialPerYard','bedPrepLaborPerSqft'],
+  LANDSCAPING_MULCH:['mulchMaterialPerYard','bedPrepLaborPerSqft','mulchOrderIncrementCubicYards'],
   LANDSCAPING_PLANTING:['mulchMaterialPerYard','bedPrepLaborPerSqft','plantingLaborPerPlant','plantMaterialAllowance']
 };
 export function pricingMapField(serviceType, field) {
@@ -369,6 +370,92 @@ function rootPricing(service) {
 function effectiveServicePricing(service) {
   const root = rootPricing(service);
   return isRecord(service.pricing) ? mergePricingForValidationVNext(root, service.pricing) : root;
+}
+
+function moneyLeafEntries(value,kind,path,category){
+  if(absentValue(value))return [];
+  if(isRecord(value))return Object.entries(value).flatMap(([key,child])=>moneyLeafEntries(child,kind,path+'.'+key,category));
+  return [{path,value,kind,category}];
+}
+function ordinaryMoneyCategory(field,serviceType,effectivePricing){
+  if(serviceType==='CUSTOM'&&['price','low','high'].includes(field))return effectivePricing.customChargeClassification||null;
+  const exact={
+    cleanupBaseRatePerSqft:'labor',mowingBaseRatePerSqft:'labor',
+    pondingWaterSurcharge:'addon',perStepPrice:'addon',
+    subfloorAllowancePerSqft:'prep',haulAwayFee:'disposal',
+    insulationPerSqft:'material'
+  }[field];
+  if(exact)return exact;
+  if(field==='edgingPerLinearFoot')return 'labor';
+  if(/(?:material|membrane|underlayment|concreteCost|formwork|reinforcement|decking|starter|dripEdge|ridgeCap|postPrice)/i.test(field))return 'material';
+  if(/(?:labor|install)/i.test(field))return 'labor';
+  if(/(?:removal|tearOff|demolition)/i.test(field))return 'removal';
+  if(/prep/i.test(field))return 'prep';
+  if(/disposal/i.test(field))return 'disposal';
+  if(/travel/i.test(field))return 'travel';
+  if(/permit/i.test(field))return 'permit';
+  if(/overhead/i.test(field))return 'overhead';
+  return null;
+}
+function moneyEntriesForContainer(container,serviceType,effectivePricing){
+  if(!isRecord(container))return [];
+  const entries=[];
+  const nested=(rows,path,identity=path)=>rows.map(entry=>({...entry,path:path+'.'+entry.path,identity:identity+'.'+(entry.identity||entry.path)}));
+  for(const [field,value] of Object.entries(container)){
+    if(fenceType(serviceType)&&field==='fenceOfferings'){
+      for(const [key,offer] of Object.entries(isRecord(value)?value:{})){
+        if(!isRecord(offer))continue;
+        const effective=mergePricingForValidationVNext(effectivePricing.fenceOfferings?.[key]||{},offer);
+        const prefix=field+'.'+key;
+        entries.push(...nested(moneyEntriesForContainer(offer,serviceType,effective),prefix));
+        for(const [index,tier] of (Array.isArray(offer.tiers)?offer.tiers:[]).entries()){
+          if(!isRecord(tier)||!isRecord(tier.overrides))continue;
+          const tierPricing=mergePricingForValidationVNext(effective,tier.overrides);
+          entries.push(...nested(moneyEntriesForContainer(tier.overrides,serviceType,tierPricing),prefix+'.tiers.'+index+'.overrides',prefix+'.tiers.'+(tier.name||index)+'.overrides'));
+        }
+      }
+      continue;
+    }
+    if(fenceType(serviceType)&&field==='heightRows'){
+      for(const [key,row] of Object.entries(isRecord(value)?value:{})){
+        if(!isRecord(row))continue;
+        const effective={...effectivePricing,...effectivePricing.heightRows?.[key],...row};
+        entries.push(...nested(moneyEntriesForContainer(row,serviceType,effective),field+'.'+key));
+      }
+      continue;
+    }
+    if(DYNAMIC_MONEY_MAPS.has(field)){
+      const definitions=field==='offeringRates'?offeringDefinitions(serviceType,effectivePricing):scopeRateDefinitions(serviceType,effectivePricing,true);
+      for(const [key,amount] of Object.entries(isRecord(value)?value:{})){
+        const definition=definitions[key];
+        if(!definition||absentValue(amount)||isRecord(amount)||Array.isArray(amount))continue;
+        entries.push({path:field+'.'+key,value:amount,kind:definition.moneyKind||(field==='offeringRates'?offeringMoneyKind(key):'unit_rate'),category:definition.category||null});
+      }
+      continue;
+    }
+    if(field==='debrisPricing'){
+      for(const [level,row] of Object.entries(isRecord(value)?value:{}))if(isRecord(row)&&!absentValue(row.disposalFlat))entries.push({path:`debrisPricing.${level}.disposalFlat`,value:row.disposalFlat,kind:'fixed_amount',category:'disposal'});
+      continue;
+    }
+    const kind=moneyKindForField(serviceType,field,effectivePricing);
+    if(kind)entries.push(...moneyLeafEntries(value,kind,field,ordinaryMoneyCategory(field,serviceType,effectivePricing)));
+  }
+  return entries;
+}
+
+// Enumerate only explicitly stored owner money leaves. Inherited tier prices
+// keep the base price's date; a tier receives its own date only for an override.
+export function ownerMoneyEntries(service){
+  if(!isRecord(service)||typeof service.serviceType!=='string')return [];
+  const effective=effectiveServicePricing(service),baseContainer={...rootPricing(service),...(isRecord(service.pricing)?service.pricing:{})};
+  const decorate=(entry,metadata,extra={})=>({...entry,...extra,metadata:isRecord(metadata?.[entry.path])?cloneData(metadata[entry.path]):undefined,material:entry.category==='material',costBasis:entry.category!==null&&service.priceBasisByCategory?.[entry.category]==='cost'});
+  const out=moneyEntriesForContainer(baseContainer,service.serviceType,effective).map(entry=>decorate(entry,service.priceMetadata,{scope:'service'}));
+  for(const [tierIndex,tier] of (Array.isArray(service.tiers)?service.tiers:[]).entries()){
+    if(!isRecord(tier)||!isRecord(tier.overrides))continue;
+    const tierPricing=mergePricingForValidationVNext(effective,tier.overrides);
+    out.push(...moneyEntriesForContainer(tier.overrides,service.serviceType,tierPricing).map(entry=>decorate(entry,tier.priceMetadata,{scope:'tier',tierIndex,tierName:tier.name||null})));
+  }
+  return out;
 }
 function convertService(service, direction, location) {
   if (!isRecord(service)) return cloneData(service);

@@ -2220,7 +2220,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "HTTP path segment named draft, not a database access.",
     "signature": "5b060122282a853f532d4dcd0903ac21cb793631302c70e7ca2f3e059b04baf5",
     "occurrence": 1,
-    "line": 276
+    "line": 277
   },
   {
     "file": "server/src/quoteDoneRoutes.js",
@@ -2228,7 +2228,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "HTTP path segment named draft, not a database access.",
     "signature": "8621ad257ba4926ce00d97497886875137519b6a6fef92a569637a84e2b7cf2a",
     "occurrence": 1,
-    "line": 279
+    "line": 280
   },
   {
     "file": "server/src/quoteEmailService.js",

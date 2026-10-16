@@ -107,6 +107,15 @@ export function scopesSuppressPrice(type,c,p,rules,path){
 }
 
 function ceilExact(value){const e=exactDecimal(value),n=(e.numerator+e.denominator-1n)/e.denominator;if(n<0n||n>BigInt(Number.MAX_SAFE_INTEGER))throw new RangeError('Purchased quantity exceeds the supported numeric range.');return Number(n);}
+export function purchasedQuantityVNext(measuredQuantity,wasteFactor=0,packageSize){
+ const measured=exactDecimal(measuredQuantity),waste=exactDecimal(wasteFactor);
+ if(exactCompare(measured,0)<0||exactCompare(waste,0)<0)throw new RangeError('Purchased quantity and waste must be non-negative.');
+ const requiredQuantity=exactMultiply(measured,exactAdd(1,waste));
+ if(packageSize===undefined||packageSize===null||packageSize==='')return {requiredQuantity,purchasedQuantity:requiredQuantity,packageCount:null,packageSize:null};
+ const size=exactDecimal(packageSize);if(exactCompare(size,0)<=0)throw new RangeError('Package size must be positive.');
+ const packageCount=ceilExact(exactDivide(requiredQuantity,size));
+ return {requiredQuantity,purchasedQuantity:exactMultiply(packageCount,size),packageCount,packageSize:size};
+}
 export function scopeLines(type,c,p={},rules={}){
  const out={lines:[],disclosures:[],rules:[],replacedCommonFees:[],feeScope:{}},defs=scopeRateDefinitions(type,p),catalog=scopeDefinitions(type,p),purchases=new Map();
  const add=(key,quantity,multipliers=[])=>{const f=defs[key];if(!f)throw new TypeError('Missing configured scope price definition: '+key);out.lines.push({key,name:f.label,quantity,category:f.category,unit:f.unit,rateCents:p.scopeRates[key],ratePath:'scopeRates.'+key,priceBasis:key.startsWith('floor_underlayment_')&&p.scopeRates[key]===0&&rules.zeroPricePolicy?.includedPrices?.['scopeRates.'+key]==='materialPerSqft.'+key.slice('floor_underlayment_'.length)?rules.priceBasisByCategory?.material:f.priceBasis,multipliers});};
@@ -152,7 +161,7 @@ export function scopeLines(type,c,p={},rules={}){
   if(base==='demolition'||base==='siding_removal')out.feeScope.disposal=true;
  }
  for(const [productKey,g]of purchases){
-  const required=exactMultiply(g.quantity,exactAdd(1,exactDivide(g.d.wastePercent,100))),packages=ceilExact(exactDivide(required,g.d.coverage)),key=g.keys[0];
+  const purchase=purchasedQuantityVNext(g.quantity,exactDivide(g.d.wastePercent,100),g.d.coverage),packages=purchase.packageCount,key=g.keys[0];
   add(key,packages);out.lines[out.lines.length-1].name='Purchased materials: '+productKey;
   out.lines[out.lines.length-1].contributingRatePaths=g.keys.map(component=>'scopeRates.'+component);
   out.rules.push({name:'purchased_'+key,rule:'ceil(sum of measured product quantities * (1 + owner waste percent / 100) / owner package coverage)',inputs:{productKey,components:g.keys,measuredQuantity:exactToNumber(g.quantity),quantityUnit:g.unit,wastePercent:g.d.wastePercent,packageCoverage:g.d.coverage,packageCoverageUnit:g.unit},result:packages,usedBy:['Purchased materials: '+productKey]});

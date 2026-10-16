@@ -1,7 +1,7 @@
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
-import {scopeLines,scopeRatePath,scopesSuppressPrice} from './scopePricing.js';
+import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
 import {tradeAdjustment} from './tradeAdjustments.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
@@ -409,7 +409,9 @@ function calculateRoofReplacement(c, p, ctx) {
   const exactRoofSquares = exactDivide(exactAreaSqft, 100);
   const roofSquares = exactToNumber(exactRoofSquares);
   const waste = quantityFactor(p.wasteFactorByComplexity[c.roofComplexity], `wasteFactorByComplexity.${c.roofComplexity}`, { allowZero: true });
-  const exactMaterialSquares = exactMultiply(exactRoofSquares, exactAdd(1, waste));
+  const bundlesPerSquare=p.bundlesPerSquare?.[c.replacementRoofType];
+  const roofPurchase=purchasedQuantityVNext(exactRoofSquares,waste,bundlesPerSquare===undefined?undefined:exactDivide(1,bundlesPerSquare));
+  const exactMaterialSquares = roofPurchase.purchasedQuantity;
   const materialSquares = exactToNumber(exactMaterialSquares);
   const pitch = quantityFactor(p.pitchMultiplier[c.pitch], `pitchMultiplier.${c.pitch}`);
   const story = quantityFactor(p.storyMultiplier[c.stories], `storyMultiplier.${c.stories}`);
@@ -433,8 +435,8 @@ function calculateRoofReplacement(c, p, ctx) {
     usedBy: ['Roofing labor', 'Underlayment']
   });
   recordQuantityDerivation(out, {
-    name: 'materialSquares', formula: 'roofSquares * (1 + wasteFactor)',
-    inputs: { roofSquares, wasteFactor: waste }, result: exactMaterialSquares, unit: 'roofing squares',
+    name: 'materialSquares', formula: bundlesPerSquare===undefined?'roofSquares * (1 + wasteFactor)':'ceil(roofSquares * (1 + wasteFactor) * bundlesPerSquare) / bundlesPerSquare',
+    inputs: { roofSquares, wasteFactor: waste,...(bundlesPerSquare===undefined?{}:{bundlesPerSquare}) }, result: exactMaterialSquares, unit: 'roofing squares',
     usedBy: ['Field materials']
   });
   recordQuantityDerivation(out, {
@@ -675,7 +677,9 @@ function calculateFlooring(serviceType, c, p, ctx) {
   const patternWasteAdder = quantityFactor(p.patternWasteAdder[c.layoutPattern], `patternWasteAdder.${c.layoutPattern}`, { allowZero: true });
   const exactWaste = exactAdd(productWasteFactor, patternWasteAdder);
   const waste = exactToNumber(exactWaste);
-  const exactMaterialSqft = exactMultiply(sqft, exactAdd(1, exactWaste));
+  const cartonCoverage=c.newFlooringType==='carpet'?undefined:p.cartonCoverageSqft?.[c.newFlooringType];
+  const flooringPurchase=purchasedQuantityVNext(sqft,exactWaste,cartonCoverage);
+  const exactMaterialSqft = flooringPurchase.purchasedQuantity;
   const materialSqft = exactToNumber(exactMaterialSqft);
   recordQuantityDerivation(out, {
     name: 'averageRoomSqft', formula: 'floorAreaSqft / roomCount',
@@ -684,8 +688,8 @@ function calculateFlooring(serviceType, c, p, ctx) {
     usedBy: ['average-room complexity rule']
   });
   recordQuantityDerivation(out, {
-    name: 'flooringMaterialSqft', formula: 'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)',
-    inputs: { floorAreaSqft: sqft, productWasteFactor, patternWasteAdder },
+    name: 'flooringMaterialSqft', formula: cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
+    inputs: { floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
     result: exactMaterialSqft, unit: 'square feet',
     usedBy: ['Flooring materials']
   });
@@ -795,7 +799,9 @@ function calculateConcrete(serviceType, c, p) {
   }
   const thickness = measured(c.thickness, 'thickness');
   const waste = quantityFactor(p.concreteWasteFactor, 'concreteWasteFactor', { allowZero: true });
-  const exactYards = exactDivide(exactMultiply(dimensions.exactAreaSqft, thickness, exactAdd(1, waste)), 324);
+  const exactInstalledYards=exactDivide(exactMultiply(dimensions.exactAreaSqft, thickness),324);
+  const concretePurchase=purchasedQuantityVNext(exactInstalledYards,waste,p.readyMixOrderIncrementCubicYards);
+  const exactYards = concretePurchase.purchasedQuantity;
   const yards = exactToNumber(exactYards);
   const access = quantityFactor(p.accessMultiplier[c.accessDifficulty], `accessMultiplier.${c.accessDifficulty}`);
   const finish = quantityFactor(c.finishType==='exposed_aggregate'&&p.scopeDetails?.exposed_aggregate?1:p.finishMultiplier[c.finishType], `finishMultiplier.${c.finishType}`);
@@ -815,8 +821,8 @@ function calculateConcrete(serviceType, c, p) {
     });
   }
   recordQuantityDerivation(out, {
-    name: 'concreteVolumeCubicYards', formula: 'areaSqft * (thicknessInches / 12) / 27 * (1 + concreteWasteFactor)',
-    inputs: { areaSqft: dimensions.areaSqft, thicknessInches: thickness, concreteWasteFactor: waste },
+    name: 'concreteVolumeCubicYards', formula: p.readyMixOrderIncrementCubicYards===undefined?'areaSqft * (thicknessInches / 12) / 27 * (1 + concreteWasteFactor)':'ceil((areaSqft * (thicknessInches / 12) / 27 * (1 + concreteWasteFactor)) / readyMixOrderIncrementCubicYards) * readyMixOrderIncrementCubicYards',
+    inputs: { areaSqft: dimensions.areaSqft, thicknessInches: thickness, concreteWasteFactor: waste,...(p.readyMixOrderIncrementCubicYards===undefined?{}:{readyMixOrderIncrementCubicYards:p.readyMixOrderIncrementCubicYards}) },
     result: exactYards, unit: 'cubic yards',
     usedBy: ['Ready-mix concrete']
   });
@@ -888,7 +894,9 @@ function calculateMulch(c, p) {
     : exactDecimal(measured(c.mulchArea, 'mulchArea'));
   const yards = exactToNumber(exactYards);
   const overage = c.inputMethod==='sqft' ? quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor') : 1;
-  const exactOrderYards = exactMultiply(exactYards, overage);
+  const mulchIncrement=p.mulchOrderIncrementCubicYards?.[c.mulchType];
+  const mulchPurchase=purchasedQuantityVNext(exactYards,exactSubtract(overage,1),mulchIncrement);
+  const exactOrderYards = mulchPurchase.purchasedQuantity;
   const orderYards = exactToNumber(exactOrderYards);
   if (c.inputMethod === 'sqft') {
     recordQuantityDerivation(out, {
@@ -899,8 +907,8 @@ function calculateMulch(c, p) {
     });
   }
   recordQuantityDerivation(out, {
-    name: 'mulchOrderYards', formula: 'installedMulchYards * mulchOverageFactor',
-    inputs: { installedMulchYards: yards, mulchOverageFactor: overage },
+    name: 'mulchOrderYards', formula: mulchIncrement===undefined?'installedMulchYards * mulchOverageFactor':'ceil(installedMulchYards * mulchOverageFactor / orderIncrementCubicYards) * orderIncrementCubicYards',
+    inputs: { installedMulchYards: yards, mulchOverageFactor: overage,...(mulchIncrement===undefined?{}:{orderIncrementCubicYards:mulchIncrement}) },
     result: exactOrderYards, unit: 'cubic yards',
     usedBy: ['Mulch material']
   });
@@ -921,11 +929,12 @@ function calculateSod(c, p, ctx) {
   const waste = quantityFactor(p.sodWasteFactor, 'sodWasteFactor', { allowZero: true });
   const slope = quantityFactor(p.slopeMultiplier[c.slope], `slopeMultiplier.${c.slope}`);
   const access = quantityFactor(p.accessMultiplier[c.accessDifficulty], `accessMultiplier.${c.accessDifficulty}`);
-  const exactSodOrderSqft = exactMultiply(sqft, exactAdd(1, waste));
+  const sodPurchase=purchasedQuantityVNext(sqft,waste,p.sodPalletSizeSqft);
+  const exactSodOrderSqft = sodPurchase.purchasedQuantity;
   const sodOrderSqft = exactToNumber(exactSodOrderSqft);
   recordQuantityDerivation(out, {
-    name: 'sodOrderSqft', formula: 'sodAreaSqft * (1 + sodWasteFactor)',
-    inputs: { sodAreaSqft: sqft, sodWasteFactor: waste },
+    name: 'sodOrderSqft', formula: p.sodPalletSizeSqft===undefined?'sodAreaSqft * (1 + sodWasteFactor)':'ceil(sodAreaSqft * (1 + sodWasteFactor) / palletSizeSqft) * palletSizeSqft',
+    inputs: { sodAreaSqft: sqft, sodWasteFactor: waste,...(p.sodPalletSizeSqft===undefined?{}:{palletSizeSqft:p.sodPalletSizeSqft}) },
     result: exactSodOrderSqft, unit: 'square feet',
     usedBy: ['Sod material']
   });
