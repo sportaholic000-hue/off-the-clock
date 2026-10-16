@@ -956,6 +956,10 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   };
   pricing = pricingSnapshot.value;
   if(serviceType.startsWith('FLOORING_')){
+    if(customerInputs.newFlooringType==='carpet'&&Array.isArray(customerInputs.carpetRooms)&&!missing(customerInputs.roomCount)&&customerInputs.roomCount!==customerInputs.carpetRooms.length){
+      const message='Supply lengths and widths for every room in scope.';
+      return {ok:false,missingCustomerFields:[],invalidCustomerFields:['carpetRooms'],reviewReason:message,validationMessages:[message]};
+    }
     try{customerInputs=normalizeFlooringInputs(customerInputs);}
     catch(error){return {ok:false,missingCustomerFields:[],invalidCustomerFields:[error.flooringField||'carpetRooms'],reviewReason:error.message,validationMessages:[error.message]};}
     if(customerInputs.newFlooringType==='carpet'&&customerInputs.layoutPattern===undefined)customerInputs={...customerInputs,layoutPattern:'straight'};

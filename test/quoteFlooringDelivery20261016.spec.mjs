@@ -26,6 +26,16 @@ test('flooring new priced questions match between owner/widget and voice, includ
   assert.equal(voice.find(q=>q.field==='floorLevelingSqft').unknownLabel,'Not sure');
 });
 
+test('carpet resolved phone questions use room dimensions without requesting a duplicate area or room count',()=>{
+  // Expected before execution: room/roll mode asks zero duplicate area,
+  // area-method, room-count or hard-floor-layout questions; one room needs no
+  // connection question. The room-dimension question itself stays available.
+  const f=carpet([{lengthFt:12,widthFt:14}]),def=bridge.applicationServiceDefinition(f.ownerPricing);
+  const fields=voiceQuestionContract(f.ownerPricing,def,{...f.customerInputs,carpetMeasurementMethod:'rooms'}).fields.map(f=>f.field);
+  for(const key of ['sqft','sqftMethod','roomCount','layoutPattern','carpetConnectedAreas'])assert.equal(fields.includes(key),false,key);
+  assert.ok(fields.includes('carpetRooms'));
+});
+
 test('flooring carpet caller-confirmed about 12 by 14 quotes, persists rooms and keeps site qualifications in phone/email/public copy',async t=>{
   // Expected before execution: floor168 sq ft; roll cuts min(2*12*14.5,
   // 2*12*12.5)=300 bought sq ft=90,000c material. Labor168*300*1.10

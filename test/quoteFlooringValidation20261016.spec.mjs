@@ -19,6 +19,15 @@ test('carpet derived room area survives customer projection; altered room eviden
   }
 });
 
+test('carpet never silently drops a stated room when fewer room dimensions are supplied',()=>{
+  // Expected before execution: a stated2-room scope with one measured room
+  // needs the second room's numbers; removing that contradictory legacy count
+  // leaves the explicit one-room12x14 quote at145,608c, with estimates accepted.
+  const f=carpet([{lengthFt:12,widthFt:14}]);f.customerInputs.roomCount=2;
+  let q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.invalidCustomerFields.includes('carpetRooms'));
+  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1456.08);
+});
+
 test('flooring optional zero prices ask no questions and do not add new cents',()=>{
   // Expected before execution: 200*300*1.10+200*1.12*500=178,000c;
   // explicit zero for any new optional line behaves like blank.
