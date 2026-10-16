@@ -88,7 +88,7 @@ test('lane A Chromium: owner package, freshness, validity and source controls sa
     await palletField.getByText('Sod pallet coverage',{exact:true}).waitFor();
     const pallet=palletField.locator('input');await pallet.fill('450');
     await opened.page.getByRole('button',{name:/Price dates and sources/}).click();
-    await opened.page.getByLabel(/Sod material per sqft price source/i).fill('[SYNTHETIC] Supplier Q-21');
+    await opened.page.getByLabel(/Sod material per square foot price source/i).fill('[SYNTHETIC] Supplier Q-21');
     await opened.page.getByRole('button',{name:/Price freshness and quote validity/}).click();
     await opened.page.getByLabel('Flag prices older than days',{exact:true}).fill('90');
     await opened.page.getByLabel('Quotes valid for days',{exact:true}).fill('30');
@@ -108,7 +108,7 @@ test('lane A Chromium: owner package, freshness, validity and source controls sa
       assert.equal(await reloaded.page.getByLabel('Flag prices older than days',{exact:true}).inputValue(),'90');
       assert.equal(await reloaded.page.getByLabel('Quotes valid for days',{exact:true}).inputValue(),'30');
       await reloaded.page.getByRole('button',{name:/Price dates and sources/}).click();
-      assert.equal(await reloaded.page.getByLabel(/Sod material per sqft price source/i).inputValue(),'[SYNTHETIC] Supplier Q-21');
+      assert.equal(await reloaded.page.getByLabel(/Sod material per square foot price source/i).inputValue(),'[SYNTHETIC] Supplier Q-21');
       assert.deepEqual(reloaded.errors,[]);
     }finally{await reloaded.context.close();}
   }finally{if(opened.context.pages().length)await opened.context.close();}
@@ -123,14 +123,14 @@ test('lane A Chromium: an unchanged confirmed AI number stays marked until This 
     await opened.page.getByText('AI placeholder prices',{exact:true}).waitFor();
     await opened.page.getByText(/Confirmation does not verify cost/i).waitFor();
     await opened.page.getByRole('button',{name:/Price dates and sources/}).click();
-    const source=opened.page.getByLabel(/Sod material per sqft price source/i),row=opened.page.locator('.owner-field').filter({has:source});
+    const source=opened.page.getByLabel(/Sod material per square foot price source/i),row=opened.page.locator('.owner-field').filter({has:source});
     await row.getByRole('button',{name:'This is my price',exact:true}).click();
     await save(opened.page);
     assert.equal(loadPricebook(owner).services[0].priceMetadata.sodMaterialPerSqft.aiPlaceholder,false);
     const reloaded=await openOwner(owner,'LANDSCAPING_SOD');
     try{
       await reloaded.page.getByRole('button',{name:/Price dates and sources/}).click();
-      const adoptedSource=reloaded.page.getByLabel(/Sod material per sqft price source/i);
+      const adoptedSource=reloaded.page.getByLabel(/Sod material per square foot price source/i);
       const adopted=reloaded.page.locator('.owner-field').filter({has:adoptedSource});
       assert.equal(await adopted.getByRole('button',{name:'This is my price',exact:true}).count(),0);
       assert.ok((await reloaded.page.getByText('AI placeholder prices',{exact:true}).count())===1,'other unchanged AI prices remain visibly marked');
