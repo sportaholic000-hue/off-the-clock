@@ -7,6 +7,8 @@ import {voiceQuestionContract,bindVoiceQuoteInputs} from '../server/src/voice/vo
 import {customerFieldForInputs} from '../server/scopeConfiguration.js';
 import {FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION} from '../server/quote-engine-vnext/fencePricing.js';
 import {priceChoices,reviewRows} from '../client/src/pricebookReview.js';
+import {randomUUID} from 'node:crypto';
+import {publish,date} from './quoteDeliveryBatch20261015Fixture.mjs';
 
 // Expected before execution: 7+9=16 infill LF, 5 posts: 4 terminal + 1 line.
 // $160 labor + $352 waste-adjusted infill + $100 posts + $20 footing labor
@@ -59,4 +61,15 @@ test('Oct16 three tiers share one stable gate choice; upgraded hardware cannot r
  const definition=bridge.applicationServiceDefinition(f.ownerPricing),field=customerFieldForInputs(definition.customerFields.find(q=>q.name==='fenceRuns'),f.customerInputs);
  assert.equal(field.gateChoices.length,1);assert.equal(field.gateChoices[0].value,'walk');assert.ok(field.gateChoices[0].label.includes(o.offeringDetails.gates.walk.description));assert.doesNotMatch(field.gateChoices[0].label,/Upgraded/);
  assert.deepEqual(voiceQuestionContract(f.ownerPricing,definition,f.customerInputs).fields.find(q=>q.field==='fenceRuns').choices,field.gateChoices);
+});
+test('Oct16 malformed section summaries stay review-only through production intake: no exception and no released cents',t=>{
+ // Expected before execution: each malformed section/gate returns needs_details,
+ // with no price. A null section or non-text gate identity must never throw.
+ const f=sections(),h=quoteEmailFixture(t),a=publish(h.c.ownerId,f);
+ for(const bad of [null,17,[],{lengthLF:7,gateAfter:1},{lengthLF:7,gateAfter:{}},{lengthLF:7,gateAfter:true}]){
+   const c=structuredClone(f.customerInputs);c.fenceRuns[0].sections[0]=bad;
+   const response=bridge.prepareApplicationIntake(h.c.ownerId,{requestId:randomUUID(),serviceId:a.service.id,serviceRequest:a.service.service,
+     customerInputs:c,customerFeeSelections:{},additionalWork:[],contact:{email:'caller@example.invalid'},intakeFlow:'job-details-v1',context:'',explicitUnknowns:'',urgency:'flexible'},date);
+   assert.equal(response.status,'needs_details');assert.equal(response.midEstimate,undefined);assert.equal(response.confirmation,undefined);
+ }
 });

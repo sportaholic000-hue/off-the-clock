@@ -5,7 +5,12 @@ const grass = {maintained:'Regularly maintained',overgrown:'Overgrown',severe:'S
 export function customerSummaryValue(field, value, fallback) {
   if(field?.type==='fence_runs'&&Array.isArray(value))return value.map((run,i)=>{
     if(!run||!Array.isArray(run.sections))return 'Run '+(i+1)+': Not supplied';
-    const sections=run.sections.map((s,j)=>'Section '+(j+1)+': '+fallback(s.lengthLF)+' ft'+(s.gateAfter?'; gate: '+(field.gateChoices?.find(g=>g.value===s.gateAfter)?.label||s.gateAfter.replaceAll('_',' ')):'')).join('; ');
+    const sections=run.sections.map((s,j)=>{
+      const label='Section '+(j+1)+': ';
+      if(!s||typeof s!=='object'||Array.isArray(s))return label+'Not supplied';
+      const gate=s.gateAfter?(field.gateChoices?.find(g=>g.value===s.gateAfter)?.label||(typeof s.gateAfter==='string'?s.gateAfter.replaceAll('_',' '):'Not supplied')):'';
+      return label+fallback(s.lengthLF)+' ft'+(gate?'; gate: '+gate:'');
+    }).join('; ');
     return 'Run '+(i+1)+'; connects back: '+(run.closed===true?'Yes':run.closed===false?'No':'Not supplied')+'; '+sections;
   }).join(' | ');
   // Fence heights read the way they were entered ("5 ft 3.65 in"), never as a long decimal.
