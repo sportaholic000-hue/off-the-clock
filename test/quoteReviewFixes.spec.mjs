@@ -98,7 +98,7 @@ test('a product registered and priced under the same typed name goes live and qu
 });
 
 test('every owner name-entry control uses the shared conversion and shows refusals', () => {
-  const files = ['client/src/pricebook.jsx', 'client/src/quoteDoneControls.jsx', 'client/src/offeringEditor.jsx', 'client/src/interviewStructured.jsx'];
+  const files = ['client/src/pricebook.jsx', 'client/src/quoteDoneControls.jsx', 'client/src/FenceOfferingEditor.jsx', 'client/src/interviewStructured.jsx'];
   for (const file of files) {
     const source = fs.readFileSync(path.join(repo, file), 'utf8');
     assert.ok(source.includes('productKeyFromName('), file + ' must use the shared conversion');

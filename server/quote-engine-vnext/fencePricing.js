@@ -136,6 +136,7 @@ const ceilSpans=(length,spacing)=>{const r=exactDecimal(exactDivide(length,spaci
 
 export function fenceLayout(c,p){
   if(!Array.isArray(c.fenceRuns)||!c.fenceRuns.length||c.fenceRuns.length>1000)throw new RangeError('Supply the measured sections for every fence run.');
+  if(c.lfMethod!==undefined&&c.lfMethod!=='exact')throw new RangeError('The section layout requires measured section lengths.');
   if(c.fenceRunCount!==undefined&&c.fenceRunCount!==c.fenceRuns.length)throw new RangeError('The fence run count does not match the measured runs.');
   let length=exactDecimal(0),corners=0,openRuns=0,sections=0;
   const gates={};
@@ -154,10 +155,10 @@ export function fenceLayout(c,p){
   }
   const linearFeet=exactToNumber(length);
   if(!Number.isFinite(linearFeet)||linearFeet>1_000_000||sections>10_000)throw new RangeError('The measured fence layout exceeds the supported project size.');
-  if(c.linearFeet!==undefined&&exactCompare(c.linearFeet,length)!==0)throw new RangeError('The total fence length does not match the measured sections.');
+  if(c.linearFeet!==undefined&&(!positive(c.linearFeet)||exactCompare(c.linearFeet,length)!==0))throw new RangeError('The total fence length does not match the measured sections.');
   if(c.cornerCount!==undefined&&c.cornerCount!==corners)throw new RangeError('Corners come from the section boundaries; the supplied corner count does not match.');
   if(c.gates!==undefined){
-    if(!record(c.gates)||Object.values(c.gates).some(n=>!Number.isSafeInteger(n)||n<0)||Object.keys({...gates,...c.gates}).some(k=>(gates[k]||0)!==(c.gates[k]||0)))throw new RangeError('The gate counts do not match their places in the measured sections.');
+    if(!record(c.gates)||Object.keys(c.gates).some(k=>!own(p.offeringDetails?.gates,k))||Object.values(c.gates).some(n=>!Number.isSafeInteger(n)||n<0)||Object.keys({...gates,...c.gates}).some(k=>(gates[k]||0)!==(c.gates[k]||0)))throw new RangeError('The gate counts do not match their places in the measured sections.');
   }
   return {linearFeet,cornerCount:corners,gates,fenceRunCount:c.fenceRuns.length,openRuns};
 }

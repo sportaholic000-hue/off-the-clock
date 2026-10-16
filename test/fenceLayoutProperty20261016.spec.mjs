@@ -51,6 +51,8 @@ test('Oct16 property: 20,000 seeded layouts equal independently placed posts; fa
     assert.deepEqual({total:actual.total,terminal:actual.terminal,line:actual.line},expected,'seed '+seed+', sample '+sample);
     const fallback=fencePostQuantities({linearFeet:totalUnits/4,fenceRunCount:runCount,cornerCount:corners,gates:Object.fromEntries(Object.keys(gates).map(k=>[k,1]))},p);
     assert.ok(fallback.total>=expected.total,'fallback under-count at seed '+seed+', sample '+sample);
+    assert.ok(fallback.terminal>=expected.terminal,'fallback terminal under-count at seed '+seed+', sample '+sample);
+    assert.ok(fallback.line>=expected.line,'fallback line under-count at seed '+seed+', sample '+sample);
     maxFallbackExtra=Math.max(maxFallbackExtra,fallback.total-expected.total);
   }
   t.diagnostic(JSON.stringify({seed,layouts:20000,closedRuns:closed,layoutsWithGates:withGates,maxFallbackExtra}));

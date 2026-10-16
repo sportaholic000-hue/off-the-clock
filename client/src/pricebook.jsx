@@ -1241,7 +1241,7 @@ export default function PriceBook() {
                         replaceSelected(next);
                       }}>Reset all to default</Button>
                     </div>
-                    {(selectedMeta.class2Fields || []).map(definition => {
+                    {(selectedMeta.class2Fields || []).filter(d=>!(servicePricing(selected).fenceOfferings&&d.field==='postSpacingLF')).map(definition => {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);
                       const wastePercent=definition.ownerInputUnit==='percent';
                       const isStructured = definition.defaultValue && typeof definition.defaultValue === 'object';

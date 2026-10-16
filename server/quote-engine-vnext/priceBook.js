@@ -1186,9 +1186,13 @@ export function quoteFromVNextPricebook(input = {}) {
   const builtIn = serviceType !== 'CUSTOM';
   const requestedCustomService = isPlainRecord(customerInputs) && typeof customerInputs.service === 'string' ? customerInputs.service : '';
   const requestedCustomName = requestedCustomService.trim().toLowerCase();
-  const matches = builtIn
-    ? services.filter(entry => entry?.serviceType === serviceType&&(!fenceType(serviceType)||!customerInputs?.fenceType||fenceOfferingEntries(entry.pricing||{}).some(([type])=>type===customerInputs.fenceType)))
+  let matches = builtIn
+    ? services.filter(entry => entry?.serviceType === serviceType)
     : services.filter(entry => entry?.serviceType === 'CUSTOM' && typeof entry.service === 'string' && entry.service.trim().toLowerCase() === requestedCustomName);
+  if(fenceType(serviceType)&&matches.length>1&&customerInputs?.fenceType){
+    const selected=matches.filter(entry=>fenceOfferingEntries(entry.pricing||{}).some(([type])=>type===customerInputs.fenceType));
+    matches=selected.length?selected:matches.filter(entry=>!configuredOffering(serviceType,entry.pricing||{}));
+  }
   if (matches.length === 0) {
     const description = builtIn ? serviceType : `custom service "${requestedCustomService}"`;
     return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `No matching service is configured for ${description}.`, path: 'services', kind: 'missing_service' });

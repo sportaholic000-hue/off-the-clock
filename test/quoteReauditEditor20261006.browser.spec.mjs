@@ -12,7 +12,7 @@ let browser,bundle,book,fixture;
 before(async()=>{
  const {chromium}=createRequire(import.meta.url)(process.env.PRICEBOOK_BROWSER_MODULE||'playwright');
  browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});
- fixture=offeringFixture('FENCING_INSTALL','installed');fixture.customerInputs.gates={};
+ fixture=offeringFixture('FENCING_INSTALL','installed');fixture.customerInputs.gates={};fixture.customerInputs.fenceRunCount=1;
  book=convertApplicationBook({services:[fixture.ownerPricing],defaults:fixture.businessDefaults},'toDollars');
  const meta=applicationMetadata().services.find(row=>row.serviceType===fixture.serviceType);
  const result=await build({bundle:true,write:false,format:'iife',define:{'process.env.NODE_ENV':'"production"'},loader:{'.js':'jsx'},stdin:{loader:'jsx',resolveDir:process.cwd(),contents:`
@@ -33,7 +33,9 @@ test('re-audit browser: Remove gate offering yields a coherent saveable draft an
   assert.equal(await page.getByRole('button',{name:'Remove gate offering',exact:true}).count(),0);
   assert.equal(await page.getByText('Prices outside this selection',{exact:true}).count(),0);
   const draft=JSON.parse(await page.getByTestId('draft').textContent());
-  assert.deepEqual(draft.pricing.offeringDetails.gates,{});assert.equal(draft.pricing.offeringRates.gate_walk,undefined);
+  const offer=draft.pricing.fenceOfferings.wood;assert.deepEqual(offer.offeringDetails.gates,{});
+  for(const row of Object.values(offer.heightRows)){assert.equal(row.offeringRates.gate_walk,undefined);assert.equal(row.installedLaborPercent?.['offeringRates.gate_walk'],undefined);assert.equal(row.installedMaterialsPercent?.['offeringRates.gate_walk'],undefined);}
+  assert.equal(draft.pricing.offeringDetails,undefined,'explicit editor migration has one active offering location');
   const cents=convertApplicationBook({...book,services:[draft]},'toCents'),q=generateQuoteVNext({...fixture,ownerPricing:cents.services[0]});
   assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,400000);assert.deepEqual(errors,[]);
  }finally{await page.close();}

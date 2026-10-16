@@ -18,20 +18,20 @@ for(const [mode,tax,total]of [['TAX_NONE',0,45000],['TAX_MATERIALS',767,45767],[
  assert.equal(s.finalTotalCents,total);assert.equal(c.midEstimate,total/100);
  assert.ok(c.lowEstimate*100>=45000+tax,'The customer lower bound must also preserve the pre-tax floor.');
 });
-// Owner ruling (Oct 3): any requested height quotes. Each height-dependent line is the
-// priced-height line scaled exactly by requested height / priced height.
-const exactOf=e=>[BigInt(e.numerator),BigInt(e.denominator)];
-for(const mode of ['installed','itemized'])for(const height of [0.5,3.5,5,5.5,7,9])test('Opus 3: '+mode+' fencing priced at '+height+'ft quotes any other height in exact proportion',()=>{
- const input=fence(height,mode),{r}=quote(input);assert.equal(r.calculationRecord.options[0].scenarios.mid.finalTotalCents,mode==='installed'?450000:424000);
+// Owner ruling (Oct16): retain every exact saved-height control, refuse each
+// previously scaled request, then quote it only when an explicit row exists.
+for(const mode of ['installed','itemized'])for(const height of [0.5,3.5,5,5.5,7,9])test('Opus 3: '+mode+' exact '+height+'ft offering requires its own row for other heights',()=>{
+ const input=fence(height,mode),{r}=quote(input),expected=mode==='installed'?450000:424000;
+ assert.equal(r.calculationRecord.options[0].scenarios.mid.finalTotalCents,expected);
  for(const requested of [height+0.25,height*2,13,2]){
-  const other=structuredClone(input);other.customerInputs.fenceHeight=requested;const {r:scaled}=quote(other);
-  for(const line of scaled.options[0].lineItems){
-   const base=r.options[0].lineItems.find(row=>row.calculation?.ratePath===line.calculation?.ratePath);assert.ok(base,line.name);
-   const [a,b]=exactOf(line.calculation.exactUnroundedCents),[c,d]=exactOf(base.calculation.exactUnroundedCents);
-   // a/b == (c/d) * requested/height, compared exactly via the same decimal text the engine uses.
-   const [rn,rd]=[BigInt(Math.round(requested*1000)),1000n],[hn,hd]=[BigInt(Math.round(height*1000)),1000n];
-   assert.equal(a*d*rd*hn,c*b*rn*hd,line.name+' at '+requested+' ft');
-  }
+  const other=structuredClone(input);other.customerInputs.fenceHeight=requested;
+  const missing=engine.generateQuoteVNext(other);assert.equal(missing.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(engine.sanitizeForCustomerVNext(missing).midEstimate,undefined);
+  other.customerInputs.fenceRunCount=1;
+  other.ownerPricing.pricing.heightRows={saved:{exactHeight:height,postSpacingLF:8,offeringRates:{...input.ownerPricing.pricing.offeringRates}},requested:{exactHeight:requested,postSpacingLF:8,offeringRates:{...input.ownerPricing.pricing.offeringRates}}};
+  // The explicit row deliberately has the same rates: 450000 / 424000 cents,
+  // independent of height. Every billed component must match, not only totals.
+  const {r:covered}=quote(other);assert.equal(covered.calculationRecord.options[0].scenarios.mid.finalTotalCents,expected);
+  assert.deepEqual(covered.options[0].lineItems.map(l=>l.amountCents),r.options[0].lineItems.map(l=>l.amountCents));
  }
 });
 test('Opus 3: zero, negative, missing and nonnumeric offered fence heights fail closed',()=>{

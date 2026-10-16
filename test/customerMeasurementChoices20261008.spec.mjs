@@ -43,7 +43,8 @@ before(async () => {
     import {CustomerMeasurements} from './client/src/quoteDoneControls.jsx';
     export {offeringPreviewFields} from './client/src/offeringEditor.jsx';
     export function render(fields, knownOfferings) {
-      return renderToStaticMarkup(<CustomerMeasurements fields={fields} value={{}} knownOfferings={knownOfferings} onChange={()=>{}}/>);
+      // Both measured fencing methods must preserve the shared permitted choices.
+      return renderToStaticMarkup(<><CustomerMeasurements fields={fields} value={{}} knownOfferings={knownOfferings} onChange={()=>{}}/>{fields.some(f=>f.type==='fence_runs')&&<CustomerMeasurements fields={fields} value={{linearFeet:1}} knownOfferings={knownOfferings} onChange={()=>{}}/>}</>);
     }
   `}});
   const module = {exports:{}};

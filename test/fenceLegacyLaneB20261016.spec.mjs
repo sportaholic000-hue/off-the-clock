@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {generateQuoteVNext,vNextServiceStatus} from '../server/quote-engine-vnext/index.js';
+import {fenceOfferingFromLegacy} from '../server/quote-engine-vnext/fencePricing.js';
 
 // Written before execution, and also run against detached 33d30e9:
 // 100 LF, two $250 gates. Installed $40/LF. Itemized $10/LF labor,
@@ -20,4 +21,13 @@ for(const [type,mode,terrain,expected]of [
  assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).fenceHeightNotice,'Only the saved fence height is priced. Add rows for the other heights you build.');
  assert.deepEqual(f.ownerPricing,before,'reads and quotes do not rewrite saved prices');f.customerInputs.fenceHeight=8;
  const unpriced=generateQuoteVNext(f);assert.equal(unpriced.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(unpriced.reviewReason,/No price is set for a 8 ft fence/);
+});
+test('Oct16 explicit legacy migration keeps its rounding boundary: 24 LF, 4 posts, moderate terrain = 109205 cents before and after',()=>{
+ // Infill 27600+52800; posts 8000; footing labor 4*4001*1.15=18404.6 ->18405;
+ // footing materials 2400. Splitting equal footing rates would lose one cent.
+ const f=offeringFixture('FENCING_INSTALL','itemized');Object.assign(f.customerInputs,{linearFeet:24,gates:{},terrainSlope:'moderate'});f.ownerPricing.pricing.offeringRates.footingLaborEach=4001;
+ const before=generateQuoteVNext(f);assert.equal(before.options[0].calculationRecord.scenarios.mid.finalTotalCents,109205);
+ f.ownerPricing.pricing.fenceOfferings={wood:fenceOfferingFromLegacy(f.ownerPricing.pricing)};f.customerInputs.fenceRunCount=1;
+ const after=generateQuoteVNext(f);assert.equal(after.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(after));assert.equal(after.options[0].calculationRecord.scenarios.mid.finalTotalCents,109205);
+ assert.deepEqual(after.options[0].lineItems.map(l=>l.amountCents),before.options[0].lineItems.map(l=>l.amountCents));
 });

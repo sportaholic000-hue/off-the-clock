@@ -27,7 +27,9 @@ test('Oct16 save rejects overlapping height rows, including an effective tier ov
     const f=fenceFixture('installed');
     if(tier)f.ownerPricing.pricing.fenceOfferings.wood.tiers=[{name:'[SYNTHETIC] Overlap',overrides:{heightRows:{eight:{minimumHeight:5}}}}];
     else f.ownerPricing.pricing.fenceOfferings.wood.heightRows.eight.minimumHeight=5;
-    assert.throws(()=>save(f),/overlap|same height/i);
+    const owner='synthetic-overlap-'+randomUUID(),before=bridge.readApplicationBook(owner);
+    assert.throws(()=>save(f,owner),/overlap|same height/i);
+    assert.deepEqual(bridge.readApplicationBook(owner),before,'rejected overlap never changes durable storage');
   }
 });
 test('Oct16 money boundary: a 0.5-cent per-foot rate survives nested rows and tier overrides; fixed post/gate cents cannot become fractional',()=>{

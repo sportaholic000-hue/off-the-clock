@@ -48,11 +48,12 @@ test('itemized fence with two gate types, corners and steep ground, at the price
   const quote = live({ serviceType:'FENCING_INSTALL', service:'Wood privacy', knownOfferings:{ fenceType:{ wood:fenceId } }, pricing:{ minimumJob:0, offeringMode:'itemized',
     offeringDetails:{ description:'Wood privacy', fenceType:'wood', fenceHeight:6, postFootingDescription:'Posts in concrete', gates:twoGates(false) },
     offeringRates:{ fenceLaborPerLF:9.5, fenceMaterialPerLF:14.25, postMaterialEach:28.75, footingLaborEach:22, footingMaterialEach:9.4, gate_walk:385, gate_double:1250 },
-    installedLaborPercent:{ 'offeringRates.gate_walk':40, 'offeringRates.gate_double':35 } } });
+    installedLaborPercent:{ 'offeringRates.gate_walk':40, 'offeringRates.gate_double':35 },heightRows:Object.fromEntries([[0,6],[6,8]].map(([min,max],i)=>['height_'+i,{minimumHeight:min,maximumHeight:max,postSpacingLF:8,offeringRates:{fenceLaborPerLF:9.5,fenceMaterialPerLF:14.25,postMaterialEach:28.75,footingLaborEach:22,footingMaterialEach:9.4,gate_walk:385,gate_double:1250}}])) } });
   // Posts: ceil(160 / 8) + 1 end + 2 corners + 2 per walk gate (price excludes posts) x 2 gates; the double gate includes its posts.
   const posts = D(20 + 1 + 2 + 4), steep = D('1.3');
-  for (const [height, f] of [[6, D(1)], [8, frac(4n, 3n)]]) {
-    const result = quote(wood({ linearFeet:160, lfMethod:'exact', fenceType:'wood', fenceHeight:height, terrainSlope:'steep', gates:{ walk:2, double:1 }, cornerCount:2 }));
+  // Oct16: independently priced rows intentionally retain identical component rates.
+  for (const [height, f] of [[6,D(1)],[8,D(1)]]) {
+    const result = quote(wood({ linearFeet:160,fenceRunCount:1, lfMethod:'exact', fenceType:'wood', fenceHeight:height, terrainSlope:'steep', gates:{ walk:2, double:1 }, cornerCount:2 }));
     assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', height + ' ft');
     assert.deepEqual(lines(result), sorted([cents(mul(D(160), D(950), f, steep)), cents(mul(D(160), D('1.1'), D(1425), f)), cents(mul(posts, D(2875), f)),
       cents(mul(posts, D(2200), f, steep)), cents(mul(posts, D(940), f)), cents(mul(D(2), D(38500), f, D('1.12'))), cents(mul(D(125000), f, D('1.105')))]), height + ' ft');
@@ -104,7 +105,12 @@ const resultType = input => engine.generateQuoteVNext(input).resultType;
 test('fence quantity, height, gate and corner boundaries: supported values quote, unsafe values return review', () => {
   for (const linearFeet of [1, 100, 1_000_000]) assert.equal(resultType(fenceInput({ linearFeet, gates:{} })), 'INSTANT_ESTIMATE_READY', 'length ' + linearFeet);
   for (const linearFeet of [0.99, 0, -1, '100', Infinity, undefined]) assert.equal(resultType(fenceInput({ linearFeet, gates:{} })), 'ESTIMATE_REQUIRES_REVIEW', 'length ' + String(linearFeet));
-  for (const fenceHeight of [0.25, 2, 13, 100]) assert.equal(resultType(fenceInput({ fenceHeight, gates:{} })), 'INSTANT_ESTIMATE_READY', 'height ' + fenceHeight);
+  for(const fenceHeight of [0.25,2,13,100]){
+    const f=fenceInput({fenceHeight,gates:{}});assert.equal(resultType(f),'ESTIMATE_REQUIRES_REVIEW','unpriced height '+fenceHeight);
+    f.customerInputs.fenceRunCount=1;f.ownerPricing.pricing.heightRows={requested:{exactHeight:fenceHeight,postSpacingLF:8,offeringRates:{...f.ownerPricing.pricing.offeringRates}}};
+    assert.equal(resultType(f),'INSTANT_ESTIMATE_READY','explicit height '+fenceHeight);
+    assert.equal(engine.generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid.finalTotalCents,400000,'100 LF * 4000 cents without height scaling');
+  }
   for (const fenceHeight of [0, -6, '6', Infinity, undefined, 1e300]) assert.equal(resultType(fenceInput({ fenceHeight, gates:{} })), 'ESTIMATE_REQUIRES_REVIEW', 'height ' + String(fenceHeight));
   for (const gates of [{}, { walk:1 }, { walk:2 }]) assert.equal(resultType(fenceInput({ gates })), 'INSTANT_ESTIMATE_READY', JSON.stringify(gates));
   for (const gates of [{ walk:-1 }, { walk:1.5 }, { unknown_gate:1 }, { walk:'2' }, []]) assert.equal(resultType(fenceInput({ gates })), 'ESTIMATE_REQUIRES_REVIEW', JSON.stringify(gates));

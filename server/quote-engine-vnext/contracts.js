@@ -951,7 +951,8 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   for (const [name, value] of Object.entries(customerInputs)) {
     if (!allowed.has(name)) continue;
     if (missing(value)) continue;
-    const message = validateFieldValue(contract.fields[name], value);
+    const definition=fenceType(serviceType)&&customerInputs.fenceRuns!==undefined&&name==='linearFeet'?{...contract.fields[name],min:Number.MIN_VALUE}:contract.fields[name];
+    const message = validateFieldValue(definition, value);
     if (message) {
       invalidCustomerFields.push(name);
       validationMessages.push(`${contract.fields[name].label} ${message}.`);

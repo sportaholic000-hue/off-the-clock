@@ -13,6 +13,8 @@ for(const [name,change]of [
  ['gate at open end',c=>c.fenceRuns[0].sections[1].gateAfter='walk'],['empty runs',c=>c.fenceRuns=[]],
  ['fractional run count',c=>c.fenceRunCount=1.5],['contradictory run count',c=>c.fenceRunCount=2],
  ['contradictory total',c=>c.linearFeet=17],['contradictory corners',c=>c.cornerCount=1],
+ ['text total',c=>c.linearFeet='16'],['unmeasured method',c=>c.lfMethod='assumption'],
+ ['unknown zero gate',c=>c.gates={walk:1,unknown:0}],
  ['contradictory gates',c=>c.gates={}],['extra section input',c=>c.fenceRuns[0].sections[0].postCount=2],
  ])test('Oct16 layout refuses '+name+' with no released price',()=>{
   const f=layout();change(f.customerInputs);const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(sanitizeForCustomerVNext(q).midEstimate,undefined);
@@ -57,4 +59,11 @@ test('Oct16 free tiers are scoped to a fence type: aluminum Good can be zero; wo
 test('Oct16 exact spans do not add a post on binary decimal boundaries: 0.3 ft / 0.1 ft has 4 posts, not 5',()=>{
  const p={postSpacingLF:0.1,offeringDetails:{gates:{}}};
  assert.deepEqual(Object.fromEntries(Object.entries(fencePostQuantities({fenceRuns:[{closed:false,sections:[{lengthLF:0.3}]}]},p)).filter(([k])=>['total','terminal','line'].includes(k))),{total:4,terminal:2,line:2});
+});
+test('Oct16 new total-only rows require the run count instead of assuming one run',()=>{
+ const f=fenceFixture();delete f.customerInputs.fenceRunCount;const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.missingCustomerFields.includes('fenceRunCount'));
+});
+test('Oct16 a quarter-foot measured section stays measurable: 2 terminal posts, 0 line posts, total 6800 cents',()=>{
+ // 0.25*$10 + 0.25*1.10*$20 + 2*($20+$4+$6) = $68.00.
+ const f=layout();f.customerInputs.fenceRuns=[{closed:false,sections:[{lengthLF:0.25}]}];const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(total(q),6800);
 });

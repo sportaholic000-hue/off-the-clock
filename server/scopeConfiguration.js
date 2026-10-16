@@ -139,7 +139,7 @@ export function customerFieldVisible(field,values={}){
 // field must never acquire the last product's wording merely due to map order.
 export function customerFieldForInputs(field,values={}){
  const choices=(field.choiceVariants||[]).filter(v=>matchesConditions(v.visibleWhen,values));
- if(field.choiceVariants?.length)field={...field,values:[...new Set(choices.flatMap(v=>v.values||[]))],options:Object.assign({},...choices.map(v=>v.options||{})),gateChoices:choices.flatMap(v=>v.gateChoices||[])};
+ if(field.choiceVariants?.length)field={...field,values:[...new Set(choices.flatMap(v=>v.values||[]))],options:Object.assign({},...choices.map(v=>v.options||{})),gateChoices:[...new Map(choices.flatMap(v=>v.gateChoices||[]).map(g=>[g.value,g])).values()]};
  const selected=(field.presentationVariants||[]).filter(v=>matchesConditions(v.visibleWhen,values));
  if(!selected.length)return field;
  const labels=[...new Set(selected.map(v=>v.label))],details=[...new Set(selected.flatMap(v=>(v.details||[]).map(detail=>v.tierName?v.tierName+': '+detail:detail)))];

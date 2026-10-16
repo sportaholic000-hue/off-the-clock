@@ -4,7 +4,7 @@ import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,editServiceTiers,addPriceTier} from './pricebookEditing.js';
 import {productKeyFromName,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
 import {fenceOfferingFromLegacy} from '../../server/quote-engine-vnext/fencePricing.js';
-import {offeringRateDefinitions} from '../../server/quote-engine-vnext/configuredOfferings.js';
+import {offeringRateDefinitions,offeringBaselineConfirmation} from '../../server/quote-engine-vnext/configuredOfferings.js';
 
 const without=(value,key)=>Object.fromEntries(Object.entries(value||{}).filter(([k])=>k!==key));
 const setValue=(value,key,next)=>next===undefined?without(value,key):{...value,[key]:next};
@@ -17,10 +17,10 @@ function RowPrices({serviceType,offer,row,onChange,inherit}) {
   </div>)}</>;
 }
 
-export function FenceOfferingEditor({service,onChange}) {
+export function FenceOfferingEditor({service,meta,onChange}) {
   const p=servicePricing(service),[name,setName]=useState(''),[error,setError]=useState('');
   const legacy=!p.fenceOfferings&&p.offeringMode&&p.offeringDetails?.fenceType;
-  const offers=p.fenceOfferings||(legacy?{[p.offeringDetails.fenceType]:fenceOfferingFromLegacy(p,service.tiers||[])}:{});
+  const offers=p.fenceOfferings||(legacy?{[p.offeringDetails.fenceType]:fenceOfferingFromLegacy({...p,postSpacingLF:p.postSpacingLF??meta?.class2Defaults?.postSpacingLF},service.tiers||[])}:{});
   function save(next,known=service.knownOfferings){
     let updated=editServiceField(service,'fenceOfferings',next);
     if(legacy){updated=editServiceTiers(updated,[]);for(const field of ['offeringMode','offeringDetails','offeringRates','heightRows','installedLaborPercent','installedMaterialsPercent'])updated=editServiceField(updated,field,undefined);}
@@ -45,10 +45,12 @@ function FenceTypeEditor({serviceType,type,offer,onChange,onRemove}) {
   const bool=(key,label)=><Field label={label}><Select aria-label={label+' — '+type} value={d[key]===undefined?'':String(d[key])} onChange={e=>detail(key,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select></Field>;
   const rowChange=(key,row)=>onChange({...offer,heightRows:{...rows,[key]:row}});
   function removeGate(key){
-    const clean=entry=>({...entry,...(entry.offeringDetails?{offeringDetails:{...entry.offeringDetails,gates:without(entry.offeringDetails.gates,key)}}:{}),heightRows:Object.fromEntries(Object.entries(entry.heightRows||{}).map(([name,row])=>[name,{...row,offeringRates:without(row.offeringRates,'gate_'+key),installedLaborPercent:without(row.installedLaborPercent,'offeringRates.gate_'+key),installedMaterialsPercent:without(row.installedMaterialsPercent,'offeringRates.gate_'+key)}]))});
+    const clean=entry=>({...entry,installedLaborPercent:without(entry.installedLaborPercent,'offeringRates.gate_'+key),installedMaterialsPercent:without(entry.installedMaterialsPercent,'offeringRates.gate_'+key),...(entry.offeringDetails?{offeringDetails:{...entry.offeringDetails,gates:without(entry.offeringDetails.gates,key)}}:{}),heightRows:Object.fromEntries(Object.entries(entry.heightRows||{}).map(([name,row])=>[name,{...row,offeringRates:without(row.offeringRates,'gate_'+key),installedLaborPercent:without(row.installedLaborPercent,'offeringRates.gate_'+key),installedMaterialsPercent:without(row.installedMaterialsPercent,'offeringRates.gate_'+key)}]))});
     onChange({...clean(offer),tiers:tiers.map(t=>({...t,overrides:clean(t.overrides||{})}))});
   }
+  const confirmation=offeringBaselineConfirmation(serviceType,offer);
   return <section className="editor-section" data-fence-type={type}><h3>{humanPricingKey(type)}</h3>
+    {confirmation&&<Notice tone="warning">{confirmation.message}</Notice>}
     <Field label="Offering pricing"><Select aria-label={'Offering pricing — '+type} value={offer.offeringMode||''} onChange={e=>onChange({...offer,offeringMode:e.target.value||undefined})}><option value="">Choose how you price this offering</option><option value="installed">Complete installed prices</option><option value="itemized">Itemized measured components</option></Select></Field>
     {text('description','Included job description')}{text('postFootingDescription','Standard posts, footings and digging included')}
     {d.terrainSlope&&d.terrainSlope!=='flat'&&<label><input type="checkbox" checked={d.baselinePricesConfirmed===true} onChange={e=>detail('baselinePricesConfirmed',e.target.checked)}/> I confirm these are baseline prices for flat ground</label>}

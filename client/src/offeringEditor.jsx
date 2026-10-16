@@ -2,12 +2,11 @@ import {customerQuoteFields} from '../../server/customerQuoteFields.js';
 import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
 import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 import {offeringPriceBaseline,offeringBaselineConfirmation,offeringRateDefinitions} from '../../server/quote-engine-vnext/configuredOfferings.js';
-import React,{useState} from 'react';
+import React from 'react';
 import {FenceOfferingEditor} from './FenceOfferingEditor.jsx';
-import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
-import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
-import {servicePricing,editServiceField,chooseFenceType,removeGateOffering} from './pricebookEditing.js';
-import {productKeyFromName,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
+import {Field,Select,Textarea,Button,Notice} from './ui.jsx';
+import {ExactNumericInput} from './pricebookInputs.jsx';
+import {servicePricing,editServiceField} from './pricebookEditing.js';
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 
 export function offeringPreviewFields(meta,service) {
@@ -42,9 +41,6 @@ export function OfferingEditor(props) {
 }
 function PaintingOfferingEditor({service,meta,onChange}) {
   const p=servicePricing(service),mode=p.offeringMode,d=p.offeringDetails||{},rates=p.offeringRates||{},fence=service.serviceType.startsWith('FENCING_'),interior=service.serviceType==='INTERIOR_PAINTING';
-  const [gateName,setGateName]=useState(''),[gateError,setGateError]=useState(''),[typeName,setTypeName]=useState(''),[typeError,setTypeError]=useState('');
-  const fenceTypes=service.knownOfferings?.fenceType||{};
-  const useFenceType=name=>{const chosen=chooseFenceType(service,name);if(chosen.error){setTypeError(chosen.error);return;}onChange(chosen.service);setTypeName('');setTypeError('');};
   const baseline=offeringPriceBaseline(service.serviceType),confirmation=offeringBaselineConfirmation(service.serviceType,p);
   const legacyCondition=d[baseline.field]!==undefined&&d[baseline.field]!==baseline.value;
   const baselineNote=`Baseline prices cover ${baseline.condition}. ${baseline.adjustment} adjustments apply on top to labor only.${interior?' Wall height adjusts walls and ceilings; trim prices do not change with wall height.':''}`;

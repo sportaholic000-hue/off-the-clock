@@ -53,3 +53,10 @@ test('Oct16 owner review: nested prices are dollars, row heights are feet, alloc
   assert.ok(rows.some(r=>/Height up to and including/.test(r.label)&&r.value==='6 ft'));
   assert.ok(rows.some(r=>r.value==='60%'));assert.ok(!rows.some(r=>r.value.includes('[object Object]')));
 });
+test('Oct16 three tiers share one stable gate choice; upgraded hardware cannot relabel the confirmed opening',()=>{
+ const f=fourTypes(),o=f.ownerPricing.pricing.fenceOfferings.aluminum;
+ o.tiers[1].overrides.offeringDetails={gates:{walk:{description:'[SYNTHETIC] Upgraded tier hardware'}}};
+ const definition=bridge.applicationServiceDefinition(f.ownerPricing),field=customerFieldForInputs(definition.customerFields.find(q=>q.name==='fenceRuns'),f.customerInputs);
+ assert.equal(field.gateChoices.length,1);assert.equal(field.gateChoices[0].value,'walk');assert.ok(field.gateChoices[0].label.includes(o.offeringDetails.gates.walk.description));assert.doesNotMatch(field.gateChoices[0].label,/Upgraded/);
+ assert.deepEqual(voiceQuestionContract(f.ownerPricing,definition,f.customerInputs).fields.find(q=>q.field==='fenceRuns').choices,field.gateChoices);
+});

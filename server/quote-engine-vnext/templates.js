@@ -1223,7 +1223,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     const out=baseOutput(serviceType);
     for(const item of offeringLines(serviceType,customerInputs,pricing)) {
       if(scopesSuppressPrice(serviceType,customerInputs,pricing,serviceRules,item.ratePath))continue;
-      add(out,makeLine({name:item.label,category:item.category,quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,priceBasis:item.priceBasis,multipliers:item.multipliers||[]}));
+      add(out,makeLine({name:item.label,category:item.category,quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,contributingRatePaths:item.contributingRatePaths,priceBasis:item.priceBasis,multipliers:item.multipliers||[]}));
       if(item.derivation)recordQuantityDerivation(out,{name:item.key+'Quantity',...item.derivation,result:item.quantity,unit:item.unit,usedBy:[item.label]});
       else recordMeasurement(out,item.key,exactToNumber(exactDecimal(item.quantity)),item.unit,'confirmed_offering_scope');
     }
