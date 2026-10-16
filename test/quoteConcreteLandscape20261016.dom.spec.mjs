@@ -11,6 +11,8 @@ import {concreteFixture,customPlantFixture} from './quoteConcreteLandscape202610
 // Expected before execution: the actual owner page exposes plant definitions
 // inside Optional prices, keeps exact owner names and persists a changed name.
 // Concrete optional inputs start empty; typing $40 persists exactly 4000 cents.
+// The three concrete choices render as empty selects; Excluded and Pump save
+// unchanged, with a $1500 pump charge stored as exactly 150000 cents.
 // This is DOM behavior evidence, not a substitute for the Chromium tests.
 let bundle;
 before(async()=>{
@@ -41,6 +43,7 @@ async function mount(t,f){
   return {owner,w,d,calls};
 }
 async function fill(h,selector,value){const input=h.d.querySelector(selector);assert.ok(input,selector);Object.getOwnPropertyDescriptor(h.w.HTMLInputElement.prototype,'value').set.call(input,value);input.dispatchEvent(new h.w.Event('input',{bubbles:true}));input.dispatchEvent(new h.w.FocusEvent('focusout',{bubbles:true}));await pause();}
+async function choose(h,field,value){const input=h.d.querySelector('#field-'+field+' select');assert.ok(input,field+' select');Object.getOwnPropertyDescriptor(h.w.HTMLSelectElement.prototype,'value').set.call(input,value);input.dispatchEvent(new h.w.Event('change',{bubbles:true}));await pause();}
 async function save(h){button(h.d,'Save & validate').click();await waitFor(()=>h.calls.includes('/api/pricebook/save'),'saved price book');}
 test('plant owner DOM exposes definitions, edits the exact name and persists it',async t=>{
   const h=await mount(t,customPlantFixture());await waitFor(()=>h.d.querySelector('[aria-label="Customer size name 1"]'),'plant definitions');
@@ -48,9 +51,16 @@ test('plant owner DOM exposes definitions, edits the exact name and persists it'
   await fill(h,'[aria-label="Customer size name 1"]','#5 patio shrub, container');await save(h);
   assert.equal(loadPricebook(h.owner).services[0].pricing.plantSizes.shrub_5.name,'#5 patio shrub, container');
 });
-test('concrete owner DOM leaves new prices blank and saves40 dollars as4000 cents',async t=>{
+test('concrete owner DOM keeps new fields blank and saves rates, control joints and placement choices',async t=>{
   const h=await mount(t,concreteFixture());await waitFor(()=>h.d.querySelector('#field-shortLoadPerYard input'),'short-load fields');
   assert.equal(h.d.querySelector('#field-shortLoadPerYard input').value,'');assert.equal(h.d.querySelector('[aria-label="Placement flat charge ($ per pour) Pump"]').value,'');
-  await fill(h,'#field-shortLoadThresholdCubicYards input','5');await fill(h,'#field-shortLoadPerYard input','40');await save(h);
-  assert.equal(loadPricebook(h.owner).services[0].pricing.shortLoadPerYard,4000);
+  for(const field of ['controlJointPricing','defaultPlacementMethod','uncertainPlacementMethod']){
+    const select=h.d.querySelector('#field-'+field+' select');assert.ok(select,field+' must offer choices');assert.equal(select.value,'');
+  }
+  await fill(h,'#field-shortLoadThresholdCubicYards input','5');await fill(h,'#field-shortLoadPerYard input','40');
+  await fill(h,'[aria-label="Placement flat charge ($ per pour) Pump"]','1500');
+  await choose(h,'controlJointPricing','excluded');await choose(h,'defaultPlacementMethod','pump');await choose(h,'uncertainPlacementMethod','pump');await save(h);
+  const pricing=loadPricebook(h.owner).services[0].pricing;
+  assert.equal(pricing.shortLoadPerYard,4000);assert.equal(pricing.placementFlat.pump,150000);
+  assert.equal(pricing.controlJointPricing,'excluded');assert.equal(pricing.defaultPlacementMethod,'pump');assert.equal(pricing.uncertainPlacementMethod,'pump');
 });
