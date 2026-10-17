@@ -1,3 +1,4 @@
+import {FLAT_ROOF_ITEMS,FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_SERVICES,flatRepairContract,flatRepairPricingDiagnostics,repairUnitRequirements,repairUnitConfig,hasSurfacePrice,normalizeRepairArea} from './flatRoofRepairPricing.js';
 import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import {validPricebookServiceId} from '../priceBookStructure.js';
 import {productIdentityRequired} from '../productNames.js';
@@ -948,6 +949,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     reviewReason: `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`
   };
   customerInputs = customerSnapshot.value;
+  try{customerInputs=normalizeRepairArea(serviceType,customerInputs);}catch(error){return {ok:false,missingCustomerFields:[],invalidCustomerFields:['affectedArea'],reviewReason:error.message};}
   const pricingSnapshot = validationSnapshotVNext(pricing, 'pricing');
   if (!pricingSnapshot.ok) {
     return {
@@ -1204,6 +1206,7 @@ export function customerContractForVNext(type,p={},rules={}) {
  if(type.startsWith('CONCRETE_'))base={...base,fields:{...base.fields,placementMethod:{...base.fields.placementMethod,values:offeredPlacement(p),...(!offeredPlacement(p).length||p.defaultPlacementMethod||offeredPlacement(p).length===1?{evidenceOnly:true}:{})}}};
  if(type==='LANDSCAPING_SOD')base={...base,fields:{...base.fields,usableTopsoilDepthInches:{...base.fields.usableTopsoilDepthInches,...(!present(p.topsoilPerCubicYard)?{evidenceOnly:true}:{})}}};
  if(type==='LANDSCAPING_PLANTING'&&customPlantSizes(p))base={...base,fields:{...base.fields,plantsBySize:{...base.fields.plantsBySize,values:plantSizeKeys(p),options:Object.fromEntries(plantSizeKeys(p).map(key=>[key,plantSizeLabel(p,key)]))}}};
+ base=flatRepairContract(type,base,p);
  if(type.startsWith('FLOORING_')){
    const fields=pricePresent(p.carpetRollWidthFt)?{newFlooringType:base.fields.newFlooringType,carpetMeasurementMethod:base.fields.carpetMeasurementMethod,carpetRooms:base.fields.carpetRooms,carpetConnectedAreas:base.fields.carpetConnectedAreas,...base.fields}:{...base.fields};
    for(const [key,field] of Object.entries(fields)){
@@ -1228,7 +1231,7 @@ export function customerContractForVNext(type,p={},rules={}) {
 }
 
 export function allowedPricingFields(serviceType) {
-  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []),...(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
+  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []),...(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]),...(serviceType==='FLAT_ROOF_REPLACEMENT'?FLAT_ROOF_FIELDS:REPAIR_SERVICES.includes(serviceType)?REPAIR_UNIT_FIELDS:[]), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
 }
 
 const AI_CONFIRMABLE_SERVICE_FIELDS = [
@@ -1316,6 +1319,8 @@ function scalarMoneyFields(serviceType) {
 }
 
 export function valueAtPath(source, path) {
+  const [root,...rest]=String(path).split('.');
+  if(['installedLaborPercent','installedMaterialsPercent'].includes(root)&&Object.hasOwn(source?.[root]||{},rest.join('.')))return source[root][rest.join('.')];
   let value = source;
   for (const key of String(path).split('.')) {
     if (!isRecord(value) || !Object.hasOwn(value, key)) return undefined;
@@ -1340,6 +1345,8 @@ export function vinylUnderlaymentApplies(customerInputs, pricing) {
 }
 
 function baseOwnerRequirements(serviceType, c = {}, p = {}) {
+  const unitRequirements=repairUnitRequirements(serviceType,c,p);
+  if(unitRequirements)return unitRequirements;
   if(configuredOffering(serviceType,p))return offeringRequirements(serviceType,c,p);
   const out = [];
   const add = (path, label, options) => out.push(requirement(path, label, options));
@@ -1372,6 +1379,10 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     add(`membraneCostPerSqft.${membrane}`, 'Flat-roof membrane price for the selected membrane');
     add(`tearOffPerSqft.${c.membraneType}`, 'Flat-roof tear-off price for the selected membrane');
     add('minimumJob', 'Minimum flat-roof job price', { kind: 'minimum' });
+    for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0){
+      add(item.rate,item.label+' price',{kind:'unit_price'});
+      if(item.field==='deckSheets'&&p.flatRoofDeckPriceBasis==='installed')out.push({path:'installedLaborPercent.'+item.rate,label:'Deck replacement labor portion (%)',kind:'percentage'});
+    }
 
   } else if (serviceType === 'FLAT_ROOF_REPAIR') {
     add('laborHourlyRate', 'Flat-roof repair labor rate per hour');
@@ -1511,6 +1522,8 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
 }
 
 function validateRequirementValue(requirementDefinition, value) {
+  if (requirementDefinition.kind === 'percentage') return nonNegative(value)&&value<=100;
+  if (requirementDefinition.kind === 'unit_price') return nonNegative(value)&&value<=Number.MAX_SAFE_INTEGER;
   if (requirementDefinition.kind === 'minimum') return nonNegativeMoney(value);
   if (requirementDefinition.kind === 'non_negative_number') return nonNegative(value) && value <= Number.MAX_SAFE_INTEGER;
   if (requirementDefinition.kind === 'non_negative_quantity') return nonNegative(value) && value <= Number.MAX_SAFE_INTEGER;
@@ -1647,10 +1660,11 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   )];
   p = snapshot.value;
   diagnostics.push(...concreteLandscapeDiagnostics(serviceType,p));
+  diagnostics.push(...flatRepairPricingDiagnostics(serviceType,p));
   for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
     if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
     else for(const [key,value] of Object.entries(p[field])){
-      if(!/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft)$/.test(key)||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
+      if(!(/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
       else if(field==='installedMaterialsPercent'&&typeof p.installedLaborPercent?.[key]==='number'&&Number.isFinite(p.installedLaborPercent[key])&&p.installedLaborPercent[key]>=0&&p.installedLaborPercent[key]<=100&&exactCompare(exactAdd(value,p.installedLaborPercent[key]),100)>0)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Materials and labor portions cannot total more than 100%.');
     }
   }
@@ -1782,6 +1796,7 @@ export function pricingDiagnosticsForSelection(type,diagnostics,c,pricing={},ser
   let scopeRates;
   return diagnostics.filter(item=>{
     if(item.type!=='missing')return true; // Malformed or unsupported saved data still fails closed.
+    if(repairUnitConfig(type,c,pricing)&&/^(repairHours|repairMaterialAllowance|patchRepairHours|patchMaterialAllowance|materialAllowance)\./.test(item.path))return false;
     // An unfinished additional scope must not disable independently priced
     // work. Keep every missing field for a selected scope; global malformed
     // data was retained above, and unknown/root diagnostics remain blocking.
@@ -2398,10 +2413,10 @@ function offeringRegistryDiagnosticsVNext(field, values) {
 function hasSelectedOfferingPriceVNext(type,c,p,field) {
   const value=c[field], present=(root,...parents)=>{let map=p[root];for(const key of parents)map=isRecord(map)?map[key]:undefined;return isRecord(map)&&Object.hasOwn(map,value);};
   if(type==='ROOFING_REPLACEMENT')return (field==='existingRoofType'?['tearOffPerSquare']:['laborPerSquare','materialCostPerSquare','underlaymentPerSquare']).some(root=>present(root));
-  if(type==='ROOFING_REPAIR')return ['repairHours','repairMaterialAllowance'].some(root=>field==='roofType'?present(root):present(root,c.roofType));
+  if(type==='ROOFING_REPAIR')return ['repairHours','repairMaterialAllowance','repairUnitPrice','repairAreaMinimum'].some(root=>field==='roofType'?present(root):present(root,c.roofType));
   if(type==='FLAT_ROOF_REPLACEMENT')return (field==='membraneType'?['tearOffPerSqft']:['laborPerSqft','membraneCostPerSqft']).some(root=>present(root));
-  if(type==='FLAT_ROOF_REPAIR')return ['patchRepairHours','patchMaterialAllowance'].some(root=>field==='membraneType'?present(root):present(root,c.membraneType));
-  if(type==='SIDING_REPAIR')return ['repairHours','materialAllowance'].some(root=>present(root,c.sidingType));
+  if(type==='FLAT_ROOF_REPAIR')return ['patchRepairHours','patchMaterialAllowance','repairUnitPrice','repairAreaMinimum'].some(root=>field==='membraneType'?present(root):present(root,c.membraneType));
+  if(type==='SIDING_REPAIR')return ['repairHours','materialAllowance','repairUnitPrice','repairAreaMinimum'].some(root=>present(root,c.sidingType));
   if(type.startsWith('FLOORING_'))return ['removalPerSqft','disposalPerSqft'].some(root=>present(root));
   if(type.startsWith('FENCING_'))return ['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'].some(root=>present(root));
   if(field==='mulchType')return present('mulchMaterialPerYard');

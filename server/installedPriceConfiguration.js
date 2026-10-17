@@ -1,3 +1,4 @@
+import {FLAT_ROOF_ITEMS,REPAIR_SERVICES,repairUnitRows,repairRatePaths,hasSurfacePrice,remainingMaterialsShare} from './quote-engine-vnext/flatRoofRepairPricing.js';
 import {offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {FLOORING_ADDONS,pricePresent} from './quote-engine-vnext/flooringPricing.js';
@@ -5,6 +6,8 @@ import {FLOORING_ADDONS,pricePresent} from './quote-engine-vnext/flooringPricing
 // Installed bundles, not ordinary material selling rates or package purchases.
 export function installedPriceDefinitions(type,p={}) {
   const fields={};
+  if(type==='FLAT_ROOF_REPLACEMENT')for(const item of FLAT_ROOF_ITEMS)if(hasSurfacePrice(p[item.rate])&&(item.field!=='deckSheets'||p.flatRoofDeckPriceBasis==='installed'))fields[item.rate]=item.label;
+  if(REPAIR_SERVICES.includes(type))for(const {material,repair} of repairUnitRows(p))for(const path of repairRatePaths(type,{roofType:material,membraneType:material,sidingType:material,repairType:repair,damageLevel:repair},p))fields[path]=material.replaceAll('_',' ')+' '+repair.replaceAll('_',' ')+' '+(path.startsWith('repairAreaMinimum.')?'minimum':'unit price');
   for(const key of Object.keys(p.offeringRates||{})) {
     const active=key.startsWith('gate_')&&Object.hasOwn(p.offeringDetails?.gates||{},key.slice(5))
       ||key==='removalPerLF'&&p.offeringDetails?.removalOffered
@@ -36,4 +39,14 @@ export function installedLaborFactorPath(type,c,ratePath) {
   if(type==='INTERIOR_PAINTING')return 'wallHeightLaborMultiplier.'+c.wallHeight;
   if(type==='EXTERIOR_PAINTING')return 'storyMultiplier.'+c.stories;
   return null;
+}
+
+// These new installed prices explicitly split the whole charge between labor
+// and material. Historical installed-price allocations keep their old rules.
+export function repairOrDeckInstalled(type,path,p){
+  return type==='FLAT_ROOF_REPLACEMENT'&&path==='flatRoofDeckPerSheet'&&p.flatRoofDeckPriceBasis==='installed'||REPAIR_SERVICES.includes(type)&&/^(repairUnitPrice|repairAreaMinimum)\./.test(path);
+}
+export function installedMaterialsShare(type,p,path){
+  const labor=p.installedLaborPercent?.[path];
+  return repairOrDeckInstalled(type,path,p)&&typeof labor==='number'?remainingMaterialsShare(labor):p.installedMaterialsPercent?.[path];
 }

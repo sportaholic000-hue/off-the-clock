@@ -1,3 +1,4 @@
+import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,hasSurfacePrice,repairScenarioCube,repairScenarioInputs} from './flatRoofRepairPricing.js';
 import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,peakSurchargeConfigured,MISSING_PEAK_TIME_ZONE,monthForRecordedQuoteDate} from '../src/quoteDate.js';
@@ -283,7 +284,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   if (serviceType === 'ROOFING_REPAIR') {
     const pitch = greatestConfiguredKey(p.pitchMultiplier, ['low', 'medium', 'steep', 'very_steep'], 'medium');
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    return repairScenarios(serviceType, p.repairHours, ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => ({ repairType, affectedArea, roofType, pitch, stories, leakPresent: false }), p.largeRepairMaxSqft);
+    return repairScenarios(serviceType, repairScenarioCube(p.repairHours,p), ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => repairScenarioInputs(serviceType,{ repairType, affectedArea, roofType, pitch, stories, leakPresent: false },p), p.largeRepairMaxSqft);
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
     const configured = keysOf(p.laborPerSqft, 'epdm').filter(key => key !== 'average');
@@ -291,12 +292,12 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
     const configuredExistingTypes = keysOf(p.tearOffPerSqft,'epdm').filter(key=>key!=='average');
     const existingTypes = selection ? [selection.membraneType] : configuredExistingTypes.length ? configuredExistingTypes : membraneTypes;
-    const scenarios = membraneTypes.flatMap(replacementMembraneType=>existingTypes.map(membraneType=>({roofSqft:2_000_000,sqftMethod:'exact',membraneType,replacementMembraneType,existingLayers:10,accessDifficulty,serviceScope:'full',buildingType:'residential',insulationNeeded:false,coverboardNeeded:false})));
+    const scenarios = membraneTypes.flatMap(replacementMembraneType=>existingTypes.map(membraneType=>({roofSqft:2_000_000,sqftMethod:'exact',membraneType,replacementMembraneType,existingLayers:10,accessDifficulty,serviceScope:'full',insulationNeeded:false,coverboardNeeded:false,...Object.fromEntries(FLAT_ROOF_ITEMS.filter(i=>hasSurfacePrice(p[i.rate])).map(i=>[i.field,i.max]))})));
 
     return scenarios;
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
-    const base = repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false, accessDifficulty: greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult') }), p.largeRepairMaxSqft);
+    const base = repairScenarios(serviceType, repairScenarioCube(p.patchRepairHours,p), ['epdm', 'patch'], (membraneType, repairType, affectedArea) => repairScenarioInputs(serviceType,{ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false, accessDifficulty: greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult') },p), p.largeRepairMaxSqft);
     // Probe optional treatment when configured; real selected requests always
     // require its price. An unpriced extra does not disable complete base repairs.
     return [undefined, null, ''].includes(p.pondingWaterSurcharge) ? base : base.flatMap(inputs => [
@@ -400,7 +401,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   }
   if (serviceType === 'SIDING_REPAIR') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    return repairScenarios(serviceType, p.repairHours, ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => ({ sidingType, damageLevel, affectedArea, stories }), p.largeRepairMaxSqft);
+    return repairScenarios(serviceType, repairScenarioCube(p.repairHours,p), ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => repairScenarioInputs(serviceType,{ sidingType, damageLevel, affectedArea, stories },p), p.largeRepairMaxSqft);
   }
   if (serviceType === 'CUSTOM') return [{ service: service.service, serviceConfirmed: true, unit: p.unit || 'flat', ...({ per_hour: { hours: 4 }, per_unit: { itemCount: 3 }, per_sqft: { areaSqft: 500 }, per_LF: { linearFeet: 120 }, per_square: { roofSquares: 20 } }[p.unit] || {}) }];
   return [];
@@ -1285,6 +1286,7 @@ export function reviewOnlyScopesVNext(serviceType) {
 
 function fieldCopy(serviceType, field) {
   if(CONCRETE_LANDSCAPE_COPY[field])return {...CONCRETE_LANDSCAPE_COPY[field]};
+  if(FLAT_REPAIR_COPY[field])return {...FLAT_REPAIR_COPY[field]};
   if(serviceType.startsWith('FLOORING_')&&FLOORING_FIELD_COPY[field])return {...FLOORING_FIELD_COPY[field]};
   if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};

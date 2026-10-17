@@ -27,7 +27,7 @@ export function PricingTree({value,onChange,definition,level=1,label=definition.
  const keys=[...new Set([...Object.keys(map),...required])];
  const available=allowed?.filter(key=>!own(map,key)&&!required.includes(key));
  const update=(key,item)=>{const next={...map};if(item===undefined)delete next[key];else next[key]=item;onChange(item===undefined&&!Object.keys(next).length&&!tree.allowEmpty?undefined:next);};
- return <div className="field-stack">{tree.allowEmpty&&!keys.length&&<small>{available?.length?'No allocation percentages entered. Add a listed installed price only when you want to classify its labor or materials portion; this empty allocation map can be saved explicitly.':'No installed prices currently need a materials or labor allocation. This empty allocation map can be saved explicitly.'}</small>}{keys.map(key=><div key={key}>
+ return <div className="field-stack">{tree.allowEmpty&&!keys.length&&<small>{tree.emptyHelp||(available?.length?'No allocation percentages entered. Add a listed installed price only when you want to classify its labor or materials portion; this empty allocation map can be saved explicitly.':'No installed prices currently need a materials or labor allocation. This empty allocation map can be saved explicitly.')}</small>}{keys.map(key=><div key={key}>
   {level<depth?<><strong>{treeLabel(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+treeLabel(key)}/></>:
    <Field label={tree.leafLabels?.[key]||treeLabel(key)}>{tree.leafType==='enum'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
     tree.leafType==='boolean'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]===undefined?'':String(map[key])} onChange={e=>update(key,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>:
@@ -92,6 +92,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  const measuredRuns=value.fenceRuns||Array.from({length:Number.isSafeInteger(value.fenceRunCount)&&value.fenceRunCount>0&&value.fenceRunCount<=1000?value.fenceRunCount:1},()=>({sections:[{}]}));
  const layoutChange=(runs,{removedRun=false}={})=>{const next={...value,fenceRuns:runs,fenceRunCount:removedRun||value.fenceRunCount===undefined?runs.length:value.fenceRunCount};for(const k of ['linearFeet','gates','cornerCount','lfMethod'])delete next[k];onChange(clearChangedScopeConfirmations(scopeFields,value,next));};
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
+  if(name==='repairAreaMethod'){if(next==='dimensions')delete updated.affectedArea;else{delete updated.repairLengthFt;delete updated.repairWidthFt;}}
   if(name==='newFlooringType'){if(next==='carpet')delete updated.layoutPattern;else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
   if(name==='carpetMeasurementMethod'){
    if(next==='area_only'){delete updated.carpetRooms;delete updated.carpetConnectedAreas;}

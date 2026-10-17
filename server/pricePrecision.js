@@ -2,6 +2,7 @@
 // retain fractional cents until their extended line is rounded by the engine.
 export const FIXED_PRICE_FIELDS = new Set([
   'shortLoadFlatFee','placementFlat',
+  'flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairAreaMinimum',
   'deckingPerSheet','perStepPrice','postPrice','concretePerPost','gatePrice',
   'plantingLaborPerPlant','plantMaterialAllowance','repairMinimum',
   'repairMaterialAllowance','minimumJob','minimumServiceCharge','disposalFlat',

@@ -1,3 +1,4 @@
+import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES} from './flatRoofRepairPricing.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
 import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,pricePresent,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
@@ -5,7 +6,7 @@ import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
 import {tradeAdjustment} from './tradeAdjustments.js';
-import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
+import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
 import {fenceType,fenceHasRows,resolvedFencePricing,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
@@ -518,8 +519,21 @@ function calculateRoofReplacement(c, p, ctx) {
   return out;
 }
 
+
+function addUnitRepair(out,type,c,p) {
+  const lines=repairUnitLines(type,c,p);if(!lines)return false;
+  for(const item of lines)add(out,makeLine(item));
+  recordMeasurement(out,'affectedAreaSqft',c.affectedArea,'square feet');
+  const row=repairUnitConfig(type,c,p);
+  if(row.unit==='square_feet')recordRuleApplication(out,{name:'areaRepairPrice',rule:'minimum covers first area; additional square feet use the extra-area price',inputs:{affectedAreaSqft:c.affectedArea,firstAreaSqft:row.firstArea},result:{unit:row.unit},usedBy:lines.map(l=>l.name)});
+  else recordMeasurement(out,row.unit==='linear_feet'?'repairLengthLF':'repairItemCount',row.unit==='linear_feet'?c.repairLengthLF:c.repairItemCount,row.unit==='linear_feet'?'linear feet':'each');
+  out.priceDrivers.push(`${c.affectedArea} affected square feet`,`${(c.repairType||c.damageLevel).replaceAll('_',' ')} repair`);
+  return true;
+}
+
 function calculateRoofRepair(c, p) {
   const out = baseOutput('ROOFING_REPAIR');
+  if(addUnitRepair(out,'ROOFING_REPAIR',c,p))return out;
   const repairSize = repairSizeFromAffectedArea('ROOFING_REPAIR', c.affectedArea);
   const hoursPath = `repairHours.${c.roofType}.${c.repairType}.${repairSize}`;
   const materialPath = `repairMaterialAllowance.${c.roofType}.${c.repairType}.${repairSize}`;
@@ -594,12 +608,21 @@ function calculateFlatRoofReplacement(c, p, ctx) {
   addDisposalOverride(out, p, 'disposalPerSqft', exactTearOffAreaSqft, 'existing-layer square feet', 'Flat-roof disposal');
   recordMeasurement(out, 'roofAreaSqft', areaSqft, 'square feet');
   recordMeasurement(out, 'existingLayers', layers, 'layers', 'customer_measured');
+  for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0){
+    const materialOnly=item.field==='deckSheets'&&p.flatRoofDeckPriceBasis!=='installed';
+    add(out,makeLine({name:item.label,category:materialOnly?'material':'addon',priceBasis:'sell_price',quantity:c[item.field],unit:item.unit,rateCents:p[item.rate],ratePath:item.rate}));
+    recordMeasurement(out,item.field,c[item.field],item.unit);
+  }
   out.priceDrivers.push(`Measured flat-roof area: ${areaSqft} square feet`, `${layers} existing membrane layer${layers === 1 ? '' : 's'}`);
   return out;
 }
 
 function calculateFlatRoofRepair(c, p, ctx) {
   const out = baseOutput('FLAT_ROOF_REPAIR');
+  if(addUnitRepair(out,'FLAT_ROOF_REPAIR',c,p)){
+    if(c.pondingWater){const rate=addonMoney(p.pondingWaterSurcharge,'pondingWaterSurcharge');if(rate===undefined)ctx.skipAddon('Ponding water surcharge');else add(out,fixedLine('Ponding water surcharge','addon',rate,'pondingWaterSurcharge',undefined,{allowZero:true}));}
+    return out;
+  }
   const repairSize = repairSizeFromAffectedArea('FLAT_ROOF_REPAIR', c.affectedArea);
   const hoursPath = `patchRepairHours.${c.membraneType}.${c.repairType}.${repairSize}`;
   const materialPath = `patchMaterialAllowance.${c.membraneType}.${c.repairType}.${repairSize}`;
@@ -1145,6 +1168,7 @@ function calculateSidingReplacement(c, p) {
 
 function calculateSidingRepair(c, p) {
   const out = baseOutput('SIDING_REPAIR');
+  if(addUnitRepair(out,'SIDING_REPAIR',c,p))return out;
   const repairSize = repairSizeFromAffectedArea('SIDING_REPAIR', c.affectedArea);
   const hoursPath = `repairHours.${c.sidingType}.${c.damageLevel}.${repairSize}`;
   const materialPath = `materialAllowance.${c.sidingType}.${c.damageLevel}.${repairSize}`;
@@ -1292,19 +1316,24 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
       const ratePath=line.calculation?.ratePath;
       if(Object.hasOwn(installedPriceDefinitions(serviceType,pricing),ratePath)) {
         const factorPath=installedLaborFactorPath(serviceType,customerInputs,ratePath);
-        const factor=factorPath?valueAtPath(pricing,factorPath):1;
+        const unitRepair=REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\./.test(ratePath);
+        const repairFactorPaths=unitRepair?(serviceType==='ROOFING_REPAIR'?[`pitchMultiplier.${customerInputs.pitch}`,`storyMultiplier.${customerInputs.stories}`]:serviceType==='FLAT_ROOF_REPAIR'?[`accessMultiplier.${customerInputs.accessDifficulty}`]:[`storyMultiplier.${customerInputs.stories}`]):[];
+        const exactRepairFactor=unitRepair?exactMultiply(...repairFactorPaths.map(path=>valueAtPath(pricing,path))):null;
+        const factor=unitRepair?exactToNumber(exactRepairFactor):factorPath?valueAtPath(pricing,factorPath):1;
+        const exactFactor=exactRepairFactor??exactDecimal(factor);
         const laborShare=pricing.installedLaborPercent?.[ratePath];
         const base=exactFromEvidence(line.calculation.exactUnroundedCents);
         if(factor!==1 && laborShare===undefined)throw new QuoteReviewError('Set the labor portion of this installed price before applying a labor adjustment.',{missingOwnerFields:['installedLaborPercent.'+ratePath]});
-        const adjusted=factor===1?line:makeLine({...line,...line.calculation,multipliers:[...line.calculation.multipliers,{name:'Installed labor portion adjustment',path:factorPath,value:exactAdd(1,exactMultiply(exactDivide(laborShare,100),exactSubtract(factor,1))),laborSharePercent:laborShare,laborFactor:factor}]});
+        const adjusted=factor===1?line:makeLine({...line,...line.calculation,multipliers:[...line.calculation.multipliers,{name:'Installed labor portion adjustment',path:factorPath||repairFactorPaths[0],value:exactAdd(1,exactMultiply(exactDivide(laborShare,100),exactSubtract(exactFactor,1))),laborSharePercent:laborShare,laborFactor:factor,...(unitRepair?{factorPaths:repairFactorPaths}: {})}]});
         // Shares split the amount actually billed (the rounded line), so a 100%
         // materials or 100% labor share equals the whole billed line and the
         // portions always add back to it exactly. Fractions are kept until the
         // tax or surcharge itself is rounded.
-        const scale=factor===1?exactDecimal(1):exactAdd(1,exactMultiply(exactDivide(laborShare,100),exactSubtract(factor,1)));
+        const scale=factor===1?exactDecimal(1):exactAdd(1,exactMultiply(exactDivide(laborShare,100),exactSubtract(exactFactor,1)));
         const billedBase=exactDivide(adjusted.amountCents,scale);
         adjusted.installedBaseExactCents=exactEvidence(billedBase);
-        if(laborShare!==undefined)adjusted.installedLaborExactCents=exactEvidence(exactMultiply(billedBase,exactDivide(laborShare,100),factor));
+        if(laborShare!==undefined)adjusted.installedLaborExactCents=exactEvidence(exactMultiply(billedBase,exactDivide(laborShare,100),exactFactor));
+        if(repairOrDeckInstalled(serviceType,ratePath,pricing))adjusted.installedMaterialExactCents=exactEvidence(exactMultiply(billedBase,exactDivide(installedMaterialsShare(serviceType,pricing,ratePath),100)));
         return adjusted;
       }
       const adjustment=tradeAdjustment(serviceType,customerInputs,pricing,line);
