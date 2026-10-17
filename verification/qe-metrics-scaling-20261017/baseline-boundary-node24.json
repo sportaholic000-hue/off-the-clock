@@ -1,0 +1,32 @@
+{
+  "applicationCommit": "2aa54a2f9306bcd0565ea0d2010c7daf07c31d1b",
+  "runnerNode": "v24.19.0",
+  "runs": [
+    {
+      "mode": "arithmetic",
+      "startedAt": "2026-10-17T21:12:42.217Z",
+      "endedAt": "2026-10-17T21:12:57.242Z",
+      "elapsedMs": 15025.046,
+      "timeoutMs": 15000,
+      "timedOut": true,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "measurement": null,
+      "parseError": null,
+      "stderr": ""
+    },
+    {
+      "mode": "metrics",
+      "startedAt": "2026-10-17T21:12:57.243Z",
+      "endedAt": "2026-10-17T21:13:12.264Z",
+      "elapsedMs": 15021.072,
+      "timeoutMs": 15000,
+      "timedOut": true,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "measurement": null,
+      "parseError": null,
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "applicationCommit": "a29ed102bd61f521a3d248c6a4e614c951077f12",
+  "runnerNode": "v22.23.3",
+  "runs": [
+    {
+      "mode": "arithmetic",
+      "startedAt": "2026-10-17T21:29:46.493Z",
+      "endedAt": "2026-10-17T21:29:46.714Z",
+      "elapsedMs": 220.278,
+      "timeoutMs": 15000,
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "measurement": {
+        "mode": "arithmetic",
+        "node": "v22.23.3",
+        "records": 100000,
+        "firstPrime": 7,
+        "lastPrime": 393241,
+        "primeSum": "6251065493",
+        "primeGenerationMs": 11.311,
+        "constructionMs": 93.723,
+        "calculationMs": 44.054,
+        "totalMs": 149.088,
+        "memory": {
+          "rssBytes": null,
+          "heapUsedBytes": null,
+          "maxRssKilobytes": 111912
+        },
+        "result": {
+          "count": 100000,
+          "value": "0.01"
+        }
+      },
+      "parseError": null,
+      "stderr": "(node:46) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    {
+      "mode": "metrics",
+      "startedAt": "2026-10-17T21:29:46.714Z",
+      "endedAt": "2026-10-17T21:29:47.622Z",
+      "elapsedMs": 907.694,
+      "timeoutMs": 15000,
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "measurement": {
+        "mode": "metrics",
+        "node": "v22.23.3",
+        "records": 100000,
+        "firstPrime": 7,
+        "lastPrime": 393241,
+        "primeSum": "6251065493",
+        "primeGenerationMs": 10.133,
+        "constructionMs": 144.946,
+        "calculationMs": 690.161,
+        "totalMs": 845.241,
+        "memory": {
+          "rssBytes": null,
+          "heapUsedBytes": null,
+          "maxRssKilobytes": 201044
+        },
+        "result": {
+          "groups": 1,
+          "records": 100000,
+          "jobs": 100000,
+          "insideRange": {
+            "count": 100000,
+            "inside": 100000,
+            "percent": "100.00"
+          },
+          "signedGap": {
+            "count": 100000,
+            "value": "4375.73"
+          },
+          "absoluteGap": {
+            "count": 100000,
+            "value": "4375.73"
+          },
+          "signedGapPercent": {
+            "count": 100000,
+            "value": "0.01"
+          },
+          "absoluteGapPercent": {
+            "count": 100000,
+            "value": "0.01"
+          }
+        }
+      },
+      "parseError": null,
+      "stderr": "(node:54) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    {
+      "mode": "report",
+      "startedAt": "2026-10-17T21:29:47.622Z",
+      "endedAt": "2026-10-17T21:29:48.921Z",
+      "elapsedMs": 1298.996,
+      "timeoutMs": 15000,
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "measurement": {
+        "mode": "report",
+        "node": "v22.23.3",
+        "records": 100000,
+        "firstPrime": 7,
+        "lastPrime": 393241,
+        "primeSum": "6251065493",
+        "primeGenerationMs": 9.923,
+        "constructionMs": 151.741,
+        "calculationMs": 1072.654,
+        "totalMs": 1234.317,
+        "memory": {
+          "rssBytes": null,
+          "heapUsedBytes": null,
+          "maxRssKilobytes": 195432
+        },
+        "result": {
+          "groups": 1,
+          "records": 100000,
+          "jobs": 100000,
+          "insideRange": {
+            "count": 100000,
+            "inside": 100000,
+            "percent": "100.00"
+          },
+          "signedGap": {
+            "count": 100000,
+            "value": "4375.73"
+          },
+          "absoluteGap": {
+            "count": 100000,
+            "value": "4375.73"
+          },
+          "signedGapPercent": {
+            "count": 100000,
+            "value": "0.01"
+          },
+          "absoluteGapPercent": {
+            "count": 100000,
+            "value": "0.01"
+          }
+        }
+      },
+      "parseError": null,
+      "stderr": "(node:62) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    }
+  ]
+}

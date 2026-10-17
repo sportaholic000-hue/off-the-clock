@@ -59,8 +59,36 @@ const addExact=(left,right)=>{
   return {n:numerator/reduction,d:(left.d/reduction)*leftScale};
 };
 
+// Decimal report rounding only needs the exact fallback when the interval
+// proof touches a half-cent/hundredth boundary. Before forming a global common
+// denominator, combine fractions whose denominators differ only by decimal
+// factors. This is an exact partition: summing each partition and then the
+// partitions is algebraically identical to summing the original fractions.
+//
+// Accepted monetary inputs are safe integers, so after removing 2s and 5s the
+// LCM inside one partition has bounded bit width. Re-aggregating equal reduced
+// denominators also collapses cancellation before unrelated prime factors can
+// enter the balanced exact tree.
+const decimalKernel=denominator=>{
+  while(denominator%2n===0n)denominator/=2n;
+  while(denominator%5n===0n)denominator/=5n;
+  return denominator;
+};
+const collapseDecimalFamilies=ratios=>{
+  const byKernel=new Map();
+  for(const ratio of ratios){
+    const kernel=decimalKernel(ratio.d),previous=byKernel.get(kernel);
+    byKernel.set(kernel,previous?addExact(previous,ratio):ratio);
+  }
+  const byDenominator=new Map();
+  for(const ratio of byKernel.values())if(ratio.n!==0n)byDenominator.set(ratio.d,(byDenominator.get(ratio.d)||0n)+ratio.n);
+  const result=[];
+  for(const [d,n] of byDenominator)if(n!==0n)result.push(metricFraction(n,d));
+  return result;
+};
+
 const exactRoundedMean=(whole,ratios,count,scale)=>{
-  let level=ratios.map(({n,d})=>metricFraction(n*scale,d));
+  let level=collapseDecimalFamilies(ratios).map(({n,d})=>metricFraction(n*scale,d));
   if(whole!==0n)level.push({n:whole*scale,d:1n});
   if(!level.length)return '0.00';
   while(level.length>1){
