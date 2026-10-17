@@ -1301,7 +1301,7 @@ function fieldCopy(serviceType, field) {
   if(CONCRETE_LANDSCAPE_COPY[field])return {...CONCRETE_LANDSCAPE_COPY[field]};
   if(FLAT_REPAIR_COPY[field])return {...FLAT_REPAIR_COPY[field]};
   if(serviceType.startsWith('FLOORING_')&&FLOORING_FIELD_COPY[field])return {...FLOORING_FIELD_COPY[field]};
-  if(['paintingSettings','paintingRates','surfaceExtraRates','sidingSettings'].includes(field))return {label:{paintingSettings:'Painting coats and height bands',paintingRates:'Additional painting component prices',surfaceExtraRates:'Optional surface work prices',sidingSettings:'Siding measurement conventions'}[field],type:'surface_configuration',help:'Optional owner-entered settings. No starting ratios or prices are supplied.'};
+  if(['paintingSettings','paintingRates','surfaceExtraRates','sidingSettings'].includes(field))return {label:{paintingSettings:'Painting coats and height bands',paintingRates:'Additional painting component prices',surfaceExtraRates:'Optional surface work prices',sidingSettings:'Siding measurement conventions'}[field],type:'surface_configuration',help:field==='paintingSettings'?'Optional coat and height settings. Review the sourced additional-coat starting ratios in Quantity assumptions; existing services keep their prices until adoption. Primer ratios have no starting values.':'Optional owner-entered settings. No starting prices are supplied.'};
   if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};
   if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};
@@ -1337,7 +1337,7 @@ export function getVNextPriceBookMetadata() {
     service: SERVICE_NAMES[contract.serviceType],
     supportsScopeConfiguration:Object.keys(scopeDefinitions(contract.serviceType,{materialCostPerSquare:{configured_roof_type:1}})).length>0,
     reviewOnlyScopes: reviewOnlyScopesVNext(contract.serviceType),
-    pricingFields: contract.allowedPricingFields.filter(field => !contract.class2Fields.some(definition => definition.name === field)).map(field => ({ field, ...fieldCopy(contract.serviceType, field) })),
+    pricingFields: contract.allowedPricingFields.filter(field => !contract.class2Fields.some(definition => definition.name === field&&!definition.startingValueOnly)).map(field => ({ field, ...fieldCopy(contract.serviceType, field) })),
     ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
     class2Fields: contract.class2Fields.filter(definition=>!(contract.serviceType==='LANDSCAPING_PLANTING'&&definition.name==='mulchOverageFactor')).map(definition => ({
       ...definition,
@@ -1364,6 +1364,7 @@ export function materializeVNextService(service) {
   next.pricing ||= {};
   next=synchronizeStartingValuesVNext(next,CLASS2_DEFINITIONS[next.serviceType]||{});
   for (const [field, definition] of Object.entries(CLASS2_DEFINITIONS[next.serviceType] || {})) {
+    if(definition.startingValueOnly)continue;
     if (next.pricing[field] === undefined) next.pricing[field] = structuredClone(definition.defaultValue);
   }
   return next;

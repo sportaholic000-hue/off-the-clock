@@ -1,3 +1,4 @@
+import {retainHistoricalStartingValues} from './historicalStartingValuesFixture.mjs';
 import './pricebookTestEnv.mjs';
 // Independent acceptance checks for the five findings reported at eda14525.
 // Run from a checkout with Node 22 and locked dependencies installed:
@@ -27,6 +28,7 @@ function saveAndApprove(f){
  const ownerId='synthetic-followup-'+randomUUID(),service=structuredClone(f.ownerPricing);delete service.origin;
  const draft=b.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'USD',quoteTimeZone:'UTC'}},'toDollars');
  b.saveApplicationBook(ownerId,{...b.readApplicationBook(ownerId),...draft});
+  retainHistoricalStartingValues(ownerId,service);
  const saved=store.loadPricebook(ownerId);
  b.approveApplicationService(ownerId,service.id,{revision:b.bookRevision(saved),confirmConfiguration:true,confirmLegacySettings:true});
  return store.loadPricebook(ownerId);

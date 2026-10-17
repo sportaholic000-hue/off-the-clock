@@ -1,3 +1,4 @@
+import {retainHistoricalStartingValues} from './historicalStartingValuesFixture.mjs';
 import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -30,6 +31,7 @@ function live(service) {
   bridge.saveApplicationBook(ownerId, { revision:bridge.readApplicationBook(ownerId).revision, services:[{ source:'MANUAL', active:true, tiers:[],
     feeRules:{ travel:'not_applicable', disposal:'not_applicable', permit:'not_applicable', overhead:'not_applicable' },
     priceBasisByCategory:{ ...all('cost'), addon:'sell_price' }, taxabilityByCategory:all(false), ...service }], defaults });
+  retainHistoricalStartingValues(ownerId,service);
   let book = store.loadPricebook(ownerId);
   const status = bridge.applicationStatus(book.services[0], book);
   bridge.approveApplicationService(ownerId, book.services[0].id, { revision:bridge.bookRevision(book), confirmConfiguration:true, confirmLegacySettings:true, fields:status.confirmationFields });

@@ -1,3 +1,4 @@
+import {retainHistoricalStartingValues} from './historicalStartingValuesFixture.mjs';
 import './pricebookTestEnv.mjs';
 import test, {before, after} from 'node:test';
 import assert from 'node:assert/strict';
@@ -160,6 +161,7 @@ test('launch arithmetic version invalidates v5 approvals; reapproval restores th
   const f=peak(),owner='synthetic-launch-'+randomUUID(),service=structuredClone(f.ownerPricing);delete service.origin;
   const draft=bridge.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'USD',quoteTimeZone:'UTC'}},'toDollars');
   bridge.saveApplicationBook(owner,{...bridge.readApplicationBook(owner),...draft});
+  retainHistoricalStartingValues(owner,service);
   const approve=()=>bridge.approveApplicationService(owner,service.id,{revision:bridge.bookRevision(loadPricebook(owner)),confirmConfiguration:true,confirmLegacySettings:true});
   approve();let book=loadPricebook(owner);book.services[0].quoteDoneApproval.engineVersion='quote-engine-vnext-audit-repairs-20261005-v5';savePricebook(owner,book);
   book=loadPricebook(owner);assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,false);assert.notEqual(ENGINE_VERSION,'quote-engine-vnext-audit-repairs-20261005-v5');
@@ -266,6 +268,7 @@ test('follow-up saved and approved tier-only itemized pricing has no warning and
   const f=tierPaint(),owner='synthetic-tier-notice-'+randomUUID(),service=structuredClone(f.ownerPricing);delete service.origin;
   const draft=bridge.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'USD',quoteTimeZone:'UTC'}},'toDollars');
   bridge.saveApplicationBook(owner,{...bridge.readApplicationBook(owner),...draft});
+  retainHistoricalStartingValues(owner,service);
   bridge.approveApplicationService(owner,service.id,{revision:bridge.bookRevision(loadPricebook(owner)),confirmConfiguration:true,confirmLegacySettings:true});
   const book=loadPricebook(owner),status=bridge.applicationStatus(book.services[0],book);
   assert.equal(status.status,'QUOTING LIVE');assert.equal(status.approvalCurrent,true);

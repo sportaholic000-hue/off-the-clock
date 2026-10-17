@@ -1,3 +1,4 @@
+import {retainHistoricalStartingValues} from './historicalStartingValuesFixture.mjs';
 import {randomUUID} from 'node:crypto';
 import {fixture,mowing,flooring} from '../verification/engine-independent/fixtures.mjs';
 import * as bridge from '../server/src/quoteDoneBridge.js';
@@ -26,6 +27,7 @@ export function savedDisplayFixture(f,{approve=true}={}){
  const owner='synthetic-quote-display-'+randomUUID(),s=structuredClone(f.ownerPricing);delete s.origin;
  const initial=bridge.readApplicationBook(owner),draft=bridge.convertApplicationBook({services:[s],defaults:{currency:'CAD',quoteTimeZone:'UTC',...f.businessDefaults}},'toDollars');
  bridge.saveApplicationBook(owner,{...draft,revision:initial.revision},date);
+  retainHistoricalStartingValues(owner,s);
  if(f.ownerPricing.serviceType==='ROOFING_REPLACEMENT'){
   const historical=loadPricebook(owner);historical.services[0].startingValueAdoptions={roofing_replacement_20261016:{mode:'legacy'}};savePricebook(owner,historical);
  }

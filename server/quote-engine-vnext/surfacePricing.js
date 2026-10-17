@@ -256,10 +256,10 @@ export function surfaceCustomerContract(type,p,base){
 
 // The legacy price is retained as a two-coat basis. Keeping the conversion as an
 // exact multiplier avoids serializing 111.111... cents as a rounded unit price.
-export function coatLaborParts(quantity,coats,ratio){
+export function coatLaborParts(quantity,coats,ratio,ratioPath='paintingSettings'){
  if(ratio===undefined)return [{suffix:'',quantity:exactMultiply(quantity,coats),multipliers:[]}];
  const first=exactDivide(2,exactAdd(1,ratio));
- return [{suffix:' — first coat',quantity,multipliers:[{name:'First-coat price conversion',path:'paintingSettings',value:exactToNumber(first),exactValue:exactEvidence(first)}]},...(coats>1?[{suffix:' — additional coats',quantity:exactMultiply(quantity,coats-1),multipliers:[{name:'Additional-coat price conversion',path:'paintingSettings',value:exactToNumber(exactMultiply(first,ratio)),exactValue:exactEvidence(exactMultiply(first,ratio)),allowZero:true}]}]:[])];
+ return [{suffix:' — first coat',quantity,multipliers:[{name:'First-coat price conversion',path:ratioPath,value:exactToNumber(first),exactValue:exactEvidence(first)}]},...(coats>1?[{suffix:' — additional coats',quantity:exactMultiply(quantity,coats-1),multipliers:[{name:'Additional-coat price conversion',path:ratioPath,value:exactToNumber(exactMultiply(first,ratio)),exactValue:exactEvidence(exactMultiply(first,ratio)),allowZero:true}]}]:[])];
 }
 
 export const trimComponentPricing=p=>p.paintingRates?.trimLaborPerLFPerCoat!==undefined||p.paintingRates?.trimMaterialPerLFPerCoat!==undefined;

@@ -1,3 +1,4 @@
+import {retainHistoricalStartingValues} from './historicalStartingValuesFixture.mjs';
 import './pricebookTestEnv.mjs';
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
@@ -16,6 +17,7 @@ function saved(f){
  const owner='synthetic-oct5-'+randomUUID(),service=structuredClone(f.ownerPricing);delete service.origin;
  const draft=bridge.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'USD',quoteTimeZone:'UTC'}},'toDollars');
  bridge.saveApplicationBook(owner,{...bridge.readApplicationBook(owner),...draft});
+  retainHistoricalStartingValues(owner,service);
  bridge.approveApplicationService(owner,service.id,{revision:bridge.bookRevision(loadPricebook(owner)),confirmConfiguration:true,confirmLegacySettings:true});
  return loadPricebook(owner);
 }

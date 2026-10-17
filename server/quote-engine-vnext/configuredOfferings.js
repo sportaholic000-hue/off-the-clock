@@ -321,7 +321,7 @@ export function offeringLines(type,c,p) {
   const add=(key,quantity,derivation,multipliers)=>{const def=definitions[key];lines.push({key,quantity,...def,ratePath:'offeringRates.'+key,rateCents:p.offeringRates?.[key],...(derivation?{derivation}:{}),...(multipliers?.length?{multipliers}:{})});};
   const coated=(key,area,coats)=>add(key,exactMultiply(area,coats),{formula:'measuredAreaSqft * definedCoats',inputs:{measuredAreaSqft:exactToNumber(exactDecimal(area)),definedCoats:coats}});
   const labor=(key,area,coats,ratio)=>{
-    for(const part of coatLaborParts(area,coats,p.paintingSettings?.[ratio])){
+    for(const part of coatLaborParts(area,coats,p.paintingSettings?.[ratio],'paintingSettings.'+ratio)){
       add(key,part.quantity,undefined,part.multipliers);
       lines.at(-1).label+=part.suffix;
     }
@@ -391,11 +391,11 @@ export function offeringLines(type,c,p) {
     if(c.trimIncluded){
       if(!installed&&trimComponentPricing(p)){
         const trim=(key,quantity,category,multipliers=[],suffix='')=>lines.push({key,label:PAINTING_RATES[key]+suffix,quantity,category,unit:'trim linear-foot coats',ratePath:'paintingRates.'+key,rateCents:p.paintingRates[key],multipliers});
-        for(const part of coatLaborParts(c.trimLengthLF,c.trimCoats??1,p.paintingSettings?.trimAdditionalCoatRatio))trim('trimLaborPerLFPerCoat',part.quantity,'labor',part.multipliers,part.suffix);
+        for(const part of coatLaborParts(c.trimLengthLF,c.trimCoats??1,p.paintingSettings?.trimAdditionalCoatRatio,'paintingSettings.trimAdditionalCoatRatio'))trim('trimLaborPerLFPerCoat',part.quantity,'labor',part.multipliers,part.suffix);
         trim('trimMaterialPerLFPerCoat',exactMultiply(c.trimLengthLF,c.trimCoats??1),'material');
         if(trimPreparationNeeded(c,p))for(const category of ['Labor','Material'])trim('trimPrep'+category+'PerLF_'+c.trimSurfaceCondition,c.trimLengthLF,category==='Labor'?'prep':'material');
         if(p.paintingSettings?.trimPrimerCoats>0){
-          for(const part of coatLaborParts(c.trimLengthLF,p.paintingSettings.trimPrimerCoats,p.paintingSettings.trimPrimerAdditionalCoatRatio))trim('trimPrimerLaborPerLFPerCoat',part.quantity,'labor',part.multipliers);
+          for(const part of coatLaborParts(c.trimLengthLF,p.paintingSettings.trimPrimerCoats,p.paintingSettings.trimPrimerAdditionalCoatRatio,'paintingSettings.trimPrimerAdditionalCoatRatio'))trim('trimPrimerLaborPerLFPerCoat',part.quantity,'labor',part.multipliers);
           trim('trimPrimerMaterialPerLFPerCoat',exactMultiply(c.trimLengthLF,p.paintingSettings.trimPrimerCoats),'material');
         }
       }else add('installedTrimPerLF',c.trimLengthLF);

@@ -39,6 +39,7 @@ export function startingValueDefinitionsVNext(definitions={}){
         path,value:leaf.value,label:definition.startingValueLabel||definition.label||path,
         source:definition.startingValueSource,assumption:definition.startingValueAssumption,
         ...(definition.startingValueGroup?{group:definition.startingValueGroup}:{}),
+        ...(definition.deferUntilAdoption?{deferUntilAdoption:true}:{}),
         definitionSignature:signature({path,value:leaf.value,source:definition.startingValueSource,assumption:definition.startingValueAssumption,label:definition.startingValueLabel||definition.label||path})
       });
     }
@@ -53,6 +54,12 @@ export function startingValueDefinitionsVNext(definitions={}){
 export function synchronizeStartingValuesVNext(service,definitions={},options={}){
   if(!record(service))throw new TypeError('A service is required.');
   const next=clone(service);next.pricing=record(next.pricing)?next.pricing:{};
+  const pricingFor=path=>own(next,pathParts(path)[0])&&!own(next.pricing,pathParts(path)[0])?next:next.pricing;
+  const mirroredRoots=new Set(Object.keys(definitions).filter(field=>own(next,field)&&own(next.pricing,field)&&signature(next[field])===signature(next.pricing[field])));
+  const storeValue=(path,value)=>{
+    setPath(pricingFor(path),path,value);
+    if(mirroredRoots.has(pathParts(path)[0]))setPath(next,path,value);
+  };
   const state=record(next.startingValueState)?clone(next.startingValueState):{},adoptions=record(next.startingValueAdoptions)?clone(next.startingValueAdoptions):{};
   const confirm=new Set(options.confirmPaths||[]),ownerEntered=new Set(options.ownerEnteredPaths||[]);
   const legacyGroups=new Set(options.legacyGroups||[]),newGroups=new Set(options.newGroups||[]),adoptGroups=new Set(options.adoptGroups||[]);
@@ -61,27 +68,39 @@ export function synchronizeStartingValuesVNext(service,definitions={},options={}
   for(const group of new Set(definitionRows.map(item=>item.group).filter(Boolean))){
     if(!adoptions[group]&&legacyGroups.has(group))adoptions[group]={mode:'legacy',introducedAt:now};
     else if(!adoptions[group]&&newGroups.has(group))adoptions[group]={mode:'new',introducedAt:now};
+    else if(!adoptions[group]&&definitionRows.some(item=>item.group===group&&item.deferUntilAdoption))adoptions[group]={mode:'legacy',introducedAt:now};
   }
   for(const path of Object.keys(state))if(!definitionPaths.has(path))delete state[path];
   for(const item of definitionRows){
-    const current=getPath(next.pricing,item.path),prior=state[item.path];
+    const current=getPath(pricingFor(item.path),item.path);
+    let prior=state[item.path];
     if(ownerEntered.has(item.path)){
-      if(!hasPath(next.pricing,item.path)||!finite(current))throw new TypeError('An owner-entered starting-value replacement must be a finite stored factor.');
+      if(!hasPath(pricingFor(item.path),item.path)||!finite(current))throw new TypeError('An owner-entered starting-value replacement must be a finite stored factor.');
       delete state[item.path];continue;
+    }
+    // An existing optional factor is never replaced by a proposal.
+    if(prior?.pendingAdoption){
+      delete state[item.path];prior=undefined;
+      if(hasPath(pricingFor(item.path),item.path))continue;
+    }
+    if(item.deferUntilAdoption&&adoptions[item.group]?.mode==='legacy'&&!adoptGroups.has(item.group)){
+      if(confirm.has(item.path))throw new TypeError('Adopt this service’s starting values before confirming a pending value.');
+      if(!hasPath(pricingFor(item.path),item.path))state[item.path]={...item,pendingAdoption:true,confirmed:false,introducedAt:now};
+      continue;
     }
     if(prior){
       if(!Object.is(current,prior.value)){delete state[item.path];continue;}
       if(prior.definitionSignature!==item.definitionSignature){
-        setPath(next.pricing,item.path,item.value);
+        storeValue(item.path,item.value);
         state[item.path]={...item,confirmed:false,introducedAt:now};
       }
-    }else if(!hasPath(next.pricing,item.path)){
-      setPath(next.pricing,item.path,item.value);
+    }else if(!hasPath(pricingFor(item.path),item.path)){
+      storeValue(item.path,item.value);
       state[item.path]={...item,confirmed:false,introducedAt:now};
     }
     if(confirm.has(item.path)){
       const row=state[item.path];
-      if(!row||row.definitionSignature!==item.definitionSignature||!Object.is(getPath(next.pricing,item.path),item.value))throw new TypeError('Only the current stored starting value can be confirmed.');
+      if(!row||row.definitionSignature!==item.definitionSignature||!Object.is(getPath(pricingFor(item.path),item.path),item.value))throw new TypeError('Only the current stored starting value can be confirmed.');
       const ownerId=options.ownerId||next.origin?.ownerId;
       if(typeof ownerId!=='string'||!ownerId.trim()||next.origin?.ownerId&&ownerId!==next.origin.ownerId)throw new TypeError('Starting-value confirmation must match the service owner.');
       state[item.path]={...row,confirmed:true,confirmedAt:now,ownerId};
@@ -94,7 +113,7 @@ export function synchronizeStartingValuesVNext(service,definitions={},options={}
     if(typeof ownerId!=='string'||!ownerId.trim()||next.origin?.ownerId&&ownerId!==next.origin.ownerId)throw new TypeError('Starting-value adoption must match the service owner.');
     for(const item of rows){
       const row=state[item.path];
-      if(row&&row.definitionSignature===item.definitionSignature&&Object.is(getPath(next.pricing,item.path),item.value))state[item.path]={...row,confirmed:true,confirmedAt:now,ownerId};
+      if(row&&row.definitionSignature===item.definitionSignature&&Object.is(getPath(pricingFor(item.path),item.path),item.value))state[item.path]={...row,confirmed:true,confirmedAt:now,ownerId};
     }
     adoptions[group]={mode:'adopted',adoptedAt:now,ownerId};
   }
@@ -116,9 +135,10 @@ function evidencePaths(template){
   return paths;
 }
 
-export function unconfirmedStartingValueUsesVNext(service,template){
+export function unconfirmedStartingValueUsesVNext(service,template,effectivePricing=service?.pricing,tierName){
   const used=evidencePaths(template),state=record(service?.startingValueState)?service.startingValueState:{};
-  return Object.entries(state).filter(([path,row])=>used.has(path)&&(!record(row)||row.confirmed!==true)&&(!row?.group||service?.startingValueAdoptions?.[row.group]?.mode!=='legacy')).map(([path,row])=>({
+  const overrides=service?.tiers?.find(tier=>tier.name===tierName)?.overrides;
+  return Object.entries(state).filter(([path,row])=>used.has(path)&&!hasPath(overrides,path)&&(!record(row)||Object.is(getPath(effectivePricing,path),row.value))&&(!record(row)||row.confirmed!==true)&&(!row?.group||service?.startingValueAdoptions?.[row.group]?.mode!=='legacy')).map(([path,row])=>({
     path:'startingValueState.'+path,
     factorPath:path,
     message:'Confirm the starting value for '+String(record(row)&&row.label||path).toLowerCase()+' in your price book.'

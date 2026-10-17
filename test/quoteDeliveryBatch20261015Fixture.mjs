@@ -1,3 +1,4 @@
+import {retainHistoricalStartingValues} from './historicalStartingValuesFixture.mjs';
 import './pricebookTestEnv.mjs';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -20,6 +21,7 @@ export function publish(owner,f,{roofRuleMode='legacy'}={}){
   const service=structuredClone(f.ownerPricing);delete service.origin;
   const draft=bridge.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'CAD',quoteTimeZone:'UTC'}},'toDollars');
   bridge.saveApplicationBook(owner,{...draft,revision:bridge.readApplicationBook(owner).revision},date);
+  retainHistoricalStartingValues(owner,service);
   if(service.serviceType==='ROOFING_REPLACEMENT'&&roofRuleMode==='legacy'){
     const historical=loadPricebook(owner);historical.services[0].startingValueAdoptions={roofing_replacement_20261016:{mode:'legacy'}};savePricebook(owner,historical);
   }

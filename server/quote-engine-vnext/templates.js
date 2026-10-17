@@ -749,7 +749,7 @@ function calculateInteriorPainting(c, p, rules={}) {
     usedBy: ['Wall labor', 'Wall paint and materials']
   });
   const labor=(name,area,n,rate,path,ratio,multipliers=[])=>{
-    for(const part of coatLaborParts(area,n,p.paintingSettings?.[ratio]))add(out,makeLine({name:name+part.suffix,category:'labor',quantity:part.quantity,unit:'measured surface-unit coats',rateCents:rate,ratePath:path,multipliers:[...part.multipliers,...multipliers]}));
+    for(const part of coatLaborParts(area,n,p.paintingSettings?.[ratio],'paintingSettings.'+ratio))add(out,makeLine({name:name+part.suffix,category:'labor',quantity:part.quantity,unit:'measured surface-unit coats',rateCents:rate,ratePath:path,multipliers:[...part.multipliers,...multipliers]}));
   };
   const groups=c._surfaceGeometry?.groups||[{area:wallArea,ceiling:c.ceilingAreaSqft,height:c.wallHeight}];
   for(const group of groups)labor('Wall labor',group.area,coats,p.laborPerWallSqftPerCoat,'laborPerWallSqftPerCoat','wallAdditionalCoatRatio',[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
@@ -815,6 +815,10 @@ function calculateFlooring(serviceType, c, p, ctx) {
   }
   const exactRoomLaborFactor=exactDivide(laborEquivalentSqft,sqft);
   const productWasteFactor = quantityFactor(p.wasteFactorByType[c.newFlooringType], `wasteFactorByType.${c.newFlooringType}`, { allowZero: true });
+  const patternMode=ctx.ownerPricing?.startingValueAdoptions?.flooring_patterns_20261017?.mode;
+  if(['new','adopted'].includes(patternMode)&&c.newFlooringType==='tile'&&c.layoutPattern==='herringbone_or_chevron'&&p.herringboneLaborMultiplierByType?.tile===undefined)throw new QuoteReviewError('Enter your tile herringbone or chevron labor adjustment.',{missingOwnerFields:['herringboneLaborMultiplierByType.tile']});
+  const patternLabor=flooringLayoutValue(c,p,'labor');
+  recordQuantityDerivation(out,{name:'flooringPatternLaborAdjustment',formula:'selected owner pattern labor adjustment',inputs:{factorPath:patternLabor.path},result:patternLabor.value,unit:'multiplier',usedBy:['Flooring labor']});
   const patternWaste=flooringLayoutValue(c,p,'waste');
   const patternWasteAdder = quantityFactor(patternWaste.value,patternWaste.path, { allowZero: true });
   const exactWaste = exactAdd(productWasteFactor, patternWasteAdder);

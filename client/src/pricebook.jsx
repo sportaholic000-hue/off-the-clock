@@ -947,7 +947,9 @@ export default function PriceBook() {
 
   function updateField(field, value, ownerEnteredPath=field) {
     let next=markEditedPriceMetadata(selected,editServiceField(selected, field, value));
-    const paths=Object.keys(selected.startingValueState||{}).filter(path=>path===ownerEnteredPath||path.startsWith(ownerEnteredPath+'.'));
+    const leafValue=(source,path)=>path.slice(field.length+1).split('.').reduce((current,key)=>current?.[key],source);
+    const optionalMap=ownerEnteredPath===field&&selectedMeta.class2Fields.some(definition=>definition.field===field&&definition.startingValueOnly);
+    const paths=Object.keys(selected.startingValueState||{}).filter(path=>(path===ownerEnteredPath||path.startsWith(ownerEnteredPath+'.'))&&(!optionalMap||(Number.isFinite(leafValue(value,path))&&!Object.is(leafValue(value,path),leafValue(serviceFieldValue(selected,field),path)))));
     if(paths.length){
       const actions=next.startingValueActions||{};
       next={...next,startingValueActions:{...actions,ownerEnteredPaths:[...new Set([...(actions.ownerEnteredPaths||[]),...paths])],confirmPaths:(actions.confirmPaths||[]).filter(path=>!paths.includes(path))}};
@@ -1102,7 +1104,7 @@ export default function PriceBook() {
   const requiredMissing = requiredFields.filter(field => missingSet.has(field.field));
   const optionalMissing = optionalFields.filter(field => missingSet.has(field.field));
   const optionalSet = optionalFields.filter(field => serviceFieldValue(selected, field.field) !== undefined).length;
-  const class2Overridden = (selectedMeta?.class2Fields || []).filter(field =>
+  const class2Overridden = (selectedMeta?.class2Fields || []).filter(field => !field.startingValueOnly&&
     JSON.stringify(serviceFieldValue(selected, field.field) === undefined ? field.defaultValue : serviceFieldValue(selected, field.field)) !== JSON.stringify(field.defaultValue)).length;
   const selectedMoneyFields=selected?ownerMoneyEntries(selected):[];
 
@@ -1301,7 +1303,7 @@ export default function PriceBook() {
                 {(selectedMeta.class2Fields || []).length > 0 && (
                   <Disclosure
                     title="Quantity assumptions"
-                    subtitle="Defaults are already being applied. Adjust only if your jobs differ."
+                    subtitle="Review the assumptions used for your service. Sourced starting values need your confirmation or adoption."
                     summaryChip={class2Overridden > 0 ? `${class2Overridden} CHANGED` : 'DEFAULTS APPLIED'}
                   >
                     <div className="assumption-toolbar">
@@ -1314,21 +1316,22 @@ export default function PriceBook() {
                         replaceSelected(next);
                       }}>Reset all to default</Button>
                     </div>
-                    {[...new Set((selectedMeta.class2Fields||[]).map(field=>field.startingValueGroup).filter(group=>selected.startingValueAdoptions?.[group]?.mode==='legacy'))].map(group=><Notice key={group} tone="warning"><strong>New roofing starting values are available.</strong> This service is still using its previously approved pricing rules. Review the sources and assumptions below, then use one owner action to confirm these values and switch this service to the new rules. <Button variant="secondary" onClick={()=>adoptStartingValues(group)}>Adopt new roofing rules and starting values</Button></Notice>)}
+                    {[...new Set((selectedMeta.class2Fields||[]).map(field=>field.startingValueGroup).filter(group=>selected.startingValueAdoptions?.[group]?.mode==='legacy'))].map(group=>{const trade=group==='painting_coats_20261017'?'painting':group==='flooring_patterns_20261017'?'flooring':'roofing';return <Notice key={group} tone="warning"><strong>New {trade} starting values are available.</strong> This service is still using its previously approved pricing rules. Review the sources and assumptions below, then use one owner action to confirm these values and switch this service to the new rules. Existing owner values stay unchanged. <Button variant="secondary" onClick={()=>adoptStartingValues(group)}>Adopt new {trade} rules and starting values</Button></Notice>;})}
                     {(selectedMeta.class2Fields || []).filter(d=>!(servicePricing(selected).fenceOfferings&&d.field==='postSpacingLF')).map(definition => {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);
                       const wastePercent=definition.ownerInputUnit==='percent';
                       const isStructured = definition.defaultValue && typeof definition.defaultValue === 'object';
                       const startingEntries=Object.entries(selected.startingValueState||{}).filter(([path])=>path===definition.field||path.startsWith(definition.field+'.'));
                       const startingNotice=startingEntries.length?<div className="starting-value-note">
-                        <strong>{startingEntries.every(([,row])=>row.confirmed===true)?'Starting value — confirmed':'Starting value — waiting for your confirmation'}</strong>
+                        <strong>{startingEntries.every(([,row])=>row.pendingAdoption)?'Starting values — available after adoption':startingEntries.every(([,row])=>row.confirmed===true)?'Starting value — confirmed':'Starting value — waiting for your confirmation'}</strong>
                         <p><strong>Source:</strong> {definition.startingValueSource||startingEntries[0][1].source}</p>
                         <p><strong>Assumption:</strong> {definition.startingValueAssumption||startingEntries[0][1].assumption}</p>
                         {startingEntries.map(([path,row])=>{
                           const queued=selected.startingValueActions?.confirmPaths?.includes(path),confirmed=row.confirmed===true;
-                          return <Button key={path} variant="secondary" disabled={confirmed||queued} onClick={()=>confirmStartingValue(path)}>{confirmed?'CONFIRMED':queued?'CONFIRM ON SAVE':'Confirm '+humanPricingKey(path.split('.').at(-1))}</Button>;
+                          return <div key={path}><span>{humanPricingKey(path.split('.').at(-1))}: {definition.startingValueOnly&&definition.unit==='decimal fraction'?`${(row.value*100).toLocaleString('en-US',{maximumSignificantDigits:12})} percentage points`:row.value} </span>{!row.pendingAdoption&&<Button variant="secondary" disabled={confirmed||queued} onClick={()=>confirmStartingValue(path)}>{confirmed?'CONFIRMED':queued?'CONFIRM ON SAVE':'Confirm '+humanPricingKey(path.split('.').at(-1))}</Button>}</div>;
                         })}
                       </div>:null;
+                      if(definition.startingValueOnly)return <div className="assumption-row" key={definition.field}><span className="assumption-label">{definition.label}</span><p className="assumption-explanation">Edit these values in the service fields above. Existing owner values are preserved.</p>{startingNotice||<><p><strong>Source:</strong> {definition.startingValueSource}</p><p><strong>Assumption:</strong> {definition.startingValueAssumption}</p></>}</div>;
                       if (isStructured) {
                         return (
                           <div className="assumption-row" key={definition.field}>

@@ -22,7 +22,7 @@ export function SurfacePricingEditor({service,onChange}){
  return <section className="editor-section" aria-label="Painting and siding measurements and extras">
   {paintingType(type)&&<>
    <h2>Coats and measured surfaces</h2>
-   <Notice>Leave an additional-coat ratio blank to keep your current per-coat labor price. Setting a ratio converts that price into first-coat and additional-coat prices while keeping its unrounded two-coat labor price. Each extended coat line is rounded separately, so some totals can differ by one cent. Materials stay per coat. No starting ratios are supplied.</Notice>
+   <Notice>Before adoption, a blank additional-coat ratio keeps your current per-coat labor price. Setting a ratio converts that price into first-coat and additional-coat prices while keeping its unrounded two-coat labor price. Each extended coat line is rounded separately, so some totals can differ by one cent. Materials stay per coat. Review starting ratios and their sources in Quantity assumptions. Primer ratios have no starting values.</Notice>
    {p.offeringMode!=='installed'&&Object.entries(COAT_RATIOS).map(([key,label])=><Field key={key} label={label+' — additional-coat labor ratio'}><ExactNumericInput aria-label={label+' — additional-coat labor ratio'} value={settings[key]} onChange={v=>set('paintingSettings',key,v)}/>{split(key)}</Field>)}
    {type==='INTERIOR_PAINTING'&&<>
     <h3>Wall-height bands in feet</h3><p>Leave all bands blank to keep Standard / High / Vaulted and their current adjustments. When you enter bands, customers give a height in feet. Each upper limit is included in its band.</p>

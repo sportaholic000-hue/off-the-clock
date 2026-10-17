@@ -1,3 +1,4 @@
+import {retainHistoricalStartingValues} from './historicalStartingValuesFixture.mjs';
 import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -42,6 +43,7 @@ function saveDraft(input, prefix) {
     defaults:{ currency:'USD', quoteTimeZone:'UTC', ...input.businessDefaults }
   }, 'toDollars');
   bridge.saveApplicationBook(owner, { ...draft, revision:initial.revision }, date);
+  retainHistoricalStartingValues(owner,service);
   return { owner, policy, saved:bridge.readApplicationBook(owner) };
 }
 

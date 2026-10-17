@@ -1,0 +1,1549 @@
+{
+  "purpose": "[SYNTHETIC] Saved manual and AI approvals captured by running unchanged commit 308ddcf in a detached checkout before adoption.",
+  "sourceCommit": "308ddcf9168d03bc0798bfba850d732f5500cbea",
+  "cases": {
+    "painting": {
+      "book": {
+        "ownerId": "synthetic-pre-oct17-33f57013-2188-4eba-b458-ce7b42b2b535",
+        "services": [
+          {
+            "id": "c01769e5-2921-41e9-8cd1-33f59460cec2",
+            "source": "MANUAL",
+            "knownOfferings": {},
+            "active": true,
+            "serviceType": "INTERIOR_PAINTING",
+            "service": "[SYNTHETIC] INTERIOR_PAINTING",
+            "pricing": {
+              "laborPerWallSqftPerCoat": 100,
+              "materialPerWallSqftPerCoat": 30,
+              "minimumJob": 0,
+              "wallHeightLaborMultiplier": {
+                "standard": 1,
+                "high": 1.1,
+                "vaulted": 1.25
+              },
+              "paintWasteFactor": 0.1,
+              "primerWasteFactor": 0.1,
+              "prepMaterialWasteFactor": 0.1
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "sell_price",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "confirmedFields": {},
+            "origin": {
+              "serviceId": "c01769e5-2921-41e9-8cd1-33f59460cec2",
+              "serviceType": "INTERIOR_PAINTING",
+              "source": "MANUAL",
+              "ownerId": "synthetic-pre-oct17-33f57013-2188-4eba-b458-ce7b42b2b535",
+              "operationId": "160c5f0b-77c0-4c8b-9b38-7a6941f6e16e",
+              "createdAt": "2026-10-17T03:35:54.152Z"
+            },
+            "priceMetadata": {
+              "laborPerWallSqftPerCoat": {
+                "changedAt": "2026-10-17T03:35:54.179Z"
+              },
+              "materialPerWallSqftPerCoat": {
+                "changedAt": "2026-10-17T03:35:54.179Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-17T03:35:54.179Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-pre-oct17-33f57013-2188-4eba-b458-ce7b42b2b535",
+              "serviceId": "c01769e5-2921-41e9-8cd1-33f59460cec2",
+              "operationId": "bebba28b-022e-41e2-9b7f-9cd44b5705aa",
+              "approvedAt": "2026-10-17T03:35:54.270Z",
+              "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "d728e7370d59509c9af0da9812bad041d47576086c05e339c66c7bfa0262b89c",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "817125034a262edaaa8748054ba52025fb2a0e04faf9a8264ddae9e6fa1bc77c",
+                "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+                "service.origin": "55663593465183e2915b722341bccdac4ae496993b7952b75c48357b8f5a6a1c",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d",
+                "service.pricing": "0c5dc9e888a05da4f4f7fa519805cffa6f2ce89baaae89e3e31f44da145b6191",
+                "service.service": "7c71e1a92069345afaea7db07005abe8a11cfeea34053bd6e874ca64cef62042",
+                "service.serviceType": "1e41b95b9e3485a1e1ef06dc4f00fac11e2d5aa937e84a589d32b99813238a5d",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "39b9a33556043e96999199aebafd054f8aee38420b98f121a4971f34f934e0bc",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "USD",
+          "quoteTimeZone": "UTC"
+        },
+        "updatedAt": "2026-10-17T03:35:54.271Z"
+      },
+      "customerInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 400,
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "surfaceCondition": "good",
+        "coats": 2,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      }
+    },
+    "painting_empty": {
+      "book": {
+        "ownerId": "synthetic-pre-oct17-7a8a2008-e3f4-4097-b2fb-c7ef9e0973dc",
+        "services": [
+          {
+            "id": "cc0ffc9e-d173-440b-9e6c-70a262a96c89",
+            "source": "MANUAL",
+            "knownOfferings": {},
+            "active": true,
+            "serviceType": "INTERIOR_PAINTING",
+            "service": "[SYNTHETIC] INTERIOR_PAINTING",
+            "pricing": {
+              "laborPerWallSqftPerCoat": 100,
+              "materialPerWallSqftPerCoat": 30,
+              "minimumJob": 0,
+              "wallHeightLaborMultiplier": {
+                "standard": 1,
+                "high": 1.1,
+                "vaulted": 1.25
+              },
+              "paintWasteFactor": 0.1,
+              "primerWasteFactor": 0.1,
+              "prepMaterialWasteFactor": 0.1,
+              "paintingSettings": {}
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "sell_price",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "confirmedFields": {},
+            "origin": {
+              "serviceId": "cc0ffc9e-d173-440b-9e6c-70a262a96c89",
+              "serviceType": "INTERIOR_PAINTING",
+              "source": "MANUAL",
+              "ownerId": "synthetic-pre-oct17-7a8a2008-e3f4-4097-b2fb-c7ef9e0973dc",
+              "operationId": "80ab0f68-913c-4d4b-8488-1b56cfab866c",
+              "createdAt": "2026-10-17T03:35:54.290Z"
+            },
+            "priceMetadata": {
+              "laborPerWallSqftPerCoat": {
+                "changedAt": "2026-10-17T03:35:54.298Z"
+              },
+              "materialPerWallSqftPerCoat": {
+                "changedAt": "2026-10-17T03:35:54.298Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-17T03:35:54.298Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-pre-oct17-7a8a2008-e3f4-4097-b2fb-c7ef9e0973dc",
+              "serviceId": "cc0ffc9e-d173-440b-9e6c-70a262a96c89",
+              "operationId": "d46a7ceb-649a-45bc-aa53-6945a845c653",
+              "approvedAt": "2026-10-17T03:35:54.337Z",
+              "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "3f468f4c438c609e3f8a9ac7f5bf4f71a6e097e0cf4e00738617161bb81291a3",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "32ebf05ab053c524334865fdf9b9b1bbdffc40bdb30cd67bcf52aef785172634",
+                "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+                "service.origin": "5277c20fc7fab66bfe2d5478a5228027ee86bf989e5d9a5c1e9b2cdc74250d77",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d",
+                "service.pricing": "52ce49e4fd13cd02cfeb7986ab760b6f22a94e2f927c5c82e4f09b1d20896b48",
+                "service.service": "7c71e1a92069345afaea7db07005abe8a11cfeea34053bd6e874ca64cef62042",
+                "service.serviceType": "1e41b95b9e3485a1e1ef06dc4f00fac11e2d5aa937e84a589d32b99813238a5d",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "39b9a33556043e96999199aebafd054f8aee38420b98f121a4971f34f934e0bc",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "USD",
+          "quoteTimeZone": "UTC"
+        },
+        "updatedAt": "2026-10-17T03:35:54.338Z"
+      },
+      "customerInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 400,
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "surfaceCondition": "good",
+        "coats": 2,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      }
+    },
+    "painting_owner": {
+      "book": {
+        "ownerId": "synthetic-pre-oct17-2d4b7337-bbc0-4558-a756-20c48fe66526",
+        "services": [
+          {
+            "id": "43b6b8c2-ff33-4afe-9ab5-58e5f28f6314",
+            "source": "MANUAL",
+            "knownOfferings": {},
+            "active": true,
+            "serviceType": "INTERIOR_PAINTING",
+            "service": "[SYNTHETIC] INTERIOR_PAINTING",
+            "pricing": {
+              "laborPerWallSqftPerCoat": 100,
+              "materialPerWallSqftPerCoat": 30,
+              "minimumJob": 0,
+              "wallHeightLaborMultiplier": {
+                "standard": 1,
+                "high": 1.1,
+                "vaulted": 1.25
+              },
+              "paintWasteFactor": 0.1,
+              "primerWasteFactor": 0.1,
+              "prepMaterialWasteFactor": 0.1,
+              "paintingSettings": {
+                "wallAdditionalCoatRatio": 0.65,
+                "ceilingAdditionalCoatRatio": 0.55,
+                "trimAdditionalCoatRatio": 0.45,
+                "heightBands": {
+                  "standardMaxFeet": 9,
+                  "highMaxFeet": 12,
+                  "vaultedMaxFeet": 20
+                }
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "sell_price",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "confirmedFields": {},
+            "origin": {
+              "serviceId": "43b6b8c2-ff33-4afe-9ab5-58e5f28f6314",
+              "serviceType": "INTERIOR_PAINTING",
+              "source": "MANUAL",
+              "ownerId": "synthetic-pre-oct17-2d4b7337-bbc0-4558-a756-20c48fe66526",
+              "operationId": "e294b0b1-22c0-4b86-92cd-8e00e7f5e5ad",
+              "createdAt": "2026-10-17T03:35:54.356Z"
+            },
+            "priceMetadata": {
+              "laborPerWallSqftPerCoat": {
+                "changedAt": "2026-10-17T03:35:54.363Z"
+              },
+              "materialPerWallSqftPerCoat": {
+                "changedAt": "2026-10-17T03:35:54.363Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-17T03:35:54.363Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-pre-oct17-2d4b7337-bbc0-4558-a756-20c48fe66526",
+              "serviceId": "43b6b8c2-ff33-4afe-9ab5-58e5f28f6314",
+              "operationId": "9251edbd-7ee2-4042-bce6-a1783f182f8c",
+              "approvedAt": "2026-10-17T03:35:54.400Z",
+              "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "2e9e3c70e03c4167b5ab82a3d2188404427e07a753595799a48de8a652f9d668",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "5ea31e44616aa6126cdf1c7302743022bf1874a56b624f9d577601cfb152e9b2",
+                "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+                "service.origin": "c352f1322c694174727cf0d4ab6e8607b142f6ce8d2925fd1cc46c696d4341b7",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d",
+                "service.pricing": "3291921dcebfb56d2ca16d130e96e8b00f03371c79f04dc99f33e16f6669444e",
+                "service.service": "7c71e1a92069345afaea7db07005abe8a11cfeea34053bd6e874ca64cef62042",
+                "service.serviceType": "1e41b95b9e3485a1e1ef06dc4f00fac11e2d5aa937e84a589d32b99813238a5d",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "39b9a33556043e96999199aebafd054f8aee38420b98f121a4971f34f934e0bc",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "USD",
+          "quoteTimeZone": "UTC"
+        },
+        "updatedAt": "2026-10-17T03:35:54.401Z"
+      },
+      "customerInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 400,
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "surfaceCondition": "good",
+        "coats": 2,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      }
+    },
+    "flooring": {
+      "book": {
+        "ownerId": "synthetic-pre-oct17-dc0e29a8-08da-4e77-b40b-444e09e7b63a",
+        "services": [
+          {
+            "id": "33b8ee6a-0522-4560-9a7f-fda6867ac959",
+            "source": "MANUAL",
+            "knownOfferings": {
+              "existingFloorType": {
+                "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+                "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+                "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+                "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+                "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+                "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+              }
+            },
+            "active": true,
+            "serviceType": "FLOORING_INSTALL",
+            "service": "[SYNTHETIC] FLOORING_INSTALL",
+            "pricing": {
+              "laborPerSqft": {
+                "vinyl_plank": 300
+              },
+              "materialPerSqft": {
+                "vinyl_plank": 500
+              },
+              "minimumJob": 0,
+              "vinylPlankUnderlaymentRule": "never_included",
+              "perStepPrice": 10000,
+              "wasteFactorByType": {
+                "hardwood": 0.1,
+                "laminate": 0.08,
+                "vinyl_plank": 0.08,
+                "carpet": 0.1,
+                "tile": 0.12
+              },
+              "patternWasteAdder": {
+                "straight": 0,
+                "diagonal_or_pattern": 0.07
+              },
+              "roomComplexityMultiplier": {
+                "large": 1,
+                "medium": 1.1,
+                "small": 1.2
+              },
+              "roomSizeThresholds": {
+                "smallMaxSqft": 150,
+                "mediumMaxSqft": 300
+              },
+              "layoutLaborMultiplier": {
+                "straight": 1,
+                "diagonal_or_pattern": 1.2
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "confirmedFields": {},
+            "origin": {
+              "serviceId": "33b8ee6a-0522-4560-9a7f-fda6867ac959",
+              "serviceType": "FLOORING_INSTALL",
+              "source": "MANUAL",
+              "ownerId": "synthetic-pre-oct17-dc0e29a8-08da-4e77-b40b-444e09e7b63a",
+              "operationId": "9b9fd325-dfb6-49db-bf47-240f4f1a3e76",
+              "createdAt": "2026-10-17T03:35:54.418Z"
+            },
+            "priceMetadata": {
+              "laborPerSqft.vinyl_plank": {
+                "changedAt": "2026-10-17T03:35:54.425Z"
+              },
+              "materialPerSqft.vinyl_plank": {
+                "changedAt": "2026-10-17T03:35:54.425Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-17T03:35:54.425Z"
+              },
+              "perStepPrice": {
+                "changedAt": "2026-10-17T03:35:54.425Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-pre-oct17-dc0e29a8-08da-4e77-b40b-444e09e7b63a",
+              "serviceId": "33b8ee6a-0522-4560-9a7f-fda6867ac959",
+              "operationId": "6d62dd2e-4312-4c1a-ace5-7a24fcf73434",
+              "approvedAt": "2026-10-17T03:35:54.488Z",
+              "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "b9367414e94edb3f44e88ff3d9399daffcaa4d0af00808d748c88f73847e98de",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "7cfe5d9e9bcf600a5a87c360f7914f40c80180bda8a06253cb161cd54f27ae30",
+                "service.knownOfferings": "b875ba8ca5e7ccb7c2411ac8900bee8ae2b1b3edac3c34b62e7169c591f80765",
+                "service.origin": "882e15f539da2844d94a8fea421933509308a6ac48ad46a80766fde80c658971",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "f24630d2df20534834aafa62e699ebc325c209754334df8b65331fbfaf920cbd",
+                "service.service": "a210134b6006fe763ac52392bde0126c53b3eebe67c5185a43f8200da1c71011",
+                "service.serviceType": "47e7634615b36ea4056899b0819942fd023206cbaf11a1aa995c1bacf379574a",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "39b9a33556043e96999199aebafd054f8aee38420b98f121a4971f34f934e0bc",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "USD",
+          "quoteTimeZone": "UTC"
+        },
+        "updatedAt": "2026-10-17T03:35:54.489Z"
+      },
+      "customerInputs": {
+        "sqft": 300,
+        "sqftMethod": "exact",
+        "newFlooringType": "vinyl_plank",
+        "existingFloorType": "none",
+        "removalNeeded": false,
+        "roomCount": 1,
+        "layoutPattern": "straight",
+        "stairSteps": 0
+      }
+    },
+    "flooring_owner": {
+      "book": {
+        "ownerId": "synthetic-pre-oct17-328f6651-9276-400f-8711-413249a6446b",
+        "services": [
+          {
+            "id": "67c40b02-025b-4396-8ea0-63ecf36cc59c",
+            "source": "MANUAL",
+            "knownOfferings": {
+              "existingFloorType": {
+                "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+                "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+                "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+                "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+                "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+                "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+              }
+            },
+            "active": true,
+            "serviceType": "FLOORING_INSTALL",
+            "service": "[SYNTHETIC] FLOORING_INSTALL",
+            "pricing": {
+              "laborPerSqft": {
+                "vinyl_plank": 300
+              },
+              "materialPerSqft": {
+                "vinyl_plank": 500
+              },
+              "minimumJob": 0,
+              "vinylPlankUnderlaymentRule": "never_included",
+              "perStepPrice": 10000,
+              "wasteFactorByType": {
+                "hardwood": 0.1,
+                "laminate": 0.08,
+                "vinyl_plank": 0.08,
+                "carpet": 0.1,
+                "tile": 0.12
+              },
+              "patternWasteAdder": {
+                "straight": 0,
+                "diagonal_or_pattern": 0.07
+              },
+              "roomComplexityMultiplier": {
+                "large": 1,
+                "medium": 1.1,
+                "small": 1.2
+              },
+              "roomSizeThresholds": {
+                "smallMaxSqft": 150,
+                "mediumMaxSqft": 300
+              },
+              "layoutLaborMultiplier": {
+                "straight": 1,
+                "diagonal_or_pattern": 1.2
+              },
+              "diagonalWasteAdderByType": {
+                "vinyl_plank": 0.05
+              },
+              "herringboneWasteAdderByType": {
+                "vinyl_plank": 0.06
+              },
+              "diagonalLaborMultiplierByType": {
+                "vinyl_plank": 1.4
+              },
+              "herringboneLaborMultiplierByType": {
+                "vinyl_plank": 1.6
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "confirmedFields": {},
+            "origin": {
+              "serviceId": "67c40b02-025b-4396-8ea0-63ecf36cc59c",
+              "serviceType": "FLOORING_INSTALL",
+              "source": "MANUAL",
+              "ownerId": "synthetic-pre-oct17-328f6651-9276-400f-8711-413249a6446b",
+              "operationId": "48184f3b-9357-4ec6-ab84-e24927034bac",
+              "createdAt": "2026-10-17T03:35:54.518Z"
+            },
+            "priceMetadata": {
+              "laborPerSqft.vinyl_plank": {
+                "changedAt": "2026-10-17T03:35:54.525Z"
+              },
+              "materialPerSqft.vinyl_plank": {
+                "changedAt": "2026-10-17T03:35:54.525Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-17T03:35:54.525Z"
+              },
+              "perStepPrice": {
+                "changedAt": "2026-10-17T03:35:54.525Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-pre-oct17-328f6651-9276-400f-8711-413249a6446b",
+              "serviceId": "67c40b02-025b-4396-8ea0-63ecf36cc59c",
+              "operationId": "7c87d6e2-4a3f-4709-9f86-acf257ad2bea",
+              "approvedAt": "2026-10-17T03:35:54.582Z",
+              "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "1e59a348763dfbe10fb46fbf01a9b55bf6098a7b79eca42c442b583bf28e553c",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "755505c044888473c803e65c22ced9c3ea31c50dc4431afb18054a0134a4c6bf",
+                "service.knownOfferings": "b875ba8ca5e7ccb7c2411ac8900bee8ae2b1b3edac3c34b62e7169c591f80765",
+                "service.origin": "462604b80a69925c9e47541402e39755b247a44855ea0f21f9f8e4b00a66850d",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "051a64290d12162e1e94861608e27d6b297220fbca9a45822b0a63f77dccff1c",
+                "service.service": "a210134b6006fe763ac52392bde0126c53b3eebe67c5185a43f8200da1c71011",
+                "service.serviceType": "47e7634615b36ea4056899b0819942fd023206cbaf11a1aa995c1bacf379574a",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "39b9a33556043e96999199aebafd054f8aee38420b98f121a4971f34f934e0bc",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "USD",
+          "quoteTimeZone": "UTC"
+        },
+        "updatedAt": "2026-10-17T03:35:54.584Z"
+      },
+      "customerInputs": {
+        "sqft": 300,
+        "sqftMethod": "exact",
+        "newFlooringType": "vinyl_plank",
+        "existingFloorType": "none",
+        "removalNeeded": false,
+        "roomCount": 1,
+        "layoutPattern": "straight",
+        "stairSteps": 0
+      }
+    },
+    "painting_ai": {
+      "book": {
+        "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+        "services": [
+          {
+            "id": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+            "source": "AI_SUGGESTED",
+            "knownOfferings": {},
+            "active": true,
+            "serviceType": "INTERIOR_PAINTING",
+            "service": "[SYNTHETIC] INTERIOR_PAINTING",
+            "pricing": {
+              "laborPerWallSqftPerCoat": 100,
+              "materialPerWallSqftPerCoat": 30,
+              "minimumJob": 0,
+              "wallHeightLaborMultiplier": {
+                "standard": 1,
+                "high": 1.1,
+                "vaulted": 1.25
+              },
+              "paintWasteFactor": 0.1,
+              "primerWasteFactor": 0.1,
+              "prepMaterialWasteFactor": 0.1
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "sell_price",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "confirmedFields": {
+              "laborPerWallSqftPerCoat": true,
+              "materialPerWallSqftPerCoat": true,
+              "minimumJob": true,
+              "wallHeightLaborMultiplier": true,
+              "paintWasteFactor": true,
+              "primerWasteFactor": true,
+              "prepMaterialWasteFactor": true,
+              "feeRules": true,
+              "priceBasisByCategory": true,
+              "taxabilityByCategory": true,
+              "peakMonths": true,
+              "peakSurchargePercent": true,
+              "knownOfferings": true
+            },
+            "origin": {
+              "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+              "serviceType": "INTERIOR_PAINTING",
+              "source": "AI_SUGGESTED",
+              "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+              "operationId": "43088e15-6104-4509-85a0-5ce3e9d0cd25",
+              "createdAt": "2026-10-17T03:35:54.617Z"
+            },
+            "priceMetadata": {
+              "laborPerWallSqftPerCoat": {
+                "changedAt": "2026-10-17T03:35:54.624Z",
+                "aiPlaceholder": true
+              },
+              "materialPerWallSqftPerCoat": {
+                "changedAt": "2026-10-17T03:35:54.624Z",
+                "aiPlaceholder": true
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-17T03:35:54.624Z",
+                "aiPlaceholder": true
+              }
+            },
+            "approvedValues": {
+              "laborPerWallSqftPerCoat": {
+                "value": 100,
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "materialPerWallSqftPerCoat": {
+                "value": 30,
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "minimumJob": {
+                "value": 0,
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "wallHeightLaborMultiplier": {
+                "value": {
+                  "standard": 1,
+                  "high": 1.1,
+                  "vaulted": 1.25
+                },
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "paintWasteFactor": {
+                "value": 0.1,
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "primerWasteFactor": {
+                "value": 0.1,
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "prepMaterialWasteFactor": {
+                "value": 0.1,
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "feeRules": {
+                "value": {
+                  "travel": "not_applicable",
+                  "disposal": "not_applicable",
+                  "permit": "not_applicable",
+                  "overhead": "not_applicable"
+                },
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "priceBasisByCategory": {
+                "value": {
+                  "labor": "cost",
+                  "material": "sell_price",
+                  "removal": "cost",
+                  "prep": "cost",
+                  "addon": "cost",
+                  "equipment": "cost",
+                  "travel": "cost",
+                  "disposal": "cost",
+                  "permit": "cost",
+                  "overhead": "cost",
+                  "surcharge": "cost"
+                },
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "taxabilityByCategory": {
+                "value": {
+                  "labor": false,
+                  "material": false,
+                  "removal": false,
+                  "prep": false,
+                  "addon": false,
+                  "equipment": false,
+                  "travel": false,
+                  "disposal": false,
+                  "permit": false,
+                  "overhead": false,
+                  "surcharge": false
+                },
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "peakMonths": {
+                "value": [],
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "peakSurchargePercent": {
+                "value": 0,
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              },
+              "knownOfferings": {
+                "value": {},
+                "serviceType": "INTERIOR_PAINTING",
+                "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+                "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+                "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+                "approvedAt": "2026-10-17T03:35:54.660Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-pre-oct17-bc4b18d1-e3a7-48c8-a91f-738bd2852088",
+              "serviceId": "5c361a7e-49ee-410d-888e-98f05e5d2bb0",
+              "operationId": "b71942d2-c02c-439c-b1cf-2af541b62d84",
+              "approvedAt": "2026-10-17T03:35:54.660Z",
+              "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "160bba28327cebbd913977a24781fc4e63c9ac90384b8eef4759f97995c887b1",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "abd8b0561a36f21b398561d354515a8b9c497156d4f74edee153d01a45b61bf4",
+                "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+                "service.origin": "581ad20f61aa9081ebd037ef5e0dfb5b94bf9ac1b359074059b4110692d22289",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d",
+                "service.pricing": "0c5dc9e888a05da4f4f7fa519805cffa6f2ce89baaae89e3e31f44da145b6191",
+                "service.service": "7c71e1a92069345afaea7db07005abe8a11cfeea34053bd6e874ca64cef62042",
+                "service.serviceType": "1e41b95b9e3485a1e1ef06dc4f00fac11e2d5aa937e84a589d32b99813238a5d",
+                "service.source": "1748a8364ecb5e13f134074f10903771c281e9d0baed5551748dfe1ca7894ed4",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "39b9a33556043e96999199aebafd054f8aee38420b98f121a4971f34f934e0bc",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "USD",
+          "quoteTimeZone": "UTC"
+        },
+        "updatedAt": "2026-10-17T03:35:54.661Z"
+      },
+      "customerInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 400,
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "surfaceCondition": "good",
+        "coats": 2,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      }
+    },
+    "flooring_ai": {
+      "book": {
+        "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+        "services": [
+          {
+            "id": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+            "source": "AI_SUGGESTED",
+            "knownOfferings": {
+              "existingFloorType": {
+                "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+                "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+                "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+                "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+                "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+                "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+              }
+            },
+            "active": true,
+            "serviceType": "FLOORING_INSTALL",
+            "service": "[SYNTHETIC] FLOORING_INSTALL",
+            "pricing": {
+              "laborPerSqft": {
+                "vinyl_plank": 300
+              },
+              "materialPerSqft": {
+                "vinyl_plank": 500
+              },
+              "minimumJob": 0,
+              "vinylPlankUnderlaymentRule": "never_included",
+              "perStepPrice": 10000,
+              "wasteFactorByType": {
+                "hardwood": 0.1,
+                "laminate": 0.08,
+                "vinyl_plank": 0.08,
+                "carpet": 0.1,
+                "tile": 0.12
+              },
+              "patternWasteAdder": {
+                "straight": 0,
+                "diagonal_or_pattern": 0.07
+              },
+              "roomComplexityMultiplier": {
+                "large": 1,
+                "medium": 1.1,
+                "small": 1.2
+              },
+              "roomSizeThresholds": {
+                "smallMaxSqft": 150,
+                "mediumMaxSqft": 300
+              },
+              "layoutLaborMultiplier": {
+                "straight": 1,
+                "diagonal_or_pattern": 1.2
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "confirmedFields": {
+              "laborPerSqft": true,
+              "materialPerSqft": true,
+              "minimumJob": true,
+              "vinylPlankUnderlaymentRule": true,
+              "perStepPrice": true,
+              "wasteFactorByType": true,
+              "patternWasteAdder": true,
+              "roomComplexityMultiplier": true,
+              "roomSizeThresholds": true,
+              "layoutLaborMultiplier": true,
+              "feeRules": true,
+              "priceBasisByCategory": true,
+              "taxabilityByCategory": true,
+              "peakMonths": true,
+              "peakSurchargePercent": true,
+              "knownOfferings": true
+            },
+            "origin": {
+              "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+              "serviceType": "FLOORING_INSTALL",
+              "source": "AI_SUGGESTED",
+              "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+              "operationId": "1dceb710-c35c-4276-9ccb-eaf70fa8eba5",
+              "createdAt": "2026-10-17T03:35:54.682Z"
+            },
+            "priceMetadata": {
+              "laborPerSqft.vinyl_plank": {
+                "changedAt": "2026-10-17T03:35:54.688Z",
+                "aiPlaceholder": true
+              },
+              "materialPerSqft.vinyl_plank": {
+                "changedAt": "2026-10-17T03:35:54.688Z",
+                "aiPlaceholder": true
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-17T03:35:54.688Z",
+                "aiPlaceholder": true
+              },
+              "perStepPrice": {
+                "changedAt": "2026-10-17T03:35:54.688Z",
+                "aiPlaceholder": true
+              }
+            },
+            "approvedValues": {
+              "laborPerSqft": {
+                "value": {
+                  "vinyl_plank": 300
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "materialPerSqft": {
+                "value": {
+                  "vinyl_plank": 500
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "minimumJob": {
+                "value": 0,
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "vinylPlankUnderlaymentRule": {
+                "value": "never_included",
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "perStepPrice": {
+                "value": 10000,
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "wasteFactorByType": {
+                "value": {
+                  "hardwood": 0.1,
+                  "laminate": 0.08,
+                  "vinyl_plank": 0.08,
+                  "carpet": 0.1,
+                  "tile": 0.12
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "patternWasteAdder": {
+                "value": {
+                  "straight": 0,
+                  "diagonal_or_pattern": 0.07
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "roomComplexityMultiplier": {
+                "value": {
+                  "large": 1,
+                  "medium": 1.1,
+                  "small": 1.2
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "roomSizeThresholds": {
+                "value": {
+                  "smallMaxSqft": 150,
+                  "mediumMaxSqft": 300
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "layoutLaborMultiplier": {
+                "value": {
+                  "straight": 1,
+                  "diagonal_or_pattern": 1.2
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "feeRules": {
+                "value": {
+                  "travel": "not_applicable",
+                  "disposal": "not_applicable",
+                  "permit": "not_applicable",
+                  "overhead": "not_applicable"
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "priceBasisByCategory": {
+                "value": {
+                  "labor": "cost",
+                  "material": "cost",
+                  "removal": "cost",
+                  "prep": "cost",
+                  "addon": "cost",
+                  "equipment": "cost",
+                  "travel": "cost",
+                  "disposal": "cost",
+                  "permit": "cost",
+                  "overhead": "cost",
+                  "surcharge": "cost"
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "taxabilityByCategory": {
+                "value": {
+                  "labor": false,
+                  "material": false,
+                  "removal": false,
+                  "prep": false,
+                  "addon": false,
+                  "equipment": false,
+                  "travel": false,
+                  "disposal": false,
+                  "permit": false,
+                  "overhead": false,
+                  "surcharge": false
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "peakMonths": {
+                "value": [],
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "peakSurchargePercent": {
+                "value": 0,
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              },
+              "knownOfferings": {
+                "value": {
+                  "existingFloorType": {
+                    "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+                    "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+                    "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+                    "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+                    "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+                    "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+                  }
+                },
+                "serviceType": "FLOORING_INSTALL",
+                "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+                "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+                "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+                "approvedAt": "2026-10-17T03:35:54.752Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-pre-oct17-18d44151-5c4c-4ed1-874a-a814c83a05ae",
+              "serviceId": "e2ff3fac-2404-480b-bd24-2b546897a03f",
+              "operationId": "2148f7cc-9f5a-41d3-b695-93f77f1afbfb",
+              "approvedAt": "2026-10-17T03:35:54.752Z",
+              "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "082610e1e513a5bff6850dd9892bfd18aff5bd4e0f06e32ebef7ebcc27bf0b2b",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "2d9b4ce1f45568c9de84579da55f7596b6da6baaed751980612f080f437be1d4",
+                "service.knownOfferings": "b875ba8ca5e7ccb7c2411ac8900bee8ae2b1b3edac3c34b62e7169c591f80765",
+                "service.origin": "e01cd1d302a15c813f5469c3827ebfbc617f323c6125bb877b5e5901a99eb3e4",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "f24630d2df20534834aafa62e699ebc325c209754334df8b65331fbfaf920cbd",
+                "service.service": "a210134b6006fe763ac52392bde0126c53b3eebe67c5185a43f8200da1c71011",
+                "service.serviceType": "47e7634615b36ea4056899b0819942fd023206cbaf11a1aa995c1bacf379574a",
+                "service.source": "1748a8364ecb5e13f134074f10903771c281e9d0baed5551748dfe1ca7894ed4",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "39b9a33556043e96999199aebafd054f8aee38420b98f121a4971f34f934e0bc",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "USD",
+          "quoteTimeZone": "UTC"
+        },
+        "updatedAt": "2026-10-17T03:35:54.753Z"
+      },
+      "customerInputs": {
+        "sqft": 300,
+        "sqftMethod": "exact",
+        "newFlooringType": "vinyl_plank",
+        "existingFloorType": "none",
+        "removalNeeded": false,
+        "roomCount": 1,
+        "layoutPattern": "straight",
+        "stairSteps": 0
+      }
+    }
+  }
+}

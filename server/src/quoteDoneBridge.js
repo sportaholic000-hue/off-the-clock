@@ -112,6 +112,7 @@ export function approvalContent(raw,book,{forceLegacyStartingValues=false}={}) {
   delete service.startingValueState;delete service.dependentLineState;
   for(const [group,row] of Object.entries(service.startingValueAdoptions||{}))if(row?.mode==='legacy'){
     for(const definition of startingValueDefinitionsVNext(CLASS2_DEFINITIONS[service.serviceType]||{}).filter(item=>item.group===group)){
+      if(definition.deferUntilAdoption)continue;
       const parts=definition.path.split('.');let target=service.pricing;
       for(const part of parts.slice(0,-1))target=target?.[part];
       if(target&&typeof target==='object')delete target[parts.at(-1)];
@@ -384,6 +385,11 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
       const legacy=synchronizeStartingValuesVNext(raw,definitions,{ownerId,now,legacyGroups:groups});
       const adopted=synchronizeStartingValuesVNext(legacy,definitions,{ownerId,now,adoptGroups:[input.adoptStartingValueGroup]});
       Object.assign(raw,adopted);
+      if(['AI_SUGGESTED','AI_INTERVIEW'].includes(raw.source)){
+        const fields=[...new Set(startingValueDefinitionsVNext(definitions).filter(row=>row.group===input.adoptStartingValueGroup).map(row=>row.path.split('.')[0]))];
+        const approved=approveVNextValues(projection(raw),{fields,ownerId,operationId,approvedAt:now});
+        for(const key of ['confirmedFields','approvedValues'])raw[key]={...raw[key],...Object.fromEntries(fields.map(field=>[field,approved[key][field]]))};
+      }
       const adoptedContent=approvalContent(raw,book);
       raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(adoptedContent),sectionDigests:approvalSectionDigests(adoptedContent),operation:'owner_adopted_starting_value_group'};
       book.services[index]=raw;validateLiveServiceLimit(book,dateContext);const saved=savePricebook(ownerId,book).pricebook;
@@ -583,6 +589,6 @@ export function applicationMetadata() {
     return {...old,...meta,name:meta.service,requiresOffering,fields:ownerFields,interviewFields:[...nameFields,...offeringRegistryFields,...allocationInterviewFields],legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>{
       const inputCopy=class2FieldCopy(meta.serviceType,field.name,field.defaultValue),percent=inputCopy.ownerInputUnit==='percent';
       return {...field,...(percent?{help:inputCopy.help,unit:inputCopy.unit}:{}),ownerInputUnit:inputCopy.ownerInputUnit,field:field.name};
-    }),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
+    }),class2Defaults:Object.fromEntries(meta.class2Fields.filter(field=>!field.startingValueOnly).map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
   })};
 }

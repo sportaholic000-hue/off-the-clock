@@ -801,6 +801,29 @@ for(const type of ['INTERIOR_PAINTING','EXTERIOR_PAINTING']){
  CLASS2_DEFINITIONS[type].prepMaterialWasteFactor=waste('Preparation material waste');
 }
 CLASS2_DEFINITIONS.FLOORING_INSTALL.layoutLaborMultiplier=factorMap({straight:1,diagonal_or_pattern:1.20},'Flooring layout labor adjustment','multiplier',0.1,5);
+// Proposed optional factors stay outside existing services until adoption.
+const optionalStarting=(value,label,unit,source,assumption,group,min,max)=>({
+  label,unit,min,max,defaultValue:structuredClone(value),startingValue:structuredClone(value),startingValueOnly:true,deferUntilAdoption:true,
+  startingValueLabel:label,startingValueSource:source,startingValueAssumption:assumption,startingValueGroup:group
+});
+for(const type of ['INTERIOR_PAINTING','EXTERIOR_PAINTING'])CLASS2_DEFINITIONS[type].paintingSettings=optionalStarting(
+  {wallAdditionalCoatRatio:0.8,ceilingAdditionalCoatRatio:0.8,trimAdditionalCoatRatio:0.33},
+  'Painting additional-coat labor ratios','ratio',
+  'Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/',
+  'Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.',
+  'painting_coats_20261017',0,10
+);
+const patternWasteSource='Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor';
+const patternWasteAssumption='Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.';
+for(const [field,label] of [['diagonalWasteAdderByType','Diagonal additional waste by flooring type'],['herringboneWasteAdderByType','Herringbone or chevron additional waste by flooring type']])CLASS2_DEFINITIONS.FLOORING_INSTALL[field]=optionalStarting(
+  {laminate:0.06,vinyl_plank:0.04,hardwood:0.07,tile:0.03},label,'decimal fraction',patternWasteSource,patternWasteAssumption,'flooring_patterns_20261017',0,0.5
+);
+CLASS2_DEFINITIONS.FLOORING_INSTALL.herringboneLaborMultiplierByType=optionalStarting(
+  {hardwood:1.75,laminate:1.75,vinyl_plank:1.75},'Herringbone or chevron labor adjustment by flooring type','multiplier',
+  'DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/',
+  'Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.',
+  'flooring_patterns_20261017',0.1,5
+);
 CLASS2_DEFINITIONS.FENCING_INSTALL={postSpacingLF:factor(8,'Distance between fence posts','feet',0.1,100),fenceWasteFactor:waste('Fence infill material waste'),terrainLaborMultiplier:factorMap({flat:1,moderate:1.15,steep:1.30},'Fence terrain labor adjustment','multiplier',0.1,5)};
 CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.reinforcementWasteFactor=factorMap({wire_mesh:0.10,rebar:0.10},'Wire mesh and rebar material waste','decimal fraction',0,0.5);
 CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.stampedMaterialWasteFactor=waste('Stamped finish material waste');
@@ -909,6 +932,7 @@ export function withClass2Defaults(serviceType, pricing = {}) {
   }
   const next = snapshot.value;
   for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
+    if(definition.startingValueOnly)continue;
     if (next[name] === undefined) next[name] = structuredClone(definition.defaultValue);
   }
   // Snapshot trust is request-local. Never expose a mutable trusted object that
@@ -1175,6 +1199,7 @@ export function validateClass2FactorsDetailed(serviceType, pricing = {}) {
   pricing = snapshot.value;
 
   for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
+    if(definition.startingValueOnly)continue;
     const expected = definition.defaultValue;
     const value = pricing[name];
     if (value === undefined) {
@@ -1330,7 +1355,7 @@ export function customerContractForVNext(type,p={},rules={}) {
 }
 
 export function allowedPricingFields(serviceType) {
-  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []),...(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]),...(serviceType==='FLAT_ROOF_REPLACEMENT'?FLAT_ROOF_FIELDS:REPAIR_SERVICES.includes(serviceType)?REPAIR_UNIT_FIELDS:[]), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[]),...(paintingType(serviceType)?['paintingSettings','paintingRates','surfaceExtraRates']:serviceType==='SIDING_REPLACEMENT'?['sidingSettings','surfaceExtraRates']:[])];
+  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []),...(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]),...(serviceType==='FLAT_ROOF_REPLACEMENT'?FLAT_ROOF_FIELDS:REPAIR_SERVICES.includes(serviceType)?REPAIR_UNIT_FIELDS:[]), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}).filter(name=>!CLASS2_DEFINITIONS[serviceType][name].startingValueOnly), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[]),...(paintingType(serviceType)?['paintingSettings','paintingRates','surfaceExtraRates']:serviceType==='SIDING_REPLACEMENT'?['sidingSettings','surfaceExtraRates']:[])];
 }
 
 const AI_CONFIRMABLE_SERVICE_FIELDS = [

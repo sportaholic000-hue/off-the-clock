@@ -1155,7 +1155,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
-  const unconfirmedStarting=unconfirmedStartingValueUsesVNext(ownerPricing,template);
+  const unconfirmedStarting=unconfirmedStartingValueUsesVNext(ownerPricing,template,pricing,tierName);
   if(unconfirmedStarting.length)throw new QuoteReviewError(unconfirmedStarting[0].message,{
     missingOwnerFields:unconfirmedStarting.map(item=>item.path),
     ownerDiagnostics:unconfirmedStarting.map(item=>({type:'missing',kind:'starting_value_confirmation',path:item.path,message:item.message}))
