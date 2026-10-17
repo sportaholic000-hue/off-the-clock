@@ -1,0 +1,15 @@
+import {execFileSync} from 'node:child_process';
+if(execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()!=='8b53169b2d6019e6769481b5c0551aca42a91f42')throw Error('Capture only at the pinned base before source edits.');
+import {gzipSync} from 'node:zlib';
+import {writeFileSync} from 'node:fs';
+import {cases,custom} from '../engine-independent/fixtures.mjs';
+import {generateQuoteVNext} from '../../server/quote-engine-vnext/engine.js';
+import {convertApplicationBook} from '../../server/src/quoteDoneBridge.js';
+const control=custom();control.ownerPricing.pricing.price=97600;control.businessDefaults.rangeBufferPercent=10;
+const fixtures=[...cases(),{id:'requested-976-control',input:control}];
+const stable=value=>JSON.parse(JSON.stringify(value,(key,v)=>key==='quoteId'?'synthetic-quote-id':v));
+const rows=fixtures.map(({id,input})=>({id,input,result:stable(generateQuoteVNext(input)),book:convertApplicationBook(convertApplicationBook({services:[input.ownerPricing],defaults:input.businessDefaults},'toDollars'),'toCents')}));
+writeFileSync(new URL('./base-quotes.json.gz',import.meta.url),gzipSync(JSON.stringify(rows,null,2)+'\n',{mtime:0}));
+console.log('Captured '+rows.length+' synthetic base quotes and book conversions.');
+console.log(JSON.stringify(rows.at(-1).result.options?.[0]?.calculationRecord.range));
+console.log('Customer display: '+rows.at(-1).result.lowEstimate+'–'+rows.at(-1).result.highEstimate);

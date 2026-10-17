@@ -9,7 +9,7 @@ import {assertRealContainment} from './deploymentConfig.js';
 // Child-first inventory. Financial evidence is deliberately not a prefix-based
 // exception: billingVoiceUsage contains call identifiers and must be erased.
 export const ERASED_TENANT_TABLES=Object.freeze([
-  'ownerRecordEvents','ownerRecordWorkflows','ownerReportSettings','callerBlocklist',
+  'ownerJobCosts','ownerRecordEvents','ownerRecordWorkflows','ownerReportSettings','callerBlocklist',
   'quoteEmailDeliveries','quoteEmailRecipients','voiceQuoteNarrations','callbackRequests',
   'ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
   'appointmentChanges','appointments','bookingIdempotency','bookingPreferences',

@@ -1,0 +1,2608 @@
+{
+  "base": "56e19419e6287f4fc984e9e6b650469828ce182e",
+  "incoming": "046f9d905435495cab31f5abb02cce1413645e54",
+  "counts": {
+    "files": 371,
+    "identical": 370,
+    "explicitExpectationChanges": 1
+  },
+  "files": [
+    {
+      "path": "test/accountEmail.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5b4d0ec991ba81a902dc1b45b7fabbfeb6ad25dc",
+      "actualBlob": "5b4d0ec991ba81a902dc1b45b7fabbfeb6ad25dc",
+      "status": "identical"
+    },
+    {
+      "path": "test/agreedAuditFollowup.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "32a71be8703bb46d92df06988482a26fb9baa1c2",
+      "actualBlob": "32a71be8703bb46d92df06988482a26fb9baa1c2",
+      "status": "identical"
+    },
+    {
+      "path": "test/applicationPersistence.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "86a8a3cf1758b79382e4a88eceaca9eb262cda1b",
+      "actualBlob": "86a8a3cf1758b79382e4a88eceaca9eb262cda1b",
+      "status": "identical"
+    },
+    {
+      "path": "test/approvalDiagnosticsLaneB20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ca298b02fda3498ef9561b7fe39876373630c94c",
+      "actualBlob": "ca298b02fda3498ef9561b7fe39876373630c94c",
+      "status": "identical"
+    },
+    {
+      "path": "test/astraAuditRepairs20261004.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "81d2a1030d4027c2c0c792843ce50b8b32b2d742",
+      "actualBlob": "81d2a1030d4027c2c0c792843ce50b8b32b2d742",
+      "status": "identical"
+    },
+    {
+      "path": "test/astraQuoteScope.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "47be2a35830f9b5477d7b57924481a119f74118e",
+      "actualBlob": "47be2a35830f9b5477d7b57924481a119f74118e",
+      "status": "identical"
+    },
+    {
+      "path": "test/auditFixes20261003.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e42b07d7e97b62ea64cb76a23abc706e80e6e1d7",
+      "actualBlob": "e42b07d7e97b62ea64cb76a23abc706e80e6e1d7",
+      "status": "identical"
+    },
+    {
+      "path": "test/authSessionClient.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "78fc946e58766f2ac1828c870dc642f1dd09ee71",
+      "actualBlob": "78fc946e58766f2ac1828c870dc642f1dd09ee71",
+      "status": "identical"
+    },
+    {
+      "path": "test/authSessionHttp.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5c430ad67500eab99a9cc7a7460c5ef50e46dd30",
+      "actualBlob": "5c430ad67500eab99a9cc7a7460c5ef50e46dd30",
+      "status": "identical"
+    },
+    {
+      "path": "test/authSessionService.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d43151b85a3803f02266c8220a06553400861a82",
+      "actualBlob": "d43151b85a3803f02266c8220a06553400861a82",
+      "status": "identical"
+    },
+    {
+      "path": "test/authTokenService.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "27c6f1f8192ce17aba5da2a81879bf48bcb5e577",
+      "actualBlob": "27c6f1f8192ce17aba5da2a81879bf48bcb5e577",
+      "status": "identical"
+    },
+    {
+      "path": "test/backupCoordination20261012.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "07c468fc4ad0137c16128cfda4b941873aa451de",
+      "actualBlob": "07c468fc4ad0137c16128cfda4b941873aa451de",
+      "status": "identical"
+    },
+    {
+      "path": "test/backupRestoreRehearsal.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "924e2c692f0ef8e2dfced469d3de2017f7a93d32",
+      "actualBlob": "924e2c692f0ef8e2dfced469d3de2017f7a93d32",
+      "status": "identical"
+    },
+    {
+      "path": "test/backups.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "561122f8d33996b13a8fee116e324a89525aaba5",
+      "actualBlob": "561122f8d33996b13a8fee116e324a89525aaba5",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingBackupLeftovers20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a451c233958d31a9c3298aec652f3459c2a081eb",
+      "actualBlob": "a451c233958d31a9c3298aec652f3459c2a081eb",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCalls20261009Http.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "cd25f68d4861675eb9700be686605f94327219a3",
+      "actualBlob": "cd25f68d4861675eb9700be686605f94327219a3",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCalls20261009Recovery.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9fabf981192f690b27bec408fe349798a0ba098c",
+      "actualBlob": "9fabf981192f690b27bec408fe349798a0ba098c",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCalls20261009Render.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "07b6f76c8ab3b354f7cce343ddc09ff733f09c29",
+      "actualBlob": "07b6f76c8ab3b354f7cce343ddc09ff733f09c29",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCalls20261009Text.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e6ddd8aa2541c7b8ed88d855ca8b864485d6a3e6",
+      "actualBlob": "e6ddd8aa2541c7b8ed88d855ca8b864485d6a3e6",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingConfig.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ec3bca5dae9a9486c3ac10ca0873ffd1cc180782",
+      "actualBlob": "ec3bca5dae9a9486c3ac10ca0873ffd1cc180782",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006.helpers.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5f2779a67d511a70d80a11d8e550ef9a3ddf30b1",
+      "actualBlob": "5f2779a67d511a70d80a11d8e550ef9a3ddf30b1",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006.legacy.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "772c2d349a56b49b411b111622e134d8b867cb27",
+      "actualBlob": "772c2d349a56b49b411b111622e134d8b867cb27",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b80c6c8885cd57efbe61ef3041f5ff3462728f21",
+      "actualBlob": "b80c6c8885cd57efbe61ef3041f5ff3462728f21",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006CallEntry.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "4c12ee5152d29a5e8aaa12ab5faad4203e40ec50",
+      "actualBlob": "4c12ee5152d29a5e8aaa12ab5faad4203e40ec50",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006Capabilities.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "49e25892336e14c2f907513e07ebd468e3e1cc15",
+      "actualBlob": "49e25892336e14c2f907513e07ebd468e3e1cc15",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006Lifecycle.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9f0941c6862018530ccfc2ce2a26a30e92daca18",
+      "actualBlob": "9f0941c6862018530ccfc2ce2a26a30e92daca18",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006LifecycleEntry.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "41708855a239e72d6d35a496acb708842ca5ffbf",
+      "actualBlob": "41708855a239e72d6d35a496acb708842ca5ffbf",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006Meter.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5976f8e078fe19459644abdedb3247617116062a",
+      "actualBlob": "5976f8e078fe19459644abdedb3247617116062a",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006Permutations.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e7707678e6b96d6393ad5e6f11f322ac0965dece",
+      "actualBlob": "e7707678e6b96d6393ad5e6f11f322ac0965dece",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006Provider.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "17013a7a43ef77002bb4b5e632e27dd1a2964511",
+      "actualBlob": "17013a7a43ef77002bb4b5e632e27dd1a2964511",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCoreRepair20261006Recovery.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f41fb72cda8d4e5c09b7c6b2f89ddb9ba7ea7f13",
+      "actualBlob": "f41fb72cda8d4e5c09b7c6b2f89ddb9ba7ea7f13",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCustomerLifecycle20261007.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "839043d01e23aed2928faa969a82c884a97dbbe9",
+      "actualBlob": "839043d01e23aed2928faa969a82c884a97dbbe9",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCustomerLifecycle20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5ce37f4764e6875e5ba8707c5050314c94951903",
+      "actualBlob": "5ce37f4764e6875e5ba8707c5050314c94951903",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingCustomerLifecycleProduction20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "549f3f46f1d5f05da7d5ba89b041f80c9333429a",
+      "actualBlob": "549f3f46f1d5f05da7d5ba89b041f80c9333429a",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingRoutes.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d69dfee558f18038d7e8364b7583f299e771d89d",
+      "actualBlob": "d69dfee558f18038d7e8364b7583f299e771d89d",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingStateService.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "6c0252c950c34a7793fdf6281065810cda732e3f",
+      "actualBlob": "6c0252c950c34a7793fdf6281065810cda732e3f",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingSystem20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0383a1972e669670ae2f9258d94289ca161e82f9",
+      "actualBlob": "0383a1972e669670ae2f9258d94289ca161e82f9",
+      "status": "identical"
+    },
+    {
+      "path": "test/billingTrial20261011.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "53222018d831d629ef225dd87152f7711a97a818",
+      "actualBlob": "53222018d831d629ef225dd87152f7711a97a818",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingAdminRoutes.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1ca79195e7c1a706b7411e05aabe76baa1f34403",
+      "actualBlob": "1ca79195e7c1a706b7411e05aabe76baa1f34403",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingAdminService.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "32e341010ff9771553b8eab3254d23af5a35e4ad",
+      "actualBlob": "32e341010ff9771553b8eab3254d23af5a35e4ad",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingCalendar20261006.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "dce9f7b5826248c46551bf49e125a6c32696b94d",
+      "actualBlob": "dce9f7b5826248c46551bf49e125a6c32696b94d",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingCalendar20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "43f32a840cec99576a2d5eb9e94fb30b02e56fc6",
+      "actualBlob": "43f32a840cec99576a2d5eb9e94fb30b02e56fc6",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingCalendarApplication20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "06034ddcb6280a3ca0c80e2d5a1e7b150f19c8f6",
+      "actualBlob": "06034ddcb6280a3ca0c80e2d5a1e7b150f19c8f6",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingCapabilities.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "6f8538474437d84235633cd9ff65e3b2cfc097a7",
+      "actualBlob": "6f8538474437d84235633cd9ff65e3b2cfc097a7",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingPreferenceService.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "79b65ff26d2b7a07fc0f262af9e374aa0f3b96bd",
+      "actualBlob": "79b65ff26d2b7a07fc0f262af9e374aa0f3b96bd",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingRoutes.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "146b4fa64c0f3ec9d9ca0356172c4d2727a17214",
+      "actualBlob": "146b4fa64c0f3ec9d9ca0356172c4d2727a17214",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingService.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0985e22caa23cc609261c8b2e1d522c94fff7c69",
+      "actualBlob": "0985e22caa23cc609261c8b2e1d522c94fff7c69",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingServiceEnd20261014.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e92a557ae39984ac92da28813e01348e60e94821",
+      "actualBlob": "e92a557ae39984ac92da28813e01348e60e94821",
+      "status": "identical"
+    },
+    {
+      "path": "test/bookingTokenReceipt.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ec4ae3b1d7329db8d989c1a1a187ffe2c9bbac7c",
+      "actualBlob": "ec4ae3b1d7329db8d989c1a1a187ffe2c9bbac7c",
+      "status": "identical"
+    },
+    {
+      "path": "test/calendarChangeRecovery20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f5152fde276ad2574870811e0b8472e59ec16ca7",
+      "actualBlob": "f5152fde276ad2574870811e0b8472e59ec16ca7",
+      "status": "identical"
+    },
+    {
+      "path": "test/calendarCredentials.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e71dd5c526ef67b0d5d3fab17fcb463fe6ef4d6f",
+      "actualBlob": "e71dd5c526ef67b0d5d3fab17fcb463fe6ef4d6f",
+      "status": "identical"
+    },
+    {
+      "path": "test/calendarForm.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "2a409e0feeb63ce2aa536c314243dad4009459f1",
+      "actualBlob": "2a409e0feeb63ce2aa536c314243dad4009459f1",
+      "status": "identical"
+    },
+    {
+      "path": "test/calendarOAuthState.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "36e24ad9928e623805ed2ffec8b2e52bea932ba4",
+      "actualBlob": "36e24ad9928e623805ed2ffec8b2e52bea932ba4",
+      "status": "identical"
+    },
+    {
+      "path": "test/calendarScopeAuthorization20261010.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "daf6a719f6d93de19778ebcba874a7ee9742f272",
+      "actualBlob": "daf6a719f6d93de19778ebcba874a7ee9742f272",
+      "status": "identical"
+    },
+    {
+      "path": "test/callerHistoryFollowup20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3621d6210833e36395db0260d93a4c31b5475185",
+      "actualBlob": "3621d6210833e36395db0260d93a4c31b5475185",
+      "status": "identical"
+    },
+    {
+      "path": "test/callerHistoryFollowup20261006Http.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9beb7eed728f8a531edfd9bdcd13417c08081674",
+      "actualBlob": "9beb7eed728f8a531edfd9bdcd13417c08081674",
+      "status": "identical"
+    },
+    {
+      "path": "test/callerHistoryFollowup20261006Live.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "4f8ec2f68e1ddd7297d692b943231cf35118813d",
+      "actualBlob": "4f8ec2f68e1ddd7297d692b943231cf35118813d",
+      "status": "identical"
+    },
+    {
+      "path": "test/callerHistoryFollowup20261006LiveFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "52241e12cc711c562993b73fdcd8922b47640bb5",
+      "actualBlob": "52241e12cc711c562993b73fdcd8922b47640bb5",
+      "status": "identical"
+    },
+    {
+      "path": "test/callerHistoryFollowup20261006Summary.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a9a2e40169576e47daa551cef63c361e7455941a",
+      "actualBlob": "a9a2e40169576e47daa551cef63c361e7455941a",
+      "status": "identical"
+    },
+    {
+      "path": "test/callerHistoryFollowup20261006Web.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "970b9582b04efc91d84f935d23ef3b3c704242f6",
+      "actualBlob": "970b9582b04efc91d84f935d23ef3b3c704242f6",
+      "status": "identical"
+    },
+    {
+      "path": "test/candidateLTagGate20261012.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "27d60ddf0d7f4a0ac1f597f95062ef91dcf59eff",
+      "actualBlob": "27d60ddf0d7f4a0ac1f597f95062ef91dcf59eff",
+      "status": "identical"
+    },
+    {
+      "path": "test/candidateMTagGate20261013.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "53b7b0d511678d06b9912f4e1f1d7b61bd3fadc9",
+      "actualBlob": "53b7b0d511678d06b9912f4e1f1d7b61bd3fadc9",
+      "status": "identical"
+    },
+    {
+      "path": "test/candidateNTagGate20261014.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b631cddf61a49167766e4322ecb1d048640be9e1",
+      "actualBlob": "b631cddf61a49167766e4322ecb1d048640be9e1",
+      "status": "identical"
+    },
+    {
+      "path": "test/ciRunnerRepair20261013.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "92d38934a81e5d76052ea5ef21d58f7f94da5f96",
+      "actualBlob": "92d38934a81e5d76052ea5ef21d58f7f94da5f96",
+      "status": "identical"
+    },
+    {
+      "path": "test/ciSummary20261012.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3af40c7898fa1b1769459354a9d1c338c1c8eefd",
+      "actualBlob": "3af40c7898fa1b1769459354a9d1c338c1c8eefd",
+      "status": "identical"
+    },
+    {
+      "path": "test/claudeAuditFixes20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9c2cf3e1c8af2287f57d56e38d67c3649654bc54",
+      "actualBlob": "9c2cf3e1c8af2287f57d56e38d67c3649654bc54",
+      "status": "identical"
+    },
+    {
+      "path": "test/claudeContactLines20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1e734a951637d3e9085cfd054333f0c3c0fffa57",
+      "actualBlob": "1e734a951637d3e9085cfd054333f0c3c0fffa57",
+      "status": "identical"
+    },
+    {
+      "path": "test/claudeContactLines20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "25ebeab32041208c3768add6127021b51805968b",
+      "actualBlob": "25ebeab32041208c3768add6127021b51805968b",
+      "status": "identical"
+    },
+    {
+      "path": "test/claudeGuideHints20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b69e80095d0e784e7eb445928a7deb5281fbb846",
+      "actualBlob": "b69e80095d0e784e7eb445928a7deb5281fbb846",
+      "status": "identical"
+    },
+    {
+      "path": "test/claudeListedUnits20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b2fb8110ec062ac69120be9d433fac82c5a4a1ff",
+      "actualBlob": "b2fb8110ec062ac69120be9d433fac82c5a4a1ff",
+      "status": "identical"
+    },
+    {
+      "path": "test/claudeRepairBands20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c0c9dc6228979b497a55032f65f390f118b2f946",
+      "actualBlob": "c0c9dc6228979b497a55032f65f390f118b2f946",
+      "status": "identical"
+    },
+    {
+      "path": "test/claudeScopeEditorOrder.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1890b8a1fe05be4ffe326fdaca0f9e7b623b689f",
+      "actualBlob": "1890b8a1fe05be4ffe326fdaca0f9e7b623b689f",
+      "status": "identical"
+    },
+    {
+      "path": "test/clientAddress.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "cc0c2f3c09dd36d3496d05434d9480e88ad01163",
+      "actualBlob": "cc0c2f3c09dd36d3496d05434d9480e88ad01163",
+      "status": "identical"
+    },
+    {
+      "path": "test/componentPricingRepairs.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f6d8545fc1c9adb0e3d0944783a1337c44e9f425",
+      "actualBlob": "f6d8545fc1c9adb0e3d0944783a1337c44e9f425",
+      "status": "identical"
+    },
+    {
+      "path": "test/configuredOfferings.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "88c0535d9726b1e0279d018e4ef79a322a3611a8",
+      "actualBlob": "88c0535d9726b1e0279d018e4ef79a322a3611a8",
+      "status": "identical"
+    },
+    {
+      "path": "test/configuredOfferingsFixtures.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5c599f734f6db41fcba9fc7929f9c97b1b9331f7",
+      "actualBlob": "5c599f734f6db41fcba9fc7929f9c97b1b9331f7",
+      "status": "identical"
+    },
+    {
+      "path": "test/continuousOffsite20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3ee26795cb98b65a1635246858d01f6f6434ddc9",
+      "actualBlob": "3ee26795cb98b65a1635246858d01f6f6434ddc9",
+      "status": "identical"
+    },
+    {
+      "path": "test/corsPolicy.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8111d13baab45950a31f79f4b5b0c951b491e7b3",
+      "actualBlob": "8111d13baab45950a31f79f4b5b0c951b491e7b3",
+      "status": "identical"
+    },
+    {
+      "path": "test/customerExplanation.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "dace339daf2fbcff08d11aee628dd1ef41dbe282",
+      "actualBlob": "dace339daf2fbcff08d11aee628dd1ef41dbe282",
+      "status": "identical"
+    },
+    {
+      "path": "test/customerExplanationCatalog.json",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3ac124bc9353a6f0be72281c0c353658a3138f38",
+      "actualBlob": "3ac124bc9353a6f0be72281c0c353658a3138f38",
+      "status": "identical"
+    },
+    {
+      "path": "test/customerExplanationFixtures.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "73f59b9fd214a498eac3c223c6aec1b02e640bb5",
+      "actualBlob": "73f59b9fd214a498eac3c223c6aec1b02e640bb5",
+      "status": "identical"
+    },
+    {
+      "path": "test/customerMeasurementChoices20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "df2cc2d0a592c39e34fcf175bf7f5d55bf5e3e3a",
+      "actualBlob": "df2cc2d0a592c39e34fcf175bf7f5d55bf5e3e3a",
+      "status": "identical"
+    },
+    {
+      "path": "test/dashboardOffRouting20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e943fe1477b57a2eaef6e2de3a708522f0becb10",
+      "actualBlob": "e943fe1477b57a2eaef6e2de3a708522f0becb10",
+      "status": "identical"
+    },
+    {
+      "path": "test/day90Backups20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ff4c502e8437f855bda9ef7d2d4b0be1677b3b51",
+      "actualBlob": "ff4c502e8437f855bda9ef7d2d4b0be1677b3b51",
+      "status": "identical"
+    },
+    {
+      "path": "test/day90Cancellation20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e2103c8eebeb7339bc73a7b1b354d89c85ac1d6e",
+      "actualBlob": "e2103c8eebeb7339bc73a7b1b354d89c85ac1d6e",
+      "status": "identical"
+    },
+    {
+      "path": "test/day90Guarantees20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "38f80ce3d945ac82afd32745b40e639f18e8b301",
+      "actualBlob": "38f80ce3d945ac82afd32745b40e639f18e8b301",
+      "status": "identical"
+    },
+    {
+      "path": "test/day90Providers20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "31ecf96a01244245c00286496f1294b2323de93d",
+      "actualBlob": "31ecf96a01244245c00286496f1294b2323de93d",
+      "status": "identical"
+    },
+    {
+      "path": "test/demoAnnualPricing20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "cd4e71fba9f9d75a7d4d0df4b1ec0fd5805ac4bc",
+      "actualBlob": "cd4e71fba9f9d75a7d4d0df4b1ec0fd5805ac4bc",
+      "status": "identical"
+    },
+    {
+      "path": "test/deploymentConfig.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "953d82f826f5103c9d52b139c7720893bbcb500a",
+      "actualBlob": "953d82f826f5103c9d52b139c7720893bbcb500a",
+      "status": "identical"
+    },
+    {
+      "path": "test/deploymentProcess.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "44febfc8328119c15fd1249f55f2f241cf4b665f",
+      "actualBlob": "44febfc8328119c15fd1249f55f2f241cf4b665f",
+      "status": "identical"
+    },
+    {
+      "path": "test/durationFallback20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "cf88e0dbf8f92a01aecbc99e98cf01abbd93bfc1",
+      "actualBlob": "cf88e0dbf8f92a01aecbc99e98cf01abbd93bfc1",
+      "status": "identical"
+    },
+    {
+      "path": "test/engineAuditListedPrices20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a3249d944e35edec2a12185509e8cac372d35d78",
+      "actualBlob": "a3249d944e35edec2a12185509e8cac372d35d78",
+      "status": "identical"
+    },
+    {
+      "path": "test/engineLaunchFixes20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "dd63927274922cafe4e5a225a13a0fe658503186",
+      "actualBlob": "dd63927274922cafe4e5a225a13a0fe658503186",
+      "status": "identical"
+    },
+    {
+      "path": "test/everytrade20261017.browser.spec.mjs",
+      "sourceCommit": "046f9d905435495cab31f5abb02cce1413645e54",
+      "expectedBlob": "eef32b006aeb07721e551ef6ae55488f13c57e35",
+      "actualBlob": "eef32b006aeb07721e551ef6ae55488f13c57e35",
+      "status": "identical"
+    },
+    {
+      "path": "test/everytrade20261017.dom.spec.mjs",
+      "sourceCommit": "046f9d905435495cab31f5abb02cce1413645e54",
+      "expectedBlob": "db8d3d1d30ddf4132484ed54953ef293f9ffd064",
+      "actualBlob": "db8d3d1d30ddf4132484ed54953ef293f9ffd064",
+      "status": "identical"
+    },
+    {
+      "path": "test/everytrade20261017.http.spec.mjs",
+      "sourceCommit": "046f9d905435495cab31f5abb02cce1413645e54",
+      "expectedBlob": "595eed9d9560b30a23406b96a7046780dac95029",
+      "actualBlob": "595eed9d9560b30a23406b96a7046780dac95029",
+      "status": "identical"
+    },
+    {
+      "path": "test/everytrade20261017.spec.mjs",
+      "sourceCommit": "046f9d905435495cab31f5abb02cce1413645e54",
+      "expectedBlob": "f25a9296e5bf0349aa135f15861b17677a9c4440",
+      "actualBlob": "852c782102f85720af3e41c3e99481c7f001d30a",
+      "status": "explicit nonbehavioral expectation reconciliation"
+    },
+    {
+      "path": "test/fenceAnyHeight.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "2e0f624a2f18bde4d2a5836e3c336ed8930b5551",
+      "actualBlob": "2e0f624a2f18bde4d2a5836e3c336ed8930b5551",
+      "status": "identical"
+    },
+    {
+      "path": "test/fenceBoundaryLaneB20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "cb4fc4612f0769c6cd7b18cad4c0ce412810c01c",
+      "actualBlob": "cb4fc4612f0769c6cd7b18cad4c0ce412810c01c",
+      "status": "identical"
+    },
+    {
+      "path": "test/fenceDeliveryLaneB20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "6f74a19fb74daf481b69998ad7a51b534937e573",
+      "actualBlob": "6f74a19fb74daf481b69998ad7a51b534937e573",
+      "status": "identical"
+    },
+    {
+      "path": "test/fenceHeightHalfCent.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0f8f06edf6c71853077f5c4431afb20cf11e3b87",
+      "actualBlob": "0f8f06edf6c71853077f5c4431afb20cf11e3b87",
+      "status": "identical"
+    },
+    {
+      "path": "test/fenceLaneB20261016.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3941fc87db63558df8855c56d7c036014c2d9468",
+      "actualBlob": "3941fc87db63558df8855c56d7c036014c2d9468",
+      "status": "identical"
+    },
+    {
+      "path": "test/fenceLaneB20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5df5071eaa0da64c6d3ec7176051d02c04e93769",
+      "actualBlob": "5df5071eaa0da64c6d3ec7176051d02c04e93769",
+      "status": "identical"
+    },
+    {
+      "path": "test/fenceLaneB20261016Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d1aea0c30e0e41855ca441a893a79a1e85ea49c9",
+      "actualBlob": "d1aea0c30e0e41855ca441a893a79a1e85ea49c9",
+      "status": "identical"
+    },
+    {
+      "path": "test/fenceLayoutProperty20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a1f1e0ee8ee6bcd9120005dbd39f148971cbdef0",
+      "actualBlob": "a1f1e0ee8ee6bcd9120005dbd39f148971cbdef0",
+      "status": "identical"
+    },
+    {
+      "path": "test/fenceLegacyLaneB20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "151496c17b0a5a4c994b63664b56d9f603183002",
+      "actualBlob": "151496c17b0a5a4c994b63664b56d9f603183002",
+      "status": "identical"
+    },
+    {
+      "path": "test/fencePricebookLaneB20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "26b2212c3d33e534a432e680ed4e90378d38960e",
+      "actualBlob": "26b2212c3d33e534a432e680ed4e90378d38960e",
+      "status": "identical"
+    },
+    {
+      "path": "test/fixedPricesKnowledge20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "db91f35bbec2cdd2dbf08a45a6d79656efaf7d9e",
+      "actualBlob": "db91f35bbec2cdd2dbf08a45a6d79656efaf7d9e",
+      "status": "identical"
+    },
+    {
+      "path": "test/fixtures/bookingCalendar20261006.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "61a24ed8555763605c1d9a6ace80b17441651f7a",
+      "actualBlob": "61a24ed8555763605c1d9a6ace80b17441651f7a",
+      "status": "identical"
+    },
+    {
+      "path": "test/fixtures/bookingCalendarApplication20261006.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8696b1a5018aae50256f0e74eca15bf8bb0d822f",
+      "actualBlob": "8696b1a5018aae50256f0e74eca15bf8bb0d822f",
+      "status": "identical"
+    },
+    {
+      "path": "test/fixtures/bookingCalendarProvider20261006.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "090c9a7abe85ca0dd7262c1e8bb725b5836e1d66",
+      "actualBlob": "090c9a7abe85ca0dd7262c1e8bb725b5836e1d66",
+      "status": "identical"
+    },
+    {
+      "path": "test/fixtures/bookingCalendarRace20261006.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "558580586952531a97609a165a990b72767a9240",
+      "actualBlob": "558580586952531a97609a165a990b72767a9240",
+      "status": "identical"
+    },
+    {
+      "path": "test/forwardingOnOff20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a46c0e77decaada338c60dafd66f20bfab01c478",
+      "actualBlob": "a46c0e77decaada338c60dafd66f20bfab01c478",
+      "status": "identical"
+    },
+    {
+      "path": "test/geminiMediaBridge.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a03f9ee6c1386af467135f250c2663887a751f46",
+      "actualBlob": "a03f9ee6c1386af467135f250c2663887a751f46",
+      "status": "identical"
+    },
+    {
+      "path": "test/googleCalendarAdapter.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "6265b5fd12036fd42cf746d04971dbcd4cee8f2b",
+      "actualBlob": "6265b5fd12036fd42cf746d04971dbcd4cee8f2b",
+      "status": "identical"
+    },
+    {
+      "path": "test/googleGenAiLiveAdapter.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9eebce8fe32f0ac72b3fcf22b09c20856f0faf1a",
+      "actualBlob": "9eebce8fe32f0ac72b3fcf22b09c20856f0faf1a",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/backupRestoreProcess.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f38f8c5e1336d6f67f9a166b533046d857d5887c",
+      "actualBlob": "f38f8c5e1336d6f67f9a166b533046d857d5887c",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/ciRunnerRepairFixture20261013.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "fe1b1175fb435d75fc79f1916d02dae1a2435a24",
+      "actualBlob": "fe1b1175fb435d75fc79f1916d02dae1a2435a24",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/continuousOffsiteProduction.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d9a6b1b8aea45708c6546dd6ee222f0b92269d17",
+      "actualBlob": "d9a6b1b8aea45708c6546dd6ee222f0b92269d17",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/controlledOwnerAlertWorker.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "7997478df0ffe92a8d22518656039b17f9b5c3a5",
+      "actualBlob": "7997478df0ffe92a8d22518656039b17f9b5c3a5",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/launchPlanFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c9f17922d4c44ffe42cb9d713380ef0eee3bced9",
+      "actualBlob": "c9f17922d4c44ffe42cb9d713380ef0eee3bced9",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/lockRaceWorker20261011.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "be5796e8f33e1987052e77250b47be7ff1170ead",
+      "actualBlob": "be5796e8f33e1987052e77250b47be7ff1170ead",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/offsiteFakeS3.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8f5349f1e27e12f601e183348b0cd78e58606596",
+      "actualBlob": "8f5349f1e27e12f601e183348b0cd78e58606596",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/overageProductionFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d919736247b434215a152f1274d16a871af88def",
+      "actualBlob": "d919736247b434215a152f1274d16a871af88def",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/ownerAlertControlledScenario.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "96660f857c93a1015d2565f927cc3c857d40e3cd",
+      "actualBlob": "96660f857c93a1015d2565f927cc3c857d40e3cd",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/ownerCallFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e06a10e7ad60da546493da8ef19f3d1a6eb5f309",
+      "actualBlob": "e06a10e7ad60da546493da8ef19f3d1a6eb5f309",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/ownerQueryScan.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ec89690466c93e0c92b50e5c8d550ca593c5a9fc",
+      "actualBlob": "ec89690466c93e0c92b50e5c8d550ca593c5a9fc",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/railwayEnv.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "834aecd6f2e5526daece7e4561026ae8490b3b10",
+      "actualBlob": "834aecd6f2e5526daece7e4561026ae8490b3b10",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/railwayProcessFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e3bb676f4229c1b93ea4be3af18c547c95015cc1",
+      "actualBlob": "e3bb676f4229c1b93ea4be3af18c547c95015cc1",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/syntheticTls.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "03a0c72131c660aee99b817183b75fb172be5c2c",
+      "actualBlob": "03a0c72131c660aee99b817183b75fb172be5c2c",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/tenantIsolationFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9846101833ea64b03145a55387ab735e9ce1a402",
+      "actualBlob": "9846101833ea64b03145a55387ab735e9ce1a402",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/tenantIsolationProcess.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0d9112d75e55f5df0dc7ff847d8c49708657a979",
+      "actualBlob": "0d9112d75e55f5df0dc7ff847d8c49708657a979",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/tenantRetentionFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c8e8b810d55ab651d0736762524b984d9bf431d1",
+      "actualBlob": "c8e8b810d55ab651d0736762524b984d9bf431d1",
+      "status": "identical"
+    },
+    {
+      "path": "test/helpers/tenantRouteInventory.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "32be2dac62a4e61227647a44904da140f9f4f43a",
+      "actualBlob": "32be2dac62a4e61227647a44904da140f9f4f43a",
+      "status": "identical"
+    },
+    {
+      "path": "test/historicalStartingValuesFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0f82a393ca1964f57ba20ee4a6abb801fb302a2b",
+      "actualBlob": "0f82a393ca1964f57ba20ee4a6abb801fb302a2b",
+      "status": "identical"
+    },
+    {
+      "path": "test/integrationDownloads.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "af838169ffe76df0c05997c39647dfc2c05b8b6a",
+      "actualBlob": "af838169ffe76df0c05997c39647dfc2c05b8b6a",
+      "status": "identical"
+    },
+    {
+      "path": "test/interviewControls.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e35a30081a58b29f64196d0849635f71a5d28481",
+      "actualBlob": "e35a30081a58b29f64196d0849635f71a5d28481",
+      "status": "identical"
+    },
+    {
+      "path": "test/knowledgeFinancialConditions20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "26444cc214de2084bca21f2b52bcd6d934dc9cfa",
+      "actualBlob": "26444cc214de2084bca21f2b52bcd6d934dc9cfa",
+      "status": "identical"
+    },
+    {
+      "path": "test/landscapeDeliveryLaneB20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8961ac4502ebcedffec7542725b8a07f718220b4",
+      "actualBlob": "8961ac4502ebcedffec7542725b8a07f718220b4",
+      "status": "identical"
+    },
+    {
+      "path": "test/landscapeFollowup20261016.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "7967d94ec5a9b78526c388bafb6f4c7a91809ea6",
+      "actualBlob": "7967d94ec5a9b78526c388bafb6f4c7a91809ea6",
+      "status": "identical"
+    },
+    {
+      "path": "test/landscapeLaneB20261016Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "047ab49b5ad976d0aaa196a550dff76863b444a5",
+      "actualBlob": "047ab49b5ad976d0aaa196a550dff76863b444a5",
+      "status": "identical"
+    },
+    {
+      "path": "test/landscapePricingLaneB20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5af5841a312783890510ef6a6bda20bfa00c1fcf",
+      "actualBlob": "5af5841a312783890510ef6a6bda20bfa00c1fcf",
+      "status": "identical"
+    },
+    {
+      "path": "test/launchPlans.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "912125fa3036fc0b4ef8e218fef9849d93f45ceb",
+      "actualBlob": "912125fa3036fc0b4ef8e218fef9849d93f45ceb",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1d5e66a1d66d7e679a27c2f60255473acdfa4a81",
+      "actualBlob": "1d5e66a1d66d7e679a27c2f60255473acdfa4a81",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "97a141fce7d9c7ab1215f5541b238dbfbadcb233",
+      "actualBlob": "97a141fce7d9c7ab1215f5541b238dbfbadcb233",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006Feed.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f3fc324b058bd03e6bcc1329c7c55be9c0681779",
+      "actualBlob": "f3fc324b058bd03e6bcc1329c7c55be9c0681779",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3f28ef40ba30d5df3fe4152fa8f4ca7e2719bfc9",
+      "actualBlob": "3f28ef40ba30d5df3fe4152fa8f4ca7e2719bfc9",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006Http.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e9b430715f62c0cfad39bded5ab5729b8c4f76bb",
+      "actualBlob": "e9b430715f62c0cfad39bded5ab5729b8c4f76bb",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006HttpFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1cd04ab0676be7e5729a531d9cc7b68f22dad4a4",
+      "actualBlob": "1cd04ab0676be7e5729a531d9cc7b68f22dad4a4",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadsAreaUI20261010Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3b3c7fe0b50225fe64848f0687f37c8e76c4c1a9",
+      "actualBlob": "3b3c7fe0b50225fe64848f0687f37c8e76c4c1a9",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadsServiceArea20261010.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "fc36d412eb933dc2497c64aa6009130acfb7e7e4",
+      "actualBlob": "fc36d412eb933dc2497c64aa6009130acfb7e7e4",
+      "status": "identical"
+    },
+    {
+      "path": "test/leadsServiceArea20261010.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "269b4f7d97e201616d345f6d29be3db9c7e8e02d",
+      "actualBlob": "269b4f7d97e201616d345f6d29be3db9c7e8e02d",
+      "status": "identical"
+    },
+    {
+      "path": "test/legacy/priceBookService.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f5f05412a4f69277970c3ceec9dfb856c6271645",
+      "actualBlob": "f5f05412a4f69277970c3ceec9dfb856c6271645",
+      "status": "identical"
+    },
+    {
+      "path": "test/legacy/quoteEngine.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5a6d9b798b754fe644f4669e43bdab52c97f493d",
+      "actualBlob": "5a6d9b798b754fe644f4669e43bdab52c97f493d",
+      "status": "identical"
+    },
+    {
+      "path": "test/legacy/quoteTemplates.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f9922a1748a568d5ae9af8d789e9220a1b1079d6",
+      "actualBlob": "f9922a1748a568d5ae9af8d789e9220a1b1079d6",
+      "status": "identical"
+    },
+    {
+      "path": "test/lifecycle.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "bb044f1d2bae7ec2b5efa0e57b52a1b1f7031e0b",
+      "actualBlob": "bb044f1d2bae7ec2b5efa0e57b52a1b1f7031e0b",
+      "status": "identical"
+    },
+    {
+      "path": "test/liveDemo.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c410b24c083ffd4500920e056856c556264704ca",
+      "actualBlob": "c410b24c083ffd4500920e056856c556264704ca",
+      "status": "identical"
+    },
+    {
+      "path": "test/lockDatabaseBackup20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "184a6e4a430a51f0bda14da2aa01d47bcbe6d33b",
+      "actualBlob": "184a6e4a430a51f0bda14da2aa01d47bcbe6d33b",
+      "status": "identical"
+    },
+    {
+      "path": "test/lockRecoveryRace20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f58c47adea2c5cdf16dc47aebcd68734641dde46",
+      "actualBlob": "f58c47adea2c5cdf16dc47aebcd68734641dde46",
+      "status": "identical"
+    },
+    {
+      "path": "test/measuredScopeFixtures.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ac2b1a879cb0d1b43d25f888e303799c8be2b519",
+      "actualBlob": "ac2b1a879cb0d1b43d25f888e303799c8be2b519",
+      "status": "identical"
+    },
+    {
+      "path": "test/measuredScopes.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0be1242337db2137b831c7b60566b11e85d04d66",
+      "actualBlob": "0be1242337db2137b831c7b60566b11e85d04d66",
+      "status": "identical"
+    },
+    {
+      "path": "test/namedReviewContact20261006.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a27a5e8187bfd8ef0cff8a0f1f009fa765b490b9",
+      "actualBlob": "a27a5e8187bfd8ef0cff8a0f1f009fa765b490b9",
+      "status": "identical"
+    },
+    {
+      "path": "test/namedReviewContact20261006.fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3bc49a2d554451e3dcd15057f09a6c979771cb22",
+      "actualBlob": "3bc49a2d554451e3dcd15057f09a6c979771cb22",
+      "status": "identical"
+    },
+    {
+      "path": "test/namedReviewContact20261006.routes.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1988c212cbd31d7428b930fa6fca5b629398154c",
+      "actualBlob": "1988c212cbd31d7428b930fa6fca5b629398154c",
+      "status": "identical"
+    },
+    {
+      "path": "test/namedReviewContact20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5557e0062e0e3e8b5bce562496e9b911c349f9e0",
+      "actualBlob": "5557e0062e0e3e8b5bce562496e9b911c349f9e0",
+      "status": "identical"
+    },
+    {
+      "path": "test/namedReviewContact20261006.voice.fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "dd352c0a2407fe8286f858e4a8ee4e7c75c38548",
+      "actualBlob": "dd352c0a2407fe8286f858e4a8ee4e7c75c38548",
+      "status": "identical"
+    },
+    {
+      "path": "test/noSmsQuoteEmail.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "77c865195e77da2f1e84729e842927aac564960e",
+      "actualBlob": "77c865195e77da2f1e84729e842927aac564960e",
+      "status": "identical"
+    },
+    {
+      "path": "test/offsiteBackups20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "62be80ba09f7cc2c12d5e51fbb11d924f9400010",
+      "actualBlob": "62be80ba09f7cc2c12d5e51fbb11d924f9400010",
+      "status": "identical"
+    },
+    {
+      "path": "test/onboardingCalendar.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d755a371cc1e8a6618322cf1fe6d07554ecd5510",
+      "actualBlob": "d755a371cc1e8a6618322cf1fe6d07554ecd5510",
+      "status": "identical"
+    },
+    {
+      "path": "test/onboardingServiceArea.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "6673d071c127ad33cfcd681452e62021f677e075",
+      "actualBlob": "6673d071c127ad33cfcd681452e62021f677e075",
+      "status": "identical"
+    },
+    {
+      "path": "test/opusQuoteFixtures.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e99443ad3bfe858291d999901d9f2c230d261ea4",
+      "actualBlob": "e99443ad3bfe858291d999901d9f2c230d261ea4",
+      "status": "identical"
+    },
+    {
+      "path": "test/opusQuoteRepairs.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "019b6f8b72200465ef8e3274989990f19d263c84",
+      "actualBlob": "019b6f8b72200465ef8e3274989990f19d263c84",
+      "status": "identical"
+    },
+    {
+      "path": "test/overageDashboard20261006.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "44c3ddf4e57613226cd7e3ca853de33a1a3c1ba8",
+      "actualBlob": "44c3ddf4e57613226cd7e3ca853de33a1a3c1ba8",
+      "status": "identical"
+    },
+    {
+      "path": "test/overageIntegration20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "915e1918a99cdd3a083e95ac60436fbeefaecdd3",
+      "actualBlob": "915e1918a99cdd3a083e95ac60436fbeefaecdd3",
+      "status": "identical"
+    },
+    {
+      "path": "test/overageMinute20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8ac2962ad23d5de259b551818f5ed50f94cd981c",
+      "actualBlob": "8ac2962ad23d5de259b551818f5ed50f94cd981c",
+      "status": "identical"
+    },
+    {
+      "path": "test/overageMinute20261006Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "12d70f8be0a1c38bee62a35a292cbb3c72e747c4",
+      "actualBlob": "12d70f8be0a1c38bee62a35a292cbb3c72e747c4",
+      "status": "identical"
+    },
+    {
+      "path": "test/overageProduction20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5aa8df73103ab3adf6651edc163d890b2c665e8b",
+      "actualBlob": "5aa8df73103ab3adf6651edc163d890b2c665e8b",
+      "status": "identical"
+    },
+    {
+      "path": "test/overageProviderSdk20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f8d2173911d89c2dea02b627670c80c14bddcdaa",
+      "actualBlob": "f8d2173911d89c2dea02b627670c80c14bddcdaa",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertRepair20261006.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b4779f08847bd67900d5c968c91eab94f6f01c2e",
+      "actualBlob": "b4779f08847bd67900d5c968c91eab94f6f01c2e",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertRepair20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "63bf5f02f0ea7b9a60a58121bffe185ef54a9dab",
+      "actualBlob": "63bf5f02f0ea7b9a60a58121bffe185ef54a9dab",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertRepair20261006Http.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0c06502c350cb5d4bf2421eeff5b6c3dd5f47cfa",
+      "actualBlob": "0c06502c350cb5d4bf2421eeff5b6c3dd5f47cfa",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertRepair20261006Worker.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "aede9ab1f7c74a55337803c1ad0379f3af2c15ae",
+      "actualBlob": "aede9ab1f7c74a55337803c1ad0379f3af2c15ae",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertScheduling20261012Http.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0a071924e2317ef8d762c61fc6edd6b2dc98fb7b",
+      "actualBlob": "0a071924e2317ef8d762c61fc6edd6b2dc98fb7b",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertsDelivery20261006.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "18f1b3080338606e614d7f7b13a0aa2af6629ab9",
+      "actualBlob": "18f1b3080338606e614d7f7b13a0aa2af6629ab9",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertsDelivery20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "91d9c6c35afb27050998f101cdd509f51d2ce2da",
+      "actualBlob": "91d9c6c35afb27050998f101cdd509f51d2ce2da",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertsDelivery20261006Http.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "4f2c842f07d65b3dd8c911e1bc225b6773ebb450",
+      "actualBlob": "4f2c842f07d65b3dd8c911e1bc225b6773ebb450",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerAlertsDelivery20261006Provider.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "35cc15a26600794ca91167698513da341c30e1be",
+      "actualBlob": "35cc15a26600794ca91167698513da341c30e1be",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerCalendarService.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "40f56b03466504d493c6f37584da92dd66cb4115",
+      "actualBlob": "40f56b03466504d493c6f37584da92dd66cb4115",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerCallVisibility.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "4192ac4db8cf669e3330f8ae1d17ae096c7442ba",
+      "actualBlob": "4192ac4db8cf669e3330f8ae1d17ae096c7442ba",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerCallVisibilityHttp.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e14a00d76947d6e96aea7d6c84351c1a6159365a",
+      "actualBlob": "e14a00d76947d6e96aea7d6c84351c1a6159365a",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerCallVisibilityRendering.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "727196b8e0c475bf16488f897f870352889f115b",
+      "actualBlob": "727196b8e0c475bf16488f897f870352889f115b",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerDashboard20261007.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "4ba9b207380cc1acce2af597bbf67272f48ce982",
+      "actualBlob": "4ba9b207380cc1acce2af597bbf67272f48ce982",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerDashboard20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "46dbf2fc3c7e7a765da6f307c6a8511a2b491ab3",
+      "actualBlob": "46dbf2fc3c7e7a765da6f307c6a8511a2b491ab3",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerDashboard20261007Baseline.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e80d0e8eb8d5ec12557057a54128950d862030dc",
+      "actualBlob": "e80d0e8eb8d5ec12557057a54128950d862030dc",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerDashboard20261007Http.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c4f80cf5914a622f48aa616f439a659558808b68",
+      "actualBlob": "c4f80cf5914a622f48aa616f439a659558808b68",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerDashboard20261007TenantHttp.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "368626290e61d3814c4b98b9caa6435877e798ea",
+      "actualBlob": "368626290e61d3814c4b98b9caa6435877e798ea",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerIntegrations.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "addabc7066e21083002fd9d122715e60d5f74b52",
+      "actualBlob": "addabc7066e21083002fd9d122715e60d5f74b52",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerQueryCoverage20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e1a3ea985e9439e8f1321535344dec6ecf55f427",
+      "actualBlob": "e1a3ea985e9439e8f1321535344dec6ecf55f427",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerQueryReview20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1e22a109ab3aede26f1f1541107c23e429221bfc",
+      "actualBlob": "1e22a109ab3aede26f1f1541107c23e429221bfc",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerStatusMessages.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "624839e4ee7fb863a4f354e0d53af86db4f240ee",
+      "actualBlob": "624839e4ee7fb863a4f354e0d53af86db4f240ee",
+      "status": "identical"
+    },
+    {
+      "path": "test/ownerWording20261011.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "7c92992f94a37ab01f8b1f0585cfe265e31f5fb5",
+      "actualBlob": "7c92992f94a37ab01f8b1f0585cfe265e31f5fb5",
+      "status": "identical"
+    },
+    {
+      "path": "test/phase2.spec.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8b4252a6e3d67217ec0ec2fbda74426077486fa4",
+      "actualBlob": "8b4252a6e3d67217ec0ec2fbda74426077486fa4",
+      "status": "identical"
+    },
+    {
+      "path": "test/phase2Terminology.spec.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b0cca629e445f974ddc5b7e28c0673b09b3223ca",
+      "actualBlob": "b0cca629e445f974ddc5b7e28c0673b09b3223ca",
+      "status": "identical"
+    },
+    {
+      "path": "test/planAccess.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "574a4727e94e30d70690fd35add7f14e43613b03",
+      "actualBlob": "574a4727e94e30d70690fd35add7f14e43613b03",
+      "status": "identical"
+    },
+    {
+      "path": "test/platformSchema.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e624614185172858e93b70b4deb40aebe9e216c5",
+      "actualBlob": "e624614185172858e93b70b4deb40aebe9e216c5",
+      "status": "identical"
+    },
+    {
+      "path": "test/precisionFixtureIntegrity.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9996b9982c538a8ff0272901bcd709fe720ae0d8",
+      "actualBlob": "9996b9982c538a8ff0272901bcd709fe720ae0d8",
+      "status": "identical"
+    },
+    {
+      "path": "test/priceBookAI.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "84f9b4526b7bc5dc00114d6eaa0bce57bb20db66",
+      "actualBlob": "84f9b4526b7bc5dc00114d6eaa0bce57bb20db66",
+      "status": "identical"
+    },
+    {
+      "path": "test/priceBookEditor.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3ce0af8d373f368bea992bc1131cad79ea682b11",
+      "actualBlob": "3ce0af8d373f368bea992bc1131cad79ea682b11",
+      "status": "identical"
+    },
+    {
+      "path": "test/priceBookIntegrity.spec.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "81b8310455279986c612c5748e661065ca04de6b",
+      "actualBlob": "81b8310455279986c612c5748e661065ca04de6b",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookClarificationHttp.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0f7b30a3d80ce60412a9ba3b9a2a3cc444facf7a",
+      "actualBlob": "0f7b30a3d80ce60412a9ba3b9a2a3cc444facf7a",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookConflictRecovery.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "063fc15532c64190522cf23a5678bf21a25f7bfd",
+      "actualBlob": "063fc15532c64190522cf23a5678bf21a25f7bfd",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookConflictRecovery.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "eeef0e0efcfb7031090ef1303f1a94d49799edd0",
+      "actualBlob": "eeef0e0efcfb7031090ef1303f1a94d49799edd0",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookConverterRegressions20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f276e2c5075e86a529e8d181d6aa322a81e2a1fc",
+      "actualBlob": "f276e2c5075e86a529e8d181d6aa322a81e2a1fc",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookDurability.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "bd695bf5c00dc5b82ab7b38a3d8f42416cc7f571",
+      "actualBlob": "bd695bf5c00dc5b82ab7b38a3d8f42416cc7f571",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookEditorRepairs.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a2ffae44fb97085627dbf6eb72cb51ae6503aa04",
+      "actualBlob": "a2ffae44fb97085627dbf6eb72cb51ae6503aa04",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookFirstVisit20261009.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ca1d3d260a877e587289346d4b0c1f770b192e08",
+      "actualBlob": "ca1d3d260a877e587289346d4b0c1f770b192e08",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookInterviewNormalization20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e8b6f7dfdb55595d08cc68672d806d5813ff6d94",
+      "actualBlob": "e8b6f7dfdb55595d08cc68672d806d5813ff6d94",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookInterviewSave.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "4aeb685d11b77bff1fb9f2dcdf0d25e278ae330e",
+      "actualBlob": "4aeb685d11b77bff1fb9f2dcdf0d25e278ae330e",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookMoneyMetadataSweep20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ae717b7052faea8991a64fdbc93187e5669227e9",
+      "actualBlob": "ae717b7052faea8991a64fdbc93187e5669227e9",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookPersistence.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "2d710d225c37b55de0166e853c241682d27c24bb",
+      "actualBlob": "2d710d225c37b55de0166e853c241682d27c24bb",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookPersistenceEditor20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "dde78281f4c06030f06c52f90c91b78560ba8702",
+      "actualBlob": "dde78281f4c06030f06c52f90c91b78560ba8702",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookPreviewFreshness.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1dee0596166ba7b95abe9236faf7466e4e36cc49",
+      "actualBlob": "1dee0596166ba7b95abe9236faf7466e4e36cc49",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookStorageRepair20261014.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ed1e85e7342f267ddebba28ebd506fbfa1e8a2db",
+      "actualBlob": "ed1e85e7342f267ddebba28ebd506fbfa1e8a2db",
+      "status": "identical"
+    },
+    {
+      "path": "test/pricebookTestEnv.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c91a272c6c73652e8d33b9c1aeeba558f892907f",
+      "actualBlob": "c91a272c6c73652e8d33b9c1aeeba558f892907f",
+      "status": "identical"
+    },
+    {
+      "path": "test/providerCredentials.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8e4f14714a25950270ecf9876279b7c3b957a26a",
+      "actualBlob": "8e4f14714a25950270ecf9876279b7c3b957a26a",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteActivationParity20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "268a8f5ab32c9bbc6ccb86a53617c9d40d9cedf3",
+      "actualBlob": "268a8f5ab32c9bbc6ccb86a53617c9d40d9cedf3",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteApplicationBoundary.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f9e0172312d074631cf88b63a2093d6ac70d46c4",
+      "actualBlob": "f9e0172312d074631cf88b63a2093d6ac70d46c4",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteApprovalHistory20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b9479f98f7352b24bceeb1dff233d8b58cdbf802",
+      "actualBlob": "b9479f98f7352b24bceeb1dff233d8b58cdbf802",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteArchitectureGuard.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "23ec6d77b0d6329ca60f98e3b5f360fc410c6dde",
+      "actualBlob": "23ec6d77b0d6329ca60f98e3b5f360fc410c6dde",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteAudit20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "182f9c4eda9965e552e4da1b992d6de91b3b3325",
+      "actualBlob": "182f9c4eda9965e552e4da1b992d6de91b3b3325",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteAuditAcceptance20261004.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d0c887cd299ac6984f9ab75f56bc54cdbca2baf2",
+      "actualBlob": "d0c887cd299ac6984f9ab75f56bc54cdbca2baf2",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteAuditDecisions20261004.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "752a5806af92b9e20490bffd65c049c5c3866efc",
+      "actualBlob": "752a5806af92b9e20490bffd65c049c5c3866efc",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteAuditFollowup20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "7387ee6ffed46765e675d427946a4248f2da12ef",
+      "actualBlob": "7387ee6ffed46765e675d427946a4248f2da12ef",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteAuditSmallRepairs20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0fc54e57ade4764268dfad6bea4b104cef97dda5",
+      "actualBlob": "0fc54e57ade4764268dfad6bea4b104cef97dda5",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteCatalogIncludedPricing20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "0b775d8af00d3ef10826f08b2162165bc8937263",
+      "actualBlob": "0b775d8af00d3ef10826f08b2162165bc8937263",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteCatalogScaling20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c60daaaf5a2c74307ec8ff8096186cb1e01a57d7",
+      "actualBlob": "c60daaaf5a2c74307ec8ff8096186cb1e01a57d7",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteChoiceCap20261015.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c9780383eb7e059a8bdc613e96736cda9df5fb3f",
+      "actualBlob": "c9780383eb7e059a8bdc613e96736cda9df5fb3f",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteCombinationBoundaries.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "40d7ac0608c7d9bf7efb3c483c2176d1445c6be3",
+      "actualBlob": "40d7ac0608c7d9bf7efb3c483c2176d1445c6be3",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteConcreteLandscape20261016.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "bd404af07cf475f13dbe9181fce24f338694f748",
+      "actualBlob": "bd404af07cf475f13dbe9181fce24f338694f748",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteConcreteLandscape20261016.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "37714ba1e516f669b75a2f21593d480d353dfcbc",
+      "actualBlob": "37714ba1e516f669b75a2f21593d480d353dfcbc",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteConcreteLandscape20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d98055c7dc01b491559876d9a8ace6155705f54c",
+      "actualBlob": "d98055c7dc01b491559876d9a8ace6155705f54c",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteConcreteLandscape20261016Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3a09a329cf2837187a161262304f22dfd8522a57",
+      "actualBlob": "3a09a329cf2837187a161262304f22dfd8522a57",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteConcreteLandscapeDelivery20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1027d49ae2d906da875b42430258ac0ad9a7f77f",
+      "actualBlob": "1027d49ae2d906da875b42430258ac0ad9a7f77f",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteConcreteLandscapeLegacy20261016.json",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1ae769c7851d05b32af4a03c913b0fc13a385841",
+      "actualBlob": "1ae769c7851d05b32af4a03c913b0fc13a385841",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteConcreteLandscapeValidation20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8059dbc237e3e1ca7f2924c6a0b755998b95e62a",
+      "actualBlob": "8059dbc237e3e1ca7f2924c6a0b755998b95e62a",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteConfigurationInterview.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c9a20a917eb56ac487dcaa0ea5a8071d3079627a",
+      "actualBlob": "c9a20a917eb56ac487dcaa0ea5a8071d3079627a",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDecisionFollowup.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "dc694082144a111a47fb56a405044c075e3ba5e7",
+      "actualBlob": "dc694082144a111a47fb56a405044c075e3ba5e7",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDeliveryBatch20261015.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f46566ac6d6e1efb21d58809302d8bfb2c750945",
+      "actualBlob": "f46566ac6d6e1efb21d58809302d8bfb2c750945",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDeliveryBatch20261015Email.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e88438dba3f07d9270c7a0830468f1a0b1def6c6",
+      "actualBlob": "e88438dba3f07d9270c7a0830468f1a0b1def6c6",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDeliveryBatch20261015Evidence.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8c32e4028b644c847fe113dc6767d4eb0c43fbdd",
+      "actualBlob": "8c32e4028b644c847fe113dc6767d4eb0c43fbdd",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDeliveryBatch20261015Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d72542d3e20feade430fe324961a70e4ec9508a5",
+      "actualBlob": "d72542d3e20feade430fe324961a70e4ec9508a5",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDeliveryBatch20261015Gates.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "586eca6ff71323940d4db0d3f37690b98045b0f5",
+      "actualBlob": "586eca6ff71323940d4db0d3f37690b98045b0f5",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDisplay20261006.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "60fd690a92a1e1f26200a4c1af453417442d78f0",
+      "actualBlob": "60fd690a92a1e1f26200a4c1af453417442d78f0",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDisplay20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "6516fc0cfde9ac76aaae4092f64c5601694934a9",
+      "actualBlob": "6516fc0cfde9ac76aaae4092f64c5601694934a9",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDisplayFixtures20261006.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "44b6fb63de65ee8c8add323bccd8af2c0ed3f73b",
+      "actualBlob": "44b6fb63de65ee8c8add323bccd8af2c0ed3f73b",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteDisplayRender20261006.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "573906970e788a90997c2d26cc17a9ad5d761111",
+      "actualBlob": "573906970e788a90997c2d26cc17a9ad5d761111",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteEmailFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3bb6c7f54ce05eb85a5f845ab43177359bb5d24a",
+      "actualBlob": "3bb6c7f54ce05eb85a5f845ab43177359bb5d24a",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteEngine.spec.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a884ae2907da36742187a762a26d5096b6b79441",
+      "actualBlob": "a884ae2907da36742187a762a26d5096b6b79441",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteEngineLeftovers20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "20a094c29b4beaa709c70e6445f02782884116e4",
+      "actualBlob": "20a094c29b4beaa709c70e6445f02782884116e4",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "58deffb4d4fee9f1b21a279ef8f1d08d1fb67552",
+      "actualBlob": "58deffb4d4fee9f1b21a279ef8f1d08d1fb67552",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e01c625ac77cb0bf8c42d21c944dd3d354098fb0",
+      "actualBlob": "e01c625ac77cb0bf8c42d21c944dd3d354098fb0",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteEngineVNextFixtures.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "fa759874799629f328f07f7e94ac1eb1f1dba0f0",
+      "actualBlob": "fa759874799629f328f07f7e94ac1eb1f1dba0f0",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "00b8d4e9336ea581c887227e9858c639f78a4b1c",
+      "actualBlob": "00b8d4e9336ea581c887227e9858c639f78a4b1c",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteEngineVNextReplay.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c672f18cf9770b48d3818317f92ec454de2607d0",
+      "actualBlob": "c672f18cf9770b48d3818317f92ec454de2607d0",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFinalRepairs20261004.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "fdda12dd647f6614932e960786170ef151159f02",
+      "actualBlob": "fdda12dd647f6614932e960786170ef151159f02",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlatRoofRepairs20261016.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3a5c97ccbb939a5b5a38ef2c4d20608dae98ee95",
+      "actualBlob": "3a5c97ccbb939a5b5a38ef2c4d20608dae98ee95",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlatRoofRepairs20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "df7f07cca9d88f0b55b5ad0ce88b569f9429ba5b",
+      "actualBlob": "df7f07cca9d88f0b55b5ad0ce88b569f9429ba5b",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlooring20261016.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "cefb96bba0574591a82535ee6a3f57337f23e133",
+      "actualBlob": "cefb96bba0574591a82535ee6a3f57337f23e133",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlooring20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "526d3bfac94d60f88112e7940d7473a8f00b89e6",
+      "actualBlob": "526d3bfac94d60f88112e7940d7473a8f00b89e6",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlooring20261016Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "96b21f4b52c5003c81a605a8ba452f611589527d",
+      "actualBlob": "96b21f4b52c5003c81a605a8ba452f611589527d",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlooringDelivery20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "7367b66db1a5a1686402721bee38d96b6ccf79d2",
+      "actualBlob": "7367b66db1a5a1686402721bee38d96b6ccf79d2",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlooringLegacy20261016.json",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f655087d049bd713f383c120e719dd8e77017048",
+      "actualBlob": "f655087d049bd713f383c120e719dd8e77017048",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlooringValidation20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "4e7118c84cd6f54ecee3cad1323d783d10061c66",
+      "actualBlob": "4e7118c84cd6f54ecee3cad1323d783d10061c66",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteFlowRepairs.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "18b0cd96bd5ae8f9aa67bfb5d43167bbf5e76d4f",
+      "actualBlob": "18b0cd96bd5ae8f9aa67bfb5d43167bbf5e76d4f",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteInterviewRendering.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c3c20570736c037af8ade35a263fb7d254fc28ec",
+      "actualBlob": "c3c20570736c037af8ade35a263fb7d254fc28ec",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteLaneAGroundwork20261016.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "83e156fe084f4b51703a3a21be6c74956ad38a54",
+      "actualBlob": "83e156fe084f4b51703a3a21be6c74956ad38a54",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteLaneAGroundwork20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "cbdc735976824b372207a36b10ffcc9705e5f732",
+      "actualBlob": "cbdc735976824b372207a36b10ffcc9705e5f732",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteLaneIntegration20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "fde0403ae4948452db8c7351f9612c16c2fab46f",
+      "actualBlob": "fde0403ae4948452db8c7351f9612c16c2fab46f",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOfferingScopeIsolation.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f03d0a668144ee4a10cdfec98a2fdf77336345d3",
+      "actualBlob": "f03d0a668144ee4a10cdfec98a2fdf77336345d3",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOptionalScopeIsolation.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "52309260cfa6fb7bbde900b7d351963d98d77b7b",
+      "actualBlob": "52309260cfa6fb7bbde900b7d351963d98d77b7b",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOriginStorage.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5ea0c86dde3630cf1c0090a91a0f0d6482040506",
+      "actualBlob": "5ea0c86dde3630cf1c0090a91a0f0d6482040506",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOwnerBatch20261015Editor.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "97647fc562f51b1a7100ebcf70ec2925f0a562a9",
+      "actualBlob": "97647fc562f51b1a7100ebcf70ec2925f0a562a9",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOwnerBatch20261015Editor.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8204448c20295188540a9fd42a86a760d8fce9c9",
+      "actualBlob": "8204448c20295188540a9fd42a86a760d8fce9c9",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOwnerBatch20261015Interview.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "53a5b59a365fc48117ed4a63ff46123352dcc769",
+      "actualBlob": "53a5b59a365fc48117ed4a63ff46123352dcc769",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOwnerBatch20261015Interview.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "74fcf6c9369e74c145c9c6f313bfaf6c4431fa6a",
+      "actualBlob": "74fcf6c9369e74c145c9c6f313bfaf6c4431fa6a",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOwnerBatch20261015Jurisdiction.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "c6c724a6bec0033da7dd7923b73cc6f903842b2c",
+      "actualBlob": "c6c724a6bec0033da7dd7923b73cc6f903842b2c",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOwnerFollowup20261015.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d633096599db0ad120bf7abe8c1088217b6efefc",
+      "actualBlob": "d633096599db0ad120bf7abe8c1088217b6efefc",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteOwnerName20261015Http.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a650730f1c84d3e2d737adf87b18b1c1e3f23b3b",
+      "actualBlob": "a650730f1c84d3e2d737adf87b18b1c1e3f23b3b",
+      "status": "identical"
+    },
+    {
+      "path": "test/quotePresentation.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "17a2e3c70bd868361947fc7d1c8bd6f116496f1b",
+      "actualBlob": "17a2e3c70bd868361947fc7d1c8bd6f116496f1b",
+      "status": "identical"
+    },
+    {
+      "path": "test/quotePresentation20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "94c41bb968ac39b2b4ab4546aaad6d7e691fb9d4",
+      "actualBlob": "94c41bb968ac39b2b4ab4546aaad6d7e691fb9d4",
+      "status": "identical"
+    },
+    {
+      "path": "test/quotePreviewTier20261005.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "10c0fe89fb57dc6a81492efa459897a65b7e3bf8",
+      "actualBlob": "10c0fe89fb57dc6a81492efa459897a65b7e3bf8",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteRatePrecisionMatrix.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "cd36d11e7f43bf4b39ded457ae6c9ae33adbe13e",
+      "actualBlob": "cd36d11e7f43bf4b39ded457ae6c9ae33adbe13e",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteReadinessExhaustive.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "fd21a0dcc55172172b8cde04f2360b482a7ee030",
+      "actualBlob": "fd21a0dcc55172172b8cde04f2360b482a7ee030",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteReadinessRepairs.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b15f0d4f1944471be2e6abce99bf4b02ecf6376f",
+      "actualBlob": "b15f0d4f1944471be2e6abce99bf4b02ecf6376f",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteReauditEditor20261006.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5d4ceee4e55fcf24b9fea02f1483faa33c85fcee",
+      "actualBlob": "5d4ceee4e55fcf24b9fea02f1483faa33c85fcee",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteReauditRepairs.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "facf9bba270c260dab80879ccfdb4b34d36625a4",
+      "actualBlob": "facf9bba270c260dab80879ccfdb4b34d36625a4",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteReauditRepairs20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "2a8aa4aa0b0994f1c9a019fbfbb56492f162a8e0",
+      "actualBlob": "2a8aa4aa0b0994f1c9a019fbfbb56492f162a8e0",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteReleaseStorage.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "bd84ea50832c6547b919c57cd236398f624add0d",
+      "actualBlob": "bd84ea50832c6547b919c57cd236398f624add0d",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteReviewFixes.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d7a9255de1a7390a8e0a7ad520f96392f7decfa9",
+      "actualBlob": "d7a9255de1a7390a8e0a7ad520f96392f7decfa9",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteRoofing20261016.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5520fe9fe6e5faee1255398bb962daf6ebf0a2e9",
+      "actualBlob": "5520fe9fe6e5faee1255398bb962daf6ebf0a2e9",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteRoofing20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8a159bf29476b7db0ce580d52ffef8052a624b60",
+      "actualBlob": "8a159bf29476b7db0ce580d52ffef8052a624b60",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteServerCorrectness.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3d52a85c15dca1b2599c31740426346a1dc1139d",
+      "actualBlob": "3d52a85c15dca1b2599c31740426346a1dc1139d",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteSmallRepairs.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f76ab5d0e9220c284f86651f7abd35983c9243bb",
+      "actualBlob": "f76ab5d0e9220c284f86651f7abd35983c9243bb",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteStartingValues20261017.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "21fed1b197aa72ee4b6bb0480302aad5447ad691",
+      "actualBlob": "21fed1b197aa72ee4b6bb0480302aad5447ad691",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteStartingValues20261017.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "34ef29d0ce7a7e831d0caec2a28f587b0c57a3e2",
+      "actualBlob": "34ef29d0ce7a7e831d0caec2a28f587b0c57a3e2",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteStartingValues20261017Legacy.json",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5dfdbc62c4734efe33daf0ed10b49e9849b63bb3",
+      "actualBlob": "5dfdbc62c4734efe33daf0ed10b49e9849b63bb3",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteTradeDecisions.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "32993ab78069e23f27c179868fbd2ae95edb83a3",
+      "actualBlob": "32993ab78069e23f27c179868fbd2ae95edb83a3",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteZeroPricingRepair20261014.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "7f223ed50bee8d63c96c9340e879cba5669ca831",
+      "actualBlob": "7f223ed50bee8d63c96c9340e879cba5669ca831",
+      "status": "identical"
+    },
+    {
+      "path": "test/quoteZeroPricingRepair20261014.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f5ba199b52060bba51d1943775a8d0237a20354e",
+      "actualBlob": "f5ba199b52060bba51d1943775a8d0237a20354e",
+      "status": "identical"
+    },
+    {
+      "path": "test/railwayConfigDocs20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "f40bd41f27da2494bc96e3f571589dff19695fe5",
+      "actualBlob": "f40bd41f27da2494bc96e3f571589dff19695fe5",
+      "status": "identical"
+    },
+    {
+      "path": "test/receptionist20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e50f1fc9854dee33e046d37f5be448109a64187f",
+      "actualBlob": "e50f1fc9854dee33e046d37f5be448109a64187f",
+      "status": "identical"
+    },
+    {
+      "path": "test/receptionistAudit20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1258295d686adf24cdacce6c6a8158ca67ed0bd5",
+      "actualBlob": "1258295d686adf24cdacce6c6a8158ca67ed0bd5",
+      "status": "identical"
+    },
+    {
+      "path": "test/receptionistRuntime20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "26b8d13b2182aa922820a096e60df2bedde920ca",
+      "actualBlob": "26b8d13b2182aa922820a096e60df2bedde920ca",
+      "status": "identical"
+    },
+    {
+      "path": "test/receptionistSettings20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a032b1150e6b0e5432c75762d0ad1face9c1f217",
+      "actualBlob": "a032b1150e6b0e5432c75762d0ad1face9c1f217",
+      "status": "identical"
+    },
+    {
+      "path": "test/receptionistSystem20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "159751113cbfeb2c03b680fa51d8bd7a09e503e7",
+      "actualBlob": "159751113cbfeb2c03b680fa51d8bd7a09e503e7",
+      "status": "identical"
+    },
+    {
+      "path": "test/releaseIntegration20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e94e5793c9c9696794c23243ed65e385cf1cba50",
+      "actualBlob": "e94e5793c9c9696794c23243ed65e385cf1cba50",
+      "status": "identical"
+    },
+    {
+      "path": "test/releaseProductionEngineGuard.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9518b18d4717eeda92dbe849df914c7cd24ed909",
+      "actualBlob": "9518b18d4717eeda92dbe849df914c7cd24ed909",
+      "status": "identical"
+    },
+    {
+      "path": "test/releaseQuoteGuards.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "57a317d9a4297d4e4fd10f70bd92a19b6d625fb9",
+      "actualBlob": "57a317d9a4297d4e4fd10f70bd92a19b6d625fb9",
+      "status": "identical"
+    },
+    {
+      "path": "test/retentionBackupsWording20261010.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "58324f1d76da7051bd3dd236f7f4771780b47b77",
+      "actualBlob": "58324f1d76da7051bd3dd236f7f4771780b47b77",
+      "status": "identical"
+    },
+    {
+      "path": "test/retentionExpiry20261012.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a65b696525990efb65e7fef37a0527a36ccb98cf",
+      "actualBlob": "a65b696525990efb65e7fef37a0527a36ccb98cf",
+      "status": "identical"
+    },
+    {
+      "path": "test/retentionHardeningHealth20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "519f18167622db5b8461c5b52e3e20ebf36e8fa6",
+      "actualBlob": "519f18167622db5b8461c5b52e3e20ebf36e8fa6",
+      "status": "identical"
+    },
+    {
+      "path": "test/retentionHardeningLocks20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b3bbb41e7d918b25fc324278e60c6c3fe6250c1f",
+      "actualBlob": "b3bbb41e7d918b25fc324278e60c6c3fe6250c1f",
+      "status": "identical"
+    },
+    {
+      "path": "test/retentionHardeningSecrets20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "6bed9b6617635f1816e8d5e300fefaa0c9b6c77d",
+      "actualBlob": "6bed9b6617635f1816e8d5e300fefaa0c9b6c77d",
+      "status": "identical"
+    },
+    {
+      "path": "test/retentionHardeningVersions20261011.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a24ba18caa17996581da7aa09c03c4e6cc7b0759",
+      "actualBlob": "a24ba18caa17996581da7aa09c03c4e6cc7b0759",
+      "status": "identical"
+    },
+    {
+      "path": "test/returningCallerTestHelper.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "bc9209c8c89e1b6e3bf3cba656dbac25db5df68e",
+      "actualBlob": "bc9209c8c89e1b6e3bf3cba656dbac25db5df68e",
+      "status": "identical"
+    },
+    {
+      "path": "test/runtimeConfig.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ac677645d4c61e78bff34a906b8967956c21d5a4",
+      "actualBlob": "ac677645d4c61e78bff34a906b8967956c21d5a4",
+      "status": "identical"
+    },
+    {
+      "path": "test/serviceArea.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "050c10d2d67dad9be23e501be9ba9a0f7f57b00f",
+      "actualBlob": "050c10d2d67dad9be23e501be9ba9a0f7f57b00f",
+      "status": "identical"
+    },
+    {
+      "path": "test/staffLogin20261009.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a85cba1d09847b8839260c31cc22e0dbb076ae80",
+      "actualBlob": "a85cba1d09847b8839260c31cc22e0dbb076ae80",
+      "status": "identical"
+    },
+    {
+      "path": "test/staffLogin20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "1d84600055ce6b5c6e1bdf61ef9d6d89a83e1d58",
+      "actualBlob": "1d84600055ce6b5c6e1bdf61ef9d6d89a83e1d58",
+      "status": "identical"
+    },
+    {
+      "path": "test/starterPlan20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "a929b65d471720dc2393997eca32d7ccb872418f",
+      "actualBlob": "a929b65d471720dc2393997eca32d7ccb872418f",
+      "status": "identical"
+    },
+    {
+      "path": "test/starterPlanBilling20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "442f22668232660cfb2c9a754595941798d30c2f",
+      "actualBlob": "442f22668232660cfb2c9a754595941798d30c2f",
+      "status": "identical"
+    },
+    {
+      "path": "test/starterPlanOwnerRender20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "151c8eea3e3b65e993a7140b8f371cd894d52024",
+      "actualBlob": "151c8eea3e3b65e993a7140b8f371cd894d52024",
+      "status": "identical"
+    },
+    {
+      "path": "test/starterPlanQuote20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "51c8cd9af37fa1ad02584967f69752d2cd90635e",
+      "actualBlob": "51c8cd9af37fa1ad02584967f69752d2cd90635e",
+      "status": "identical"
+    },
+    {
+      "path": "test/starterPlanRoutes20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ccf49ef28a19d586bbc911ea51d2015bcfa1fa35",
+      "actualBlob": "ccf49ef28a19d586bbc911ea51d2015bcfa1fa35",
+      "status": "identical"
+    },
+    {
+      "path": "test/surfacePricing20261016.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d3865fef9c2862d12fbf0c334b8658961f0875f2",
+      "actualBlob": "d3865fef9c2862d12fbf0c334b8658961f0875f2",
+      "status": "identical"
+    },
+    {
+      "path": "test/surfacePricing20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "2b6a299b5ff8f34c35747013954c0f649ff16c67",
+      "actualBlob": "2b6a299b5ff8f34c35747013954c0f649ff16c67",
+      "status": "identical"
+    },
+    {
+      "path": "test/surfacePricingLaneCFixes20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8a0619c6acb0c3825f89513af0de161cc0bfe747",
+      "actualBlob": "8a0619c6acb0c3825f89513af0de161cc0bfe747",
+      "status": "identical"
+    },
+    {
+      "path": "test/telephonyBetterSqlite.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "8009dc722a3fcda8be9263462583618da417c3d4",
+      "actualBlob": "8009dc722a3fcda8be9263462583618da417c3d4",
+      "status": "identical"
+    },
+    {
+      "path": "test/telephonyProvisioning.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "7e1c93aa8c5681ad352d1c0b6ba134edfd120df9",
+      "actualBlob": "7e1c93aa8c5681ad352d1c0b6ba134edfd120df9",
+      "status": "identical"
+    },
+    {
+      "path": "test/tenantAddon.spec.js",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b814d21949a65d0150dbea081575db6d2c1353d8",
+      "actualBlob": "b814d21949a65d0150dbea081575db6d2c1353d8",
+      "status": "identical"
+    },
+    {
+      "path": "test/tenantIsolationRoutes.spec.mjs",
+      "sourceCommit": "046f9d905435495cab31f5abb02cce1413645e54",
+      "expectedBlob": "04a44ce44af7af6c15713688087169dca8e42d01",
+      "actualBlob": "04a44ce44af7af6c15713688087169dca8e42d01",
+      "status": "identical"
+    },
+    {
+      "path": "test/tenantRetention20261010.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e53c726bd56d2dc63ebe8a290b8a80ca3156c174",
+      "actualBlob": "e53c726bd56d2dc63ebe8a290b8a80ca3156c174",
+      "status": "identical"
+    },
+    {
+      "path": "test/testFullScheduling.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "39d4a13914f65f8836f1d66e6ddd5f69be4f4a58",
+      "actualBlob": "39d4a13914f65f8836f1d66e6ddd5f69be4f4a58",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceAudioCodec.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "ef6f7824829caf58129edb9bb597fce1db55a243",
+      "actualBlob": "ef6f7824829caf58129edb9bb597fce1db55a243",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceBillingSystem20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "002dd29babdb3fd641587f4805516cb1a02058a8",
+      "actualBlob": "002dd29babdb3fd641587f4805516cb1a02058a8",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceCore20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5e469bb7315f92e1cc4f83c9679362bb6d42a346",
+      "actualBlob": "5e469bb7315f92e1cc4f83c9679362bb6d42a346",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceEntryPoint20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "827f62ba3f6391e835dea1966532ff552a177c2a",
+      "actualBlob": "827f62ba3f6391e835dea1966532ff552a177c2a",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceLifecycle20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "6539abb6017b068bba6d4b114abb8d590b99c935",
+      "actualBlob": "6539abb6017b068bba6d4b114abb8d590b99c935",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceLifecycle20261006Fixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "850f7cfe59918d03d769039cf90ee63a0a260abe",
+      "actualBlob": "850f7cfe59918d03d769039cf90ee63a0a260abe",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceLimits20261007.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3ccde6079391ec6b728a1ed09456a18a6275390b",
+      "actualBlob": "3ccde6079391ec6b728a1ed09456a18a6275390b",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceNamedReviewContact20261006.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "20f6f14418c6d8fc00140cccc1ca7a506ffa0b08",
+      "actualBlob": "20f6f14418c6d8fc00140cccc1ca7a506ffa0b08",
+      "status": "identical"
+    },
+    {
+      "path": "test/voicePersistence.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "b526bec8cd002c2c7ba0714034f23ad0ea6a0cf0",
+      "actualBlob": "b526bec8cd002c2c7ba0714034f23ad0ea6a0cf0",
+      "status": "identical"
+    },
+    {
+      "path": "test/voicePromptCompiler.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "22fd6bd61863a52e834422b77c0cc0cbd92872bd",
+      "actualBlob": "22fd6bd61863a52e834422b77c0cc0cbd92872bd",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceQuoteDateIntegration.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "49d4f1193b658f5231c566e5b289e2f98b3eeb25",
+      "actualBlob": "49d4f1193b658f5231c566e5b289e2f98b3eeb25",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceQuotePathCases20261005.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "3d0069018ef2dcf5f4d3285ee8ba147be08cfc68",
+      "actualBlob": "3d0069018ef2dcf5f4d3285ee8ba147be08cfc68",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceQuotePathRegression20261005.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "7a903c5a2d7bcfed5f61317a89931eb0deeadc36",
+      "actualBlob": "7a903c5a2d7bcfed5f61317a89931eb0deeadc36",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceRuntimeRoutes.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "10b3c349f2dcc5f8ed0f60e26871b234b11d1a37",
+      "actualBlob": "10b3c349f2dcc5f8ed0f60e26871b234b11d1a37",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceSecurity.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "5d6a78e15284836b91d0df83e98c1f87fd3378c7",
+      "actualBlob": "5d6a78e15284836b91d0df83e98c1f87fd3378c7",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceSessionMemory20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "9fc2eb6ddbc58511500f0c0f2f66e8d6aea2cc28",
+      "actualBlob": "9fc2eb6ddbc58511500f0c0f2f66e8d6aea2cc28",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceStarterPlan20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "726bb18326445455d444eac3552147d23a92cfcf",
+      "actualBlob": "726bb18326445455d444eac3552147d23a92cfcf",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceSurfacePricing20261016.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "d73a70a34cc39aced267cf77db9803e128de40b8",
+      "actualBlob": "d73a70a34cc39aced267cf77db9803e128de40b8",
+      "status": "identical"
+    },
+    {
+      "path": "test/voiceWebSocketServer.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "db68b74625a98d6d36cdd118732ed3b22a914eca",
+      "actualBlob": "db68b74625a98d6d36cdd118732ed3b22a914eca",
+      "status": "identical"
+    },
+    {
+      "path": "test/websitePriceBrowserFixture.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "637d24f0e1b911f92f0db33da29c111bb35e56b4",
+      "actualBlob": "637d24f0e1b911f92f0db33da29c111bb35e56b4",
+      "status": "identical"
+    },
+    {
+      "path": "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "826e1c927c57d18c1685cb28311eb3a2ca45c7a8",
+      "actualBlob": "826e1c927c57d18c1685cb28311eb3a2ca45c7a8",
+      "status": "identical"
+    },
+    {
+      "path": "test/websitePriceDraft.browser.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "12482da3005d8eb217f331f98e8cb31304cc3111",
+      "actualBlob": "12482da3005d8eb217f331f98e8cb31304cc3111",
+      "status": "identical"
+    },
+    {
+      "path": "test/websitePriceDraftRoutes.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "023cd9ac7052ba8fcf12eb336f2d5f300879feab",
+      "actualBlob": "023cd9ac7052ba8fcf12eb336f2d5f300879feab",
+      "status": "identical"
+    },
+    {
+      "path": "test/websitePriceImport.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "2d4b1c21ea9b18dcb85ece8e9fbc30efa8f38812",
+      "actualBlob": "2d4b1c21ea9b18dcb85ece8e9fbc30efa8f38812",
+      "status": "identical"
+    },
+    {
+      "path": "test/widgetEmbed.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e5f34834f221e2c4b91e51812e4884ef1e6041b6",
+      "actualBlob": "e5f34834f221e2c4b91e51812e4884ef1e6041b6",
+      "status": "identical"
+    },
+    {
+      "path": "test/widgetLeadsServiceArea20261010.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "94b93cd5876ce0d1f23ddf89c775f61fa198d2ee",
+      "actualBlob": "94b93cd5876ce0d1f23ddf89c775f61fa198d2ee",
+      "status": "identical"
+    },
+    {
+      "path": "test/workflowBillingAudit20261009.dom.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "e0fabeccddc06ba5bf67c3955d72386b9ef592cc",
+      "actualBlob": "e0fabeccddc06ba5bf67c3955d72386b9ef592cc",
+      "status": "identical"
+    },
+    {
+      "path": "test/workflowBillingAudit20261009.spec.mjs",
+      "sourceCommit": "56e19419e6287f4fc984e9e6b650469828ce182e",
+      "expectedBlob": "03a80a439b2636d687c96dec729efc1288f62f82",
+      "actualBlob": "03a80a439b2636d687c96dec729efc1288f62f82",
+      "status": "identical"
+    }
+  ]
+}

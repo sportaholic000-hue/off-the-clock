@@ -39,8 +39,8 @@ const repairSizeLabels=type=>type==='ROOFING_REPAIR'
 // The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
-export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
-const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
+export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
+const ROOT_FIELDS = ['rangeLowPercent','rangeHighPercent','id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
@@ -549,7 +549,7 @@ export function applicationMetadata() {
     const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
       const info={...prior,...field,type:field.type||prior?.type||'number',requiredAtBase:field.type==='surface_configuration'?false:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind,interviewPriority:interviewPriority(field.field)};
-      if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100},requiredAtBase:false});
+      if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100,...(meta.serviceType==='CUSTOM'&&field.field==='installedMaterialsPercent'?{leafKeys:['price']}: {})},requiredAtBase:false});
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
       if((meta.serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:meta.serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:meta.serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]).includes(field.field))Object.assign(info,{requiredAtBase:false},CONCRETE_LANDSCAPE_COPY[field.field]);
       if(FLAT_ROOF_FIELDS.includes(field.field)||REPAIR_UNIT_FIELDS.includes(field.field)){

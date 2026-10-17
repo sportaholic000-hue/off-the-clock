@@ -57,7 +57,7 @@
   },
   {
     "file": "src/ownerDashboardRoutes.js",
-    "sha256": "5131fd4061ed6eba1e9bcc17eeb7d359e9375eabb71128357fc9bb430a54a83e"
+    "sha256": "3f0990a290b5fd84d32e4e965801d7ab72a9b93aa6a0b3da427661d78255dc91"
   },
   {
     "file": "src/ownerIntegrationRoutes.js",
@@ -77,7 +77,7 @@
   },
   {
     "file": "src/server.js",
-    "sha256": "ce3a20c0dca5fe751c275733f73b02fc9e3b83f45c7e263ea4047070da6ba457"
+    "sha256": "e606b9e01c3b99d26ffcaa1fdcc6363eb17bdb3925a3e701953ccec329a6cd2d"
   },
   {
     "file": "src/staffRoutes.js",

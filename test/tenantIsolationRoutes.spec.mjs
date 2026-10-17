@@ -19,10 +19,11 @@ const serverRoot=fileURLToPath(new URL('../server/',import.meta.url));
 const uuid=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0');
 const genericId=uuid(999999);
 function pathFor(route,tenant,{other=tenant,guess=false}={}) {
-  const values={ownerId:other.owner,serviceId:other.service,id:route.includes('sms-status')?other.sms:route.includes('/transfer/')?other.transfer:route.includes('owner-alerts')?other.alert:route.includes('calls')?other.call:route.includes('deliveries')?other.delivery:other.lead,token:tenant.smsToken,draftId:other.draft,callSid:other.callSid,bookingIntentId:other.bookingIntentId,bookingToken:tenant.bookingToken,publicKey:tenant.publicKey,holdId:other.hold,confirmationId:other.confirmationId,nonce:tenant.nonce,kind:'leads'};
+  const values={ownerId:other.owner,serviceId:other.service,id:route.includes('/owner-records/quotes/')?other.quote:route.includes('sms-status')?other.sms:route.includes('/transfer/')?other.transfer:route.includes('owner-alerts')?other.alert:route.includes('calls')?other.call:route.includes('deliveries')?other.delivery:other.lead,token:tenant.smsToken,draftId:other.draft,callSid:other.callSid,bookingIntentId:other.bookingIntentId,bookingToken:tenant.bookingToken,publicKey:tenant.publicKey,holdId:other.hold,confirmationId:other.confirmationId,nonce:tenant.nonce,kind:'leads'};
   return route.split(' ').slice(1).join(' ').replace(/:([A-Za-z]+)/g,(_,key)=>encodeURIComponent(guess&&!['publicKey','bookingToken','nonce','kind'].includes(key)?genericId:values[key])).replace(/^\*$/,'/dashboard').replace('/assets/*','/assets/tenant-isolation-missing.js');
 }
 function bodyFor(route,tenant,other=tenant) {
+  if(route.endsWith('/job-costs'))return {revision:0,actualLaborHours:'8.5',actualLaborCost:'400',actualMaterialCost:'300',approvedChanges:[]};
   if(route.includes('/quote/calculate')||route.endsWith('/public/quote/:publicKey'))return {...tenant.quoteBody,serviceId:other.service};
   if(route.endsWith('/prepare'))return {serviceId:other.service,customerInputs:tenant.quoteBody.customerInputs};
   if(route==='PATCH /api/leads/:id')return {status:'DISMISSED'};
@@ -216,7 +217,7 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
   await t.test('staff role can use calls, leads, quotes, calendar and customers but not owner controls',async()=>{
     for(const path of ['/api/calls','/api/leads','/api/quotes','/api/calendar/schedule?days=7','/api/customers']){
       const response=await f.request(path,{token:A.auth.staff.token});
-      assert.equal(response.status,200,path+' staff access');noLeak(response,B,path);
+      assert.equal(response.status,200,path+' staff access: '+response.text);noLeak(response,B,path);
     }
     for(const path of ['/api/pricebook/meta','/api/pricebook/'+A.owner,'/api/billing/status','/api/reports','/api/team/staff']){
       const response=await f.request(path,{token:A.auth.staff.token});assert.equal(response.status,403,path+' staff restriction');
@@ -248,7 +249,7 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
   await t.test('merged billing reads and exports remain tenant-scoped; only admin can read backup status',async()=>{
     for(const tenant of [A,B]) {
       const other=tenant===A?B:A;
-      const state=await f.request('/api/billing/lifecycle',{token:tenant.auth.owner.token});assert.equal(state.status,200);noLeak(state,other,'own lifecycle');
+      const state=await f.request('/api/billing/lifecycle',{token:tenant.auth.owner.token});assert.equal(state.status,200,state.text);noLeak(state,other,'own lifecycle');
       for(const kind of ['leads','quotes','calls']) {
         const own=await f.request('/api/billing/export/'+kind,{token:tenant.auth.owner.token});assert.equal(own.status,200);noLeak(own,other,'own '+kind+' export');
         const forged=await f.request('/api/billing/export/'+kind+'?ownerId='+other.owner,{token:tenant.auth.owner.token});assert.equal(forged.status,403);

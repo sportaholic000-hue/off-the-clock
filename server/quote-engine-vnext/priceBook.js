@@ -137,7 +137,7 @@ const NEW_FIELD_COPY = {
 
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
-  customChargeClassification: { label: 'Custom service charge category', help: 'Choose the line category for this complete service charge. Its saved price basis, taxability, markup and seasonal settings apply. A final selling price is not marked up again. No labor/material split is inferred.' },
+  customChargeClassification: { label: 'Custom service charge category', help: 'Choose the line category for this complete service charge. Its saved price basis, taxability, markup and seasonal settings apply. A final selling price is not marked up again. Blank materials share keeps this category; an entered materials share uses labor and material rules.' },
   price: { label: 'Fixed customer price per configured unit', help: 'Final configured amount before any explicitly selected cost-basis markup.' },
   priceBasisByCategory: { label: 'Rate meaning by line category', help: 'State whether each category contains owner cost or final sell price so the engine cannot mark up a sell price twice.' },
   taxabilityByCategory: { label: 'Taxability by line category', help: 'Set the tax treatment for every line category used by this service.' },
@@ -1311,6 +1311,7 @@ function fieldCopy(serviceType, field) {
   if(FLAT_REPAIR_COPY[field])return {...FLAT_REPAIR_COPY[field]};
   if(serviceType.startsWith('FLOORING_')&&FLOORING_FIELD_COPY[field])return {...FLOORING_FIELD_COPY[field]};
   if(['paintingSettings','paintingRates','surfaceExtraRates','sidingSettings'].includes(field))return {label:{paintingSettings:'Painting coats and height bands',paintingRates:'Additional painting component prices',surfaceExtraRates:'Optional surface work prices',sidingSettings:'Siding measurement conventions'}[field],type:'surface_configuration',help:field==='paintingSettings'?'Optional coat and height settings. Review the sourced additional-coat starting ratios in Quantity assumptions; existing services keep their prices until adoption. Primer ratios have no starting values.':'Optional owner-entered settings. No starting prices are supplied.'};
+  if(serviceType==='CUSTOM'&&field==='installedMaterialsPercent')return {label:'Custom price materials share',help:'Optional percentage at price; the remainder is labor. Blank keeps the existing charge category. Applies to all custom price scenarios.'};
   if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};
   if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};

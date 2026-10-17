@@ -48,7 +48,7 @@ export function validateInterviewValue(type, field, value, pricing = {}) {
   if(type==='LANDSCAPING_PLANTING'&&customPlantSizes(pricing)&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(field))def={...def,tree:{...def.tree,rootKeys:plantSizeKeys(pricing),requiredRootKeys:plantSizeKeys(pricing)}};
   if(field==='service')return validateServiceName(value);
   const allocation=['installedLaborPercent','installedMaterialsPercent'].includes(field);
-  if(allocation)def={...def,tree:{...(def.tree||{}),leafKeys:Object.keys(installedPriceDefinitions(type,pricing)).sort()}};
+  if(allocation)def={...def,tree:{...(def.tree||{}),leafKeys:type==='CUSTOM'&&field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(type,pricing)).sort()}};
   if(CONFIGURATION_FIELDS.includes(field))return validateInterviewConfiguration(type,field,value,pricing);
   const kind = quoteDoneMoneyKind(type, field, pricing);
   const number = (v, path) => {

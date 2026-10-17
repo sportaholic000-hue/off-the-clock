@@ -1,4 +1,5 @@
 import {FLAT_ROOF_ITEMS,FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_SERVICES,flatRepairContract,flatRepairPricingDiagnostics,repairUnitRequirements,repairUnitConfig,hasSurfacePrice,normalizeRepairArea} from './flatRoofRepairPricing.js';
+import {RANGE_FIELDS,rangeSettingIssues} from '../quoteRangeSettings.js';
 import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surfaceCustomerContract,surfaceRowsIssue,surfaceOwnerDiagnostics,PAINTING_RATES} from './surfacePricing.js';
 import {validPricebookServiceId} from '../priceBookStructure.js';
@@ -1363,7 +1364,7 @@ const AI_CONFIRMABLE_SERVICE_FIELDS = [
   'priceBasisByCategory',
   'taxabilityByCategory',
   'peakMonths',
-  'peakSurchargePercent',
+  'peakSurchargePercent', ...RANGE_FIELDS,
   'disclaimer', 'disposalScope', 'knownOfferings', 'zeroPricePolicy'
 ];
 
@@ -1394,7 +1395,7 @@ const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedP
 const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
   'travelFee', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
-  'rangeBufferPercent', 'markupApplies', 'peakMonths', 'peakSurchargePercent',
+  'rangeBufferPercent', ...RANGE_FIELDS, 'markupApplies', 'peakMonths', 'peakSurchargePercent',
   'stalePriceThresholdDays', 'quoteValidityDays'
 ];
 
@@ -1807,7 +1808,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
     if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
     else for(const [key,value] of Object.entries(p[field])){
-      if(!(/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
+      if(!(serviceType==='CUSTOM'&&field==='installedMaterialsPercent'&&key==='price'||/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
       else if(field==='installedMaterialsPercent'&&typeof p.installedLaborPercent?.[key]==='number'&&Number.isFinite(p.installedLaborPercent[key])&&p.installedLaborPercent[key]>=0&&p.installedLaborPercent[key]<=100&&exactCompare(exactAdd(value,p.installedLaborPercent[key]),100)>0)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Materials and labor portions cannot total more than 100%.');
     }
   }
@@ -2133,7 +2134,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   ownerPricing = canonicalServiceIdentityVNext(snapshot.value);
   serviceType ||= ownerPricing.serviceType;
   const diagnostics = [];
-  const supportedRoot = new Set(['active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','id','origin','zeroPricePolicy','knownOfferings','startingValueState','startingValueAdoptions','dependentLineState']);
+  const supportedRoot = new Set([...RANGE_FIELDS,'active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','id','origin','zeroPricePolicy','knownOfferings','startingValueState','startingValueAdoptions','dependentLineState']);
   for(const key of Object.keys(ownerPricing)) if(!supportedRoot.has(key) && !ALL_PRICING_FIELDS.has(key) && !BUSINESS_DEFAULT_FIELDS.includes(key)) diagnostics.push(ownerDiagnostic('unsupported','service_root',key,'Unsupported service setting; migrate or explicitly configure its VNext contract before quoting.'));
   if(ownerPricing.disposalScope!==undefined && (serviceType!=='LANDSCAPING_SOD'||ownerPricing.disposalScope!=='separate_project_debris')) diagnostics.push(ownerDiagnostic('invalid','service_rule','disposalScope','Only explicitly separate sod-project debris is supported.'));
   const nestedPricing = ownerPricing.pricing;
@@ -2147,7 +2148,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
     if (!ALL_PRICING_FIELDS.has(key)) continue;
     diagnostics.push(ownerDiagnostic('unsupported', 'misplaced_pricing', key, `${key} must be stored inside pricing, not at the service root.`));
   }
-  for (const key of BUSINESS_DEFAULT_FIELDS.filter(name => !['peakMonths', 'peakSurchargePercent'].includes(name))) {
+  for (const key of BUSINESS_DEFAULT_FIELDS.filter(name => !['peakMonths', 'peakSurchargePercent',...RANGE_FIELDS].includes(name))) {
     if (Object.hasOwn(ownerPricing, key)) diagnostics.push(ownerDiagnostic('unsupported', 'misplaced_business_default', key, `${key} is a business-wide default and cannot be stored on a service.`));
   }
   diagnostics.push(...identityDiagnosticsVNext(ownerPricing, serviceType));
@@ -2192,6 +2193,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   if(['when_scope_selected','customer_selected'].includes(ownerPricing.feeRules?.permit))diagnostics.push(ownerDiagnostic('owner_decision','service_rule','feeRules.permit','Choose whether the permit fee always applies, is included, does not apply, or is selected by you. Customers do not decide permit charges.'));
   inspectRuleMap(diagnostics, ownerPricing, 'priceBasisByCategory', PRICE_BASIS_CATEGORIES, value => ['cost', 'sell_price'].includes(value), 'must be cost or sell_price');
   inspectRuleMap(diagnostics, ownerPricing, 'taxabilityByCategory', TAXABILITY_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
+  for(const issue of rangeSettingIssues(ownerPricing))diagnostics.push(ownerDiagnostic('invalid','service_rule',issue.path,issue.message));
   if (ownerPricing.peakMonths !== undefined) {
     const issue = monthListIssue(ownerPricing.peakMonths);
     const path = issue?.path ? `peakMonths.${issue.path}` : 'peakMonths';
@@ -2206,7 +2208,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays'].includes(field));
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays',...RANGE_FIELDS].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -2256,6 +2258,7 @@ export function validateBusinessDefaults(defaults = {}) {
   if (defaults.taxMode === 'TAX_NONE' && defaults.taxPercent !== 0) invalid('taxPercent', 'TAX_NONE requires a zero taxPercent.');
   if (['TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode) && defaults.taxPercent <= 0) invalid('taxPercent', 'A taxable mode requires a positive taxPercent.');
   if (!missing(defaults.rangeBufferPercent) && (!nonNegative(defaults.rangeBufferPercent) || defaults.rangeBufferPercent > 25)) invalid('rangeBufferPercent', 'rangeBufferPercent must be from 0 to 25.');
+  for(const issue of rangeSettingIssues(defaults))invalid(issue.path,issue.message);
   const markupDiagnostics = [];
   inspectRuleMap(markupDiagnostics, defaults, 'markupApplies', PRICE_BASIS_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
   for (const item of markupDiagnostics) {

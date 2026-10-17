@@ -1,3 +1,4 @@
+import {OwnerJobMetrics} from './ownerJobMetrics.jsx';
 import React,{useEffect,useState} from 'react';
 import {api,go} from './api.js';
 import {AppShell,Button,PageHeader,Field,Select,TextInput,Notice,Loading,ErrorMessage} from './ui.jsx';
@@ -24,6 +25,7 @@ export function ReportView({report}) {
     <h3>Service funnel</h3><p>{report.funnelBasis}</p>
     {!funnel.length?<Notice>No service activity in this period.</Notice>:<div style={{overflowX:'auto'}}><table><caption>Calls → quoted → booked jobs → invoiced</caption><thead><tr><th>Service</th><th>Calls</th><th>Quoted</th><th>Booked</th><th>Invoiced</th><th>Calls to quotes</th><th>Quotes to bookings</th><th>Bookings to invoices</th></tr></thead><tbody>{funnel.map(row=><tr key={row.service}><th scope="row">{row.service}</th>{['calls','quoted','booked','invoiced'].map(key=><td key={key}>{row[key]}</td>)}{['callsToQuoted','quotedToBooked','bookedToInvoiced'].map(key=><td key={key}>{row[key]===null?'—':row[key]+'%'}</td>)}</tr>)}</tbody></table></div>}
     {!!funnel.length&&<details><summary>Value by service for the call cohort</summary>{funnel.map(row=><section key={row.service}><h4>{row.service}</h4>{['quoted','booked','invoiced'].map(kind=><p key={kind}>{kind}: {row.values?.[kind]?.length?row.values[kind].map(group=>group.currency+' $'+group.low+(group.high!==group.low?'–$'+group.high:'')+' · '+group.priceUnit+' · '+group.taxTreatment).join('; '):'No complete amount recorded'}</p>)}</section>)}</details>}
+    <OwnerJobMetrics groups={report.jobMetrics}/>
     <h3>Follow-up</h3><p>{followUp.open} open · {followUp.overdue} overdue across all periods.</p>
     {followUp.items.map(row=><section key={row.kind+row.recordId}><p>{row.action==='BOOK'?'Book':'Call back'} · {row.dueAt||'No deadline set'} · {row.note}</p><Button variant="secondary" onClick={()=>go('/'+row.kind+'?record='+encodeURIComponent(row.recordId))}>Open follow-up</Button></section>)}
     {followUp.open>followUp.items.length&&<Notice>Showing the first {followUp.items.length} open follow-ups. Open Leads or Quotes for the remaining records.</Notice>}

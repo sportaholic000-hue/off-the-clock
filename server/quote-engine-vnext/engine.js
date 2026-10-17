@@ -1,4 +1,6 @@
 import {REPAIR_SERVICES} from './flatRoofRepairPricing.js';
+import {resolvedRangeSettings,validRangePercent} from '../quoteRangeSettings.js';
+import {splitCustomPriceLines} from './customPriceSplit.js';
 import {hasFirstMowingVisit} from './landscapePricing.js';
 import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {recordedQuoteDateDiagnostic,monthForRecordedQuoteDate,quoteDefaultsForTimeZone} from '../src/quoteDate.js';
@@ -558,7 +560,7 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   // the owner's surcharge category settings.
   const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
   const removalLabor=line=>/^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(line.calculation?.ratePath||'')||/^scopeRates\.(?:siding_removal|demolition|stairs)(?:__[a-z0-9_]+)?_removal$/.test(line.calculation?.ratePath||'');
-  const otherLabor=lines.reduce((sum,line)=>!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
+  const otherLabor=lines.reduce((sum,line)=>!line.customPriceSplit&&!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
   const exactLabor=exactAdd(installedLabor,otherLabor);
   const laborSubtotalCents=exactToNumber(exactLabor);
   const allocated = allocateSeasonalSurcharge(otherLabor, installedLabor, active ? seasonal.percent : 0);
@@ -599,6 +601,12 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   record.seasonActive = active;
   record.applied = amountCents > 0;
   record.amountCents = amountCents;
+  const customSurcharge=lines.filter(line=>line.calculation?.ratePath==='customSplit.peakLabor');
+  if(customSurcharge.length){
+    record.customLaborSurchargeCents=customSurcharge.reduce((sum,line)=>sum+line.amountCents,0);
+    record.amountCents+=record.customLaborSurchargeCents;record.applied=record.amountCents>0;
+    record.laborSubtotalCents=exactToNumber(exactAdd(exactLabor,...customSurcharge.map(line=>exactFromEvidence(line.calculation.exactBasisAmountCents))));
+  }
 }
 
 function exactMarkupValue(baseCents, defaults) {
@@ -621,7 +629,7 @@ function applyTaxability(lines, ownerPricing, taxMode) {
   for (const line of lines) {
     line.taxable = taxMode === 'TAX_ALL'
       ? true
-      : taxMode === 'TAX_MATERIALS' && ownerPricing.taxabilityByCategory[line.category] === true;
+      : taxMode === 'TAX_MATERIALS' && (line.customPriceSplit ? line.category==='material' : ownerPricing.taxabilityByCategory[line.category] === true);
   }
 }
 
@@ -944,7 +952,7 @@ export function installedMaterialShareDiagnosticsVNext(serviceType,pricing,defau
 }
 
 function runScenario({ variant, template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering }) {
-  const lines = materializeScenarioLinesVNext(template.lineItems, variant);
+  const lines = splitCustomPriceLines(materializeScenarioLinesVNext(template.lineItems, variant),{serviceType,pricing,ownerPricing,defaults,month});
   const record = {
     variant,
     order: [],
@@ -1035,23 +1043,26 @@ function roundedCustomerCents(valueCents, incrementCents) {
   }
 }
 
-function rangeForStandardQuote(totalCents, minimumCents, defaults, materialTaxCents = 0) {
-  const buffer = defaults.rangeBufferPercent;
+function rangeForStandardQuote(totalCents, minimumCents, defaults, materialTaxCents = 0, service = {}) {
+  const sides=resolvedRangeSettings(defaults,service);
+  const buffer = sides ? null : defaults.rangeBufferPercent;
+  const lowBuffer=sides?.rangeLowPercent??buffer,highBuffer=sides?.rangeHighPercent??buffer;
+  const extra=sides?{lowBufferPercent:lowBuffer,highBufferPercent:highBuffer}:{};
   const minimumFloorCents = minimumCustomerFloor(minimumCents, defaults, materialTaxCents);
-  if(minimumCents>0 && totalCents===minimumFloorCents)return {lowCents:totalCents,midCents:totalCents,highCents:totalCents,minimumFloorCents,buffer};
+  if(minimumCents>0 && totalCents===minimumFloorCents)return {lowCents:totalCents,midCents:totalCents,highCents:totalCents,minimumFloorCents,buffer,...extra};
   if (totalCents === 0) {
-    return { lowCents: 0, midCents: 0, highCents: 0, minimumFloorCents, buffer };
+    return { lowCents: 0, midCents: 0, highCents: 0, minimumFloorCents, buffer,...extra };
   }
   const roundingIncrementCents = 1;
   let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
-  let lowCents = roundedCustomerCents(exactMultiply(midCents, exactSubtract(1, exactDivide(buffer, 100))), roundingIncrementCents);
-  let highCents = roundedCustomerCents(exactMultiply(midCents, exactAdd(1, exactDivide(buffer, 100))), roundingIncrementCents);
+  let lowCents = roundedCustomerCents(exactMultiply(midCents, exactSubtract(1, exactDivide(lowBuffer, 100))), roundingIncrementCents);
+  let highCents = roundedCustomerCents(exactMultiply(midCents, exactAdd(1, exactDivide(highBuffer, 100))), roundingIncrementCents);
   lowCents = Math.max(lowCents, minimumFloorCents, 1);
   lowCents = Math.min(lowCents, totalCents);
   highCents = Math.max(highCents, totalCents, lowCents, 1);
   midCents = Math.max(midCents, lowCents, 1);
   midCents = Math.min(midCents, highCents);
-  return { lowCents, midCents, highCents, minimumFloorCents, buffer };
+  return { lowCents, midCents, highCents, minimumFloorCents, buffer,...extra };
 }
 
 function rangeForIntrinsicQuote(low, mid, high, defaults) {
@@ -1173,7 +1184,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     range = rangeForIntrinsicQuote(low, mid, high, defaults);
     scenarioRecords = { low: low.record, mid: mid.record, high: high.record };
   } else {
-    range = rangeForStandardQuote(mid.finalTotalCents, mid.minimumCents, defaults, mid.record.tax.taxCents);
+    range = rangeForStandardQuote(mid.finalTotalCents, mid.minimumCents, defaults, mid.record.tax.taxCents, ownerPricing);
   }
 
   assertRangeIntegrity(range);
@@ -1207,7 +1218,8 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     lineItems: structuredClone(mid.lines),
     scenarios: scenarioRecords,
     range: {
-      source: hasIntrinsicRange ? 'owner_configured_custom_range' : 'business_range_buffer',
+      source: hasIntrinsicRange ? 'owner_configured_custom_range' : range.buffer===null ? 'owner_range_buffers' : 'business_range_buffer',
+      ...(range.lowBufferPercent!==undefined?{lowBufferPercent:range.lowBufferPercent,highBufferPercent:range.highBufferPercent}:{}),
       bufferPercent: range.buffer,
       effectiveRangeBufferPercent: range.buffer,
       rangeBufferUsed: range.buffer,
@@ -1659,10 +1671,10 @@ function validScenarioRecord(scenario, variant) {
   return lineTotalCents === scenario.finalTotalCents;
 }
 
-function standardRangeFromEvidence(totalCents, minimumFloorCents, buffer) {
+function standardRangeFromEvidence(totalCents, minimumFloorCents, buffer, highBuffer=buffer) {
   if (!Number.isSafeInteger(totalCents) || totalCents < 0 ||
       !Number.isSafeInteger(minimumFloorCents) || minimumFloorCents < 0 ||
-      typeof buffer !== 'number' || !Number.isFinite(buffer) || buffer < 0 || buffer > 25) return null;
+      !validRangePercent('rangeLowPercent',buffer)||!validRangePercent('rangeHighPercent',highBuffer)) return null;
   if(totalCents>0 && totalCents===minimumFloorCents)return {lowCents:totalCents,midCents:totalCents,highCents:totalCents};
   if (totalCents === 0) {
     return minimumFloorCents === 0
@@ -1673,7 +1685,7 @@ function standardRangeFromEvidence(totalCents, minimumFloorCents, buffer) {
     const roundingIncrementCents = 1;
     let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
     let lowCents = roundedCustomerCents(exactMultiply(midCents, exactSubtract(1, exactDivide(buffer, 100))), roundingIncrementCents);
-    let highCents = roundedCustomerCents(exactMultiply(midCents, exactAdd(1, exactDivide(buffer, 100))), roundingIncrementCents);
+    let highCents = roundedCustomerCents(exactMultiply(midCents, exactAdd(1, exactDivide(highBuffer, 100))), roundingIncrementCents);
     lowCents = Math.min(Math.max(lowCents, minimumFloorCents, 1), totalCents);
     highCents = Math.max(highCents, totalCents, lowCents, 1);
     midCents = Math.min(Math.max(midCents, lowCents, 1), highCents);
@@ -1693,8 +1705,11 @@ function calculationEvidenceMatchesOption(option, record, range) {
       !Object.is(range.rangeBufferUsed, option.rangeBufferUsed)) return false;
   const scenarioKeys = isPlainObject(record.scenarios) ? Object.keys(record.scenarios).sort() : [];
   let expectedRange;
-  if (range.source === 'business_range_buffer') {
-    if (!plainDataEqual(scenarioKeys, ['mid']) || option.rangeBufferUsed === null || !validScenarioRecord(record.scenarios.mid, 'mid')) return false;
+  if (range.source === 'owner_range_buffers') {
+    if(!plainDataEqual(scenarioKeys,['mid'])||option.rangeBufferUsed!==null||!validScenarioRecord(record.scenarios.mid,'mid'))return false;
+    expectedRange=standardRangeFromEvidence(record.scenarios.mid.finalTotalCents,range.minimumCustomerFloorCents,range.lowBufferPercent,range.highBufferPercent);
+  } else if (range.source === 'business_range_buffer') {
+    if (!plainDataEqual(scenarioKeys, ['mid']) || option.rangeBufferUsed === null || option.rangeBufferUsed > 25 || !validScenarioRecord(record.scenarios.mid, 'mid')) return false;
     expectedRange = standardRangeFromEvidence(
       record.scenarios.mid.finalTotalCents,
       range.minimumCustomerFloorCents,
@@ -1726,7 +1741,7 @@ function calculationEvidenceMatchesOption(option, record, range) {
 }
 
 function displayedEstimates(range) {
-  const exactSingle = ((range.source === 'business_range_buffer' && range.bufferPercent === 0) || range.midCents===range.minimumCustomerFloorCents) &&
+  const exactSingle = ((range.source === 'business_range_buffer' && range.bufferPercent === 0)||(range.source==='owner_range_buffers'&&range.lowBufferPercent===0&&range.highBufferPercent===0) || range.midCents===range.minimumCustomerFloorCents) &&
     range.lowCents === range.midCents && range.midCents === range.highCents;
   if (exactSingle) return { lowEstimate: toDollars(range.lowCents, 'lowEstimate'), midEstimate: toDollars(range.midCents, 'midEstimate'), highEstimate: toDollars(range.highCents, 'highEstimate') };
   const low = BigInt(range.lowCents) / 100n;

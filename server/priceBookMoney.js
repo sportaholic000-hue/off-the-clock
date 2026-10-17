@@ -474,6 +474,7 @@ function convertService(service, direction, location) {
   const serviceType = service.serviceType;
   const effective = effectiveServicePricing(service);
   const output = convertPricingContainer(service, serviceType, effective, direction, location);
+  for(const field of ['rangeLowPercent','rangeHighPercent'])if(Object.hasOwn(service,field))assertDraftNumber(service[field],`${location}.${field}`,true);
   if (Object.hasOwn(service, 'peakMonths')) output.peakMonths = canonicalPeakMonths(service.peakMonths, `${location}.peakMonths`);
   if (Object.hasOwn(service, 'pricing')) output.pricing = convertPricingContainer(service.pricing, serviceType, effective, direction, `${location}.pricing`);
   if (Array.isArray(service.tiers)) {
@@ -516,11 +517,11 @@ export function convertPricebookMoney(data, direction) {
 }
 
 const DEFAULT_NUMERIC_FIELDS = new Set([
-  'markupPercent','taxPercent','rangeBufferPercent','peakSurchargePercent',...DEFAULT_MONEY_FIELDS
+  'markupPercent','taxPercent','rangeBufferPercent','rangeLowPercent','rangeHighPercent','peakSurchargePercent',...DEFAULT_MONEY_FIELDS
 ]);
 const NULLABLE_DEFAULT_NUMERIC_FIELDS = new Set([
   'travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice',
-  'rangeBufferPercent','peakSurchargePercent','laborHourlyRate'
+  'rangeBufferPercent','rangeLowPercent','rangeHighPercent','peakSurchargePercent','laborHourlyRate'
 ]);
 let numericDefinitions;
 function definitionsFor(serviceType) {
@@ -561,6 +562,7 @@ function validateDraftService(service, location) {
   assertUnambiguousPricing(service, location);
   validateDraftPricing(service, service.serviceType, location);
   if (Object.hasOwn(service, 'pricing')) validateDraftPricing(service.pricing, service.serviceType, `${location}.pricing`);
+  for(const field of ['rangeLowPercent','rangeHighPercent'])if(Object.hasOwn(service,field))assertDraftNumber(service[field],`${location}.${field}`,true);
   if (Object.hasOwn(service, 'peakMonths')) canonicalPeakMonths(service.peakMonths, `${location}.peakMonths`);
   if (Array.isArray(service.tiers)) service.tiers.forEach((tier, index) => {
     if (isRecord(tier)) validateDraftPricing(tier.overrides, service.serviceType, `${location}.tiers[${index}].overrides`);

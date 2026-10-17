@@ -1,3 +1,4 @@
+import {createOwnerJobCostService} from './ownerJobCosts.js';
 import {createAuthRateLimiter} from './authRateLimitService.js';
 import {createQuoteEmailService} from './quoteEmailService.js';
 import {installQuoteEmailRoutes} from './quoteEmailRoutes.js';
@@ -219,7 +220,7 @@ app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 installStaffRoutes(app,{rateLimiter:createAuthRateLimiter(db),service:createStaffService({database:db,ownerQuery}),ownerQuery,quoteEmail:quoteEmailDelivery,
   requireAuth,requirePriceBookPlan,asyncHandler});
 installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
-installOwnerDashboardRoutes(app,{reports:createOwnerReportService({ownerQuery}),workflow:createOwnerWorkflowService({database:db,ownerQuery}),requireAuth,requirePriceBookPlan,asyncHandler});
+installOwnerDashboardRoutes(app,{jobCosts:createOwnerJobCostService({database:db,ownerQuery}),reports:createOwnerReportService({ownerQuery}),workflow:createOwnerWorkflowService({database:db,ownerQuery}),requireAuth,requirePriceBookPlan,asyncHandler});
 installOwnerAlertRoutes(app,{service:ownerAlerts,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);
