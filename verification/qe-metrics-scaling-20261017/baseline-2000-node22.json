@@ -1,0 +1,53 @@
+{
+  "applicationCommit": "046f9d905435495cab31f5abb02cce1413645e54",
+  "runnerNode": "v22.22.0",
+  "runs": [
+    {
+      "count": 2000,
+      "startedAt": "2026-10-17T18:43:09.591Z",
+      "endedAt": "2026-10-17T18:43:19.491Z",
+      "timeoutMs": 60000,
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "measurement": {
+        "node": "v22.22.0",
+        "count": 2000,
+        "constructionMs": 2.092,
+        "calculationMs": 9818.684,
+        "totalMs": 9820.776,
+        "rssBeforeBytes": null,
+        "rssAfterBytes": null,
+        "maxRssBeforeKilobytes": 61564,
+        "maxRssAfterKilobytes": 95228,
+        "heapUsedBeforeBytes": 8513456,
+        "heapUsedAfterBytes": 21967136,
+        "groups": 1,
+        "records": 2000,
+        "insideRange": {
+          "count": 2000,
+          "inside": 2000,
+          "percent": "100.00"
+        },
+        "signedGap": {
+          "count": 2000,
+          "value": "1.00"
+        },
+        "signedGapPercent": {
+          "count": 2000,
+          "value": "0.01"
+        },
+        "absoluteGap": {
+          "count": 2000,
+          "value": "1.00"
+        },
+        "absoluteGapPercent": {
+          "count": 2000,
+          "value": "0.01"
+        }
+      },
+      "parseError": null,
+      "stderr": "(node:10) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    }
+  ]
+}

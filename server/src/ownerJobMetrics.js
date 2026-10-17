@@ -1,14 +1,11 @@
 import {storedObject} from './ownerRecordViews.js';
-// Monetary inputs are cents. Rational arithmetic avoids unsafe aggregate sums
-// and rounds only the final displayed means, including negative signed gaps.
-const gcd=(a,b)=>b?gcd(b,a%b):a;
-const fraction=(n,d=1n)=>{const g=gcd(n<0n?-n:n,d)||1n;return {n:n/g,d:d/g};};
-const add=(a,b)=>fraction(a.n*b.d+b.n*a.d,a.d*b.d);
+import {createMetricMean,metricFraction as fraction,roundedMetricValue as rounded} from '../priceBookMetricArithmetic.js';
+// Monetary inputs are cents. Percentage and margin means preserve each job's
+// exact ratio and round only the final displayed mean, including negative ties.
 const absolute=n=>n<0n?-n:n;
-const rounded=(n,d=1n)=>{const sign=n<0n?'-':'';const q=(absolute(n)*2n+d)/(2n*d);return (q===0n?'':sign)+(q/100n)+'.'+(q%100n).toString().padStart(2,'0');};
 const dollarCents=value=>{if(typeof value!=='number'||!Number.isFinite(value)||value<0||!/^\d+(?:\.\d{1,2})?$/.test(String(value)))return null;const [a,b='']=String(value).split('.');return BigInt(a)*100n+BigInt(b.padEnd(2,'0'));};
 const cents=value=>Number.isSafeInteger(value)&&value>=0?BigInt(value):null;
-function mean(){let sum=fraction(0n),count=0;return {add(value){sum=add(sum,typeof value==='bigint'?fraction(value):value);count++;},value(scale=1n){return {count,value:count?rounded(sum.n*scale,sum.d*BigInt(count)):null};}};}
+const mean=createMetricMean;
 function pair(){let count=0,estimated=0n,actual=0n;return {add(e,a){estimated+=e;actual+=a;count++;},value(){return {count,estimated:count?rounded(estimated):null,actual:count?rounded(actual):null,gap:count?rounded(actual-estimated):null};}};}
 function select(result,tier){
   if(!result||!['INSTANT_ESTIMATE_READY','INSTANT_QUOTE'].includes(result.resultType))return null;

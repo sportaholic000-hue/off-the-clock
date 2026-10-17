@@ -1,0 +1,147 @@
+{
+  "applicationCommit": "WORKTREE",
+  "runnerNode": "v24.19.0",
+  "runs": [
+    {
+      "count": 2000,
+      "startedAt": "2026-10-17T18:36:18.854Z",
+      "endedAt": "2026-10-17T18:36:18.962Z",
+      "timeoutMs": 60000,
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "measurement": {
+        "node": "v24.19.0",
+        "count": 2000,
+        "constructionMs": 2.394,
+        "calculationMs": 24.706,
+        "totalMs": 27.1,
+        "rssBeforeBytes": null,
+        "rssAfterBytes": null,
+        "maxRssBeforeKilobytes": 40448,
+        "maxRssAfterKilobytes": 53760,
+        "heapUsedBeforeBytes": 8696672,
+        "heapUsedAfterBytes": 9794584,
+        "groups": 1,
+        "records": 2000,
+        "insideRange": {
+          "count": 2000,
+          "inside": 2000,
+          "percent": "100.00"
+        },
+        "signedGap": {
+          "count": 2000,
+          "value": "1.00"
+        },
+        "signedGapPercent": {
+          "count": 2000,
+          "value": "0.01"
+        },
+        "absoluteGap": {
+          "count": 2000,
+          "value": "1.00"
+        },
+        "absoluteGapPercent": {
+          "count": 2000,
+          "value": "0.01"
+        }
+      },
+      "parseError": null,
+      "stderr": ""
+    },
+    {
+      "count": 10000,
+      "startedAt": "2026-10-17T18:36:18.962Z",
+      "endedAt": "2026-10-17T18:36:19.113Z",
+      "timeoutMs": 60000,
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "measurement": {
+        "node": "v24.19.0",
+        "count": 10000,
+        "constructionMs": 10.549,
+        "calculationMs": 71.582,
+        "totalMs": 82.131,
+        "rssBeforeBytes": null,
+        "rssAfterBytes": null,
+        "maxRssBeforeKilobytes": 43264,
+        "maxRssAfterKilobytes": 70648,
+        "heapUsedBeforeBytes": 11869416,
+        "heapUsedAfterBytes": 17783920,
+        "groups": 1,
+        "records": 10000,
+        "insideRange": {
+          "count": 10000,
+          "inside": 10000,
+          "percent": "100.00"
+        },
+        "signedGap": {
+          "count": 10000,
+          "value": "1.00"
+        },
+        "signedGapPercent": {
+          "count": 10000,
+          "value": "0.01"
+        },
+        "absoluteGap": {
+          "count": 10000,
+          "value": "1.00"
+        },
+        "absoluteGapPercent": {
+          "count": 10000,
+          "value": "0.01"
+        }
+      },
+      "parseError": null,
+      "stderr": ""
+    },
+    {
+      "count": 100000,
+      "startedAt": "2026-10-17T18:36:19.113Z",
+      "endedAt": "2026-10-17T18:36:19.814Z",
+      "timeoutMs": 60000,
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "measurement": {
+        "node": "v24.19.0",
+        "count": 100000,
+        "constructionMs": 92.11,
+        "calculationMs": 534.833,
+        "totalMs": 626.944,
+        "rssBeforeBytes": null,
+        "rssAfterBytes": null,
+        "maxRssBeforeKilobytes": 102784,
+        "maxRssAfterKilobytes": 243232,
+        "heapUsedBeforeBytes": 40048696,
+        "heapUsedAfterBytes": 135036184,
+        "groups": 1,
+        "records": 100000,
+        "insideRange": {
+          "count": 100000,
+          "inside": 100000,
+          "percent": "100.00"
+        },
+        "signedGap": {
+          "count": 100000,
+          "value": "1.00"
+        },
+        "signedGapPercent": {
+          "count": 100000,
+          "value": "0.00"
+        },
+        "absoluteGap": {
+          "count": 100000,
+          "value": "1.00"
+        },
+        "absoluteGapPercent": {
+          "count": 100000,
+          "value": "0.00"
+        }
+      },
+      "parseError": null,
+      "stderr": ""
+    }
+  ]
+}
