@@ -1,6 +1,7 @@
 // Discrete purchases and fixed charges have whole-cent prices. Measured rates
 // retain fractional cents until their extended line is rounded by the engine.
 export const FIXED_PRICE_FIELDS = new Set([
+  'flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairAreaMinimum',
   'deckingPerSheet','perStepPrice','postPrice','concretePerPost','gatePrice',
   'plantingLaborPerPlant','plantMaterialAllowance','repairMinimum',
   'repairMaterialAllowance','minimumJob','minimumServiceCharge','disposalFlat',

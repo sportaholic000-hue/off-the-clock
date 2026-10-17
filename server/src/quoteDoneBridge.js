@@ -1,3 +1,4 @@
+import {FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,FLAT_REPAIR_COPY} from '../quote-engine-vnext/flatRoofRepairPricing.js';
 import {serviceNameProblem,SERVICE_NAME_LIMIT} from '../serviceName.js';
 import {settingError,validatePricebookReceptionistSettings} from './voice/receptionistSettings.js';
 import {reviewLabel} from '../priceBookLabels.js';
@@ -502,6 +503,10 @@ export function applicationMetadata() {
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind,interviewPriority:interviewPriority(field.field)};
       if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100},requiredAtBase:false});
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
+      if(FLAT_ROOF_FIELDS.includes(field.field)||REPAIR_UNIT_FIELDS.includes(field.field)){
+        Object.assign(info,{...FLAT_REPAIR_COPY[field.field],requiredAtBase:false});
+        if(REPAIR_UNIT_FIELDS.includes(field.field))info.type='json';
+      }
       if(requiresOffering&&field.field==='minimumJob')Object.assign(info,{label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; enter zero when there is no service minimum.',reviewOnly:false});
       if(quoteDoneWholeCents(meta.serviceType,field.field))info.wholeCents=true;
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});

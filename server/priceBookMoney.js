@@ -12,6 +12,7 @@ import {FLOORING_PATTERN_FIELDS} from './quote-engine-vnext/flooringPricing.js';
 // fall through without either an explicit non-money classification or a money
 // conversion path.
 const UNIT_RATE_FIELDS = new Set([
+  'flatRoofEdgeMetalPerLF','flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairUnitPrice',
   'laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare',
   'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','disposalPerSquare',
   'laborHourlyRate','laborPerFloorSqft','materialPerFloorSqft2Coats',
@@ -32,7 +33,7 @@ const UNIT_RATE_FIELDS = new Set([
   'exteriorLaborPerSqftPerCoat','baseboardReinstallPerLF','transitionPriceEach','furnitureMovingPrice','toiletPullResetEach','floorLevelingPerSqft'
 ]);
 const FIXED_AMOUNT_FIELDS = new Set([
-  'repairMinimum','repairMaterialAllowance','minimumJob','minimumServiceCharge',
+  'repairAreaMinimum','repairMinimum','repairMaterialAllowance','minimumJob','minimumServiceCharge',
   'disposalFlat','haulAwayFee','materialAllowance','patchMaterialAllowance',
   'pondingWaterSurcharge','travelFee','disposalFee','permitFee','overheadFixed',
   'minimumJobPrice','mowingVisitCharge','disposalPerBag','disposalPerLoad'
@@ -41,6 +42,7 @@ const DEFAULT_MONEY_FIELDS = new Set([
   'travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice','laborHourlyRate'
 ]);
 const NON_MONEY_PRICING_FIELDS = new Set([
+  'flatRoofDeckPriceBasis','repairPricingUnit','repairFirstAreaSqft',
   'allowAssumptionBasedQuotes','postsIncludedInMaterial','accessoryPricingMode','unit',
   'postSpacing','trimLinearFeetPerRoom','repairHours','patchRepairHours',
   'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing',

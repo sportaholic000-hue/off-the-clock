@@ -131,7 +131,7 @@ function scopeConditions(type,key,p,rules){
 }
 // Retain a supplied value on screen even after scope changes, so the customer
 // can explicitly correct it. Visibility never deletes submitted facts.
-const matchesConditions=(conditions,values)=>!conditions||conditions.some(all=>all.every(([key,op,value])=>values[key]!==undefined&&(op==='eq'?values[key]===value:op==='ne'?values[key]!==value:op==='in'?value.includes(values[key]):op==='lte'?typeof values[key]==='number'&&values[key]<=value:typeof values[key]==='number'&&values[key]>value)));
+const matchesConditions=(conditions,values)=>!conditions||conditions.some(all=>all.every(([key,op,value])=>op==='absent'?values[key]===undefined:values[key]!==undefined&&(op==='eq'?values[key]===value:op==='ne'?values[key]!==value:op==='in'?value.includes(values[key]):op==='lte'?typeof values[key]==='number'&&values[key]<=value:typeof values[key]==='number'&&values[key]>value)));
 export function customerFieldVisible(field,values={}){
  return own(values,field.name)||matchesConditions(field.visibleWhen,values);
 }

@@ -1,8 +1,9 @@
+import {REPAIR_SERVICES} from './flatRoofRepairPricing.js';
 import {hasFirstMowingVisit} from './landscapePricing.js';
 import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {recordedQuoteDateDiagnostic,monthForRecordedQuoteDate,quoteDefaultsForTimeZone} from '../src/quoteDate.js';
 export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
-import {installedPriceDefinitions} from '../installedPriceConfiguration.js';
+import {installedPriceDefinitions,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import {customerFieldForInputs} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
@@ -936,7 +937,7 @@ export function installedMaterialShareDiagnosticsVNext(serviceType,pricing,defau
   if(defaults?.taxMode!=='TAX_MATERIALS')return [];
   const definitions=installedPriceDefinitions(serviceType,pricing);
   return [...new Set(ratePaths)].filter(path=>Object.hasOwn(definitions,path)).flatMap(path=>{
-    const share=pricing.installedMaterialsPercent?.[path];
+    const share=installedMaterialsShare(serviceType,pricing,path);
     return typeof share==='number'&&Number.isFinite(share)&&share>=0&&share<=100?[]:[{type:'missing',kind:'installed_material_share',path:'installedMaterialsPercent.'+path,message:'Set the materials share of this installed price before using materials-only tax.'}];
   });
 }
@@ -962,7 +963,7 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   if(defaults.taxMode==='TAX_MATERIALS')for(const line of lines) {
     const path=line.calculation?.ratePath;
     if(!Object.hasOwn(installedPriceDefinitions(serviceType,pricing),path))continue;
-    const share=pricing.installedMaterialsPercent?.[path];
+    const share=installedMaterialsShare(serviceType,pricing,path);
     if(typeof share!=='number'||!Number.isFinite(share)||share<0||share>100)throw new QuoteReviewError('Set the materials share of this installed price before using materials-only tax.',{missingOwnerFields:['installedMaterialsPercent.'+path]});
     line.installedMaterialExactCents=exactEvidence(exactPercentOf(exactFromEvidence(line.installedBaseExactCents),share));
     line.installedMaterialCents=exactToNumber(exactFromEvidence(line.installedMaterialExactCents));
@@ -1791,7 +1792,7 @@ function rootCalculationRecordMatches(result) {
     if (option.tierName!==null && !tier) return false;
     let pricing=tier?mergePricingVNext(configuration.pricing,tier.overrides):configuration.pricing;
     if(fenceType(result.serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,inputs);}catch{return false;}
-    const derivedMeasurements=result.serviceType.startsWith('FLOORING_')||fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined;
+    const derivedMeasurements=REPAIR_SERVICES.includes(result.serviceType)&&result.submittedCustomerInputs.repairAreaMethod==='dimensions'||result.serviceType.startsWith('FLOORING_')||fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined;
     const normalized=derivedMeasurements?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
     if (!plainDataEqual(inputs,normalized)||!validateCustomerInputs(result.serviceType,inputs,pricing,configuration).ok ||
         !validateOwnerPricing(result.serviceType,inputs,pricing,configuration,option.tierName).ok) return false;
