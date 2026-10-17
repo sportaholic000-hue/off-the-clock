@@ -332,8 +332,12 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
     const flooringTypes = keysOf(p.laborPerSqft, 'tile');
     const replacement = serviceType === 'FLOORING_REPLACEMENT';
     const layoutPattern = greatestConfiguredKey(p.patternWasteAdder, ['straight', 'diagonal_or_pattern'], 'diagonal_or_pattern');
+    // Pattern proposals are request-specific. Keep straight work available
+    // while an owner reviews diagonal starting values on a new/adopted service.
+    const patternMode=service.startingValueAdoptions?.flooring_patterns_20261017?.mode;
+    const layoutPatterns=['new','adopted'].includes(patternMode)?[...new Set(['straight',layoutPattern])]:[layoutPattern];
     const roomBands = flooringRoomBands(p);
-    const scenario = (flooringType, existingFloorType, removalNeeded, roomBand) => ({
+    const scenario = (flooringType, existingFloorType, removalNeeded, roomBand, layoutPattern) => ({
       sqft: roomBand.sqft, sqftMethod: 'exact', newFlooringType: flooringType,
       existingFloorType, removalNeeded, ...(removalNeeded?{removalAreaSqft:roomBand.sqft}:{}),
       roomCount: roomBand.roomCount, layoutPattern, stairSteps: 0,
@@ -342,9 +346,9 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' ? { subfloorCondition: 'does_not_require_underlayment' } : {}),
       ...(replacement ? { subfloorIssues: false } : {})
     });
-    return flooringTypes.flatMap(flooringType => roomBands.flatMap(roomBand => [
-      scenario(flooringType, 'none', false, roomBand)
-    ]));
+    return flooringTypes.flatMap(flooringType => layoutPatterns.flatMap(layoutPattern => roomBands.map(roomBand =>
+      scenario(flooringType, 'none', false, roomBand, layoutPattern)
+    )));
   }
   if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') {
     const fenceTypes = keysOf(p.laborPerLinearFoot, 'wood');
@@ -842,6 +846,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   if(axes&&axes.values[0].length*axes.values[1].length>PAIR_DETAIL_LIMIT)return evaluateRoofCatalog(service,effectivePricing,tierName,tierIndex,businessDefaults,options,axes);
   // All boundary probes within one product must pass; incomplete siblings do not block it.
   const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
+  if(service.serviceType.startsWith('FLOORING_')&&['new','adopted'].includes(service.startingValueAdoptions?.flooring_patterns_20261017?.mode))selectors.push('layoutPattern');
   if(selectors.length&&!options.productScenarios){
     const groups=new Map();
     for(const scenario of activationScenarios({...service,pricing:effectivePricing},service,tierName,null,true,businessDefaults)){

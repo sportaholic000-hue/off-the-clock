@@ -138,7 +138,16 @@ test('application-created services stay unconfirmed after ordinary approval; exp
     assert.equal(book.services[0].startingValueAdoptions[group].mode,'new');
     assert.ok(Object.values(book.services[0].startingValueState).every(row=>row.confirmed===false&&row.source&&row.assumption));
     const f={serviceType:service.serviceType,ownerPricing:book.services[0],businessDefaults:book.defaults,customerInputs:old.customerInputs,callerType:'owner',currentMonth:1};
-    if(name==='flooring')f.customerInputs.layoutPattern='diagonal';
+    if(name==='flooring'){
+      // Straight work uses no pattern proposal: 300*300*1.1 labor and
+      // 300*1.08*500 material must quote before any pattern confirmation.
+      const straight=bridge.calculateApplicationQuote(book,book.services[0],{customerInputs:{...f.customerInputs,layoutPattern:'straight'}},{ownerId:owner,preparingIntake:true}).internalResult;
+      assert.equal(straight.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(straight));
+      assert.equal(sum(amount(straight,'laborPerSqft.vinyl_plank')),99000);
+      assert.equal(sum(amount(straight,'materialPerSqft.vinyl_plank')),162000);
+      assert.equal(bridge.applicationStatus(book.services[0],book).status,'QUOTING LIVE');
+      f.customerInputs.layoutPattern='diagonal';
+    }
     const before=bridge.calculateApplicationQuote(book,book.services[0],{customerInputs:f.customerInputs},{ownerId:owner,preparingIntake:true}).internalResult;
     assert.equal(before.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(JSON.stringify(bridge.applicationStatus(book.services[0],book)),/startingValueState/);
     const shown=bridge.readApplicationBook(owner);shown.services[0].startingValueActions={confirmPaths:paths};bridge.saveApplicationBook(owner,shown);
