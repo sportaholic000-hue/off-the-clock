@@ -1,0 +1,43 @@
+[
+  {
+    "path": "server/quote-engine-vnext/templates.js",
+    "function": "calculateMowing",
+    "unchanged": true,
+    "baseSHA256": "64cbd9de79977299ac8d94158af7ad1328913f55fc8a8fcb418fcbaef0fe8a6b",
+    "currentSHA256": "64cbd9de79977299ac8d94158af7ad1328913f55fc8a8fcb418fcbaef0fe8a6b"
+  },
+  {
+    "path": "server/quote-engine-vnext/templates.js",
+    "function": "calculateCleanup",
+    "unchanged": true,
+    "baseSHA256": "0a38d012d714dc6e3af13504436d8bd501572495dd06a73d77da634bbc5fc884",
+    "currentSHA256": "0a38d012d714dc6e3af13504436d8bd501572495dd06a73d77da634bbc5fc884"
+  },
+  {
+    "path": "server/quote-engine-vnext/templates.js",
+    "function": "calculateSidingRepair",
+    "unchanged": true,
+    "baseSHA256": "9b4bd3b07250606bf93d0870cca8644987c4866396393712ed9d2945e706124c",
+    "currentSHA256": "9b4bd3b07250606bf93d0870cca8644987c4866396393712ed9d2945e706124c"
+  },
+  {
+    "path": "server/quote-engine-vnext/templates.js",
+    "function": "calculateSidingReplacement",
+    "unchanged": true,
+    "baseSHA256": "dd8b9a9677c93f5445c3d8a63851daffb7f095f7cbf1fedcc4919ea227874338",
+    "currentSHA256": "dd8b9a9677c93f5445c3d8a63851daffb7f095f7cbf1fedcc4919ea227874338"
+  },
+  {
+    "path": "server/src/quoteDoneBridge.js",
+    "function": "approveApplicationService",
+    "unchanged": true,
+    "baseSHA256": "740beb2b87a34cad3ba1b48707d2789cd7ab1e3561de63b35f83ef6e4e66db27",
+    "currentSHA256": "740beb2b87a34cad3ba1b48707d2789cd7ab1e3561de63b35f83ef6e4e66db27"
+  },
+  {
+    "path": "server/quote-engine-vnext/fencePricing.js",
+    "unchanged": true,
+    "baseSHA256": "753735a129cafb64a67408419104ddd9684664cb0414632dabb9cb917c77915f",
+    "currentSHA256": "753735a129cafb64a67408419104ddd9684664cb0414632dabb9cb917c77915f"
+  }
+]

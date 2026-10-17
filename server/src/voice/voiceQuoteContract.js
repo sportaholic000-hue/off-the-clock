@@ -7,9 +7,10 @@ const record = value => value !== null && typeof value === 'object' && !Array.is
   [Object.prototype, null].includes(Object.getPrototypeOf(value));
 const FIELD = /^[a-zA-Z][a-zA-Z0-9_]{0,99}$/;
 const FEES = ['travel', 'disposal', 'permit', 'overhead'];
-const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'integer_or_unknown', 'number_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs','carpet_rooms','carpet_connections']);
+const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'multi_enum', 'surface_rows', 'integer_or_unknown', 'number_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs','carpet_rooms','carpet_connections']);
 const safeText = (value, max = 240) => typeof value === 'string' && value.trim() && value.length <= max ? value.trim() : null;
 const human = value => String(value).replaceAll('_', ' ');
+const rowDetails=fields=>Object.entries(fields||{}).map(([key,d])=>key+' = '+(d.type==='surface_rows'?'optional array of rows ('+rowDetails(d.rowFields)+')':d.label+(d.type==='boolean'?' (true or false)':d.unit?' ('+d.unit+')':''))).join('; ');
 
 function publicCondition(value, depth = 0) {
   if (depth > 4) return undefined;
@@ -39,7 +40,7 @@ function scopeToken(service, field, inputs, authority) {
 export function voiceQuestionContract(service, definition, inputs = {}, authority) {
   const carpetRoomMode=service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&(inputs.carpetMeasurementMethod==='rooms'||Array.isArray(inputs.carpetRooms));
   const fields = (Array.isArray(definition?.customerFields) ? definition.customerFields : [])
-    .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly)
+    .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly && (!field.optionalItemKey||customerFieldVisible(field,inputs)))
     .filter(field => !(service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&field.name==='layoutPattern'))
     .filter(field => !carpetRoomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name)&&!(field.name==='carpetConnectedAreas'&&!(inputs.carpetRooms?.length>1)));
   if (fields.length > 64) throw new TypeError('Voice measurement contract exceeds its bounded field limit.');
@@ -87,6 +88,10 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
       if (values.length > 32) question.moreChoicesAvailable = true;
     }
     if (field.type === 'slug') question.productConfirmationRequired = true;
+    if(field.type==='multi_enum')question.details=[...(question.details||[]),'Supply an array of selected choice values, or an empty array for none.'];
+    if(field.type==='surface_rows'){
+      question.details=[...(question.details||[]),'Supply an array of rows. Each row contains: '+rowDetails(field.rowFields)+'. Use an empty array only when there are none.'];
+    }
     if(field.type==='fence_runs'){
       question.details=[field.closedQuestion,field.sectionQuestion].map(v=>{if(!safeText(v,4000))throw new TypeError('Invalid fence measurement question.');return v;});
       question.choices=(field.gateChoices||[]).slice(0,32).map(g=>{
@@ -126,6 +131,7 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
     if (!fields.some(field => field.name === key && field.type === 'slug')) followUps.push('Confirm only a product requested for this service.');
   }
   for (const field of fields) {
+    if(field.optionalItemKey&&customerFieldVisible(field,customerInputs)&&(!own(customerInputs,field.name)||customerInputs[field.name]===null||customerInputs[field.name]===''))followUps.push('Check '+field.label+'.');
     if (!own(customerInputs, field.name) || customerInputs[field.name] === null || customerInputs[field.name] === '') continue;
     if(field.type==='number_or_unknown'&&typeof customerInputs[field.name]==='string'&&['not sure','unknown'].includes(customerInputs[field.name].trim().toLowerCase()))customerInputs[field.name]='unknown';
     if (field.type === 'slug') {

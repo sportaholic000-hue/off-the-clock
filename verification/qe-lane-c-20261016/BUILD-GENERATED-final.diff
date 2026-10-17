@@ -1,0 +1,15 @@
+diff --git a/client/dist/index.html b/client/dist/index.html
+index ab2601a3..c782ed60 100644
+--- a/client/dist/index.html
++++ b/client/dist/index.html
+@@ -4,8 +4,8 @@
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Off The Clock AI</title>
+-    <script type="module" crossorigin src="/assets/index-DdcfYsVT.js"></script>
+-    <link rel="stylesheet" crossorigin href="/assets/index-Cwi6Aiz2.css">
++    <script type="module" crossorigin src="/assets/index-_MUulZpW.js"></script>
++    <link rel="stylesheet" crossorigin href="/assets/index-RRevNfiB.css">
+   </head>
+   <body>
+     <div id="root"></div>

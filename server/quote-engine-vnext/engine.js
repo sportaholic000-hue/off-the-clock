@@ -48,6 +48,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import {unconfirmedStartingValueUsesVNext} from './priceGroundwork.js';
 import {quoteValidityStatementVNext} from './quoteValidity.js';
+import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
 export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';
@@ -61,7 +62,7 @@ const FEWER_OPTIONS_NOTICE = 'Fewer options are available because one or more co
 const CUSTOMER_SKIPPED_ADDONS = new Set([
   'Ponding water surcharge',
   'Clipping bagging and disposal',
-  'Lawn edging'
+  'Lawn edging','Door sides','Door frames','Windows','Cabinet doors or drawer faces','Doors','Shutters','Garage doors','Exterior trim','Soffit','Fascia','Power washing'
 ]);
 const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment'
@@ -1860,14 +1861,14 @@ export function customerFieldClassesVNext(serviceType){
   if(typeof serviceType!=='string'||!SERVICE_TYPES.includes(serviceType))return null;
   if(!customerFieldIndex.has(serviceType)){
     const entries=[
-      ...Object.entries(MEASUREMENT_CONTRACTS[serviceType]?.fields||{}),
+      ...Object.entries(surfaceCustomerContract(serviceType,{},MEASUREMENT_CONTRACTS[serviceType]).fields||{}),
       ...(OFFERING_TYPES.includes(serviceType)?['installed','itemized'].flatMap(offeringMode=>Object.entries(offeringContract(serviceType,{offeringMode,offeringDetails:{}}).fields)):[]),
       ...Object.values(scopeDefinitions(serviceType,{})).flatMap(definition=>Object.entries(definition.customerFields||{}))
     ];
     const known=new Set(),measurements=new Set();
     for(const [name,field] of entries){
       known.add(name);
-      if(SIZE_METHOD_FIELDS.has(name)||['orthogonal_outline','fence_runs'].includes(field?.type)||(field?.type==='number'&&SIZE_UNITS.has(field.unit)))measurements.add(name);
+      if(SIZE_METHOD_FIELDS.has(name)||['orthogonal_outline','fence_runs','surface_rows'].includes(field?.type)||(field?.type==='number'&&SIZE_UNITS.has(field.unit)))measurements.add(name);
     }
     customerFieldIndex.set(serviceType,{known,measurements});
   }

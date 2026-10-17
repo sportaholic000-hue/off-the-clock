@@ -1,0 +1,120 @@
+not ok 189 - Astra 2 browser: tier-only confirmation can be answered in measurement form
+not ok 190 - Astra 2 browser: tier-only confirmation can be answered in customer wizard
+not ok 191 - Astra 4 browser: product change shows its own confirmation and clears the old Yes
+not ok 206 - Audit 2 \#4 and \#5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers
+not ok 870 - billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation
+not ok 871 - reactivation refreshes dashboard from persisted backend state and permits CSV download
+not ok 872 - expired export window disables all CSV buttons and no longer offers setup/service
+not ok 1009 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
+not ok 1167 - scope editor groups entries of the same kind and names them by their matching facts
+not ok 1269 - measurement choices: rendered widget, phone and owner preview — INTERIOR_PAINTING
+not ok 1270 - measurement choices: rendered widget, phone and owner preview — EXTERIOR_PAINTING
+not ok 1275 - measurement choices: rendered widget, phone and owner preview — SIDING_REPLACEMENT
+not ok 1289 - measurement choices: configured installed offering — INTERIOR_PAINTING
+not ok 1290 - measurement choices: configured itemized offering — INTERIOR_PAINTING
+not ok 1291 - measurement choices: configured installed offering — EXTERIOR_PAINTING
+not ok 1292 - measurement choices: configured itemized offering — EXTERIOR_PAINTING
+not ok 1308 - measurement choices: legacy INTERIOR_PAINTING.areaInputMethod=floor_sqft remains no-price review
+not ok 1309 - measurement choices: legacy INTERIOR_PAINTING.areaInputMethod=rooms remains no-price review
+not ok 1310 - measurement choices: legacy INTERIOR_PAINTING.areaInputMethod=homesize remains no-price review
+not ok 1312 - measurement choices: legacy EXTERIOR_PAINTING.areaInputMethod=homesize remains no-price review
+not ok 1314 - measurement choices: legacy SIDING_REPLACEMENT.areaInputMethod=homesize remains no-price review
+not ok 1474 - Oct16 Chromium: two separate 9 ft runs enter the verbatim questions and quote 6 posts / 75600 cents
+not ok 1475 - Oct16 Chromium: one gate between 7 and 9 ft sections quotes 5 posts / 91200 cents; total-only fallback asks runs
+not ok 1476 - Oct16 Chromium: four fence offerings retain twelve tiers; editing aluminum eight changes only its row spacing
+not ok 1477 - Oct16 Chromium: existing saved offering displays one exact-height row and the add-other-heights notice without mutating its prices
+not ok 1546 - F11 browser boolean leaves preserve No, unanswered and the exact key
+not ok 1547 - F11/F13 browser depth-three values retain zero, fractional rates and rejected text
+not ok 1548 - F13 browser legacy flat and two-level controls use the same exact parser
+not ok 1560 - lead capture repairs: production owner app navigation, stored contacts and live feed
+not ok 1586 - Operator: service-area city entry, validation, save and reopening in Chromium
+not ok 1587 - QuoteDone: service-area city entry, validation, save and reopening in Chromium
+not ok 1588 - Calendar exposes missing booking requirements and links to service-area setup in Chromium
+not ok 1654 - named review contact signup prefill remains unconfirmed until save and survives reopening
+not ok 1655 - named review contact AI draft, empty edit and rejected save preserve the confirmed person
+not ok 1736 - real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus
+not ok 1737 - QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge
+not ok 1738 - unverified period and pending historical charge are visible without an invented zero balance
+    not ok 1 - owner alert retry: paused worker renders PENDING, accepts once and never resends
+    not ok 2 - owner alert retry: worker before refresh renders BLOCKED, accepts once and never resends
+not ok 1802 - owner alert repairs: production dashboard, Calls, retry and staff visibility
+not ok 1834 - D19/D20: production browser shows saved quote email status and browses/retries older failures
+not ok 1867 - owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries
+not ok 2188 - editor D1: root factor survives no-edit blur save reopen and same-type switches
+not ok 2189 - editor D1: nested factor survives no-edit blur save reopen and same-type switches
+not ok 2190 - editor D1: flat factor survives no-edit blur save reopen and same-type switches
+not ok 2191 - editor D1: equal factor survives no-edit blur save reopen and same-type switches
+not ok 2192 - editor D1: a genuine absent default is displayed without being written by focus or blur
+not ok 2193 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
+not ok 2194 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
+not ok 2195 - editor locked rate: 0.0049 types blurs saves and reopens exactly
+not ok 2196 - editor locked rate: 0.0050 types blurs saves and reopens exactly
+not ok 2197 - editor locked rate: 0.0051 types blurs saves and reopens exactly
+not ok 2198 - editor locked invalid text: lossless rejection survives blur same-type switch and save
+not ok 2199 - editor locked maps tiers and explicit enablement stay separate for two same-type records
+not ok 2200 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
+not ok 2201 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
+not ok 2202 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
+not ok 2309 - pending manual save preserves a newer numeric edit and its question
+not ok 2310 - pending manual save preserves a newer structured price-map edit
+not ok 2311 - pending manual save prevents duplicate confirmation and premature review
+not ok 2312 - unchanged confirmed value saves once and advances normally
+not ok 2313 - failed manual save keeps the confirmed value available for retry
+not ok 2314 - stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer
+not ok 2315 - stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer
+not ok 2334 - late 200 response cannot replace a new service preview
+not ok 2335 - late 400 response cannot replace a new service preview
+not ok 2336 - old completion cannot clear current loading and invalid input cannot retain old ready
+not ok 2337 - invalid replacement rejects an old delayed success and unchanged focus blur does not request again
+not ok 2672 - interview owner can add separate demolition entries and explicitly choose up-to access
+not ok 2673 - interview rate controls accept 3.5 cents per foot and reject fractional-cent gates
+not ok 2674 - interview accepts ordinary floor names and retains invalid drafts for correction
+not ok 2703 - QE-004/015 Chromium: full multi-gate widget choices, phone quote, saved scope, and owner copy agree
+not ok 2704 - QE-015 Chromium: distinct similar gates retain their keys and $4,550 across widget, phone, persistence, and public copy
+not ok 2705 - QE-005 Chromium: actual saved partial public page keeps measurement, unpriced work, and exact cents
+not ok 2747 - display browser: changing mulch quantity method requires a fresh quantity in its new unit
+not ok 2748 - display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520
+not ok 2749 - display browser: actual dashboard and owner preview show production missing-price labels
+not ok 2750 - display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse
+not ok 2970 - interior floor-area and room-count shortcuts are inspection-first
+not ok 3021 - repair 28: ordinary tests include every VNext suite and keep the dedicated gate
+not ok 3041 - repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed
+not ok 3246 - QE-017: complete owner preview shows the authoritative withheld-option notice exactly once
+not ok 3247 - QE-017: one withheld option preserves the ready amount and the same authoritative notice
+not ok 3248 - QE-017: all unavailable options remain review-only and do not invent an availability notice
+not ok 3249 - QE-018: percent-entry waste help, conversion, save/reload, and concrete amount agree
+not ok 3250 - QE-019: rendered roof material copy changes completely with accessory mode and restores exactly
+not ok 3251 - QE-011/QE-012: tier allocations use exact paths and structured scope never renders as a decimal
+not ok 3252 - QE-013: real remove control saves cleanup while a complete tier remains quotable
+not ok 3253 - QE-013 follow-up: real removal, reload and owner reapproval preserve inherited materials tax and 268125 cents
+not ok 3254 - QE-016 owner decision: actual editor rejects 81 characters without truncation and preserves the saved name
+not ok 3262 - QE-016 owner decision: guided name rejects 81 without saving and resumes an exact 80-character Unicode name
+not ok 3263 - QE-008: Chromium guided allocation control preserves an exact dotted path and percentage
+not ok 3264 - QE-008: Chromium guided allocation control represents explicit no-allocation as an empty map
+not ok 3265 - QE-008: full guided interview persists and resumes exact paths and explicit empty allocation answers
+not ok 3266 - QE-009: full guided interview switches roof modes without confirming or reviewing inactive accessory fields
+not ok 3322 - QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960
+not ok 3568 - re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price
+not ok 3759 - QE-007 browser: approved free flooring product rows survive save/reload and approval invalidates on later edits
+not ok 3760 - QE-007 browser: approved included flooring zero is READY only with its selected positive covering charge
+not ok 3761 - QE-007 browser: unclassified zero is not READY, while a positive flooring price is READY
+not ok 3762 - QE-007 browser: an offered product with a missing price is NEEDS PRICE
+not ok 3763 - QE-007 browser: approved free and positive siding product rows are distinguished correctly
+not ok 3764 - QE-007 follow-up: FLOORING_INSTALL laborPerSqft toggle coherently disables and re-enables its paired product
+not ok 3765 - QE-007 follow-up: FLOORING_INSTALL materialPerSqft toggle coherently disables and re-enables its paired product
+not ok 3766 - QE-007 follow-up: FLOORING_REPLACEMENT laborPerSqft toggle coherently disables and re-enables its paired product
+not ok 3767 - QE-007 follow-up: FLOORING_REPLACEMENT materialPerSqft toggle coherently disables and re-enables its paired product
+not ok 3768 - QE-007 follow-up: SIDING_REPLACEMENT laborPerSqft toggle coherently disables and re-enables its paired product
+not ok 3769 - QE-007 follow-up: SIDING_REPLACEMENT materialPerSqft toggle coherently disables and re-enables its paired product
+not ok 3770 - QE-007 second follow-up: FLOORING_INSTALL laborPerSqft base-off control discloses retained tier availability and still quotes the exact Premium amount after reapproval
+not ok 3771 - QE-007 second follow-up: FLOORING_INSTALL materialPerSqft base-off control discloses retained tier availability and still quotes the exact Premium amount after reapproval
+not ok 3772 - QE-007 second follow-up: FLOORING_INSTALL laborPerSqft blank product selection is retained in the draft and blocked from disappearing on save
+not ok 3773 - QE-007 second follow-up: FLOORING_INSTALL materialPerSqft blank product selection is retained in the draft and blocked from disappearing on save
+not ok 3774 - QE-007 second follow-up: FLOORING_REPLACEMENT laborPerSqft blank product selection is retained in the draft and blocked from disappearing on save
+not ok 3775 - QE-007 second follow-up: FLOORING_REPLACEMENT materialPerSqft blank product selection is retained in the draft and blocked from disappearing on save
+not ok 3776 - QE-007 second follow-up: SIDING_REPLACEMENT laborPerSqft blank product selection is retained in the draft and blocked from disappearing on save
+not ok 3777 - QE-007 second follow-up: SIDING_REPLACEMENT materialPerSqft blank product selection is retained in the draft and blocked from disappearing on save
+not ok 3778 - QE-007 follow-up: a partially configured flooring pair can be turned off from its missing side
+not ok 3779 - QE-007 follow-up: re-enabling an approved free pair does not manufacture free zero prices
+not ok 4120 - website owner screen shows an unsaved draft, literal prices and source; saves only on review
+not ok 4121 - website owner screen says no prices found and preserves the current prices

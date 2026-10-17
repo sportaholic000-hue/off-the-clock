@@ -1,5 +1,9 @@
 import { customerJobSummary } from './quoteIntake.js';
 
+// The engine's sanitized skipped-add-on labels are the only source of these
+// exclusions. Keep this presentation boundary free of engine imports.
+const SURFACE_EXTRA_LABELS=new Set(['Door sides','Door frames','Windows','Cabinet doors or drawer faces','Doors','Shutters','Garage doors','Exterior trim','Soffit','Fascia','Power washing']);
+
 export const ADDITIONAL_WORK_NOTICE = 'The business owner will estimate this additional work on site and agree its price with you before that work starts. It is not included in the estimate for the selected service.';
 export const SELECTED_WORK_NOTICE = 'This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.';
 
@@ -19,6 +23,10 @@ export function discloseQuoteScope(result,service,definition,submission,revision
   // that a name/address field has been semantically classified as scope-free.
   const submittedDetails={requestedWork:summary.requestedWork,contact:summary.contact,location:summary.location,timing:summary.timing,additionalDetails:summary.additionalDetails,unknowns:summary.unknowns,clarifications:summary.clarifications};
   const additionalWork=declaredAdditionalWork(submission,clarifiedFields);
+  if(['INTERIOR_PAINTING','EXTERIOR_PAINTING','SIDING_REPLACEMENT'].includes(service.serviceType)){
+    const excluded=[...new Set((result.options||[]).flatMap(option=>option.skippedAddons||[]))].filter(label=>SURFACE_EXTRA_LABELS.has(label));
+    for(const description of excluded)additionalWork.push({source:'unpriced_surface_work',description});
+  }
   const scope={pricedScope,submittedDetails,scopeNotice:SELECTED_WORK_NOTICE,fullJobTotal:null};
   if(!additionalWork.length)return {...result,...scope};
   // A partial response has no top-level amount or options that an API consumer

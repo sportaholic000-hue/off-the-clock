@@ -1,3 +1,4 @@
+import {SurfaceRowsInput} from './surfacePricingEditor.jsx';
 import {registeredProductKey} from '../../server/productNames.js';
 import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations} from '../../server/scopeConfiguration.js';
 import React,{useEffect,useRef,useState} from 'react';
@@ -102,6 +103,8 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
    if(next?.length!==value.carpetRooms?.length)delete updated.carpetConnectedAreas;
    try{Object.assign(updated,normalizeFlooringInputs({...updated,newFlooringType:'carpet'}));}catch{for(const key of ['sqft','sqftMethod','roomCount'])delete updated[key];}
   }
+  if(name==='surfaceOptionalItems')for(const field of fields)if(field.optionalItemKey&&!next?.includes(field.optionalItemKey))delete updated[field.name];
+  if(name==='areaInputMethod'&&next!==value.areaInputMethod&&fields.some(f=>f.type==='surface_rows'))for(const key of ['wallAreaSqft','exteriorAreaSqft','sidingAreaSqft','rooms','buildingPerimeterFeet','doorCount','windowCount','garageDoorCount','garageDoorWidthFeet','garageDoorHeightFeet','garageOpenings','gables','largeOpenings','ceilingAreaSqft','wallHeightFeet'])delete updated[key];
   if(sectionMode&&name==='fenceRunCount'){
    if(Number.isSafeInteger(next)&&next>=1&&next<=1000)updated.fenceRuns=Array.from({length:Math.max(next,measuredRuns.length)},(_,i)=>measuredRuns[i]||{sections:[{}]});
    for(const k of ['linearFeet','gates','cornerCount','lfMethod'])delete updated[k];
@@ -113,10 +116,12 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  };
  return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerMeasurementVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}
   {f.type==='boolean'?<Select aria-label={f.label} value={value[f.name]===undefined?'':String(value[f.name])} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='true')}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select>:
+   f.type==='multi_enum'?<fieldset aria-label={f.label}>{(f.values||[]).map(key=><label key={key}><input type="checkbox" aria-label={f.optionLabels?.[key]||human(key)} checked={(value[f.name]||[]).includes(key)} onChange={e=>update(f.name,e.target.checked?[...(value[f.name]||[]),key]:(value[f.name]||[]).filter(item=>item!==key))}/>{f.optionLabels?.[key]||human(key)}</label>)}</fieldset>:
    f.type==='enum'?<Select aria-label={f.label} value={f.aliases?.[value[f.name]]??value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:f.values.find(v=>String(v)===e.target.value))}><option value="">Unknown / not supplied</option>{(f.values||[]).map(v=><option key={v} value={v}>{f.optionLabels?.[v]||human(v)}</option>)}</Select>:
    f.type==='number_or_unknown'?<><ExactNumericInput aria-label={f.label} value={value[f.name]==='unknown'?undefined:value[f.name]} onChange={v=>update(f.name,v)}/><label><input type="checkbox" aria-label={'Not sure — '+f.label} checked={value[f.name]==='unknown'} onChange={e=>update(f.name,e.target.checked?'unknown':undefined)}/> Not sure</label></>:
    f.type==='integer_or_unknown'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='unknown'?'unknown':Number(e.target.value))}><option value="">Not supplied</option><option value="unknown">Unknown — requires review</option>{Array.from({length:f.max-f.min+1},(_,i)=>f.min+i).map(n=><option key={n} value={n}>{n}</option>)}</Select>:
    f.type==='orthogonal_outline'?<MeasuredOutline field={f} value={value[f.name]} onChange={v=>update(f.name,v)}/>:
+   f.type==='surface_rows'?<SurfaceRowsInput field={f} value={value[f.name]} onChange={v=>update(f.name,v)}/>:
    f.type==='fence_runs'?<FenceRunsInput field={f} runs={measuredRuns} runCount={value.fenceRunCount} onChange={layoutChange}/>:
    f.type==='carpet_rooms'?<CarpetRoomsInput rooms={value[f.name]} onChange={v=>update(f.name,v)}/>:
    f.type==='carpet_connections'?<CarpetConnectionsInput value={value[f.name]} rooms={value.carpetRooms} onChange={v=>update(f.name,v)}/>:

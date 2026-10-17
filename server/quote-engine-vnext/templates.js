@@ -6,6 +6,7 @@ import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
 import {tradeAdjustment} from './tradeAdjustments.js';
+import {trimComponentPricing,trimPreparationNeeded,surfaceType,surfaceCalculationInputs,coatLaborParts,requestedSurfaceExtras} from './surfacePricing.js';
 import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
@@ -659,12 +660,23 @@ function calculateInteriorPainting(c, p, rules={}) {
     result: exactWallCoatSqft, unit: 'wall square-foot coats',
     usedBy: ['Wall labor', 'Wall paint and materials']
   });
-  add(out, makeLine({ name: 'Wall labor', category: 'labor', quantity: exactWallCoatSqft, unit: 'measured wall square-foot coats', rateCents: p.laborPerWallSqftPerCoat, ratePath: 'laborPerWallSqftPerCoat', multipliers: [{ name: 'wall height labor', value: height, path: `wallHeightLaborMultiplier.${c.wallHeight}` }], customerDriver: `${wallArea} measured square feet of paintable wall area` }));
-  if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'materialPerWallSqftPerCoat')) add(out, makeLine({ name: 'Wall paint and materials', category: 'material', quantity: exactWallCoatSqft, unit: 'measured wall square-foot coats', rateCents: p.materialPerWallSqftPerCoat, ratePath: 'materialPerWallSqftPerCoat', customerDriver: `${coats} paint coat${coats === 1 ? '' : 's'}` }));
+  const labor=(name,area,n,rate,path,ratio,multipliers=[])=>{
+    for(const part of coatLaborParts(area,n,p.paintingSettings?.[ratio]))add(out,makeLine({name:name+part.suffix,category:'labor',quantity:part.quantity,unit:'measured surface-unit coats',rateCents:rate,ratePath:path,multipliers:[...part.multipliers,...multipliers]}));
+  };
+  const groups=c._surfaceGeometry?.groups||[{area:wallArea,ceiling:c.ceilingAreaSqft,height:c.wallHeight}];
+  for(const group of groups)labor('Wall labor',group.area,coats,p.laborPerWallSqftPerCoat,'laborPerWallSqftPerCoat','wallAdditionalCoatRatio',[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
+  const paintArea=c._surfaceGeometry?.paint??wallArea;
+  if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'materialPerWallSqftPerCoat')) add(out, makeLine({ name: 'Wall paint and materials', category: 'material', quantity: exactMultiply(paintArea,coats),allowZeroQuantity:true, unit: 'measured wall square-foot coats', rateCents: p.materialPerWallSqftPerCoat, ratePath: 'materialPerWallSqftPerCoat', customerDriver: `${coats} paint coat${coats === 1 ? '' : 's'}` }));
+  const primer=(prefix,paint,n,ratio)=>{
+    if(!(n>0))return;
+    for(const group of groups)labor(prefix==='primer'?'Wall primer labor':'Ceiling primer labor',prefix==='primer'?group.area:group.ceiling,n,p.paintingRates?.[prefix+'LaborPerSqftPerCoat'],'paintingRates.'+prefix+'LaborPerSqftPerCoat',ratio,[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
+    if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'paintingRates.'+prefix+'MaterialPerSqftPerCoat'))add(out,makeLine({name:prefix==='primer'?'Wall primer materials':'Ceiling primer materials',category:'material',quantity:exactMultiply(paint,n),allowZeroQuantity:true,unit:'square-foot primer coats',rateCents:p.paintingRates?.[prefix+'MaterialPerSqftPerCoat'],ratePath:'paintingRates.'+prefix+'MaterialPerSqftPerCoat'}));
+  };
+  primer('primer',paintArea,p.paintingSettings?.primerCoats,'primerAdditionalCoatRatio');
 
   if (c.ceilingsIncluded) {
     const ceilingArea = measured(c.ceilingAreaSqft, 'ceilingAreaSqft');
-    const exactCeilingCoatSqft = exactMultiply(ceilingArea, c.ceilingCoats);
+    const exactCeilingCoatSqft = exactMultiply(c._surfaceGeometry?.ceiling??ceilingArea, c.ceilingCoats);
     const ceilingCoatSqft = exactToNumber(exactCeilingCoatSqft);
     recordQuantityDerivation(out, {
       name: 'ceilingCoatSqft', formula: 'ceilingAreaSqft * ceilingCoats',
@@ -672,14 +684,24 @@ function calculateInteriorPainting(c, p, rules={}) {
       result: exactCeilingCoatSqft, unit: 'ceiling square-foot coats',
       usedBy: ['Ceiling labor', 'Ceiling materials']
     });
-    add(out, makeLine({ name: 'Ceiling labor', category: 'labor', quantity: exactCeilingCoatSqft, unit: 'measured ceiling square-foot coats', rateCents: p.ceilingLaborPerSqftPerCoat, ratePath: 'ceilingLaborPerSqftPerCoat' }));
+    for(const group of groups)labor('Ceiling labor',group.ceiling,c.ceilingCoats,p.ceilingLaborPerSqftPerCoat,'ceilingLaborPerSqftPerCoat','ceilingAdditionalCoatRatio',[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
     if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'ceilingMaterialPerSqftPerCoat')) add(out, makeLine({ name: 'Ceiling materials', category: 'material', quantity: exactCeilingCoatSqft, unit: 'measured ceiling square-foot coats', rateCents: p.ceilingMaterialPerSqftPerCoat, ratePath: 'ceilingMaterialPerSqftPerCoat' }));
     recordMeasurement(out, 'ceilingAreaSqft', ceilingArea, 'square feet');
+    primer('ceilingPrimer',c._surfaceGeometry?.ceiling??ceilingArea,p.paintingSettings?.ceilingPrimerCoats,'ceilingPrimerAdditionalCoatRatio');
   }
   if (c.trimIncluded) {
     const trim = measured(c.trimLengthLF, 'trimLengthLF');
-    add(out, makeLine({ name: 'Trim labor', category: 'labor', quantity: trim, unit: 'measured linear feet', rateCents: p.trimLaborPerLF, ratePath: 'trimLaborPerLF' }));
-    if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'trimMaterialPerLF')) add(out, makeLine({ name: 'Trim materials', category: 'material', quantity: trim, unit: 'measured linear feet', rateCents: p.trimMaterialPerLF, ratePath: 'trimMaterialPerLF', customerDriver: `${trim} measured linear feet of trim materials` }));
+    const component=trimComponentPricing(p),laborPath=component?'paintingRates.trimLaborPerLFPerCoat':'trimLaborPerLF',materialPath=component?'paintingRates.trimMaterialPerLFPerCoat':'trimMaterialPerLF';
+    labor('Trim labor',trim,c.trimCoats??1,component?p.paintingRates.trimLaborPerLFPerCoat:p.trimLaborPerLF,laborPath,'trimAdditionalCoatRatio');
+    if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,materialPath)) add(out, makeLine({ name: 'Trim materials', category: 'material', quantity: exactMultiply(trim,c.trimCoats??1), unit: 'measured linear-foot coats', rateCents: component?p.paintingRates.trimMaterialPerLFPerCoat:p.trimMaterialPerLF, ratePath: materialPath, customerDriver: `${trim} measured linear feet of trim materials` }));
+    if(trimPreparationNeeded(c,p))for(const category of ['Labor','Material']){
+      const key='trimPrep'+category+'PerLF_'+c.trimSurfaceCondition;
+      if(category==='Labor'||!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'paintingRates.'+key))add(out,makeLine({name:'Trim preparation '+category.toLowerCase(),category:category==='Labor'?'prep':'material',quantity:trim,unit:'linear feet',rateCents:p.paintingRates?.[key],ratePath:'paintingRates.'+key}));
+    }
+    if(p.paintingSettings?.trimPrimerCoats>0){
+      labor('Trim primer labor',trim,p.paintingSettings.trimPrimerCoats,p.paintingRates?.trimPrimerLaborPerLFPerCoat,'paintingRates.trimPrimerLaborPerLFPerCoat','trimPrimerAdditionalCoatRatio');
+      if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'paintingRates.trimPrimerMaterialPerLFPerCoat'))add(out,makeLine({name:'Trim primer materials',category:'material',quantity:exactMultiply(trim,p.paintingSettings.trimPrimerCoats),unit:'linear-foot primer coats',rateCents:p.paintingRates?.trimPrimerMaterialPerLFPerCoat,ratePath:'paintingRates.trimPrimerMaterialPerLFPerCoat'}));
+    }
     recordMeasurement(out, 'trimLengthLF', trim, 'linear feet');
   }
   recordMeasurement(out, 'wallAreaSqft', wallArea, 'square feet');
@@ -1271,6 +1293,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   if (!ownerValidation.ok) {
     throw new QuoteReviewError('Pricing not fully configured for the measured scope.', ownerValidation);
   }
+  if(surfaceType(serviceType))customerInputs=surfaceCalculationInputs(serviceType,customerInputs,pricing);
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) {
     const path = 'priceBasisByCategory.material';
     const basis = serviceRules.priceBasisByCategory?.material;
@@ -1306,8 +1329,18 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
         }
       };
   const finalize = result => {
+    if(surfaceType(serviceType)){
+      for(const item of requestedSurfaceExtras(serviceType,customerInputs,pricing)){
+        if(item.rateCents===undefined){addonContext.skipAddon(item.label);result.disclosures.push(item.label+' is excluded and needs a separate on-site estimate.');}
+        else add(result,makeLine({name:item.label,category:'addon',quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,priceBasis:'sell_price'}));
+      }
+      if(['room_dimensions','building_dimensions'].includes(customerInputs.areaInputMethod)){
+        const geometry=customerInputs._surfaceGeometry;
+        recordQuantityDerivation(result,{name:'Wall area from supplied dimensions',formula:customerInputs.areaInputMethod==='room_dimensions'?'sum(2 * (room length + room width) * room height) minus openings 100 square feet or larger, or floor-to-ceiling openings wider than 5 feet':'perimeter * wall height + sum(gable width * gable height / 2), with the selected opening convention',inputs:{method:customerInputs.areaInputMethod},result:geometry.labor,unit:'square feet',usedBy:['Wall labor','Siding labor']});
+      }
+    }
     const extra=scopeLines(serviceType,customerInputs,pricing,serviceRules);
-    for(const line of extra.lines)add(result,makeLine(line));
+    for(const line of extra.lines)add(result,makeLine({...line,...(line.ratePath.startsWith('scopeRates.paint_')?{allowZeroQuantity:true}:{})}));
     result.disclosures.push(...extra.disclosures);
     for(const rule of extra.rules)recordRuleApplication(result,rule);
     result.replacedCommonFees=[...new Set([...result.replacedCommonFees,...extra.replacedCommonFees])];
@@ -1315,7 +1348,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     result.lineItems=result.lineItems.map(line=>{
       const ratePath=line.calculation?.ratePath;
       if(Object.hasOwn(installedPriceDefinitions(serviceType,pricing),ratePath)) {
-        const factorPath=installedLaborFactorPath(serviceType,customerInputs,ratePath);
+        const factorPath=line.surfaceHeightBand?'wallHeightLaborMultiplier.'+line.surfaceHeightBand:installedLaborFactorPath(serviceType,customerInputs,ratePath);
         const unitRepair=REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\./.test(ratePath);
         const repairFactorPaths=unitRepair?(serviceType==='ROOFING_REPAIR'?[`pitchMultiplier.${customerInputs.pitch}`,`storyMultiplier.${customerInputs.stories}`]:serviceType==='FLAT_ROOF_REPAIR'?[`accessMultiplier.${customerInputs.accessDifficulty}`]:[`storyMultiplier.${customerInputs.stories}`]):[];
         const exactRepairFactor=unitRepair?exactMultiply(...repairFactorPaths.map(path=>valueAtPath(pricing,path))):null;
@@ -1348,7 +1381,9 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     const out=baseOutput(serviceType);
     for(const item of offeringLines(serviceType,customerInputs,pricing)) {
       if(scopesSuppressPrice(serviceType,customerInputs,pricing,serviceRules,item.ratePath))continue;
-      add(out,makeLine({name:item.label,category:item.category,quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,contributingRatePaths:item.contributingRatePaths,priceBasis:item.priceBasis,multipliers:item.multipliers||[]}));
+      const line=makeLine({name:item.label,category:item.category,quantity:item.quantity,allowZeroQuantity:item.category==='material',unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,contributingRatePaths:item.contributingRatePaths,priceBasis:item.priceBasis,multipliers:item.multipliers||[]});
+      if(item.surfaceHeightBand)line.surfaceHeightBand=item.surfaceHeightBand;
+      add(out,line);
       if(item.derivation)recordQuantityDerivation(out,{name:item.key+'Quantity',...item.derivation,result:item.quantity,unit:item.unit,usedBy:[item.label]});
       else recordMeasurement(out,item.key,exactToNumber(exactDecimal(item.quantity)),item.unit,'confirmed_offering_scope');
     }

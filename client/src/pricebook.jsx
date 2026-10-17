@@ -1,4 +1,5 @@
 import {PRICE_BOOK_UNAVAILABLE} from './planDescriptions.js';
+import {SurfacePricingEditor} from './surfacePricingEditor.jsx';
 import {ownerValidationMessages,ownerMessage,ownerDiagnosticLabels} from './pricebookDiagnostics.js';
 import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {ServiceStatusNotices,priceOptionChipText} from './quoteDoneControls.jsx';
@@ -1074,7 +1075,7 @@ export default function PriceBook() {
   // activation field list, so this mirrors real activation requirements.
   const configuredMode=servicePricing(selected||{}).offeringMode;
   const offeringSetup=!!configuredMode||selectedMeta?.requiresOffering;
-  const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&(!['offering_configuration','scope_configuration'].includes(field.type)||field.field==='plantSizes')&&(!offeringSetup||field.field==='minimumJob')).map(field=>offeringSetup&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
+  const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&(!['offering_configuration','scope_configuration','surface_configuration'].includes(field.type)||field.field==='plantSizes')&&(!offeringSetup||field.field==='minimumJob')).map(field=>offeringSetup&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
   const requiredFields = allFields.filter(field => field.requiredAtBase);
   const optionalFields = allFields.filter(field => !field.requiredAtBase);
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);
@@ -1165,6 +1166,7 @@ export default function PriceBook() {
 
                   <Field label="Offering name" help="Use a distinct name for each height, product or scope you offer. Names may contain up to 80 characters and are never silently shortened."><TextInput aria-label="Offering name" aria-invalid={!!serviceNameProblem(selected.service)} value={selected.service||''} onChange={event=>replaceSelected({...selected,service:event.target.value})}/>{serviceNameProblem(selected.service)&&<Notice tone="warning">{serviceNameProblem(selected.service)}</Notice>}</Field>
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
+                  <SurfacePricingEditor service={selected} onChange={replaceSelected}/>
                   <ServiceStatusNotices status={selectedStatus}/>
                   {!!selectedStatus.stalePrices?.length&&<Notice tone="warning" title="Prices to check"><ul>{selectedStatus.stalePrices.map(row=><li key={row.displayPath}><strong>{humanPricingKey(row.path)}</strong>{row.tierName?' · '+row.tierName:''}: {row.dateLabel}{row.sourceNote?' · '+row.sourceNote:''}</li>)}</ul></Notice>}
                   {!!selectedStatus.aiPlaceholderPrices?.length&&<Notice tone="warning" title="AI placeholder prices"><p>Confirmation does not verify cost. These values remain marked until you enter a different number or choose “This is my price.”</p><ul>{selectedStatus.aiPlaceholderPrices.map(row=><li key={row.displayPath}>{humanPricingKey(row.path)}{row.tierName?' · '+row.tierName:''} — AI placeholder</li>)}</ul></Notice>}

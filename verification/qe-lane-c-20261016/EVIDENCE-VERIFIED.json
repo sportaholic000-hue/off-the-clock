@@ -1,0 +1,10 @@
+{
+  "verifiedUTC": "2026-10-16T08:35:49.196280+00:00",
+  "archive": "evidence.zip",
+  "bytes": 5917452,
+  "sha256": "565292445c950885e05ff7a277a6928959574b43dba8d4e93ecb83ef64d4eee4",
+  "payloadFiles": 594,
+  "zipEntries": 595,
+  "CRC": "PASS",
+  "allPayloadSHA256": "PASS"
+}
