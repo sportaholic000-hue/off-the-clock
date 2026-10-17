@@ -1,17 +1,17 @@
-run 39059333229 sha 0b7c6ef29ddb79691f59d02901684e56be735363
+run 39069836399 sha a9a207d2547501464f2864beeae01143af98c834
 Earlier gate outcomes: install=success; build=success; browser=success; quote=success
 Full-suite outcome: success; checker outcome: success
 Checker output:
-Summary: {"tests":5872,"suites":0,"pass":5872,"fail":0,"cancelled":0,"skipped":0,"todo":0}
+Summary: {"tests":5882,"suites":0,"pass":5882,"fail":0,"cancelled":0,"skipped":0,"todo":0}
 Known failures still failing: 0/0
 Available TAP failures (including nested subtests):
 [none recorded; absence alone is not a pass]
 Available TAP summary:
-# tests 5872
-# pass 5872
+# tests 5882
+# pass 5882
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 845567.277067
+# duration_ms 890664.608728
 This summary does not override the original gate outcomes.
