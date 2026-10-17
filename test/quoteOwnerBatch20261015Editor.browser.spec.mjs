@@ -166,7 +166,7 @@ test('QE-019: rendered roof material copy changes completely with accessory mode
     const mode=opened.page.locator('#field-accessoryPricingMode select');
     await mode.selectOption('itemized');
     await opened.page.getByText('Base roofing material price per square',{exact:true}).waitFor();
-    await opened.page.getByText(/EXCLUD(?:E|ING).*starter.*drip edge.*ridge cap.*flashing.*vents/i).waitFor();
+    await opened.page.locator('#field-materialCostPerSquare').getByText(/EXCLUD(?:E|ING).*starter.*drip edge.*ridge cap.*flashing.*vents/i).waitFor();
     assert.equal(await opened.page.getByText(allIn,{exact:true}).count(),0);
     await save(opened.page);
     assert.equal(bridge.readApplicationBook(owner).services[0].pricing.accessoryPricingMode,'itemized');
@@ -176,7 +176,7 @@ test('QE-019: rendered roof material copy changes completely with accessory mode
 
     const reloaded=await openEditor(owner,'ROOFING_REPLACEMENT');
     try{
-      await reloaded.page.getByText(/EXCLUD(?:E|ING).*starter.*drip edge.*ridge cap.*flashing.*vents/i).waitFor();
+      await reloaded.page.locator('#field-materialCostPerSquare').getByText(/EXCLUD(?:E|ING).*starter.*drip edge.*ridge cap.*flashing.*vents/i).waitFor();
       await reloaded.page.getByRole('button',{name:/Optional prices and add-on charges/}).click();
       const reloadedMode=reloaded.page.locator('#field-accessoryPricingMode select');
       await reloadedMode.selectOption('per_square_allin');

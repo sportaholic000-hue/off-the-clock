@@ -960,6 +960,11 @@ export default function PriceBook() {
     replaceSelected({...selected,startingValueActions:{...actions,confirmPaths:[...new Set([...(actions.confirmPaths||[]),path])],ownerEnteredPaths:(actions.ownerEnteredPaths||[]).filter(item=>item!==path)}});
   }
 
+  function confirmRoofDependentLine(id) {
+    const actions=selected.dependentLineActions||{};
+    replaceSelected({...selected,dependentLineActions:{reenteredIds:[...new Set([...(actions.reenteredIds||[]),id])],confirmIds:[...new Set([...(actions.confirmIds||[]),id])]}});
+  }
+
   function updatePriceMetadata(entry,patch) {
     const next=clone(selected);
     const target=entry.scope==='tier'?next.tiers[entry.tierIndex]:next;
@@ -1026,6 +1031,17 @@ export default function PriceBook() {
     finally {setSuggesting(false);}
   }
 
+  async function adoptStartingValues(group) {
+    const savedService=basePricebook.current?.services?.find(service=>service.id===selected.id);
+    if(!savedService||JSON.stringify(savedService)!==JSON.stringify(selected)){setError(Error('Save or discard editor changes before adopting the new pricing rules.'));return;}
+    beginMutation();setSaving(true);setError(null);
+    try{
+      const result=await api('/api/pricebook/services/'+selected.id+'/approve',{method:'POST',body:{revision:book.revision,adoptStartingValueGroup:group}});
+      const loaded=await api(`/api/pricebook/${dashboard.ownerId}`);basePricebook.current=clone(loaded);setBook(loaded);setStatuses(result.statuses||[]);
+    }catch(nextError){if(isRevisionConflict(nextError))await recoverConflict(nextError);else setError(nextError);}
+    finally{setSaving(false);}
+  }
+
   function addSuggestion(item) {
     const existingIndex = book.services.findIndex(service => service.serviceType === item.serviceType);
     const draftFields = item.fields || {};
@@ -1075,7 +1091,11 @@ export default function PriceBook() {
   // activation field list, so this mirrors real activation requirements.
   const configuredMode=servicePricing(selected||{}).offeringMode;
   const offeringSetup=!!configuredMode||selectedMeta?.requiresOffering;
-  const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&(!['offering_configuration','scope_configuration','surface_configuration'].includes(field.type)||field.field==='plantSizes')&&(!offeringSetup||field.field==='minimumJob')).map(field=>offeringSetup&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
+  const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&(!['offering_configuration','scope_configuration','surface_configuration'].includes(field.type)||field.field==='plantSizes')&&(!offeringSetup||field.field==='minimumJob')).map(field=>{
+    if(offeringSetup&&field.field==='minimumJob')return {...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false};
+    if(selected?.serviceType==='ROOFING_REPLACEMENT'&&field.field==='materialCostPerSquare'&&Object.values(selected.dependentLineState||{}).some(row=>row.confirmed===true&&row.reentered===true))return {...field,title:'Field roofing material price per square',label:'Your field roofing material price per square, EXCLUDING starter, drip edge, ridge cap, ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.',help:'Material charge for each waste-adjusted roofing square. Every listed accessory, flashing and vent line is priced separately only when the customer supplies its measurement.'};
+    return field;
+  });
   const requiredFields = allFields.filter(field => field.requiredAtBase);
   const optionalFields = allFields.filter(field => !field.requiredAtBase);
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);
@@ -1275,6 +1295,8 @@ export default function PriceBook() {
                   </Disclosure>
                 )}
 
+                {selected.serviceType==='ROOFING_REPLACEMENT'&&Object.entries(selected.dependentLineState||{}).some(([,row])=>row.confirmed!==true)&&<Notice tone="warning"><strong>Flashing and vent prices are not active yet.</strong> Quotes keep using today’s field-material price and do not ask customers for the new measurements. For each roofing material, re-enter the field-material price knowing it excludes ice and water barrier, valley work, step flashing, pipe jacks and ridge vent, then confirm that wording.{Object.entries(selected.dependentLineState||{}).filter(([,row])=>row.confirmed!==true).map(([id,row])=><Button key={id} variant="secondary" disabled={selected.dependentLineActions?.confirmIds?.includes(id)} onClick={()=>confirmRoofDependentLine(id)}>{selected.dependentLineActions?.confirmIds?.includes(id)?'CONFIRM ON SAVE':'I re-entered and confirm '+humanPricingKey(row.basePricePath.split('.').at(-1))}</Button>)}</Notice>}
+
                 {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
                 {(selectedMeta.class2Fields || []).length > 0 && (
                   <Disclosure
@@ -1292,6 +1314,7 @@ export default function PriceBook() {
                         replaceSelected(next);
                       }}>Reset all to default</Button>
                     </div>
+                    {[...new Set((selectedMeta.class2Fields||[]).map(field=>field.startingValueGroup).filter(group=>selected.startingValueAdoptions?.[group]?.mode==='legacy'))].map(group=><Notice key={group} tone="warning"><strong>New roofing starting values are available.</strong> This service is still using its previously approved pricing rules. Review the sources and assumptions below, then use one owner action to confirm these values and switch this service to the new rules. <Button variant="secondary" onClick={()=>adoptStartingValues(group)}>Adopt new roofing rules and starting values</Button></Notice>)}
                     {(selectedMeta.class2Fields || []).filter(d=>!(servicePricing(selected).fenceOfferings&&d.field==='postSpacingLF')).map(definition => {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);
                       const wastePercent=definition.ownerInputUnit==='percent';

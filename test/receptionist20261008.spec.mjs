@@ -43,7 +43,8 @@ test('receptionist 2 all twenty live flows use measured inputs and open fence he
  assert.match(prompt,/NATURAL SPEECH:.*Now and then use a natural filler like 'um', 'hmm', 'uh' or 'let's see'.*sparingly, never in every turn.*Never put a filler inside a price, a measurement, a number read-back or the quote narration\./i);
  assert.match(prompt,/measured wall area/i);assert.match(prompt,/How many coats do you want\?/i);
  assert.match(prompt,/How tall do you want it, in feet and inches\?/);
- assert.match(prompt,/What's the measured roof area, in square feet\?/);
+ assert.match(prompt,/Ask for measured roof surface area\. Under the new rules, a caller may instead give the house footprint including overhangs plus the roof rise per 12;/);
+ assert.match(prompt,/Ask for rise per 12 using the exact current choices: up to 6\/12, a walkable roof; 7\/12 through 9\/12, steep; 10\/12 through 12\/12, very steep; or over 12\/12, special steep work\./);
  assert.match(prompt,/Your booking is confirmed\./);
  assert.doesNotMatch(prompt,/being notified as we speak/i);
  assert.doesNotMatch(prompt,/\b(?:sms|texting|texts|text confirmation)\b/i);

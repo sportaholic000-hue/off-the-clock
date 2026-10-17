@@ -16,7 +16,7 @@ import {CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS} from 
 const UNIT_RATE_FIELDS = new Set([
   'flatRoofEdgeMetalPerLF','flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairUnitPrice',
   'laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare',
-  'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','disposalPerSquare',
+  'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','disposalPerSquare',
   'laborHourlyRate','laborPerFloorSqft','materialPerFloorSqft2Coats',
   'ceilingLaborPerFloorSqft','trimLaborPerLF','trimMaterialPerLF',
   'exteriorLaborPerSqft','materialPerSqftPerCoat','laborPerSqft','materialPerSqft',
@@ -52,7 +52,8 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
   'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft',
-  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','paintingSettings','sidingSettings'
+  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','paintingSettings','sidingSettings',
+  'deckingPriceBasis','iceWaterBarrierUnit','unknownPitchBand','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates','paintingRates','surfaceExtraRates']);
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);

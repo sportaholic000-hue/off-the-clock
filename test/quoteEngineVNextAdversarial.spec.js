@@ -419,7 +419,8 @@ test('fencing rejects caller post counts and exposes the missing geometry and mi
   }
   const source = readFileSync('server/quote-engine-vnext/templates.js', 'utf8');
   assert.equal(source.includes('postSpacing'), false);
-  assert.equal(source.includes('Math.sqrt'), false);
+  const fencingSource=source.slice(source.indexOf('function calculateFence'),source.indexOf('function calculateConcrete'));
+  assert.equal(fencingSource.includes('Math.sqrt'), false);
 });
 
 test('common disposal follows physical scope and cannot substitute for missing selected bagging pricing', () => {
@@ -642,9 +643,11 @@ test('customer sanitizer never exposes calculation records, rates, or owner rule
   }
 });
 
-test('candidate formulas contain none of the removed geometry and hidden-factor shortcuts', () => {
+test('candidate formulas contain none of the removed geometry and hidden-factor shortcuts except the approved roof-footprint conversion', () => {
   const source = readFileSync('server/quote-engine-vnext/templates.js', 'utf8');
-  for (const forbidden of ['Math.sqrt', 'postSpacing', 'trimRatio', 'paintableAreaMap', 'sidingAreaMap', 'assumedDrivewayWidthFt']) {
+  assert.equal((source.match(/Math\.sqrt/g)||[]).length,1,'only the approved roof-footprint conversion may use a square root');
+  assert.match(source,/roofSizeInput\*Math\.sqrt\(1\+\(c\.pitchRisePer12\/12\)\*\*2\)/);
+  for (const forbidden of ['postSpacing', 'trimRatio', 'paintableAreaMap', 'sidingAreaMap', 'assumedDrivewayWidthFt']) {
     assert.equal(source.includes(forbidden), false, forbidden);
   }
 });

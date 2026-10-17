@@ -18,7 +18,7 @@ import {
   PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES, MEASUREMENT_CONTRACTS,
   configuredOffering, mergePricingVNext
 } from '../quote-engine-vnext/index.js';
-import {synchronizeStartingValuesVNext} from '../quote-engine-vnext/priceGroundwork.js';
+import {synchronizeStartingValuesVNext,startingValueDefinitionsVNext,startingValueGroupsVNext,synchronizeDependentLinesVNext,roofFlashingVentDefinitionVNext} from '../quote-engine-vnext/priceGroundwork.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
 import { missingPricebookServiceId } from '../priceBookStructure.js';
@@ -40,7 +40,7 @@ const repairSizeLabels=type=>type==='ROOFING_REPAIR'
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
-const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','dependentLineState'];
+const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
@@ -105,9 +105,20 @@ function legacySettings(raw,book,includeRetired=false) {
   for(const field of Object.keys(book.defaults))if(!DEFAULT_FIELDS.includes(field))discarded.push({path:'defaults.'+field,value:clone(book.defaults[field])});
   return discarded;
 }
-function approvalContent(raw,book) {
-  const service=projection(raw);delete service.active;delete service.confirmedFields;delete service.approvedValues;
+export function approvalContent(raw,book,{forceLegacyStartingValues=false}={}) {
+  const definitions=CLASS2_DEFINITIONS[raw.serviceType]||{},groups=startingValueGroupsVNext(definitions);
+  const source=forceLegacyStartingValues?synchronizeStartingValuesVNext(raw,definitions,{legacyGroups:groups,now:raw?.origin?.createdAt||'1970-01-01T00:00:00.000Z'}):raw;
+  const service=projection(source);delete service.active;delete service.confirmedFields;delete service.approvedValues;
   delete service.startingValueState;delete service.dependentLineState;
+  for(const [group,row] of Object.entries(service.startingValueAdoptions||{}))if(row?.mode==='legacy'){
+    for(const definition of startingValueDefinitionsVNext(CLASS2_DEFINITIONS[service.serviceType]||{}).filter(item=>item.group===group)){
+      const parts=definition.path.split('.');let target=service.pricing;
+      for(const part of parts.slice(0,-1))target=target?.[part];
+      if(target&&typeof target==='object')delete target[parts.at(-1)];
+    }
+    delete service.startingValueAdoptions[group];
+  }
+  if(!Object.keys(service.startingValueAdoptions||{}).length)delete service.startingValueAdoptions;
   for(const tier of service.tiers||[])delete tier.priceMetadata;
   const businessDefaults=defaultsProjection(book);delete businessDefaults.stalePriceThresholdDays;
   return {service,businessDefaults,legacySettings:legacySettings(raw,book),ownerFeeSelections:raw.ownerFeeSelections||{}};
@@ -127,9 +138,10 @@ function approvalEvaluation(raw,book) {
     ['serviceId',receipt.serviceId===raw.id],
     ['engineVersion',receipt.engineVersion===ENGINE_VERSION],
     ['moneyUnitVersion',!roofMinimumNeedsConfirmation(raw)],
-    ['contentDigest',receipt.contentDigest===actualDigest]
+    ['contentDigest',receipt.contentDigest===actualDigest||!raw.startingValueAdoptions&&receipt.contentDigest===digest(approvalContent(raw,book,{forceLegacyStartingValues:true}))]
   ];
-  // Exactly the existing five predicates. Section hashes are diagnostic only.
+  // Keep the five receipt checks and the roofing legacy-adoption digest fallback.
+  // Section hashes remain diagnostic only.
   return {current:checks.every(([,ok])=>ok),checks,content,actualDigest};
 }
 
@@ -222,7 +234,15 @@ export function bookRevision(book) { return digest(book); }
 function synchronizedStartingService(raw,now){
   const introducedAt=typeof now==='string'&&Number.isFinite(Date.parse(now))?now:
     typeof raw?.origin?.createdAt==='string'&&Number.isFinite(Date.parse(raw.origin.createdAt))?raw.origin.createdAt:'1970-01-01T00:00:00.000Z';
-  return synchronizeStartingValuesVNext(raw,CLASS2_DEFINITIONS[raw?.serviceType]||{},{now:introducedAt});
+  const definitions=CLASS2_DEFINITIONS[raw?.serviceType]||{},groups=startingValueGroupsVNext(definitions);
+  let service=synchronizeStartingValuesVNext(raw,definitions,{now:introducedAt,...(!raw?.startingValueAdoptions&&record(raw?.quoteDoneApproval)?{legacyGroups:groups}:{})});
+  const dependent=roofDependentDefinitions(service);
+  if(dependent.length)service=synchronizeDependentLinesVNext(service,dependent,{now:introducedAt});
+  return service;
+}
+function roofDependentDefinitions(service){
+  if(service?.serviceType!=='ROOFING_REPLACEMENT')return [];
+  return Object.keys(service.pricing?.materialCostPerSquare||{}).map(roofFlashingVentDefinitionVNext);
 }
 export function readApplicationBook(ownerId) {
   const book=loadPricebook(ownerId);
@@ -278,12 +298,15 @@ export function validateApplicationDraft(ownerId,input,dateContext={}) {
     const id=typeof service.id==='string'?service.id.toLowerCase():null;
     const stored=id?saved.services.find(s=>typeof s.id==='string'&&s.id.toLowerCase()===id):undefined;
     const old=stored?synchronizedStartingService(stored,saved.updatedAt):undefined;
-    for(const field of ['origin','source','approvedValues','confirmedFields','quoteDoneApproval','zeroPricePolicy','startingValueState','dependentLineState']) {
+    for(const field of ['origin','source','approvedValues','confirmedFields','quoteDoneApproval','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState']) {
       if(old&&has(old,field))service[field]=clone(old[field]);else if(field!=='source')delete service[field];
     }
-    const actions=record(input.services.find(candidate=>candidate.id?.toLowerCase()===id)?.startingValueActions)?input.services.find(candidate=>candidate.id?.toLowerCase()===id).startingValueActions:{};
-    const synchronized=synchronizeStartingValuesVNext(service,CLASS2_DEFINITIONS[service.serviceType]||{},{ownerId,confirmPaths:Array.isArray(actions.confirmPaths)?actions.confirmPaths:[],ownerEnteredPaths:Array.isArray(actions.ownerEnteredPaths)?actions.ownerEnteredPaths:[]});
+    const submitted=input.services.find(candidate=>candidate.id?.toLowerCase()===id),actions=record(submitted?.startingValueActions)?submitted.startingValueActions:{},dependentActions=record(submitted?.dependentLineActions)?submitted.dependentLineActions:{};
+    const definitions=CLASS2_DEFINITIONS[service.serviceType]||{};
+    const synchronized=synchronizeStartingValuesVNext(service,definitions,{ownerId,confirmPaths:Array.isArray(actions.confirmPaths)?actions.confirmPaths:[],ownerEnteredPaths:Array.isArray(actions.ownerEnteredPaths)?actions.ownerEnteredPaths:[],...(!old?{newGroups:startingValueGroupsVNext(definitions)}:{})});
     Object.assign(service,synchronized);if(!has(synchronized,'startingValueState'))delete service.startingValueState;delete service.startingValueActions;
+    const dependent=synchronizeDependentLinesVNext(service,roofDependentDefinitions(service),{ownerId,reenteredIds:Array.isArray(dependentActions.reenteredIds)?dependentActions.reenteredIds:[],confirmIds:Array.isArray(dependentActions.confirmIds)?dependentActions.confirmIds:[]});
+    Object.assign(service,dependent);delete service.dependentLineActions;
     if(old)service.serviceType=old.serviceType;
   }
   const statuses=bookStatuses({...saved,...incoming,ownerId},dateContext);
@@ -304,7 +327,7 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
     const incoming=convertApplicationBook(input,'toCents');
     const ids=new Set(),now=new Date().toISOString();
     for(const [serviceIndex,service] of incoming.services.entries()) {
-      const submitted=input.services[serviceIndex],startingActions=record(submitted?.startingValueActions)?submitted.startingValueActions:{};
+      const submitted=input.services[serviceIndex],startingActions=record(submitted?.startingValueActions)?submitted.startingValueActions:{},dependentActions=record(submitted?.dependentLineActions)?submitted.dependentLineActions:{};
       if(missingPricebookServiceId(service.id))service.id=crypto.randomUUID();
       if(!validServiceIdVNext(service.id)||ids.has(service.id.toLowerCase()))throw problem('Every service must have its own valid UUID.');
       ids.add(service.id.toLowerCase());
@@ -312,21 +335,24 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
       const old=stored?synchronizedStartingService(stored,previous.updatedAt):undefined;
       if(old) {
         if(old.serviceType!==service.serviceType||old.source!==service.source)throw problem('Service type and source cannot change on an existing service ID.',409);
-        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy','startingValueState','dependentLineState']) {
+        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState']) {
           if(has(service,field)&&!same(service[field],old[field]))throw problem('Use the explicit owner confirmation operation to change protected '+field+'.',409);
           if(has(old,field))service[field]=clone(old[field]);else delete service[field];
         }
         service.confirmedFields=clone(old.confirmedFields||{});
       } else {
         if(!['MANUAL','AI_SUGGESTED','AI_INTERVIEW'].includes(service.source))throw problem('Declare whether this new service was entered manually or originated from an AI draft.');
-        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy','startingValueState','dependentLineState'])if(has(service,field))throw problem('Creation and approval receipts are generated by the server.');
+        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'])if(has(service,field))throw problem('Creation and approval receipts are generated by the server.');
         service.confirmedFields={};
         // Creation identifies this saved service; customer quoting still needs
         // a separate, explicit approval of the saved configuration.
         service.origin={serviceId:service.id,serviceType:service.serviceType,source:service.source,ownerId,operationId:crypto.randomUUID(),createdAt:now};
       }
-      const synchronized=synchronizeStartingValuesVNext(service,CLASS2_DEFINITIONS[service.serviceType]||{},{ownerId,now,confirmPaths:Array.isArray(startingActions.confirmPaths)?startingActions.confirmPaths:[],ownerEnteredPaths:Array.isArray(startingActions.ownerEnteredPaths)?startingActions.ownerEnteredPaths:[]});
+      const definitions=CLASS2_DEFINITIONS[service.serviceType]||{};
+      const synchronized=synchronizeStartingValuesVNext(service,definitions,{ownerId,now,confirmPaths:Array.isArray(startingActions.confirmPaths)?startingActions.confirmPaths:[],ownerEnteredPaths:Array.isArray(startingActions.ownerEnteredPaths)?startingActions.ownerEnteredPaths:[],...(!old?{newGroups:startingValueGroupsVNext(definitions)}:{})});
       Object.assign(service,synchronized);if(!has(synchronized,'startingValueState'))delete service.startingValueState;delete service.startingValueActions;
+      const dependent=synchronizeDependentLinesVNext(service,roofDependentDefinitions(service),{ownerId,now,reenteredIds:Array.isArray(dependentActions.reenteredIds)?dependentActions.reenteredIds:[],confirmIds:Array.isArray(dependentActions.confirmIds)?dependentActions.confirmIds:[]});
+      Object.assign(service,dependent);delete service.dependentLineActions;
       const effective=projection(service);
       const presentationIssues=applicationPresentationIssues(service);
       if(presentationIssues.length)throw problem(presentationIssues.join(' '),422,{code:'INVALID_QUOTE_PRESENTATION',issues:presentationIssues});
@@ -350,6 +376,19 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
     const book=loadPricebook(ownerId);requireRevision(book,input.revision);
     const selected=uniqueApplicationService(book,serviceId),index=book.services.indexOf(selected);if(index<0)throw problem('Service not found.',404);
     const raw=clone(book.services[index]);
+    if(typeof input.adoptStartingValueGroup==='string'){
+      if(!approvalEvaluation(raw,book).current)throw problem('Only a service with a current saved approval can adopt its new starting values in one action.',409);
+      const definitions=CLASS2_DEFINITIONS[raw.serviceType]||{},groups=startingValueGroupsVNext(definitions);
+      if(!groups.includes(input.adoptStartingValueGroup))throw problem('That starting-value group does not belong to this service.',400);
+      const now=new Date().toISOString(),operationId=crypto.randomUUID();
+      const legacy=synchronizeStartingValuesVNext(raw,definitions,{ownerId,now,legacyGroups:groups});
+      const adopted=synchronizeStartingValuesVNext(legacy,definitions,{ownerId,now,adoptGroups:[input.adoptStartingValueGroup]});
+      Object.assign(raw,adopted);
+      const adoptedContent=approvalContent(raw,book);
+      raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(adoptedContent),sectionDigests:approvalSectionDigests(adoptedContent),operation:'owner_adopted_starting_value_group'};
+      book.services[index]=raw;validateLiveServiceLimit(book,dateContext);const saved=savePricebook(ownerId,book).pricebook;
+      return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
+    }
     const presentationIssues=applicationPresentationIssues(raw);
     if(presentationIssues.length)throw problem(presentationIssues.join(' '),422,{code:'INVALID_QUOTE_PRESENTATION',issues:presentationIssues});
     if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
@@ -490,7 +529,7 @@ export function applicationMetadata() {
     const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)).filter(field=>!requiresOffering||field.type==='surface_configuration'||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
-      ROOFING_REPLACEMENT:['bundlesPerSquare'],
+      ROOFING_REPLACEMENT:['bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
       FLOORING_INSTALL:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS],
       FLOORING_REPLACEMENT:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft')],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
@@ -517,7 +556,7 @@ export function applicationMetadata() {
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
       if(pricingMapField(meta.serviceType,field.field))Object.assign(info,{type:'json',tree:{depth:1}});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
-      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
+      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'],deckingPriceBasis:['material_only','installed'],iceWaterBarrierUnit:['square_feet','linear_feet'],unknownPitchBand:['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='furnitureMovingPriceUnit')info.optionLabels={per_room:'Per room',flat:'Flat per job'};
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});

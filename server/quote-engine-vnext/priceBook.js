@@ -31,6 +31,7 @@ import {
   pricingDiagnosticsForSelection,
   validateServiceRules,
   validateServiceRulesDetailed,
+  usesNewRoofReplacementRulesVNext,
   vinylUnderlaymentApplies
 } from './contracts.js';
 import {
@@ -268,19 +269,30 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   if (serviceType === 'ROOFING_REPLACEMENT') {
     const replacements = selection ? [selection.replacementRoofType] : keysOf(p.laborPerSquare, 'asphalt_shingle');
     const existingTypes = selection ? [selection.existingRoofType] : keysOf(p.tearOffPerSquare, 'asphalt_shingle');
-    const pitch = greatestConfiguredKey(p.pitchMultiplier, ['low', 'medium', 'steep', 'very_steep'], 'medium');
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
     const roofComplexity = greatestConfiguredKey(p.wasteFactorByComplexity, ['simple', 'moderate', 'complex'], 'moderate');
-    return replacements.flatMap(replacement => existingTypes.map(existing => ({
-      roofSizeMethod: 'roof_measured', roofSizeInput: 1_000_000,
-      existingRoofType: existing, replacementRoofType: replacement,
-      pitch, stories, existingLayers: 10,
-      roofComplexity, serviceScope: 'full',
-      ...(p.accessoryPricingMode === 'itemized'
-        ? { starterLengthLF: 1_000_000, dripEdgeLengthLF: 1_000_000, ridgeCapLengthLF: 1_000_000 }
-        : {}),
-      ...(p.deckingPerSheet !== undefined ? { deckingSheets: 100_000 } : {})
-    })));
+    const common=(replacement,existing)=>({
+      roofSizeMethod:'roof_measured',roofSizeInput:1_000_000,
+      existingRoofType:existing,replacementRoofType:replacement,
+      stories,existingLayers:10,roofComplexity,serviceScope:'full',
+      ...(p.accessoryPricingMode==='itemized'?{starterLengthLF:1_000_000,dripEdgeLengthLF:1_000_000,ridgeCapLengthLF:1_000_000}:{}),
+      ...(p.deckingPerSheet!==undefined?{deckingSheets:100_000}:{})
+    });
+    if(!usesNewRoofReplacementRulesVNext(service)){
+      const pitch=greatestConfiguredKey(p.pitchMultiplier,['low','medium','steep','very_steep'],'medium');
+      return replacements.flatMap(replacement=>existingTypes.map(existing=>({...common(replacement,existing),pitch})));
+    }
+    const bands=['up_to_six','seven_to_nine','ten_to_twelve'];
+    if(p.pitchInstallationAdderOverTwelve!==undefined||p.pitchRemovalAdderOverTwelve!==undefined)bands.push('over_twelve');
+    return replacements.flatMap(replacement=>existingTypes.flatMap(existing=>{
+      const base=common(replacement,existing);
+      return [
+        ...bands.map(pitchBand=>({...base,pitchMethod:'whole_roof',pitchBand})),
+        {...base,pitchMethod:'area_by_pitch',pitchAreaUpTo6Sqft:500_000,pitchArea7To9Sqft:500_000},
+        {...base,pitchMethod:'not_sure'},
+        {...base,roofSizeMethod:'footprint',roofSizeInput:500_000,pitchRisePer12:8,pitchMethod:'whole_roof',pitchBand:'seven_to_nine'}
+      ];
+    }));
   }
   if (serviceType === 'ROOFING_REPAIR') {
     const pitch = greatestConfiguredKey(p.pitchMultiplier, ['low', 'medium', 'steep', 'very_steep'], 'medium');

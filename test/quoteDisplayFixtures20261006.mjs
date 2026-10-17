@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import {fixture,mowing,flooring} from '../verification/engine-independent/fixtures.mjs';
 import * as bridge from '../server/src/quoteDoneBridge.js';
-import {loadPricebook} from '../server/priceBookService.js';
+import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 
 export const date={timeZone:'UTC',quoteInstant:'2026-10-06T12:00:00.000Z'};
 export function roofingDisplayFixture(){
@@ -26,6 +26,9 @@ export function savedDisplayFixture(f,{approve=true}={}){
  const owner='synthetic-quote-display-'+randomUUID(),s=structuredClone(f.ownerPricing);delete s.origin;
  const initial=bridge.readApplicationBook(owner),draft=bridge.convertApplicationBook({services:[s],defaults:{currency:'CAD',quoteTimeZone:'UTC',...f.businessDefaults}},'toDollars');
  bridge.saveApplicationBook(owner,{...draft,revision:initial.revision},date);
+ if(f.ownerPricing.serviceType==='ROOFING_REPLACEMENT'){
+  const historical=loadPricebook(owner);historical.services[0].startingValueAdoptions={roofing_replacement_20261016:{mode:'legacy'}};savePricebook(owner,historical);
+ }
  if(approve)bridge.approveApplicationService(owner,s.id,{revision:bridge.readApplicationBook(owner).revision,confirmConfiguration:true,confirmLegacySettings:true},date);
  const book=loadPricebook(owner),service=book.services[0];
  return {owner,book,service,definition:bridge.applicationServiceDefinition(service),
