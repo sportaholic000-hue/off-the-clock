@@ -1,0 +1,53 @@
+{
+  "applicationCommit": "046f9d905435495cab31f5abb02cce1413645e54",
+  "runnerNode": "v24.19.0",
+  "runs": [
+    {
+      "count": 2000,
+      "startedAt": "2026-10-17T18:34:17.483Z",
+      "endedAt": "2026-10-17T18:34:28.225Z",
+      "timeoutMs": 60000,
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "measurement": {
+        "node": "v24.19.0",
+        "count": 2000,
+        "constructionMs": 3.649,
+        "calculationMs": 10639.155,
+        "totalMs": 10642.804,
+        "rssBeforeBytes": null,
+        "rssAfterBytes": null,
+        "maxRssBeforeKilobytes": 40192,
+        "maxRssAfterKilobytes": 179944,
+        "heapUsedBeforeBytes": 8664216,
+        "heapUsedAfterBytes": 16012416,
+        "groups": 1,
+        "records": 2000,
+        "insideRange": {
+          "count": 2000,
+          "inside": 2000,
+          "percent": "100.00"
+        },
+        "signedGap": {
+          "count": 2000,
+          "value": "1.00"
+        },
+        "signedGapPercent": {
+          "count": 2000,
+          "value": "0.01"
+        },
+        "absoluteGap": {
+          "count": 2000,
+          "value": "1.00"
+        },
+        "absoluteGapPercent": {
+          "count": 2000,
+          "value": "0.01"
+        }
+      },
+      "parseError": null,
+      "stderr": ""
+    }
+  ]
+}
