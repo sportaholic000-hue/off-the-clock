@@ -922,7 +922,11 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   // A priced removal scope can replace disposal even when the owner has not
   // supplied the choice needed for other work. Keep that valid scope available;
   // every real no-removal request still validates its own fee decisions.
-  const unique = uniqueStatusDiagnostics(diagnostics).filter(d=>!successfulScenarios||d.path!=='feeSelections.owner.disposal');
+  const partialPaintingStartingValues=['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&['new','adopted'].includes(service.startingValueAdoptions?.painting_coats_20261017?.mode);
+  // A confirmed wall quote remains available while optional ceiling/trim
+  // proposals await confirmation. Each actual request still checks its uses.
+  const unique = uniqueStatusDiagnostics(diagnostics).filter(d=>!successfulScenarios||
+    d.path!=='feeSelections.owner.disposal'&&!(partialPaintingStartingValues&&d.type==='missing'&&d.path?.startsWith('startingValueState.paintingSettings.')));
   return {
     ok: unique.length === 0,
     tierName,

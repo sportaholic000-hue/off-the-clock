@@ -132,6 +132,7 @@ test('application-created services stay unconfirmed after ordinary approval; exp
   for(const [name,group,paths] of [['painting',paintGroup,['paintingSettings.wallAdditionalCoatRatio']],['flooring',floorGroup,['diagonalWasteAdderByType.vinyl_plank']]]){
     const old=structuredClone(historical.cases[name]),owner='synthetic-new-starting-'+randomUUID(),service=old.book.services[0];
     for(const key of ['origin','approvedValues','quoteDoneApproval','startingValueState','startingValueAdoptions'])delete service[key];
+    if(name==='painting')Object.assign(service.pricing,{ceilingLaborPerSqftPerCoat:100,ceilingMaterialPerSqftPerCoat:30,trimLaborPerLF:200,trimMaterialPerLF:30});
     const draft=bridge.convertApplicationBook({services:[service],defaults:old.book.defaults},'toDollars');
     bridge.saveApplicationBook(owner,{...draft,revision:bridge.readApplicationBook(owner).revision});let book=loadPricebook(owner);
     bridge.approveApplicationService(owner,service.id,{revision:bridge.bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true});book=loadPricebook(owner);
@@ -154,6 +155,16 @@ test('application-created services stay unconfirmed after ordinary approval; exp
     book=loadPricebook(owner);bridge.approveApplicationService(owner,service.id,{revision:bridge.bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true});
     book=loadPricebook(owner);const q=bridge.calculateApplicationQuote(book,book.services[0],{customerInputs:f.customerInputs},{ownerId:owner,preparingIntake:true}).internalResult;
     assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));
+    if(name==='painting'){
+      // Confirming walls alone allows 400*100*2 = 80000 labor cents.
+      // Separately priced ceiling/trim work still reviews until its ratio is confirmed.
+      assert.equal(sum(amount(q,'laborPerWallSqftPerCoat')),80000);
+      for(const extra of [{ceilingsIncluded:true,ceilingAreaSqft:400,ceilingCoats:2,ceilingSurfaceCondition:'good'},{trimIncluded:true,trimLengthLF:100,trimCoats:2,trimSurfaceCondition:'good'}]){
+        const pending=bridge.calculateApplicationQuote(book,book.services[0],{customerInputs:{...f.customerInputs,...extra}},{ownerId:owner,preparingIntake:true}).internalResult;
+        assert.equal(pending.resultType,'ESTIMATE_REQUIRES_REVIEW');
+        assert.match(JSON.stringify(pending),/startingValueState.paintingSettings/);
+      }
+    }
     const voice=projectVoiceQuote(sanitizeForCustomerVNext(q),'synthetic-starting-voice',[],{callerMeasurementsEstimated:true});
     assert.ok(voice.voiceSummary.includes('This price is based on the measurements you gave us. The business will confirm them on site.'));
   }
