@@ -1,27 +1,27 @@
 {
-  "applicationCommit": "WORKTREE",
-  "runnerNode": "v22.22.0",
+  "applicationCommit": "a29ed102bd61f521a3d248c6a4e614c951077f12",
+  "runnerNode": "v22.23.3",
   "runs": [
     {
       "count": 2000,
-      "startedAt": "2026-10-17T19:33:31.581Z",
-      "endedAt": "2026-10-17T19:33:31.665Z",
-      "timeoutMs": 60000,
+      "startedAt": "2026-10-17T21:30:13.280Z",
+      "endedAt": "2026-10-17T21:30:13.364Z",
+      "timeoutMs": 15000,
       "timedOut": false,
       "exitCode": 0,
       "signal": null,
       "measurement": {
-        "node": "v22.22.0",
+        "node": "v22.23.3",
         "count": 2000,
-        "constructionMs": 1.544,
-        "calculationMs": 20.359,
-        "totalMs": 21.903,
+        "constructionMs": 1.52,
+        "calculationMs": 20.645,
+        "totalMs": 22.165,
         "rssBeforeBytes": null,
         "rssAfterBytes": null,
-        "maxRssBeforeKilobytes": 61816,
-        "maxRssAfterKilobytes": 70884,
-        "heapUsedBeforeBytes": 8552392,
-        "heapUsedAfterBytes": 11414760,
+        "maxRssBeforeKilobytes": 63708,
+        "maxRssAfterKilobytes": 73392,
+        "heapUsedBeforeBytes": 8589480,
+        "heapUsedAfterBytes": 11411440,
         "groups": 1,
         "records": 2000,
         "insideRange": {
@@ -47,28 +47,28 @@
         }
       },
       "parseError": null,
-      "stderr": "(node:10) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+      "stderr": "(node:46) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
     },
     {
       "count": 10000,
-      "startedAt": "2026-10-17T19:33:31.665Z",
-      "endedAt": "2026-10-17T19:33:31.821Z",
-      "timeoutMs": 60000,
+      "startedAt": "2026-10-17T21:30:13.364Z",
+      "endedAt": "2026-10-17T21:30:13.509Z",
+      "timeoutMs": 15000,
       "timedOut": false,
       "exitCode": 0,
       "signal": null,
       "measurement": {
-        "node": "v22.22.0",
+        "node": "v22.23.3",
         "count": 10000,
-        "constructionMs": 7.767,
-        "calculationMs": 68.887,
-        "totalMs": 76.653,
+        "constructionMs": 8.356,
+        "calculationMs": 68.21,
+        "totalMs": 76.567,
         "rssBeforeBytes": null,
         "rssAfterBytes": null,
-        "maxRssBeforeKilobytes": 65656,
-        "maxRssAfterKilobytes": 88040,
-        "heapUsedBeforeBytes": 11228600,
-        "heapUsedAfterBytes": 22588680,
+        "maxRssBeforeKilobytes": 67296,
+        "maxRssAfterKilobytes": 90100,
+        "heapUsedBeforeBytes": 10893440,
+        "heapUsedAfterBytes": 21012696,
         "groups": 1,
         "records": 10000,
         "insideRange": {
@@ -94,28 +94,28 @@
         }
       },
       "parseError": null,
-      "stderr": "(node:17) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+      "stderr": "(node:54) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
     },
     {
       "count": 100000,
-      "startedAt": "2026-10-17T19:33:31.821Z",
-      "endedAt": "2026-10-17T19:33:32.507Z",
-      "timeoutMs": 60000,
+      "startedAt": "2026-10-17T21:30:13.509Z",
+      "endedAt": "2026-10-17T21:30:14.211Z",
+      "timeoutMs": 15000,
       "timedOut": false,
       "exitCode": 0,
       "signal": null,
       "measurement": {
-        "node": "v22.22.0",
+        "node": "v22.23.3",
         "count": 100000,
-        "constructionMs": 88.97,
-        "calculationMs": 533.735,
-        "totalMs": 622.706,
+        "constructionMs": 102.571,
+        "calculationMs": 535.551,
+        "totalMs": 638.122,
         "rssBeforeBytes": null,
         "rssAfterBytes": null,
-        "maxRssBeforeKilobytes": 117244,
-        "maxRssAfterKilobytes": 162432,
-        "heapUsedBeforeBytes": 39997560,
-        "heapUsedAfterBytes": 88137696,
+        "maxRssBeforeKilobytes": 119392,
+        "maxRssAfterKilobytes": 164784,
+        "heapUsedBeforeBytes": 39804952,
+        "heapUsedAfterBytes": 86872400,
         "groups": 1,
         "records": 100000,
         "insideRange": {
@@ -141,7 +141,7 @@
         }
       },
       "parseError": null,
-      "stderr": "(node:24) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+      "stderr": "(node:62) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
     }
   ]
 }
