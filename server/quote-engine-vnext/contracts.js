@@ -10,6 +10,7 @@ import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, o
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
+import {CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {FLOORING_ADDONS,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
 
@@ -442,11 +443,14 @@ function concreteContract() {
       reinforcement: enumField('Reinforcement', ['none', 'wire_mesh', 'rebar']),
       accessDifficulty: enumField('Project access', ACCESS),
       baseNeeded: booleanField('Base preparation included'),
+      chuteAccess:{...enumField(CUSTOMER_COPY.chuteAccess.label,['yes','no','unknown']),optionLabels:CUSTOMER_COPY.chuteAccess.options,required:false},
+      placementMethod:{...enumField(CUSTOMER_COPY.placementMethod.label,PLACEMENT_METHODS),optionLabels:PLACEMENT_LABELS,visibleWhen:[[['chuteAccess','eq','no']]],required:false},
       adjoinsExistingConcrete:{...booleanField('Does any edge touch a house foundation, garage foundation, or existing concrete?'),summaryLabel:'Edges against foundation or existing concrete'},
       adjoiningEdgeLF:numberField('Total measured length of those adjoining edges','linear feet',0.1,1_000_000,{visibleWhen:[[['adjoinsExistingConcrete','eq',true]]]})
     },
-    required(c) {
+    required(c,p={}) {
       const out = ['dimensionMethod', 'thickness', 'finishType', 'demolitionNeeded', 'reinforcement', 'accessDifficulty', 'baseNeeded', 'adjoinsExistingConcrete'];
+      if(c.chuteAccess==='no'&&offeredPlacement(p).length>1&&!p.defaultPlacementMethod)out.push('placementMethod');
       if(c.adjoinsExistingConcrete===true)out.push('adjoiningEdgeLF');
       if (c.dimensionMethod === 'exact') out.push('length', 'width');
       if (c.dimensionMethod === 'measured_area_perimeter') out.push('areaSqft', 'perimeterLF');
@@ -454,6 +458,8 @@ function concreteContract() {
       return out;
     },
     inspection(c, p) {
+      if(present(p.slabLaborMinThicknessInches)&&present(p.slabLaborMaxThicknessInches)&&Number.isFinite(c.thickness)&&(c.thickness<p.slabLaborMinThicknessInches||c.thickness>p.slabLaborMaxThicknessInches))return `This slab labor rate covers ${p.slabLaborMinThicknessInches}–${p.slabLaborMaxThicknessInches} inches; the requested ${c.thickness} inches requires review.`;
+      if(c.chuteAccess==='no'&&!offeredPlacement(p).length)return 'The truck chute cannot reach and the owner has not priced a supported placement method.';
       if (['area_only', 'assumption'].includes(c.dimensionMethod)) {
         return 'Measured slab dimensions or measured area and perimeter are required; perimeter is not inferred from area.';
       }
@@ -462,8 +468,9 @@ function concreteContract() {
       }
       return null;
     },
-    crossValidate(c) {
+    crossValidate(c,p={}) {
       const errors = [];
+      if(c.placementMethod!==undefined&&(c.chuteAccess!=='no'||!offeredPlacement(p).includes(c.placementMethod)))errors.push({field:'placementMethod',message:'Choose an owner-priced placement method only when the chute cannot reach.'});
       if (c.dimensionMethod === 'exact') {
         if (c.areaSqft !== undefined) errors.push({ field: 'areaSqft', message: 'Measured area cannot be supplied when length and width are the selected slab measurement method.' });
         if (c.perimeterLF !== undefined) errors.push({ field: 'perimeterLF', message: 'Measured perimeter cannot be supplied when length and width are the selected slab measurement method.' });
@@ -550,10 +557,12 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_SOD = commonContract({
     sodSqft: numberField('Measured sod area', 'square feet', 1, 10_000_000),
     sqftMethod: enumField('Sod area method', ['exact']),
     groundPrepNeeded: booleanField('Ground preparation included'),
+    usableTopsoilDepthInches:{...numberField(CUSTOMER_COPY.usableTopsoilDepthInches.label,'inches',0,120),type:'number_or_unknown',required:false,help:CUSTOMER_COPY.usableTopsoilDepthInches.help,details:[CUSTOMER_COPY.usableTopsoilDepthInches.help],visibleWhen:[[['groundPrepNeeded','eq',true]]]},
     slope: enumField('Terrain slope', SLOPES),
     accessDifficulty: enumField('Project access', ACCESS)
   },
-  required: () => ['sodSqft', 'sqftMethod', 'groundPrepNeeded', 'slope', 'accessDifficulty'],
+  required: (c,p={}) => ['sodSqft', 'sqftMethod', 'groundPrepNeeded', 'slope', 'accessDifficulty',...(c.groundPrepNeeded&&present(p.topsoilPerCubicYard)?['usableTopsoilDepthInches']:[])],
+  crossValidate:(c,p={})=>c.usableTopsoilDepthInches!==undefined&&(!c.groundPrepNeeded||!present(p.topsoilPerCubicYard))?[{field:'usableTopsoilDepthInches',message:'Topsoil depth is used only with separately priced topsoil preparation.'}]:[],
   inspection: c => c.sqftMethod === 'assumption' ? 'Measured sod area is required for a customer-ready quote.' : null
 });
 
@@ -909,11 +918,12 @@ function validateFieldValue(definition, value) {
     return null;
   }
   if (definition.type === 'plant_counts') {
-    if (!isRecord(value)) return 'must be an object keyed by small, medium, and large';
+    const sizes=definition.values||SIZE_KEYS;
+    if (!isRecord(value)) return 'must contain plant counts by offered size';
     const keys = Object.keys(value);
-    if (keys.some(key => !SIZE_KEYS.includes(key)) || SIZE_KEYS.some(key => !keys.includes(key))) return 'must contain exactly small, medium, and large';
-    if (SIZE_KEYS.some(key => !Number.isInteger(value[key]) || value[key] < 0 || value[key] > 1_000_000)) return 'must contain finite non-negative whole-number plant counts';
-    if (SIZE_KEYS.every(key => value[key] === 0)) return 'must include at least one plant';
+    if (keys.some(key => !sizes.includes(key)) || !definition.values&&sizes.some(key => !keys.includes(key))) return definition.values?'must contain only offered plant sizes':'must contain exactly small, medium, and large';
+    if (keys.some(key => !Number.isInteger(value[key]) || value[key] < 0 || value[key] > 1_000_000)) return 'must contain finite non-negative whole-number plant counts';
+    if (!keys.some(key => value[key] > 0)) return 'must include at least one plant';
     return null;
   }
   return 'uses an unsupported contract type';
@@ -1191,6 +1201,9 @@ const ALLOWED_PRICING_FIELDS = {
 
 export function customerContractForVNext(type,p={},rules={}) {
  let base=configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type];
+ if(type.startsWith('CONCRETE_'))base={...base,fields:{...base.fields,placementMethod:{...base.fields.placementMethod,values:offeredPlacement(p),...(!offeredPlacement(p).length||p.defaultPlacementMethod||offeredPlacement(p).length===1?{evidenceOnly:true}:{})}}};
+ if(type==='LANDSCAPING_SOD')base={...base,fields:{...base.fields,usableTopsoilDepthInches:{...base.fields.usableTopsoilDepthInches,...(!present(p.topsoilPerCubicYard)?{evidenceOnly:true}:{})}}};
+ if(type==='LANDSCAPING_PLANTING'&&customPlantSizes(p))base={...base,fields:{...base.fields,plantsBySize:{...base.fields.plantsBySize,values:plantSizeKeys(p),options:Object.fromEntries(plantSizeKeys(p).map(key=>[key,plantSizeLabel(p,key)]))}}};
  if(type.startsWith('FLOORING_')){
    const fields=pricePresent(p.carpetRollWidthFt)?{newFlooringType:base.fields.newFlooringType,carpetMeasurementMethod:base.fields.carpetMeasurementMethod,carpetRooms:base.fields.carpetRooms,carpetConnectedAreas:base.fields.carpetConnectedAreas,...base.fields}:{...base.fields};
    for(const [key,field] of Object.entries(fields)){
@@ -1215,7 +1228,7 @@ export function customerContractForVNext(type,p={},rules={}) {
 }
 
 export function allowedPricingFields(serviceType) {
-  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
+  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []),...(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
 }
 
 const AI_CONFIRMABLE_SERVICE_FIELDS = [
@@ -1412,7 +1425,16 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     add('formworkPerLF', 'Formwork price per measured linear foot');
     add('minimumJob', 'Minimum concrete job price', { kind: 'minimum' });
     if (c.demolitionNeeded) add('demolitionPerSqft', 'Concrete demolition price per measured square foot');
-    if (c.baseNeeded) add('basePrepPerSqft', 'Base preparation price per square foot');
+    if (c.baseNeeded&&!separateBase(p)) add('basePrepPerSqft', 'Base preparation price per square foot');
+    if(c.baseNeeded&&separateBase(p)){
+      add('baseDepthInches',FIELD_COPY.baseDepthInches.label,{kind:'positive_number'});
+      if(present(p.baseGravelPerCubicYard)){add('baseGravelPerCubicYard',FIELD_COPY.baseGravelPerCubicYard.label);add('baseCompactionAllowance',FIELD_COPY.baseCompactionAllowance.label,{kind:'non_negative_quantity'});}
+      if(present(p.baseExcavationGradingPerSqft))add('baseExcavationGradingPerSqft',FIELD_COPY.baseExcavationGradingPerSqft.label);
+    }
+    if(present(p.shortLoadPerYard)||present(p.shortLoadFlatFee))add('shortLoadThresholdCubicYards',FIELD_COPY.shortLoadThresholdCubicYards.label,{kind:'positive_number'});
+    if(p.controlJointPricing==='excluded'&&present(p.sawCutPerLF))add('controlJointSpacingFt',FIELD_COPY.controlJointSpacingFt.label,{kind:'positive_number'});
+    const placement=placementFor(c,p);
+    if(placement)for(const field of ['placementFlat','placementPerCubicYard'])if(present(p[field]?.[placement]))add(`${field}.${placement}`,`${PLACEMENT_LABELS[placement]} placement price`,{kind:field==='placementFlat'?'non_negative_money':'non_negative_number'});
     if (c.reinforcement === 'wire_mesh') add('wireReinforcementPerSqft', 'Wire mesh price per square foot');
     if (c.reinforcement === 'rebar') add('rebarReinforcementPerSqft', 'Rebar price per square foot');
     if (c.finishType === 'stamped') add('stampedMaterialPerSqft', 'Stamped finish material price per square foot');
@@ -1435,11 +1457,18 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     add('sodMaterialPerSqft', 'Sod material price per square foot');
     add('sodInstallLaborPerSqft', 'Sod installation labor price per square foot');
     add('minimumServiceCharge', 'Minimum sod service charge', { kind: 'minimum' });
-    if (c.groundPrepNeeded) add('groundPrepPerSqft', 'Ground preparation price per square foot');
+    if (c.groundPrepNeeded&&!separateSodPrep(p)) add('groundPrepPerSqft', 'Ground preparation price per square foot');
+    if(c.groundPrepNeeded&&separateSodPrep(p)){
+      for(const field of ['sodRemovalPerSqft','sodGradingPerSqft','topsoilPerCubicYard'])if(present(p[field]))add(field,FIELD_COPY[field].label);
+      if(present(p.topsoilPerCubicYard)){
+        const field=c.usableTopsoilDepthInches==='unknown'?'topsoilTypicalImportDepthInches':'topsoilTargetDepthInches';
+        add(field,FIELD_COPY[field].label,{kind:'non_negative_quantity'});
+      }
+    }
   } else if (serviceType === 'LANDSCAPING_PLANTING') {
-    for (const size of SIZE_KEYS.filter(size => c.plantsBySize?.[size] > 0)) {
-      add(`plantingLaborPerPlant.${size}`, `Planting labor price for ${size} plants`);
-      add(`plantMaterialAllowance.${size}`, `Material allowance for ${size} plants`);
+    for (const size of plantSizeKeys(p).filter(size => c.plantsBySize?.[size] > 0)) {
+      add(`plantingLaborPerPlant.${size}`, `Planting labor price for ${plantSizeLabel(p,size)}`);
+      add(`plantMaterialAllowance.${size}`, `Material allowance for ${plantSizeLabel(p,size)}`);
     }
     add('minimumServiceCharge', 'Minimum planting service charge', { kind: 'minimum' });
     if (c.bedCondition !== 'clean') add(`bedPrepLaborPerSqft.${c.bedCondition}`, 'Bed preparation price for the selected bed condition');
@@ -1484,6 +1513,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
 function validateRequirementValue(requirementDefinition, value) {
   if (requirementDefinition.kind === 'minimum') return nonNegativeMoney(value);
   if (requirementDefinition.kind === 'non_negative_number') return nonNegative(value) && value <= Number.MAX_SAFE_INTEGER;
+  if (requirementDefinition.kind === 'non_negative_quantity') return nonNegative(value) && value <= Number.MAX_SAFE_INTEGER;
   if (requirementDefinition.kind === 'positive_number') return positive(value);
   if (requirementDefinition.kind === 'non_negative_money') return nonNegativeMoney(value);
   if (requirementDefinition.kind === 'boolean') return typeof value === 'boolean';
@@ -1616,6 +1646,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     `Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`
   )];
   p = snapshot.value;
+  diagnostics.push(...concreteLandscapeDiagnostics(serviceType,p));
   for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
     if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
     else for(const [key,value] of Object.entries(p[field])){
@@ -1718,8 +1749,8 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   if (serviceType === 'LANDSCAPING_MULCH') inspectPriceMap(diagnostics, p, 'mulchOrderIncrementCubicYards', { canonicalKeys: true, predicate: positive });
   if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'bedPrepLaborPerSqft', { allowedKeys: ['needs_weeding', 'overgrown'], requireAll: p.bedPrepLaborPerSqft !== undefined });
   if (serviceType === 'LANDSCAPING_PLANTING') {
-    inspectPriceMap(diagnostics, p, 'plantingLaborPerPlant', { allowedKeys: SIZE_KEYS, requireAll: true });
-    inspectPriceMap(diagnostics, p, 'plantMaterialAllowance', { allowedKeys: SIZE_KEYS, requireAll: true });
+    inspectPriceMap(diagnostics, p, 'plantingLaborPerPlant', { allowedKeys: plantSizeKeys(p), requireAll: true });
+    inspectPriceMap(diagnostics, p, 'plantMaterialAllowance', { allowedKeys: plantSizeKeys(p), requireAll: true });
   }
   if (serviceType === 'LANDSCAPING_MOWING') {
     if (p.mowingBaseRatePerSqft !== undefined && (!nonNegative(p.mowingBaseRatePerSqft) || p.mowingBaseRatePerSqft > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics,'invalid','mowingBaseRatePerSqft','Mowing rate must be finite nonnegative cents per square foot, up to MAX_SAFE_INTEGER; fractional cents are supported.');
@@ -2221,6 +2252,8 @@ function supportedIncludedPricePath(serviceType, path, pricing = {}) {
   if(fenceType(serviceType)&&root==='heightRows'&&parts.length===4&&leaf==='offeringRates')return !!pricing.heightRows?.[key]&&supportedIncludedPricePath(serviceType,parts.slice(2).join('.'),{...pricing,offeringRates:pricing.heightRows[key].offeringRates});
 
   if (!allowedPricingFields(serviceType).includes(root)) return false;
+  if(parts.length===1&&(serviceType.startsWith('CONCRETE_')?CONCRETE_MONEY_FIELDS:serviceType==='LANDSCAPING_SOD'?SOD_MONEY_FIELDS:[]).includes(root))return true;
+  if(parts.length===2&&serviceType.startsWith('CONCRETE_')&&['placementFlat','placementPerCubicYard'].includes(root))return PLACEMENT_METHODS.includes(key);
   if (parts.length === 1) return (
     scalarMoneyFields(serviceType).includes(root) && !['minimumJob','repairMinimum','minimumServiceCharge'].includes(root)
   ) || (serviceType === 'LANDSCAPING_MOWING' && root === 'mowingBaseRatePerSqft');
@@ -2239,7 +2272,7 @@ function supportedIncludedPricePath(serviceType, path, pricing = {}) {
     if (serviceType.startsWith('FLOORING_') && ['laborPerSqft','materialPerSqft'].includes(root)) return FLOORING_TYPES.includes(key);
     if (serviceType === 'SIDING_REPLACEMENT' && ['laborPerSqft','materialPerSqft'].includes(root)) return SIDING_TYPES.includes(key);
     if (['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'].includes(serviceType) && root === 'bedPrepLaborPerSqft') return ['needs_weeding','overgrown'].includes(key);
-    if (serviceType === 'LANDSCAPING_PLANTING' && ['plantingLaborPerPlant','plantMaterialAllowance'].includes(root)) return SIZE_KEYS.includes(key);
+    if (serviceType === 'LANDSCAPING_PLANTING' && ['plantingLaborPerPlant','plantMaterialAllowance'].includes(root)) return plantSizeKeys(pricing).includes(key);
   }
   if (parts.length === 3) return serviceType === 'LANDSCAPING_CLEANUP' && root === 'debrisPricing' && ['light','moderate','heavy'].includes(key) && leaf === 'disposalFlat';
   if (parts.length === 4) {

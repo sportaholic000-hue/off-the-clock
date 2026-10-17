@@ -3,6 +3,7 @@ import {Field,Select,TextInput,Textarea,Button} from './ui.jsx';
 import {ExactNumericInput,ProductNameInput} from './pricebookInputs.jsx';
 import {productKeyFromName} from './pricebookFormatting.js';
 import {interviewConfigurationSchema} from '../../server/interviewConfiguration.js';
+import {PlantSizesEditor} from './PlantSizesEditor.jsx';
 
 function ConfigurationInput({schema,value,onChange}){
  const [name,setName]=useState(''),[error,setError]=useState('');
@@ -21,5 +22,6 @@ function ConfigurationInput({schema,value,onChange}){
  return <Textarea aria-label={schema.label} value={value??''} onChange={e=>onChange(e.target.value||undefined)}/>;
 }
 export default function InterviewConfiguration({definition,pricing,value,onChange}){
+ if(definition.field==='plantSizes')return <PlantSizesEditor value={value} onChange={onChange}/>;
  return <ConfigurationInput schema={interviewConfigurationSchema(definition.serviceType,definition.field,pricing,value)} value={value} onChange={onChange}/>;
 }

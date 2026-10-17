@@ -26,6 +26,8 @@ import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from
 import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE} from '../priceBookCopy.js';
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
+import {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
+export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 
 // The engine sorts a measured affected area into these bands
 // (repairSizeFromAffectedArea). Owners see the same limits on each price box.
@@ -473,6 +475,7 @@ function applicationScopeReview(raw,submission,options) {
   return {customerResult:sanitizeForCustomerVNext({resultType:'ESTIMATE_REQUIRES_REVIEW',quoteId}),applicationReview:{reason:issues.join(' '),issues,quoteId,stage:'whole_request_scope'},request:null,internalResult:null,leadEnvelope:null};
 }
 const interviewPriority=field=>{
+  if(field==='plantSizes')return 1;
   if(['offeringMode','unit','customPricingMode','customChargeClassification','accessoryPricingMode','underlaymentPriceBasis','vinylPlankUnderlaymentRule'].includes(field))return 0;
   if(['offeringDetails','scopeDetails','knownOfferings','materialAccessoryBasis'].includes(field))return 1;
   if(['installedLaborPercent','installedMaterialsPercent'].includes(field))return 3;
@@ -502,6 +505,7 @@ export function applicationMetadata() {
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind,interviewPriority:interviewPriority(field.field)};
       if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100},requiredAtBase:false});
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
+      if((meta.serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:meta.serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:meta.serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]).includes(field.field))Object.assign(info,{requiredAtBase:false},CONCRETE_LANDSCAPE_COPY[field.field]);
       if(requiresOffering&&field.field==='minimumJob')Object.assign(info,{label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; enter zero when there is no service minimum.',reviewOnly:false});
       if(quoteDoneWholeCents(meta.serviceType,field.field))info.wholeCents=true;
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});

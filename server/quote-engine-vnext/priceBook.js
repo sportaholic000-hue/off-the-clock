@@ -47,6 +47,7 @@ import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js'
 import { ownerFieldCopy } from '../priceBookCopy.js';
 import {synchronizeStartingValuesVNext} from './priceGroundwork.js';
 import {FLOORING_FIELD_COPY,FLOORING_ADDONS,pricePresent} from './flooringPricing.js';
+import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNotices,present,offeredPlacement} from './concreteLandscapePricing.js';
 
 const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
 const PRICEBOOK_QUOTE_REQUEST_FIELDS = new Set([
@@ -351,9 +352,9 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
       ] }
     ];
     return dimensions.flatMap(dimension => {
-      const base={...dimension,thickness:24,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty,baseNeeded:false,adjoinsExistingConcrete:false};
+      const base={...dimension,thickness:present(p.slabLaborMaxThicknessInches)?p.slabLaborMaxThicknessInches:24,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty,baseNeeded:false,adjoinsExistingConcrete:false};
       const candidates=['broom','smooth','stamped'].flatMap(finishType=>['none','wire_mesh','rebar'].flatMap(reinforcement=>[false,true].map(baseNeeded=>({...base,finishType,reinforcement,baseNeeded}))));
-      return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
+      return [base,...candidates.filter(input=>completeOptionalPricing(service,input)),...offeredPlacement(p).map(placementMethod=>({...base,chuteAccess:'no',placementMethod})),...(p.uncertainPlacementMethod?[{...base,chuteAccess:'unknown'}]:[])];
     });
   }
   if (serviceType === 'LANDSCAPING_CLEANUP') {
@@ -373,12 +374,12 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   if (serviceType === 'LANDSCAPING_SOD') {
     const slope = greatestConfiguredKey(p.slopeMultiplier, ['flat', 'moderate', 'steep'], 'moderate');
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
-    const base={sodSqft:10_000_000,sqftMethod:'exact',groundPrepNeeded:false,slope,accessDifficulty},extra={...base,groundPrepNeeded:true};
+    const base={sodSqft:10_000_000,sqftMethod:'exact',groundPrepNeeded:false,slope,accessDifficulty},extra={...base,groundPrepNeeded:true,...(present(p.topsoilPerCubicYard)?{usableTopsoilDepthInches:0}:{})};
     const scenarios=[base,...(completeOptionalPricing(service,extra)?[extra]:[])];
     return scenarios.flatMap(scenario=>service.disposalScope==='separate_project_debris'?[false,true].map(separateDisposalSelected=>({...scenario,separateDisposalSelected})):[scenario]);
   }
   if (serviceType === 'LANDSCAPING_PLANTING') {
-    const base={accessDifficulty:greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult'),plantsBySize:{small:1_000_000,medium:1_000_000,large:1_000_000},bedCondition:'clean',mulchNeeded:false};
+    const base={accessDifficulty:greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult'),plantsBySize:Object.fromEntries(plantSizeKeys(p).map(key=>[key,1_000_000])),bedCondition:'clean',mulchNeeded:false};
     const mulch=[{},...keysOf(p.mulchMaterialPerYard,'standard').map(mulchType=>({mulchNeeded:true,mulchYards:100_000,mulchType}))];
     const candidates=['clean','needs_weeding','overgrown'].flatMap(bedCondition=>mulch.map(extra=>({...base,bedCondition,...(bedCondition!=='clean'?{bedSqft:10_000_000}:{}),...extra})));
     return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
@@ -591,7 +592,7 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
-    statusNotices: basicPaintNotices(service,validTierNames),
+    statusNotices: [...basicPaintNotices(service,validTierNames),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).map(note=>tier.name+': '+note))],
     scopeCoverage: scopeCoverageForService(service),
     laborAdjustmentCoverage: laborAdjustmentCoverage(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',
@@ -1283,6 +1284,7 @@ export function reviewOnlyScopesVNext(serviceType) {
 }
 
 function fieldCopy(serviceType, field) {
+  if(CONCRETE_LANDSCAPE_COPY[field])return {...CONCRETE_LANDSCAPE_COPY[field]};
   if(serviceType.startsWith('FLOORING_')&&FLOORING_FIELD_COPY[field])return {...FLOORING_FIELD_COPY[field]};
   if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};

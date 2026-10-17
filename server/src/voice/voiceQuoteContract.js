@@ -147,6 +147,16 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
         normalized[key] = count;
       }
       customerInputs[field.name] = normalized;
+    } else if(field.type==='plant_counts'&&field.values&&record(customerInputs[field.name])){
+      const normalized={};
+      for(const [name,count] of Object.entries(customerInputs[field.name])){
+        const key=field.values.find(key=>key===name||field.options?.[key]?.trim().toLowerCase()===name.trim().toLowerCase());
+        if(!key||own(normalized,key)){followUps.push('Confirm each distinct offered plant size and its count.');continue;}
+        normalized[key]=count;
+      }
+      customerInputs[field.name]=normalized;
+    } else if(field.name==='chuteAccess'&&typeof customerInputs[field.name]==='string'&&['not sure','unknown'].includes(customerInputs[field.name].trim().toLowerCase())){
+      customerInputs[field.name]='unknown';
     } else if (field.type === 'enum' && typeof customerInputs[field.name] === 'string') {
       const key = registeredProductKey(customerInputs[field.name], (field.values || []).filter(value => typeof value === 'string'));
       if (key) customerInputs[field.name] = key;
