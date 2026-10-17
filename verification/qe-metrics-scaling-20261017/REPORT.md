@@ -216,6 +216,6 @@ now prevents that CPU work from freezing the server indefinitely.
 - Remote production repair commit used by this evidence: `a29ed102bd61f521a3d248c6a4e614c951077f12`.
 - Clean Node 22 owner/widget build: exit 0.
 - Dedicated arithmetic, worker, service, HTTP, responsiveness and tenant regressions: 18/18 pass, zero failures, skips, cancellations or TODOs.
-- Complete strict quote gate: 4,716 tests; 4,601 pass / 115 fail / 0 skipped / 0 cancelled / 0 TODO. Every failure was a Chromium launch hook after the installed headless shell exited with SIGTRAP in this sandbox.
-- Complete repository suite: 5,694 tests; 5,579 pass / 115 fail / 0 skipped / 0 cancelled / 0 TODO. The same 115 Chromium launch hooks failed; no non-browser assertion failed.
+- Complete strict quote gate: 4,716 tests; 4,601 pass / 115 fail / 0 skipped / 0 cancelled / 0 TODO. Every failure was a Chromium launch hook because its executable was initially unavailable in this sandbox; a later supported install succeeded, but a direct launch exited with SIGTRAP.
+- Complete repository suite: 5,694 tests; 5,579 pass / 115 fail / 0 skipped / 0 cancelled / 0 TODO. Every failure was a Chromium launch hook after the installed headless shell exited with SIGTRAP; no non-browser assertion failed.
 - Hosted CI remains the authoritative working-Chromium gate for the final branch head.
