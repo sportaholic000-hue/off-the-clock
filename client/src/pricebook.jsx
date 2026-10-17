@@ -420,7 +420,7 @@ function StructuredFactorField({ value, defaultValue, onChange, unit, wastePerce
 function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [], status, onToggleOffering }) {
   const service = useContext(PricingContext);
   const pricing=servicePricing(service);
-  if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
+  if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:service.serviceType==='CUSTOM'&&definition.field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
   const modeCopy=definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode];
   if(modeCopy)definition={...definition,...modeCopy};
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)

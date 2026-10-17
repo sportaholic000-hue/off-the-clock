@@ -1,3 +1,4 @@
+import {installOwnerJobCostSchema} from './ownerJobCosts.js';
 import {migrateBillingCheckoutRecovery} from './billingCoreMigration.js';
 import {installBillingUsageSchema} from './billingUsageSchema.js';
 import {installAppointmentChangeSchema} from './appointmentChangeSchema.js';
@@ -326,6 +327,7 @@ export function migrateDatabase(database) {
   installAppointmentChangeSchema(database);
   installOwnerAlertSchema(database);
   installOwnerDashboardSchema(database);
+  installOwnerJobCostSchema(database);
   installBillingLifecycleSchema(database);
   installTenantErasureGuards(database);
   backfillWidgetLeads(database);

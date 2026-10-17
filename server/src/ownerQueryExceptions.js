@@ -2,6 +2,16 @@
 // Signatures, method and occurrence are checked; computed access is never allowed.
 export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
 {
+  "file": "server/src/ownerJobCosts.js",
+  "line": 8,
+  "function": "installOwnerJobCostSchema",
+  "method": "exec",
+  "signature": "1b7d0aa9c5305c9cdd35a6311e57d8f39fa96795f0021036515c3cab7514f4c7",
+  "occurrence": 1,
+  "category": "migrations",
+  "reason": "Creates only the owner-keyed job-cost table and its owner foreign key. All job-data reads and writes use ownerQuery with ownerId."
+},
+{
   "file": "server/src/backupRetentionLock.js",
   "function": "acquireProcessLock",
   "method": "exec",

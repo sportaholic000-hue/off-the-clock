@@ -301,6 +301,7 @@ const DEFAULT_DISPLAY_NAMES = {
   taxMode:'Tax mode',
   taxPercent:'Tax rate',
   rangeBufferPercent:'Estimate range buffer percentage',
+  rangeLowPercent:'Business low range buffer percentage',rangeHighPercent:'Business high range buffer percentage',
   laborHourlyRate:'Business-wide labor rate per hour',
   peakMonths:'Peak-season months',
   peakSurchargePercent:'Peak-season surcharge percentage',
@@ -308,6 +309,7 @@ const DEFAULT_DISPLAY_NAMES = {
 };
 
 const SERVICE_SETTING_NAMES = {
+  rangeLowPercent:'This service low range buffer percentage',rangeHighPercent:'This service high range buffer percentage',
   serviceType:'Service type',
   service:'Service name',
   tiers:'Pricing tiers',

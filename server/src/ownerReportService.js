@@ -1,3 +1,4 @@
+import {ownerJobMetrics} from './ownerJobMetrics.js';
 import {storedObject} from './ownerRecordViews.js';
 import {utcToLocalParts} from './calendarTime.js';
 import {localReportRange,ownerTimezone,reportProblem as problem} from './ownerReportTime.js';
@@ -108,7 +109,7 @@ export function createOwnerReportService({ownerQuery,clock=()=>new Date()}) {
     for(const callId of cohort)if(!assigned.has(callId))funnelRow({callId,serviceType:'Unclassified'});
     const percentage=(numerator,denominator)=>denominator?Math.round(numerator/denominator*10000)/100:null;
     const openFollowUps=workflows.filter(row=>row.followUpStatus==='OPEN'&&(row.kind==='quotes'?quoteById:leadById).has(row.recordId));
-    return {range,settings:hours,canManage:role==='owner',counts:{calls:selectedCalls.length,answered:eligibleCalls.filter(row=>row.duration>0).length,
+    return {...(role==='owner'?{jobMetrics:ownerJobMetrics(selectedQuotes,read('ownerJobCosts'))}:{}),range,settings:hours,canManage:role==='owner',counts:{calls:selectedCalls.length,answered:eligibleCalls.filter(row=>row.duration>0).length,
       spam:selectedCalls.length-eligibleCalls.length,seconds:eligibleCalls.reduce((sum,row)=>sum+(Number.isFinite(row.duration)&&row.duration>0?row.duration:0),0),
       billedMinutes:selectedCalls.reduce((sum,row)=>sum+(Number.isSafeInteger(row.minutesBilled)&&row.minutesBilled>=0?row.minutesBilled:0),0),quotes:selectedQuotes.length,bookings:selectedBookings.length,invoices:invoiced.size},
       afterHours,values:{quoted:quoteValues.output(),booked:bookValues.output(),invoiced:invoiceValues.output()},excludedValues:{quoted:quoteValues.excluded,booked:bookValues.excluded,invoiced:invoiceValues.excluded},
