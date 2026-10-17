@@ -5,8 +5,11 @@ import {fileURLToPath} from 'node:url';
 const worker=fileURLToPath(new URL('./boundary-worker.mjs',import.meta.url));
 const timeoutArg=process.argv.find(arg=>arg.startsWith('--timeout-ms='));
 const outputArg=process.argv.find(arg=>arg.startsWith('--output='));
+const modesArg=process.argv.find(arg=>arg.startsWith('--modes='));
 const timeoutMs=timeoutArg?Number(timeoutArg.split('=')[1]):15_000;
+const modes=modesArg?modesArg.slice('--modes='.length).split(','):['arithmetic','metrics'];
 if(!Number.isSafeInteger(timeoutMs)||timeoutMs<1)throw new Error('Invalid watchdog timeout.');
+if(!modes.length||modes.some(mode=>!['arithmetic','metrics','report'].includes(mode)))throw new Error('Invalid benchmark modes.');
 
 const run=mode=>new Promise(resolve=>{
   const startedAt=new Date().toISOString();
@@ -26,7 +29,7 @@ const run=mode=>new Promise(resolve=>{
 });
 
 const output={applicationCommit:process.env.APPLICATION_COMMIT||null,runnerNode:process.version,runs:[]};
-for(const mode of ['arithmetic','metrics'])output.runs.push(await run(mode));
+for(const mode of modes)output.runs.push(await run(mode));
 const serialized=JSON.stringify(output,null,2)+'\n';
 if(outputArg)writeFileSync(outputArg.slice('--output='.length),serialized);
 process.stdout.write(serialized);

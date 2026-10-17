@@ -2,7 +2,7 @@ import {performance} from 'node:perf_hooks';
 import {pathToFileURL} from 'node:url';
 
 const mode=process.argv[2];
-if(!['arithmetic','metrics'].includes(mode))throw new Error('Mode must be arithmetic or metrics.');
+if(!['arithmetic','metrics','report'].includes(mode))throw new Error('Mode must be arithmetic, metrics or report.');
 
 const root=new URL('../../',import.meta.url);
 const arithmeticModule=process.env.PRICEBOOK_METRIC_ARITHMETIC_MODULE
@@ -26,8 +26,12 @@ function firstPrimes(count){
 }
 
 const memory=()=>{
-  const usage=process.memoryUsage();
-  return {rssBytes:usage.rss,heapUsedBytes:usage.heapUsed,maxRssKilobytes:process.resourceUsage().maxRSS};
+  try{
+    const usage=process.memoryUsage();
+    return {rssBytes:usage.rss,heapUsedBytes:usage.heapUsed,maxRssKilobytes:process.resourceUsage().maxRSS};
+  }catch{
+    return {rssBytes:null,heapUsedBytes:null,maxRssKilobytes:process.resourceUsage().maxRSS};
+  }
 };
 const started=performance.now();
 const primes=firstPrimes(33_333);
@@ -59,7 +63,6 @@ if(mode==='arithmetic'){
     totalMs:Number((finished-started).toFixed(3)),memory:memory(),result
   })+'\n');
 }else{
-  const {ownerJobMetrics}=await import(metricsModule);
   const quotes=[];
   let index=0;
   for(const family of families)for(const p of primes){
@@ -87,7 +90,9 @@ if(mode==='arithmetic'){
     },request:{ownerPricing:{id:'boundary-service',service:'Boundary service'}}})
   });
   const constructed=performance.now();
-  const groups=ownerJobMetrics(quotes);
+  const groups=mode==='metrics'
+    ?(await import(metricsModule)).ownerJobMetrics(quotes)
+    :(await import(new URL('server/src/ownerReportCalculation.js',root).href)).calculateOwnerReport({role:'owner',range:{period:'all',timezone:'UTC',fromDate:null,toDate:null,startAtUtc:null,endAtUtc:null},hours:{weeklyHours:null,revision:0,updatedAt:null},calls:[],allQuotes:quotes,leads:[],appointments:[],intents:[],events:[],workflows:[],costRows:[],nowMs:Date.parse('2026-10-17T12:00:00.000Z')}).jobMetrics;
   const finished=performance.now();
   const group=groups[0];
   result={
