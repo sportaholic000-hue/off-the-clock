@@ -41,7 +41,10 @@ test('concrete browser owner saves dollar rates and unscaled depths, warns about
   for(const [field,value] of [['shortLoadThresholdCubicYards','5'],['shortLoadPerYard','40'],['controlJointSpacingFt','15'],['sawCutPerLF','1.50'],['slabLaborMinThicknessInches','4'],['slabLaborMaxThicknessInches','6'],['baseDepthInches','4'],['baseCompactionAllowance','0.2'],['baseGravelPerCubicYard','45'],['baseExcavationGradingPerSqft','1.20']])await page.locator('#field-'+field+' input').fill(value);
   await page.locator('#field-controlJointPricing select').selectOption('excluded');await page.getByLabel('Placement flat charge ($ per pour) Pump',{exact:true}).fill('1500');await page.locator('#field-uncertainPlacementMethod select').selectOption('pump');
   await save(page);const p=loadPricebook(owner).services[0].pricing;assert.equal(p.shortLoadPerYard,4000);assert.equal(p.placementFlat.pump,150000);assert.equal(p.sawCutPerLF,150);assert.equal(p.baseDepthInches,4);assert.equal(p.baseCompactionAllowance,.2);assert.deepEqual(errors,[]);
-  await page.reload();await page.getByRole('button',{name:/Optional prices and add-on charges/}).click();assert.equal(await page.locator('#field-shortLoadPerYard input').inputValue(),'40');assert.match(await page.locator('body').innerText(),/15 feet.*10 feet/);
+  await page.reload();await page.getByRole('button',{name:/Optional prices and add-on charges/}).click();assert.equal(await page.locator('#field-shortLoadPerYard input').inputValue(),'40');
+  // Reloaded prices render before the asynchronous validation response.
+  await page.getByText(/Control-joint spacing of 15 feet exceeds the NRMCA cap of 10 feet/).waitFor();
+  assert.match(await page.locator('body').innerText(),/15 feet.*10 feet/);
 });
 test('planting browser edits owner size names and per-plant prices and persists both',async t=>{
   //Expected before execution:edit#5 to#7 with container7; labor$50=>5000c.

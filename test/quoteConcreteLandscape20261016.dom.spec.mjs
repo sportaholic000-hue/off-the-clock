@@ -13,6 +13,7 @@ import {concreteFixture,customPlantFixture} from './quoteConcreteLandscape202610
 // Concrete optional inputs start empty; typing $40 persists exactly 4000 cents.
 // The three concrete choices render as empty selects; Excluded and Pump save
 // unchanged, with a $1500 pump charge stored as exactly 150000 cents.
+// At a 4-inch labor minimum, 15-foot joint spacing displays the 10-foot cap.
 // This is DOM behavior evidence, not a substitute for the Chromium tests.
 let bundle;
 before(async()=>{
@@ -58,9 +59,13 @@ test('concrete owner DOM keeps new fields blank and saves rates, control joints 
     const select=h.d.querySelector('#field-'+field+' select');assert.ok(select,field+' must offer choices');assert.equal(select.value,'');
   }
   await fill(h,'#field-shortLoadThresholdCubicYards input','5');await fill(h,'#field-shortLoadPerYard input','40');
+  await fill(h,'#field-controlJointSpacingFt input','15');await fill(h,'#field-sawCutPerLF input','1.50');
+  await fill(h,'#field-slabLaborMinThicknessInches input','4');await fill(h,'#field-slabLaborMaxThicknessInches input','6');
   await fill(h,'[aria-label="Placement flat charge ($ per pour) Pump"]','1500');
   await choose(h,'controlJointPricing','excluded');await choose(h,'defaultPlacementMethod','pump');await choose(h,'uncertainPlacementMethod','pump');await save(h);
+  await waitFor(()=>/Control-joint spacing of 15 feet exceeds the NRMCA cap of 10 feet/.test(h.d.body.textContent),'saved spacing warning');
   const pricing=loadPricebook(h.owner).services[0].pricing;
   assert.equal(pricing.shortLoadPerYard,4000);assert.equal(pricing.placementFlat.pump,150000);
+  assert.equal(pricing.sawCutPerLF,150);assert.equal(pricing.controlJointSpacingFt,15);
   assert.equal(pricing.controlJointPricing,'excluded');assert.equal(pricing.defaultPlacementMethod,'pump');assert.equal(pricing.uncertainPlacementMethod,'pump');
 });
