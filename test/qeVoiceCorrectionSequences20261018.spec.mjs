@@ -1,0 +1,122 @@
+import './pricebookTestEnv.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {sequence,token,confirm,denied,amount,expected,publish,bridge} from '../verification/qe-voice-corrections-20261018/sequenceFixture.mjs';
+
+// Hand arithmetic was written first in verification/qe-voice-corrections-20261018/EXPECTED.md.
+// Deliberately select each confirmation field; never blanket-confirm a contract.
+const underlay='underlaymentScopeConfirmed',stairs='stairScopeConfirmed';
+
+test('voice corrections: changed dimensions require structured confirmation and price the corrected area',async t=>{
+  const h=await sequence(t),c=await h.connect(),handle=await h.match(c);
+  await h.say(c,'The laminate room is 20 by 10 feet.');
+  const original=h.args(handle),question=await h.tool(c,'getQuote',original);
+  denied(question);h.counts(0);
+  const scope=token(question,underlay,'laminate foam');
+  await h.say(c,'Correction: the room is 25 by 10 feet; same foam and straight layout.');
+  const corrected=confirm({...original,customerInputs:{...original.customerInputs,sqft:250}},underlay,scope);
+  denied(await h.tool(c,'getQuote',{...corrected,customerConfirmed:false}));h.counts(0);
+  // Same selected work: the token is not a signature of every measurement.
+  await h.say(c,'Those corrected details are right.');
+  amount(await h.tool(c,'getQuote',corrected),expected.area250);h.counts(1);
+  assert.equal(h.receiptInputs(0).sqft,250);
+  assert.equal(JSON.parse(h.quotes()[0].customerInputsJson).sqft,250);
+});
+
+test('voice corrections: adding stairs and then changing the selected stair package needs its own current scope token',async t=>{
+  const h=await sequence(t),c=await h.connect(),handle=await h.match(c),base=h.args(handle);
+  const foam=token(await h.tool(c,'getQuote',base),underlay,'laminate foam');
+  const narrow=confirm({...base,customerInputs:{...base.customerInputs,stairSteps:4,stairWidthLF:3,stairRemovalNeeded:false,stairDisposalNeeded:false,floorAreaExcludesStairs:true}},underlay,foam);
+  await h.say(c,'Also four steps, three feet wide, separate from the floor area, with no removal or disposal.');
+  const needsStairs=await h.tool(c,'getQuote',narrow);denied(needsStairs);h.counts(0);
+  const narrowToken=token(needsStairs,stairs,'narrow complete stair package');
+  const confirmedNarrow=confirm(narrow,stairs,narrowToken);
+  amount(await h.tool(c,'getQuote',confirmedNarrow),expected.narrow);h.counts(1);const saved=h.snapshot();
+  await h.say(c,'I measured again: those four steps are four feet wide.');
+  const wide={...confirmedNarrow,customerInputs:{...confirmedNarrow.customerInputs,stairWidthLF:4}};
+  const stale=await h.tool(c,'getQuote',wide);denied(stale);h.counts(1);h.unchanged(saved);
+  const wideToken=token(stale,stairs,'wide complete stair package');assert.notEqual(wideToken,narrowToken);
+  amount(await h.tool(c,'getQuote',confirm(wide,stairs,wideToken)),expected.wide);h.counts(2);h.unchanged(saved);
+  assert.equal(h.receiptInputs(1).stairWidthLF,4);
+});
+
+test('voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable',async t=>{
+  const h=await sequence(t),c=await h.connect(),handle=await h.match(c),base=h.args(handle);
+  const foam=token(await h.tool(c,'getQuote',base),underlay,'laminate foam'),original=confirm(base,underlay,foam);
+  const first=await h.tool(c,'getQuote',original);amount(first,expected.laminate);const saved=h.snapshot();
+  await h.say(c,'Change the new floor from laminate to hardwood, still 200 square feet.');
+  const corrected={...original,customerInputs:{...original.customerInputs,newFlooringType:'hardwood'}};
+  const rejected=await h.tool(c,'getQuote',corrected);denied(rejected);h.counts(1);h.unchanged(saved);
+  const plywood=token(rejected,underlay,'hardwood plywood');assert.notEqual(plywood,foam);
+  await h.say(c,'Yes, hardwood with that plywood underlayment.');
+  amount(await h.tool(c,'getQuote',confirm(corrected,underlay,plywood)),expected.hardwood);h.counts(2);h.unchanged(saved);
+  assert.equal(h.receiptInputs(1).newFlooringType,'hardwood');
+  assert.deepEqual(await h.tool(c,'getQuote',original),first);h.counts(2);h.unchanged(saved);
+});
+
+test('voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay',async t=>{
+  const h=await sequence(t),c=await h.connect(),handle=await h.match(c),base=h.args(handle);
+  const oldToken=token(await h.tool(c,'getQuote',base),underlay,'laminate foam'),original=confirm(base,underlay,oldToken);
+  const first=await h.tool(c,'getQuote',original);amount(first,expected.laminate);const saved=h.snapshot(),oldRevision=bridge.readApplicationBook(h.owner).revision;
+  const revised=structuredClone(h.f);revised.ownerPricing.pricing.materialPerSqft.laminate=300;
+  publish(h.owner,revised);assert.notEqual(bridge.readApplicationBook(h.owner).revision,oldRevision);
+  await h.say(c,'Correct the room area to 250 square feet.');
+  const correction={...original,customerInputs:{...original.customerInputs,sqft:250}};
+  denied(await h.tool(c,'getQuote',correction));h.counts(1);h.unchanged(saved);
+  const newHandle=await h.match(c);assert.notEqual(newHandle,handle);
+  const rebound={...correction,serviceHandle:newHandle};
+  const stale=await h.tool(c,'getQuote',rebound);denied(stale);h.counts(1);
+  const current=token(stale,underlay,'laminate foam');assert.notEqual(current,oldToken);
+  amount(await h.tool(c,'getQuote',confirm(rebound,underlay,current)),expected.revised250);h.counts(2);h.unchanged(saved);
+  assert.equal(h.receiptInputs(1).sqft,250);assert.notEqual(h.rows()[1].bookRevision,h.rows()[0].bookRevision);
+  assert.deepEqual(await h.tool(c,'getQuote',original),first);h.counts(2);h.unchanged(saved);
+});
+
+test('voice corrections: scope token and service handle cannot authorize another call',async t=>{
+  const h=await sequence(t),a=await h.connect(1),aHandle=await h.match(a),base=h.args(aHandle);
+  const aToken=token(await h.tool(a,'getQuote',base),underlay,'laminate foam'),original=confirm(base,underlay,aToken);
+  amount(await h.tool(a,'getQuote',original),expected.laminate);const saved=h.snapshot();
+  const b=await h.connect(2);await h.say(b,'Laminate, 200 square feet, one room.');
+  denied(await h.tool(b,'getQuote',original));h.counts(1);
+  const bHandle=await h.match(b);assert.notEqual(bHandle,aHandle);
+  const borrowed={...original,serviceHandle:bHandle},stale=await h.tool(b,'getQuote',borrowed);
+  denied(stale);h.counts(1);h.unchanged(saved);
+  const bToken=token(stale,underlay,'laminate foam');assert.notEqual(bToken,aToken);
+  amount(await h.tool(b,'getQuote',confirm(borrowed,underlay,bToken)),expected.laminate);h.counts(2);h.unchanged(saved);
+  assert.deepEqual(h.quotes().map(row=>h.db.prepare('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(h.owner,row.callId)?.callSid),[a.params.CallSid,b.params.CallSid]);
+  assert.equal(h.sessions.length,2);
+});
+
+test('voice corrections: same-call same-revision service change cannot reuse another service scope token',async t=>{
+  const h=await sequence(t,{pair:true}),c=await h.connect(),aHandle=await h.match(c),base=h.args(aHandle);
+  const revision=bridge.readApplicationBook(h.owner).revision;
+  const aToken=token(await h.tool(c,'getQuote',base),underlay,'laminate foam'),original=confirm(base,underlay,aToken);
+  const first=await h.tool(c,'getQuote',original);amount(first,expected.laminate);const saved=h.snapshot();
+  await h.say(c,'Switch to the Orchard installation service.');
+  const bHandle=await h.match(c,h.other);assert.notEqual(bHandle,aHandle);
+  assert.equal(bridge.readApplicationBook(h.owner).revision,revision,'Isolate service binding without revision change');
+  const borrowed={...original,serviceHandle:bHandle},stale=await h.tool(c,'getQuote',borrowed);
+  denied(stale);h.counts(1);h.unchanged(saved);
+  const bToken=token(stale,underlay,'laminate foam');assert.notEqual(bToken,aToken);
+  amount(await h.tool(c,'getQuote',confirm(borrowed,underlay,bToken)),expected.secondService);h.counts(2);h.unchanged(saved);
+  assert.deepEqual(h.rows().map(row=>JSON.parse(row.originalSubmissionJson).serviceId),[h.f.ownerPricing.id,h.other.ownerPricing.id]);
+  assert.deepEqual(await h.tool(c,'getQuote',original),first);h.counts(2);h.unchanged(saved);
+});
+
+test('voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct',async t=>{
+  const h=await sequence(t),c=await h.connect(),handle=await h.match(c),base=h.args(handle);
+  const pending=await h.tool(c,'getQuote',base,'awaiting-confirmation'),scope=token(pending,underlay,'laminate foam');
+  assert.deepEqual(await h.tool(c,'getQuote',base,'awaiting-confirmation'),pending);h.counts(0);
+  const original=confirm(base,underlay,scope);
+  denied(await h.tool(c,'getQuote',original,'awaiting-confirmation'));h.counts(0);
+  const first=await h.tool(c,'getQuote',original,'confirmed-original');amount(first,expected.laminate);const saved=h.snapshot();
+  assert.deepEqual(await h.tool(c,'getQuote',original,'confirmed-original'),first);h.counts(1);
+  await h.say(c,'Correction: 250 square feet, with the same laminate foam. These revised details are correct.');
+  const correction={...original,customerInputs:{...original.customerInputs,sqft:250}};
+  denied(await h.tool(c,'getQuote',correction,'confirmed-original'));h.counts(1);h.unchanged(saved);
+  const corrected=await h.tool(c,'getQuote',correction,'confirmed-correction');amount(corrected,expected.area250);
+  assert.notEqual(corrected.quoteHandle,first.quoteHandle);h.counts(2);h.unchanged(saved);
+  assert.equal(h.receiptInputs(0).sqft,200);assert.equal(h.receiptInputs(1).sqft,250);
+  assert.deepEqual(await h.tool(c,'getQuote',original,'fresh-original-replay'),first);h.counts(2);h.unchanged(saved);
+  assert.deepEqual(await h.tool(c,'getQuote',correction,'fresh-correction-replay'),corrected);h.counts(2);h.unchanged(saved);
+});

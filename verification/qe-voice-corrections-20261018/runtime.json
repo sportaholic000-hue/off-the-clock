@@ -1,0 +1,12 @@
+{
+  "node": "v22.23.3",
+  "npm": "11.9.0",
+  "dependencyInstall": {
+    "command": "npm ci",
+    "exitCode": 0,
+    "packagesAdded": 328
+  },
+  "base": "1857b7779b83b70f7753b41b72c3677270cd4ffc",
+  "platform": "Linux 6.18.55 x86_64",
+  "note": "Node 22 toolchain installed outside repository; no manifest or lockfile changes."
+}

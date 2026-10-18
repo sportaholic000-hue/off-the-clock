@@ -1,0 +1,128 @@
+TAP version 13
+# (node:24) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: voice corrections: changed dimensions require structured confirmation and price the corrected area
+ok 1 - voice corrections: changed dimensions require structured confirmation and price the corrected area
+  ---
+  duration_ms: 1156.553071
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":1,"receiptHashes":["0991cf0bb9437450142e0d801119f5f4f4c6adc98f173cb84e0659f473d2494c"],"quoteHashes":["485de237942c0037aeba795c1417cdc98a6f52f7f68216d9d1bd1cd7b2ba3b7a"]}
+# Subtest: voice corrections: adding stairs and then changing the selected stair package needs its own current scope token
+ok 2 - voice corrections: adding stairs and then changing the selected stair package needs its own current scope token
+  ---
+  duration_ms: 981.697642
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"quoted","low":1152,"mid":1152,"high":1152,"receiptCount":1,"receiptHashes":["f25fe70c8110f284a4c750790e3e8e1c6e4ad6aefd6aed70de6ed46d7bd95b3a"],"quoteHashes":["0a1620025c544fc79a1b6df1811970b9ec67499fee3fc52e92c74ec1273f83fc"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["f25fe70c8110f284a4c750790e3e8e1c6e4ad6aefd6aed70de6ed46d7bd95b3a"],"quoteHashes":["0a1620025c544fc79a1b6df1811970b9ec67499fee3fc52e92c74ec1273f83fc"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":1332,"mid":1332,"high":1332,"receiptCount":2,"receiptHashes":["f25fe70c8110f284a4c750790e3e8e1c6e4ad6aefd6aed70de6ed46d7bd95b3a","2fd2725f73e3d41a2e477ad3fa9a2d24b518d1244d9da27a0aad1e34d3b73292"],"quoteHashes":["0a1620025c544fc79a1b6df1811970b9ec67499fee3fc52e92c74ec1273f83fc","7cd993dfc967c7907d8aba9c365c2f2669da290b498f1321db9e30b2ce636fc6"]}
+# Subtest: voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable
+ok 3 - voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable
+  ---
+  duration_ms: 900.622208
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["5ecd31f5c4f00651e3cd8e4c5bd1db6d387b5a28200bf79ca9c27bbd4a00f17c"],"quoteHashes":["02e975ca39c2f61768e76ea1c930773a91cf85927a6dcdaedd2e272ea2626e39"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["5ecd31f5c4f00651e3cd8e4c5bd1db6d387b5a28200bf79ca9c27bbd4a00f17c"],"quoteHashes":["02e975ca39c2f61768e76ea1c930773a91cf85927a6dcdaedd2e272ea2626e39"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"quoted","low":1940,"mid":1940,"high":1940,"receiptCount":2,"receiptHashes":["5ecd31f5c4f00651e3cd8e4c5bd1db6d387b5a28200bf79ca9c27bbd4a00f17c","d94b69fef78c6b387c73a809efce4303554ba5d1ecd5ae69d4fb0eddaba2239e"],"quoteHashes":["02e975ca39c2f61768e76ea1c930773a91cf85927a6dcdaedd2e272ea2626e39","0fd764daa5ff0175cfa3c6d257fd78d9fb10a8c49e3e0edd99ff0bcf77794d45"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["5ecd31f5c4f00651e3cd8e4c5bd1db6d387b5a28200bf79ca9c27bbd4a00f17c","d94b69fef78c6b387c73a809efce4303554ba5d1ecd5ae69d4fb0eddaba2239e"],"quoteHashes":["02e975ca39c2f61768e76ea1c930773a91cf85927a6dcdaedd2e272ea2626e39","0fd764daa5ff0175cfa3c6d257fd78d9fb10a8c49e3e0edd99ff0bcf77794d45"]}
+# Subtest: voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay
+ok 4 - voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay
+  ---
+  duration_ms: 1087.004392
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["0109c6e5f63b8c990095d665c39dbfc7c19332b7d6000ae27d327a30ea76f307"],"quoteHashes":["3137d78a70b42e4d0b0f30b14a51ed09bfdb8d4420c2f1a11237669e7c208884"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["0109c6e5f63b8c990095d665c39dbfc7c19332b7d6000ae27d327a30ea76f307"],"quoteHashes":["3137d78a70b42e4d0b0f30b14a51ed09bfdb8d4420c2f1a11237669e7c208884"]}
+# {"tool":"matchService","id":"correction-5","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":1,"receiptHashes":["0109c6e5f63b8c990095d665c39dbfc7c19332b7d6000ae27d327a30ea76f307"],"quoteHashes":["3137d78a70b42e4d0b0f30b14a51ed09bfdb8d4420c2f1a11237669e7c208884"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["0109c6e5f63b8c990095d665c39dbfc7c19332b7d6000ae27d327a30ea76f307"],"quoteHashes":["3137d78a70b42e4d0b0f30b14a51ed09bfdb8d4420c2f1a11237669e7c208884"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000001","status":"quoted","low":1335,"mid":1335,"high":1335,"receiptCount":2,"receiptHashes":["0109c6e5f63b8c990095d665c39dbfc7c19332b7d6000ae27d327a30ea76f307","1817521c6eaa1cb7d93e68e714fcad8f1a7bb4f22bb7d67138da2f94ebbfce0d"],"quoteHashes":["3137d78a70b42e4d0b0f30b14a51ed09bfdb8d4420c2f1a11237669e7c208884","3589fba4477e9c6ef9e91df2dcf75e389bb2be61b8d01fcaa29db7f9fe09ddd1"]}
+# {"tool":"getQuote","id":"correction-8","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["0109c6e5f63b8c990095d665c39dbfc7c19332b7d6000ae27d327a30ea76f307","1817521c6eaa1cb7d93e68e714fcad8f1a7bb4f22bb7d67138da2f94ebbfce0d"],"quoteHashes":["3137d78a70b42e4d0b0f30b14a51ed09bfdb8d4420c2f1a11237669e7c208884","3589fba4477e9c6ef9e91df2dcf75e389bb2be61b8d01fcaa29db7f9fe09ddd1"]}
+# Subtest: voice corrections: scope token and service handle cannot authorize another call
+not ok 5 - voice corrections: scope token and service handle cannot authorize another call
+  ---
+  duration_ms: 896.809516
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-voice-corrections/test/qeVoiceCorrectionSequences20261018.spec.mjs:75:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'addb796f-d804-43fa-b29e-82df64e40575',
+    +   '2555c349-c80e-45a5-85bd-f89a479ab7b1'
+    -   'CA00000000000000000000000000000001',
+    -   'CA00000000000000000000000000000002'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'CA00000000000000000000000000000001'
+    1: 'CA00000000000000000000000000000002'
+  actual:
+    0: 'addb796f-d804-43fa-b29e-82df64e40575'
+    1: '2555c349-c80e-45a5-85bd-f89a479ab7b1'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-voice-corrections/test/qeVoiceCorrectionSequences20261018.spec.mjs:86:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["e4245c14b5541bda7ee08fc21b4034a192c58f41d59680997a8dc05314e192e5"],"quoteHashes":["c9e1907e2ef9e2623faf1d578624c5b96f9f69aae11a3d6f683b32aa4417029a"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000002","status":"needs_details","receiptCount":1,"receiptHashes":["e4245c14b5541bda7ee08fc21b4034a192c58f41d59680997a8dc05314e192e5"],"quoteHashes":["c9e1907e2ef9e2623faf1d578624c5b96f9f69aae11a3d6f683b32aa4417029a"]}
+# {"tool":"matchService","id":"correction-5","call":"CA00000000000000000000000000000002","status":"matched","receiptCount":1,"receiptHashes":["e4245c14b5541bda7ee08fc21b4034a192c58f41d59680997a8dc05314e192e5"],"quoteHashes":["c9e1907e2ef9e2623faf1d578624c5b96f9f69aae11a3d6f683b32aa4417029a"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000002","status":"needs_details","receiptCount":1,"receiptHashes":["e4245c14b5541bda7ee08fc21b4034a192c58f41d59680997a8dc05314e192e5"],"quoteHashes":["c9e1907e2ef9e2623faf1d578624c5b96f9f69aae11a3d6f683b32aa4417029a"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000002","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["e4245c14b5541bda7ee08fc21b4034a192c58f41d59680997a8dc05314e192e5","c34dff1b99abec43b972e0e3c3081bec53fc3a3ecf96a5aff55118024bb6ef41"],"quoteHashes":["c9e1907e2ef9e2623faf1d578624c5b96f9f69aae11a3d6f683b32aa4417029a","b6040d02b65c9f18e9473b602bdab5c4370f465b0c2ed1af28ae864e78100aa9"]}
+# Subtest: voice corrections: same-call same-revision service change cannot reuse another service scope token
+ok 6 - voice corrections: same-call same-revision service change cannot reuse another service scope token
+  ---
+  duration_ms: 1279.466361
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["8752ef8a37af6938e50cf05eaff6deef39274d171ff58ed05c0a077d42e00e46"],"quoteHashes":["a8334f3e1e44c5f020a8764991356e2f92bc079056edf9b37ae34b16dd7d054b"]}
+# {"tool":"matchService","id":"correction-4","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":1,"receiptHashes":["8752ef8a37af6938e50cf05eaff6deef39274d171ff58ed05c0a077d42e00e46"],"quoteHashes":["a8334f3e1e44c5f020a8764991356e2f92bc079056edf9b37ae34b16dd7d054b"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["8752ef8a37af6938e50cf05eaff6deef39274d171ff58ed05c0a077d42e00e46"],"quoteHashes":["a8334f3e1e44c5f020a8764991356e2f92bc079056edf9b37ae34b16dd7d054b"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":1072,"mid":1072,"high":1072,"receiptCount":2,"receiptHashes":["8752ef8a37af6938e50cf05eaff6deef39274d171ff58ed05c0a077d42e00e46","9c6c696ea66e571c74a3daf74efb2eb88064bab4228d4912382196c70f59cb6d"],"quoteHashes":["a8334f3e1e44c5f020a8764991356e2f92bc079056edf9b37ae34b16dd7d054b","ff3c7d2015727a20122d4bd9f7a15de5f33e954b69b6283b7173c4a62e8fe887"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["8752ef8a37af6938e50cf05eaff6deef39274d171ff58ed05c0a077d42e00e46","9c6c696ea66e571c74a3daf74efb2eb88064bab4228d4912382196c70f59cb6d"],"quoteHashes":["a8334f3e1e44c5f020a8764991356e2f92bc079056edf9b37ae34b16dd7d054b","ff3c7d2015727a20122d4bd9f7a15de5f33e954b69b6283b7173c4a62e8fe887"]}
+# Subtest: voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct
+ok 7 - voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct
+  ---
+  duration_ms: 1020.776499
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["8eaaca4b57043d272a5441e656f95dd455dd619c819ea5cf59a314c5bcd16391"],"quoteHashes":["05d983e0911992bc1546eeeebbb865bb743461ce82444871f9aaf35f205e81a4"]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["8eaaca4b57043d272a5441e656f95dd455dd619c819ea5cf59a314c5bcd16391"],"quoteHashes":["05d983e0911992bc1546eeeebbb865bb743461ce82444871f9aaf35f205e81a4"]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["8eaaca4b57043d272a5441e656f95dd455dd619c819ea5cf59a314c5bcd16391"],"quoteHashes":["05d983e0911992bc1546eeeebbb865bb743461ce82444871f9aaf35f205e81a4"]}
+# {"tool":"getQuote","id":"confirmed-correction","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":2,"receiptHashes":["8eaaca4b57043d272a5441e656f95dd455dd619c819ea5cf59a314c5bcd16391","5283dd247fd8d7ab9bd3894fc542bd1674e9c0095fda5fa0ec9f6ad166dc0181"],"quoteHashes":["05d983e0911992bc1546eeeebbb865bb743461ce82444871f9aaf35f205e81a4","2d8ddaddb02cfa3614fbf450ed29aab9585be8151ed614dbbdbdf5f280d1c835"]}
+# {"tool":"getQuote","id":"fresh-original-replay","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["8eaaca4b57043d272a5441e656f95dd455dd619c819ea5cf59a314c5bcd16391","5283dd247fd8d7ab9bd3894fc542bd1674e9c0095fda5fa0ec9f6ad166dc0181"],"quoteHashes":["05d983e0911992bc1546eeeebbb865bb743461ce82444871f9aaf35f205e81a4","2d8ddaddb02cfa3614fbf450ed29aab9585be8151ed614dbbdbdf5f280d1c835"]}
+# {"tool":"getQuote","id":"fresh-correction-replay","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":2,"receiptHashes":["8eaaca4b57043d272a5441e656f95dd455dd619c819ea5cf59a314c5bcd16391","5283dd247fd8d7ab9bd3894fc542bd1674e9c0095fda5fa0ec9f6ad166dc0181"],"quoteHashes":["05d983e0911992bc1546eeeebbb865bb743461ce82444871f9aaf35f205e81a4","2d8ddaddb02cfa3614fbf450ed29aab9585be8151ed614dbbdbdf5f280d1c835"]}
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7731.119027

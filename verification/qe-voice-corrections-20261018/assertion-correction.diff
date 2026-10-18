@@ -1,0 +1,11 @@
+--- verification/qe-voice-corrections-20261018/first-run.spec.mjs.txt	2026-10-18 14:31:35.417790255 +0900
++++ test/qeVoiceCorrectionSequences20261018.spec.mjs	2026-10-18 14:31:35.436301807 +0900
+@@ -83,7 +83,7 @@
+   denied(stale);h.counts(1);h.unchanged(saved);
+   const bToken=token(stale,underlay,'laminate foam');assert.notEqual(bToken,aToken);
+   amount(await h.tool(b,'getQuote',confirm(borrowed,underlay,bToken)),expected.laminate);h.counts(2);h.unchanged(saved);
+-  assert.deepEqual(h.quotes().map(row=>row.callId),[a.params.CallSid,b.params.CallSid]);
++  assert.deepEqual(h.quotes().map(row=>h.db.prepare('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(h.owner,row.callId)?.callSid),[a.params.CallSid,b.params.CallSid]);
+   assert.equal(h.sessions.length,2);
+ });
+ 

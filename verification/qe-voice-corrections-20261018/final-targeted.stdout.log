@@ -1,0 +1,1079 @@
+TAP version 13
+# (node:37) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: voice corrections: changed dimensions require structured confirmation and price the corrected area
+ok 1 - voice corrections: changed dimensions require structured confirmation and price the corrected area
+  ---
+  duration_ms: 1027.17053
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":1,"receiptHashes":["736eae0634beac59eb6285e49908400e115a5996c13e0a0c9a9359e19c8fda47"],"quoteHashes":["c3aa38e74a6ce4bdb27904db85a844faee5cc0ca32357b38b6d29a4ac7f90595"]}
+# Subtest: voice corrections: adding stairs and then changing the selected stair package needs its own current scope token
+ok 2 - voice corrections: adding stairs and then changing the selected stair package needs its own current scope token
+  ---
+  duration_ms: 970.196033
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"quoted","low":1152,"mid":1152,"high":1152,"receiptCount":1,"receiptHashes":["97435584d6eceb5d7d8ea16e666b1006285bd4b3ec6519d9c0f47eb694c2ddff"],"quoteHashes":["21b9e7909bdda634f431fdcb41c0996b9e96b6c914ad78b4a93b8de67e74a6dc"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["97435584d6eceb5d7d8ea16e666b1006285bd4b3ec6519d9c0f47eb694c2ddff"],"quoteHashes":["21b9e7909bdda634f431fdcb41c0996b9e96b6c914ad78b4a93b8de67e74a6dc"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":1332,"mid":1332,"high":1332,"receiptCount":2,"receiptHashes":["97435584d6eceb5d7d8ea16e666b1006285bd4b3ec6519d9c0f47eb694c2ddff","d5014a5d7326de127b3b247673fdd031652898fe6b1e3bacab691e52f9163c68"],"quoteHashes":["21b9e7909bdda634f431fdcb41c0996b9e96b6c914ad78b4a93b8de67e74a6dc","263f31d99673484131eb34e1c3edb22240e8a2db3a0f6c947418d39a1262a0a7"]}
+# Subtest: voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable
+ok 3 - voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable
+  ---
+  duration_ms: 804.759275
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["2af6eaf7250a720bf84bbff7306479327ee8e0672fbabec3d880972bce4b6971"],"quoteHashes":["9b33dabbf8c3a55000f4cae348ee1130f9e01c31faab18294984280917f03dbe"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["2af6eaf7250a720bf84bbff7306479327ee8e0672fbabec3d880972bce4b6971"],"quoteHashes":["9b33dabbf8c3a55000f4cae348ee1130f9e01c31faab18294984280917f03dbe"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"quoted","low":1940,"mid":1940,"high":1940,"receiptCount":2,"receiptHashes":["2af6eaf7250a720bf84bbff7306479327ee8e0672fbabec3d880972bce4b6971","9c356879a8c57ab25bc639bbcd386e033933ab0403ede38e67e15090e1d4fd0d"],"quoteHashes":["9b33dabbf8c3a55000f4cae348ee1130f9e01c31faab18294984280917f03dbe","280b977a0566780f0c3118b7a006aaa825939d1cb33ca2d15603f521672315ae"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["2af6eaf7250a720bf84bbff7306479327ee8e0672fbabec3d880972bce4b6971","9c356879a8c57ab25bc639bbcd386e033933ab0403ede38e67e15090e1d4fd0d"],"quoteHashes":["9b33dabbf8c3a55000f4cae348ee1130f9e01c31faab18294984280917f03dbe","280b977a0566780f0c3118b7a006aaa825939d1cb33ca2d15603f521672315ae"]}
+# Subtest: voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay
+ok 4 - voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay
+  ---
+  duration_ms: 1192.929353
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["c8f501aea58cb55ea3c910fa4df84af6a6b0740ebf08cf93d6dac3fb4312c642"],"quoteHashes":["e6c5858d2676f8885cff23e88f041a327a1dc6b45c595b5ffd9b44b04da00199"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["c8f501aea58cb55ea3c910fa4df84af6a6b0740ebf08cf93d6dac3fb4312c642"],"quoteHashes":["e6c5858d2676f8885cff23e88f041a327a1dc6b45c595b5ffd9b44b04da00199"]}
+# {"tool":"matchService","id":"correction-5","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":1,"receiptHashes":["c8f501aea58cb55ea3c910fa4df84af6a6b0740ebf08cf93d6dac3fb4312c642"],"quoteHashes":["e6c5858d2676f8885cff23e88f041a327a1dc6b45c595b5ffd9b44b04da00199"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["c8f501aea58cb55ea3c910fa4df84af6a6b0740ebf08cf93d6dac3fb4312c642"],"quoteHashes":["e6c5858d2676f8885cff23e88f041a327a1dc6b45c595b5ffd9b44b04da00199"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000001","status":"quoted","low":1335,"mid":1335,"high":1335,"receiptCount":2,"receiptHashes":["c8f501aea58cb55ea3c910fa4df84af6a6b0740ebf08cf93d6dac3fb4312c642","d531a604fc454f5db12539bf475065a09b20a568b3d4c108ae8e5e0df6d2b085"],"quoteHashes":["e6c5858d2676f8885cff23e88f041a327a1dc6b45c595b5ffd9b44b04da00199","8849aa708e0c48b51002d8742414484f4b7b250fc1fbac4ce150c90defdc0cb1"]}
+# {"tool":"getQuote","id":"correction-8","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["c8f501aea58cb55ea3c910fa4df84af6a6b0740ebf08cf93d6dac3fb4312c642","d531a604fc454f5db12539bf475065a09b20a568b3d4c108ae8e5e0df6d2b085"],"quoteHashes":["e6c5858d2676f8885cff23e88f041a327a1dc6b45c595b5ffd9b44b04da00199","8849aa708e0c48b51002d8742414484f4b7b250fc1fbac4ce150c90defdc0cb1"]}
+# Subtest: voice corrections: scope token and service handle cannot authorize another call
+ok 5 - voice corrections: scope token and service handle cannot authorize another call
+  ---
+  duration_ms: 1241.437001
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["e1071490356ea437fd03ce054eac98a434b69cd933e999f5f17263208b2f4216"],"quoteHashes":["15315b6ccfeae1bc6fb0779f6de14e0e641b6abd8f8f3315c7a39bb360c83e66"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000002","status":"needs_details","receiptCount":1,"receiptHashes":["e1071490356ea437fd03ce054eac98a434b69cd933e999f5f17263208b2f4216"],"quoteHashes":["15315b6ccfeae1bc6fb0779f6de14e0e641b6abd8f8f3315c7a39bb360c83e66"]}
+# {"tool":"matchService","id":"correction-5","call":"CA00000000000000000000000000000002","status":"matched","receiptCount":1,"receiptHashes":["e1071490356ea437fd03ce054eac98a434b69cd933e999f5f17263208b2f4216"],"quoteHashes":["15315b6ccfeae1bc6fb0779f6de14e0e641b6abd8f8f3315c7a39bb360c83e66"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000002","status":"needs_details","receiptCount":1,"receiptHashes":["e1071490356ea437fd03ce054eac98a434b69cd933e999f5f17263208b2f4216"],"quoteHashes":["15315b6ccfeae1bc6fb0779f6de14e0e641b6abd8f8f3315c7a39bb360c83e66"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000002","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["e1071490356ea437fd03ce054eac98a434b69cd933e999f5f17263208b2f4216","60a4a431ad161c68e654548d3f8a1f66d13d27ceec6ff582c308dc6b07da7e7a"],"quoteHashes":["15315b6ccfeae1bc6fb0779f6de14e0e641b6abd8f8f3315c7a39bb360c83e66","221949f76c63187fd1ad837bdc12c0d598c62d185d1ef84dd190e0b9761bc104"]}
+# Subtest: voice corrections: same-call same-revision service change cannot reuse another service scope token
+ok 6 - voice corrections: same-call same-revision service change cannot reuse another service scope token
+  ---
+  duration_ms: 1478.662296
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["8a4d07c31949297a6d8ab42bd6a6db4b0eb3967ea6b0fed85deabe972e39f1f3"],"quoteHashes":["6380dcaa22eb4c787d54d9a9ada9cd1db49353aedf8bd94484f248b05d2819a0"]}
+# {"tool":"matchService","id":"correction-4","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":1,"receiptHashes":["8a4d07c31949297a6d8ab42bd6a6db4b0eb3967ea6b0fed85deabe972e39f1f3"],"quoteHashes":["6380dcaa22eb4c787d54d9a9ada9cd1db49353aedf8bd94484f248b05d2819a0"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["8a4d07c31949297a6d8ab42bd6a6db4b0eb3967ea6b0fed85deabe972e39f1f3"],"quoteHashes":["6380dcaa22eb4c787d54d9a9ada9cd1db49353aedf8bd94484f248b05d2819a0"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":1072,"mid":1072,"high":1072,"receiptCount":2,"receiptHashes":["8a4d07c31949297a6d8ab42bd6a6db4b0eb3967ea6b0fed85deabe972e39f1f3","2daf3dee232f6f6e30fb5f4d985c87afa6c614c93fc9a341099d683e703a21eb"],"quoteHashes":["6380dcaa22eb4c787d54d9a9ada9cd1db49353aedf8bd94484f248b05d2819a0","c97c42b80887fdfd64b1f1307f1361417d0c006533967741153afe1310e7ae6e"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["8a4d07c31949297a6d8ab42bd6a6db4b0eb3967ea6b0fed85deabe972e39f1f3","2daf3dee232f6f6e30fb5f4d985c87afa6c614c93fc9a341099d683e703a21eb"],"quoteHashes":["6380dcaa22eb4c787d54d9a9ada9cd1db49353aedf8bd94484f248b05d2819a0","c97c42b80887fdfd64b1f1307f1361417d0c006533967741153afe1310e7ae6e"]}
+# Subtest: voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct
+ok 7 - voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct
+  ---
+  duration_ms: 1155.431658
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["0b94fe915de866882a09e89496aec5ab21ebec906f1dcbe22e52a37a38ab6cc8"],"quoteHashes":["26eb4844200a5339c97434285fb9f7513e68281eb5c274c43fac514d0e446dbe"]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["0b94fe915de866882a09e89496aec5ab21ebec906f1dcbe22e52a37a38ab6cc8"],"quoteHashes":["26eb4844200a5339c97434285fb9f7513e68281eb5c274c43fac514d0e446dbe"]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["0b94fe915de866882a09e89496aec5ab21ebec906f1dcbe22e52a37a38ab6cc8"],"quoteHashes":["26eb4844200a5339c97434285fb9f7513e68281eb5c274c43fac514d0e446dbe"]}
+# {"tool":"getQuote","id":"confirmed-correction","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":2,"receiptHashes":["0b94fe915de866882a09e89496aec5ab21ebec906f1dcbe22e52a37a38ab6cc8","ecf96ca33119faa60635c84a5a5f10d7adb63323797dc3be31dcd67e7a5dab0e"],"quoteHashes":["26eb4844200a5339c97434285fb9f7513e68281eb5c274c43fac514d0e446dbe","50d24bcc9bf796e673cc7aee55042d4c6f3f3667dd0db69ac652c5b77aa261a4"]}
+# {"tool":"getQuote","id":"fresh-original-replay","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["0b94fe915de866882a09e89496aec5ab21ebec906f1dcbe22e52a37a38ab6cc8","ecf96ca33119faa60635c84a5a5f10d7adb63323797dc3be31dcd67e7a5dab0e"],"quoteHashes":["26eb4844200a5339c97434285fb9f7513e68281eb5c274c43fac514d0e446dbe","50d24bcc9bf796e673cc7aee55042d4c6f3f3667dd0db69ac652c5b77aa261a4"]}
+# {"tool":"getQuote","id":"fresh-correction-replay","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":2,"receiptHashes":["0b94fe915de866882a09e89496aec5ab21ebec906f1dcbe22e52a37a38ab6cc8","ecf96ca33119faa60635c84a5a5f10d7adb63323797dc3be31dcd67e7a5dab0e"],"quoteHashes":["26eb4844200a5339c97434285fb9f7513e68281eb5c274c43fac514d0e446dbe","50d24bcc9bf796e673cc7aee55042d4c6f3f3667dd0db69ac652c5b77aa261a4"]}
+# (node:45) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: QE-004/015 production save/approve/match/quote: 1 x 45 G
+ok 8 - QE-004/015 production save/approve/match/quote: 1 x 45 G
+  ---
+  duration_ms: 514.794434
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 1 x 1512 G
+ok 9 - QE-004/015 production save/approve/match/quote: 1 x 1512 G
+  ---
+  duration_ms: 278.619239
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 1512 G
+ok 10 - QE-004/015 production save/approve/match/quote: 3 x 1512 G
+  ---
+  duration_ms: 337.391887
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 G
+ok 11 - QE-004/015 production save/approve/match/quote: 3 x 2000 G
+  ---
+  duration_ms: 294.770473
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 界
+ok 12 - QE-004/015 production save/approve/match/quote: 3 x 2000 界
+  ---
+  duration_ms: 308.574107
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 😀
+ok 13 - QE-004/015 production save/approve/match/quote: 3 x 2000 😀
+  ---
+  duration_ms: 393.264907
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 239-character gate label survives matching
+ok 14 - QE-015 entire 239-character gate label survives matching
+  ---
+  duration_ms: 120.206495
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 240-character gate label survives matching
+ok 15 - QE-015 entire 240-character gate label survives matching
+  ---
+  duration_ms: 110.351219
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 241-character gate label survives matching
+ok 16 - QE-015 entire 241-character gate label survives matching
+  ---
+  duration_ms: 105.272063
+  type: 'test'
+  ...
+# Subtest: QE-015 similar names bind the measured choice and its own price, never another opening
+ok 17 - QE-015 similar names bind the measured choice and its own price, never another opening
+  ---
+  duration_ms: 209.137658
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable characters outcome is durably review-only and idempotent
+ok 18 - QE-004 unpresentable characters outcome is durably review-only and idempotent
+  ---
+  duration_ms: 224.319082
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable bytes outcome is durably review-only and idempotent
+ok 19 - QE-004 unpresentable bytes outcome is durably review-only and idempotent
+  ---
+  duration_ms: 193.013085
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable scope count outcome is durably review-only and idempotent
+ok 20 - QE-004 unpresentable scope count outcome is durably review-only and idempotent
+  ---
+  duration_ms: 182.841954
+  type: 'test'
+  ...
+# Subtest: QE-004 presentation fallback never converts pricebook/storage failure into saved review success
+ok 21 - QE-004 presentation fallback never converts pricebook/storage failure into saved review success
+  ---
+  duration_ms: 86.994478
+  type: 'test'
+  ...
+# Subtest: QE-004 combined gate configuration envelope rejects before save instead of truncating
+ok 22 - QE-004 combined gate configuration envelope rejects before save instead of truncating
+  ---
+  duration_ms: 33.462583
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 3999-character scope preserves spaces and Unicode through real transport
+ok 23 - QE-004 aggregate 3999-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.771171
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 4000-character scope preserves spaces and Unicode through real transport
+ok 24 - QE-004 aggregate 4000-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.333361
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 4001-character scope preserves spaces and Unicode through real transport
+ok 25 - QE-004 aggregate 4001-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.347964
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 7999-character scope preserves spaces and Unicode through real transport
+ok 26 - QE-004 aggregate 7999-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.401003
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 8000-character scope preserves spaces and Unicode through real transport
+ok 27 - QE-004 aggregate 8000-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.363838
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 8001-character scope preserves spaces and Unicode through real transport
+ok 28 - QE-004 aggregate 8001-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.704811
+  type: 'test'
+  ...
+# Subtest: QE-004 a fallback database write failure is never acknowledged; a clean retry saves exactly once
+ok 29 - QE-004 a fallback database write failure is never acknowledged; a clean retry saves exactly once
+  ---
+  duration_ms: 269.429894
+  type: 'test'
+  ...
+# Subtest: QE-004 an unpresentable partial result saves an owner review without a nonexistent released-quote link
+ok 30 - QE-004 an unpresentable partial result saves an owner review without a nonexistent released-quote link
+  ---
+  duration_ms: 176.963929
+  type: 'test'
+  ...
+# (node:53) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: leftovers scope: resolved phone question identifies selected laminate, not first hardwood
+ok 31 - leftovers scope: resolved phone question identifies selected laminate, not first hardwood
+  ---
+  duration_ms: 361.533791
+  type: 'test'
+  ...
+# Subtest: leftovers scope: approved phone calculation refuses an unbound scope boolean
+ok 32 - leftovers scope: approved phone calculation refuses an unbound scope boolean
+  ---
+  duration_ms: 272.310698
+  type: 'test'
+  ...
+# Subtest: leftovers scope: confirmations bind selected presentation, call, and configuration revision
+ok 33 - leftovers scope: confirmations bind selected presentation, call, and configuration revision
+  ---
+  duration_ms: 104.535292
+  type: 'test'
+  ...
+# Subtest: leftovers history: service retains saved material qualifications and option exclusions
+ok 34 - leftovers history: service retains saved material qualifications and option exclusions
+  ---
+  duration_ms: 22.178367
+  type: 'test'
+  ...
+# Subtest: leftovers history: dispatched partial receipt retains priced scope and separate work
+ok 35 - leftovers history: dispatched partial receipt retains priced scope and separate work
+  ---
+  duration_ms: 25.906506
+  type: 'test'
+  ...
+# Subtest: leftovers history: authoritative frozen receipt retains long and per-option qualifications
+ok 36 - leftovers history: authoritative frozen receipt retains long and per-option qualifications
+  ---
+  duration_ms: 25.202596
+  type: 'test'
+  ...
+# Subtest: leftovers history: oversize disclosure withholds all amounts instead of dropping qualifications
+ok 37 - leftovers history: oversize disclosure withholds all amounts instead of dropping qualifications
+  ---
+  duration_ms: 22.69226
+  type: 'test'
+  ...
+# Subtest: leftovers history: invalid exclusion withholds all amounts instead of dropping qualifications
+ok 38 - leftovers history: invalid exclusion withholds all amounts instead of dropping qualifications
+  ---
+  duration_ms: 31.089233
+  type: 'test'
+  ...
+# Subtest: leftovers history: missing separate scope withholds all amounts instead of dropping qualifications
+ok 39 - leftovers history: missing separate scope withholds all amounts instead of dropping qualifications
+  ---
+  duration_ms: 22.771009
+  type: 'test'
+  ...
+# Subtest: leftovers website: stylesheet hidden price is absent from direct extraction
+ok 40 - leftovers website: stylesheet hidden price is absent from direct extraction
+  ---
+  duration_ms: 5.833586
+  type: 'test'
+  ...
+# Subtest: leftovers website: real HTTP import excludes stylesheet-hidden ancestor prices
+ok 41 - leftovers website: real HTTP import excludes stylesheet-hidden ancestor prices
+  ---
+  duration_ms: 28.672367
+  type: 'test'
+  ...
+# Subtest: leftovers website: bounded stylesheet selector .catalog .retired / display:none
+ok 42 - leftovers website: bounded stylesheet selector .catalog .retired / display:none
+  ---
+  duration_ms: 0.597388
+  type: 'test'
+  ...
+# Subtest: leftovers website: bounded stylesheet selector \#catalog > p.retired[data-retired="yes"] / visibility:hidden
+ok 43 - leftovers website: bounded stylesheet selector \#catalog > p.retired[data-retired="yes"] / visibility:hidden
+  ---
+  duration_ms: 0.686182
+  type: 'test'
+  ...
+# Subtest: leftovers website: bounded stylesheet selector .retired / opacity:0
+ok 44 - leftovers website: bounded stylesheet selector .retired / opacity:0
+  ---
+  duration_ms: 0.379801
+  type: 'test'
+  ...
+# Subtest: leftovers website: bounded stylesheet selector .retired / content-visibility:hidden
+ok 45 - leftovers website: bounded stylesheet selector .retired / content-visibility:hidden
+  ---
+  duration_ms: 0.346531
+  type: 'test'
+  ...
+# Subtest: leftovers website: bounded stylesheet selector .retired / text-decoration:line-through
+ok 46 - leftovers website: bounded stylesheet selector .retired / text-decoration:line-through
+  ---
+  duration_ms: 0.185629
+  type: 'test'
+  ...
+# Subtest: leftovers website: bounded stylesheet selector .retired / color:\#0000
+ok 47 - leftovers website: bounded stylesheet selector .retired / color:\#0000
+  ---
+  duration_ms: 0.247062
+  type: 'test'
+  ...
+# Subtest: leftovers website: bounded stylesheet selector .retired / color:rgb(0 0 0 / 0)
+ok 48 - leftovers website: bounded stylesheet selector .retired / color:rgb(0 0 0 / 0)
+  ---
+  duration_ms: 0.462085
+  type: 'test'
+  ...
+# Subtest: leftovers website: bounded stylesheet selector .retired / font-size:0.0px
+ok 49 - leftovers website: bounded stylesheet selector .retired / font-size:0.0px
+  ---
+  duration_ms: 0.254813
+  type: 'test'
+  ...
+# Subtest: leftovers website: unresolved CSS never becomes a visible-price assumption: @media screen {.retired{display:none}}
+ok 50 - leftovers website: unresolved CSS never becomes a visible-price assumption: @media screen {.retired{display:none}}
+  ---
+  duration_ms: 0.19278
+  type: 'test'
+  ...
+# Subtest: leftovers website: unresolved CSS never becomes a visible-price assumption: .retired:not(.current){display:none}
+ok 51 - leftovers website: unresolved CSS never becomes a visible-price assumption: .retired:not(.current){display:none}
+  ---
+  duration_ms: 0.186561
+  type: 'test'
+  ...
+# Subtest: leftovers website: unresolved CSS never becomes a visible-price assumption: .retired{display:var(--state)}
+ok 52 - leftovers website: unresolved CSS never becomes a visible-price assumption: .retired{display:var(--state)}
+  ---
+  duration_ms: 0.155023
+  type: 'test'
+  ...
+# Subtest: leftovers website: unresolved CSS never becomes a visible-price assumption: @import url("/other.css");
+ok 53 - leftovers website: unresolved CSS never becomes a visible-price assumption: @import url("/other.css");
+  ---
+  duration_ms: 0.097767
+  type: 'test'
+  ...
+# Subtest: leftovers website: unresolved CSS never becomes a visible-price assumption: .retired{font-size-adjust:0}
+ok 54 - leftovers website: unresolved CSS never becomes a visible-price assumption: .retired{font-size-adjust:0}
+  ---
+  duration_ms: 0.100872
+  type: 'test'
+  ...
+# Subtest: leftovers website: unresolved CSS never becomes a visible-price assumption: .retired{color:white;background-color:white}
+ok 55 - leftovers website: unresolved CSS never becomes a visible-price assumption: .retired{color:white;background-color:white}
+  ---
+  duration_ms: 0.104787
+  type: 'test'
+  ...
+# Subtest: leftovers website: same-host linked CSS uses the bounded transport and preserves visible price
+ok 56 - leftovers website: same-host linked CSS uses the bounded transport and preserves visible price
+  ---
+  duration_ms: 10.727379
+  type: 'test'
+  ...
+# Subtest: leftovers website: foreign host fails visibility closed
+ok 57 - leftovers website: foreign host fails visibility closed
+  ---
+  duration_ms: 2.612481
+  type: 'test'
+  ...
+# Subtest: leftovers website: private address fails visibility closed
+ok 58 - leftovers website: private address fails visibility closed
+  ---
+  duration_ms: 2.576466
+  type: 'test'
+  ...
+# Subtest: leftovers website: wrong content type fails visibility closed
+ok 59 - leftovers website: wrong content type fails visibility closed
+  ---
+  duration_ms: 4.011265
+  type: 'test'
+  ...
+# Subtest: leftovers website: unresolved nested CSS fails visibility closed
+ok 60 - leftovers website: unresolved nested CSS fails visibility closed
+  ---
+  duration_ms: 3.926357
+  type: 'test'
+  ...
+# Subtest: leftovers website: shared request budget fails visibility closed
+ok 61 - leftovers website: shared request budget fails visibility closed
+  ---
+  duration_ms: 2.536576
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: prompt delegates multiplication to server only
+ok 62 - leftovers listed prices: prompt delegates multiplication to server only
+  ---
+  duration_ms: 3.946718
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: server tool accepts listing identity and quantity, never a supplied rate
+ok 63 - leftovers listed prices: server tool accepts listing identity and quantity, never a supplied rate
+  ---
+  duration_ms: 0.507053
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: dispatched exact product $0.10 × 3 = 0.30
+ok 64 - leftovers listed prices: dispatched exact product $0.10 × 3 = 0.30
+  ---
+  duration_ms: 25.94932
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: dispatched exact product $2 × 500 = 1000.00
+ok 65 - leftovers listed prices: dispatched exact product $2 × 500 = 1000.00
+  ---
+  duration_ms: 21.912307
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: dispatched exact product $19.99 × 3 = 59.97
+ok 66 - leftovers listed prices: dispatched exact product $19.99 × 3 = 59.97
+  ---
+  duration_ms: 22.674734
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: dispatched exact product $0.035 × 1000 = 35.00
+ok 67 - leftovers listed prices: dispatched exact product $0.035 × 1000 = 35.00
+  ---
+  duration_ms: 23.746516
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: dispatched exact product $0.10 × 0.2 = 0.02
+ok 68 - leftovers listed prices: dispatched exact product $0.10 × 0.2 = 0.02
+  ---
+  duration_ms: 35.713235
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: dispatched exact product $0.005 × 3 = 0.02
+ok 69 - leftovers listed prices: dispatched exact product $0.005 × 3 = 0.02
+  ---
+  duration_ms: 23.737453
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: dispatched exact product $1,234.50 × 2 = 2469.00
+ok 70 - leftovers listed prices: dispatched exact product $1,234.50 × 2 = 2469.00
+  ---
+  duration_ms: 23.459595
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget from $0.10 each
+ok 71 - leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget from $0.10 each
+  ---
+  duration_ms: 26.583664
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10 each; minimum 10 items
+ok 72 - leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10 each; minimum 10 items
+  ---
+  duration_ms: 23.080153
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10 each; first 10 only
+ok 73 - leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10 each; first 10 only
+  ---
+  duration_ms: 23.338873
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10 each; $2 delivery
+ok 74 - leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10 each; $2 delivery
+  ---
+  duration_ms: 23.457581
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10
+ok 75 - leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10
+  ---
+  duration_ms: 26.461861
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10 each; discount over 20
+ok 76 - leftovers listed prices: no arithmetic for ambiguous or nonlinear listing [SYNTHETIC] Widget $0.10 each; discount over 20
+  ---
+  duration_ms: 22.77838
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: current owner listing is authoritative across tenants, edits, and draft state
+ok 77 - leftovers listed prices: current owner listing is authoritative across tenants, edits, and draft state
+  ---
+  duration_ms: 22.226999
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: invalid quantity 3 cannot reach arithmetic
+ok 78 - leftovers listed prices: invalid quantity 3 cannot reach arithmetic
+  ---
+  duration_ms: 0.240602
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: invalid quantity -1 cannot reach arithmetic
+ok 79 - leftovers listed prices: invalid quantity -1 cannot reach arithmetic
+  ---
+  duration_ms: 0.065619
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: invalid quantity 1e3 cannot reach arithmetic
+ok 80 - leftovers listed prices: invalid quantity 1e3 cannot reach arithmetic
+  ---
+  duration_ms: 0.04612
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: invalid quantity 1/2 cannot reach arithmetic
+ok 81 - leftovers listed prices: invalid quantity 1/2 cannot reach arithmetic
+  ---
+  duration_ms: 0.041282
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: invalid quantity NaN cannot reach arithmetic
+ok 82 - leftovers listed prices: invalid quantity NaN cannot reach arithmetic
+  ---
+  duration_ms: 0.083796
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: invalid quantity Infinity cannot reach arithmetic
+ok 83 - leftovers listed prices: invalid quantity Infinity cannot reach arithmetic
+  ---
+  duration_ms: 0.04646
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: invalid quantity 1.0000001 cannot reach arithmetic
+ok 84 - leftovers listed prices: invalid quantity 1.0000001 cannot reach arithmetic
+  ---
+  duration_ms: 0.050987
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: invalid quantity 1000000000000 cannot reach arithmetic
+ok 85 - leftovers listed prices: invalid quantity 1000000000000 cannot reach arithmetic
+  ---
+  duration_ms: 0.041562
+  type: 'test'
+  ...
+# Subtest: leftovers listed prices: zero quantity and over-limit products have no invented result
+ok 86 - leftovers listed prices: zero quantity and over-limit products have no invented result
+  ---
+  duration_ms: 23.371092
+  type: 'test'
+  ...
+# (node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Owner ruling: removed SMS tool cannot reach the production provider
+ok 87 - Owner ruling: removed SMS tool cannot reach the production provider
+  ---
+  duration_ms: 304.152092
+  type: 'test'
+  ...
+# Subtest: D04 owner ruling: production refuses caller SMS and never invokes the provider
+ok 88 - D04 owner ruling: production refuses caller SMS and never invokes the provider
+  ---
+  duration_ms: 67.417789
+  type: 'test'
+  ...
+# Subtest: D06 failed transfer persists the promised callback with caller words and replay identity
+ok 89 - D06 failed transfer persists the promised callback with caller words and replay identity
+  ---
+  duration_ms: 25.533355
+  type: 'test'
+  ...
+# Subtest: D04 production transfer adapter initiates one provider handoff without claiming connection
+ok 90 - D04 production transfer adapter initiates one provider handoff without claiming connection
+  ---
+  duration_ms: 56.020932
+  type: 'test'
+  ...
+# Subtest: D04 production appointment-change adapter reaches the booking service
+ok 91 - D04 production appointment-change adapter reaches the booking service
+  ---
+  duration_ms: 83.82938
+  type: 'test'
+  ...
+# Subtest: D07 model startup failure gathers and durably saves before any forwarding
+ok 92 - D07 model startup failure gathers and durably saves before any forwarding
+  ---
+  duration_ms: 53.543795
+  type: 'test'
+  ...
+# Subtest: D08 signed anonymous caller resolves by To and cannot see another anonymous caller history
+ok 93 - D08 signed anonymous caller resolves by To and cannot see another anonymous caller history
+  ---
+  duration_ms: 31.936037
+  type: 'test'
+  ...
+# Subtest: D25 completed call is final in storage and signed fallback
+ok 94 - D25 completed call is final in storage and signed fallback
+  ---
+  duration_ms: 44.489434
+  type: 'test'
+  ...
+# Subtest: D26 caller text and unfinished model transcript survive immediate call cleanup
+ok 95 - D26 caller text and unfinished model transcript survive immediate call cleanup
+  ---
+  duration_ms: 41.588098
+  type: 'test'
+  ...
+# Subtest: D26 final provider text received during close is persisted before cleanup
+ok 96 - D26 final provider text received during close is persisted before cleanup
+  ---
+  duration_ms: 41.106064
+  type: 'test'
+  ...
+# Subtest: D07 transient transcript write failure retries received words before ending the call
+ok 97 - D07 transient transcript write failure retries received words before ending the call
+  ---
+  duration_ms: 51.466782
+  type: 'test'
+  ...
+# Subtest: D27 production startup recovers active call into one durable lead
+ok 98 - D27 production startup recovers active call into one durable lead
+  ---
+  duration_ms: 24.544857
+  type: 'test'
+  ...
+# Subtest: D27 legacy active rows with incomplete provider metadata still become owner leads
+ok 99 - D27 legacy active rows with incomplete provider metadata still become owner leads
+  ---
+  duration_ms: 21.711264
+  type: 'test'
+  ...
+# Subtest: D28 provisioned phone alone never claims eligibility when inbound runtime is disabled
+ok 100 - D28 provisioned phone alone never claims eligibility when inbound runtime is disabled
+  ---
+  duration_ms: 0.316486
+  type: 'test'
+  ...
+# Subtest: D28 receptionist readiness has no dashboard on/off switch
+ok 101 - D28 receptionist readiness has no dashboard on/off switch
+  ---
+  duration_ms: 0.148844
+  type: 'test'
+  ...
+# Subtest: D31 duplicate signed inbound delivery replays one durable session and never reopens final calls
+ok 102 - D31 duplicate signed inbound delivery replays one durable session and never reopens final calls
+  ---
+  duration_ms: 32.047045
+  type: 'test'
+  ...
+# Subtest: D32 default ceiling reserves five sessions atomically; sixth captures its request
+ok 103 - D32 default ceiling reserves five sessions atomically; sixth captures its request
+  ---
+  duration_ms: 53.113749
+  type: 'test'
+  ...
+# Subtest: P01 no default callback or quote deadline; only explicit owner policy authorizes one
+ok 104 - P01 no default callback or quote deadline; only explicit owner policy authorizes one
+  ---
+  duration_ms: 0.800765
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity anonymous is isolated from prior caller history
+ok 105 - D08 anonymous identity anonymous is isolated from prior caller history
+  ---
+  duration_ms: 87.247232
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity unknown is isolated from prior caller history
+ok 106 - D08 anonymous identity unknown is isolated from prior caller history
+  ---
+  duration_ms: 90.902281
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity restricted is isolated from prior caller history
+ok 107 - D08 anonymous identity restricted is isolated from prior caller history
+  ---
+  duration_ms: 87.502256
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity unavailable is isolated from prior caller history
+ok 108 - D08 anonymous identity unavailable is isolated from prior caller history
+  ---
+  duration_ms: 86.410954
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity private is isolated from prior caller history
+ok 109 - D08 anonymous identity private is isolated from prior caller history
+  ---
+  duration_ms: 85.323658
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity blocked is isolated from prior caller history
+ok 110 - D08 anonymous identity blocked is isolated from prior caller history
+  ---
+  duration_ms: 84.762665
+  type: 'test'
+  ...
+# Subtest: D08 malformed caller and cross-tenant capture callbacks cannot alter a request
+ok 111 - D08 malformed caller and cross-tenant capture callbacks cannot alter a request
+  ---
+  duration_ms: 28.824997
+  type: 'test'
+  ...
+# Subtest: D07 fallback persistence failure returns retryable error and never forwards
+ok 112 - D07 fallback persistence failure returns retryable error and never forwards
+  ---
+  duration_ms: 52.582199
+  type: 'test'
+  ...
+# Subtest: D07 partial fallback speech survives an empty final result and recovery
+ok 113 - D07 partial fallback speech survives an empty final result and recovery
+  ---
+  duration_ms: 46.084444
+  type: 'test'
+  ...
+# Subtest: D25 repeated completed fallback capture neither rewrites request nor forwards again
+ok 114 - D25 repeated completed fallback capture neither rewrites request nor forwards again
+  ---
+  duration_ms: 47.795508
+  type: 'test'
+  ...
+# Subtest: D26 pending text is preserved on error
+ok 115 - D26 pending text is preserved on error
+  ---
+  duration_ms: 51.013589
+  type: 'test'
+  ...
+# Subtest: D26 pending text is preserved on provider_close
+ok 116 - D26 pending text is preserved on provider_close
+  ---
+  duration_ms: 48.312285
+  type: 'test'
+  ...
+# Subtest: D26 pending text is preserved on socket_close
+ok 117 - D26 pending text is preserved on socket_close
+  ---
+  duration_ms: 49.301594
+  type: 'test'
+  ...
+# Subtest: D26 received caller text persists while a provider tool is still waiting
+ok 118 - D26 received caller text persists while a provider tool is still waiting
+  ---
+  duration_ms: 70.684414
+  type: 'test'
+  ...
+# Subtest: D31 duplicated media upgrade cannot start a second provider session
+ok 119 - D31 duplicated media upgrade cannot start a second provider session
+  ---
+  duration_ms: 42.026138
+  type: 'test'
+  ...
+# Subtest: D26 normal cleanup enriches the captured inquiry without duplicating it
+ok 120 - D26 normal cleanup enriches the captured inquiry without duplicating it
+  ---
+  duration_ms: 51.866442
+  type: 'test'
+  ...
+# Subtest: D32 sixth caller request is retained and another tenant has independent capacity
+ok 121 - D32 sixth caller request is retained and another tenant has independent capacity
+  ---
+  duration_ms: 48.696834
+  type: 'test'
+  ...
+# Subtest: P01 owner-set policy is available verbatim; caller urgency and business hours are not deadlines
+ok 122 - P01 owner-set policy is available verbatim; caller urgency and business hours are not deadlines
+  ---
+  duration_ms: 0.796499
+  type: 'test'
+  ...
+# Subtest: D04 warm transfer requires explicit acceptance with signed child-leg binding
+ok 123 - D04 warm transfer requires explicit acceptance with signed child-leg binding
+  ---
+  duration_ms: 57.114278
+  type: 'test'
+  ...
+# Subtest: D04 warm transfer decline saves callback with signed child-leg binding
+ok 124 - D04 warm transfer decline saves callback with signed child-leg binding
+  ---
+  duration_ms: 59.043371
+  type: 'test'
+  ...
+# Subtest: D04 real booking service cancel uses fake calendar and commits only confirmed result
+ok 125 - D04 real booking service cancel uses fake calendar and commits only confirmed result
+  ---
+  duration_ms: 49.8853
+  type: 'test'
+  ...
+# Subtest: D04 real booking service reschedule uses fake calendar and commits only confirmed result
+ok 126 - D04 real booking service reschedule uses fake calendar and commits only confirmed result
+  ---
+  duration_ms: 63.037457
+  type: 'test'
+  ...
+# Subtest: D04 ambiguous calendar change preserves both reservations and request evidence
+ok 127 - D04 ambiguous calendar change preserves both reservations and request evidence
+  ---
+  duration_ms: 61.574113
+  type: 'test'
+  ...
+# Subtest: D04 rescheduling rechecks remote availability before writing a stale offered slot
+ok 128 - D04 rescheduling rechecks remote availability before writing a stale offered slot
+  ---
+  duration_ms: 64.270803
+  type: 'test'
+  ...
+# Subtest: D04 Google calendar cancel adapter uses authenticated PATCH and validates response
+ok 129 - D04 Google calendar cancel adapter uses authenticated PATCH and validates response
+  ---
+  duration_ms: 1.961152
+  type: 'test'
+  ...
+# Subtest: D04 Google calendar reschedule adapter uses authenticated PATCH and validates response
+ok 130 - D04 Google calendar reschedule adapter uses authenticated PATCH and validates response
+  ---
+  duration_ms: 0.632042
+  type: 'test'
+  ...
+# (node:69) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:69) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: nonce persistence is atomic, bound, expiring, and one use
+ok 131 - nonce persistence is atomic, bound, expiring, and one use
+  ---
+  duration_ms: 6.821758
+  type: 'test'
+  ...
+# Subtest: session storage binds a call to the nonce hash and exact signed context
+ok 132 - session storage binds a call to the nonce hash and exact signed context
+  ---
+  duration_ms: 3.514731
+  type: 'test'
+  ...
+# Subtest: fallback persistence is idempotent and account context derives metered usage
+ok 133 - fallback persistence is idempotent and account context derives metered usage
+  ---
+  duration_ms: 4.726915
+  type: 'test'
+  ...
+# Subtest: durable tool idempotency replays across store restarts and rejects changed arguments
+ok 134 - durable tool idempotency replays across store restarts and rejects changed arguments
+  ---
+  duration_ms: 2.984643
+  type: 'test'
+  ...
+# Subtest: tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+ok 135 - tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+  ---
+  duration_ms: 3.076261
+  type: 'test'
+  ...
+# Subtest: opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+ok 136 - opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+  ---
+  duration_ms: 3.504876
+  type: 'test'
+  ...
+# Subtest: voice tool runtime persists a safe review quote and lead without exposing internal identities
+ok 137 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+  ---
+  duration_ms: 48.852615
+  type: 'test'
+  ...
+# Subtest: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+ok 138 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+  ---
+  duration_ms: 5.770576
+  type: 'test'
+  ...
+# Subtest: a reused signed CallSid cannot change its tenant, caller, account or destination
+ok 139 - a reused signed CallSid cannot change its tenant, caller, account or destination
+  ---
+  duration_ms: 3.619168
+  type: 'test'
+  ...
+# (node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: signed production voice exposes server-only listed-price multiplication and speaks its exact response
+ok 140 - signed production voice exposes server-only listed-price multiplication and speaks its exact response
+  ---
+  duration_ms: 464.664712
+  type: 'test'
+  ...
+# Subtest: signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+ok 141 - signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+  ---
+  duration_ms: 791.324048
+  type: 'test'
+  ...
+# Subtest: caller-estimated phone quote saves flag, owner warnings and identical written narration
+ok 142 - caller-estimated phone quote saves flag, owner warnings and identical written narration
+  ---
+  duration_ms: 434.852392
+  type: 'test'
+  ...
+# Subtest: session-start failure captures before signed forwarding; mismatched caller fails closed
+ok 143 - session-start failure captures before signed forwarding; mismatched caller fails closed
+  ---
+  duration_ms: 268.986299
+  type: 'test'
+  ...
+# Subtest: ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+ok 144 - ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+  ---
+  duration_ms: 389.578178
+  type: 'test'
+  ...
+# Subtest: phone readiness uses cached quick statuses with the same live answer
+ok 145 - phone readiness uses cached quick statuses with the same live answer
+  ---
+  duration_ms: 386.846546
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value 0
+ok 146 - forbidden quote key __proto__ value 0
+  ---
+  duration_ms: 0.672573
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value null
+ok 147 - forbidden quote key __proto__ value null
+  ---
+  duration_ms: 0.124538
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value "x"
+ok 148 - forbidden quote key __proto__ value "x"
+  ---
+  duration_ms: 0.349255
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value {"sentinel":true}
+ok 149 - forbidden quote key __proto__ value {"sentinel":true}
+  ---
+  duration_ms: 0.35255
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value 0
+ok 150 - forbidden quote key constructor value 0
+  ---
+  duration_ms: 0.104417
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value null
+ok 151 - forbidden quote key constructor value null
+  ---
+  duration_ms: 0.069575
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value "x"
+ok 152 - forbidden quote key constructor value "x"
+  ---
+  duration_ms: 0.061012
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value {"sentinel":true}
+ok 153 - forbidden quote key constructor value {"sentinel":true}
+  ---
+  duration_ms: 0.09915
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value 0
+ok 154 - forbidden quote key prototype value 0
+  ---
+  duration_ms: 0.148193
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value null
+ok 155 - forbidden quote key prototype value null
+  ---
+  duration_ms: 0.079489
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value "x"
+ok 156 - forbidden quote key prototype value "x"
+  ---
+  duration_ms: 0.056666
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value {"sentinel":true}
+ok 157 - forbidden quote key prototype value {"sentinel":true}
+  ---
+  duration_ms: 0.051788
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value 0
+ok 158 - forbidden quote key __PrOtO__ value 0
+  ---
+  duration_ms: 0.117937
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value null
+ok 159 - forbidden quote key __PrOtO__ value null
+  ---
+  duration_ms: 0.066189
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value "x"
+ok 160 - forbidden quote key __PrOtO__ value "x"
+  ---
+  duration_ms: 0.047952
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value {"sentinel":true}
+ok 161 - forbidden quote key __PrOtO__ value {"sentinel":true}
+  ---
+  duration_ms: 0.047772
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected ownerId
+ok 162 - caller identity or money rejected ownerId
+  ---
+  duration_ms: 0.094662
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected price
+ok 163 - caller identity or money rejected price
+  ---
+  duration_ms: 0.046711
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected offeringId
+ok 164 - caller identity or money rejected offeringId
+  ---
+  duration_ms: 0.04001
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected confirmedFacts
+ok 165 - caller identity or money rejected confirmedFacts
+  ---
+  duration_ms: 0.046119
+  type: 'test'
+  ...
+# Subtest: full written disclosure survives both projections while short summary preserves both ranges and exclusions
+ok 166 - full written disclosure survives both projections while short summary preserves both ranges and exclusions
+  ---
+  duration_ms: 1.178194
+  type: 'test'
+  ...
+# Subtest: booking already owns hold then confirm; caller hold/finalize injection stays rejected
+ok 167 - booking already owns hold then confirm; caller hold/finalize injection stays rejected
+  ---
+  duration_ms: 0.213892
+  type: 'test'
+  ...
+# Subtest: actual start entry point installs the signed runtime instead of the placeholder
+ok 168 - actual start entry point installs the signed runtime instead of the placeholder
+  ---
+  duration_ms: 0.26626
+  type: 'test'
+  ...
+1..168
+# tests 168
+# suites 0
+# pass 168
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20008.396708

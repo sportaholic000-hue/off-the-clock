@@ -1,0 +1,5 @@
+{
+  "test/qeVoiceCorrectionSequences20261018.spec.mjs": "b838e1892339addc35498927da8ac3c2c5fb43c46f56c652b22341fb08ae3ee4",
+  "verification/qe-voice-corrections-20261018/sequenceFixture.mjs": "caf3a1e652ee653e696e6465e8604d2e5fd60d5f28a297cb7be7314759ce5dc9",
+  "verification/qe-voice-corrections-20261018/EXPECTED.md": "aad8e4246f95ed0006da299608457475b9d7e66ea740a11a462e41c55ce29cb2"
+}

@@ -1,0 +1,25 @@
+{
+  "command": "node",
+  "args": [
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/qeVoiceCorrectionSequences20261018.spec.mjs",
+    "test/voiceQuotePathRegression20261005.spec.mjs",
+    "test/voiceLifecycle20261006.spec.mjs",
+    "test/voicePersistence.spec.mjs",
+    "test/quoteEngineLeftovers20261007.spec.mjs",
+    "test/quoteDeliveryBatch20261015Gates.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/qe-voice-corrections",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T05:31:35.493Z",
+  "environment": {
+    "PRICEBOOK_PATH": "created per worker by test/pricebookTestEnv.mjs",
+    "providers": "synthetic injected Google/Twilio clients",
+    "TMPDIR": "/workspace/scratch/5228524b6f21/qe-voice-runtime/tmp"
+  }
+}
