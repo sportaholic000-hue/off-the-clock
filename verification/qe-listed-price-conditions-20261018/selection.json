@@ -1,0 +1,7 @@
+{
+  "regressionFile": "test/voiceListedPriceConditions20261018.spec.mjs",
+  "fullIncludes": true,
+  "strictIncludes": false,
+  "fullFiles": 332,
+  "strictFiles": 268
+}

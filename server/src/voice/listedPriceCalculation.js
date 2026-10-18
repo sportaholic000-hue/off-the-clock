@@ -5,6 +5,13 @@ const decimal=/^(?:0|[1-9]\d{0,11})(?:\.\d{1,6})?$/;
 const coefficient=value=>{const [whole,fraction='']=value.split('.');return {value:BigInt(whole+fraction),scale:fraction.length};};
 const priceSentence=/^(?<item>[\p{L}\p{M}\p{N}#\[][\p{L}\p{M}\p{N}\s:'’()\[\]#./×-]*?\s*)?(?<currency>CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|CAD|USD|EUR|GBP|AUD|NZD)\s*(?<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)\s*(?:each|(?:per\s+|\/\s*)(?:(?:square|sq\.?|linear|lineal|lin\.?|cubic|cu\.?|board)\s+(?:foot|feet|ft|yards?|yds?|meters?|metres?|m|inch(?:es)?|in)|[a-z]+))\.?$/iu;
 const qualifiedPricePrefix=/\p{N}|\b(?:minimum|min|maximum|max|from|starting|start|up\s+to|about|approx|around|only|first|second|half|discount|off|sale|special|promo|deal|free|extra|additional|each\s+additional|per|over|pack)\b/iu;
+// Quantity confirmation cannot establish a condition, eligibility or an
+// uncertain price. Treat these as qualifications even inside an item label.
+const conditionalPricePrefix=/\b(?:if|unless|when(?:ever)?|where(?:ver)?|whether|while|after|before|until|once|upon|during|subject|provided|providing|pending|conditional(?:ly)?|contingent|depend(?:s|ing|ent)?|requir(?:e[sd]?|ing)|must|may|might|could|would|should|eligible|eligibility|qualif(?:y|ies|ied|ying)|members?|subscribers?|terms?|conditions?|restrictions?|estimated?|approximate(?:ly)?|roughly|ballpark|suggested|provisional|preliminary|tentative|indicative|variable|negotiable|negotiated|agreed|normally|usually|typically|daily|weekly|monthly|yearly|weekdays?|weekends?|prepaid|prepayment|plus|except|excluding)\b|\bcan\s+(?:change|vary|depend|be|cost)\b/iu;
+// A prepositional qualification cannot safely be classified as a product
+// name. Keep ambiguous listings on the verbatim path. Word starts preserve
+// ordinary compounds such as board-on-board and substring names (Aftercare).
+const unclassifiedPricePrefix=/(?:^|\s|\(|\[)(?:for|with|without|under|on|at|by|as|via|through)\b/iu;
 // Only numbers with a recognizable product-name role may precede the one
 // saved unit price. Any remaining number might be a quantity or condition.
 const withoutProductNumbers=item=>item
@@ -31,7 +38,11 @@ export function calculateSavedListedPrice(knowledge,args){
   if(match){
    // A qualification anywhere before the price can change the charge. Even
    // genuine item names such as "Half-round gutter" must be repeated as saved.
-   if(price||qualifiedPricePrefix.test(withoutProductNumbers(match.groups.item||'')))return refusal();
+   const item=withoutProductNumbers(match.groups.item||'');
+   // Normalize only qualification detection; saved text, numeric-name checks,
+   // currency and all arithmetic retain their original representation.
+   const qualification=item.normalize('NFKC');
+   if(price||qualifiedPricePrefix.test(item)||conditionalPricePrefix.test(qualification)||unclassifiedPricePrefix.test(qualification))return refusal();
    price=match.groups;
   }else if(!taxSentence.test(sentence)&&!contactSentence.test(sentence))return refusal();
  }
