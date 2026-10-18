@@ -1,0 +1,65 @@
+{
+  "base": "c1817621f6eccb31822979bf994efc4902682d34",
+  "expected": {
+    "status": "needs_review",
+    "extendedAmount": "absent",
+    "fallback": "Repeat only the saved listing word for word with its conditions."
+  },
+  "observed": [
+    {
+      "listedItem": "If prepaid $10 per item",
+      "result": {
+        "status": "calculated",
+        "listedItem": "If prepaid $10 per item",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "If prepaid $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    },
+    {
+      "listedItem": "Unless delivered $10 per item",
+      "result": {
+        "status": "calculated",
+        "listedItem": "Unless delivered $10 per item",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Unless delivered $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    },
+    {
+      "listedItem": "When booked online $10 per item",
+      "result": {
+        "status": "calculated",
+        "listedItem": "When booked online $10 per item",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "When booked online $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    },
+    {
+      "listedItem": "After inspection $10 per item",
+      "result": {
+        "status": "calculated",
+        "listedItem": "After inspection $10 per item",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "After inspection $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    },
+    {
+      "listedItem": "Subject to approval $10 per item",
+      "result": {
+        "status": "calculated",
+        "listedItem": "Subject to approval $10 per item",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Subject to approval $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    }
+  ]
+}

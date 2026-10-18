@@ -9,14 +9,15 @@ const qualifiedPricePrefix=/\p{N}|\b(?:minimum|min|maximum|max|from|starting|sta
 // Quantity confirmation cannot establish payment, timing, availability or scope
 // conditions. Refuse clause markers anywhere in that text, including inside
 // parentheses or after a product number. Do not attempt to evaluate the clause.
-const conditionalPricePrefix=/\b(?:if|unless|when(?:ever)?|where(?:ver)?|before|after|until|while|once|upon|provided|providing|assuming|subject|conditional|condition(?:s)?|contingent|dependent|depending|pending|based|except|otherwise|during|since)\b/iu;
+const conditionalPricePrefix=/\b(?:if|unless|when(?:ever)?|where(?:ver)?|whether|before|after|until|while|once|upon|provided|providing|assuming|subject|conditional(?:ly)?|condition(?:s)?|contingent|depend(?:s|ing|ent)?|pending|based|except|otherwise|during|since)\b/iu;
 // Recognize prepositional phrases without rejecting ordinary compounds such
 // as board-on-board panels, nail-in anchors and plug-in adapters.
-const prepositionalPricePrefix=/(?:^|\s|\(|\[)(?:with|without|for|on|in|at|by|under|as|to|via|through)\b/iu;
+const prepositionalPricePrefix=/(?:^|\s|:|\(|\[)(?:with|without|for|on|in|at|by|under|as|to|via|through)\b/iu;
 // Other qualifiers do not need an explicit "if" to make a rate non-flat.
 // Unclassified eligibility/payment/time/charge wording also takes the existing
 // verbatim-listing fallback, even when it could be part of a genuine item name.
 // Only the separately recognized tax/contact sentences below are accepted.
+const uncertainPricePrefix=/\b(?:terms?|restrictions?|requiring|could|ballpark|suggested|provisional|preliminary|tentative|indicative|negotiated|agreed|normally|usually|typically|yearly|plus|except)\b|\bcan\s+(?:change|vary|depend|be|cost)\b/iu;
 const unclassifiedPricePrefix=/\b(?:prepaid|prepay(?:ment)?|paid|cash|deposit|payment|financ(?:e|ing)|credit|coupon|rebate|refund|surcharge|fee(?:s)?|member(?:s|ship)?|subscriber(?:s)?|resident(?:s)?|senior(?:s)?|student(?:s)?|eligible|eligibility|qualif(?:y|ies|ied|ying)|approved|approval|consent|required|requires?|requirement(?:s)?|must|may|might|would|should|valid|available|availability|stock|limited|advance|prebooked|weekday(?:s)?|weekend(?:s)?|daily|weekly|monthly|annually|seasonal|monday|tuesday|wednesday|thursday|friday|saturday|sunday|holiday(?:s)?|included?|including|inclusive|excluded?|excluding|exclusive|billed|separately|terms|appl(?:y|ies|icable)|var(?:y|ies|iable)|negotiable|approximate(?:ly)?|estimated?|roughly|bulk|wholesale)\b/iu;
 // Only numbers with a recognizable product-name role may precede the one
 // saved unit price. Any remaining number might be a quantity or condition.
@@ -45,7 +46,10 @@ export function calculateSavedListedPrice(knowledge,args){
    // A qualification anywhere before the price can change the charge. Even
    // genuine item names such as "Half-round gutter" must be repeated as saved.
    const item=match.groups.item||'';
-   if(price||qualifiedPricePrefix.test(withoutProductNumbers(item))||conditionalPricePrefix.test(item)||prepositionalPricePrefix.test(item)||unclassifiedPricePrefix.test(item))return refusal();
+   // Normalize qualification detection only; saved identity, product numbers,
+   // currencies and the exact arithmetic below retain their original spelling.
+   const qualification=item.normalize('NFKC');
+   if(price||qualifiedPricePrefix.test(withoutProductNumbers(item))||conditionalPricePrefix.test(qualification)||prepositionalPricePrefix.test(qualification)||uncertainPricePrefix.test(qualification)||unclassifiedPricePrefix.test(qualification))return refusal();
    price=match.groups;
   }else if(!taxSentence.test(sentence)&&!contactSentence.test(sentence))return refusal();
  }

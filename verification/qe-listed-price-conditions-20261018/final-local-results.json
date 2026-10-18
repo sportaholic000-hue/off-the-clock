@@ -1,0 +1,36 @@
+{
+  "reconcile-final-strict.tap": {
+    "tests": 4995,
+    "pass": 4871,
+    "fail": 124,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "newRegressionsExecuted": 0,
+    "newRegressionsEachOnce": false,
+    "failureCauses": {
+      "browser launch": 123,
+      "failed browser children": 1
+    },
+    "logSha256": "28694d132b054a6ac60540914f45c3de7866090a1a7af0955eea1d964b72675a",
+    "newRegressionsExpected": 0,
+    "selectionAsRequired": true
+  },
+  "reconcile-final-full.tap": {
+    "tests": 6310,
+    "pass": 6186,
+    "fail": 124,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "newRegressionsExecuted": 305,
+    "newRegressionsEachOnce": true,
+    "failureCauses": {
+      "browser launch": 123,
+      "failed browser children": 1
+    },
+    "logSha256": "6b4bfbca7b9748111beaf272d9531642b58f22d86761bfbb8582db8752665f0a",
+    "newRegressionsExpected": 305,
+    "selectionAsRequired": true
+  }
+}

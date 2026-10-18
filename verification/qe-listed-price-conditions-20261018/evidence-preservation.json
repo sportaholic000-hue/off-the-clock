@@ -1,0 +1,128 @@
+[
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/README.md",
+    "preserved": "verification/qe-listed-price-conditions-20261018/README.local-235eb5c.md",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/after-tests.tap",
+    "preserved": "verification/qe-listed-price-conditions-20261018/after-tests.tap",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/baseline-reproduction.json",
+    "preserved": "verification/qe-listed-price-conditions-20261018/baseline-reproduction.json",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/baseline-tests.tap",
+    "preserved": "verification/qe-listed-price-conditions-20261018/baseline-tests.tap",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/build.log",
+    "preserved": "verification/qe-listed-price-conditions-20261018/build.local-235eb5c.log",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/compound-after.tap",
+    "preserved": "verification/qe-listed-price-conditions-20261018/compound-after.tap",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/compound-before.tap",
+    "preserved": "verification/qe-listed-price-conditions-20261018/compound-before.tap",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/final-build.log",
+    "preserved": "verification/qe-listed-price-conditions-20261018/final-build.log",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/final-neighbors.tap",
+    "preserved": "verification/qe-listed-price-conditions-20261018/final-neighbors.tap",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/neighbors.tap",
+    "preserved": "verification/qe-listed-price-conditions-20261018/neighbors.tap",
+    "byteIdentical": true
+  },
+  {
+    "parent": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "original": "verification/qe-listed-price-conditions-20261018/remote-review-4f615241.tap",
+    "preserved": "verification/qe-listed-price-conditions-20261018/remote-review-4f615241.tap",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/EXPECTED.md",
+    "preserved": "verification/qe-listed-price-conditions-20261018/EXPECTED.md",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/README.md",
+    "preserved": "verification/qe-listed-price-conditions-20261018/README.remote-4f615241.md",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/base-regressions.tap.gz",
+    "preserved": "verification/qe-listed-price-conditions-20261018/base-regressions.tap.gz",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/before-direct.json",
+    "preserved": "verification/qe-listed-price-conditions-20261018/before-direct.json",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/build.log",
+    "preserved": "verification/qe-listed-price-conditions-20261018/build.remote-4f615241.log",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/focused.tap.gz",
+    "preserved": "verification/qe-listed-price-conditions-20261018/focused.tap.gz",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/install.log",
+    "preserved": "verification/qe-listed-price-conditions-20261018/install.log",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/neighboring.tap.gz",
+    "preserved": "verification/qe-listed-price-conditions-20261018/neighboring.tap.gz",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/selection.json",
+    "preserved": "verification/qe-listed-price-conditions-20261018/selection.json",
+    "byteIdentical": true
+  },
+  {
+    "parent": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "original": "verification/qe-listed-price-conditions-20261018/source-binding.json",
+    "preserved": "verification/qe-listed-price-conditions-20261018/source-binding.json",
+    "byteIdentical": true
+  }
+]
