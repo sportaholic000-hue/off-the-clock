@@ -1,0 +1,190 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"sha":"4f6152413a650085a7fe6002dfd077a542f9c0c2","listing":"Assuming pickup $10 each","result":{"status":"calculated","listedItem":"Assuming pickup $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Assuming pickup $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+{"sha":"4f6152413a650085a7fe6002dfd077a542f9c0c2","listing":"Cash price $10 each","result":{"status":"calculated","listedItem":"Cash price $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Cash price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+{"sha":"4f6152413a650085a7fe6002dfd077a542f9c0c2","listing":"Monday service $10 each","result":{"status":"calculated","listedItem":"Monday service $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Monday service $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+{"sha":"4f6152413a650085a7fe6002dfd077a542f9c0c2","listing":"Advance booking $10 each","result":{"status":"calculated","listedItem":"Advance booking $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Advance booking $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+{"sha":"4f6152413a650085a7fe6002dfd077a542f9c0c2","listing":"Approved orders $10 each","result":{"status":"calculated","listedItem":"Approved orders $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Approved orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+{"sha":"4f6152413a650085a7fe6002dfd077a542f9c0c2","listing":"Delivery excluded $10 each","result":{"status":"calculated","listedItem":"Delivery excluded $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Delivery excluded $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+{"sha":"4f6152413a650085a7fe6002dfd077a542f9c0c2","listing":"Materials billed separately $10 each","result":{"status":"calculated","listedItem":"Materials billed separately $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Materials billed separately $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+TAP version 13
+# Subtest: remote remaining qualifier: Assuming pickup $10 each
+not ok 1 - remote remaining qualifier: Assuming pickup $10 each
+  ---
+  duration_ms: 37.352227
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:12:221'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:17:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: remote remaining qualifier: Cash price $10 each
+not ok 2 - remote remaining qualifier: Cash price $10 each
+  ---
+  duration_ms: 26.383725
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:12:221'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:17:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: remote remaining qualifier: Monday service $10 each
+not ok 3 - remote remaining qualifier: Monday service $10 each
+  ---
+  duration_ms: 34.585844
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:12:221'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:17:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: remote remaining qualifier: Advance booking $10 each
+not ok 4 - remote remaining qualifier: Advance booking $10 each
+  ---
+  duration_ms: 36.300376
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:12:221'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:17:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: remote remaining qualifier: Approved orders $10 each
+not ok 5 - remote remaining qualifier: Approved orders $10 each
+  ---
+  duration_ms: 24.031608
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:12:221'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:17:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: remote remaining qualifier: Delivery excluded $10 each
+not ok 6 - remote remaining qualifier: Delivery excluded $10 each
+  ---
+  duration_ms: 21.91252
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:12:221'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:17:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: remote remaining qualifier: Materials billed separately $10 each
+not ok 7 - remote remaining qualifier: Materials billed separately $10 each
+  ---
+  duration_ms: 22.27782
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:12:221'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/[eval1]:17:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 217.073259

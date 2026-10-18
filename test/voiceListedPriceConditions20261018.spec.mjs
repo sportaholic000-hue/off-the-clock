@@ -99,6 +99,11 @@ const controls=[
   ['Inspection $10 each','3','30.00','$',false],
   ['Delivery $10 each','3','30.00','$',false]
 ];
+controls.push(
+  ['Board-on-board panel $10 each','3','30.00','$',false],
+  ['Nail-in anchor $10 each','3','30.00','$',false],
+  ['Plug-in adapter $10 each','3','30.00','$',false]
+);
 for(const [listing,quantity,amount,currency,rounded] of controls)test('listed conditions control: '+listing,async t=>{
   const direct=calculate(listing,quantity);
   assert.equal(direct.status,'calculated');assert.equal(direct.extendedAmount,amount);

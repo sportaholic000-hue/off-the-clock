@@ -9,7 +9,10 @@ const qualifiedPricePrefix=/\p{N}|\b(?:minimum|min|maximum|max|from|starting|sta
 // Quantity confirmation cannot establish payment, timing, availability or scope
 // conditions. Refuse clause markers anywhere in that text, including inside
 // parentheses or after a product number. Do not attempt to evaluate the clause.
-const conditionalPricePrefix=/\b(?:if|unless|when(?:ever)?|where(?:ver)?|before|after|until|while|once|upon|provided|providing|assuming|subject|conditional|condition(?:s)?|contingent|dependent|depending|pending|based|except|otherwise|with|without|for|on|at|by|under|during|since)\b/iu;
+const conditionalPricePrefix=/\b(?:if|unless|when(?:ever)?|where(?:ver)?|before|after|until|while|once|upon|provided|providing|assuming|subject|conditional|condition(?:s)?|contingent|dependent|depending|pending|based|except|otherwise|during|since)\b/iu;
+// Recognize prepositional phrases without rejecting ordinary compounds such
+// as board-on-board panels, nail-in anchors and plug-in adapters.
+const prepositionalPricePrefix=/(?:^|\s|\(|\[)(?:with|without|for|on|in|at|by|under|as|to|via|through)\b/iu;
 // Other qualifiers do not need an explicit "if" to make a rate non-flat.
 // Unclassified eligibility/payment/time/charge wording also takes the existing
 // verbatim-listing fallback, even when it could be part of a genuine item name.
@@ -42,7 +45,7 @@ export function calculateSavedListedPrice(knowledge,args){
    // A qualification anywhere before the price can change the charge. Even
    // genuine item names such as "Half-round gutter" must be repeated as saved.
    const item=match.groups.item||'';
-   if(price||qualifiedPricePrefix.test(withoutProductNumbers(item))||conditionalPricePrefix.test(item)||unclassifiedPricePrefix.test(item))return refusal();
+   if(price||qualifiedPricePrefix.test(withoutProductNumbers(item))||conditionalPricePrefix.test(item)||prepositionalPricePrefix.test(item)||unclassifiedPricePrefix.test(item))return refusal();
    price=match.groups;
   }else if(!taxSentence.test(sentence)&&!contactSentence.test(sentence))return refusal();
  }

@@ -83,3 +83,34 @@ SHA's completed logs, including execution of all 88 new tests exactly once in
 the full suite and zero times in strict quote. This document does not claim a
 pending hosted result as a pass. No production/model speech behavior is inferred
 from synthetic deterministic tests.
+
+## Publication collision and additional local checks
+
+The branch did not exist at the initial remote check. Before publication,
+another writer created it and advanced it to
+`4f6152413a650085a7fe6002dfd077a542f9c0c2`, with overlapping parser, test and
+evidence files. GitHub rejected this candidate's non-fast-forward ref update.
+No force push or overwrite occurred. The remote writer's work is preserved.
+This local candidate has **not** been published as the branch head.
+
+Read-only review of that remote parser found seven remaining qualifiers that
+produce `calculated` / `30.00` for quantity 3: Assuming pickup; Cash price;
+Monday service; Advance booking; Approved orders; Delivery excluded; Materials
+billed separately (each followed by `$10 each`). These were reproduced both
+directly and by injecting the exact remote parser into the otherwise unchanged
+real dispatcher/runtime using Node's module mock facility. The full responses
+and seven failing expectations are in `remote-review-4f615241.tap`.
+
+Comparison also identified an overly broad local preposition boundary: the
+initial candidate refused the unconditional `Board-on-board panel $10 each`.
+Three additional compound-name controls were added first: 90/91 passed and
+that one failed (`compound-before.tap`). The preposition check now recognizes
+phrase starts while preserving board-on-board, nail-in and plug-in names.
+All **91/91** focused tests and **535/535** focused/neighboring tests pass after
+the refinement; both builds pass again. See `compound-after.tap`,
+`final-neighbors.tap` and `final-build.log`. No existing assertion was changed.
+
+Because the task explicitly prohibits changing other agents' files, publication
+and exact-final-SHA hosted verification are blocked pending coordination of the
+overlapping branch ownership. The remote writer's CI is not verification of
+this local candidate. This work is not complete or approved for integration.
