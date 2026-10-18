@@ -1,4 +1,4 @@
-import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './quote-engine-vnext/priceGroundwork.js';
+import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext,tierDependentDefinitionVNext} from './quote-engine-vnext/priceGroundwork.js';
 
 const copy = (label, help) => ({ label, help });
 
@@ -19,19 +19,24 @@ const ROOF_MATERIAL_COPY_WITH_CONFIRMED_DEPENDENT_LINES = {
   itemized:titled('Field roofing material price per square','Your field roofing material price per square, EXCLUDING starter, drip edge, ridge cap, ice and water barrier, valley work, step flashing, pipe jacks, and ridge vent.','Material charge for each waste-adjusted roofing square. Every listed accessory, flashing, and vent line is priced separately only when the customer supplies its measurement.')
 };
 
-const roofMaterialReceiptActive=(service,pricing,materialType,pricesInDollars)=>{
+const roofMaterialReceiptActive=(service,pricing,materialType,pricesInDollars,tierName)=>{
   if(typeof materialType!=='string'||!/^[a-z][a-z0-9_]*$/.test(materialType))return false;
   try{
     const definition=roofFlashingVentDefinitionVNext(materialType);
-    if(!pricesInDollars)return dependentLineEnabledVNext({...service,pricing},definition);
+    if(!pricesInDollars)return dependentLineEnabledVNext({...service,pricing},definition,pricing,tierName);
     // Application reads convert editable prices from stored cents to dollars,
     // while the immutable receipt deliberately remains in its stored unit. Do
     // the inverse comparison without changing either object, then let the core
     // receipt predicate validate every other receipt field and signature.
-    const row=service?.dependentLineState?.[definition.id],visible=pricing?.materialCostPerSquare?.[materialType];
+    const tier=service?.tiers?.find(candidate=>candidate?.name===tierName);
+    const tierMaterialPrices=tier?.overrides?.materialCostPerSquare;
+    const receiptDefinition=tierMaterialPrices&&typeof tierMaterialPrices==='object'&&!Array.isArray(tierMaterialPrices)&&Object.hasOwn(tierMaterialPrices,materialType)
+      ?tierDependentDefinitionVNext(definition,tierName)
+      :definition;
+    const row=service?.dependentLineState?.[receiptDefinition.id],visible=pricing?.materialCostPerSquare?.[materialType];
     if(typeof row?.baseValue!=='number'||!Number.isFinite(row.baseValue)||!Object.is(visible,row.baseValue/100))return false;
     const receiptPricing={...pricing,materialCostPerSquare:{...pricing.materialCostPerSquare,[materialType]:row.baseValue}};
-    return dependentLineEnabledVNext({...service,pricing:receiptPricing},definition);
+    return dependentLineEnabledVNext({...service,pricing:receiptPricing},definition,receiptPricing,tierName);
   }
   catch{return false;}
 };
@@ -43,11 +48,12 @@ const roofMaterialReceiptActive=(service,pricing,materialType,pricesInDollars)=>
 export function roofMaterialPresentationCopy(definition,service={},pricing=service?.pricing||{},options={}) {
   if(definition?.field!=='materialCostPerSquare')return definition;
   const mode=pricing?.accessoryPricingMode==='itemized'?'itemized':'per_square_allin';
+  const tierName=typeof options.tierName==='string'?options.tierName:null;
   const values=pricing?.materialCostPerSquare;
   const materialTypes=values&&typeof values==='object'&&!Array.isArray(values)?Object.keys(values):[];
   const byProduct=Object.fromEntries(materialTypes.map(materialType=>[
     materialType,
-    roofMaterialReceiptActive(service,pricing,materialType,options.pricesInDollars===true)
+    roofMaterialReceiptActive(service,pricing,materialType,options.pricesInDollars===true,tierName)
       ?ROOF_MATERIAL_COPY_WITH_CONFIRMED_DEPENDENT_LINES[mode]
       :ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE[mode]
   ]));

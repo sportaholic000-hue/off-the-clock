@@ -26,10 +26,25 @@ selector, receipt-validation, or engine-version change.
 | `itemized` | confirmed and exact for this product/effective price | Excludes starter, drip edge, ridge cap, and the separately priced flashing/vent lines. |
 
 - The receipt decision is per product. Mixed products show their own bases.
-- A tier price that differs from the receipt's exact base value uses the
-  unconfirmed wording for that effective tier price.
+- A tier that inherits its product price uses the base product receipt.
+- A tier that explicitly overrides a product price uses that tier's own
+  dependent-line receipt, even when the override has the same numeric value as
+  the base price. Until that receipt is confirmed, it uses the unconfirmed
+  wording and its option remains unavailable to the quote engine.
+- Independently confirmed overriding tiers use confirmed wording only for
+  their own exact effective price. A base confirmation never confirms an
+  overriding tier, and one tier's confirmation never confirms another tier.
+- Owner confirmation controls identify `Base price` or the named tier in both
+  actionable and pending-on-save states.
 - The guided interview, which has no saved dependent-line receipt, uses the
   same unconfirmed mode wording.
+
+The pinned tier regression uses an inherited tier at `$100/square`, an
+unconfirmed explicit same-price tier at `$100/square`, and an independently
+confirmed Premium tier at `$400/square`. With 20 valley feet, the pending quote
+must preserve `Inherited $581` and `Premium $881` while omitting the unconfirmed
+same-price option. After its independent confirmation, `Same price $581` must
+appear without changing either surviving amount.
 
 ## F18 — option-specific surface scope
 

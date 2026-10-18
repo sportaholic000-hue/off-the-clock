@@ -8,13 +8,15 @@ import {reviewRows} from '../client/src/pricebookReview.js';
 import {interviewDefinition} from '../client/src/interviewStructuredValue.js';
 import {applicationMetadata} from '../server/src/quoteDoneBridge.js';
 import {ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,roofMaterialPresentationCopy} from '../server/priceBookCopy.js';
-import {roofFlashingVentDefinitionVNext,synchronizeDependentLinesVNext} from '../server/quote-engine-vnext/priceGroundwork.js';
+import {roofDependentDefinitionsVNext,roofFlashingVentDefinitionVNext,synchronizeDependentLinesVNext} from '../server/quote-engine-vnext/priceGroundwork.js';
 import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
+import {mergePricingVNext} from '../server/quote-engine-vnext/pricingMerge.js';
 import {customerReceiptPresentation} from '../server/src/quoteScopeDisclosure.js';
 import {projectSavedQuoteContext,projectVoiceQuote} from '../server/src/voice/voiceQuotePresentation.js';
 import {fixture} from '../verification/engine-independent/fixtures.mjs';
 import {mowingFixture} from './landscapeLaneB20261016Fixture.mjs';
 import {webQuote,db} from './quoteDeliveryBatch20261015Fixture.mjs';
+import {accessoryRoof} from '../verification/qe-agent1-core-accuracy-20261018/fixtures.mjs';
 
 const NOW='2026-10-18T12:00:00.000Z';
 let browser,bundle;
@@ -23,7 +25,7 @@ before(async()=>{
   const pricebookSource=await readFile(new URL('../client/src/pricebook.jsx',import.meta.url),'utf8');
   const exposePricebook={name:'agent3-pricebook-exports',setup(builder){
     builder.onLoad({filter:/client[/\\]src[/\\]pricebook\.jsx$/},()=>({
-      contents:pricebookSource+'\nexport {OwnerField as TestOwnerField,PricingContext as TestPricingContext,Preview as TestPreview};',
+      contents:pricebookSource+'\nexport {OwnerField as TestOwnerField,PricingContext as TestPricingContext,Preview as TestPreview,TierBuilder as TestTierBuilder,RoofDependentLineNotice as TestRoofDependentLineNotice};',
       loader:'jsx',resolveDir:new URL('../client/src/',import.meta.url).pathname
     }));
   }};
@@ -38,12 +40,15 @@ before(async()=>{
       import {interviewDefinition} from './client/src/interviewStructuredValue.js';
       import {SavedApproval} from './client/src/quoteDoneControls.jsx';
       import {QuoteResult} from './client/src/quotedone.jsx';
-      import {TestOwnerField,TestPricingContext,TestPreview} from './client/src/pricebook.jsx';
-      function Roof({definition,service,compact=false}){return <TestPricingContext.Provider value={service}><TestOwnerField definition={definition} value={service.pricing.materialCostPerSquare} onChange={()=>{}} compact={compact}/></TestPricingContext.Provider>;}
+      import {mergePricingVNext} from './server/quote-engine-vnext/pricingMerge.js';
+      import {TestOwnerField,TestPricingContext,TestPreview,TestTierBuilder,TestRoofDependentLineNotice} from './client/src/pricebook.jsx';
+      function Roof({definition,service,compact=false,tierName}){const tier=service.tiers?.find(candidate=>candidate.name===tierName),pricing=tier?mergePricingVNext(service.pricing,tier.overrides||{}):service.pricing,context={...service,pricing,...(tierName===undefined?{}:{pricingTierName:tierName})};return <TestPricingContext.Provider value={context}><TestOwnerField definition={definition} value={pricing.materialCostPerSquare} onChange={()=>{}} compact={compact}/></TestPricingContext.Provider>;}
+      function RoofTiers({definition,service}){return <TestPricingContext.Provider value={service}><TestTierBuilder tiers={service.tiers||[]} definitions={[definition]} onChange={()=>{}}/></TestPricingContext.Provider>;}
+      function RoofNotice({service}){return <TestRoofDependentLineNotice service={service} onConfirm={id=>{window.agent3RoofConfirmId=id}}/>;}
       function Interview({definition,pricing,value}){const resolved=interviewDefinition(definition,pricing);return <section><p className="interview-copy">{resolved.label}</p><StructuredPricingQuestion definition={resolved} value={value} onChange={()=>{}}/></section>;}
-      const components={roof:Roof,interview:Interview,approval:SavedApproval,preview:TestPreview,widget:QuoteResult};
+      const components={roof:Roof,roofTiers:RoofTiers,roofNotice:RoofNotice,interview:Interview,approval:SavedApproval,preview:TestPreview,widget:QuoteResult};
       const root=createRoot(document.getElementById('root'));let key=0;
-      window.showAgent3=(kind,props)=>flushSync(()=>root.render(React.createElement(components[kind],{...props,key:++key})));
+      window.showAgent3=(kind,props)=>{window.agent3RoofConfirmId=null;flushSync(()=>root.render(React.createElement(components[kind],{...props,key:++key})));};
     `}
   });
   bundle=built.outputFiles[0].text;
@@ -82,6 +87,38 @@ function confirmedRoof(mode='per_square_allin'){
   const definitions=['asphalt_shingle','metal'].map(roofFlashingVentDefinitionVNext),asphalt=definitions[0].id;
   const stored=synchronizeDependentLinesVNext(service,definitions,{ownerId:'agent3-owner',now:NOW,reenteredIds:[asphalt],confirmIds:[asphalt]});
   return {...stored,pricing:{...stored.pricing,materialCostPerSquare:{asphalt_shingle:100,metal:200}}};
+}
+
+function tierReceiptRoof(){
+  const f=accessoryRoof({
+    materialCostPerSquare:{asphalt_shingle:10000},
+    wasteFactorByComplexity:{simple:0,moderate:0,complex:0},
+    valleyPerLF:1000
+  });
+  f.ownerPricing.tiers=[
+    {name:'Inherited',overrides:{}},
+    {name:'Same price',overrides:{materialCostPerSquare:{asphalt_shingle:10000}}},
+    {name:'Premium',overrides:{materialCostPerSquare:{asphalt_shingle:40000}}}
+  ];
+  const definitions=roofDependentDefinitionsVNext(f.ownerPricing);
+  const id=name=>definitions.find(definition=>definition.tierName===name)?.id;
+  const ids={base:definitions.find(definition=>definition.tierName===undefined).id,same:id('Same price'),premium:id('Premium')};
+  f.ownerPricing=synchronizeDependentLinesVNext(f.ownerPricing,definitions,{
+    ownerId:f.ownerPricing.origin.ownerId,now:NOW,
+    reenteredIds:[ids.base,ids.same,ids.premium],confirmIds:[ids.base,ids.premium]
+  });
+  f.customerInputs.valleyLengthLF=20;
+  return {f,definitions,ids};
+}
+
+function roofForClient(service){
+  const next=structuredClone(service);
+  next.pricing.materialCostPerSquare=Object.fromEntries(Object.entries(next.pricing.materialCostPerSquare||{}).map(([key,value])=>[key,value/100]));
+  next.tiers=(next.tiers||[]).map(tier=>({
+    ...tier,
+    overrides:{...tier.overrides,...(tier.overrides?.materialCostPerSquare?{materialCostPerSquare:Object.fromEntries(Object.entries(tier.overrides.materialCostPerSquare).map(([key,value])=>[key,value/100]))}:{})}
+  }));
+  return next;
 }
 
 function surfaceTierFixture(){
@@ -138,7 +175,7 @@ test('Agent3 F6: the actual saved-approval table omits starting-value adoption r
   },{approvalBook:book,approvalStatus:status});
 });
 
-test('Agent3 F14: roof copy follows each product receipt and effective tier price',async()=>{
+test('Agent3 F14: rendered roof copy follows base, inherited and independent tier receipts',async()=>{
   const definition=roofDefinition(),service=confirmedRoof();
   assert.equal(service.pricing.materialCostPerSquare.asphalt_shingle,100);
   assert.equal(service.dependentLineState['roofing_flashing_vents.asphalt_shingle'].baseValue,10000);
@@ -155,8 +192,31 @@ test('Agent3 F14: roof copy follows each product receipt and effective tier pric
   const itemized=roofMaterialPresentationCopy(definition,itemizedService,itemizedService.pricing,{pricesInDollars:true});
   assert.match(itemized.tree.leafHelp.asphalt_shingle,/EXCLUDING starter, drip edge, ridge cap, ice and water barrier/i);
   assert.match(itemized.tree.leafHelp.metal,/EXCLUDING separately itemized starter, drip edge, and ridge cap, and INCLUDING flashing and vents/i);
-  const changedTier={...itemizedService,pricing:{...itemizedService.pricing,materialCostPerSquare:{asphalt_shingle:150}}};
-  assert.match(roofMaterialPresentationCopy(definition,changedTier,changedTier.pricing,{pricesInDollars:true}).label,/INCLUDING flashing and vents/i);
+
+  const {f,definitions,ids}=tierReceiptRoof(),receiptSnapshot=JSON.stringify(f.ownerPricing.dependentLineState);
+  assert.equal(f.ownerPricing.pricing.materialCostPerSquare.asphalt_shingle,10000);
+  assert.equal(f.ownerPricing.tiers[1].overrides.materialCostPerSquare.asphalt_shingle,10000);
+  assert.equal(f.ownerPricing.tiers[2].overrides.materialCostPerSquare.asphalt_shingle,40000);
+  const pendingQuote=generateQuoteVNext(f);
+  assert.equal(pendingQuote.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(pendingQuote));
+  assert.deepEqual(pendingQuote.options.map(option=>[option.tierName,option.midEstimate]),[['Inherited',581],['Premium',881]]);
+
+  const client=roofForClient(f.ownerPricing),copyFor=(candidate,tierName)=>{
+    const tier=candidate.tiers.find(option=>option.name===tierName),pricing=mergePricingVNext(candidate.pricing,tier?.overrides||{});
+    return roofMaterialPresentationCopy(definition,candidate,pricing,{pricesInDollars:true,tierName,leafHelp:true});
+  };
+  assert.match(copyFor(client,'Inherited').label,/EXCLUDING separately priced ice and water barrier/i);
+  assert.match(copyFor(client,'Same price').label,/INCLUDING starter, drip edge, ridge cap, flashing, and vents/i);
+  assert.match(copyFor(client,'Premium').label,/EXCLUDING separately priced ice and water barrier/i);
+  assert.equal(JSON.stringify(f.ownerPricing.dependentLineState),receiptSnapshot);
+
+  const confirmedSame=synchronizeDependentLinesVNext(f.ownerPricing,definitions,{ownerId:f.ownerPricing.origin.ownerId,now:'2026-10-18T12:01:00.000Z',confirmIds:[ids.same]});
+  const confirmedFixture={...f,ownerPricing:confirmedSame},confirmedQuote=generateQuoteVNext(confirmedFixture);
+  assert.equal(confirmedQuote.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(confirmedQuote));
+  assert.deepEqual(confirmedQuote.options.map(option=>[option.tierName,option.midEstimate]),[['Inherited',581],['Same price',581],['Premium',881]]);
+  const confirmedClient=roofForClient(confirmedSame);
+  assert.match(copyFor(confirmedClient,'Same price').label,/EXCLUDING separately priced ice and water barrier/i);
+  assert.match(copyFor(confirmedClient,'Premium').label,/EXCLUDING separately priced ice and water barrier/i);
 
   for(const [mode,pattern] of [
     ['per_square_allin',/INCLUDING starter, drip edge, ridge cap, flashing, and vents/i],
@@ -166,8 +226,8 @@ test('Agent3 F14: roof copy follows each product receipt and effective tier pric
   await rendered(async(page,show)=>{
     await show('roof',{definition,service});
     await page.getByText(/inclusion basis differs by roofing product/i).waitFor();
-    const asphalt=page.locator('.field').filter({has:page.locator('.field-label', {hasText:'Asphalt shingle'})}).first();
-    const metal=page.locator('.field').filter({has:page.locator('.field-label', {hasText:'Metal'})}).first();
+    const asphalt=page.locator('.field').filter({has:page.locator('.field-label',{hasText:'Asphalt shingle'})}).first();
+    const metal=page.locator('.field').filter({has:page.locator('.field-label',{hasText:'Metal'})}).first();
     assert.match(await asphalt.locator('.field-help').textContent(),/INCLUDING starter.*EXCLUDING separately priced ice/i);
     assert.match(await metal.locator('.field-help').textContent(),/INCLUDING starter.*flashing, and vents/i);
 
@@ -176,10 +236,34 @@ test('Agent3 F14: roof copy follows each product receipt and effective tier pric
     assert.match(await page.locator('.owner-field-definition').textContent(),/EXCLUDING starter, drip edge, ridge cap, ice and water barrier.*ridge vent/i);
     assert.doesNotMatch(await page.locator('.owner-field-definition').textContent(),/INCLUDING flashing and vents/i);
 
-    await show('roof',{definition,service:changedTier,compact:true});
-    const tierHelp=await page.locator('.field-help').textContent();
-    assert.match(tierHelp,/INCLUDING flashing and vents/i);
-    assert.doesNotMatch(tierHelp,/EXCLUDING.*ice and water barrier/i);
+    await show('roofTiers',{definition,service:client});
+    const tierRows=page.locator('.tier-row');
+    assert.match(await tierRows.nth(1).locator('.field-help').textContent(),/INCLUDING starter, drip edge, ridge cap, flashing, and vents/i);
+    assert.doesNotMatch(await tierRows.nth(1).locator('.field-help').textContent(),/EXCLUDING.*ice and water barrier/i);
+    assert.match(await tierRows.nth(2).locator('.field-help').textContent(),/EXCLUDING separately priced ice and water barrier/i);
+    assert.doesNotMatch(await tierRows.nth(2).locator('.field-help').textContent(),/INCLUDING.*flashing.*vents/i);
+
+    await show('roof',{definition,service:client,tierName:'Inherited',compact:true});
+    assert.match(await page.locator('.field-help').textContent(),/EXCLUDING separately priced ice and water barrier/i);
+
+    await show('roofTiers',{definition,service:confirmedClient});
+    const confirmedRows=page.locator('.tier-row');
+    assert.match(await confirmedRows.nth(1).locator('.field-help').textContent(),/EXCLUDING separately priced ice and water barrier/i);
+    assert.match(await confirmedRows.nth(2).locator('.field-help').textContent(),/EXCLUDING separately priced ice and water barrier/i);
+
+    const pendingNotice=structuredClone(client);
+    pendingNotice.dependentLineState[ids.base].confirmed=false;
+    pendingNotice.dependentLineActions={confirmIds:[ids.base,ids.same]};
+    await show('roofNotice',{service:pendingNotice});
+    await page.getByRole('button',{name:'CONFIRM ON SAVE — Asphalt shingle — Base price',exact:true}).waitFor();
+    await page.getByRole('button',{name:'CONFIRM ON SAVE — Asphalt shingle — Same price',exact:true}).waitFor();
+    assert.equal(await page.getByRole('button',{name:/CONFIRM ON SAVE — Asphalt shingle —/}).count(),2);
+
+    const actionableNotice=structuredClone(client);
+    actionableNotice.dependentLineActions={confirmIds:[]};
+    await show('roofNotice',{service:actionableNotice});
+    await page.getByRole('button',{name:'I re-entered and confirm Asphalt shingle — Same price',exact:true}).click();
+    assert.equal(await page.evaluate(()=>window.agent3RoofConfirmId),ids.same);
 
     await show('interview',{definition,pricing:{accessoryPricingMode:'itemized',materialCostPerSquare:{asphalt_shingle:100}},value:{asphalt_shingle:100}});
     assert.match(await page.locator('.interview-copy').textContent(),/EXCLUDING separately itemized starter.*INCLUDING flashing and vents/i);

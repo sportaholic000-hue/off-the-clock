@@ -426,7 +426,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   const pricing=servicePricing(service);
   if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:service.serviceType==='CUSTOM'&&definition.field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
   definition=definition.field==='materialCostPerSquare'
-    ?roofMaterialPresentationCopy(definition,service,pricing,{pricesInDollars:true,leafHelp:compact})
+    ?roofMaterialPresentationCopy(definition,service,pricing,{pricesInDollars:true,leafHelp:compact,tierName:service.pricingTierName})
     :definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode]
       ?{...definition,...definition.copyByAccessoryPricingMode[pricing.accessoryPricingMode]}
       :definition;
@@ -548,7 +548,7 @@ function TierBuilder({ tiers, definitions, onChange }) {
       <div className="tier-list">
         {tiers.map((tier, index) => {
           const tierDefinitions=definitionsFor(tier),effective=mergePricingVNext(servicePricing(service),tier.overrides||{});
-          return <PricingContext.Provider key={index} value={{ ...service, pricing:effective }}>
+          return <PricingContext.Provider key={index} value={{ ...service, pricing:effective, pricingTierName:tier.name }}>
           <article className="tier-row">
             <div className="tier-heading">
               <TextInput value={tier.name} onChange={event => patchTier(index, { name:event.target.value })} aria-label={`Tier ${index + 1} name`} />
@@ -576,6 +576,18 @@ function TierBuilder({ tiers, definitions, onChange }) {
       </div>
     </section>
   );
+}
+
+function RoofDependentLineNotice({service,onConfirm}) {
+  const rows=service?.serviceType==='ROOFING_REPLACEMENT'
+    ?Object.entries(service.dependentLineState||{}).filter(([,row])=>row?.confirmed!==true)
+    :[];
+  if(!rows.length)return null;
+  const pending=new Set(service.dependentLineActions?.confirmIds||[]);
+  return <Notice tone="warning"><strong>Flashing and vent prices are not active yet.</strong> Only confirmed materials and price options offer these measurements. For each material at the base price and in every overriding price option, re-enter the applicable field-material price knowing it excludes ice and water barrier, valley work, step flashing, pipe jacks and ridge vent, then confirm that wording. A base-price confirmation does not confirm an overriding price option.{rows.map(([id,row])=>{
+    const target=humanPricingKey(row.basePricePath.split('.').at(-1))+' — '+(row.tierName||'Base price'),waiting=pending.has(id);
+    return <React.Fragment key={id}> <Button variant="secondary" disabled={waiting} onClick={()=>onConfirm(id)}>{waiting?'CONFIRM ON SAVE — '+target:'I re-entered and confirm '+target}</Button></React.Fragment>;
+  })}</Notice>;
 }
 
 function Preview({ preview, loading, status, plan }) {
@@ -1321,7 +1333,7 @@ export default function PriceBook() {
                   </Disclosure>
                 )}
 
-                {selected.serviceType==='ROOFING_REPLACEMENT'&&Object.entries(selected.dependentLineState||{}).some(([,row])=>row.confirmed!==true)&&<Notice tone="warning"><strong>Flashing and vent prices are not active yet.</strong> Quotes keep using today’s field-material price and do not ask customers for the new measurements. For each roofing material, re-enter the field-material price knowing it excludes ice and water barrier, valley work, step flashing, pipe jacks and ridge vent, then confirm that wording.{Object.entries(selected.dependentLineState||{}).filter(([,row])=>row.confirmed!==true).map(([id,row])=><Button key={id} variant="secondary" disabled={selected.dependentLineActions?.confirmIds?.includes(id)} onClick={()=>confirmRoofDependentLine(id)}>{selected.dependentLineActions?.confirmIds?.includes(id)?'CONFIRM ON SAVE':'I re-entered and confirm '+humanPricingKey(row.basePricePath.split('.').at(-1))}</Button>)}</Notice>}
+                <RoofDependentLineNotice service={selected} onConfirm={confirmRoofDependentLine}/>
 
                 {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
                 {(selectedMeta.class2Fields || []).length > 0 && (
