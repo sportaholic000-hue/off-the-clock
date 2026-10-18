@@ -5,6 +5,16 @@ const decimal=/^(?:0|[1-9]\d{0,11})(?:\.\d{1,6})?$/;
 const coefficient=value=>{const [whole,fraction='']=value.split('.');return {value:BigInt(whole+fraction),scale:fraction.length};};
 const priceSentence=/^(?<item>[\p{L}\p{M}\p{N}#\[][\p{L}\p{M}\p{N}\s:'’()\[\]#./×-]*?\s*)?(?<currency>CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|CAD|USD|EUR|GBP|AUD|NZD)\s*(?<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)\s*(?:each|(?:per\s+|\/\s*)(?:(?:square|sq\.?|linear|lineal|lin\.?|cubic|cu\.?|board)\s+(?:foot|feet|ft|yards?|yds?|meters?|metres?|m|inch(?:es)?|in)|[a-z]+))\.?$/iu;
 const qualifiedPricePrefix=/\p{N}|\b(?:minimum|min|maximum|max|from|starting|start|up\s+to|about|approx|around|only|first|second|half|discount|off|sale|special|promo|deal|free|extra|additional|each\s+additional|per|over|pack)\b/iu;
+// The optional item text is a product name, not an eligibility expression.
+// Quantity confirmation cannot establish payment, timing, availability or scope
+// conditions. Refuse clause markers anywhere in that text, including inside
+// parentheses or after a product number. Do not attempt to evaluate the clause.
+const conditionalPricePrefix=/\b(?:if|unless|when(?:ever)?|where(?:ver)?|before|after|until|while|once|upon|provided|providing|assuming|subject|conditional|condition(?:s)?|contingent|dependent|depending|pending|based|except|otherwise|with|without|for|on|at|by|under|during|since)\b/iu;
+// Other qualifiers do not need an explicit "if" to make a rate non-flat.
+// Unclassified eligibility/payment/time/charge wording also takes the existing
+// verbatim-listing fallback, even when it could be part of a genuine item name.
+// Only the separately recognized tax/contact sentences below are accepted.
+const unclassifiedPricePrefix=/\b(?:prepaid|prepay(?:ment)?|paid|cash|deposit|payment|financ(?:e|ing)|credit|coupon|rebate|refund|surcharge|fee(?:s)?|member(?:s|ship)?|subscriber(?:s)?|resident(?:s)?|senior(?:s)?|student(?:s)?|eligible|eligibility|qualif(?:y|ies|ied|ying)|approved|approval|consent|required|requires?|requirement(?:s)?|must|may|might|would|should|valid|available|availability|stock|limited|advance|prebooked|weekday(?:s)?|weekend(?:s)?|daily|weekly|monthly|annually|seasonal|monday|tuesday|wednesday|thursday|friday|saturday|sunday|holiday(?:s)?|included?|including|inclusive|excluded?|excluding|exclusive|billed|separately|terms|appl(?:y|ies|icable)|var(?:y|ies|iable)|negotiable|approximate(?:ly)?|estimated?|roughly|bulk|wholesale)\b/iu;
 // Only numbers with a recognizable product-name role may precede the one
 // saved unit price. Any remaining number might be a quantity or condition.
 const withoutProductNumbers=item=>item
@@ -31,7 +41,8 @@ export function calculateSavedListedPrice(knowledge,args){
   if(match){
    // A qualification anywhere before the price can change the charge. Even
    // genuine item names such as "Half-round gutter" must be repeated as saved.
-   if(price||qualifiedPricePrefix.test(withoutProductNumbers(match.groups.item||'')))return refusal();
+   const item=match.groups.item||'';
+   if(price||qualifiedPricePrefix.test(withoutProductNumbers(item))||conditionalPricePrefix.test(item)||unclassifiedPricePrefix.test(item))return refusal();
    price=match.groups;
   }else if(!taxSentence.test(sentence)&&!contactSentence.test(sentence))return refusal();
  }
