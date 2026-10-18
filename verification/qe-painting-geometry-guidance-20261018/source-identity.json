@@ -1,0 +1,82 @@
+{
+  "base": "1857b7779b83b70f7753b41b72c3677270cd4ffc",
+  "node": "22.23.3",
+  "npm": "11.9.0",
+  "git": "2.51.1",
+  "platform": "Linux",
+  "cwd": "/workspace/scratch/63b8cb6aa9ed/painting-guidance",
+  "records": [
+    {
+      "path": "server/quote-engine-vnext/surfacePricing.js",
+      "baseSHA256": "34e6aa4cc1f1674c604b9a8c925b9a18c45729d9b924795ac195b54fa7342ef7",
+      "currentSHA256": "bbbaaafef8f3f1f873eaad066fd8c57574050ad0a3b0a7e2ca1bfe5cdcc36eba",
+      "matchesBase": false
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "baseSHA256": "36b172167b4e80f3f040b50f32748521c3025dc37eb19868f5daf297b0842e09",
+      "currentSHA256": "36b172167b4e80f3f040b50f32748521c3025dc37eb19868f5daf297b0842e09",
+      "matchesBase": true
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "baseSHA256": "9bfc4d287914539f0ef58014b37f2b2f1120214622b3e23da8df4bce97001708",
+      "currentSHA256": "9bfc4d287914539f0ef58014b37f2b2f1120214622b3e23da8df4bce97001708",
+      "matchesBase": true
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "baseSHA256": "84ad516cc59043cc25f0aa345f4c7b0620844a62943836dd6cf9373bc75cb1e8",
+      "currentSHA256": "84ad516cc59043cc25f0aa345f4c7b0620844a62943836dd6cf9373bc75cb1e8",
+      "matchesBase": true
+    },
+    {
+      "path": "server/src/runtimeConfig.js",
+      "baseSHA256": "3d56fb62faf11044c4c008c4b284346f459f9570eae4c2a54ccbeb1aff10fa64",
+      "currentSHA256": "3d56fb62faf11044c4c008c4b284346f459f9570eae4c2a54ccbeb1aff10fa64",
+      "matchesBase": true
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "baseSHA256": "0dce05f218be18893b6cbc6e56060742dc6e8efd7be8ec7c6dd6b7c8484dde8d",
+      "currentSHA256": "0dce05f218be18893b6cbc6e56060742dc6e8efd7be8ec7c6dd6b7c8484dde8d",
+      "matchesBase": true
+    },
+    {
+      "path": "server/src/voice/voiceToolRuntime.js",
+      "baseSHA256": "2b65dba615d4069473c0846b292203ba2d954809b0affb018eb7dc0f85f660a4",
+      "currentSHA256": "2b65dba615d4069473c0846b292203ba2d954809b0affb018eb7dc0f85f660a4",
+      "matchesBase": true
+    },
+    {
+      "path": "server/src/voice/voiceQuoteContract.js",
+      "baseSHA256": "5471385531724217923e6de613952ea4da56a22f59aef779e339a97be9bd14c9",
+      "currentSHA256": "5471385531724217923e6de613952ea4da56a22f59aef779e339a97be9bd14c9",
+      "matchesBase": true
+    },
+    {
+      "path": "server/src/voice/voicePromptCompiler.js",
+      "baseSHA256": "a875d3c9929efc39c2f3d22f3fe2e0f859886293be0545ab912c3dcd30aadbdd",
+      "currentSHA256": "a875d3c9929efc39c2f3d22f3fe2e0f859886293be0545ab912c3dcd30aadbdd",
+      "matchesBase": true
+    },
+    {
+      "path": "server/src/voice/voiceQuotePresentation.js",
+      "baseSHA256": "ab0b6e539887ccc53fd6288be73a18a0ca84ed63ce5ad7ef68692117d0f320bc",
+      "currentSHA256": "ab0b6e539887ccc53fd6288be73a18a0ca84ed63ce5ad7ef68692117d0f320bc",
+      "matchesBase": true
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "baseSHA256": "6aa0d1a3a84f5212183c8758f82f004183a1d97f4f87ad15ca9cf4a2f84ed353",
+      "currentSHA256": "6aa0d1a3a84f5212183c8758f82f004183a1d97f4f87ad15ca9cf4a2f84ed353",
+      "matchesBase": true
+    },
+    {
+      "path": "test/qePaintingGeometryGuidance20261018.spec.mjs",
+      "baseSHA256": null,
+      "currentSHA256": "324088ce1bd6bc9e86d98b9b2ddcf9f1bc574c13f8c04d97e7308c881e50797f",
+      "matchesBase": null
+    }
+  ]
+}

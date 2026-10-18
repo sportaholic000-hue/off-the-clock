@@ -1,0 +1,16 @@
+diff --git a/server/quote-engine-vnext/surfacePricing.js b/server/quote-engine-vnext/surfacePricing.js
+index 1b12d08..59cc9be 100644
+--- a/server/quote-engine-vnext/surfacePricing.js
++++ b/server/quote-engine-vnext/surfacePricing.js
+@@ -191,8 +191,9 @@ export function surfaceCustomerContract(type,p,base){
+  const interior=type==='INTERIOR_PAINTING',siding=type==='SIDING_REPLACEMENT';
+  const fields={...base.fields};
+  const convention=p.sidingSettings?.areaConventionByType;
+- fields.areaInputMethod=select(siding?'Siding area measurement method':'Wall area measurement method',interior?['wall_sqft','room_dimensions']:siding?['sqft','building_dimensions']:['wall_sqft','building_dimensions'],{optionLabels:{sqft:'Enter siding wall area directly',wall_sqft:'Enter wall area directly',room_dimensions:'Room length, width and height',building_dimensions:'House perimeter and wall height'},details:['Changing measurement methods clears the other method\'s measurements. Enter gables separately only when they are not included in the direct area.']});
+- if(interior)fields.rooms={...rows('Room measurements',ROOM_FIELDS,1),visibleWhen:when('areaInputMethod','room_dimensions')};
++ const roomGuidance='Room dimensions assume a rectangular room, one wall height and a flat ceiling. For sloped ceilings, irregular rooms or walls with different heights, enter the measured wall and ceiling surface areas directly.';
++ fields.areaInputMethod=select(siding?'Siding area measurement method':'Wall area measurement method',interior?['wall_sqft','room_dimensions']:siding?['sqft','building_dimensions']:['wall_sqft','building_dimensions'],{optionLabels:{sqft:'Enter siding wall area directly',wall_sqft:'Enter wall area directly',room_dimensions:'Room length, width and height',building_dimensions:'House perimeter and wall height'},details:['Changing measurement methods clears the other method\'s measurements. Enter gables separately only when they are not included in the direct area.',...(interior?[roomGuidance]:[])]});
++ if(interior)fields.rooms={...rows('Room measurements',ROOM_FIELDS,1),details:[roomGuidance],visibleWhen:when('areaInputMethod','room_dimensions')};
+  else {
+   fields.buildingPerimeterFeet={...num('House perimeter','feet',0.01),visibleWhen:when('areaInputMethod','building_dimensions')};
+   fields.gables={...rows('Gable triangles',GABLE_FIELDS),details:['Enter each gable separately. Its width × height ÷ 2 is added once; leave these triangles out of any direct area entered above.'],visibleWhen:[...when('areaInputMethod','building_dimensions'),...when('areaInputMethod',siding?'sqft':'wall_sqft')]};
