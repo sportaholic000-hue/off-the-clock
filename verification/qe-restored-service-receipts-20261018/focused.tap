@@ -1,0 +1,570 @@
+(node:3) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:10) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Save 409 opens the shared recovery dialog, keeps the draft and locks preview without a generic error
+ok 1 - Save 409 opens the shared recovery dialog, keeps the draft and locks preview without a generic error
+  ---
+  duration_ms: 1603.526316
+  type: 'test'
+  ...
+# Subtest: Review mismatch reuses its fetched remote book without a second GET and a non-overlap merge saves both edits
+ok 2 - Review mismatch reuses its fetched remote book without a second GET and a non-overlap merge saves both edits
+  ---
+  duration_ms: 491.960632
+  type: 'test'
+  ...
+# Subtest: Approval-time 409 enters the same coordinator
+ok 3 - Approval-time 409 enters the same coordinator
+  ---
+  duration_ms: 389.244714
+  type: 'test'
+  ...
+# Subtest: unrelated 409 errors remain ordinary validation errors and do not mount recovery
+ok 4 - unrelated 409 errors remain ordinary validation errors and do not mount recovery
+  ---
+  duration_ms: 178.177993
+  type: 'test'
+  ...
+# Subtest: missing prices and approval warnings do not block acceptance; malformed merged values do
+ok 5 - missing prices and approval warnings do not block acceptance; malformed merged values do
+  ---
+  duration_ms: 627.495521
+  type: 'test'
+  ...
+# Subtest: explicit discard requires confirmation and restores the authoritative remote snapshot
+ok 6 - explicit discard requires confirmation and restores the authoritative remote snapshot
+  ---
+  duration_ms: 355.342111
+  type: 'test'
+  ...
+# Subtest: remote-deleted modified service can be restored and receives a new server identity
+ok 7 - remote-deleted modified service can be restored and receives a new server identity
+  ---
+  duration_ms: 436.990981
+  type: 'test'
+  ...
+# Subtest: local additions have stable UI IDs and every actual API payload excludes transient keys
+ok 8 - local additions have stable UI IDs and every actual API payload excludes transient keys
+  ---
+  duration_ms: 621.569927
+  type: 'test'
+  ...
+# Subtest: a second edit/save/recovery cycle advances its base instead of resurrecting the initial prices
+ok 9 - a second edit/save/recovery cycle advances its base instead of resurrecting the initial prices
+  ---
+  duration_ms: 500.228905
+  type: 'test'
+  ...
+# Subtest: an additional remote save after acceptance starts recovery again and preserves the combined draft
+ok 10 - an additional remote save after acceptance starts recovery again and preserves the combined draft
+  ---
+  duration_ms: 425.465993
+  type: 'test'
+  ...
+# Subtest: a failed remote fetch permits editing and retry without dropping the draft
+ok 11 - a failed remote fetch permits editing and retry without dropping the draft
+  ---
+  duration_ms: 296.611494
+  type: 'test'
+  ...
+# Subtest: late validation cannot overwrite a newer recovery after returning to edit
+ok 12 - late validation cannot overwrite a newer recovery after returning to edit
+  ---
+  duration_ms: 472.498499
+  type: 'test'
+  ...
+# Subtest: competing inherited tiers show their names and prices without requiring index-based choices
+ok 13 - competing inherited tiers show their names and prices without requiring index-based choices
+  ---
+  duration_ms: 331.819623
+  type: 'test'
+  ...
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: independent service edits merge by UUID, preserve the remote order, and leave inputs untouched
+ok 14 - independent service edits merge by UUID, preserve the remote order, and leave inputs untouched
+  ---
+  duration_ms: 2.164763
+  type: 'test'
+  ...
+# Subtest: independent nested rate/default edits merge, including zero, false, null and field removal
+ok 15 - independent nested rate/default edits merge, including zero, false, null and field removal
+  ---
+  duration_ms: 0.477338
+  type: 'test'
+  ...
+# Subtest: same-field competing prices require an explicit choice and equal concurrent edits do not
+ok 16 - same-field competing prices require an explicit choice and equal concurrent edits do not
+  ---
+  duration_ms: 0.879723
+  type: 'test'
+  ...
+# Subtest: UUID casing is canonical and duplicate identities fail closed
+ok 17 - UUID casing is canonical and duplicate identities fail closed
+  ---
+  duration_ms: 0.546522
+  type: 'test'
+  ...
+# Subtest: local deletion wins against an unchanged service, including receipt-only changes
+ok 18 - local deletion wins against an unchanged service, including receipt-only changes
+  ---
+  duration_ms: 0.265509
+  type: 'test'
+  ...
+# Subtest: local deletion conflicts with an actively modified service
+ok 19 - local deletion conflicts with an actively modified service
+  ---
+  duration_ms: 1.779114
+  type: 'test'
+  ...
+# Subtest: remote deletion wins against an unchanged service, including receipt-only changes
+ok 20 - remote deletion wins against an unchanged service, including receipt-only changes
+  ---
+  duration_ms: 0.198007
+  type: 'test'
+  ...
+# Subtest: remote deletion conflicts with an actively modified service
+ok 21 - remote deletion conflicts with an actively modified service
+  ---
+  duration_ms: 0.198859
+  type: 'test'
+  ...
+# Subtest: restoring a remote deletion removes old identity and every receipt, with a stable temporary identity
+ok 22 - restoring a remote deletion removes old identity and every receipt, with a stable temporary identity
+  ---
+  duration_ms: 0.629476
+  type: 'test'
+  ...
+# Subtest: all existing services take immutable identity, source and receipts exactly from remote
+ok 23 - all existing services take immutable identity, source and receipts exactly from remote
+  ---
+  duration_ms: 0.535826
+  type: 'test'
+  ...
+# Subtest: simultaneous additions of the same service type stay distinct and new local receipts are removed
+ok 24 - simultaneous additions of the same service type stay distinct and new local receipts are removed
+  ---
+  duration_ms: 0.63194
+  type: 'test'
+  ...
+# Subtest: temporary keys never enter save, validation or preview payloads and editor identity survives clones/reordering
+ok 25 - temporary keys never enter save, validation or preview payloads and editor identity survives clones/reordering
+  ---
+  duration_ms: 0.482846
+  type: 'test'
+  ...
+# Subtest: tiers are atomic values when both sessions change them, with no index-based merge
+ok 26 - tiers are atomic values when both sessions change them, with no index-based merge
+  ---
+  duration_ms: 0.485319
+  type: 'test'
+  ...
+# Subtest: concurrent registration of the same catalog name retains the saved UUID without an opaque owner choice
+ok 27 - concurrent registration of the same catalog name retains the saved UUID without an opaque owner choice
+  ---
+  duration_ms: 0.388564
+  type: 'test'
+  ...
+# Subtest: only the typed revision contract triggers recovery, including post-approval races
+ok 28 - only the typed revision contract triggers recovery, including post-approval races
+  ---
+  duration_ms: 0.325939
+  type: 'test'
+  ...
+# Subtest: draft acceptance allows missing prices and owner decisions but blocks invalid/unsupported/cross-field diagnostics at every level
+ok 29 - draft acceptance allows missing prices and owner decisions but blocks invalid/unsupported/cross-field diagnostics at every level
+  ---
+  duration_ms: 0.325189
+  type: 'test'
+  ...
+# Subtest: real saves and approval/validation/preview calls reject stale revisions with the same typed 409
+ok 30 - real saves and approval/validation/preview calls reject stale revisions with the same typed 409
+  ---
+  duration_ms: 271.516689
+  type: 'test'
+  ...
+# Subtest: a real three-way merge saves both independent prices with server revisions and exact cent storage
+ok 31 - a real three-way merge saves both independent prices with server revisions and exact cent storage
+  ---
+  duration_ms: 415.921251
+  type: 'test'
+  ...
+# Subtest: a further remote save during recovery restarts concurrency protection without overwriting it
+ok 32 - a further remote save during recovery restarts concurrency protection without overwriting it
+  ---
+  duration_ms: 190.669179
+  type: 'test'
+  ...
+# Subtest: restored deletions save as new server IDs with fresh origin and no resurrected approval
+ok 33 - restored deletions save as new server IDs with fresh origin and no resurrected approval
+  ---
+  duration_ms: 150.306372
+  type: 'test'
+  ...
+# Subtest: real validation allows incomplete drafts and flags root/nested disagreement and unsupported values
+ok 34 - real validation allows incomplete drafts and flags root/nested disagreement and unsupported values
+  ---
+  duration_ms: 267.806683
+  type: 'test'
+  ...
+# Subtest: backend preserves remote receipts but changed merged prices invalidate current approval
+ok 35 - backend preserves remote receipts but changed merged prices invalidate current approval
+  ---
+  duration_ms: 225.239855
+  type: 'test'
+  ...
+# Subtest: individually valid range edits that become incompatible after merging are blocked
+ok 36 - individually valid range edits that become incompatible after merging are blocked
+  ---
+  duration_ms: 95.493927
+  type: 'test'
+  ...
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: QE-001: confirmation runs after durable replacement and before the pause marker is cleared
+ok 37 - QE-001: confirmation runs after durable replacement and before the pause marker is cleared
+  ---
+  duration_ms: 6.064164
+  type: 'test'
+  ...
+# Subtest: QE-001: failure before replacement keeps the previous file and never invokes creation confirmation
+ok 38 - QE-001: failure before replacement keeps the previous file and never invokes creation confirmation
+  ---
+  duration_ms: 2.981451
+  type: 'test'
+  ...
+# Subtest: QE-001: an ordinary application save does not fail after committing changed owner prices
+ok 39 - QE-001: an ordinary application save does not fail after committing changed owner prices
+  ---
+  duration_ms: 188.632538
+  type: 'test'
+  ...
+# Subtest: QE-001: the real approval path cannot report failure after making a service customer-live
+ok 40 - QE-001: the real approval path cannot report failure after making a service customer-live
+  ---
+  duration_ms: 210.409727
+  type: 'test'
+  ...
+# Subtest: QE-001: first-creation ledger failure stays paused through restart and a retry confirms recovery
+ok 41 - QE-001: first-creation ledger failure stays paused through restart and a retry confirms recovery
+  ---
+  duration_ms: 435.414007
+  type: 'test'
+  ...
+# Subtest: QE-002: an established valid book is read-only in this process and after restart
+ok 42 - QE-002: an established valid book is read-only in this process and after restart
+  ---
+  duration_ms: 246.250346
+  type: 'test'
+  ...
+# Subtest: QE-002: legacy file-only backfill is one deliberate write and failed backfill never blesses the file
+ok 43 - QE-002: legacy file-only backfill is one deliberate write and failed backfill never blesses the file
+  ---
+  duration_ms: 43.725605
+  type: 'test'
+  ...
+# Subtest: QE-001: a crash marker without a live file is uncertain storage, not a new empty book
+ok 44 - QE-001: a crash marker without a live file is uncertain storage, not a new empty book
+  ---
+  duration_ms: 5.239224
+  type: 'test'
+  ...
+# Subtest: QE-001/QE-002: concurrent application saves preserve revision binding and one confirmed ledger row
+ok 45 - QE-001/QE-002: concurrent application saves preserve revision binding and one confirmed ledger row
+  ---
+  duration_ms: 897.090489
+  type: 'test'
+  ...
+# Subtest: QE-001 follow-up: an outer rollback is refused before first-creation storage mutation
+ok 46 - QE-001 follow-up: an outer rollback is refused before first-creation storage mutation
+  ---
+  duration_ms: 891.592331
+  type: 'test'
+  ...
+# Subtest: QE-001 follow-up: the caller can commit after refusal and retry confirms creation across restart
+ok 47 - QE-001 follow-up: the caller can commit after refusal and retry confirms creation across restart
+  ---
+  duration_ms: 243.974925
+  type: 'test'
+  ...
+# Subtest: QE-001 follow-up: submitQuote cannot backfill a legacy ledger inside its rollback transaction
+ok 48 - QE-001 follow-up: submitQuote cannot backfill a legacy ledger inside its rollback transaction
+  ---
+  duration_ms: 277.684002
+  type: 'test'
+  ...
+# Subtest: QE-002 follow-up: established erased accounts stay unreadable without database writes after restart
+ok 49 - QE-002 follow-up: established erased accounts stay unreadable without database writes after restart
+  ---
+  duration_ms: 335.188964
+  type: 'test'
+  ...
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: real save API restores edited adopted flooring as fresh unapproved work with exact editable configuration
+ok 50 - real save API restores edited adopted flooring as fresh unapproved work with exact editable configuration
+  ---
+  duration_ms: 2591.024177
+  type: 'test'
+  ...
+# Subtest: surviving service keeps authoritative remote adoption and approval receipts, plus independent local price edit
+ok 51 - surviving service keeps authoritative remote adoption and approval receipts, plus independent local price edit
+  ---
+  duration_ms: 2035.691806
+  type: 'test'
+  ...
+# Subtest: receipt-only remote adoption does not conflict with a local deletion
+ok 52 - receipt-only remote adoption does not conflict with a local deletion
+  ---
+  duration_ms: 1352.703631
+  type: 'test'
+  ...
+# Subtest: remote absence removes a local adoption receipt and unsaved additions strip it
+ok 53 - remote absence removes a local adoption receipt and unsaved additions strip it
+  ---
+  duration_ms: 1427.495185
+  type: 'test'
+  ...
+# Subtest: ordinary local conflict choice preserves exact prices and independent configuration through HTTP save
+ok 54 - ordinary local conflict choice preserves exact prices and independent configuration through HTTP save
+  ---
+  duration_ms: 1241.983061
+  type: 'test'
+  ...
+# Subtest: ordinary remote conflict choice preserves exact prices and independent configuration through HTTP save
+ok 55 - ordinary remote conflict choice preserves exact prices and independent configuration through HTTP save
+  ---
+  duration_ms: 1244.248169
+  type: 'test'
+  ...
+# Subtest: real API still rejects forged new and existing adoption receipts without changing saved revision
+ok 56 - real API still rejects forged new and existing adoption receipts without changing saved revision
+  ---
+  duration_ms: 1107.578891
+  type: 'test'
+  ...
+# Subtest: rendered flooring restoration crosses real HTTP conflict, validation and save paths
+ok 57 - rendered flooring restoration crosses real HTTP conflict, validation and save paths
+  ---
+  duration_ms: 2221.555367
+  type: 'test'
+  ...
+# Subtest: rendered ordinary remote choice retains remote price and independent local title
+ok 58 - rendered ordinary remote choice retains remote price and independent local title
+  ---
+  duration_ms: 1854.262442
+  type: 'test'
+  ...
+# (node:24) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: stored widget origin allowlists fail closed when corrupt or ambiguous
+ok 59 - stored widget origin allowlists fail closed when corrupt or ambiguous
+  ---
+  duration_ms: 1.43057
+  type: 'test'
+  ...
+# Subtest: loopback HTTP origins are accepted only outside production
+ok 60 - loopback HTTP origins are accepted only outside production
+  ---
+  duration_ms: 0.909997
+  type: 'test'
+  ...
+# (node:35) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: release storage: omitted new ID receives a UUID
+ok 61 - release storage: omitted new ID receives a UUID
+  ---
+  duration_ms: 52.757875
+  type: 'test'
+  ...
+# Subtest: release storage: undefined new ID receives a UUID
+ok 62 - release storage: undefined new ID receives a UUID
+  ---
+  duration_ms: 8.180375
+  type: 'test'
+  ...
+# Subtest: release storage: null new ID receives a UUID
+ok 63 - release storage: null new ID receives a UUID
+  ---
+  duration_ms: 7.859361
+  type: 'test'
+  ...
+# Subtest: release storage: empty new ID receives a UUID
+ok 64 - release storage: empty new ID receives a UUID
+  ---
+  duration_ms: 8.760706
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused "not-a-uuid"
+ok 65 - release storage: invalid supplied ID is refused "not-a-uuid"
+  ---
+  duration_ms: 11.035586
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused 17
+ok 66 - release storage: invalid supplied ID is refused 17
+  ---
+  duration_ms: 6.550284
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused 0
+ok 67 - release storage: invalid supplied ID is refused 0
+  ---
+  duration_ms: 5.865816
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused false
+ok 68 - release storage: invalid supplied ID is refused false
+  ---
+  duration_ms: 7.162685
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused {}
+ok 69 - release storage: invalid supplied ID is refused {}
+  ---
+  duration_ms: 8.132212
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused []
+ok 70 - release storage: invalid supplied ID is refused []
+  ---
+  duration_ms: 14.423887
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused "00000000-0000-0000-0000-000000000000"
+ok 71 - release storage: invalid supplied ID is refused "00000000-0000-0000-0000-000000000000"
+  ---
+  duration_ms: 8.879354
+  type: 'test'
+  ...
+# Subtest: release storage: duplicate UUID casing is refused atomically
+ok 72 - release storage: duplicate UUID casing is refused atomically
+  ---
+  duration_ms: 7.277017
+  type: 'test'
+  ...
+# Subtest: release storage: null service pauses corrupted saved data and rejects new writes
+ok 73 - release storage: null service pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 6.249893
+  type: 'test'
+  ...
+# Subtest: release storage: array service pauses corrupted saved data and rejects new writes
+ok 74 - release storage: array service pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 4.999093
+  type: 'test'
+  ...
+# Subtest: release storage: string service pauses corrupted saved data and rejects new writes
+ok 75 - release storage: string service pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 7.846111
+  type: 'test'
+  ...
+# Subtest: release storage: null pricing pauses corrupted saved data and rejects new writes
+ok 76 - release storage: null pricing pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 10.445699
+  type: 'test'
+  ...
+# Subtest: release storage: array pricing pauses corrupted saved data and rejects new writes
+ok 77 - release storage: array pricing pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 8.459474
+  type: 'test'
+  ...
+# Subtest: release storage: object tiers pauses corrupted saved data and rejects new writes
+ok 78 - release storage: object tiers pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 6.734371
+  type: 'test'
+  ...
+# Subtest: release storage: null tiers pauses corrupted saved data and rejects new writes
+ok 79 - release storage: null tiers pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 6.849744
+  type: 'test'
+  ...
+# Subtest: release storage: null tier pauses corrupted saved data and rejects new writes
+ok 80 - release storage: null tier pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 6.11494
+  type: 'test'
+  ...
+# Subtest: release storage: array tier pauses corrupted saved data and rejects new writes
+ok 81 - release storage: array tier pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 6.644176
+  type: 'test'
+  ...
+# Subtest: release storage: null overrides pauses corrupted saved data and rejects new writes
+ok 82 - release storage: null overrides pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 8.309439
+  type: 'test'
+  ...
+# Subtest: release storage: array overrides pauses corrupted saved data and rejects new writes
+ok 83 - release storage: array overrides pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 5.800243
+  type: 'test'
+  ...
+# Subtest: release storage: missing defaults pauses corrupted saved data and rejects new writes
+ok 84 - release storage: missing defaults pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 7.307667
+  type: 'test'
+  ...
+# Subtest: release storage: null defaults pauses corrupted saved data and rejects new writes
+ok 85 - release storage: null defaults pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 11.282347
+  type: 'test'
+  ...
+# Subtest: release storage: array defaults pauses corrupted saved data and rejects new writes
+ok 86 - release storage: array defaults pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 8.732243
+  type: 'test'
+  ...
+# Subtest: release storage: object services pauses corrupted saved data and rejects new writes
+ok 87 - release storage: object services pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 6.441541
+  type: 'test'
+  ...
+# Subtest: release storage: missing services pauses corrupted saved data and rejects new writes
+ok 88 - release storage: missing services pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 5.047365
+  type: 'test'
+  ...
+# Subtest: release storage: valid incomplete draft remains readable and cannot quote
+ok 89 - release storage: valid incomplete draft remains readable and cannot quote
+  ---
+  duration_ms: 85.003561
+  type: 'test'
+  ...
+# Subtest: release storage: omitted optional pricing and tiers remain readable
+ok 90 - release storage: omitted optional pricing and tiers remain readable
+  ---
+  duration_ms: 7.149996
+  type: 'test'
+  ...
+# Subtest: release storage: valid uppercase identity, approval, other owner and $100 quote survive a save
+ok 91 - release storage: valid uppercase identity, approval, other owner and $100 quote survive a save
+  ---
+  duration_ms: 204.663736
+  type: 'test'
+  ...
+1..91
+# tests 91
+# suites 0
+# pass 91
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15707.390128
