@@ -55,7 +55,7 @@ function completeChoices(service,field){
   const values=field.type==='slug'?[...new Set([...exempt,...Object.keys(service.knownOfferings?.[field.name]||{})])]:field.values;
   if(!Array.isArray(values))return null;
   return values.filter(value=>['string','number','boolean'].includes(typeof value)).map(value=>{
-    const complete=field.type==='offering_counts'||field.type==='plant_counts';
+    const complete=field.name==='gates'&&field.type==='offering_counts';
     const label=field.options?.[value]??field.optionLabels?.[value];
     if(complete&&label!==undefined&&!safeText(label,4000))throw new TypeError('Invalid complete voice choice.');
     return {value,label:complete?(safeText(label,4000)||human(value)):(safeText(field.options?.[value])||safeText(field.optionLabels?.[value])||human(value))};

@@ -79,6 +79,15 @@ test('catalog planting: later supported plant size is paged, searched, selected 
  const found=await h.lookup('plantsBySize',{query:'#32 shrub'});assert.deepEqual(found.choices,[{value:'plant_32',label:'[SYNTHETIC] #32 shrub, container'}]);
  const result=await h.quote({...h.inputs,plantsBySize:{[found.choices[0].value]:2}});assert.equal(result.status,'quoted',JSON.stringify(result));assert.equal(result.midEstimate,150);
 });
+test('catalog planting: maximum supported 160-character Unicode identity remains complete and quotes',async t=>{
+ const f=plantBook(),name='[SYNTHETIC] '+'葉'.repeat(135)+'_LAST_PLANT32';assert.equal(name.length,160);
+ f.ownerPricing.pricing.plantSizes.plant_32.name=name;
+ const h=await opened(t,f),found=await h.lookup('plantsBySize',{query:'_LAST_PLANT32'});
+ assert.deepEqual(found.choices,[{value:'plant_32',label:name}]);
+ assert.equal(h.matched.questionContract.fields.find(q=>q.field==='plantsBySize').choices.find(c=>c.value==='plant_32').label,name);
+ const result=await h.quote({...h.inputs,plantsBySize:{[found.choices[0].value]:2}});
+ assert.equal(result.status,'quoted',JSON.stringify(result));assert.equal(result.midEstimate,150);
+});
 test('catalog search: duplicate descriptions retain distinct keys and widths; missing results invent nothing',async t=>{
  const f=gateBook();for(const gate of Object.values(f.ownerPricing.pricing.offeringDetails.gates))gate.description='[SYNTHETIC] Same installation scope';
  const h=await opened(t,f),page=await h.lookup('gates',{query:'same INSTALLATION',limit:32});

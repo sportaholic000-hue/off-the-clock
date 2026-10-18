@@ -23,9 +23,10 @@ Product recap, scope confirmation, quote calculations and eligibility are unchan
 
 - `baseline.tap`: unchanged production, 15 tests; 2 passed and 13 failed. A known
   33rd gate already quoted at 455,000 cents while its initial choices omitted it.
-- `neighbors.tap`: 198/198, zero failures/skips/cancellations/TODOs. Includes all
-  19 new regressions plus voice declarations, runtime persistence/security,
-  plan gating, fence/landscape delivery and the unchanged tenant-query inventory.
+- `neighbors.tap`: 238/238, zero failures/skips/cancellations/TODOs. Includes all
+  20 new regressions plus voice declarations, runtime persistence/security,
+  plan gating, fence/landscape delivery, historical gate-only choice caps and the
+  unchanged tenant-query inventory.
 - `build.log`: owner and widget builds passed (1,669 and 1,624 modules).
 - `local-chromium-blocked.log`: the downloaded Chromium executable exits with
   SIGTRAP before launching in this workspace. This is not browser pass evidence.
@@ -61,3 +62,24 @@ Only necessary voice production files, the owned new test/evidence directory and
 two existing voice-specific tool-list expectations changed. No specs, guide,
 calculators, price books, engine versions, dependencies or workflows changed.
 No subagents, live calls/messages, merges, tags or deployment were used.
+
+## Full-gate follow-up
+
+The first complete-suite attempt exposed four failures in the unchanged gate-only
+choice-cap controls: the repair had broadened long-label handling for non-gate
+count fields. That unintended change is restored to the existing gate-only
+exception. A new saved-book regression proves the maximum supported 160-character
+Unicode plant name remains complete and quotes at 15,000 cents.
+
+Two existing suite-policy tests reject any selected filename containing `voice`:
+`test/auditFixes20261003.spec.mjs:262` and
+`test/quoteEngineVNextRepairs.spec.js:1177`. The owner's required new filename is
+selected transitively because it tests saved books and real quotes, so both
+assertions fail. Neither shared guard, test-selection code nor the requested
+filename was changed to conceal this conflict. Full verification remains blocked
+until the owner authorizes resolution of that scope conflict. Exact observed
+counts and final hosted status are supplied in chat, not assumed here.
+
+The initial local strict run was interrupted after identifying the label regression;
+it is diagnostic evidence only, not a completed gate. Hosted strict verification
+and a complete local full-suite run use the final corrected commit.
