@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "verification/qe-agent4-f18-review-20261018/review.spec.mjs"
+  ],
+  "exitCode": 1,
+  "preExecutionSha256": {
+    "EXPECTED.md": "3b5ee39b999204917ced9e07aba21449e9b9aaaa7e316a040858441c9d7cd019",
+    "review.spec.mjs": "6ce950b5181019b80e8c0c1b82dd99549a61372db20f0e89acdec1c52a032949"
+  }
+}

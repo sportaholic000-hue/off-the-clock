@@ -1,0 +1,30 @@
+{
+  "tests": 91,
+  "pass": 76,
+  "fail": 15,
+  "cancelled": 0,
+  "skipped": 0,
+  "todo": 0,
+  "failedChecks": [
+    "not ok 51 - malformed-before-single / customerReceiptPresentation / scope",
+    "not ok 53 - malformed-before-single / projectSavedQuoteContext / scope",
+    "not ok 56 - malformed-after-single / customerReceiptPresentation / scope",
+    "not ok 58 - malformed-after-single / projectSavedQuoteContext / scope",
+    "not ok 61 - malformed-with-two-shared / customerReceiptPresentation / scope",
+    "not ok 63 - malformed-with-two-shared / projectSavedQuoteContext / scope",
+    "not ok 71 - malformed-empty-object / customerReceiptPresentation / scope",
+    "not ok 73 - malformed-empty-object / projectSavedQuoteContext / scope",
+    "not ok 74 - malformed-empty-object / amounts, options and private fields",
+    "not ok 76 - malformed-reversed-range / customerReceiptPresentation / scope",
+    "not ok 78 - malformed-reversed-range / projectSavedQuoteContext / scope",
+    "not ok 79 - malformed-reversed-range / amounts, options and private fields",
+    "not ok 81 - malformed-all-options / customerReceiptPresentation / scope",
+    "not ok 83 - malformed-all-options / projectSavedQuoteContext / scope",
+    "not ok 87 - malformed-options-container / projectVoiceQuote / scope"
+  ],
+  "caseCount": 18,
+  "stabilityCasesPassed": 18,
+  "privateFieldLeaks": [],
+  "storedReceiptSha256": "4b06474a59f11b3c64f66df188f6c8661daac95eece9119a98fa3b490bbd2a4d",
+  "storedReceiptBytesUnchanged": true
+}

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "verification/qe-agent4-f18-review-20261018/minimal-reproductions.mjs"
+  ],
+  "exitCode": 0,
+  "preExecutionSha256": {
+    "EXPECTED-followup.md": "7eba3bb7fb90e5bdb079875facafd7b8de2d83ab0a4e84fd5aea3c9be15c30e8",
+    "minimal-reproductions.mjs": "2988384b2c767092e2176720a3d80ba5fb0736b6c61c3eb81ac2b237aaa38c5e"
+  },
+  "meaning": "Exit zero only confirms reproduction script completed and repeated outputs/input stability; semantic failures are recorded outputs, not a passing compatibility gate."
+}

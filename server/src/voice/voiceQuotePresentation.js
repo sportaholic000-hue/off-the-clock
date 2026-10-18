@@ -1,5 +1,5 @@
 import {quoteMoneyFormatter} from '../../quoteMoneyFormat.js';
-import {customerReceiptPresentation} from '../quoteScopeDisclosure.js';
+import {customerReceiptPresentation,validCustomerQuoteRange} from '../quoteScopeDisclosure.js';
 // Customer-safe phone projection. Full written disclosures remain intact and
 // separate from the short spoken summary; no price is recalculated or rounded.
 export const VOICE_WRITTEN_LIMIT = 65_536;
@@ -19,6 +19,7 @@ const list = (value, maximum = 30) => {
   return value.map(item => text(item, 1000)).filter(Boolean);
 };
 const money = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
+const hasAmounts = value => ['lowEstimate','midEstimate','highEstimate'].some(key=>value[key]!==undefined);
 
 // Validate the owner's presentation envelope before saving or approving it.
 // Reserve space for measurements, engine disclosures, tax/currency and prices;
@@ -74,7 +75,7 @@ const scopeDetails = scope => {
 };
 
 function optionProjection(option, index, parent = {}) {
-  if (!record(option) || !money(option.lowEstimate) || !money(option.highEstimate) || option.lowEstimate > option.highEstimate) throw new TypeError('Invalid voice quote range.');
+  if (!validCustomerQuoteRange(option)) throw new TypeError('Invalid voice quote range.');
   const output = { tierName: text(option.tierName, 200) || 'Option ' + (index + 1), lowEstimate: option.lowEstimate, highEstimate: option.highEstimate };
   if (money(option.midEstimate)) output.midEstimate = option.midEstimate;
   // Each spoken option carries its own currency, tax and unit context; inherit
@@ -122,6 +123,8 @@ export function projectVoiceQuote(response, quoteHandle, followUps = [], {caller
   const output = { status: released ? 'quoted' : 'needs_details', quoteHandle, resultType: response?.resultType || 'ESTIMATE_REQUIRES_REVIEW' };
   if(callerMeasurementsEstimated===true)output.callerMeasurementsEstimated=true;
   if (released) {
+    if(!record(estimate)||hasAmounts(estimate)&&!validCustomerQuoteRange(estimate))throw new TypeError('Invalid voice quote range.');
+    if(estimate.options!==undefined&&!Array.isArray(estimate.options))throw new TypeError('Invalid voice quote options.');
     if(text(estimate?.optionAvailabilityNotice,2000))output.optionAvailabilityNotice=estimate.optionAvailabilityNotice;
     for (const key of ['lowEstimate', 'midEstimate', 'highEstimate']) if (money(estimate?.[key])) output[key] = estimate[key];
     for (const key of ['currency', 'taxTreatment', 'priceUnit']) if (text(estimate?.[key], 200)) output[key] = estimate[key];
@@ -129,6 +132,7 @@ export function projectVoiceQuote(response, quoteHandle, followUps = [], {caller
       if (estimate.options.length > 3) throw new TypeError('At most three quote options are supported.');
       output.options = estimate.options.map((option, index) => optionProjection(option, index, estimate));
     }
+    if(!validCustomerQuoteRange(estimate)&&!output.options?.length)throw new TypeError('Missing voice quote range.');
     if(estimate?.firstVisit!==undefined)output.firstVisit=optionProjection(estimate.firstVisit,0,estimate);
     output.priceDrivers = list(estimate?.priceDrivers);
     output.skippedAddons = list(estimate?.skippedAddons);
@@ -166,13 +170,14 @@ export function projectSavedQuoteContext(response) {
   if(text(response.resultType,120))out.resultType=response.resultType;
   if(!['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(response.resultType))return out;
   if(!record(range))throw new TypeError('Missing saved priced scope.');
-  const prices=value=>{
+  const prices=(value,required=false)=>{
+    if((required||hasAmounts(value))&&!validCustomerQuoteRange(value))throw new TypeError('Invalid saved quote range.');
     const view={};
     for(const key of ['lowEstimate','midEstimate','highEstimate'])if(money(value[key]))view[key]=value[key];
     for(const key of ['currency','tierName','taxTreatment','priceUnit']){
       const item=text(value[key],key==='taxTreatment'?2000:200);if(item)view[key]=item;
     }
-    if(value.firstVisit!==undefined){if(!record(value.firstVisit)||Object.hasOwn(value.firstVisit,'firstVisit'))throw new TypeError('Invalid saved first visit.');view.firstVisit=prices(value.firstVisit);}
+    if(value.firstVisit!==undefined){if(!record(value.firstVisit)||Object.hasOwn(value.firstVisit,'firstVisit'))throw new TypeError('Invalid saved first visit.');view.firstVisit=prices(value.firstVisit,true);}
     if(value.skippedAddons!==undefined)view.skippedAddons=list(value.skippedAddons);
     const written=value.writtenDisclosure??value.disclaimer;
     if(text(written))view.writtenDisclosure=written;
@@ -181,10 +186,13 @@ export function projectSavedQuoteContext(response) {
   Object.assign(out,prices(range));
   if(text(range.optionAvailabilityNotice,2000))out.optionAvailabilityNotice=range.optionAvailabilityNotice;
   if(Array.isArray(range.options)){
+    // D15: ignore non-record optional junk, but never publish a malformed range
+    // from a record that purports to be a priced option.
     const options=range.options.filter(record);
     if(options.length>5)throw new TypeError('Too many saved options.');
-    out.options=options.map(option=>prices({...option,...Object.fromEntries(['currency','taxTreatment','priceUnit'].filter(key=>option[key]===undefined&&range[key]!==undefined).map(key=>[key,range[key]]))}));
+    out.options=options.map(option=>prices({...option,...Object.fromEntries(['currency','taxTreatment','priceUnit'].filter(key=>option[key]===undefined&&range[key]!==undefined).map(key=>[key,range[key]]))},true));
   }else if(range.options!==undefined)throw new TypeError('Invalid saved options.');
+  if(!validCustomerQuoteRange(range)&&!out.options?.length)throw new TypeError('Missing saved quote range.');
   for(const key of ['customerMessage','additionalWorkStatus','scopeNotice'])if(text(response[key],key==='scopeNotice'?VOICE_WRITTEN_LIMIT:2000))out[key]=response[key];
   if(response.additionalWork!==undefined){
     if(!Array.isArray(response.additionalWork))throw new TypeError('Invalid saved additional work.');

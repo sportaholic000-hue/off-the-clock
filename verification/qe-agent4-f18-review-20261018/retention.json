@@ -1,0 +1,17 @@
+{
+  "commit": "03b29925437e73acb24b916ba6e69e5a002dfff1",
+  "parent": "5eee6f6ba502e6622a379be947994f0b40ef4301",
+  "tree": "9d3e91adc48861de0b11ba6b087e98ee60b63771",
+  "trackedFilesChecked": 3146,
+  "changedTrackedFiles": [],
+  "localRefsUnchanged": true,
+  "detachedHead": true,
+  "allNewUntrackedFilesConfinedToReviewDirectory": true,
+  "nodeVersion": "v24.19.0",
+  "sourceHashes": {
+    "server/src/quoteScopeDisclosure.js": "7b06d7b2fee2c984efe319107e2f1a988250deebeb83ca9cbe208b04fa0a517f",
+    "server/src/voice/voiceQuotePresentation.js": "de5c5a780631eca579acc81f8b08258a3f7e0f6849e0657f833592db4514bd87",
+    "test/qeAgent3ScopePresentation20261018.spec.mjs": "a191cc656f49aa541415868f8d7c8debcdc81fdb9a0449f3737eb0a4c9b0d6bb",
+    "test/callerHistoryFollowup20261006.spec.mjs": "baf7a1275c695103cf8f46a48c9e1b2202104e9705160ec9a8dd2041d171c1d5"
+  }
+}

@@ -1,0 +1,26 @@
+diff --git a/server/src/voice/voiceQuotePresentation.js b/server/src/voice/voiceQuotePresentation.js
+index 208fe152..4ed600ee 100644
+--- a/server/src/voice/voiceQuotePresentation.js
++++ b/server/src/voice/voiceQuotePresentation.js
+@@ -1,4 +1,5 @@
+ import {quoteMoneyFormatter} from '../../quoteMoneyFormat.js';
++import {customerReceiptPresentation} from '../quoteScopeDisclosure.js';
+ // Customer-safe phone projection. Full written disclosures remain intact and
+ // separate from the short spoken summary; no price is recalculated or rounded.
+ export const VOICE_WRITTEN_LIMIT = 65_536;
+@@ -115,6 +116,7 @@ export function conciseVoiceSummary(result) {
+ }
+ 
+ export function projectVoiceQuote(response, quoteHandle, followUps = [], {callerMeasurementsEstimated=false}={}) {
++  response=customerReceiptPresentation(response);
+   const estimate = response?.resultType === 'PARTIAL_ESTIMATE_READY' ? response.pricedEstimate : response;
+   const released = ['INSTANT_ESTIMATE_READY', 'PARTIAL_ESTIMATE_READY'].includes(response?.resultType);
+   const output = { status: released ? 'quoted' : 'needs_details', quoteHandle, resultType: response?.resultType || 'ESTIMATE_REQUIRES_REVIEW' };
+@@ -157,6 +159,7 @@ export function projectVoiceOptions(options) {
+ // quote, truncate its qualifications, or copy the owner's financial record.
+ export function projectSavedQuoteContext(response) {
+   if(!record(response))throw new TypeError('Invalid saved quote.');
++  response=customerReceiptPresentation(response);
+   const partial=response.resultType==='PARTIAL_ESTIMATE_READY';
+   const range=partial?response.pricedEstimate:response;
+   const out={};

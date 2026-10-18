@@ -1,0 +1,1647 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D14 caller filter precedes limit with tenant and malformed-record controls
+ok 1 - D14 caller filter precedes limit with tenant and malformed-record controls
+  ---
+  duration_ms: 64.268769
+  type: 'test'
+  ...
+# Subtest: D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+ok 2 - D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+  ---
+  duration_ms: 45.794175
+  type: 'test'
+  ...
+# Subtest: D16 handle credential rotation preserves one owner-phone customer and historical references
+ok 3 - D16 handle credential rotation preserves one owner-phone customer and historical references
+  ---
+  duration_ms: 33.40616
+  type: 'test'
+  ...
+# Subtest: D21 unresolved preferences survive calendar range changes until resolved
+ok 4 - D21 unresolved preferences survive calendar range changes until resolved
+  ---
+  duration_ms: 60.072655
+  type: 'test'
+  ...
+# Subtest: D14 legacy duplicate IDs preserve caller bookings; contradictory and foreign customer links are rejected
+ok 5 - D14 legacy duplicate IDs preserve caller bookings; contradictory and foreign customer links are rejected
+  ---
+  duration_ms: 37.729379
+  type: 'test'
+  ...
+# Subtest: D14 normalized appointment phone and per-caller limit do not mix callers
+ok 6 - D14 normalized appointment phone and per-caller limit do not mix callers
+  ---
+  duration_ms: 38.486077
+  type: 'test'
+  ...
+# Subtest: D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely
+ok 7 - D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely
+  ---
+  duration_ms: 29.327603
+  type: 'test'
+  ...
+# Subtest: D15 quote and request joins reject foreign-call and foreign-submission links
+ok 8 - D15 quote and request joins reject foreign-call and foreign-submission links
+  ---
+  duration_ms: 26.490145
+  type: 'test'
+  ...
+# Subtest: D16 same names and emails do not join different phones or different tenants
+ok 9 - D16 same names and emails do not join different phones or different tenants
+  ---
+  duration_ms: 31.150372
+  type: 'test'
+  ...
+# Subtest: D16 legacy formatted phone reuses identity and preserves omitted contact fields
+ok 10 - D16 legacy formatted phone reuses identity and preserves omitted contact fields
+  ---
+  duration_ms: 29.622251
+  type: 'test'
+  ...
+# Subtest: D16 customer write rolls back with inquiry failure and retries create one identity
+ok 11 - D16 customer write rolls back with inquiry failure and retries create one identity
+  ---
+  duration_ms: 31.710728
+  type: 'test'
+  ...
+# Subtest: D15 malformed optional quote entries cannot hide valid saved ranges or other caller history
+ok 12 - D15 malformed optional quote entries cannot hide valid saved ranges or other caller history
+  ---
+  duration_ms: 30.772839
+  type: 'test'
+  ...
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D21/D24 actual owner routes expose old unresolved preferences and factual summaries without tenant leakage
+ok 13 - D21/D24 actual owner routes expose old unresolved preferences and factual summaries without tenant leakage
+  ---
+  duration_ms: 5327.617367
+  type: 'test'
+  ...
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+ok 14 - D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+  ---
+  duration_ms: 854.093087
+  type: 'test'
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D24 summary quotes only attributed transcript content; ignores unfinished and tool/system turns
+ok 15 - D24 summary quotes only attributed transcript content; ignores unfinished and tool/system turns
+  ---
+  duration_ms: 0.797978
+  type: 'test'
+  ...
+# Subtest: D24 summary is bounded; omitted text is marked as an excerpt without generating claims
+ok 16 - D24 summary is bounded; omitted text is marked as an excerpt without generating claims
+  ---
+  duration_ms: 0.433131
+  type: 'test'
+  ...
+# Subtest: D24 existing-store additive migration is repeatable and preserves transcript/customer rows
+ok 17 - D24 existing-store additive migration is repeatable and preserves transcript/customer rows
+  ---
+  duration_ms: 58.729548
+  type: 'test'
+  ...
+# Subtest: D24 completion rejects foreign call binding without changing any stored call
+ok 18 - D24 completion rejects foreign call binding without changing any stored call
+  ---
+  duration_ms: 26.502664
+  type: 'test'
+  ...
+# Subtest: D24 saved business outcome and summary commit together; failure rolls back, retry is stable
+ok 19 - D24 saved business outcome and summary commit together; failure rolls back, retry is stable
+  ---
+  duration_ms: 40.725881
+  type: 'test'
+  ...
+# (node:20) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D16 web review and voice share exact normalized owner-phone identity
+ok 20 - D16 web review and voice share exact normalized owner-phone identity
+  ---
+  duration_ms: 738.563217
+  type: 'test'
+  ...
+# Subtest: D16 email-only and ambiguous local phones never deduplicate on name or email
+ok 21 - D16 email-only and ambiguous local phones never deduplicate on name or email
+  ---
+  duration_ms: 29.514609
+  type: 'test'
+  ...
+# Subtest: D16 public web input cannot overwrite established voice identity and web history reaches returning caller
+ok 22 - D16 public web input cannot overwrite established voice identity and web history reaches returning caller
+  ---
+  duration_ms: 58.257308
+  type: 'test'
+  ...
+# Subtest: D16 web identity and all related records roll back when receipt persistence fails
+ok 23 - D16 web identity and all related records roll back when receipt persistence fails
+  ---
+  duration_ms: 31.290582
+  type: 'test'
+  ...
+# Subtest: D16 independent concurrent processes and restarted retry resolve one persistent identity
+ok 24 - D16 independent concurrent processes and restarted retry resolve one persistent identity
+  ---
+  duration_ms: 1718.654144
+  type: 'test'
+  ...
+# (node:26) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY none: every numerical output unchanged
+ok 25 - concrete base disclosure CONCRETE_DRIVEWAY none: every numerical output unchanged
+  ---
+  duration_ms: 61.317696
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY legacy: every numerical output unchanged
+ok 26 - concrete base disclosure CONCRETE_DRIVEWAY legacy: every numerical output unchanged
+  ---
+  duration_ms: 23.457199
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY blank: every numerical output unchanged
+ok 27 - concrete base disclosure CONCRETE_DRIVEWAY blank: every numerical output unchanged
+  ---
+  duration_ms: 12.445667
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY gravel: every numerical output unchanged
+ok 28 - concrete base disclosure CONCRETE_DRIVEWAY gravel: every numerical output unchanged
+  ---
+  duration_ms: 13.318978
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY grading: every numerical output unchanged
+ok 29 - concrete base disclosure CONCRETE_DRIVEWAY grading: every numerical output unchanged
+  ---
+  duration_ms: 14.500534
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY both: every numerical output unchanged
+ok 30 - concrete base disclosure CONCRETE_DRIVEWAY both: every numerical output unchanged
+  ---
+  duration_ms: 9.962065
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY zero_gravel: every numerical output unchanged
+ok 31 - concrete base disclosure CONCRETE_DRIVEWAY zero_gravel: every numerical output unchanged
+  ---
+  duration_ms: 7.950734
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY zero_grading: every numerical output unchanged
+ok 32 - concrete base disclosure CONCRETE_DRIVEWAY zero_grading: every numerical output unchanged
+  ---
+  duration_ms: 7.504644
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY zero_both: every numerical output unchanged
+ok 33 - concrete base disclosure CONCRETE_DRIVEWAY zero_both: every numerical output unchanged
+  ---
+  duration_ms: 10.154114
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY invalid_gravel: every numerical output unchanged
+ok 34 - concrete base disclosure CONCRETE_DRIVEWAY invalid_gravel: every numerical output unchanged
+  ---
+  duration_ms: 8.391777
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY invalid_grading: every numerical output unchanged
+ok 35 - concrete base disclosure CONCRETE_DRIVEWAY invalid_grading: every numerical output unchanged
+  ---
+  duration_ms: 2.707247
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY options: every numerical output unchanged
+ok 36 - concrete base disclosure CONCRETE_DRIVEWAY options: every numerical output unchanged
+  ---
+  duration_ms: 33.831244
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY financial: every numerical output unchanged
+ok 37 - concrete base disclosure CONCRETE_DRIVEWAY financial: every numerical output unchanged
+  ---
+  duration_ms: 12.738186
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY fees: every numerical output unchanged
+ok 38 - concrete base disclosure CONCRETE_DRIVEWAY fees: every numerical output unchanged
+  ---
+  duration_ms: 12.796033
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY minimum: every numerical output unchanged
+ok 39 - concrete base disclosure CONCRETE_DRIVEWAY minimum: every numerical output unchanged
+  ---
+  duration_ms: 13.096035
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB none: every numerical output unchanged
+ok 40 - concrete base disclosure CONCRETE_PATIO_SLAB none: every numerical output unchanged
+  ---
+  duration_ms: 11.097782
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB legacy: every numerical output unchanged
+ok 41 - concrete base disclosure CONCRETE_PATIO_SLAB legacy: every numerical output unchanged
+  ---
+  duration_ms: 13.272329
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB blank: every numerical output unchanged
+ok 42 - concrete base disclosure CONCRETE_PATIO_SLAB blank: every numerical output unchanged
+  ---
+  duration_ms: 10.181706
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB gravel: every numerical output unchanged
+ok 43 - concrete base disclosure CONCRETE_PATIO_SLAB gravel: every numerical output unchanged
+  ---
+  duration_ms: 9.961636
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB grading: every numerical output unchanged
+ok 44 - concrete base disclosure CONCRETE_PATIO_SLAB grading: every numerical output unchanged
+  ---
+  duration_ms: 12.926529
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB both: every numerical output unchanged
+ok 45 - concrete base disclosure CONCRETE_PATIO_SLAB both: every numerical output unchanged
+  ---
+  duration_ms: 13.678099
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB zero_gravel: every numerical output unchanged
+ok 46 - concrete base disclosure CONCRETE_PATIO_SLAB zero_gravel: every numerical output unchanged
+  ---
+  duration_ms: 17.632078
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB zero_grading: every numerical output unchanged
+ok 47 - concrete base disclosure CONCRETE_PATIO_SLAB zero_grading: every numerical output unchanged
+  ---
+  duration_ms: 14.093242
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB zero_both: every numerical output unchanged
+ok 48 - concrete base disclosure CONCRETE_PATIO_SLAB zero_both: every numerical output unchanged
+  ---
+  duration_ms: 10.851071
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB invalid_gravel: every numerical output unchanged
+ok 49 - concrete base disclosure CONCRETE_PATIO_SLAB invalid_gravel: every numerical output unchanged
+  ---
+  duration_ms: 1.191109
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB invalid_grading: every numerical output unchanged
+ok 50 - concrete base disclosure CONCRETE_PATIO_SLAB invalid_grading: every numerical output unchanged
+  ---
+  duration_ms: 1.194685
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB options: every numerical output unchanged
+ok 51 - concrete base disclosure CONCRETE_PATIO_SLAB options: every numerical output unchanged
+  ---
+  duration_ms: 17.561882
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB financial: every numerical output unchanged
+ok 52 - concrete base disclosure CONCRETE_PATIO_SLAB financial: every numerical output unchanged
+  ---
+  duration_ms: 6.768949
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB fees: every numerical output unchanged
+ok 53 - concrete base disclosure CONCRETE_PATIO_SLAB fees: every numerical output unchanged
+  ---
+  duration_ms: 6.838302
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB minimum: every numerical output unchanged
+ok 54 - concrete base disclosure CONCRETE_PATIO_SLAB minimum: every numerical output unchanged
+  ---
+  duration_ms: 6.083139
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY none
+ok 55 - concrete base saved widget CONCRETE_DRIVEWAY none
+  ---
+  duration_ms: 1804.957575
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY legacy
+ok 56 - concrete base saved widget CONCRETE_DRIVEWAY legacy
+  ---
+  duration_ms: 721.82232
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY gravel
+ok 57 - concrete base saved widget CONCRETE_DRIVEWAY gravel
+  ---
+  duration_ms: 536.228601
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY grading
+ok 58 - concrete base saved widget CONCRETE_DRIVEWAY grading
+  ---
+  duration_ms: 431.974728
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY both
+ok 59 - concrete base saved widget CONCRETE_DRIVEWAY both
+  ---
+  duration_ms: 533.844662
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY options
+ok 60 - concrete base saved widget CONCRETE_DRIVEWAY options
+  ---
+  duration_ms: 1155.914929
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB none
+ok 61 - concrete base saved widget CONCRETE_PATIO_SLAB none
+  ---
+  duration_ms: 415.795567
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB legacy
+ok 62 - concrete base saved widget CONCRETE_PATIO_SLAB legacy
+  ---
+  duration_ms: 373.518441
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB gravel
+ok 63 - concrete base saved widget CONCRETE_PATIO_SLAB gravel
+  ---
+  duration_ms: 476.152958
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB grading
+ok 64 - concrete base saved widget CONCRETE_PATIO_SLAB grading
+  ---
+  duration_ms: 403.471162
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB both
+ok 65 - concrete base saved widget CONCRETE_PATIO_SLAB both
+  ---
+  duration_ms: 310.463468
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB options
+ok 66 - concrete base saved widget CONCRETE_PATIO_SLAB options
+  ---
+  duration_ms: 739.471695
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_DRIVEWAY gravel
+ok 67 - concrete base actual voice tool CONCRETE_DRIVEWAY gravel
+  ---
+  duration_ms: 585.924967
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_DRIVEWAY grading
+ok 68 - concrete base actual voice tool CONCRETE_DRIVEWAY grading
+  ---
+  duration_ms: 460.826736
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_DRIVEWAY both
+ok 69 - concrete base actual voice tool CONCRETE_DRIVEWAY both
+  ---
+  duration_ms: 412.406662
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_DRIVEWAY options
+ok 70 - concrete base actual voice tool CONCRETE_DRIVEWAY options
+  ---
+  duration_ms: 720.150253
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_PATIO_SLAB gravel
+ok 71 - concrete base actual voice tool CONCRETE_PATIO_SLAB gravel
+  ---
+  duration_ms: 456.67137
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_PATIO_SLAB grading
+ok 72 - concrete base actual voice tool CONCRETE_PATIO_SLAB grading
+  ---
+  duration_ms: 465.357757
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_PATIO_SLAB both
+ok 73 - concrete base actual voice tool CONCRETE_PATIO_SLAB both
+  ---
+  duration_ms: 496.838907
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_PATIO_SLAB options
+ok 74 - concrete base actual voice tool CONCRETE_PATIO_SLAB options
+  ---
+  duration_ms: 645.049873
+  type: 'test'
+  ...
+# Subtest: concrete base approved versus invalid zero through saved widget and voice CONCRETE_DRIVEWAY
+ok 75 - concrete base approved versus invalid zero through saved widget and voice CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 1420.041403
+  type: 'test'
+  ...
+# Subtest: concrete base approved versus invalid zero through saved widget and voice CONCRETE_PATIO_SLAB
+ok 76 - concrete base approved versus invalid zero through saved widget and voice CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 1401.479661
+  type: 'test'
+  ...
+# Subtest: concrete base genuine pre-change receipt replay CONCRETE_DRIVEWAY
+ok 77 - concrete base genuine pre-change receipt replay CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 512.601617
+  type: 'test'
+  ...
+# Subtest: concrete base genuine pre-change receipt replay CONCRETE_PATIO_SLAB
+ok 78 - concrete base genuine pre-change receipt replay CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 545.035551
+  type: 'test'
+  ...
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sod disclosure money controls preserve no-prep and legacy combined output
+ok 79 - sod disclosure money controls preserve no-prep and legacy combined output
+  ---
+  duration_ms: 81.201096
+  type: 'test'
+  ...
+# Subtest: sod disclosure names partial and complete split preparation without changing cents
+ok 80 - sod disclosure names partial and complete split preparation without changing cents
+  ---
+  duration_ms: 31.859878
+  type: 'test'
+  ...
+# Subtest: sod disclosure distinguishes valid zero rates, zero deficit and unknown allowance
+ok 81 - sod disclosure distinguishes valid zero rates, zero deficit and unknown allowance
+  ---
+  duration_ms: 32.673085
+  type: 'test'
+  ...
+# Subtest: sod disclosure keeps separate project-debris disposal separate from preparation scope
+ok 82 - sod disclosure keeps separate project-debris disposal separate from preparation scope
+  ---
+  duration_ms: 9.08652
+  type: 'test'
+  ...
+# Subtest: saved-book widget application response uses requested/component wording and replays frozen history
+ok 83 - saved-book widget application response uses requested/component wording and replays frozen history
+  ---
+  duration_ms: 1592.531635
+  type: 'test'
+  ...
+# Subtest: real voice tool output uses the same split-preparation scope without private rates
+ok 84 - real voice tool output uses the same split-preparation scope without private rates
+  ---
+  duration_ms: 977.643856
+  type: 'test'
+  ...
+# Subtest: sod customer summary uses request wording rather than an inclusion promise
+ok 85 - sod customer summary uses request wording rather than an inclusion promise
+  ---
+  duration_ms: 28.986126
+  type: 'test'
+  ...
+# (node:38) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: QE-005 actual widget save → owner email/public: partial=false, tiers=false
+ok 86 - QE-005 actual widget save → owner email/public: partial=false, tiers=false
+  ---
+  duration_ms: 1512.923396
+  type: 'test'
+  ...
+# Subtest: QE-005 actual widget save → owner email/public: partial=false, tiers=true
+ok 87 - QE-005 actual widget save → owner email/public: partial=false, tiers=true
+  ---
+  duration_ms: 588.676828
+  type: 'test'
+  ...
+# Subtest: QE-005 actual widget save → owner email/public: partial=true, tiers=false
+ok 88 - QE-005 actual widget save → owner email/public: partial=true, tiers=false
+  ---
+  duration_ms: 427.085623
+  type: 'test'
+  ...
+# Subtest: QE-005 actual widget save → owner email/public: partial=true, tiers=true
+ok 89 - QE-005 actual widget save → owner email/public: partial=true, tiers=true
+  ---
+  duration_ms: 423.713434
+  type: 'test'
+  ...
+# Subtest: QE-005 saved voice partial copy keeps the presented script, recipient/call binding and saved amounts
+ok 90 - QE-005 saved voice partial copy keeps the presented script, recipient/call binding and saved amounts
+  ---
+  duration_ms: 369.094654
+  type: 'test'
+  ...
+# Subtest: QE-005 public HTTP copy escapes unpriced work without losing its qualification
+ok 91 - QE-005 public HTTP copy escapes unpriced work without losing its qualification
+  ---
+  duration_ms: 489.144528
+  type: 'test'
+  ...
+# Subtest: QE-005 saved exact cents and a distinct range midpoint survive owner email and immutable resend
+ok 92 - QE-005 saved exact cents and a distinct range midpoint survive owner email and immutable resend
+  ---
+  duration_ms: 664.570281
+  type: 'test'
+  ...
+# Subtest: QE-005 owner copy of a historical voice-origin record uses its bound frozen narration
+ok 93 - QE-005 owner copy of a historical voice-origin record uses its bound frozen narration
+  ---
+  duration_ms: 625.980775
+  type: 'test'
+  ...
+# Subtest: QE-005 equal tier midpoints keep their own option labels and distinct saved ranges
+ok 94 - QE-005 equal tier midpoints keep their own option labels and distinct saved ranges
+  ---
+  duration_ms: 388.87744
+  type: 'test'
+  ...
+# (node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: QE-004/015 production save/approve/match/quote: 1 x 45 G
+ok 95 - QE-004/015 production save/approve/match/quote: 1 x 45 G
+  ---
+  duration_ms: 1593.305957
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 1 x 1512 G
+ok 96 - QE-004/015 production save/approve/match/quote: 1 x 1512 G
+  ---
+  duration_ms: 590.321535
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 1512 G
+ok 97 - QE-004/015 production save/approve/match/quote: 3 x 1512 G
+  ---
+  duration_ms: 656.12288
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 G
+ok 98 - QE-004/015 production save/approve/match/quote: 3 x 2000 G
+  ---
+  duration_ms: 510.025709
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 界
+ok 99 - QE-004/015 production save/approve/match/quote: 3 x 2000 界
+  ---
+  duration_ms: 304.517789
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 😀
+ok 100 - QE-004/015 production save/approve/match/quote: 3 x 2000 😀
+  ---
+  duration_ms: 498.9611
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 239-character gate label survives matching
+ok 101 - QE-015 entire 239-character gate label survives matching
+  ---
+  duration_ms: 177.253639
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 240-character gate label survives matching
+ok 102 - QE-015 entire 240-character gate label survives matching
+  ---
+  duration_ms: 186.025699
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 241-character gate label survives matching
+ok 103 - QE-015 entire 241-character gate label survives matching
+  ---
+  duration_ms: 189.80725
+  type: 'test'
+  ...
+# Subtest: QE-015 similar names bind the measured choice and its own price, never another opening
+ok 104 - QE-015 similar names bind the measured choice and its own price, never another opening
+  ---
+  duration_ms: 349.241837
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable characters outcome is durably review-only and idempotent
+ok 105 - QE-004 unpresentable characters outcome is durably review-only and idempotent
+  ---
+  duration_ms: 310.490067
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable bytes outcome is durably review-only and idempotent
+ok 106 - QE-004 unpresentable bytes outcome is durably review-only and idempotent
+  ---
+  duration_ms: 334.575733
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable scope count outcome is durably review-only and idempotent
+ok 107 - QE-004 unpresentable scope count outcome is durably review-only and idempotent
+  ---
+  duration_ms: 343.726196
+  type: 'test'
+  ...
+# Subtest: QE-004 presentation fallback never converts pricebook/storage failure into saved review success
+ok 108 - QE-004 presentation fallback never converts pricebook/storage failure into saved review success
+  ---
+  duration_ms: 176.879261
+  type: 'test'
+  ...
+# Subtest: QE-004 combined gate configuration envelope rejects before save instead of truncating
+ok 109 - QE-004 combined gate configuration envelope rejects before save instead of truncating
+  ---
+  duration_ms: 50.568443
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 3999-character scope preserves spaces and Unicode through real transport
+ok 110 - QE-004 aggregate 3999-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 1.074725
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 4000-character scope preserves spaces and Unicode through real transport
+ok 111 - QE-004 aggregate 4000-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.462205
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 4001-character scope preserves spaces and Unicode through real transport
+ok 112 - QE-004 aggregate 4001-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.479641
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 7999-character scope preserves spaces and Unicode through real transport
+ok 113 - QE-004 aggregate 7999-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.523396
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 8000-character scope preserves spaces and Unicode through real transport
+ok 114 - QE-004 aggregate 8000-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.518088
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 8001-character scope preserves spaces and Unicode through real transport
+ok 115 - QE-004 aggregate 8001-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.713722
+  type: 'test'
+  ...
+# Subtest: QE-004 a fallback database write failure is never acknowledged; a clean retry saves exactly once
+ok 116 - QE-004 a fallback database write failure is never acknowledged; a clean retry saves exactly once
+  ---
+  duration_ms: 513.400482
+  type: 'test'
+  ...
+# Subtest: QE-004 an unpresentable partial result saves an owner review without a nonexistent released-quote link
+ok 117 - QE-004 an unpresentable partial result saves an owner review without a nonexistent released-quote link
+  ---
+  duration_ms: 287.750629
+  type: 'test'
+  ...
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Offering optional INTERIOR_PAINTING installed ceiling prices do not disable base work
+ok 118 - Offering optional INTERIOR_PAINTING installed ceiling prices do not disable base work
+  ---
+  duration_ms: 94.366104
+  type: 'test'
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING installed trim prices do not disable base work
+ok 119 - Offering optional INTERIOR_PAINTING installed trim prices do not disable base work
+  ---
+  duration_ms: 45.818222
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_INSTALL installed gate prices do not disable base work
+ok 120 - Offering optional FENCING_INSTALL installed gate prices do not disable base work
+  ---
+  duration_ms: 36.551787
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT installed gate prices do not disable base work
+ok 121 - Offering optional FENCING_REPLACEMENT installed gate prices do not disable base work
+  ---
+  duration_ms: 38.390543
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT installed removal prices do not disable base work
+ok 122 - Offering optional FENCING_REPLACEMENT installed removal prices do not disable base work
+  ---
+  duration_ms: 34.902684
+  type: 'test'
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING itemized ceiling prices do not disable base work
+ok 123 - Offering optional INTERIOR_PAINTING itemized ceiling prices do not disable base work
+  ---
+  duration_ms: 357.032313
+  type: 'test'
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING itemized trim prices do not disable base work
+ok 124 - Offering optional INTERIOR_PAINTING itemized trim prices do not disable base work
+  ---
+  duration_ms: 76.780526
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_INSTALL itemized gate prices do not disable base work
+ok 125 - Offering optional FENCING_INSTALL itemized gate prices do not disable base work
+  ---
+  duration_ms: 74.578927
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT itemized gate prices do not disable base work
+ok 126 - Offering optional FENCING_REPLACEMENT itemized gate prices do not disable base work
+  ---
+  duration_ms: 39.695885
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT itemized removal prices do not disable base work
+ok 127 - Offering optional FENCING_REPLACEMENT itemized removal prices do not disable base work
+  ---
+  duration_ms: 41.551666
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.price does not contradict wall prices
+ok 128 - Shared paint purchase group: unfinished paint_ceiling.price does not contradict wall prices
+  ---
+  duration_ms: 59.457234
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.coverage does not contradict wall prices
+ok 129 - Shared paint purchase group: unfinished paint_ceiling.coverage does not contradict wall prices
+  ---
+  duration_ms: 38.622773
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.wastePercent does not contradict wall prices
+ok 130 - Shared paint purchase group: unfinished paint_ceiling.wastePercent does not contradict wall prices
+  ---
+  duration_ms: 70.440364
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.description does not contradict wall prices
+ok 131 - Shared paint purchase group: unfinished paint_ceiling.description does not contradict wall prices
+  ---
+  duration_ms: 87.012799
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.productKey does not contradict wall prices
+ok 132 - Shared paint purchase group: unfinished paint_ceiling.productKey does not contradict wall prices
+  ---
+  duration_ms: 64.110229
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.price does not contradict wall prices
+ok 133 - Shared paint purchase group: unfinished paint_ceiling_primer.price does not contradict wall prices
+  ---
+  duration_ms: 49.984193
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.coverage does not contradict wall prices
+ok 134 - Shared paint purchase group: unfinished paint_ceiling_primer.coverage does not contradict wall prices
+  ---
+  duration_ms: 45.576226
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.wastePercent does not contradict wall prices
+ok 135 - Shared paint purchase group: unfinished paint_ceiling_primer.wastePercent does not contradict wall prices
+  ---
+  duration_ms: 45.45891
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.description does not contradict wall prices
+ok 136 - Shared paint purchase group: unfinished paint_ceiling_primer.description does not contradict wall prices
+  ---
+  duration_ms: 65.816344
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.productKey does not contradict wall prices
+ok 137 - Shared paint purchase group: unfinished paint_ceiling_primer.productKey does not contradict wall prices
+  ---
+  duration_ms: 63.981851
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group rejects conflicting supplied values in either map order false
+ok 138 - Shared paint purchase group rejects conflicting supplied values in either map order false
+  ---
+  duration_ms: 110.895773
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group rejects conflicting supplied values in either map order true
+ok 139 - Shared paint purchase group rejects conflicting supplied values in either map order true
+  ---
+  duration_ms: 108.946087
+  type: 'test'
+  ...
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Optional scope stairs-installed: missing price or description isolates only selected work
+ok 140 - Optional scope stairs-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 619.028201
+  type: 'test'
+  ...
+# Subtest: Optional scope stairs-installed: saved approval and tier completion preserve the boundary
+ok 141 - Optional scope stairs-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 834.372904
+  type: 'test'
+  ...
+# Subtest: Optional scope stairs-itemized: missing price or description isolates only selected work
+ok 142 - Optional scope stairs-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 170.90125
+  type: 'test'
+  ...
+# Subtest: Optional scope stairs-itemized: saved approval and tier completion preserve the boundary
+ok 143 - Optional scope stairs-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 480.040421
+  type: 'test'
+  ...
+# Subtest: Optional scope overlay-installed: missing price or description isolates only selected work
+ok 144 - Optional scope overlay-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 134.065058
+  type: 'test'
+  ...
+# Subtest: Optional scope overlay-installed: saved approval and tier completion preserve the boundary
+ok 145 - Optional scope overlay-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 403.273181
+  type: 'test'
+  ...
+# Subtest: Optional scope overlay-itemized: missing price or description isolates only selected work
+ok 146 - Optional scope overlay-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 127.950726
+  type: 'test'
+  ...
+# Subtest: Optional scope overlay-itemized: saved approval and tier completion preserve the boundary
+ok 147 - Optional scope overlay-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 585.042105
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-trim-installed: missing price or description isolates only selected work
+ok 148 - Optional scope siding-trim-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 102.368162
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-trim-installed: saved approval and tier completion preserve the boundary
+ok 149 - Optional scope siding-trim-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 304.295571
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-trim-itemized: missing price or description isolates only selected work
+ok 150 - Optional scope siding-trim-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 50.98554
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-trim-itemized: saved approval and tier completion preserve the boundary
+ok 151 - Optional scope siding-trim-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 202.81705
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-removal-installed: missing price or description isolates only selected work
+ok 152 - Optional scope siding-removal-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 24.508352
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-removal-installed: saved approval and tier completion preserve the boundary
+ok 153 - Optional scope siding-removal-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 215.361818
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-removal-itemized: missing price or description isolates only selected work
+ok 154 - Optional scope siding-removal-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 36.17577
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-removal-itemized: saved approval and tier completion preserve the boundary
+ok 155 - Optional scope siding-removal-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 172.788987
+  type: 'test'
+  ...
+# Subtest: Optional scope demolition-installed: missing price or description isolates only selected work
+ok 156 - Optional scope demolition-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 468.421612
+  type: 'test'
+  ...
+# Subtest: Optional scope demolition-installed: saved approval and tier completion preserve the boundary
+ok 157 - Optional scope demolition-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 1137.24476
+  type: 'test'
+  ...
+# Subtest: Optional scope demolition-itemized: missing price or description isolates only selected work
+ok 158 - Optional scope demolition-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 405.784803
+  type: 'test'
+  ...
+# Subtest: Optional scope demolition-itemized: saved approval and tier completion preserve the boundary
+ok 159 - Optional scope demolition-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 1131.925013
+  type: 'test'
+  ...
+# Subtest: Optional scope exposed-installed: missing price or description isolates only selected work
+ok 160 - Optional scope exposed-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 263.553888
+  type: 'test'
+  ...
+# Subtest: Optional scope exposed-installed: saved approval and tier completion preserve the boundary
+ok 161 - Optional scope exposed-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 815.059453
+  type: 'test'
+  ...
+# Subtest: Optional scope exposed-itemized: missing price or description isolates only selected work
+ok 162 - Optional scope exposed-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 371.172447
+  type: 'test'
+  ...
+# Subtest: Optional scope exposed-itemized: saved approval and tier completion preserve the boundary
+ok 163 - Optional scope exposed-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 868.434239
+  type: 'test'
+  ...
+# Subtest: Optional scope commercial-installed: missing price or description isolates only selected work
+ok 164 - Optional scope commercial-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 62.748633
+  type: 'test'
+  ...
+# Subtest: Optional scope commercial-installed: saved approval and tier completion preserve the boundary
+ok 165 - Optional scope commercial-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 209.508878
+  type: 'test'
+  ...
+# Subtest: Optional scope commercial-itemized: missing price or description isolates only selected work
+ok 166 - Optional scope commercial-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 61.694348
+  type: 'test'
+  ...
+# Subtest: Optional scope commercial-itemized: saved approval and tier completion preserve the boundary
+ok 167 - Optional scope commercial-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 143.425602
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: surface Oct16: exact wall coat split 1
+ok 168 - surface Oct16: exact wall coat split 1
+  ---
+  duration_ms: 33.576452
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 2
+ok 169 - surface Oct16: exact wall coat split 2
+  ---
+  duration_ms: 5.50846
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 3
+ok 170 - surface Oct16: exact wall coat split 3
+  ---
+  duration_ms: 14.905307
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 1
+ok 171 - surface Oct16: blank ratio retains linear coats 1
+  ---
+  duration_ms: 6.55283
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 2
+ok 172 - surface Oct16: blank ratio retains linear coats 2
+  ---
+  duration_ms: 8.571216
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 3
+ok 173 - surface Oct16: blank ratio retains linear coats 3
+  ---
+  duration_ms: 6.940524
+  type: 'test'
+  ...
+# Subtest: surface Oct16: converted rates retain exact fractional cents and approved independent rounding
+ok 174 - surface Oct16: converted rates retain exact fractional cents and approved independent rounding
+  ---
+  duration_ms: 7.317871
+  type: 'test'
+  ...
+# Subtest: surface Oct16: poor wall preparation and good ceiling coats are independent
+ok 175 - surface Oct16: poor wall preparation and good ceiling coats are independent
+  ---
+  duration_ms: 15.219239
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic painting still sends fair and poor walls to review
+ok 176 - surface Oct16: basic painting still sends fair and poor walls to review
+  ---
+  duration_ms: 3.916748
+  type: 'test'
+  ...
+# Subtest: surface Oct16: room dimensions separate labor from net paint without blocking a best guess
+ok 177 - surface Oct16: room dimensions separate labor from net paint without blocking a best guess
+  ---
+  duration_ms: 125.366897
+  type: 'test'
+  ...
+# Subtest: surface Oct16: siding openings_left_in convention and gables
+ok 178 - surface Oct16: siding openings_left_in convention and gables
+  ---
+  duration_ms: 15.522655
+  type: 'test'
+  ...
+# Subtest: surface Oct16: siding openings_subtracted convention and gables
+ok 179 - surface Oct16: siding openings_subtracted convention and gables
+  ---
+  duration_ms: 16.258172
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exterior labor leaves ordinary openings in and paint subtracts all openings
+ok 180 - surface Oct16: exterior labor leaves ordinary openings in and paint subtracts all openings
+  ---
+  duration_ms: 15.190425
+  type: 'test'
+  ...
+# Subtest: surface Oct16: priced door sides and fascia extend once; unpriced requested doors are excluded
+ok 181 - surface Oct16: priced door sides and fascia extend once; unpriced requested doors are excluded
+  ---
+  duration_ms: 46.317726
+  type: 'test'
+  ...
+# Subtest: surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim
+ok 182 - surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim
+  ---
+  duration_ms: 35.900024
+  type: 'test'
+  ...
+# Subtest: surface Oct16: legacy no-new-input prices keep baseline cents
+ok 183 - surface Oct16: legacy no-new-input prices keep baseline cents
+  ---
+  duration_ms: 27.42578
+  type: 'test'
+  ...
+# Subtest: surface Oct16: missing siding convention names owner pricing rather than guessing a basis
+ok 184 - surface Oct16: missing siding convention names owner pricing rather than guessing a basis
+  ---
+  duration_ms: 1.558283
+  type: 'test'
+  ...
+# Subtest: surface Oct16: malformed new fields and inconsistent measurements cannot quote
+ok 185 - surface Oct16: malformed new fields and inconsistent measurements cannot quote
+  ---
+  duration_ms: 21.85142
+  type: 'test'
+  ...
+# Subtest: surface Oct16: widget and voice expose the same room and per-surface names without private rates
+ok 186 - surface Oct16: widget and voice expose the same room and per-surface names without private rates
+  ---
+  duration_ms: 1.661528
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic ceiling has its own exact coat split
+ok 187 - surface Oct16: basic ceiling has its own exact coat split
+  ---
+  duration_ms: 2.469192
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic trim has its own exact coat split
+ok 188 - surface Oct16: basic trim has its own exact coat split
+  ---
+  duration_ms: 2.405796
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic primer has its own exact coat split
+ok 189 - surface Oct16: basic primer has its own exact coat split
+  ---
+  duration_ms: 4.505553
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic ceilingPrimer has its own exact coat split
+ok 190 - surface Oct16: basic ceilingPrimer has its own exact coat split
+  ---
+  duration_ms: 2.407519
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic trimPrimer has its own exact coat split
+ok 191 - surface Oct16: basic trimPrimer has its own exact coat split
+  ---
+  duration_ms: 8.388791
+  type: 'test'
+  ...
+# Subtest: surface Oct16: itemized trim has independent coats and no height adjustment
+ok 192 - surface Oct16: itemized trim has independent coats and no height adjustment
+  ---
+  duration_ms: 4.997453
+  type: 'test'
+  ...
+# Subtest: surface Oct16: mixed-height installed room prices adjust only their labor shares
+ok 193 - surface Oct16: mixed-height installed room prices adjust only their labor shares
+  ---
+  duration_ms: 8.342892
+  type: 'test'
+  ...
+# Subtest: surface Oct16: optional siding soffit unit square_feet
+ok 194 - surface Oct16: optional siding soffit unit square_feet
+  ---
+  duration_ms: 12.615265
+  type: 'test'
+  ...
+# Subtest: surface Oct16: optional siding soffit unit linear_feet
+ok 195 - surface Oct16: optional siding soffit unit linear_feet
+  ---
+  duration_ms: 6.413311
+  type: 'test'
+  ...
+# Subtest: surface Oct16: differing garage openings subtract qualifying openings from painting labor
+ok 196 - surface Oct16: differing garage openings subtract qualifying openings from painting labor
+  ---
+  duration_ms: 15.071547
+  type: 'test'
+  ...
+# Subtest: surface Oct16: new settings persist, can be approved, and changed content invalidates approval
+ok 197 - surface Oct16: new settings persist, can be approved, and changed content invalidates approval
+  ---
+  duration_ms: 1426.676337
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic wall and ceiling primer labor follow each room height
+ok 198 - surface Oct16: basic wall and ceiling primer labor follow each room height
+  ---
+  duration_ms: 37.787857
+  type: 'test'
+  ...
+# Subtest: surface Oct16: net room paint and trim primer package costs replace component materials
+ok 199 - surface Oct16: net room paint and trim primer package costs replace component materials
+  ---
+  duration_ms: 15.936908
+  type: 'test'
+  ...
+# Subtest: surface Oct16: large room openings use their own room height instead of an allocation
+ok 200 - surface Oct16: large room openings use their own room height instead of an allocation
+  ---
+  duration_ms: 7.011741
+  type: 'test'
+  ...
+# Subtest: surface Oct16: direct wall area can retain labor openings and subtract net paint
+ok 201 - surface Oct16: direct wall area can retain labor openings and subtract net paint
+  ---
+  duration_ms: 6.089845
+  type: 'test'
+  ...
+# Subtest: surface Oct16: explicitly priced good trim preparation is charged without height adjustment
+ok 202 - surface Oct16: explicitly priced good trim preparation is charged without height adjustment
+  ---
+  duration_ms: 4.320855
+  type: 'test'
+  ...
+# Subtest: surface Oct16: cost-based trim preparation uses its package instead of area-rate material
+ok 203 - surface Oct16: cost-based trim preparation uses its package instead of area-rate material
+  ---
+  duration_ms: 6.633453
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic explicit trim components replace retained prices and split coats
+ok 204 - surface Oct16: basic explicit trim components replace retained prices and split coats
+  ---
+  duration_ms: 17.719979
+  type: 'test'
+  ...
+# Subtest: surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs
+ok 205 - surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs
+  ---
+  duration_ms: 1.565112
+  type: 'test'
+  ...
+# Subtest: surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding
+ok 206 - surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding
+  ---
+  duration_ms: 8.797106
+  type: 'test'
+  ...
+# Subtest: surface Oct16: zero net paint uses zero packages while labor still quotes
+ok 207 - surface Oct16: zero net paint uses zero packages while labor still quotes
+  ---
+  duration_ms: 3.797615
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact derived wall area survives preparation extension to a safe-integer boundary
+ok 208 - surface Oct16: exact derived wall area survives preparation extension to a safe-integer boundary
+  ---
+  duration_ms: 7.190182
+  type: 'test'
+  ...
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lane C fixes: room opening {"widthFeet":12.5,"heightFeet":8,"runsFloorToCeiling":false}
+ok 209 - lane C fixes: room opening {"widthFeet":12.5,"heightFeet":8,"runsFloorToCeiling":false}
+  ---
+  duration_ms: 81.593752
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":true}
+ok 210 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":true}
+  ---
+  duration_ms: 50.123743
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":false}
+ok 211 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":false}
+  ---
+  duration_ms: 29.091054
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9}
+ok 212 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9}
+  ---
+  duration_ms: 13.710551
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":5,"heightFeet":9,"runsFloorToCeiling":true}
+ok 213 - lane C fixes: room opening {"widthFeet":5,"heightFeet":9,"runsFloorToCeiling":true}
+  ---
+  duration_ms: 20.495832
+  type: 'test'
+  ...
+# Subtest: lane C fixes: interior direct-area openings use the same dimensions and floor-to-ceiling rule
+ok 214 - lane C fixes: interior direct-area openings use the same dimensions and floor-to-ceiling rule
+  ---
+  duration_ms: 5.428861
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"largeOpenings":[{"areaSqft":100}],"garageDoorCount":0}
+ok 215 - lane C fixes: exterior100-sqft threshold {"largeOpenings":[{"areaSqft":100}],"garageDoorCount":0}
+  ---
+  duration_ms: 6.981406
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageDoorWidthFeet":12.5,"garageDoorHeightFeet":8}
+ok 216 - lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageDoorWidthFeet":12.5,"garageDoorHeightFeet":8}
+  ---
+  duration_ms: 4.588708
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageOpenings":[{"widthFeet":12.5,"heightFeet":8}]}
+ok 217 - lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageOpenings":[{"widthFeet":12.5,"heightFeet":8}]}
+  ---
+  duration_ms: 13.096088
+  type: 'test'
+  ...
+# Subtest: lane C fixes:9x7 garage openings_left_in
+ok 218 - lane C fixes:9x7 garage openings_left_in
+  ---
+  duration_ms: 8.416362
+  type: 'test'
+  ...
+# Subtest: lane C fixes:9x7 garage openings_subtracted
+ok 219 - lane C fixes:9x7 garage openings_subtracted
+  ---
+  duration_ms: 2.944447
+  type: 'test'
+  ...
+# Subtest: lane C fixes: siding halves every other opening and every individual garage opening
+ok 220 - lane C fixes: siding halves every other opening and every individual garage opening
+  ---
+  duration_ms: 3.152629
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING basic
+ok 221 - lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING basic
+  ---
+  duration_ms: 2.677155
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING itemized
+ok 222 - lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING itemized
+  ---
+  duration_ms: 0.374633
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities EXTERIOR_PAINTING itemized
+ok 223 - lane C fixes: one optional selector and no unpriced quantities EXTERIOR_PAINTING itemized
+  ---
+  duration_ms: 0.295123
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities SIDING_REPLACEMENT basic
+ok 224 - lane C fixes: one optional selector and no unpriced quantities SIDING_REPLACEMENT basic
+  ---
+  duration_ms: 0.296055
+  type: 'test'
+  ...
+# Subtest: lane C fixes: unpriced selection excludes door sides without asking a quantity
+ok 225 - lane C fixes: unpriced selection excludes door sides without asking a quantity
+  ---
+  duration_ms: 12.029495
+  type: 'test'
+  ...
+# Subtest: lane C fixes: only selected priced quantities are asked, required and charged
+ok 226 - lane C fixes: only selected priced quantities are asked, required and charged
+  ---
+  duration_ms: 10.189037
+  type: 'test'
+  ...
+# Subtest: lane C fixes: selected soffit uses saved square_feet
+ok 227 - lane C fixes: selected soffit uses saved square_feet
+  ---
+  duration_ms: 2.373267
+  type: 'test'
+  ...
+# Subtest: lane C fixes: selected soffit uses saved linear_feet
+ok 228 - lane C fixes: selected soffit uses saved linear_feet
+  ---
+  duration_ms: 2.122441
+  type: 'test'
+  ...
+# Subtest: lane C fixes: unpriced siding soffit needs no unit or quantity
+ok 229 - lane C fixes: unpriced siding soffit needs no unit or quantity
+  ---
+  duration_ms: 2.636904
+  type: 'test'
+  ...
+# Subtest: lane C fixes: invalid optional selections and floor-to-ceiling flags do not quote
+ok 230 - lane C fixes: invalid optional selections and floor-to-ceiling flags do not quote
+  ---
+  duration_ms: 1.334276
+  type: 'test'
+  ...
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:147) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: release voice date: west fallback quotes $110 using the runtime clock
+ok 231 - release voice date: west fallback quotes $110 using the runtime clock
+  ---
+  duration_ms: 670.196918
+  type: 'test'
+  ...
+# Subtest: release voice date: east fallback quotes $110 using the runtime clock
+ok 232 - release voice date: east fallback quotes $110 using the runtime clock
+  ---
+  duration_ms: 301.725111
+  type: 'test'
+  ...
+# Subtest: release voice date: UTC book overrides west quotes $100 using the runtime clock
+ok 233 - release voice date: UTC book overrides west quotes $100 using the runtime clock
+  ---
+  duration_ms: 459.326602
+  type: 'test'
+  ...
+# Subtest: release voice date: profile changes immediately unpublish and restore seasonal service
+ok 234 - release voice date: profile changes immediately unpublish and restore seasonal service
+  ---
+  duration_ms: 247.795238
+  type: 'test'
+  ...
+# (node:159) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: signed production voice exposes server-only listed-price multiplication and speaks its exact response
+ok 235 - signed production voice exposes server-only listed-price multiplication and speaks its exact response
+  ---
+  duration_ms: 1173.518369
+  type: 'test'
+  ...
+# Subtest: signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+ok 236 - signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+  ---
+  duration_ms: 1665.807172
+  type: 'test'
+  ...
+# Subtest: caller-estimated phone quote saves flag, owner warnings and identical written narration
+ok 237 - caller-estimated phone quote saves flag, owner warnings and identical written narration
+  ---
+  duration_ms: 853.772785
+  type: 'test'
+  ...
+# Subtest: session-start failure captures before signed forwarding; mismatched caller fails closed
+ok 238 - session-start failure captures before signed forwarding; mismatched caller fails closed
+  ---
+  duration_ms: 361.797421
+  type: 'test'
+  ...
+# Subtest: ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+ok 239 - ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+  ---
+  duration_ms: 851.597932
+  type: 'test'
+  ...
+# Subtest: phone readiness uses cached quick statuses with the same live answer
+ok 240 - phone readiness uses cached quick statuses with the same live answer
+  ---
+  duration_ms: 554.907438
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value 0
+ok 241 - forbidden quote key __proto__ value 0
+  ---
+  duration_ms: 0.746882
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value null
+ok 242 - forbidden quote key __proto__ value null
+  ---
+  duration_ms: 0.288163
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value "x"
+ok 243 - forbidden quote key __proto__ value "x"
+  ---
+  duration_ms: 0.297887
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value {"sentinel":true}
+ok 244 - forbidden quote key __proto__ value {"sentinel":true}
+  ---
+  duration_ms: 0.331868
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value 0
+ok 245 - forbidden quote key constructor value 0
+  ---
+  duration_ms: 0.12011
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value null
+ok 246 - forbidden quote key constructor value null
+  ---
+  duration_ms: 0.072669
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value "x"
+ok 247 - forbidden quote key constructor value "x"
+  ---
+  duration_ms: 0.058989
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value {"sentinel":true}
+ok 248 - forbidden quote key constructor value {"sentinel":true}
+  ---
+  duration_ms: 0.079339
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value 0
+ok 249 - forbidden quote key prototype value 0
+  ---
+  duration_ms: 0.175224
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value null
+ok 250 - forbidden quote key prototype value null
+  ---
+  duration_ms: 0.084106
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value "x"
+ok 251 - forbidden quote key prototype value "x"
+  ---
+  duration_ms: 0.075113
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value {"sentinel":true}
+ok 252 - forbidden quote key prototype value {"sentinel":true}
+  ---
+  duration_ms: 0.057917
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value 0
+ok 253 - forbidden quote key __PrOtO__ value 0
+  ---
+  duration_ms: 0.12647
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value null
+ok 254 - forbidden quote key __PrOtO__ value null
+  ---
+  duration_ms: 0.085648
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value "x"
+ok 255 - forbidden quote key __PrOtO__ value "x"
+  ---
+  duration_ms: 0.084217
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value {"sentinel":true}
+ok 256 - forbidden quote key __PrOtO__ value {"sentinel":true}
+  ---
+  duration_ms: 0.056815
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected ownerId
+ok 257 - caller identity or money rejected ownerId
+  ---
+  duration_ms: 0.099179
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected price
+ok 258 - caller identity or money rejected price
+  ---
+  duration_ms: 0.045058
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected offeringId
+ok 259 - caller identity or money rejected offeringId
+  ---
+  duration_ms: 0.04028
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected confirmedFacts
+ok 260 - caller identity or money rejected confirmedFacts
+  ---
+  duration_ms: 0.111017
+  type: 'test'
+  ...
+# Subtest: full written disclosure survives both projections while short summary preserves both ranges and exclusions
+ok 261 - full written disclosure survives both projections while short summary preserves both ranges and exclusions
+  ---
+  duration_ms: 1.384891
+  type: 'test'
+  ...
+# Subtest: booking already owns hold then confirm; caller hold/finalize injection stays rejected
+ok 262 - booking already owns hold then confirm; caller hold/finalize injection stays rejected
+  ---
+  duration_ms: 0.22631
+  type: 'test'
+  ...
+# Subtest: actual start entry point installs the signed runtime instead of the placeholder
+ok 263 - actual start entry point installs the signed runtime instead of the placeholder
+  ---
+  duration_ms: 0.374693
+  type: 'test'
+  ...
+# (node:181) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: surface voice Oct16: confirmed estimated room dimensions quote through the actual tool runtime
+ok 264 - surface voice Oct16: confirmed estimated room dimensions quote through the actual tool runtime
+  ---
+  duration_ms: 565.566597
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: service-specific blocks preserve shared instructions and require independent surfaces
+ok 265 - surface voice Oct16: service-specific blocks preserve shared instructions and require independent surfaces
+  ---
+  duration_ms: 1.978052
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: selected door sides are excluded without a quantity
+ok 266 - surface voice Oct16: selected door sides are excluded without a quantity
+  ---
+  duration_ms: 303.155698
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: selected door sides ask a priced count
+ok 267 - surface voice Oct16: selected door sides ask a priced count
+  ---
+  duration_ms: 384.410419
+  type: 'test'
+  ...
+1..267
+# tests 267
+# suites 0
+# pass 267
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16831.506313
