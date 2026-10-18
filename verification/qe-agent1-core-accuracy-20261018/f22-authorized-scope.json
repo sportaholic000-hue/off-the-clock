@@ -1,0 +1,15 @@
+{
+  "base": "58af2adc956d3b6500f80c19ec93c40fbc5554fe",
+  "changes": [
+    {
+      "path": "test/quoteConcreteLandscape20261016.browser.spec.mjs",
+      "replacements": 1,
+      "allOtherBytesUnchanged": true
+    },
+    {
+      "path": "test/quoteConcreteLandscape20261016.dom.spec.mjs",
+      "replacements": 1,
+      "allOtherBytesUnchanged": true
+    }
+  ]
+}
