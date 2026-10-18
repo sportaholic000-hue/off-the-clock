@@ -1,0 +1,1042 @@
+{
+  "base": "1857b7779b83b70f7753b41b72c3677270cd4ffc",
+  "engineVersion": "quote-engine-vnext-accuracy-20261018-v8",
+  "controls": [
+    {
+      "customer": {
+        "pitchBand": "seven_to_nine"
+      },
+      "expected": 451800,
+      "lineItems": [
+        {
+          "name": "Roofing labor",
+          "category": "labor",
+          "amountCents": 200000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares",
+            "rateCents": 20000,
+            "ratePath": "laborPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 200000,
+            "exactUnroundedCents": {
+              "numerator": "200000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 200000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "customerDriver": "Measured roof area: 10.00 roofing squares",
+          "taxable": false
+        },
+        {
+          "name": "Steep-pitch installation",
+          "category": "labor",
+          "amountCents": 40000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares at seven-to-nine",
+            "rateCents": 20000,
+            "ratePath": "laborPerSquare.asphalt_shingle",
+            "multipliers": [
+              {
+                "name": "pitch addition",
+                "value": 0.2,
+                "path": "pitchInstallationAdder.seven_to_nine",
+                "exactValue": {
+                  "numerator": "1",
+                  "denominator": "5"
+                }
+              }
+            ],
+            "unroundedCents": 40000,
+            "exactUnroundedCents": {
+              "numerator": "40000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 40000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Steep-pitch removal",
+          "category": "removal",
+          "amountCents": 20800,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares at seven-to-nine",
+            "rateCents": 8000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "contributingRatePaths": [
+              "disposalPerSquare"
+            ],
+            "multipliers": [
+              {
+                "name": "pitch removal addition",
+                "value": 0.26,
+                "path": "pitchRemovalAdder.seven_to_nine",
+                "exactValue": {
+                  "numerator": "13",
+                  "denominator": "50"
+                }
+              }
+            ],
+            "unroundedCents": 20800,
+            "exactUnroundedCents": {
+              "numerator": "20800",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 20800,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Field materials",
+          "category": "material",
+          "amountCents": 110000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 11,
+            "exactQuantity": {
+              "numerator": "11",
+              "denominator": "1"
+            },
+            "unit": "waste-adjusted roofing squares",
+            "rateCents": 10000,
+            "ratePath": "materialCostPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 110000,
+            "exactUnroundedCents": {
+              "numerator": "110000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 110000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "taxable": false
+        },
+        {
+          "name": "Tear-off",
+          "category": "removal",
+          "amountCents": 60000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "first-layer roofing squares",
+            "rateCents": 6000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 60000,
+            "exactUnroundedCents": {
+              "numerator": "60000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 60000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Underlayment",
+          "category": "material",
+          "priceBasis": "sell_price",
+          "amountCents": 1000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "measured installed roofing squares",
+            "rateCents": 100,
+            "ratePath": "underlaymentPerSquare.asphalt_shingle",
+            "priceBasis": "sell_price",
+            "multipliers": [],
+            "unroundedCents": 1000,
+            "exactUnroundedCents": {
+              "numerator": "1000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 1000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "installedBaseExactCents": {
+            "numerator": "1000",
+            "denominator": "1"
+          },
+          "installedLaborExactCents": {
+            "numerator": "0",
+            "denominator": "1"
+          },
+          "taxable": false
+        },
+        {
+          "name": "Roofing disposal",
+          "category": "disposal",
+          "amountCents": 20000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "existing-layer roofing squares",
+            "rateCents": 2000,
+            "ratePath": "disposalPerSquare",
+            "multipliers": [],
+            "unroundedCents": 20000,
+            "exactUnroundedCents": {
+              "numerator": "20000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 20000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "customer": {
+        "pitchBand": "ten_to_twelve"
+      },
+      "expected": 485800,
+      "lineItems": [
+        {
+          "name": "Roofing labor",
+          "category": "labor",
+          "amountCents": 200000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares",
+            "rateCents": 20000,
+            "ratePath": "laborPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 200000,
+            "exactUnroundedCents": {
+              "numerator": "200000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 200000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "customerDriver": "Measured roof area: 10.00 roofing squares",
+          "taxable": false
+        },
+        {
+          "name": "Steep-pitch installation",
+          "category": "labor",
+          "amountCents": 62000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares at ten-to-twelve",
+            "rateCents": 20000,
+            "ratePath": "laborPerSquare.asphalt_shingle",
+            "multipliers": [
+              {
+                "name": "pitch addition",
+                "value": 0.31,
+                "path": "pitchInstallationAdder.ten_to_twelve",
+                "exactValue": {
+                  "numerator": "31",
+                  "denominator": "100"
+                }
+              }
+            ],
+            "unroundedCents": 62000,
+            "exactUnroundedCents": {
+              "numerator": "62000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 62000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Steep-pitch removal",
+          "category": "removal",
+          "amountCents": 32800,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares at ten-to-twelve",
+            "rateCents": 8000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "contributingRatePaths": [
+              "disposalPerSquare"
+            ],
+            "multipliers": [
+              {
+                "name": "pitch removal addition",
+                "value": 0.41,
+                "path": "pitchRemovalAdder.ten_to_twelve",
+                "exactValue": {
+                  "numerator": "41",
+                  "denominator": "100"
+                }
+              }
+            ],
+            "unroundedCents": 32800,
+            "exactUnroundedCents": {
+              "numerator": "32800",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 32800,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Field materials",
+          "category": "material",
+          "amountCents": 110000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 11,
+            "exactQuantity": {
+              "numerator": "11",
+              "denominator": "1"
+            },
+            "unit": "waste-adjusted roofing squares",
+            "rateCents": 10000,
+            "ratePath": "materialCostPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 110000,
+            "exactUnroundedCents": {
+              "numerator": "110000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 110000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "taxable": false
+        },
+        {
+          "name": "Tear-off",
+          "category": "removal",
+          "amountCents": 60000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "first-layer roofing squares",
+            "rateCents": 6000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 60000,
+            "exactUnroundedCents": {
+              "numerator": "60000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 60000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Underlayment",
+          "category": "material",
+          "priceBasis": "sell_price",
+          "amountCents": 1000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "measured installed roofing squares",
+            "rateCents": 100,
+            "ratePath": "underlaymentPerSquare.asphalt_shingle",
+            "priceBasis": "sell_price",
+            "multipliers": [],
+            "unroundedCents": 1000,
+            "exactUnroundedCents": {
+              "numerator": "1000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 1000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "installedBaseExactCents": {
+            "numerator": "1000",
+            "denominator": "1"
+          },
+          "installedLaborExactCents": {
+            "numerator": "0",
+            "denominator": "1"
+          },
+          "taxable": false
+        },
+        {
+          "name": "Roofing disposal",
+          "category": "disposal",
+          "amountCents": 20000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "existing-layer roofing squares",
+            "rateCents": 2000,
+            "ratePath": "disposalPerSquare",
+            "multipliers": [],
+            "unroundedCents": 20000,
+            "exactUnroundedCents": {
+              "numerator": "20000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 20000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "customer": {
+        "pitchBand": "over_twelve"
+      },
+      "expected": 539000,
+      "lineItems": [
+        {
+          "name": "Roofing labor",
+          "category": "labor",
+          "amountCents": 200000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares",
+            "rateCents": 20000,
+            "ratePath": "laborPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 200000,
+            "exactUnroundedCents": {
+              "numerator": "200000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 200000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "customerDriver": "Measured roof area: 10.00 roofing squares",
+          "taxable": false
+        },
+        {
+          "name": "Steep-pitch installation",
+          "category": "labor",
+          "amountCents": 100000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares at over-twelve",
+            "rateCents": 20000,
+            "ratePath": "laborPerSquare.asphalt_shingle",
+            "multipliers": [
+              {
+                "name": "pitch addition",
+                "value": 0.5,
+                "path": "pitchInstallationAdderOverTwelve",
+                "exactValue": {
+                  "numerator": "1",
+                  "denominator": "2"
+                }
+              }
+            ],
+            "unroundedCents": 100000,
+            "exactUnroundedCents": {
+              "numerator": "100000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 100000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Steep-pitch removal",
+          "category": "removal",
+          "amountCents": 48000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares at over-twelve",
+            "rateCents": 8000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "contributingRatePaths": [
+              "disposalPerSquare"
+            ],
+            "multipliers": [
+              {
+                "name": "pitch removal addition",
+                "value": 0.6,
+                "path": "pitchRemovalAdderOverTwelve",
+                "exactValue": {
+                  "numerator": "3",
+                  "denominator": "5"
+                }
+              }
+            ],
+            "unroundedCents": 48000,
+            "exactUnroundedCents": {
+              "numerator": "48000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 48000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Field materials",
+          "category": "material",
+          "amountCents": 110000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 11,
+            "exactQuantity": {
+              "numerator": "11",
+              "denominator": "1"
+            },
+            "unit": "waste-adjusted roofing squares",
+            "rateCents": 10000,
+            "ratePath": "materialCostPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 110000,
+            "exactUnroundedCents": {
+              "numerator": "110000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 110000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "taxable": false
+        },
+        {
+          "name": "Tear-off",
+          "category": "removal",
+          "amountCents": 60000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "first-layer roofing squares",
+            "rateCents": 6000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 60000,
+            "exactUnroundedCents": {
+              "numerator": "60000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 60000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Underlayment",
+          "category": "material",
+          "priceBasis": "sell_price",
+          "amountCents": 1000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "measured installed roofing squares",
+            "rateCents": 100,
+            "ratePath": "underlaymentPerSquare.asphalt_shingle",
+            "priceBasis": "sell_price",
+            "multipliers": [],
+            "unroundedCents": 1000,
+            "exactUnroundedCents": {
+              "numerator": "1000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 1000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "installedBaseExactCents": {
+            "numerator": "1000",
+            "denominator": "1"
+          },
+          "installedLaborExactCents": {
+            "numerator": "0",
+            "denominator": "1"
+          },
+          "taxable": false
+        },
+        {
+          "name": "Roofing disposal",
+          "category": "disposal",
+          "amountCents": 20000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "existing-layer roofing squares",
+            "rateCents": 2000,
+            "ratePath": "disposalPerSquare",
+            "multipliers": [],
+            "unroundedCents": 20000,
+            "exactUnroundedCents": {
+              "numerator": "20000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 20000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "customer": {
+        "pitchBand": "up_to_six",
+        "existingLayers": 3,
+        "stories": 2
+      },
+      "expected": 549400,
+      "lineItems": [
+        {
+          "name": "Roofing labor",
+          "category": "labor",
+          "amountCents": 200000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares",
+            "rateCents": 20000,
+            "ratePath": "laborPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 200000,
+            "exactUnroundedCents": {
+              "numerator": "200000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 200000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "customerDriver": "Measured roof area: 10.00 roofing squares",
+          "taxable": false
+        },
+        {
+          "name": "Story labor adjustment",
+          "category": "labor",
+          "amountCents": 20000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "roofing squares",
+            "rateCents": 20000,
+            "ratePath": "laborPerSquare.asphalt_shingle",
+            "multipliers": [
+              {
+                "name": "story addition",
+                "value": 0.10000000000000009,
+                "path": "storyMultiplier.2",
+                "exactValue": {
+                  "numerator": "10000000000000009",
+                  "denominator": "100000000000000000"
+                }
+              }
+            ],
+            "unroundedCents": 20000.00000000002,
+            "exactUnroundedCents": {
+              "numerator": "10000000000000009",
+              "denominator": "500000000000"
+            },
+            "roundedAmountCents": 20000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Field materials",
+          "category": "material",
+          "amountCents": 110000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 11,
+            "exactQuantity": {
+              "numerator": "11",
+              "denominator": "1"
+            },
+            "unit": "waste-adjusted roofing squares",
+            "rateCents": 10000,
+            "ratePath": "materialCostPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 110000,
+            "exactUnroundedCents": {
+              "numerator": "110000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 110000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "taxable": false
+        },
+        {
+          "name": "Tear-off",
+          "category": "removal",
+          "amountCents": 60000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "first-layer roofing squares",
+            "rateCents": 6000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "multipliers": [],
+            "unroundedCents": 60000,
+            "exactUnroundedCents": {
+              "numerator": "60000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 60000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Additional-layer tear-off",
+          "category": "removal",
+          "amountCents": 84000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 20,
+            "exactQuantity": {
+              "numerator": "20",
+              "denominator": "1"
+            },
+            "unit": "additional-layer roofing squares",
+            "rateCents": 6000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "multipliers": [
+              {
+                "name": "additional layer removal factor",
+                "value": 0.7,
+                "path": "additionalLayerRemovalFactor",
+                "exactValue": {
+                  "numerator": "7",
+                  "denominator": "10"
+                }
+              }
+            ],
+            "unroundedCents": 84000,
+            "exactUnroundedCents": {
+              "numerator": "84000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 84000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Story tear-off adjustment",
+          "category": "removal",
+          "amountCents": 6000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "first-layer roofing squares",
+            "rateCents": 6000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "multipliers": [
+              {
+                "name": "story addition",
+                "value": 0.10000000000000009,
+                "path": "storyMultiplier.2",
+                "exactValue": {
+                  "numerator": "10000000000000009",
+                  "denominator": "100000000000000000"
+                }
+              }
+            ],
+            "unroundedCents": 6000.0000000000055,
+            "exactUnroundedCents": {
+              "numerator": "30000000000000027",
+              "denominator": "5000000000000"
+            },
+            "roundedAmountCents": 6000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Additional-layer story adjustment",
+          "category": "removal",
+          "amountCents": 8400,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 20,
+            "exactQuantity": {
+              "numerator": "20",
+              "denominator": "1"
+            },
+            "unit": "additional-layer roofing squares",
+            "rateCents": 6000,
+            "ratePath": "tearOffPerSquare.asphalt_shingle",
+            "multipliers": [
+              {
+                "name": "additional layer removal factor",
+                "value": 0.7,
+                "path": "additionalLayerRemovalFactor",
+                "exactValue": {
+                  "numerator": "7",
+                  "denominator": "10"
+                }
+              },
+              {
+                "name": "story addition",
+                "value": 0.10000000000000009,
+                "path": "storyMultiplier.2",
+                "exactValue": {
+                  "numerator": "10000000000000009",
+                  "denominator": "100000000000000000"
+                }
+              }
+            ],
+            "unroundedCents": 8400.000000000007,
+            "exactUnroundedCents": {
+              "numerator": "210000000000000189",
+              "denominator": "25000000000000"
+            },
+            "roundedAmountCents": 8400,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        },
+        {
+          "name": "Underlayment",
+          "category": "material",
+          "priceBasis": "sell_price",
+          "amountCents": 1000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 10,
+            "exactQuantity": {
+              "numerator": "10",
+              "denominator": "1"
+            },
+            "unit": "measured installed roofing squares",
+            "rateCents": 100,
+            "ratePath": "underlaymentPerSquare.asphalt_shingle",
+            "priceBasis": "sell_price",
+            "multipliers": [],
+            "unroundedCents": 1000,
+            "exactUnroundedCents": {
+              "numerator": "1000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 1000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "installedBaseExactCents": {
+            "numerator": "1000",
+            "denominator": "1"
+          },
+          "installedLaborExactCents": {
+            "numerator": "0",
+            "denominator": "1"
+          },
+          "taxable": false
+        },
+        {
+          "name": "Roofing disposal",
+          "category": "disposal",
+          "amountCents": 60000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 30,
+            "exactQuantity": {
+              "numerator": "30",
+              "denominator": "1"
+            },
+            "unit": "existing-layer roofing squares",
+            "rateCents": 2000,
+            "ratePath": "disposalPerSquare",
+            "multipliers": [],
+            "unroundedCents": 60000,
+            "exactUnroundedCents": {
+              "numerator": "60000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 60000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "taxable": false
+        }
+      ]
+    }
+  ]
+}

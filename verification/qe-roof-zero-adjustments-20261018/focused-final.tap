@@ -1,0 +1,1708 @@
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings
+not ok 1 - production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings
+  ---
+  duration_ms: 471.28449
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/backupRestoreRehearsal.spec.mjs:140:1'
+  failureType: 'testCodeFailure'
+  error: 'Startup failed: {"pid":20,"requestedPort":45307,"code":1,"signal":null}'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    ChildProcess.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/backupRestoreRehearsal.spec.mjs:74:66)
+    Object.onceWrapper (node:events:634:26)
+    ChildProcess.emit (node:events:531:35)
+    ChildProcess._handle.onexit (node:internal/child_process:293:12)
+  ...
+# (node:29) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: unchanged pinned quote and book: mowing-control
+ok 2 - unchanged pinned quote and book: mowing-control
+  ---
+  duration_ms: 20.996721
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-unpriced-bagging
+ok 3 - unchanged pinned quote and book: mowing-unpriced-bagging
+  ---
+  duration_ms: 4.142417
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-unpriced-edging
+ok 4 - unchanged pinned quote and book: mowing-unpriced-edging
+  ---
+  duration_ms: 4.159622
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-priced-extras-control
+ok 5 - unchanged pinned quote and book: mowing-priced-extras-control
+  ---
+  duration_ms: 5.819588
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-control
+ok 6 - unchanged pinned quote and book: flat-repair-control
+  ---
+  duration_ms: 7.050938
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-unpriced-ponding
+ok 7 - unchanged pinned quote and book: flat-repair-unpriced-ponding
+  ---
+  duration_ms: 6.452559
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-priced-ponding-control
+ok 8 - unchanged pinned quote and book: flat-repair-priced-ponding-control
+  ---
+  duration_ms: 3.76554
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-200-control
+ok 9 - unchanged pinned quote and book: floor-tile-200-control
+  ---
+  duration_ms: 5.829873
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-150-boundary
+ok 10 - unchanged pinned quote and book: floor-tile-150-boundary
+  ---
+  duration_ms: 4.345903
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-300-boundary
+ok 11 - unchanged pinned quote and book: floor-tile-300-boundary
+  ---
+  duration_ms: 4.188967
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-tile
+ok 12 - unchanged pinned quote and book: floor-type-tile
+  ---
+  duration_ms: 3.219809
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-vinyl_plank
+ok 13 - unchanged pinned quote and book: floor-type-vinyl_plank
+  ---
+  duration_ms: 4.289848
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-hardwood
+ok 14 - unchanged pinned quote and book: floor-type-hardwood
+  ---
+  duration_ms: 2.575582
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-laminate
+ok 15 - unchanged pinned quote and book: floor-type-laminate
+  ---
+  duration_ms: 2.162721
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-carpet
+ok 16 - unchanged pinned quote and book: floor-type-carpet
+  ---
+  duration_ms: 2.216041
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-stairs
+ok 17 - unchanged pinned quote and book: floor-stairs
+  ---
+  duration_ms: 2.41505
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-flat
+ok 18 - unchanged pinned quote and book: custom-flat
+  ---
+  duration_ms: 1.987247
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_hour
+ok 19 - unchanged pinned quote and book: custom-fixed-per_hour
+  ---
+  duration_ms: 1.952936
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_unit
+ok 20 - unchanged pinned quote and book: custom-fixed-per_unit
+  ---
+  duration_ms: 2.093236
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_sqft
+ok 21 - unchanged pinned quote and book: custom-fixed-per_sqft
+  ---
+  duration_ms: 1.525753
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_LF
+ok 22 - unchanged pinned quote and book: custom-fixed-per_LF
+  ---
+  duration_ms: 1.522298
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_square
+ok 23 - unchanged pinned quote and book: custom-fixed-per_square
+  ---
+  duration_ms: 1.685003
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-fractional-rate
+ok 24 - unchanged pinned quote and book: custom-fixed-fractional-rate
+  ---
+  duration_ms: 1.540375
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-range-flat
+ok 25 - unchanged pinned quote and book: custom-range-flat
+  ---
+  duration_ms: 2.989664
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-classification-attempt
+ok 26 - unchanged pinned quote and book: custom-classification-attempt
+  ---
+  duration_ms: 1.628158
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-base-control
+ok 27 - unchanged pinned quote and book: siding-base-control
+  ---
+  duration_ms: 4.096217
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-trim
+ok 28 - unchanged pinned quote and book: siding-trim
+  ---
+  duration_ms: 1.208116
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-removal
+ok 29 - unchanged pinned quote and book: siding-removal
+  ---
+  duration_ms: 1.071831
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-base-control
+ok 30 - unchanged pinned quote and book: concrete-base-control
+  ---
+  duration_ms: 4.416358
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-demolition
+ok 31 - unchanged pinned quote and book: concrete-demolition
+  ---
+  duration_ms: 1.329749
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-exposed-aggregate
+ok 32 - unchanged pinned quote and book: concrete-exposed-aggregate
+  ---
+  duration_ms: 1.309669
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-roof-residential-control
+ok 33 - unchanged pinned quote and book: flat-roof-residential-control
+  ---
+  duration_ms: 3.514623
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-roof-commercial
+ok 34 - unchanged pinned quote and book: flat-roof-commercial
+  ---
+  duration_ms: 3.416696
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_INSTALL-installed-control
+ok 35 - unchanged pinned quote and book: FENCING_INSTALL-installed-control
+  ---
+  duration_ms: 5.803444
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_INSTALL-itemized-control
+ok 36 - unchanged pinned quote and book: FENCING_INSTALL-itemized-control
+  ---
+  duration_ms: 4.577151
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_REPLACEMENT-installed-control
+ok 37 - unchanged pinned quote and book: FENCING_REPLACEMENT-installed-control
+  ---
+  duration_ms: 4.265432
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_REPLACEMENT-itemized-control
+ok 38 - unchanged pinned quote and book: FENCING_REPLACEMENT-itemized-control
+  ---
+  duration_ms: 5.19654
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: INTERIOR_PAINTING-installed-control
+ok 39 - unchanged pinned quote and book: INTERIOR_PAINTING-installed-control
+  ---
+  duration_ms: 4.31745
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: INTERIOR_PAINTING-itemized-control
+ok 40 - unchanged pinned quote and book: INTERIOR_PAINTING-itemized-control
+  ---
+  duration_ms: 5.977706
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: EXTERIOR_PAINTING-installed-control
+ok 41 - unchanged pinned quote and book: EXTERIOR_PAINTING-installed-control
+  ---
+  duration_ms: 3.24677
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: EXTERIOR_PAINTING-itemized-control
+ok 42 - unchanged pinned quote and book: EXTERIOR_PAINTING-itemized-control
+  ---
+  duration_ms: 4.193623
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: painting-itemized-cost-basis
+ok 43 - unchanged pinned quote and book: painting-itemized-cost-basis
+  ---
+  duration_ms: 2.080758
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: requested-976-control
+ok 44 - unchanged pinned quote and book: requested-976-control
+  ---
+  duration_ms: 1.455518
+  type: 'test'
+  ...
+# Subtest: range endpoints, independent service overrides, private settings and unchanged display
+ok 45 - range endpoints, independent service overrides, private settings and unchanged display
+  ---
+  duration_ms: 8.723753
+  type: 'test'
+  ...
+# Subtest: legacy single-buffer evidence retains its 25% bound
+ok 46 - legacy single-buffer evidence retains its 25% bound
+  ---
+  duration_ms: 1.588668
+  type: 'test'
+  ...
+# Subtest: blank range sides fall back; wide high bands, minimum and zero side validation
+ok 47 - blank range sides fall back; wide high bands, minimum and zero side validation
+  ---
+  duration_ms: 6.519379
+  type: 'test'
+  ...
+# Subtest: custom materials share gives exact tax, labor surcharge and total
+ok 48 - custom materials share gives exact tax, labor surcharge and total
+  ---
+  duration_ms: 8.66849
+  type: 'test'
+  ...
+# Subtest: custom split follows labor/material markup flags, sell basis, and intrinsic scenarios
+ok 49 - custom split follows labor/material markup flags, sell basis, and intrinsic scenarios
+  ---
+  duration_ms: 9.970938
+  type: 'test'
+  ...
+# Subtest: custom shares reject invalid values and conserve billed cents at tiny boundaries
+ok 50 - custom shares reject invalid values and conserve billed cents at tiny boundaries
+  ---
+  duration_ms: 15.136072
+  type: 'test'
+  ...
+# Subtest: accuracy independent three-job oracle and metric-specific coverage
+ok 51 - accuracy independent three-job oracle and metric-specific coverage
+  ---
+  duration_ms: 1.672284
+  type: 'test'
+  ...
+# Subtest: metrics exclude missing middles, zero denominators, unknown tiers, currencies and sell-price budgets separately
+ok 52 - metrics exclude missing middles, zero denominators, unknown tiers, currencies and sell-price budgets separately
+  ---
+  duration_ms: 7.194685
+  type: 'test'
+  ...
+# Subtest: owner cost storage is separate, tenant-bound, revisioned, durable and absent from staff views
+ok 53 - owner cost storage is separate, tenant-bound, revisioned, durable and absent from staff views
+  ---
+  duration_ms: 46.86086
+  type: 'test'
+  ...
+# Subtest: new settings and custom share survive the real saved-book, approval and interview paths
+ok 54 - new settings and custom share survive the real saved-book, approval and interview paths
+  ---
+  duration_ms: 578.968158
+  type: 'test'
+  ...
+# (node:37) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: accuracy integration: full footprint roof keeps corrected underlayment through widget and voice
+ok 55 - accuracy integration: full footprint roof keeps corrected underlayment through widget and voice
+  ---
+  duration_ms: 1081.011504
+  type: 'test'
+  ...
+# Subtest: accuracy integration: partial footprint roof keeps corrected underlayment through widget and voice
+ok 56 - accuracy integration: partial footprint roof keeps corrected underlayment through widget and voice
+  ---
+  duration_ms: 536.931414
+  type: 'test'
+  ...
+# Subtest: accuracy integration: sod component disclosure and unchanged cents cross widget and voice
+ok 57 - accuracy integration: sod component disclosure and unchanged cents cross widget and voice
+  ---
+  duration_ms: 350.948408
+  type: 'test'
+  ...
+# Subtest: accuracy integration: genuine v7 sod approval stays stale while frozen retries remain exact
+ok 58 - accuracy integration: genuine v7 sod approval stays stale while frozen retries remain exact
+  ---
+  duration_ms: 278.863855
+  type: 'test'
+  ...
+# (node:45) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: v9 comparison metadata advances only explicit paths on a clone, including results without options
+ok 59 - v9 comparison metadata advances only explicit paths on a clone, including results without options
+  ---
+  duration_ms: 3.821143
+  type: 'test'
+  ...
+# Subtest: roof underlayment new full: footprint uses rounded surface
+ok 60 - roof underlayment new full: footprint uses rounded surface
+  ---
+  duration_ms: 22.640962
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: footprint uses rounded surface
+ok 61 - roof underlayment new partial: footprint uses rounded surface
+  ---
+  duration_ms: 9.230856
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: footprint uses rounded surface
+ok 62 - roof underlayment adopted full: footprint uses rounded surface
+  ---
+  duration_ms: 6.634311
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: footprint uses rounded surface
+ok 63 - roof underlayment adopted partial: footprint uses rounded surface
+  ---
+  duration_ms: 4.992855
+  type: 'test'
+  ...
+# Subtest: roof underlayment new full: measured surface equivalence
+ok 64 - roof underlayment new full: measured surface equivalence
+  ---
+  duration_ms: 12.093708
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: measured surface equivalence
+ok 65 - roof underlayment new partial: measured surface equivalence
+  ---
+  duration_ms: 8.831616
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: measured surface equivalence
+ok 66 - roof underlayment adopted full: measured surface equivalence
+  ---
+  duration_ms: 8.878786
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: measured surface equivalence
+ok 67 - roof underlayment adopted partial: measured surface equivalence
+  ---
+  duration_ms: 6.840963
+  type: 'test'
+  ...
+# Subtest: roof underlayment new: explicit partial surface takes precedence
+ok 68 - roof underlayment new: explicit partial surface takes precedence
+  ---
+  duration_ms: 5.50902
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted: explicit partial surface takes precedence
+ok 69 - roof underlayment adopted: explicit partial surface takes precedence
+  ---
+  duration_ms: 5.163362
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.105
+ok 70 - roof underlayment surface rounding before package boundary 707.105
+  ---
+  duration_ms: 3.262714
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.111
+ok 71 - roof underlayment surface rounding before package boundary 707.111
+  ---
+  duration_ms: 2.96724
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy full remains unchanged
+ok 72 - roof underlayment legacy full remains unchanged
+  ---
+  duration_ms: 4.075115
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy partial remains unchanged
+ok 73 - roof underlayment legacy partial remains unchanged
+  ---
+  duration_ms: 3.930298
+  type: 'test'
+  ...
+# Subtest: roof underlayment package cost receives existing markup and materials tax once
+ok 74 - roof underlayment package cost receives existing markup and materials tax once
+  ---
+  duration_ms: 3.516266
+  type: 'test'
+  ...
+# Subtest: roof underlayment installed-area full remains surface-based without package waste
+ok 75 - roof underlayment installed-area full remains surface-based without package waste
+  ---
+  duration_ms: 4.146664
+  type: 'test'
+  ...
+# Subtest: roof underlayment installed-area partial remains surface-based without package waste
+ok 76 - roof underlayment installed-area partial remains surface-based without package waste
+  ---
+  duration_ms: 3.763457
+  type: 'test'
+  ...
+# Subtest: roof underlayment retains included-zero semantics and unrelated measured scope controls
+ok 77 - roof underlayment retains included-zero semantics and unrelated measured scope controls
+  ---
+  duration_ms: 85.464045
+  type: 'test'
+  ...
+# Subtest: roof underlayment corrected full saved widget-route and voice-tool parity
+ok 78 - roof underlayment corrected full saved widget-route and voice-tool parity
+  ---
+  duration_ms: 1283.4544
+  type: 'test'
+  ...
+# Subtest: roof underlayment corrected partial saved widget-route and voice-tool parity
+ok 79 - roof underlayment corrected partial saved widget-route and voice-tool parity
+  ---
+  duration_ms: 642.914092
+  type: 'test'
+  ...
+# Subtest: roof underlayment v7 approval reviews new requests; explicit v9 reapproval preserves historical retries
+ok 80 - roof underlayment v7 approval reviews new requests; explicit v9 reapproval preserves historical retries
+  ---
+  duration_ms: 532.915022
+  type: 'test'
+  ...
+# (node:53) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: roof zero independent control: positive control
+ok 81 - roof zero independent control: positive control
+  ---
+  duration_ms: 23.93671
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: zero upper installation
+ok 82 - roof zero independent control: zero upper installation
+  ---
+  duration_ms: 6.909916
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: zero upper removal
+ok 83 - roof zero independent control: zero upper removal
+  ---
+  duration_ms: 5.467378
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: three layers zero factor
+ok 84 - roof zero independent control: three layers zero factor
+  ---
+  duration_ms: 4.390299
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: three layers two stories zero factor
+ok 85 - roof zero independent control: three layers two stories zero factor
+  ---
+  duration_ms: 5.947139
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine install full
+ok 86 - roof zero seven_to_nine install full
+  ---
+  duration_ms: 3.592951
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine remove full
+ok 87 - roof zero seven_to_nine remove full
+  ---
+  duration_ms: 3.30582
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine both full
+ok 88 - roof zero seven_to_nine both full
+  ---
+  duration_ms: 3.27256
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine install partial-area
+ok 89 - roof zero seven_to_nine install partial-area
+  ---
+  duration_ms: 4.05854
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine remove partial-area
+ok 90 - roof zero seven_to_nine remove partial-area
+  ---
+  duration_ms: 4.457981
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine both partial-area
+ok 91 - roof zero seven_to_nine both partial-area
+  ---
+  duration_ms: 2.938437
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine install partial-percent
+ok 92 - roof zero seven_to_nine install partial-percent
+  ---
+  duration_ms: 3.244006
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine remove partial-percent
+ok 93 - roof zero seven_to_nine remove partial-percent
+  ---
+  duration_ms: 2.90057
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine both partial-percent
+ok 94 - roof zero seven_to_nine both partial-percent
+  ---
+  duration_ms: 3.274422
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve install full
+ok 95 - roof zero ten_to_twelve install full
+  ---
+  duration_ms: 2.891987
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve remove full
+ok 96 - roof zero ten_to_twelve remove full
+  ---
+  duration_ms: 3.355193
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve both full
+ok 97 - roof zero ten_to_twelve both full
+  ---
+  duration_ms: 2.811276
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve install partial-area
+ok 98 - roof zero ten_to_twelve install partial-area
+  ---
+  duration_ms: 3.207322
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve remove partial-area
+ok 99 - roof zero ten_to_twelve remove partial-area
+  ---
+  duration_ms: 3.462825
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve both partial-area
+ok 100 - roof zero ten_to_twelve both partial-area
+  ---
+  duration_ms: 2.99445
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve install partial-percent
+ok 101 - roof zero ten_to_twelve install partial-percent
+  ---
+  duration_ms: 2.918197
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve remove partial-percent
+ok 102 - roof zero ten_to_twelve remove partial-percent
+  ---
+  duration_ms: 2.95346
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve both partial-percent
+ok 103 - roof zero ten_to_twelve both partial-percent
+  ---
+  duration_ms: 2.755822
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve install full
+ok 104 - roof zero over_twelve install full
+  ---
+  duration_ms: 3.115823
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve remove full
+ok 105 - roof zero over_twelve remove full
+  ---
+  duration_ms: 2.694309
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve both full
+ok 106 - roof zero over_twelve both full
+  ---
+  duration_ms: 4.761187
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve install partial-area
+ok 107 - roof zero over_twelve install partial-area
+  ---
+  duration_ms: 5.163511
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve remove partial-area
+ok 108 - roof zero over_twelve remove partial-area
+  ---
+  duration_ms: 4.05814
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve both partial-area
+ok 109 - roof zero over_twelve both partial-area
+  ---
+  duration_ms: 3.594468
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve install partial-percent
+ok 110 - roof zero over_twelve install partial-percent
+  ---
+  duration_ms: 2.828912
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve remove partial-percent
+ok 111 - roof zero over_twelve remove partial-percent
+  ---
+  duration_ms: 2.821271
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve both partial-percent
+ok 112 - roof zero over_twelve both partial-percent
+  ---
+  duration_ms: 3.264748
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install full
+ok 113 - roof zero mixed measured seven_to_nine install full
+  ---
+  duration_ms: 4.10479
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove full
+ok 114 - roof zero mixed measured seven_to_nine remove full
+  ---
+  duration_ms: 3.278458
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both full
+ok 115 - roof zero mixed measured seven_to_nine both full
+  ---
+  duration_ms: 3.280461
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install full
+ok 116 - roof zero mixed measured ten_to_twelve install full
+  ---
+  duration_ms: 3.435645
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove full
+ok 117 - roof zero mixed measured ten_to_twelve remove full
+  ---
+  duration_ms: 3.586421
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both full
+ok 118 - roof zero mixed measured ten_to_twelve both full
+  ---
+  duration_ms: 3.997329
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve install full
+ok 119 - roof zero mixed measured over_twelve install full
+  ---
+  duration_ms: 3.327181
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve remove full
+ok 120 - roof zero mixed measured over_twelve remove full
+  ---
+  duration_ms: 3.191187
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve both full
+ok 121 - roof zero mixed measured over_twelve both full
+  ---
+  duration_ms: 3.110726
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all install full
+ok 122 - roof zero mixed measured all install full
+  ---
+  duration_ms: 3.517958
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all remove full
+ok 123 - roof zero mixed measured all remove full
+  ---
+  duration_ms: 4.638392
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all both full
+ok 124 - roof zero mixed measured all both full
+  ---
+  duration_ms: 3.215583
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install partial-area
+ok 125 - roof zero mixed measured seven_to_nine install partial-area
+  ---
+  duration_ms: 3.473412
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove partial-area
+ok 126 - roof zero mixed measured seven_to_nine remove partial-area
+  ---
+  duration_ms: 3.677117
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both partial-area
+ok 127 - roof zero mixed measured seven_to_nine both partial-area
+  ---
+  duration_ms: 3.1937
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install partial-area
+ok 128 - roof zero mixed measured ten_to_twelve install partial-area
+  ---
+  duration_ms: 3.323486
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove partial-area
+ok 129 - roof zero mixed measured ten_to_twelve remove partial-area
+  ---
+  duration_ms: 3.109344
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both partial-area
+ok 130 - roof zero mixed measured ten_to_twelve both partial-area
+  ---
+  duration_ms: 3.733963
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve install partial-area
+ok 131 - roof zero mixed measured over_twelve install partial-area
+  ---
+  duration_ms: 3.189044
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve remove partial-area
+ok 132 - roof zero mixed measured over_twelve remove partial-area
+  ---
+  duration_ms: 3.174151
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve both partial-area
+ok 133 - roof zero mixed measured over_twelve both partial-area
+  ---
+  duration_ms: 3.19349
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all install partial-area
+ok 134 - roof zero mixed measured all install partial-area
+  ---
+  duration_ms: 3.11358
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all remove partial-area
+ok 135 - roof zero mixed measured all remove partial-area
+  ---
+  duration_ms: 3.5458
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all both partial-area
+ok 136 - roof zero mixed measured all both partial-area
+  ---
+  duration_ms: 3.051537
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install partial-percent
+ok 137 - roof zero mixed measured seven_to_nine install partial-percent
+  ---
+  duration_ms: 3.165207
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove partial-percent
+ok 138 - roof zero mixed measured seven_to_nine remove partial-percent
+  ---
+  duration_ms: 3.206289
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both partial-percent
+ok 139 - roof zero mixed measured seven_to_nine both partial-percent
+  ---
+  duration_ms: 3.612891
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install partial-percent
+ok 140 - roof zero mixed measured ten_to_twelve install partial-percent
+  ---
+  duration_ms: 3.503356
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove partial-percent
+ok 141 - roof zero mixed measured ten_to_twelve remove partial-percent
+  ---
+  duration_ms: 3.413301
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both partial-percent
+ok 142 - roof zero mixed measured ten_to_twelve both partial-percent
+  ---
+  duration_ms: 3.450738
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve install partial-percent
+ok 143 - roof zero mixed measured over_twelve install partial-percent
+  ---
+  duration_ms: 3.657979
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve remove partial-percent
+ok 144 - roof zero mixed measured over_twelve remove partial-percent
+  ---
+  duration_ms: 3.134942
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve both partial-percent
+ok 145 - roof zero mixed measured over_twelve both partial-percent
+  ---
+  duration_ms: 3.154792
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all install partial-percent
+ok 146 - roof zero mixed measured all install partial-percent
+  ---
+  duration_ms: 3.457027
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all remove partial-percent
+ok 147 - roof zero mixed measured all remove partial-percent
+  ---
+  duration_ms: 3.889787
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all both partial-percent
+ok 148 - roof zero mixed measured all both partial-percent
+  ---
+  duration_ms: 3.154722
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=1 partial=false
+ok 149 - roof zero additional layers=2 stories=1 partial=false
+  ---
+  duration_ms: 2.766529
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=1 partial=true
+ok 150 - roof zero additional layers=2 stories=1 partial=true
+  ---
+  duration_ms: 3.017837
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=1 partial=false
+ok 151 - roof zero additional layers=3 stories=1 partial=false
+  ---
+  duration_ms: 2.542753
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=1 partial=true
+ok 152 - roof zero additional layers=3 stories=1 partial=true
+  ---
+  duration_ms: 3.065287
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=1 partial=false
+ok 153 - roof zero additional layers=4 stories=1 partial=false
+  ---
+  duration_ms: 2.418075
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=1 partial=true
+ok 154 - roof zero additional layers=4 stories=1 partial=true
+  ---
+  duration_ms: 2.549442
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=2 partial=false
+ok 155 - roof zero additional layers=2 stories=2 partial=false
+  ---
+  duration_ms: 2.990806
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=2 partial=true
+ok 156 - roof zero additional layers=2 stories=2 partial=true
+  ---
+  duration_ms: 2.770705
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=2 partial=false
+ok 157 - roof zero additional layers=3 stories=2 partial=false
+  ---
+  duration_ms: 3.305839
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=2 partial=true
+ok 158 - roof zero additional layers=3 stories=2 partial=true
+  ---
+  duration_ms: 2.931527
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=2 partial=false
+ok 159 - roof zero additional layers=4 stories=2 partial=false
+  ---
+  duration_ms: 2.817494
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=2 partial=true
+ok 160 - roof zero additional layers=4 stories=2 partial=true
+  ---
+  duration_ms: 3.005637
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=3 partial=false
+ok 161 - roof zero additional layers=2 stories=3 partial=false
+  ---
+  duration_ms: 2.836874
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=3 partial=true
+ok 162 - roof zero additional layers=2 stories=3 partial=true
+  ---
+  duration_ms: 3.293631
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=3 partial=false
+ok 163 - roof zero additional layers=3 stories=3 partial=false
+  ---
+  duration_ms: 2.802452
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=3 partial=true
+ok 164 - roof zero additional layers=3 stories=3 partial=true
+  ---
+  duration_ms: 2.775111
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=3 partial=false
+ok 165 - roof zero additional layers=4 stories=3 partial=false
+  ---
+  duration_ms: 2.898687
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=3 partial=true
+ok 166 - roof zero additional layers=4 stories=3 partial=true
+  ---
+  duration_ms: 3.170917
+  type: 'test'
+  ...
+# Subtest: roof zero owner-selected unknown band seven_to_nine
+ok 167 - roof zero owner-selected unknown band seven_to_nine
+  ---
+  duration_ms: 2.807951
+  type: 'test'
+  ...
+# Subtest: roof zero owner-selected unknown band ten_to_twelve
+ok 168 - roof zero owner-selected unknown band ten_to_twelve
+  ---
+  duration_ms: 2.582512
+  type: 'test'
+  ...
+# Subtest: roof zero owner-selected unknown band over_twelve
+ok 169 - roof zero owner-selected unknown band over_twelve
+  ---
+  duration_ms: 2.657164
+  type: 'test'
+  ...
+# Subtest: roof zero up-to-six ignores inactive steep additions
+ok 170 - roof zero up-to-six ignores inactive steep additions
+  ---
+  duration_ms: 2.385896
+  type: 'test'
+  ...
+# Subtest: roof zero combined upper pitch and additional layers preserve two-story first tear-off and disposal
+ok 171 - roof zero combined upper pitch and additional layers preserve two-story first tear-off and disposal
+  ---
+  duration_ms: 3.416996
+  type: 'test'
+  ...
+# Subtest: roof zero keeps half-cent material rounding and exact remaining pitch charge
+ok 172 - roof zero keeps half-cent material rounding and exact remaining pitch charge
+  ---
+  duration_ms: 2.699278
+  type: 'test'
+  ...
+# Subtest: roof positive additional-layer story factor remains unchanged
+ok 173 - roof positive additional-layer story factor remains unchanged
+  ---
+  duration_ms: 2.85382
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install missing
+ok 174 - roof zero rejects install missing
+  ---
+  duration_ms: 1.941158
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install null
+ok 175 - roof zero rejects install null
+  ---
+  duration_ms: 1.309919
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install blank
+ok 176 - roof zero rejects install blank
+  ---
+  duration_ms: 1.162637
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install string-zero
+ok 177 - roof zero rejects install string-zero
+  ---
+  duration_ms: 1.154435
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install negative
+ok 178 - roof zero rejects install negative
+  ---
+  duration_ms: 1.219554
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install infinite
+ok 179 - roof zero rejects install infinite
+  ---
+  duration_ms: 1.775508
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install nan
+ok 180 - roof zero rejects install nan
+  ---
+  duration_ms: 1.220164
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove missing
+ok 181 - roof zero rejects remove missing
+  ---
+  duration_ms: 1.233444
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove null
+ok 182 - roof zero rejects remove null
+  ---
+  duration_ms: 1.215627
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove blank
+ok 183 - roof zero rejects remove blank
+  ---
+  duration_ms: 1.158111
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove string-zero
+ok 184 - roof zero rejects remove string-zero
+  ---
+  duration_ms: 1.11079
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove negative
+ok 185 - roof zero rejects remove negative
+  ---
+  duration_ms: 1.132562
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove infinite
+ok 186 - roof zero rejects remove infinite
+  ---
+  duration_ms: 1.088817
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove nan
+ok 187 - roof zero rejects remove nan
+  ---
+  duration_ms: 1.241426
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra missing
+ok 188 - roof zero rejects extra missing
+  ---
+  duration_ms: 1.146804
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra null
+ok 189 - roof zero rejects extra null
+  ---
+  duration_ms: 1.271311
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra blank
+ok 190 - roof zero rejects extra blank
+  ---
+  duration_ms: 1.809329
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra string-zero
+ok 191 - roof zero rejects extra string-zero
+  ---
+  duration_ms: 1.24357
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra negative
+ok 192 - roof zero rejects extra negative
+  ---
+  duration_ms: 1.12432
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra infinite
+ok 193 - roof zero rejects extra infinite
+  ---
+  duration_ms: 1.13081
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra nan
+ok 194 - roof zero rejects extra nan
+  ---
+  duration_ms: 1.244901
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install missing
+ok 195 - roof zero over12 rejects install missing
+  ---
+  duration_ms: 2.037563
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install null
+ok 196 - roof zero over12 rejects install null
+  ---
+  duration_ms: 1.299043
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install blank
+ok 197 - roof zero over12 rejects install blank
+  ---
+  duration_ms: 1.200494
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install string-zero
+ok 198 - roof zero over12 rejects install string-zero
+  ---
+  duration_ms: 1.175487
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install negative
+ok 199 - roof zero over12 rejects install negative
+  ---
+  duration_ms: 1.534927
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install infinite
+ok 200 - roof zero over12 rejects install infinite
+  ---
+  duration_ms: 1.241907
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove missing
+ok 201 - roof zero over12 rejects remove missing
+  ---
+  duration_ms: 1.927958
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove null
+ok 202 - roof zero over12 rejects remove null
+  ---
+  duration_ms: 1.189929
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove blank
+ok 203 - roof zero over12 rejects remove blank
+  ---
+  duration_ms: 1.183609
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove string-zero
+ok 204 - roof zero over12 rejects remove string-zero
+  ---
+  duration_ms: 1.253023
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove negative
+ok 205 - roof zero over12 rejects remove negative
+  ---
+  duration_ms: 1.229639
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove infinite
+ok 206 - roof zero over12 rejects remove infinite
+  ---
+  duration_ms: 1.324741
+  type: 'test'
+  ...
+# Subtest: roof zero does not supply missing product confirmation
+ok 207 - roof zero does not supply missing product confirmation
+  ---
+  duration_ms: 1.314425
+  type: 'test'
+  ...
+# Subtest: roof zero v9 engine/runtime agree and genuine positive v8 line evidence stays exact
+ok 208 - roof zero v9 engine/runtime agree and genuine positive v8 line evidence stays exact
+  ---
+  duration_ms: 13.424209
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: upper installation zero
+ok 209 - roof zero saved widget and voice parity: upper installation zero
+  ---
+  duration_ms: 975.319377
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: upper removal zero
+ok 210 - roof zero saved widget and voice parity: upper removal zero
+  ---
+  duration_ms: 536.936178
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: upper both zero
+ok 211 - roof zero saved widget and voice parity: upper both zero
+  ---
+  duration_ms: 500.248981
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: over12 both zero partial
+ok 212 - roof zero saved widget and voice parity: over12 both zero partial
+  ---
+  duration_ms: 511.658054
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: three layers two stories zero
+ok 213 - roof zero saved widget and voice parity: three layers two stories zero
+  ---
+  duration_ms: 515.58698
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: mixed partial zero upper installation
+ok 214 - roof zero saved widget and voice parity: mixed partial zero upper installation
+  ---
+  duration_ms: 493.125716
+  type: 'test'
+  ...
+# Subtest: roof zero saved new proposals still need explicit setting confirmation and owner approval
+ok 215 - roof zero saved new proposals still need explicit setting confirmation and owner approval
+  ---
+  duration_ms: 251.909635
+  type: 'test'
+  ...
+# Subtest: roof zero genuine v8 approval remains stale through save; explicit v9 approval and zero correction preserve receipt replay
+ok 216 - roof zero genuine v8 approval remains stale through save; explicit v9 approval and zero correction preserve receipt replay
+  ---
+  duration_ms: 629.731089
+  type: 'test'
+  ...
+# (node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: one product-name conversion accepts punctuation and accents and explains every refusal
+ok 217 - one product-name conversion accepts punctuation and accents and explains every refusal
+  ---
+  duration_ms: 4.096587
+  type: 'test'
+  ...
+# Subtest: a product registered and priced under the same typed name goes live and quotes
+ok 218 - a product registered and priced under the same typed name goes live and quotes
+  ---
+  duration_ms: 289.483976
+  type: 'test'
+  ...
+# Subtest: every owner name-entry control uses the shared conversion and shows refusals
+ok 219 - every owner name-entry control uses the shared conversion and shows refusals
+  ---
+  duration_ms: 1.025351
+  type: 'test'
+  ...
+# Subtest: customer review wording treats every measured size as a measurement, using field metadata
+ok 220 - customer review wording treats every measured size as a measurement, using field metadata
+  ---
+  duration_ms: 874.077861
+  type: 'test'
+  ...
+# Subtest: metadata sweep: every sized field reads as a measurement and every count as a job detail
+ok 221 - metadata sweep: every sized field reads as a measurement and every count as a job detail
+  ---
+  duration_ms: 2.131444
+  type: 'test'
+  ...
+# Subtest: malformed review results keep the generic message and never invoke accessors
+ok 222 - malformed review results keep the generic message and never invoke accessors
+  ---
+  duration_ms: 0.265049
+  type: 'test'
+  ...
+# Subtest: saved approval lists a retained price only under retained settings, formatted like a price
+ok 223 - saved approval lists a retained price only under retained settings, formatted like a price
+  ---
+  duration_ms: 263.545522
+  type: 'test'
+  ...
+# Subtest: changed pricing requires fresh approval: the engine version moved on (v8 after the October 18 roof underlayment correction)
+ok 224 - changed pricing requires fresh approval: the engine version moved on (v8 after the October 18 roof underlayment correction)
+  ---
+  duration_ms: 181.534088
+  type: 'test'
+  ...
+# (node:69) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: roof adoption keeps legacy mode unchanged and adopted mixed pitch uses additive per-band charges
+ok 225 - roof adoption keeps legacy mode unchanged and adopted mixed pitch uses additive per-band charges
+  ---
+  duration_ms: 29.77654
+  type: 'test'
+  ...
+# Subtest: adopted upper pitch, story and complexity additions do not multiply
+ok 226 - adopted upper pitch, story and complexity additions do not multiply
+  ---
+  duration_ms: 5.439687
+  type: 'test'
+  ...
+# Subtest: adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit
+ok 227 - adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit
+  ---
+  duration_ms: 22.537247
+  type: 'test'
+  ...
+# Subtest: roof dependent accessory lines, distinct labels and decking allocation are exact
+ok 228 - roof dependent accessory lines, distinct labels and decking allocation are exact
+  ---
+  duration_ms: 14.492425
+  type: 'test'
+  ...
+# Subtest: caller approximate roofing inputs quote and voice retains the exact on-site line
+ok 229 - caller approximate roofing inputs quote and voice retains the exact on-site line
+  ---
+  duration_ms: 16.197388
+  type: 'test'
+  ...
+# Subtest: every legacy roof pitch, story, layer and complexity combination stays on the prior formula until adoption
+ok 230 - every legacy roof pitch, story, layer and complexity combination stays on the prior formula until adoption
+  ---
+  duration_ms: 194.718496
+  type: 'test'
+  ...
+# Subtest: group adoption confirms current system values together, preserves owner values and later definition changes unconfirm
+ok 231 - group adoption confirms current system values together, preserves owner values and later definition changes unconfirm
+  ---
+  duration_ms: 2.178925
+  type: 'test'
+  ...
+# Subtest: application adoption keeps a historically approved roof live, then atomically binds the new rules
+ok 232 - application adoption keeps a historically approved roof live, then atomically binds the new rules
+  ---
+  duration_ms: 244.363032
+  type: 'test'
+  ...
+# Subtest: new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band
+ok 233 - new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band
+  ---
+  duration_ms: 747.496519
+  type: 'test'
+  ...
+# Subtest: new roofing decking exactly preserves the established optional-line and customer-note behavior
+ok 234 - new roofing decking exactly preserves the established optional-line and customer-note behavior
+  ---
+  duration_ms: 6.454122
+  type: 'test'
+  ...
+# Subtest: new roofing partial pitch areas describe only the replaced area and reject whole-roof totals
+ok 235 - new roofing partial pitch areas describe only the replaced area and reject whole-roof totals
+  ---
+  duration_ms: 4.118511
+  type: 'test'
+  ...
+# Subtest: partial pitch-area contradictions ask for correction at the widget application boundary
+ok 236 - partial pitch-area contradictions ask for correction at the widget application boundary
+  ---
+  duration_ms: 286.439123
+  type: 'test'
+  ...
+# Subtest: partial pitch-area contradictions ask for correction through the receptionist
+ok 237 - partial pitch-area contradictions ask for correction through the receptionist
+  ---
+  duration_ms: 276.198885
+  type: 'test'
+  ...
+# (node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: adopted wall, ceiling and trim ratios keep exact two-coat conversion and no primer defaults
+ok 238 - adopted wall, ceiling and trim ratios keep exact two-coat conversion and no primer defaults
+  ---
+  duration_ms: 57.393781
+  type: 'test'
+  ...
+# Subtest: flooring adoption adds per-material waste, retains diagonal labor and separately prices herringbone
+ok 239 - flooring adoption adds per-material waste, retains diagonal labor and separately prices herringbone
+  ---
+  duration_ms: 17.594478
+  type: 'test'
+  ...
+# Subtest: new and adopted tile herringbone review until the owner supplies its own labor adjustment
+ok 240 - new and adopted tile herringbone review until the owner supplies its own labor adjustment
+  ---
+  duration_ms: 12.818078
+  type: 'test'
+  ...
+# Subtest: new proposals include source and assumption; only used unconfirmed factors require review
+ok 241 - new proposals include source and assumption; only used unconfirmed factors require review
+  ---
+  duration_ms: 10.364089
+  type: 'test'
+  ...
+# Subtest: seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once
+ok 242 - seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once
+  ---
+  duration_ms: 2056.053829
+  type: 'test'
+  ...
+# Subtest: root and mirrored owner maps survive adoption; an explicit tier value is not a base proposal
+ok 243 - root and mirrored owner maps survive adoption; an explicit tier value is not a base proposal
+  ---
+  duration_ms: 223.546448
+  type: 'test'
+  ...
+# Subtest: application-created services stay unconfirmed after ordinary approval; explicit confirmation quotes with the on-site line
+ok 244 - application-created services stay unconfirmed after ordinary approval; explicit confirmation quotes with the on-site line
+  ---
+  duration_ms: 620.325245
+  type: 'test'
+  ...
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: release guard: production starts with the current compiled v8 engine
+not ok 245 - release guard: production starts with the current compiled v8 engine
+  ---
+  duration_ms: 314.537433
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/releaseProductionEngineGuard.spec.mjs:45:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    (node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11
+    const fail = message => { throw new Error(message); };
+                                    ^
+    
+    Error: Production owner/widget bundles are missing; build before starting.
+        at fail (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11:33)
+        at prepareDeploymentEnvironment (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:102:119)
+        at file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentEnvironment.js:6:33
+        at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+        at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+        at async file:///workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-engine-guard-f54C90/start.mjs:1:1
+    
+    Node.js v22.23.3
+    
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    fail (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11:33)
+    prepareDeploymentEnvironment (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:102:119)
+    file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentEnvironment.js:6:33
+    ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    async file:///workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-engine-guard-f54C90/start.mjs:1:1
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/releaseProductionEngineGuard.spec.mjs:46:39)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: release guard: production refuses compiled engine "quote-engine-vnext-launch-fixes-20261005-v6"
+not ok 246 - release guard: production refuses compiled engine "quote-engine-vnext-launch-fixes-20261005-v6"
+  ---
+  duration_ms: 166.445971
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/releaseProductionEngineGuard.spec.mjs:49:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /QUOTE_ENGINE_VERSION_MISMATCH/. Input:
+    
+    '(node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n' +
+      '(Use `node --trace-warnings ...` to show where the warning was created)\n' +
+      'file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11\n' +
+      'const fail = message => { throw new Error(message); };\n' +
+      '                                ^\n' +
+      '\n' +
+      'Error: Production owner/widget bundles are missing; build before starting.\n' +
+      '    at fail (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11:33)\n' +
+      '    at prepareDeploymentEnvironment (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:102:119)\n' +
+      '    at file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentEnvironment.js:6:33\n' +
+      '    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n' +
+      '    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n' +
+      '    at async file:///workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-engine-guard-ZwrKd8/start.mjs:2:19\n' +
+      '\n' +
+      'Node.js v22.23.3\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11
+    const fail = message => { throw new Error(message); };
+                                    ^
+    
+    Error: Production owner/widget bundles are missing; build before starting.
+        at fail (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11:33)
+        at prepareDeploymentEnvironment (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:102:119)
+        at file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentEnvironment.js:6:33
+        at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+        at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+        at async file:///workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-engine-guard-ZwrKd8/start.mjs:2:19
+    
+    Node.js v22.23.3
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/releaseProductionEngineGuard.spec.mjs:53:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: release guard: production refuses compiled engine "quote-engine-vnext-date-context-20261006-v7"
+not ok 247 - release guard: production refuses compiled engine "quote-engine-vnext-date-context-20261006-v7"
+  ---
+  duration_ms: 163.959609
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/releaseProductionEngineGuard.spec.mjs:49:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /QUOTE_ENGINE_VERSION_MISMATCH/. Input:
+    
+    '(node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n' +
+      '(Use `node --trace-warnings ...` to show where the warning was created)\n' +
+      'file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11\n' +
+      'const fail = message => { throw new Error(message); };\n' +
+      '                                ^\n' +
+      '\n' +
+      'Error: Production owner/widget bundles are missing; build before starting.\n' +
+      '    at fail (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11:33)\n' +
+      '    at prepareDeploymentEnvironment (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:102:119)\n' +
+      '    at file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentEnvironment.js:6:33\n' +
+      '    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n' +
+      '    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n' +
+      '    at async file:///workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-engine-guard-Fo1TeK/start.mjs:2:19\n' +
+      '\n' +
+      'Node.js v22.23.3\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11
+    const fail = message => { throw new Error(message); };
+                                    ^
+    
+    Error: Production owner/widget bundles are missing; build before starting.
+        at fail (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11:33)
+        at prepareDeploymentEnvironment (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:102:119)
+        at file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentEnvironment.js:6:33
+        at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+        at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+        at async file:///workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-engine-guard-Fo1TeK/start.mjs:2:19
+    
+    Node.js v22.23.3
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/releaseProductionEngineGuard.spec.mjs:53:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: release guard: production refuses compiled engine ""
+not ok 248 - release guard: production refuses compiled engine ""
+  ---
+  duration_ms: 185.363242
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/releaseProductionEngineGuard.spec.mjs:49:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /QUOTE_ENGINE_VERSION_MISMATCH/. Input:
+    
+    '(node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n' +
+      '(Use `node --trace-warnings ...` to show where the warning was created)\n' +
+      'file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11\n' +
+      'const fail = message => { throw new Error(message); };\n' +
+      '                                ^\n' +
+      '\n' +
+      'Error: Production owner/widget bundles are missing; build before starting.\n' +
+      '    at fail (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11:33)\n' +
+      '    at prepareDeploymentEnvironment (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:102:119)\n' +
+      '    at file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentEnvironment.js:6:33\n' +
+      '    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n' +
+      '    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n' +
+      '    at async file:///workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-engine-guard-vF4O9X/start.mjs:2:19\n' +
+      '\n' +
+      'Node.js v22.23.3\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11
+    const fail = message => { throw new Error(message); };
+                                    ^
+    
+    Error: Production owner/widget bundles are missing; build before starting.
+        at fail (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:11:33)
+        at prepareDeploymentEnvironment (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentConfig.js:102:119)
+        at file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/server/src/deploymentEnvironment.js:6:33
+        at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+        at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+        at async file:///workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-engine-guard-vF4O9X/start.mjs:2:19
+    
+    Node.js v22.23.3
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/releaseProductionEngineGuard.spec.mjs:53:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..248
+# tests 248
+# suites 0
+# pass 243
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20155.438939

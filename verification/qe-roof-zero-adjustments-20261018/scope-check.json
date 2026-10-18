@@ -1,0 +1,10 @@
+{
+  "base": "1857b7779b83b70f7753b41b72c3677270cd4ffc",
+  "unchangedTemplatesPrefixSha256": "ae6f13e573a1649642fced5480f782b2c04132031bc2817b142ac7580521d574",
+  "unchangedTemplatesSuffixSha256": "d4816b5bca184835b98563162be931dec984a241183b10a2aabd041187e17b86",
+  "adoptedRoofZeroOptIns": 4,
+  "fullSelection": true,
+  "quoteSelection": true,
+  "sharedQuantityFactorUnchanged": true,
+  "concreteAndSodUnchanged": true
+}
