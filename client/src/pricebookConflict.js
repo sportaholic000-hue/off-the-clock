@@ -1,6 +1,6 @@
 // UI identities never cross an API boundary. Persisted identities come only
 // from the server; a restored deletion is a new service, not a revived receipt.
-export const RECEIPT_FIELDS = ['origin', 'quoteDoneApproval', 'confirmedFields', 'approvedValues', 'zeroPricePolicy', 'startingValueState', 'dependentLineState'];
+export const RECEIPT_FIELDS = ['origin', 'quoteDoneApproval', 'confirmedFields', 'approvedValues', 'zeroPricePolicy', 'startingValueState', 'startingValueAdoptions', 'dependentLineState'];
 const immutable = new Set(['id', 'serviceType', 'source', ...RECEIPT_FIELDS, '__clientTempId', 'createdAt', 'updatedAt']);
 const absent = Symbol('absent');
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
