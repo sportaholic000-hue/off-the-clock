@@ -997,10 +997,11 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 }
 .quote-range-label { font-size: 11px; letter-spacing: .14em; color: var(--gray); margin-bottom: 6px; }
 .quote-range-values { display: flex; align-items: baseline; justify-content: center; gap: 6px; flex-wrap: wrap; }
-.quote-low, .quote-high { font-family: 'Space Grotesk', sans-serif; font-size: 30px; font-weight: 700; line-height: 1; }
-.quote-low { color: var(--white); }
-.quote-high { color: var(--green); }
-.quote-dash { font-size: 18px; color: var(--gray); }
+.quote-low, .quote-high, .quote-first-visit-low, .quote-first-visit-high { font-family: 'Space Grotesk', sans-serif; font-size: 30px; font-weight: 700; line-height: 1; }
+.quote-low, .quote-first-visit-low { color: var(--white); }
+.quote-high, .quote-first-visit-high { color: var(--green); }
+.quote-dash, .quote-first-visit-dash { font-size: 18px; color: var(--gray); }
+.quote-first-visit-range { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--black-line); }
 .quote-tier-name { display: block; margin-top: 8px; font-size: 11.5px; letter-spacing: .1em; color: var(--gray); }
 .quote-lines { display: flex; flex-direction: column; gap: 9px; margin: 0; font-size: 13px; }
 .quote-lines > div { display: flex; justify-content: space-between; gap: 12px; }

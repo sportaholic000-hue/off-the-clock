@@ -4,19 +4,22 @@ AI phone operator and QuoteDone quoting platform for home-service businesses.
 
 ## Start here
 
-For the consolidated quote engine and price book, use the
-[single audit entry point](docs/QUOTE_ENGINE_AUDIT.md). It identifies the candidate
-branch, active production paths, governing rules and required verification.
+For the consolidated quote engine and price book, begin at the
+[current audit navigation boundary](docs/QUOTE_ENGINE_AUDIT.md). It pins the
+latest checked integration baseline separately from scoped or historical work,
+then maps the active source, governing rules and required verification.
 
-1. Read [AGENTS.md](AGENTS.md) and the current summary at the top of
-   [BUILD_STATUS.md](specs/BUILD_STATUS.md).
+1. Read [AGENTS.md](AGENTS.md), then use the audit boundary above for the
+   current checked SHA. [BUILD_STATUS.md](specs/BUILD_STATUS.md) is a
+   chronological record and may open on an older release checkpoint.
 2. Use the [repository map](#repository-map) below to locate active source and tests.
 3. Use the [documentation index](docs/README.md) for specifications and dated
    records, and the [verification index](verification/README.md) for evidence.
 
-**Branch warning:** `main` and the October repair candidate are different
-checkpoints. A passing historical report does not establish that the current
-checkout or deployment has passed. Confirm the branch and commit before auditing.
+**Branch warning:** `main`, the October 6/7 release candidate, the October 18
+accuracy integration, and later scoped branches are different checkpoints. A
+passing parent or historical report does not establish that the current checkout
+or any deployment passed. Confirm the exact branch, commit and run before auditing.
 
 ## Repository map
 
@@ -59,9 +62,10 @@ npm test
 
 `test:quote` requires every selected test and file to complete with zero failures,
 skips, cancellations or TODOs. `npm test` runs the broader suite with an empty
-known-failure allowance. Read the actual summary and tested commit in BUILD_STATUS.
+known-failure allowance. Read the exact tested SHA and run in the audit boundary
+or the scoped verification report; do not infer it from a historical heading.
 
-The five original audit findings and their added boundary controls are also
+Historical October 4 audit findings and their added boundary controls are also
 available as one focused run (these 35 cases are included in `test:quote`):
 
 ```sh
@@ -72,7 +76,7 @@ It preserves the original missing-minimum performance case and valid tier
 controls. See the [follow-up result](verification/independent-followup-20261004/README.md)
 for before/after evidence. No launch or deployment approval is implied.
 
-Additional catalog and optional-scope regressions are included in the same strict
+Historical catalog and optional-scope regressions are included in the same strict
 quote gate. The [readiness repair evidence](verification/readiness-scope-followup-20261004/README.md)
 records the further defects found after the original five-case audit, their
 reproductions, and verification at `42812a71`.

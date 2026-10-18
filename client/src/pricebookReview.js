@@ -5,7 +5,7 @@ import {formatFenceHeight} from '../../server/quote-engine-vnext/configuredOffer
 import {servicePricing} from './pricebookEditing.js';
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
-const omitted=new Set(['id','serviceType','origin','confirmedFields','approvedValues','quoteDoneApproval','starterSuggestion','createdAt','updatedAt','validationInputs','priceMetadata','startingValueState','dependentLineState']);
+const omitted=new Set(['id','serviceType','origin','confirmedFields','approvedValues','quoteDoneApproval','starterSuggestion','createdAt','updatedAt','validationInputs','priceMetadata','startingValueState','startingValueAdoptions','dependentLineState']);
 const defaultMoney=new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 export const displayAmount=value=>'$'+String(value);
 export const reviewLabel=(path,service,meta={})=>ownerPricingLabel(path,service,meta,servicePricing(service));

@@ -1,3 +1,5 @@
+import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './quote-engine-vnext/priceGroundwork.js';
+
 const copy = (label, help) => ({ label, help });
 
 // Approved label ruling: where the authoritative pricing definition is a full
@@ -11,6 +13,54 @@ export const ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE = {
   per_square_allin:titled('All-in roofing material price per square','Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.','Material charge for each waste-adjusted roofing square when accessories are included in the all-in price.'),
   itemized:titled('Base roofing material price per square','Your base roofing material price per square, EXCLUDING separately itemized starter, drip edge, and ridge cap, and INCLUDING flashing and vents.','Material charge for each waste-adjusted roofing square. Starter, drip edge, and ridge cap are charged separately; flashing and vents remain included in this base price.')
 };
+
+const ROOF_MATERIAL_COPY_WITH_CONFIRMED_DEPENDENT_LINES = {
+  per_square_allin:titled('Roofing material price per square','Your roofing material price per square, INCLUDING starter, drip edge, and ridge cap, and EXCLUDING separately priced ice and water barrier, valley work, step flashing, pipe jacks, and ridge vent.','Material charge for each waste-adjusted roofing square. Starter, drip edge, and ridge cap remain in this price; each listed flashing or vent line is separate only when the customer supplies its measurement.'),
+  itemized:titled('Field roofing material price per square','Your field roofing material price per square, EXCLUDING starter, drip edge, ridge cap, ice and water barrier, valley work, step flashing, pipe jacks, and ridge vent.','Material charge for each waste-adjusted roofing square. Every listed accessory, flashing, and vent line is priced separately only when the customer supplies its measurement.')
+};
+
+const roofMaterialReceiptActive=(service,pricing,materialType,pricesInDollars)=>{
+  if(typeof materialType!=='string'||!/^[a-z][a-z0-9_]*$/.test(materialType))return false;
+  try{
+    const definition=roofFlashingVentDefinitionVNext(materialType);
+    if(!pricesInDollars)return dependentLineEnabledVNext({...service,pricing},definition);
+    // Application reads convert editable prices from stored cents to dollars,
+    // while the immutable receipt deliberately remains in its stored unit. Do
+    // the inverse comparison without changing either object, then let the core
+    // receipt predicate validate every other receipt field and signature.
+    const row=service?.dependentLineState?.[definition.id],visible=pricing?.materialCostPerSquare?.[materialType];
+    if(typeof row?.baseValue!=='number'||!Number.isFinite(row.baseValue)||!Object.is(visible,row.baseValue/100))return false;
+    const receiptPricing={...pricing,materialCostPerSquare:{...pricing.materialCostPerSquare,[materialType]:row.baseValue}};
+    return dependentLineEnabledVNext({...service,pricing:receiptPricing},definition);
+  }
+  catch{return false;}
+};
+
+// The saved dependent-line receipt, including its exact base value, decides
+// whether flashing and vent work is still inside a product's material price.
+// Resolve this for every effective product so a tier override cannot inherit
+// wording from a base price whose receipt it no longer matches.
+export function roofMaterialPresentationCopy(definition,service={},pricing=service?.pricing||{},options={}) {
+  if(definition?.field!=='materialCostPerSquare')return definition;
+  const mode=pricing?.accessoryPricingMode==='itemized'?'itemized':'per_square_allin';
+  const values=pricing?.materialCostPerSquare;
+  const materialTypes=values&&typeof values==='object'&&!Array.isArray(values)?Object.keys(values):[];
+  const byProduct=Object.fromEntries(materialTypes.map(materialType=>[
+    materialType,
+    roofMaterialReceiptActive(service,pricing,materialType,options.pricesInDollars===true)
+      ?ROOF_MATERIAL_COPY_WITH_CONFIRMED_DEPENDENT_LINES[mode]
+      :ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE[mode]
+  ]));
+  const variants=[...new Set(Object.values(byProduct).map(value=>value.label))];
+  const resolved=variants.length>1
+    ?titled('Roofing material price per square by product','The inclusion basis differs by roofing product. Read the inclusion and exclusion wording shown with each product price.','Each product keeps its own confirmed material-price basis.')
+    :(Object.values(byProduct)[0]||ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE[mode]);
+  return {
+    ...definition,
+    ...resolved,
+    ...(definition.tree?{tree:{...definition.tree,leafHelp:Object.fromEntries(Object.entries(byProduct).map(([key,value])=>[key,value.label]))}}:{})
+  };
+}
 
 export const OWNER_FIELD_COPY = {
   laborPerSquare: copy('Roof installation labor price per roofing square', 'Labor charge for each 100 square feet of roof area before pitch and story adjustments.'),

@@ -18,6 +18,7 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import {roofMaterialPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
 import { moneyKindForField, validatePricebookNumericDraft, ownerMoneyEntries } from '../../server/priceBookMoney.js';
 import {markEditedPriceMetadata} from './pricebookPriceMetadata.js';
@@ -424,8 +425,11 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   const service = useContext(PricingContext);
   const pricing=servicePricing(service);
   if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:service.serviceType==='CUSTOM'&&definition.field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
-  const modeCopy=definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode];
-  if(modeCopy)definition={...definition,...modeCopy};
+  definition=definition.field==='materialCostPerSquare'
+    ?roofMaterialPresentationCopy(definition,service,pricing,{pricesInDollars:true})
+    :definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode]
+      ?{...definition,...definition.copyByAccessoryPricingMode[pricing.accessoryPricingMode]}
+      :definition;
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
     ? moneyKindForField(service.serviceType, definition.field, pricing)
     : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
@@ -584,8 +588,13 @@ function Preview({ preview, loading, status, plan }) {
   const review = !loading && preview?.resultType === 'ESTIMATE_REQUIRES_REVIEW';
   const [tierIndex, setTierIndex] = useState(0);
   const options = ready ? (estimate.options || []) : [];
-  const money=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate,option.midEstimate]));
+  const money=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate,option.midEstimate,...(option.firstVisit?[option.firstVisit.lowEstimate,option.firstVisit.highEstimate,option.firstVisit.midEstimate]:[])]));
   const active = options[Math.min(tierIndex, Math.max(0, options.length - 1))] || null;
+  const firstVisit=active?.firstVisit;
+  const recurringUnit=active?.priceUnit||estimate?.priceUnit;
+  const recurringTax=active?.taxTreatment||estimate?.taxTreatment;
+  const firstVisitUnit=firstVisit?.priceUnit||recurringUnit;
+  const firstVisitTax=firstVisit?.taxTreatment||recurringTax;
 
   // The quote engine's canonical customer view is sanitizeForCustomer(), which
   // strips lineItems entirely and exposes priceDrivers: human-readable,
@@ -652,14 +661,23 @@ function Preview({ preview, loading, status, plan }) {
             {(estimate.optionAvailabilityNotice||preview.optionAvailabilityNotice)&&<Notice tone="warning">{estimate.optionAvailabilityNotice||preview.optionAvailabilityNotice}</Notice>}
 
             <div className="quote-range">
-              <div className="mono quote-range-label">RANGE YOUR CUSTOMER GETS</div>
+              <div className="mono quote-range-label">{firstVisit?'RECURRING RANGE YOUR CUSTOMER GETS':'RANGE YOUR CUSTOMER GETS'}</div>
               <div className="quote-range-values">
                 <span className="quote-low">{money.amount(active.lowEstimate)}</span>
                 {active.lowEstimate!==active.highEstimate&&<><span className="mono quote-dash">–</span>
                 <span className="quote-high">{money.amount(active.highEstimate)}</span></>}
-                {active.priceUnit&&<span className="quote-price-unit">{active.priceUnit}</span>}
+                {recurringUnit&&<span className="quote-price-unit">{recurringUnit}</span>}
               </div>
-              {active.taxTreatment&&<p className="quote-tax-treatment">{active.taxTreatment}</p>}
+              {recurringTax&&<p className="quote-tax-treatment">{firstVisit?'Recurring: ':''}{recurringTax}</p>}
+              {firstVisit&&<div className="quote-first-visit-range">
+                <div className="mono quote-range-label">FIRST-VISIT RANGE YOUR CUSTOMER GETS</div>
+                <div className="quote-range-values">
+                  <span className="quote-first-visit-low">{money.amount(firstVisit.lowEstimate)}</span>
+                  {firstVisit.lowEstimate!==firstVisit.highEstimate&&<><span className="mono quote-first-visit-dash">–</span><span className="quote-first-visit-high">{money.amount(firstVisit.highEstimate)}</span></>}
+                  {firstVisitUnit&&<span className="quote-price-unit">{firstVisitUnit}</span>}
+                </div>
+                {firstVisitTax&&<p className="quote-tax-treatment">First visit: {firstVisitTax}</p>}
+              </div>}
               {active.tierName && <span className="mono quote-tier-name">{active.tierName}</span>}
             </div>
 
@@ -678,8 +696,12 @@ function Preview({ preview, loading, status, plan }) {
                 <p className="quote-driver-empty">Labor and materials for the job as described.</p>
               )}
               {active.lowEstimate!==active.highEstimate&&<div className="quote-midpoint-row">
-                <span>Midpoint estimate</span>
-                <span className="mono quote-midpoint-value">{money.amount(active.midEstimate)}{active.priceUnit ? ` ${active.priceUnit}` : ''}</span>
+                <span>{firstVisit?'Recurring midpoint estimate':'Midpoint estimate'}</span>
+                <span className="mono quote-midpoint-value">{money.amount(active.midEstimate)}{recurringUnit ? ` ${recurringUnit}` : ''}</span>
+              </div>}
+              {firstVisit&&firstVisit.lowEstimate!==firstVisit.highEstimate&&<div className="quote-midpoint-row quote-first-visit-midpoint-row">
+                <span>First-visit midpoint estimate</span>
+                <span className="mono quote-midpoint-value">{money.amount(firstVisit.midEstimate)}{firstVisitUnit ? ` ${firstVisitUnit}` : ''}</span>
               </div>}
             </div>
 
@@ -695,6 +717,9 @@ function Preview({ preview, loading, status, plan }) {
             )}
             {active.disclaimer && (
               <p className="quote-disclaimer">{quoteDisplayDisclaimer(active.disclaimer,active)}</p>
+            )}
+            {firstVisit?.disclaimer&&firstVisit.disclaimer!==active.disclaimer&&(
+              <p className="quote-disclaimer quote-first-visit-disclaimer"><strong>First visit:</strong> {quoteDisplayDisclaimer(firstVisit.disclaimer,firstVisit)}</p>
             )}
 
             {status && (
@@ -1095,7 +1120,6 @@ export default function PriceBook() {
   const offeringSetup=!!configuredMode||selectedMeta?.requiresOffering;
   const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&(!['offering_configuration','scope_configuration','surface_configuration'].includes(field.type)||field.field==='plantSizes')&&(!offeringSetup||field.field==='minimumJob')).map(field=>{
     if(offeringSetup&&field.field==='minimumJob')return {...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false};
-    if(selected?.serviceType==='ROOFING_REPLACEMENT'&&field.field==='materialCostPerSquare'&&Object.values(selected.dependentLineState||{}).some(row=>row.confirmed===true&&row.reentered===true))return {...field,title:'Field roofing material price per square',label:'Your field roofing material price per square, EXCLUDING starter, drip edge, ridge cap, ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.',help:'Material charge for each waste-adjusted roofing square. Every listed accessory, flashing and vent line is priced separately only when the customer supplies its measurement.'};
     return field;
   });
   const requiredFields = allFields.filter(field => field.requiredAtBase);
