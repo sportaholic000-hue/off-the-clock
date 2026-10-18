@@ -1,0 +1,883 @@
+{
+  "base": "1857b7779b83b70f7753b41b72c3677270cd4ffc",
+  "responses": [
+    {
+      "type": "CONCRETE_DRIVEWAY",
+      "customer": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 8030,
+        "midEstimate": 8030,
+        "highEstimate": 8030,
+        "priceDrivers": [
+          "600 measured square feet at 4 inches thick",
+          "100 measured linear feet of formwork",
+          "broom finish"
+        ],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+        "quoteId": "a8e584e8-0363-4b87-a236-e391a450ce50",
+        "priceUnit": null,
+        "taxTreatment": "No tax added.",
+        "currency": "CAD",
+        "options": [
+          {
+            "tierName": null,
+            "lowEstimate": 8030,
+            "midEstimate": 8030,
+            "highEstimate": 8030,
+            "priceDrivers": [
+              "600 measured square feet at 4 inches thick",
+              "100 measured linear feet of formwork",
+              "broom finish"
+            ],
+            "skippedAddons": [],
+            "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+            "priceUnit": null,
+            "taxTreatment": "No tax added."
+          }
+        ]
+      },
+      "widget": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 8030,
+        "midEstimate": 8030,
+        "highEstimate": 8030,
+        "priceDrivers": [
+          "600 measured square feet at 4 inches thick",
+          "100 measured linear feet of formwork",
+          "broom finish"
+        ],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+        "quoteId": "45caa9be-d89c-42ab-b7e8-53e49e98f92f",
+        "priceUnit": null,
+        "taxTreatment": "No tax added.",
+        "currency": "CAD",
+        "options": [
+          {
+            "tierName": null,
+            "lowEstimate": 8030,
+            "midEstimate": 8030,
+            "highEstimate": 8030,
+            "priceDrivers": [
+              "600 measured square feet at 4 inches thick",
+              "100 measured linear feet of formwork",
+              "broom finish"
+            ],
+            "skippedAddons": [],
+            "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+            "priceUnit": null,
+            "taxTreatment": "No tax added."
+          }
+        ],
+        "pricedScope": {
+          "service": "[SYNTHETIC] CONCRETE_DRIVEWAY",
+          "facts": [
+            {
+              "label": "Slab measurement method",
+              "value": "Exact"
+            },
+            {
+              "label": "Measured slab length",
+              "value": "20 feet"
+            },
+            {
+              "label": "Measured slab width",
+              "value": "30 feet"
+            },
+            {
+              "label": "Concrete thickness",
+              "value": "4 inches"
+            },
+            {
+              "label": "Concrete finish",
+              "value": "Broom"
+            },
+            {
+              "label": "Existing concrete demolition included",
+              "value": "No"
+            },
+            {
+              "label": "Reinforcement",
+              "value": "None"
+            },
+            {
+              "label": "Project access",
+              "value": "Easy"
+            },
+            {
+              "label": "Base preparation requested",
+              "value": "Yes"
+            },
+            {
+              "label": "Edges against foundation or existing concrete",
+              "value": "No"
+            }
+          ],
+          "fees": []
+        },
+        "submittedDetails": {
+          "requestedWork": "[SYNTHETIC] CONCRETE_DRIVEWAY",
+          "contact": {
+            "email": "caller@example.invalid"
+          },
+          "location": {},
+          "timing": "Flexible timing",
+          "additionalDetails": "",
+          "unknowns": "",
+          "clarifications": []
+        },
+        "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+        "fullJobTotal": null,
+        "bookingCapability": "NONE"
+      },
+      "voice": {
+        "status": "quoted",
+        "quoteHandle": "eDUbdnqVVd6Q-bdXBkiHfIyfqeLFjejuszloJeTkv3I",
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 8030,
+        "midEstimate": 8030,
+        "highEstimate": 8030,
+        "priceDrivers": [
+          "600 measured square feet at 4 inches thick",
+          "100 measured linear feet of formwork",
+          "broom finish"
+        ],
+        "skippedAddons": [],
+        "currency": "CAD",
+        "taxTreatment": "No tax added.",
+        "pricedScope": [
+          "[SYNTHETIC] CONCRETE_DRIVEWAY",
+          "Slab measurement method: Exact",
+          "Measured slab length: 20 feet",
+          "Measured slab width: 30 feet",
+          "Concrete thickness: 4 inches",
+          "Concrete finish: Broom",
+          "Existing concrete demolition included: No",
+          "Reinforcement: None",
+          "Project access: Easy",
+          "Base preparation requested: Yes",
+          "Edges against foundation or existing concrete: No"
+        ],
+        "scopeDetails": [],
+        "quoteNarration": "$8,030 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option. Priced scope: [SYNTHETIC] CONCRETE_DRIVEWAY; Slab measurement method: Exact; Measured slab length: 20 feet; Measured slab width: 30 feet; Concrete thickness: 4 inches; Concrete finish: Broom; Existing concrete demolition included: No; Reinforcement: None; Project access: Easy; Base preparation requested: Yes; Edges against foundation or existing concrete: No. This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner. This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+        "options": [
+          {
+            "tierName": "Option 1",
+            "lowEstimate": 8030,
+            "highEstimate": 8030,
+            "midEstimate": 8030,
+            "currency": "CAD",
+            "taxTreatment": "No tax added.",
+            "skippedAddons": [],
+            "writtenDisclosure": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD)."
+          }
+        ],
+        "writtenDisclosure": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+        "voiceSummary": "$8,030 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option.",
+        "disclaimer": "$8,030 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option."
+      },
+      "voiceQuestionContract": {
+        "fields": [
+          {
+            "field": "dimensionMethod",
+            "label": "Slab measurement method",
+            "type": "enum",
+            "choices": [
+              {
+                "value": "exact",
+                "label": "exact"
+              },
+              {
+                "value": "measured_area_perimeter",
+                "label": "measured area perimeter"
+              },
+              {
+                "value": "measured_outline",
+                "label": "measured outline"
+              }
+            ]
+          },
+          {
+            "field": "length",
+            "label": "Measured slab length",
+            "type": "number",
+            "unit": "feet",
+            "min": 0.1,
+            "max": 100000
+          },
+          {
+            "field": "width",
+            "label": "Measured slab width",
+            "type": "number",
+            "unit": "feet",
+            "min": 0.1,
+            "max": 100000
+          },
+          {
+            "field": "areaSqft",
+            "label": "Measured slab area",
+            "type": "number",
+            "unit": "square feet",
+            "min": 1,
+            "max": 10000000
+          },
+          {
+            "field": "perimeterLF",
+            "label": "Measured slab perimeter",
+            "type": "number",
+            "unit": "linear feet",
+            "min": 0.1,
+            "max": 1000000
+          },
+          {
+            "field": "thickness",
+            "label": "Concrete thickness",
+            "type": "number",
+            "unit": "inches",
+            "min": 2,
+            "max": 24
+          },
+          {
+            "field": "finishType",
+            "label": "Concrete finish",
+            "type": "enum",
+            "choices": [
+              {
+                "value": "broom",
+                "label": "broom"
+              },
+              {
+                "value": "smooth",
+                "label": "smooth"
+              },
+              {
+                "value": "exposed_aggregate",
+                "label": "exposed aggregate"
+              },
+              {
+                "value": "stamped",
+                "label": "stamped"
+              }
+            ]
+          },
+          {
+            "field": "demolitionNeeded",
+            "label": "Existing concrete demolition included",
+            "type": "boolean"
+          },
+          {
+            "field": "demolitionAreaSqft",
+            "label": "Measured demolition area",
+            "type": "number",
+            "unit": "square feet",
+            "min": 0.1,
+            "max": 10000000
+          },
+          {
+            "field": "reinforcement",
+            "label": "Reinforcement",
+            "type": "enum",
+            "choices": [
+              {
+                "value": "none",
+                "label": "none"
+              },
+              {
+                "value": "wire_mesh",
+                "label": "wire mesh"
+              },
+              {
+                "value": "rebar",
+                "label": "rebar"
+              }
+            ]
+          },
+          {
+            "field": "accessDifficulty",
+            "label": "Project access",
+            "type": "enum",
+            "choices": [
+              {
+                "value": "easy",
+                "label": "easy"
+              },
+              {
+                "value": "moderate",
+                "label": "moderate"
+              },
+              {
+                "value": "difficult",
+                "label": "difficult"
+              }
+            ]
+          },
+          {
+            "field": "baseNeeded",
+            "label": "Base preparation requested",
+            "type": "boolean"
+          },
+          {
+            "field": "chuteAccess",
+            "label": "Can the concrete truck get its chute to the pour?",
+            "type": "enum",
+            "required": false,
+            "choices": [
+              {
+                "value": "yes",
+                "label": "Yes"
+              },
+              {
+                "value": "no",
+                "label": "No"
+              },
+              {
+                "value": "unknown",
+                "label": "Not sure"
+              }
+            ]
+          },
+          {
+            "field": "adjoinsExistingConcrete",
+            "label": "Does any edge touch a house foundation, garage foundation, or existing concrete?",
+            "type": "boolean"
+          },
+          {
+            "field": "adjoiningEdgeLF",
+            "label": "Total measured length of those adjoining edges",
+            "type": "number",
+            "unit": "linear feet",
+            "min": 0.1,
+            "max": 1000000,
+            "visibleWhen": [
+              [
+                [
+                  "adjoinsExistingConcrete",
+                  "eq",
+                  true
+                ]
+              ]
+            ]
+          },
+          {
+            "field": "outlinePoints",
+            "label": "Closed measured orthogonal outline coordinates",
+            "type": "orthogonal_outline",
+            "unit": "feet"
+          },
+          {
+            "field": "demolitionThickness",
+            "label": "Measured existing slab thickness",
+            "type": "number",
+            "unit": "inches",
+            "min": 0.1,
+            "max": 1000000,
+            "visibleWhen": [
+              [
+                [
+                  "demolitionNeeded",
+                  "eq",
+                  true
+                ]
+              ]
+            ]
+          },
+          {
+            "field": "demolitionReinforcement",
+            "label": "Existing slab reinforcement",
+            "type": "enum",
+            "visibleWhen": [
+              [
+                [
+                  "demolitionNeeded",
+                  "eq",
+                  true
+                ]
+              ]
+            ],
+            "choices": [
+              {
+                "value": "none",
+                "label": "none"
+              },
+              {
+                "value": "wire_mesh",
+                "label": "wire mesh"
+              },
+              {
+                "value": "rebar",
+                "label": "rebar"
+              }
+            ]
+          },
+          {
+            "field": "demolitionAccessDifficulty",
+            "label": "Existing slab demolition access",
+            "type": "enum",
+            "visibleWhen": [
+              [
+                [
+                  "demolitionNeeded",
+                  "eq",
+                  true
+                ]
+              ]
+            ],
+            "choices": [
+              {
+                "value": "easy",
+                "label": "easy"
+              },
+              {
+                "value": "moderate",
+                "label": "moderate"
+              },
+              {
+                "value": "difficult",
+                "label": "difficult"
+              }
+            ]
+          }
+        ],
+        "customerFees": []
+      }
+    },
+    {
+      "type": "CONCRETE_PATIO_SLAB",
+      "customer": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 8030,
+        "midEstimate": 8030,
+        "highEstimate": 8030,
+        "priceDrivers": [
+          "600 measured square feet at 4 inches thick",
+          "100 measured linear feet of formwork",
+          "broom finish"
+        ],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+        "quoteId": "12732ea4-451a-4205-8e06-fcfc676e78e2",
+        "priceUnit": null,
+        "taxTreatment": "No tax added.",
+        "currency": "CAD",
+        "options": [
+          {
+            "tierName": null,
+            "lowEstimate": 8030,
+            "midEstimate": 8030,
+            "highEstimate": 8030,
+            "priceDrivers": [
+              "600 measured square feet at 4 inches thick",
+              "100 measured linear feet of formwork",
+              "broom finish"
+            ],
+            "skippedAddons": [],
+            "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+            "priceUnit": null,
+            "taxTreatment": "No tax added."
+          }
+        ]
+      },
+      "widget": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 8030,
+        "midEstimate": 8030,
+        "highEstimate": 8030,
+        "priceDrivers": [
+          "600 measured square feet at 4 inches thick",
+          "100 measured linear feet of formwork",
+          "broom finish"
+        ],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+        "quoteId": "b404adaa-fd3b-4ff5-98f5-47059ee2aaf7",
+        "priceUnit": null,
+        "taxTreatment": "No tax added.",
+        "currency": "CAD",
+        "options": [
+          {
+            "tierName": null,
+            "lowEstimate": 8030,
+            "midEstimate": 8030,
+            "highEstimate": 8030,
+            "priceDrivers": [
+              "600 measured square feet at 4 inches thick",
+              "100 measured linear feet of formwork",
+              "broom finish"
+            ],
+            "skippedAddons": [],
+            "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+            "priceUnit": null,
+            "taxTreatment": "No tax added."
+          }
+        ],
+        "pricedScope": {
+          "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+          "facts": [
+            {
+              "label": "Slab measurement method",
+              "value": "Exact"
+            },
+            {
+              "label": "Measured slab length",
+              "value": "20 feet"
+            },
+            {
+              "label": "Measured slab width",
+              "value": "30 feet"
+            },
+            {
+              "label": "Concrete thickness",
+              "value": "4 inches"
+            },
+            {
+              "label": "Concrete finish",
+              "value": "Broom"
+            },
+            {
+              "label": "Existing concrete demolition included",
+              "value": "No"
+            },
+            {
+              "label": "Reinforcement",
+              "value": "None"
+            },
+            {
+              "label": "Project access",
+              "value": "Easy"
+            },
+            {
+              "label": "Base preparation requested",
+              "value": "Yes"
+            },
+            {
+              "label": "Edges against foundation or existing concrete",
+              "value": "No"
+            }
+          ],
+          "fees": []
+        },
+        "submittedDetails": {
+          "requestedWork": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+          "contact": {
+            "email": "caller@example.invalid"
+          },
+          "location": {},
+          "timing": "Flexible timing",
+          "additionalDetails": "",
+          "unknowns": "",
+          "clarifications": []
+        },
+        "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+        "fullJobTotal": null,
+        "bookingCapability": "NONE"
+      },
+      "voice": {
+        "status": "quoted",
+        "quoteHandle": "Z1wjjGum-Cj-ynWXx8HG51pCenOm3K6og2pNdJqso44",
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 8030,
+        "midEstimate": 8030,
+        "highEstimate": 8030,
+        "priceDrivers": [
+          "600 measured square feet at 4 inches thick",
+          "100 measured linear feet of formwork",
+          "broom finish"
+        ],
+        "skippedAddons": [],
+        "currency": "CAD",
+        "taxTreatment": "No tax added.",
+        "pricedScope": [
+          "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+          "Slab measurement method: Exact",
+          "Measured slab length: 20 feet",
+          "Measured slab width: 30 feet",
+          "Concrete thickness: 4 inches",
+          "Concrete finish: Broom",
+          "Existing concrete demolition included: No",
+          "Reinforcement: None",
+          "Project access: Easy",
+          "Base preparation requested: Yes",
+          "Edges against foundation or existing concrete: No"
+        ],
+        "scopeDetails": [],
+        "quoteNarration": "$8,030 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option. Priced scope: [SYNTHETIC] CONCRETE_PATIO_SLAB; Slab measurement method: Exact; Measured slab length: 20 feet; Measured slab width: 30 feet; Concrete thickness: 4 inches; Concrete finish: Broom; Existing concrete demolition included: No; Reinforcement: None; Project access: Easy; Base preparation requested: Yes; Edges against foundation or existing concrete: No. This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner. This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+        "options": [
+          {
+            "tierName": "Option 1",
+            "lowEstimate": 8030,
+            "highEstimate": 8030,
+            "midEstimate": 8030,
+            "currency": "CAD",
+            "taxTreatment": "No tax added.",
+            "skippedAddons": [],
+            "writtenDisclosure": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD)."
+          }
+        ],
+        "writtenDisclosure": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Included base preparation: base gravel material. Excluded base preparation: base excavation and grading labor. Any required excluded work needs a separate on-site estimate. Base gravel material quantity assumes 4 inches of compacted base depth. No tax added. Prices are in Canadian dollars (CAD).",
+        "voiceSummary": "$8,030 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option.",
+        "disclaimer": "$8,030 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option."
+      },
+      "voiceQuestionContract": {
+        "fields": [
+          {
+            "field": "dimensionMethod",
+            "label": "Slab measurement method",
+            "type": "enum",
+            "choices": [
+              {
+                "value": "exact",
+                "label": "exact"
+              },
+              {
+                "value": "measured_area_perimeter",
+                "label": "measured area perimeter"
+              },
+              {
+                "value": "measured_outline",
+                "label": "measured outline"
+              }
+            ]
+          },
+          {
+            "field": "length",
+            "label": "Measured slab length",
+            "type": "number",
+            "unit": "feet",
+            "min": 0.1,
+            "max": 100000
+          },
+          {
+            "field": "width",
+            "label": "Measured slab width",
+            "type": "number",
+            "unit": "feet",
+            "min": 0.1,
+            "max": 100000
+          },
+          {
+            "field": "areaSqft",
+            "label": "Measured slab area",
+            "type": "number",
+            "unit": "square feet",
+            "min": 1,
+            "max": 10000000
+          },
+          {
+            "field": "perimeterLF",
+            "label": "Measured slab perimeter",
+            "type": "number",
+            "unit": "linear feet",
+            "min": 0.1,
+            "max": 1000000
+          },
+          {
+            "field": "thickness",
+            "label": "Concrete thickness",
+            "type": "number",
+            "unit": "inches",
+            "min": 2,
+            "max": 24
+          },
+          {
+            "field": "finishType",
+            "label": "Concrete finish",
+            "type": "enum",
+            "choices": [
+              {
+                "value": "broom",
+                "label": "broom"
+              },
+              {
+                "value": "smooth",
+                "label": "smooth"
+              },
+              {
+                "value": "exposed_aggregate",
+                "label": "exposed aggregate"
+              },
+              {
+                "value": "stamped",
+                "label": "stamped"
+              }
+            ]
+          },
+          {
+            "field": "demolitionNeeded",
+            "label": "Existing concrete demolition included",
+            "type": "boolean"
+          },
+          {
+            "field": "demolitionAreaSqft",
+            "label": "Measured demolition area",
+            "type": "number",
+            "unit": "square feet",
+            "min": 0.1,
+            "max": 10000000
+          },
+          {
+            "field": "reinforcement",
+            "label": "Reinforcement",
+            "type": "enum",
+            "choices": [
+              {
+                "value": "none",
+                "label": "none"
+              },
+              {
+                "value": "wire_mesh",
+                "label": "wire mesh"
+              },
+              {
+                "value": "rebar",
+                "label": "rebar"
+              }
+            ]
+          },
+          {
+            "field": "accessDifficulty",
+            "label": "Project access",
+            "type": "enum",
+            "choices": [
+              {
+                "value": "easy",
+                "label": "easy"
+              },
+              {
+                "value": "moderate",
+                "label": "moderate"
+              },
+              {
+                "value": "difficult",
+                "label": "difficult"
+              }
+            ]
+          },
+          {
+            "field": "baseNeeded",
+            "label": "Base preparation requested",
+            "type": "boolean"
+          },
+          {
+            "field": "chuteAccess",
+            "label": "Can the concrete truck get its chute to the pour?",
+            "type": "enum",
+            "required": false,
+            "choices": [
+              {
+                "value": "yes",
+                "label": "Yes"
+              },
+              {
+                "value": "no",
+                "label": "No"
+              },
+              {
+                "value": "unknown",
+                "label": "Not sure"
+              }
+            ]
+          },
+          {
+            "field": "adjoinsExistingConcrete",
+            "label": "Does any edge touch a house foundation, garage foundation, or existing concrete?",
+            "type": "boolean"
+          },
+          {
+            "field": "adjoiningEdgeLF",
+            "label": "Total measured length of those adjoining edges",
+            "type": "number",
+            "unit": "linear feet",
+            "min": 0.1,
+            "max": 1000000,
+            "visibleWhen": [
+              [
+                [
+                  "adjoinsExistingConcrete",
+                  "eq",
+                  true
+                ]
+              ]
+            ]
+          },
+          {
+            "field": "outlinePoints",
+            "label": "Closed measured orthogonal outline coordinates",
+            "type": "orthogonal_outline",
+            "unit": "feet"
+          },
+          {
+            "field": "demolitionThickness",
+            "label": "Measured existing slab thickness",
+            "type": "number",
+            "unit": "inches",
+            "min": 0.1,
+            "max": 1000000,
+            "visibleWhen": [
+              [
+                [
+                  "demolitionNeeded",
+                  "eq",
+                  true
+                ]
+              ]
+            ]
+          },
+          {
+            "field": "demolitionReinforcement",
+            "label": "Existing slab reinforcement",
+            "type": "enum",
+            "visibleWhen": [
+              [
+                [
+                  "demolitionNeeded",
+                  "eq",
+                  true
+                ]
+              ]
+            ],
+            "choices": [
+              {
+                "value": "none",
+                "label": "none"
+              },
+              {
+                "value": "wire_mesh",
+                "label": "wire mesh"
+              },
+              {
+                "value": "rebar",
+                "label": "rebar"
+              }
+            ]
+          },
+          {
+            "field": "demolitionAccessDifficulty",
+            "label": "Existing slab demolition access",
+            "type": "enum",
+            "visibleWhen": [
+              [
+                [
+                  "demolitionNeeded",
+                  "eq",
+                  true
+                ]
+              ]
+            ],
+            "choices": [
+              {
+                "value": "easy",
+                "label": "easy"
+              },
+              {
+                "value": "moderate",
+                "label": "moderate"
+              },
+              {
+                "value": "difficult",
+                "label": "difficult"
+              }
+            ]
+          }
+        ],
+        "customerFees": []
+      }
+    }
+  ]
+}

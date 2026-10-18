@@ -1031,8 +1031,14 @@ function calculateConcrete(serviceType, c, p) {
   if (c.baseNeeded) {
     if(!separateBase(p))add(out, makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft' }));
     else {
-      out.disclosures.push(`Base preparation is priced for ${p.baseDepthInches} inches of compacted base depth.`);
+      const included=[],excluded=[];
+      for(const [field,component] of [['baseGravelPerCubicYard','base gravel material'],['baseExcavationGradingPerSqft','base excavation and grading labor']]){
+        (present(p[field])?included:excluded).push(component);
+      }
+      if(included.length)out.disclosures.push(`Included base preparation: ${included.join(', ')}.`);
+      if(excluded.length)out.disclosures.push(`Excluded base preparation: ${excluded.join(', ')}. Any required excluded work needs a separate on-site estimate.`);
       if(present(p.baseGravelPerCubicYard)){
+        out.disclosures.push(`Base gravel material quantity assumes ${p.baseDepthInches} inches of compacted base depth.`);
         const gravel=exactMultiply(exactDivide(exactMultiply(dimensions.exactAreaSqft,p.baseDepthInches),324),exactAdd(1,p.baseCompactionAllowance));
         recordQuantityDerivation(out,{name:'baseGravelCubicYards',formula:'areaSqft * baseDepthInches / 324 * (1 + baseCompactionAllowance)',inputs:{areaSqft:dimensions.areaSqft,baseDepthInches:p.baseDepthInches,baseCompactionAllowance:p.baseCompactionAllowance},result:gravel,unit:'cubic yards',usedBy:['Base gravel']});
         add(out,makeLine({name:'Base gravel',category:'material',quantity:gravel,unit:'cubic yards',rateCents:p.baseGravelPerCubicYard,ratePath:'baseGravelPerCubicYard'}));
