@@ -1,5 +1,35 @@
 {
-  "file": "test/qeVoiceCorrectionSequences20261018.spec.mjs",
-  "fullSuite": true,
-  "quoteSelection": true
+  "repairStartingCommit": "741aa8fe9afb2a36ff7a7eb8f3035b3e7325dc90",
+  "previous": {
+    "file": "test/qeVoiceCorrectionSequences20261018.spec.mjs",
+    "allSpecFiles": {
+      "count": 328,
+      "included": true,
+      "sha256OfJsonArray": "9c31e3121ccb8eb628aa5526dcc5da578ab32570a4a3afee298967fabbd51c36"
+    },
+    "quotePricebookSpecFiles": {
+      "count": 267,
+      "included": true,
+      "sha256OfJsonArray": "2d387038b2b58a71f7c34eba250bb43ebb6eba60b2d224af6ace5e610f83ab95"
+    }
+  },
+  "current": {
+    "file": "test/voiceCorrectionSequences20261018.spec.mjs",
+    "sha256": "b838e1892339addc35498927da8ac3c2c5fb43c46f56c652b22341fb08ae3ee4",
+    "allSpecFiles": {
+      "count": 328,
+      "included": true,
+      "sha256OfJsonArray": "d02235f829b74bb71d4da449c2a8b229c2d4a99c0c1e9a80bdfbeec67da11eee"
+    },
+    "quotePricebookSpecFiles": {
+      "count": 266,
+      "included": false,
+      "sha256OfJsonArray": "0ae5a6dae7751e359f4dae9f9f953b736966d6aebad06bde1af558edcfcdb2bb"
+    }
+  },
+  "onlySelectionChanges": {
+    "allSpecFiles": "the old path is replaced by the new path",
+    "quotePricebookSpecFiles": "the old path is removed and no new path is added",
+    "verifiedByReconstructingPreviousArraysAndMatchingPreviousDigests": true
+  }
 }
