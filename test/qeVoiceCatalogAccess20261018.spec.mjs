@@ -2,6 +2,7 @@ import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
+import {readFileSync} from 'node:fs';
 import {gates,publish,runtime,quoteEmailFixture,bridge,loadPricebook,date} from './quoteDeliveryBatch20261015Fixture.mjs';
 import {customPlantFixture} from './quoteConcreteLandscape20261016Fixture.mjs';
 import {fourTypes} from './fenceLaneB20261016Fixture.mjs';
@@ -10,6 +11,8 @@ import {voiceToolAllowed} from '../server/src/voice/voicePlanAccess.js';
 import {projectVoiceToolResult} from '../server/src/voice/toolDispatcher.js';
 import {VOICE_RESULT_BYTES} from '../server/src/voice/voiceQuotePresentation.js';
 import {voiceQuestionContract} from '../server/src/voice/voiceQuoteContract.js';
+import {compileVoiceSystemInstruction} from '../server/src/voice/voicePromptCompiler.js';
+import {harness} from './voiceLifecycle20261006Fixture.mjs';
 
 // Independent expectations, written before production changes:
 // gate 33: 100 LF * 4000 cents + one 55000-cent installed gate = 455000 cents.
@@ -122,6 +125,21 @@ test('catalog revision: a saved-book edit invalidates both old handle and cursor
  await assert.rejects(h.lookup('gates'));await assert.rejects(h.lookup('gates',{limit:16,cursor:page.nextCursor}));
  assert.equal(JSON.stringify(loadPricebook(h.c.ownerId)),saved);
 });
+test('catalog authority: expiry and another saved service reject continuation even on the same owner and call',async t=>{
+ const h=await opened(t,gateBook()),draft=bridge.readApplicationBook(h.c.ownerId),second=structuredClone(draft.services[0]);
+ draft.services[0].service='[SYNTHETIC] Alpha compound boundary enclosure';
+ second.id=randomUUID();second.service='[SYNTHETIC] Beta yard perimeter construction';
+ for(const key of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'])delete second[key];
+ draft.services.push(second);bridge.saveApplicationBook(h.c.ownerId,draft,date);
+ bridge.approveApplicationService(h.c.ownerId,draft.services[0].id,{revision:bridge.readApplicationBook(h.c.ownerId).revision,confirmConfiguration:true,confirmLegacySettings:true},date);
+ bridge.approveApplicationService(h.c.ownerId,second.id,{revision:bridge.readApplicationBook(h.c.ownerId).revision,confirmConfiguration:true,confirmLegacySettings:true},date);
+ const first=await h.tool('matchService',{query:draft.services[0].service}),other=await h.tool('matchService',{query:second.service});
+ assert.equal(first.status,'matched');assert.equal(other.status,'matched');assert.notEqual(first.serviceHandle,other.serviceHandle);
+ const args={serviceHandle:first.serviceHandle,field:'gates',customerInputs:h.inputs,limit:16},page=await h.tool(toolName,args);
+ await assert.rejects(h.tool(toolName,{...args,serviceHandle:other.serviceHandle,cursor:page.nextCursor}));
+ h.advance(3*60*60*1000);
+ await assert.rejects(h.voice(h.c)({name:toolName,args:{...args,cursor:page.nextCursor}}));
+});
 test('catalog scope: selected fence type controls section gates and lookup never confirms a product',async t=>{
  const f=fourTypes();f.ownerPricing.pricing.fenceOfferings.aluminum.offeringDetails.gates.walk.description='[SYNTHETIC] Aluminum-only installation';
  const h=await opened(t,f),page=await h.lookup('fenceRuns');assert.match(page.choices[0].label,/Aluminum-only/);
@@ -142,4 +160,35 @@ test('catalog schemas and projection: no mutation ID required, plan gate and exi
 test('catalog question projection: duplicate display labels remain separate stable choices',()=>{
  const service={id:randomUUID()},definition={customerFields:[{name:'selection',label:'Selection',type:'enum',values:['a','b'],options:{a:'Same display',b:'Same display'}}]};
  const q=voiceQuestionContract(service,definition).fields[0];assert.deepEqual(q.choices,[{value:'a',label:'Same display'},{value:'b',label:'Same display'}]);
+});
+test('catalog compiled instructions describe bounded continuation, exact identity and retained confirmation rules',()=>{
+ const prompt=compileVoiceSystemInstruction({guideText:readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8'),
+  business:{businessName:'[SYNTHETIC] Catalog business',agentName:'[SYNTHETIC] Assistant'},services:[{serviceType:'FENCING_INSTALL',serviceLabel:'[SYNTHETIC] Fencing',active:true,status:'QUOTING LIVE',offerings:[]}]});
+ assert.match(prompt,/lookupQuoteCatalog/);assert.match(prompt,/Follow nextCursor/);assert.match(prompt,/opening width and installation scope/);
+ assert.match(prompt,/never treat a lookup as product or scope confirmation/);assert.match(prompt,/read back EVERY numeric measurement/);
+});
+for(const [name,factory,field,query,key,count,expected] of [
+ ['gate',gateBook,'gates','walk 33','walk_33',1,4550],
+ ['plant',plantBook,'plantsBySize','#32 shrub','plant_32',2,150]
+])test('catalog production fake-provider session: later '+name+' can be discovered, confirmed and quoted',async t=>{
+ const f=factory();let config;
+ const h=await harness(t,{beforeInstall:({db})=>{
+  db.prepare("UPDATE users SET plan='QuoteDone' WHERE id='synthetic-a'").run();publish('synthetic-a',f);
+ },onConnect:input=>{config=input.config;}});
+ const call=await h.connect();assert.ok(JSON.stringify(config.tools).includes(toolName));
+ assert.match(JSON.stringify(config.systemInstruction),/lookupQuoteCatalog/);
+ const matched=await h.tool(call.callback,'matchService',{query:f.ownerPricing.service});assert.equal(matched.status,'matched',JSON.stringify(matched));
+ const inputs=structuredClone(f.customerInputs);delete inputs.confirmedFacts;
+ const found=await h.tool(call.callback,toolName,{serviceHandle:matched.serviceHandle,field,customerInputs:inputs,query});
+ assert.equal(found.status,'choices',JSON.stringify(found));assert.deepEqual(found.choices.map(c=>c.value),[key]);
+ const args={serviceHandle:matched.serviceHandle,customerInputs:{...inputs,[field]:{[found.choices[0].value]:count}},customerConfirmed:true,
+  productConfirmations:Object.fromEntries(Object.keys(f.customerInputs.confirmedFacts||{}).map(k=>[k,true]))};
+ let result=await h.tool(call.callback,'getQuote',args);
+ if(result.questionContract?.fields.some(q=>q.confirmationToken)){
+  args.scopeConfirmations=Object.fromEntries(result.questionContract.fields.filter(q=>q.confirmationToken).map(q=>[q.field,q.confirmationToken]));
+  result=await h.tool(call.callback,'getQuote',args);
+ }
+ assert.equal(result.status,'quoted',JSON.stringify(result));assert.equal(result.midEstimate,expected);
+ assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quoteSubmissions WHERE ownerId=?').get(h.owner).n,1);
+ assert.deepEqual(h.writes,[]);assert.deepEqual(h.errors,[]);
 });

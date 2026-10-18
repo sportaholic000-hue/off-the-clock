@@ -292,7 +292,7 @@ test('voice tool runtime persists a safe review quote and lead without exposing 
     assert.equal(capturedDetails.applicationOutcome.customerResult.resultType,'ESTIMATE_REQUIRES_REVIEW');
     assert.deepEqual(Object.keys(runtime.handlers).sort(), [
       'bookAppointment', 'calculateListedPrice', 'calculateVoiceArea', 'captureLead', 'checkAvailability', 'flagUrgent',
-      'getCustomerContext', 'getQuote', 'logQuoteRequest', 'matchService',
+      'getCustomerContext', 'getQuote', 'logQuoteRequest', 'lookupQuoteCatalog', 'matchService',
       'modifyAppointment', 'prepareQuoteEmail', 'sendQuoteEmail', 'transferCall'
     ]);
   } finally { db.close(); }

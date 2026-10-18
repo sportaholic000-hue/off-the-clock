@@ -1,7 +1,7 @@
 import {hasOperatorAccess,hasQuoteDoneAccess,hasReceptionistAccess} from '../planAccess.js';
 
 const BOOKING_TOOLS=new Set(['checkAvailability','bookAppointment','modifyAppointment']);
-const QUOTE_TOOLS=new Set(['matchService','getQuote','calculateVoiceArea','prepareQuoteEmail','sendQuoteEmail']);
+const QUOTE_TOOLS=new Set(['matchService','lookupQuoteCatalog','getQuote','calculateVoiceArea','prepareQuoteEmail','sendQuoteEmail']);
 export function voicePlanCapabilities(account,options){
   return {receptionist:hasReceptionistAccess(account,options),booking:hasOperatorAccess(account,options),transfer:hasOperatorAccess(account,options),phoneQuoting:hasQuoteDoneAccess(account,options)};
 }

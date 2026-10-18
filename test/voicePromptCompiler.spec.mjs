@@ -245,6 +245,7 @@ test("prompt locks quote accuracy, separate-work handling, confirmation, and add
 
 const VALID_ARGUMENTS = Object.freeze({
   matchService: { query: "roof repair" },
+  lookupQuoteCatalog: { serviceHandle: HANDLE_A, field: "gates" },
   calculateVoiceArea: { length: "10", width: "12", customerConfirmed: true },
   getQuote: {
     serviceHandle: HANDLE_A,
@@ -290,7 +291,7 @@ test("Gemini function declarations have exact tool coverage and validator-requir
   assert.deepEqual(VOICE_TOOL_DECLARATIONS.map((item) => item.name), VOICE_TOOL_NAMES);
   assert.deepEqual(
     MUTATING_VOICE_TOOLS,
-    VOICE_TOOL_NAMES.filter((name) => !["matchService", "getCustomerContext", "calculateListedPrice", "calculateVoiceArea"].includes(name)),
+    VOICE_TOOL_NAMES.filter((name) => !["matchService", "lookupQuoteCatalog", "getCustomerContext", "calculateListedPrice", "calculateVoiceArea"].includes(name)),
   );
 
   for (const declaration of VOICE_TOOL_DECLARATIONS) {
