@@ -1,0 +1,84 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:16:
+#       3 │ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DE...
+#         ╵                 ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: painting geometry Oct18: rectangular walls 384 and flat ceiling 144 are independently calculated
+ok 1 - painting geometry Oct18: rectangular walls 384 and flat ceiling 144 are independently calculated
+  ---
+  duration_ms: 157.405694
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: ordinary openings leave labor384 and paint334
+ok 2 - painting geometry Oct18: ordinary openings leave labor384 and paint334
+  ---
+  duration_ms: 0.455876
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: eligible direct areas preserve every quantity and 110652 cents
+ok 3 - painting geometry Oct18: eligible direct areas preserve every quantity and 110652 cents
+  ---
+  duration_ms: 22.738168
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: separate rooms retain their dimensions and existing height treatment
+ok 4 - painting geometry Oct18: separate rooms retain their dimensions and existing height treatment
+  ---
+  duration_ms: 6.577355
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: a directly measured sloped ceiling surface remains available
+ok 5 - painting geometry Oct18: a directly measured sloped ceiling surface remains available
+  ---
+  duration_ms: 3.814579
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: vaulted is a labor category and does not establish a sloped ceiling area
+ok 6 - painting geometry Oct18: vaulted is a labor category and does not establish a sloped ceiling area
+  ---
+  duration_ms: 4.053519
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: contradictory direct and room inputs retain existing protections
+ok 7 - painting geometry Oct18: contradictory direct and room inputs retain existing protections
+  ---
+  duration_ms: 4.627051
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: actual widget displays guidance at selection and room entry, retaining direct entry
+ok 8 - painting geometry Oct18: actual widget displays guidance at selection and room entry, retaining direct entry
+  ---
+  duration_ms: 166.572735
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: actual voice tool contract carries guidance and saved receipts replay unchanged
+ok 9 - painting geometry Oct18: actual voice tool contract carries guidance and saved receipts replay unchanged
+  ---
+  duration_ms: 344.172264
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: guidance is confined to interior customer details
+ok 10 - painting geometry Oct18: guidance is confined to interior customer details
+  ---
+  duration_ms: 0.626532
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1177.041727

@@ -1,0 +1,591 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:16:
+#       3 │ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DE...
+#         ╵                 ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: painting geometry Oct18: rectangular walls 384 and flat ceiling 144 are independently calculated
+ok 1 - painting geometry Oct18: rectangular walls 384 and flat ceiling 144 are independently calculated
+  ---
+  duration_ms: 128.828927
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: ordinary openings leave labor384 and paint334
+ok 2 - painting geometry Oct18: ordinary openings leave labor384 and paint334
+  ---
+  duration_ms: 0.632181
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: eligible direct areas preserve every quantity and 110652 cents
+not ok 3 - painting geometry Oct18: eligible direct areas preserve every quantity and 110652 cents
+  ---
+  duration_ms: 23.057424
+  type: 'test'
+  location: '/workspace/scratch/63b8cb6aa9ed/painting-guidance/test/qePaintingGeometryGuidance20261018.spec.mjs:55:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        768,
+    +   734.8,
+    -   668,
+        144,
+    +   158.4
+    -   144
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 768
+    1: 668
+    2: 144
+    3: 144
+  actual:
+    0: 768
+    1: 734.8
+    2: 144
+    3: 158.4
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/63b8cb6aa9ed/painting-guidance/test/qePaintingGeometryGuidance20261018.spec.mjs:67:30)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: painting geometry Oct18: separate rooms retain their dimensions and existing height treatment
+ok 4 - painting geometry Oct18: separate rooms retain their dimensions and existing height treatment
+  ---
+  duration_ms: 6.005179
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: a directly measured sloped ceiling surface remains available
+ok 5 - painting geometry Oct18: a directly measured sloped ceiling surface remains available
+  ---
+  duration_ms: 3.764827
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: vaulted is a labor category and does not establish a sloped ceiling area
+ok 6 - painting geometry Oct18: vaulted is a labor category and does not establish a sloped ceiling area
+  ---
+  duration_ms: 4.291719
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: contradictory direct and room inputs retain existing protections
+ok 7 - painting geometry Oct18: contradictory direct and room inputs retain existing protections
+  ---
+  duration_ms: 4.606984
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: actual widget displays guidance at selection and room entry, retaining direct entry
+ok 8 - painting geometry Oct18: actual widget displays guidance at selection and room entry, retaining direct entry
+  ---
+  duration_ms: 167.599326
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: Chromium shows the widget guidance at both measurement steps
+not ok 9 - painting geometry Oct18: Chromium shows the widget guidance at both measurement steps
+  ---
+  duration_ms: 1.554649
+  type: 'test'
+  location: '/workspace/scratch/63b8cb6aa9ed/painting-guidance/test/qePaintingGeometryGuidance20261018.spec.mjs:162:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find package 'playwright' imported from /workspace/scratch/63b8cb6aa9ed/painting-guidance/test/qePaintingGeometryGuidance20261018.spec.mjs
+    Did you mean to import "playwright/index.js"?
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    packageResolve (node:internal/modules/esm/resolve:772:81)
+    moduleResolve (node:internal/modules/esm/resolve:859:18)
+    defaultResolve (node:internal/modules/esm/resolve:989:11)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+    onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:36)
+    TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+    ModuleLoader.import (node:internal/modules/esm/loader:679:21)
+  ...
+# Subtest: painting geometry Oct18: actual voice tool contract carries guidance and saved receipts replay unchanged
+ok 10 - painting geometry Oct18: actual voice tool contract carries guidance and saved receipts replay unchanged
+  ---
+  duration_ms: 332.528903
+  type: 'test'
+  ...
+# Subtest: painting geometry Oct18: guidance is confined to interior customer details
+ok 11 - painting geometry Oct18: guidance is confined to interior customer details
+  ---
+  duration_ms: 0.503187
+  type: 'test'
+  ...
+# (node:31) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:16:
+#       3 │ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DE...
+#         ╵                 ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: surface DOM Oct16: owner coat ratios start blank and retain the entered decimal
+ok 12 - surface DOM Oct16: owner coat ratios start blank and retain the entered decimal
+  ---
+  duration_ms: 312.134783
+  type: 'test'
+  ...
+# Subtest: surface DOM Oct16: room widget inputs reach the same arithmetic contract
+ok 13 - surface DOM Oct16: room widget inputs reach the same arithmetic contract
+  ---
+  duration_ms: 208.371101
+  type: 'test'
+  ...
+# Subtest: surface DOM Oct16: a large opening stays bound to its room
+ok 14 - surface DOM Oct16: a large opening stays bound to its room
+  ---
+  duration_ms: 201.566741
+  type: 'test'
+  ...
+# Subtest: surface DOM Oct16: optional selector hides unpriced quantities and selection survives submission
+ok 15 - surface DOM Oct16: optional selector hides unpriced quantities and selection survives submission
+  ---
+  duration_ms: 95.621491
+  type: 'test'
+  ...
+# Subtest: surface DOM Oct16: floor-to-ceiling answer changes labor but not paint
+ok 16 - surface DOM Oct16: floor-to-ceiling answer changes labor but not paint
+  ---
+  duration_ms: 243.48646
+  type: 'test'
+  ...
+# (node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: surface Oct16: exact wall coat split 1
+ok 17 - surface Oct16: exact wall coat split 1
+  ---
+  duration_ms: 19.838389
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 2
+ok 18 - surface Oct16: exact wall coat split 2
+  ---
+  duration_ms: 3.546968
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 3
+ok 19 - surface Oct16: exact wall coat split 3
+  ---
+  duration_ms: 4.221033
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 1
+ok 20 - surface Oct16: blank ratio retains linear coats 1
+  ---
+  duration_ms: 3.429862
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 2
+ok 21 - surface Oct16: blank ratio retains linear coats 2
+  ---
+  duration_ms: 3.466748
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 3
+ok 22 - surface Oct16: blank ratio retains linear coats 3
+  ---
+  duration_ms: 3.872779
+  type: 'test'
+  ...
+# Subtest: surface Oct16: converted rates retain exact fractional cents and approved independent rounding
+ok 23 - surface Oct16: converted rates retain exact fractional cents and approved independent rounding
+  ---
+  duration_ms: 5.023521
+  type: 'test'
+  ...
+# Subtest: surface Oct16: poor wall preparation and good ceiling coats are independent
+ok 24 - surface Oct16: poor wall preparation and good ceiling coats are independent
+  ---
+  duration_ms: 8.855298
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic painting still sends fair and poor walls to review
+ok 25 - surface Oct16: basic painting still sends fair and poor walls to review
+  ---
+  duration_ms: 2.723128
+  type: 'test'
+  ...
+# Subtest: surface Oct16: room dimensions separate labor from net paint without blocking a best guess
+ok 26 - surface Oct16: room dimensions separate labor from net paint without blocking a best guess
+  ---
+  duration_ms: 22.550501
+  type: 'test'
+  ...
+# Subtest: surface Oct16: siding openings_left_in convention and gables
+ok 27 - surface Oct16: siding openings_left_in convention and gables
+  ---
+  duration_ms: 3.824917
+  type: 'test'
+  ...
+# Subtest: surface Oct16: siding openings_subtracted convention and gables
+ok 28 - surface Oct16: siding openings_subtracted convention and gables
+  ---
+  duration_ms: 2.929559
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exterior labor leaves ordinary openings in and paint subtracts all openings
+ok 29 - surface Oct16: exterior labor leaves ordinary openings in and paint subtracts all openings
+  ---
+  duration_ms: 4.063446
+  type: 'test'
+  ...
+# Subtest: surface Oct16: priced door sides and fascia extend once; unpriced requested doors are excluded
+ok 30 - surface Oct16: priced door sides and fascia extend once; unpriced requested doors are excluded
+  ---
+  duration_ms: 11.037031
+  type: 'test'
+  ...
+# Subtest: surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim
+ok 31 - surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim
+  ---
+  duration_ms: 3.437183
+  type: 'test'
+  ...
+# Subtest: surface Oct16: legacy no-new-input prices keep baseline cents
+ok 32 - surface Oct16: legacy no-new-input prices keep baseline cents
+  ---
+  duration_ms: 10.176657
+  type: 'test'
+  ...
+# Subtest: surface Oct16: missing siding convention names owner pricing rather than guessing a basis
+ok 33 - surface Oct16: missing siding convention names owner pricing rather than guessing a basis
+  ---
+  duration_ms: 1.334228
+  type: 'test'
+  ...
+# Subtest: surface Oct16: malformed new fields and inconsistent measurements cannot quote
+ok 34 - surface Oct16: malformed new fields and inconsistent measurements cannot quote
+  ---
+  duration_ms: 5.212655
+  type: 'test'
+  ...
+# Subtest: surface Oct16: widget and voice expose the same room and per-surface names without private rates
+ok 35 - surface Oct16: widget and voice expose the same room and per-surface names without private rates
+  ---
+  duration_ms: 1.48173
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic ceiling has its own exact coat split
+ok 36 - surface Oct16: basic ceiling has its own exact coat split
+  ---
+  duration_ms: 2.287233
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic trim has its own exact coat split
+ok 37 - surface Oct16: basic trim has its own exact coat split
+  ---
+  duration_ms: 2.277738
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic primer has its own exact coat split
+ok 38 - surface Oct16: basic primer has its own exact coat split
+  ---
+  duration_ms: 2.492672
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic ceilingPrimer has its own exact coat split
+ok 39 - surface Oct16: basic ceilingPrimer has its own exact coat split
+  ---
+  duration_ms: 2.449186
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic trimPrimer has its own exact coat split
+ok 40 - surface Oct16: basic trimPrimer has its own exact coat split
+  ---
+  duration_ms: 2.420413
+  type: 'test'
+  ...
+# Subtest: surface Oct16: itemized trim has independent coats and no height adjustment
+ok 41 - surface Oct16: itemized trim has independent coats and no height adjustment
+  ---
+  duration_ms: 4.020781
+  type: 'test'
+  ...
+# Subtest: surface Oct16: mixed-height installed room prices adjust only their labor shares
+ok 42 - surface Oct16: mixed-height installed room prices adjust only their labor shares
+  ---
+  duration_ms: 3.306486
+  type: 'test'
+  ...
+# Subtest: surface Oct16: optional siding soffit unit square_feet
+ok 43 - surface Oct16: optional siding soffit unit square_feet
+  ---
+  duration_ms: 2.349567
+  type: 'test'
+  ...
+# Subtest: surface Oct16: optional siding soffit unit linear_feet
+ok 44 - surface Oct16: optional siding soffit unit linear_feet
+  ---
+  duration_ms: 1.763264
+  type: 'test'
+  ...
+# Subtest: surface Oct16: differing garage openings subtract qualifying openings from painting labor
+ok 45 - surface Oct16: differing garage openings subtract qualifying openings from painting labor
+  ---
+  duration_ms: 3.354158
+  type: 'test'
+  ...
+# Subtest: surface Oct16: new settings persist, can be approved, and changed content invalidates approval
+ok 46 - surface Oct16: new settings persist, can be approved, and changed content invalidates approval
+  ---
+  duration_ms: 617.826172
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic wall and ceiling primer labor follow each room height
+ok 47 - surface Oct16: basic wall and ceiling primer labor follow each room height
+  ---
+  duration_ms: 5.385005
+  type: 'test'
+  ...
+# Subtest: surface Oct16: net room paint and trim primer package costs replace component materials
+ok 48 - surface Oct16: net room paint and trim primer package costs replace component materials
+  ---
+  duration_ms: 7.270834
+  type: 'test'
+  ...
+# Subtest: surface Oct16: large room openings use their own room height instead of an allocation
+ok 49 - surface Oct16: large room openings use their own room height instead of an allocation
+  ---
+  duration_ms: 3.40132
+  type: 'test'
+  ...
+# Subtest: surface Oct16: direct wall area can retain labor openings and subtract net paint
+ok 50 - surface Oct16: direct wall area can retain labor openings and subtract net paint
+  ---
+  duration_ms: 1.98021
+  type: 'test'
+  ...
+# Subtest: surface Oct16: explicitly priced good trim preparation is charged without height adjustment
+ok 51 - surface Oct16: explicitly priced good trim preparation is charged without height adjustment
+  ---
+  duration_ms: 2.474194
+  type: 'test'
+  ...
+# Subtest: surface Oct16: cost-based trim preparation uses its package instead of area-rate material
+ok 52 - surface Oct16: cost-based trim preparation uses its package instead of area-rate material
+  ---
+  duration_ms: 3.448159
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic explicit trim components replace retained prices and split coats
+ok 53 - surface Oct16: basic explicit trim components replace retained prices and split coats
+  ---
+  duration_ms: 2.73088
+  type: 'test'
+  ...
+# Subtest: surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs
+ok 54 - surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs
+  ---
+  duration_ms: 1.033706
+  type: 'test'
+  ...
+# Subtest: surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding
+ok 55 - surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding
+  ---
+  duration_ms: 5.500029
+  type: 'test'
+  ...
+# Subtest: surface Oct16: zero net paint uses zero packages while labor still quotes
+ok 56 - surface Oct16: zero net paint uses zero packages while labor still quotes
+  ---
+  duration_ms: 3.477113
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact derived wall area survives preparation extension to a safe-integer boundary
+ok 57 - surface Oct16: exact derived wall area survives preparation extension to a safe-integer boundary
+  ---
+  duration_ms: 5.723394
+  type: 'test'
+  ...
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lane C fixes: room opening {"widthFeet":12.5,"heightFeet":8,"runsFloorToCeiling":false}
+ok 58 - lane C fixes: room opening {"widthFeet":12.5,"heightFeet":8,"runsFloorToCeiling":false}
+  ---
+  duration_ms: 30.1037
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":true}
+ok 59 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":true}
+  ---
+  duration_ms: 6.507133
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":false}
+ok 60 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":false}
+  ---
+  duration_ms: 11.72061
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9}
+ok 61 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9}
+  ---
+  duration_ms: 6.085278
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":5,"heightFeet":9,"runsFloorToCeiling":true}
+ok 62 - lane C fixes: room opening {"widthFeet":5,"heightFeet":9,"runsFloorToCeiling":true}
+  ---
+  duration_ms: 7.371645
+  type: 'test'
+  ...
+# Subtest: lane C fixes: interior direct-area openings use the same dimensions and floor-to-ceiling rule
+ok 63 - lane C fixes: interior direct-area openings use the same dimensions and floor-to-ceiling rule
+  ---
+  duration_ms: 4.065329
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"largeOpenings":[{"areaSqft":100}],"garageDoorCount":0}
+ok 64 - lane C fixes: exterior100-sqft threshold {"largeOpenings":[{"areaSqft":100}],"garageDoorCount":0}
+  ---
+  duration_ms: 9.727361
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageDoorWidthFeet":12.5,"garageDoorHeightFeet":8}
+ok 65 - lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageDoorWidthFeet":12.5,"garageDoorHeightFeet":8}
+  ---
+  duration_ms: 8.675678
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageOpenings":[{"widthFeet":12.5,"heightFeet":8}]}
+ok 66 - lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageOpenings":[{"widthFeet":12.5,"heightFeet":8}]}
+  ---
+  duration_ms: 6.700405
+  type: 'test'
+  ...
+# Subtest: lane C fixes:9x7 garage openings_left_in
+ok 67 - lane C fixes:9x7 garage openings_left_in
+  ---
+  duration_ms: 6.482717
+  type: 'test'
+  ...
+# Subtest: lane C fixes:9x7 garage openings_subtracted
+ok 68 - lane C fixes:9x7 garage openings_subtracted
+  ---
+  duration_ms: 2.785092
+  type: 'test'
+  ...
+# Subtest: lane C fixes: siding halves every other opening and every individual garage opening
+ok 69 - lane C fixes: siding halves every other opening and every individual garage opening
+  ---
+  duration_ms: 2.953425
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING basic
+ok 70 - lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING basic
+  ---
+  duration_ms: 2.281955
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING itemized
+ok 71 - lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING itemized
+  ---
+  duration_ms: 0.510618
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities EXTERIOR_PAINTING itemized
+ok 72 - lane C fixes: one optional selector and no unpriced quantities EXTERIOR_PAINTING itemized
+  ---
+  duration_ms: 0.380093
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities SIDING_REPLACEMENT basic
+ok 73 - lane C fixes: one optional selector and no unpriced quantities SIDING_REPLACEMENT basic
+  ---
+  duration_ms: 0.460223
+  type: 'test'
+  ...
+# Subtest: lane C fixes: unpriced selection excludes door sides without asking a quantity
+ok 74 - lane C fixes: unpriced selection excludes door sides without asking a quantity
+  ---
+  duration_ms: 9.556443
+  type: 'test'
+  ...
+# Subtest: lane C fixes: only selected priced quantities are asked, required and charged
+ok 75 - lane C fixes: only selected priced quantities are asked, required and charged
+  ---
+  duration_ms: 7.583945
+  type: 'test'
+  ...
+# Subtest: lane C fixes: selected soffit uses saved square_feet
+ok 76 - lane C fixes: selected soffit uses saved square_feet
+  ---
+  duration_ms: 2.287573
+  type: 'test'
+  ...
+# Subtest: lane C fixes: selected soffit uses saved linear_feet
+ok 77 - lane C fixes: selected soffit uses saved linear_feet
+  ---
+  duration_ms: 1.968583
+  type: 'test'
+  ...
+# Subtest: lane C fixes: unpriced siding soffit needs no unit or quantity
+ok 78 - lane C fixes: unpriced siding soffit needs no unit or quantity
+  ---
+  duration_ms: 2.36455
+  type: 'test'
+  ...
+# Subtest: lane C fixes: invalid optional selections and floor-to-ceiling flags do not quote
+ok 79 - lane C fixes: invalid optional selections and floor-to-ceiling flags do not quote
+  ---
+  duration_ms: 0.91697
+  type: 'test'
+  ...
+# (node:67) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: surface voice Oct16: confirmed estimated room dimensions quote through the actual tool runtime
+ok 80 - surface voice Oct16: confirmed estimated room dimensions quote through the actual tool runtime
+  ---
+  duration_ms: 435.060815
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: service-specific blocks preserve shared instructions and require independent surfaces
+ok 81 - surface voice Oct16: service-specific blocks preserve shared instructions and require independent surfaces
+  ---
+  duration_ms: 1.333427
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: selected door sides are excluded without a quantity
+ok 82 - surface voice Oct16: selected door sides are excluded without a quantity
+  ---
+  duration_ms: 268.897004
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: selected door sides ask a priced count
+ok 83 - surface voice Oct16: selected door sides ask a priced count
+  ---
+  duration_ms: 336.997411
+  type: 'test'
+  ...
+1..83
+# tests 83
+# suites 0
+# pass 81
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5264.168718
