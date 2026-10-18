@@ -259,7 +259,11 @@ test('Audit 2 #4 and #5: the runner asks for the report format its checker reads
   const { quotePricebookSpecFiles } = await import('../scripts/testSelection.mjs');
   const files = quotePricebookSpecFiles(path.resolve(path.dirname(new URL(import.meta.url).pathname), '..'));
   for (const name of ['opusQuoteRepairs', 'customerExplanation', 'quotePresentation', 'fenceAnyHeight', 'auditFixes20261003']) assert.ok(files.includes('test/' + name + '.spec.mjs'), name);
-  assert.ok(!files.some(file => /voice/i.test(file)));
+  // Owner-approved exception: this named saved-book/catalog regression must
+  // remain in the quote gate; every other voice-named test stays excluded.
+  const catalogRegression = 'test/qeVoiceCatalogAccess20261018.spec.mjs';
+  assert.ok(files.includes(catalogRegression), catalogRegression);
+  assert.ok(!files.some(file => /voice/i.test(file) && file !== catalogRegression));
 });
 
 // ---- Third audit (October 4): F01-F06 and G01 ----
