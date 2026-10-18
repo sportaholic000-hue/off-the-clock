@@ -9,7 +9,7 @@ Branch: `codex/qe-agent3-scope-presentation-20261018`
 - Started from `0b59a401e1d8f2c2c43188c7355abb9939504b9b`.
 - Merged restoration implementation
   `8aae4f4ea90047bc0ea841853a93415f5d2ef232` as a second parent in
-  `f8124f51cf4a503721f042f4f539b83d99938001`.
+  `8a35afde7b8f14de6fd9062de6490e4d669aeab6`.
 - Did not merge the workflow-only child
   `d4f9394a0836ad007d50b2c33d6ffe56b4e4ea03`.
 - No quote calculator, contract, money/precision module, listed-price module,
@@ -76,3 +76,14 @@ Pending until the final source commit is pushed. Required exact-head outcomes:
 - remaining required CI jobs.
 
 No merge, deployment, tag, or production acceptance is asserted here.
+
+### Non-qualifying hosted attempt
+
+Run [39162450029](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39162450029)
+tested `5eee6f6ba502e6622a379be947994f0b40ef4301`. Install, build,
+Chromium launch, the browser gate, the voice container, and all four Agent 3
+rendered tests passed. The strict gate recorded 5,153/5,155 passes, so the run
+does **not** qualify the branch. It exposed two projection compatibility issues:
+malformed optional historical option entries were not ignored during receipt
+cleaning, and homogeneous roof wording rendered twice. Both are covered by the
+subsequent owned-file repair and require a new exact-head hosted run.

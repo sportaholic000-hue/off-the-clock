@@ -67,7 +67,7 @@ export function customerReceiptPresentation(response) {
  function clean(quote){
   if(!quote||typeof quote!=='object')return;
   delete quote.rangeBufferUsed;
-  for(const option of quote.options||[])delete option.rangeBufferUsed;
+  for(const option of Array.isArray(quote.options)?quote.options:[])if(record(option))delete option.rangeBufferUsed;
   if(quote.pricedScope){for(const field of ['serviceId','serviceType','bookRevision'])delete quote.pricedScope[field];}
   if(quote.jobSummary)delete quote.jobSummary.bookRevision;
   if(quote.pricedEstimate)clean(quote.pricedEstimate);

@@ -426,7 +426,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   const pricing=servicePricing(service);
   if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:service.serviceType==='CUSTOM'&&definition.field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
   definition=definition.field==='materialCostPerSquare'
-    ?roofMaterialPresentationCopy(definition,service,pricing,{pricesInDollars:true})
+    ?roofMaterialPresentationCopy(definition,service,pricing,{pricesInDollars:true,leafHelp:compact})
     :definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode]
       ?{...definition,...definition.copyByAccessoryPricingMode[pricing.accessoryPricingMode]}
       :definition;

@@ -55,10 +55,15 @@ export function roofMaterialPresentationCopy(definition,service={},pricing=servi
   const resolved=variants.length>1
     ?titled('Roofing material price per square by product','The inclusion basis differs by roofing product. Read the inclusion and exclusion wording shown with each product price.','Each product keeps its own confirmed material-price basis.')
     :(Object.values(byProduct)[0]||ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE[mode]);
+  const tree=definition.tree?{...definition.tree}:undefined;
+  if(tree){
+    if(variants.length>1||options.leafHelp===true)tree.leafHelp=Object.fromEntries(Object.entries(byProduct).map(([key,value])=>[key,value.label]));
+    else delete tree.leafHelp;
+  }
   return {
     ...definition,
     ...resolved,
-    ...(definition.tree?{tree:{...definition.tree,leafHelp:Object.fromEntries(Object.entries(byProduct).map(([key,value])=>[key,value.label]))}}:{})
+    ...(tree?{tree}:{})
   };
 }
 

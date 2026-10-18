@@ -183,7 +183,7 @@ test('Agent3 F14: roof copy follows each product receipt and effective tier pric
 
     await show('interview',{definition,pricing:{accessoryPricingMode:'itemized',materialCostPerSquare:{asphalt_shingle:100}},value:{asphalt_shingle:100}});
     assert.match(await page.locator('.interview-copy').textContent(),/EXCLUDING separately itemized starter.*INCLUDING flashing and vents/i);
-    assert.match(await page.locator('.field-help').textContent(),/INCLUDING flashing and vents/i);
+    assert.equal(await page.locator('.field-help').count(),0);
     await show('interview',{definition,pricing:{accessoryPricingMode:'per_square_allin',materialCostPerSquare:{asphalt_shingle:100}},value:{asphalt_shingle:100}});
     assert.match(await page.locator('.interview-copy').textContent(),/INCLUDING starter, drip edge, ridge cap, flashing, and vents/i);
   });
