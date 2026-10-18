@@ -1,0 +1,26 @@
+{
+  "command": "node",
+  "args": [
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/auditFixes20261003.spec.mjs",
+    "test/quoteEngineVNextRepairs.spec.js",
+    "test/voiceCorrectionSequences20261018.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/1750c872b36f/off-the-clock-accuracy-integration",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T06:08:29.056Z",
+  "environment": {
+    "PRICEBOOK_PATH": "created per worker by test/pricebookTestEnv.mjs",
+    "providers": "synthetic injected Google/Twilio clients",
+    "TMPDIR": "/workspace/scratch/1750c872b36f/qe-voice-selection-repair.iEx40c"
+  },
+  "exitCode": 0,
+  "signal": null,
+  "finishedAt": "2026-10-18T06:09:38.267Z",
+  "outputErrors": []
+}

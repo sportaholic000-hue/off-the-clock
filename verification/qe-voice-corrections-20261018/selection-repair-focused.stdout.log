@@ -1,0 +1,1331 @@
+TAP version 13
+# (node:23) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D01: shares split the billed line, so a 100% materials share taxes exactly like tax-entire-job
+ok 1 - D01: shares split the billed line, so a 100% materials share taxes exactly like tax-entire-job
+  ---
+  duration_ms: 682.797418
+  type: 'test'
+  ...
+# Subtest: D01: with a terrain factor, the labor and materials portions still add back to the billed line
+ok 2 - D01: with a terrain factor, the labor and materials portions still add back to the billed line
+  ---
+  duration_ms: 102.947799
+  type: 'test'
+  ...
+# Subtest: M04: the surcharge on installed selling-price labor is never marked up; ordinary cost labor keeps the owner setting
+ok 3 - M04: the surcharge on installed selling-price labor is never marked up; ordinary cost labor keeps the owner setting
+  ---
+  duration_ms: 251.532483
+  type: 'test'
+  ...
+# Subtest: D04: an incomplete second flat-roof membrane does not block a complete one
+ok 4 - D04: an incomplete second flat-roof membrane does not block a complete one
+  ---
+  duration_ms: 152.847721
+  type: 'test'
+  ...
+# Subtest: D05: a fence type typed as "Wood Privacy" is stored and registered under one key and quotes
+ok 5 - D05: a fence type typed as "Wood Privacy" is stored and registered under one key and quotes
+  ---
+  duration_ms: 99.3954
+  type: 'test'
+  ...
+# Subtest: D06: included-price choices list option overrides by name and never offer minimums
+ok 6 - D06: included-price choices list option overrides by name and never offer minimums
+  ---
+  duration_ms: 10.468225
+  type: 'test'
+  ...
+# Subtest: D03: the default settings a quote uses are saved with the service and shown for approval
+ok 7 - D03: the default settings a quote uses are saved with the service and shown for approval
+  ---
+  duration_ms: 71.9619
+  type: 'test'
+  ...
+# Subtest: D10: inches are accepted to two decimal places; finer values are refused, never silently rounded; exact parts never show 12 inches
+ok 8 - D10: inches are accepted to two decimal places; finer values are refused, never silently rounded; exact parts never show 12 inches
+  ---
+  duration_ms: 204.954282
+  type: 'test'
+  ...
+# Subtest: D08/D09: tax note states the installed-share rule; no accessible name exposes an internal key
+ok 9 - D08/D09: tax note states the installed-share rule; no accessible name exposes an internal key
+  ---
+  duration_ms: 2.959899
+  type: 'test'
+  ...
+# Subtest: M03: a large repair is priced only up to the area the owner says it covers
+ok 10 - M03: a large repair is priced only up to the area the owner says it covers
+  ---
+  duration_ms: 405.345321
+  type: 'test'
+  ...
+# Subtest: C03: the price-book currency is validated, stated on every quote and carried in the customer result
+ok 11 - C03: the price-book currency is validated, stated on every quote and carried in the customer result
+  ---
+  duration_ms: 266.763461
+  type: 'test'
+  ...
+# Subtest: Audit 2 \#1 (D02): an AI reading applies only to the unchanged question and value it was asked about
+ok 12 - Audit 2 \#1 (D02): an AI reading applies only to the unchanged question and value it was asked about
+  ---
+  duration_ms: 0.409375
+  type: 'test'
+  ...
+# Subtest: Audit 2 \#2 (D07): readiness is computed once per saved revision, not on every quote
+ok 13 - Audit 2 \#2 (D07): readiness is computed once per saved revision, not on every quote
+  ---
+  duration_ms: 174.596948
+  type: 'test'
+  ...
+# Subtest: Audit 2 \#3 and \#6 (C03): currency is an active, required setting and is never shown as retained legacy data
+ok 14 - Audit 2 \#3 and \#6 (C03): currency is an active, required setting and is never shown as retained legacy data
+  ---
+  duration_ms: 188.927446
+  type: 'test'
+  ...
+# Subtest: Audit 2 \#4 and \#5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers
+ok 15 - Audit 2 \#4 and \#5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers
+  ---
+  duration_ms: 1560.954574
+  type: 'test'
+  ...
+# Subtest: F01: a save whose durability cannot be confirmed pauses quoting until a confirmed save
+ok 16 - F01: a save whose durability cannot be confirmed pauses quoting until a confirmed save
+  ---
+  duration_ms: 122.080106
+  type: 'test'
+  ...
+# Subtest: F01: if anything fails before the saved book is replaced, the previous book stays current and quoting is not paused
+ok 17 - F01: if anything fails before the saved book is replaced, the previous book stays current and quoting is not paused
+  ---
+  duration_ms: 3.711641
+  type: 'test'
+  ...
+# Subtest: F02: two processes saving against the same revision cannot both succeed
+ok 18 - F02: two processes saving against the same revision cannot both succeed
+  ---
+  duration_ms: 2289.716882
+  type: 'test'
+  ...
+# Subtest: F03 + audit defects 6 and 7: a pending confirmation keeps a newer entry, blocks a second confirmation and blocks review
+ok 19 - F03 + audit defects 6 and 7: a pending confirmation keeps a newer entry, blocks a second confirmation and blocks review
+  ---
+  duration_ms: 1.669756
+  type: 'test'
+  ...
+# Subtest: F05: the sanitizer binds currency to the reproduced quote
+ok 20 - F05: the sanitizer binds currency to the reproduced quote
+  ---
+  duration_ms: 98.812254
+  type: 'test'
+  ...
+# Subtest: F06: an AI answer with no clear price asks the owner to clarify, with one provider call and no retry
+ok 21 - F06: an AI answer with no clear price asks the owner to clarify, with one provider call and no retry
+  ---
+  duration_ms: 18.07627
+  type: 'test'
+  ...
+# Subtest: F04 and G01: readiness for a 10 x 10 flat-roof catalog stays correct and bounded; CI runs the strict quote gate
+ok 22 - F04 and G01: readiness for a 10 x 10 flat-roof catalog stays correct and bounded; CI runs the strict quote gate
+  ---
+  duration_ms: 160.73712
+  type: 'test'
+  ...
+# Subtest: Defect 1: a failed recovery save never clears the pause left by an earlier unconfirmed save
+ok 23 - Defect 1: a failed recovery save never clears the pause left by an earlier unconfirmed save
+  ---
+  duration_ms: 3.697958
+  type: 'test'
+  ...
+# Subtest: Defect 2: when only the flush after clearing the pause fails, the save succeeds and nothing claims quoting is paused
+ok 24 - Defect 2: when only the flush after clearing the pause fails, the save succeeds and nothing claims quoting is paused
+  ---
+  duration_ms: 5.19625
+  type: 'test'
+  ...
+# (node:39) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:47) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Save lock: a living holder is never overridden, a crashed holder releases at once, old lock files are ignored, no lock files are created
+ok 25 - Save lock: a living holder is never overridden, a crashed holder releases at once, old lock files are ignored, no lock files are created
+  ---
+  duration_ms: 3990.999901
+  type: 'test'
+  ...
+# (node:55) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:56) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# customer-facing 40 x 40 readiness ms: 15
+# owner-facing 40 x 40 readiness ms: 74
+# Subtest: Save lock: two processes saving the same revision produce one saved edit and one refusal, never a silent overwrite
+ok 26 - Save lock: two processes saving the same revision produce one saved edit and one refusal, never a silent overwrite
+  ---
+  duration_ms: 418.614084
+  type: 'test'
+  ...
+# Subtest: Readiness: every pair is checked exactly; the customer-facing check stops at the first live product with the same answer and stays fast
+ok 27 - Readiness: every pair is checked exactly; the customer-facing check stops at the first live product with the same answer and stays fast
+  ---
+  duration_ms: 108.358613
+  type: 'test'
+  ...
+# Subtest: Readiness for large pair catalogs: per-product owner coverage is exact, never misses a live pair, and stays under a second
+ok 28 - Readiness for large pair catalogs: per-product owner coverage is exact, never misses a live pair, and stays under a second
+  ---
+  duration_ms: 202.91748
+  type: 'test'
+  ...
+# (node:71) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:71) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/scratch/1750c872b36f/off-the-clock-accuracy-integration/test/quoteEngineVNextRepairs.spec.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /workspace/scratch/1750c872b36f/off-the-clock-accuracy-integration/package.json.
+# Subtest: repair 1: tax modes use independently calculated bases
+ok 29 - repair 1: tax modes use independently calculated bases
+  ---
+  duration_ms: 28.758845
+  type: 'test'
+  ...
+# Subtest: repairs 2 and 4: tax mode controls minimum ordering and adjustment tax
+ok 30 - repairs 2 and 4: tax mode controls minimum ordering and adjustment tax
+  ---
+  duration_ms: 11.431249
+  type: 'test'
+  ...
+# Subtest: repair 3: minimum floor uses tax attributable to the minimum scenario
+ok 31 - repair 3: minimum floor uses tax attributable to the minimum scenario
+  ---
+  duration_ms: 2.160184
+  type: 'test'
+  ...
+# Subtest: repair 5: positive cent totals remain exact and free complete offerings require classification
+ok 32 - repair 5: positive cent totals remain exact and free complete offerings require classification
+  ---
+  duration_ms: 14.151235
+  type: 'test'
+  ...
+# Subtest: repair 6: roof replacement enforces only its supported service minimum
+ok 33 - repair 6: roof replacement enforces only its supported service minimum
+  ---
+  duration_ms: 9.397045
+  type: 'test'
+  ...
+# Subtest: repair 7: inherited interior prep factors cannot price measured wall area
+ok 34 - repair 7: inherited interior prep factors cannot price measured wall area
+  ---
+  duration_ms: 3.520358
+  type: 'test'
+  ...
+# Subtest: repair 8: exterior primer scope fails closed without an approved primer price contract
+ok 35 - repair 8: exterior primer scope fails closed without an approved primer price contract
+  ---
+  duration_ms: 3.109591
+  type: 'test'
+  ...
+# Subtest: Oct3: wall height adjusts ceiling labor with the shared height factor
+ok 36 - Oct3: wall height adjusts ceiling labor with the shared height factor
+  ---
+  duration_ms: 4.786679
+  type: 'test'
+  ...
+# Subtest: repair 10: flooring underlayment has a field-specific installed-area sell basis
+ok 37 - repair 10: flooring underlayment has a field-specific installed-area sell basis
+  ---
+  duration_ms: 12.838173
+  type: 'test'
+  ...
+# Subtest: repair 10: roofing underlayment has a field-specific installed-area sell basis
+ok 38 - repair 10: roofing underlayment has a field-specific installed-area sell basis
+  ---
+  duration_ms: 8.737804
+  type: 'test'
+  ...
+# Subtest: repair 11: unknown flat-roof membrane or layer count always requires review
+ok 39 - repair 11: unknown flat-roof membrane or layer count always requires review
+  ---
+  duration_ms: 4.812599
+  type: 'test'
+  ...
+# Subtest: repair 12: measured affected area derives repair categories at every boundary
+ok 40 - repair 12: measured affected area derives repair categories at every boundary
+  ---
+  duration_ms: 33.676722
+  type: 'test'
+  ...
+# Subtest: repair 13: active leak urgency survives every review path
+ok 41 - repair 13: active leak urgency survives every review path
+  ---
+  duration_ms: 17.53665
+  type: 'test'
+  ...
+# Subtest: repair 14: selected gate widths fail closed without an approved width-pricing contract
+ok 42 - repair 14: selected gate widths fail closed without an approved width-pricing contract
+  ---
+  duration_ms: 2.762089
+  type: 'test'
+  ...
+# Subtest: repair 15: corner count is not required and cannot be silently ignored
+ok 43 - repair 15: corner count is not required and cannot be silently ignored
+  ---
+  duration_ms: 1.490829
+  type: 'test'
+  ...
+# Subtest: repair 16: fencing requires executable post prices but never consumes the obsolete per-gate scalar
+ok 44 - repair 16: fencing requires executable post prices but never consumes the obsolete per-gate scalar
+  ---
+  duration_ms: 1.13184
+  type: 'test'
+  ...
+# Subtest: repair 17: mixed concrete and digging charge fails closed without an allocation rule
+ok 45 - repair 17: mixed concrete and digging charge fails closed without an allocation rule
+  ---
+  duration_ms: 1.541936
+  type: 'test'
+  ...
+# Subtest: repair 18: exposed aggregate fails closed without approved material pricing
+ok 46 - repair 18: exposed aggregate fails closed without approved material pricing
+  ---
+  duration_ms: 8.281408
+  type: 'test'
+  ...
+# Subtest: repair 19: zero and missing remain distinct for conditional prices
+ok 47 - repair 19: zero and missing remain distinct for conditional prices
+  ---
+  duration_ms: 11.15166
+  type: 'test'
+  ...
+# Subtest: repair 20: owner preview evaluates a valid inactive draft without enabling customer quote
+ok 48 - repair 20: owner preview evaluates a valid inactive draft without enabling customer quote
+  ---
+  duration_ms: 2.392454
+  type: 'test'
+  ...
+# Subtest: repair 21: owner pricing diagnostics identify exact fields and failure kinds
+ok 49 - repair 21: owner pricing diagnostics identify exact fields and failure kinds
+  ---
+  duration_ms: 6.263868
+  type: 'test'
+  ...
+# Subtest: repair 22: every failed tier retains separate field diagnostics
+ok 50 - repair 22: every failed tier retains separate field diagnostics
+  ---
+  duration_ms: 7.947978
+  type: 'test'
+  ...
+# Subtest: repair 23: customer sees unavailable option notice without owner diagnostics
+ok 51 - repair 23: customer sees unavailable option notice without owner diagnostics
+  ---
+  duration_ms: 7.673405
+  type: 'test'
+  ...
+# Subtest: repair 24: customer review wording distinguishes missing measurements and details without exposing owner setup
+ok 52 - repair 24: customer review wording distinguishes missing measurements and details without exposing owner setup
+  ---
+  duration_ms: 3.872817
+  type: 'test'
+  ...
+# Subtest: repair 25: customer-safe price drivers rank by financial significance
+ok 53 - repair 25: customer-safe price drivers rank by financial significance
+  ---
+  duration_ms: 15.562344
+  type: 'test'
+  ...
+# Subtest: repair 26: every calculation line declares a reproducible evidence variant
+ok 54 - repair 26: every calculation line declares a reproducible evidence variant
+  ---
+  duration_ms: 13.416321
+  type: 'test'
+  ...
+# Subtest: repair 27: measured quotes expose the exact effective range buffer
+ok 55 - repair 27: measured quotes expose the exact effective range buffer
+  ---
+  duration_ms: 2.884953
+  type: 'test'
+  ...
+# Subtest: repair 28: ordinary tests include every VNext suite and keep the dedicated gate
+ok 56 - repair 28: ordinary tests include every VNext suite and keep the dedicated gate
+  ---
+  duration_ms: 1614.677529
+  type: 'test'
+  ...
+# Subtest: repair 29: the real price-book preview can calculate an unconfirmed AI draft without confirming it
+ok 57 - repair 29: the real price-book preview can calculate an unconfirmed AI draft without confirming it
+  ---
+  duration_ms: 21.635306
+  type: 'test'
+  ...
+# Subtest: repair 30: permitted zero disposal and explicit included scope stay distinct from unclassified core zero
+ok 58 - repair 30: permitted zero disposal and explicit included scope stay distinct from unclassified core zero
+  ---
+  duration_ms: 17.904402
+  type: 'test'
+  ...
+# Subtest: repair 31: flooring underlayment requirements are product-specific and vinyl-only controls do not block tile
+ok 59 - repair 31: flooring underlayment requirements are product-specific and vinyl-only controls do not block tile
+  ---
+  duration_ms: 5.530006
+  type: 'test'
+  ...
+# Subtest: repair 32: unresolved material cost inputs review while exact flooring thresholds quote
+ok 60 - repair 32: unresolved material cost inputs review while exact flooring thresholds quote
+  ---
+  duration_ms: 15.01403
+  type: 'test'
+  ...
+# Subtest: repair 33: conditional customer fields are rejected whenever their selected scope cannot consume them
+ok 61 - repair 33: conditional customer fields are rejected whenever their selected scope cannot consume them
+  ---
+  duration_ms: 2.953526
+  type: 'test'
+  ...
+# Subtest: repair 34: missing and duplicate service previews report the lookup defect instead of inactive status
+ok 62 - repair 34: missing and duplicate service previews report the lookup defect instead of inactive status
+  ---
+  duration_ms: 1.069497
+  type: 'test'
+  ...
+# Subtest: repair 35: decking distinguishes missing scope from confirmed zero and preserves the per-sheet explanation without its owner rate
+ok 63 - repair 35: decking distinguishes missing scope from confirmed zero and preserves the per-sheet explanation without its owner rate
+  ---
+  duration_ms: 15.582144
+  type: 'test'
+  ...
+# Subtest: repair 36: internal review retains lead evidence and customer sanitization removes it
+ok 64 - repair 36: internal review retains lead evidence and customer sanitization removes it
+  ---
+  duration_ms: 2.599484
+  type: 'test'
+  ...
+# Subtest: repair 37: metadata and customer results describe only behavior the candidate actually implements
+ok 65 - repair 37: metadata and customer results describe only behavior the candidate actually implements
+  ---
+  duration_ms: 22.662479
+  type: 'test'
+  ...
+# Subtest: repair 38: intrinsic range scenarios rewrite amount and evidence together, including an intentional free low bound
+ok 66 - repair 38: intrinsic range scenarios rewrite amount and evidence together, including an intentional free low bound
+  ---
+  duration_ms: 1.716718
+  type: 'test'
+  ...
+# Subtest: repair 39: inspection-first reviews retain submitted scope and validated measurements through the real price-book path
+ok 67 - repair 39: inspection-first reviews retain submitted scope and validated measurements through the real price-book path
+  ---
+  duration_ms: 1.702447
+  type: 'test'
+  ...
+# Subtest: repair 40: invalid provenance and disclaimer values fail every status, preview, and live path closed
+ok 68 - repair 40: invalid provenance and disclaimer values fail every status, preview, and live path closed
+  ---
+  duration_ms: 12.073615
+  type: 'test'
+  ...
+# Subtest: repair 41: only an explicit owner caller can receive internal quote or review data
+ok 69 - repair 41: only an explicit owner caller can receive internal quote or review data
+  ---
+  duration_ms: 1.878983
+  type: 'test'
+  ...
+# Subtest: repair 42: every open shaped-map family rejects noncanonical keys at the exact dotted path
+ok 70 - repair 42: every open shaped-map family rejects noncanonical keys at the exact dotted path
+  ---
+  duration_ms: 3.502771
+  type: 'test'
+  ...
+# Subtest: repair 43: a concrete finish multiplier below one cannot save or disappear from the calculation
+ok 71 - repair 43: a concrete finish multiplier below one cannot save or disappear from the calculation
+  ---
+  duration_ms: 18.918416
+  type: 'test'
+  ...
+# Subtest: repair 44: money-driving derived quantities are hand-recomputed across every affected trade
+ok 72 - repair 44: money-driving derived quantities are hand-recomputed across every affected trade
+  ---
+  duration_ms: 26.130797
+  type: 'test'
+  ...
+# Subtest: repair 45: every scenario line records its effective basis, markup eligibility, and exact scenario cents
+ok 73 - repair 45: every scenario line records its effective basis, markup eligibility, and exact scenario cents
+  ---
+  duration_ms: 5.995785
+  type: 'test'
+  ...
+# Subtest: repair 46: blocked scopes expose only executable Class 2 controls and the actual owner decision
+ok 74 - repair 46: blocked scopes expose only executable Class 2 controls and the actual owner decision
+  ---
+  duration_ms: 32.182908
+  type: 'test'
+  ...
+# Subtest: repair 47: intrinsic range multiplication and midpoint arithmetic stay within safe integer cents
+ok 75 - repair 47: intrinsic range multiplication and midpoint arithmetic stay within safe integer cents
+  ---
+  duration_ms: 1.210868
+  type: 'test'
+  ...
+# Subtest: repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed
+ok 76 - repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed
+  ---
+  duration_ms: 35402.599473
+  type: 'test'
+  ...
+# Subtest: repair 49: a positive peak percentage over intentionally free labor remains a valid zero charge
+ok 77 - repair 49: a positive peak percentage over intentionally free labor remains a valid zero charge
+  ---
+  duration_ms: 1.918112
+  type: 'test'
+  ...
+# Subtest: repair 50: misplaced quote-affecting service controls fail closed instead of being ignored
+ok 78 - repair 50: misplaced quote-affecting service controls fail closed instead of being ignored
+  ---
+  duration_ms: 6.512548
+  type: 'test'
+  ...
+# Subtest: repair 51: malformed top-level quote containers return review diagnostics instead of throwing
+ok 79 - repair 51: malformed top-level quote containers return review diagnostics instead of throwing
+  ---
+  duration_ms: 1.366343
+  type: 'test'
+  ...
+# Subtest: repair 52: activation executes formulas and cannot mark an overflowing service live
+ok 80 - repair 52: activation executes formulas and cannot mark an overflowing service live
+  ---
+  duration_ms: 25.094066
+  type: 'test'
+  ...
+# Subtest: repair 53: displayed ranges fail closed before integer-cent rounding or buffering overflows
+ok 81 - repair 53: displayed ranges fail closed before integer-cent rounding or buffering overflows
+  ---
+  duration_ms: 2.590894
+  type: 'test'
+  ...
+# Subtest: repair 54: exported validators and tier boundaries fail closed on malformed structured data
+ok 82 - repair 54: exported validators and tier boundaries fail closed on malformed structured data
+  ---
+  duration_ms: 3.107742
+  type: 'test'
+  ...
+# Subtest: repair 55: an independent arithmetic oracle matches the shared pipeline across 1,152 policy combinations
+ok 83 - repair 55: an independent arithmetic oracle matches the shared pipeline across 1,152 policy combinations
+  ---
+  duration_ms: 1819.103323
+  type: 'test'
+  ...
+# Subtest: repair 56: direct calculator boundaries fail closed with exact defensive diagnostics
+ok 84 - repair 56: direct calculator boundaries fail closed with exact defensive diagnostics
+  ---
+  duration_ms: 8.251672
+  type: 'test'
+  ...
+# Subtest: repair 57: every selected common fee follows its exact owner or customer boolean without cross-fee leakage
+ok 85 - repair 57: every selected common fee follows its exact owner or customer boolean without cross-fee leakage
+  ---
+  duration_ms: 34.153631
+  type: 'test'
+  ...
+# Subtest: repair 58: cross-field and shaped-structure validators reject every adversarial relationship at its exact path
+ok 86 - repair 58: cross-field and shaped-structure validators reject every adversarial relationship at its exact path
+  ---
+  duration_ms: 2.33524
+  type: 'test'
+  ...
+# Subtest: repair 59: public wrappers, materializers, and deep merges have explicit boundary behavior
+ok 87 - repair 59: public wrappers, materializers, and deep merges have explicit boundary behavior
+  ---
+  duration_ms: 3.573011
+  type: 'test'
+  ...
+# Subtest: repair 60: exported raw boundaries reject unresolved custom classification and malformed intrinsic range evidence
+ok 88 - repair 60: exported raw boundaries reject unresolved custom classification and malformed intrinsic range evidence
+  ---
+  duration_ms: 2.368911
+  type: 'test'
+  ...
+# Subtest: repair 61: price-book LIVE status executes fees, markup, add-ons, and final-total integrity through the real pipeline
+ok 89 - repair 61: price-book LIVE status executes fees, markup, add-ons, and final-total integrity through the real pipeline
+  ---
+  duration_ms: 66.177704
+  type: 'test'
+  ...
+# Subtest: repair 62: inherited properties and prototype-shaped tier overrides cannot supply hidden quote rates or approvals
+ok 90 - repair 62: inherited properties and prototype-shaped tier overrides cannot supply hidden quote rates or approvals
+  ---
+  duration_ms: 32.501629
+  type: 'test'
+  ...
+# Subtest: repair 63: zero-charge evidence distinguishes configured free prices from positive amounts rounded below one cent
+ok 91 - repair 63: zero-charge evidence distinguishes configured free prices from positive amounts rounded below one cent
+  ---
+  duration_ms: 7.171369
+  type: 'test'
+  ...
+# Subtest: repair 64: AI-sourced service rules cannot change a customer quote before explicit own-field confirmation
+ok 92 - repair 64: AI-sourced service rules cannot change a customer quote before explicit own-field confirmation
+  ---
+  duration_ms: 62.50924
+  type: 'test'
+  ...
+# Subtest: repair 65: LIVE activation executes worst-case configured branches across every variable-scope trade
+ok 93 - repair 65: LIVE activation executes worst-case configured branches across every variable-scope trade
+  ---
+  duration_ms: 257.324194
+  type: 'test'
+  ...
+# Subtest: repair 66: customer and lead boundaries reject malformed, inherited, or aliased records
+ok 94 - repair 66: customer and lead boundaries reject malformed, inherited, or aliased records
+  ---
+  duration_ms: 6.292468
+  type: 'test'
+  ...
+# Subtest: repair 67: public registries and malformed request boundaries cannot poison or crash the engine
+ok 95 - repair 67: public registries and malformed request boundaries cannot poison or crash the engine
+  ---
+  duration_ms: 17.647043
+  type: 'test'
+  ...
+# Subtest: repair 68: nested pricing is the one canonical service shape across status, preview, and live quotes
+ok 96 - repair 68: nested pricing is the one canonical service shape across status, preview, and live quotes
+  ---
+  duration_ms: 14.591661
+  type: 'test'
+  ...
+# Subtest: repair 69: equal partial measurements quote; unconfigured flooring overlays still require setup
+ok 97 - repair 69: equal partial measurements quote; unconfigured flooring overlays still require setup
+  ---
+  duration_ms: 17.006701
+  type: 'test'
+  ...
+# Subtest: repair 70: malformed business-default containers keep one exact root path across public APIs
+ok 98 - repair 70: malformed business-default containers keep one exact root path across public APIs
+  ---
+  duration_ms: 27.429496
+  type: 'test'
+  ...
+# Subtest: repair 71: accessor-backed public requests fail closed without leaking customer diagnostics
+ok 99 - repair 71: accessor-backed public requests fail closed without leaking customer diagnostics
+  ---
+  duration_ms: 2.054568
+  type: 'test'
+  ...
+# Subtest: repair 72: sparse tiers and seasonal arrays are rejected at exact paths
+ok 100 - repair 72: sparse tiers and seasonal arrays are rejected at exact paths
+  ---
+  duration_ms: 13.151438
+  type: 'test'
+  ...
+# Subtest: repair 74: snapshot trust is non-observable and cannot be forged through an exported value
+ok 101 - repair 74: snapshot trust is non-observable and cannot be forged through an exported value
+  ---
+  duration_ms: 0.481804
+  type: 'test'
+  ...
+# Subtest: repair 75: every exported evidence helper rejects accessors, sparse arrays, and named array data
+ok 102 - repair 75: every exported evidence helper rejects accessors, sparse arrays, and named array data
+  ---
+  duration_ms: 4.021033
+  type: 'test'
+  ...
+# Subtest: repair 76: price-book service arrays cannot hide sparse or named definitions
+ok 103 - repair 76: price-book service arrays cannot hide sparse or named definitions
+  ---
+  duration_ms: 1.296789
+  type: 'test'
+  ...
+# Subtest: repair 77: function and symbol values fail at their exact quote-data paths
+ok 104 - repair 77: function and symbol values fail at their exact quote-data paths
+  ---
+  duration_ms: 0.504518
+  type: 'test'
+  ...
+# Subtest: repair 78: landscaping fields explicitly sold as labor use labor financial treatment
+ok 105 - repair 78: landscaping fields explicitly sold as labor use labor financial treatment
+  ---
+  duration_ms: 4.82382
+  type: 'test'
+  ...
+# Subtest: repair 79: customer estimates require cent precision and a consistent first-option projection
+ok 106 - repair 79: customer estimates require cent precision and a consistent first-option projection
+  ---
+  duration_ms: 18.449169
+  type: 'test'
+  ...
+# Subtest: repair 80: customer projections are independent and bound to safe calculation evidence
+ok 107 - repair 80: customer projections are independent and bound to safe calculation evidence
+  ---
+  duration_ms: 7.254754
+  type: 'test'
+  ...
+# Subtest: repair 81: malformed pricing primitives retain exact paths through direct and price-book execution
+ok 108 - repair 81: malformed pricing primitives retain exact paths through direct and price-book execution
+  ---
+  duration_ms: 43.06735
+  type: 'test'
+  ...
+# Subtest: repair 82: prototype-backed approvals and fee selections are rejected across public APIs
+ok 109 - repair 82: prototype-backed approvals and fee selections are rejected across public APIs
+  ---
+  duration_ms: 1.431162
+  type: 'test'
+  ...
+# Subtest: repair 83: an exported service status cannot report LIVE without complete business defaults
+ok 110 - repair 83: an exported service status cannot report LIVE without complete business defaults
+  ---
+  duration_ms: 17.300602
+  type: 'test'
+  ...
+# Subtest: repair 84: fee selections and tier definitions enforce exact supported request shapes
+ok 111 - repair 84: fee selections and tier definitions enforce exact supported request shapes
+  ---
+  duration_ms: 7.528315
+  type: 'test'
+  ...
+# Subtest: repair 85: mutation after snapshot cannot bypass any later public boundary inspection
+ok 112 - repair 85: mutation after snapshot cannot bypass any later public boundary inspection
+  ---
+  duration_ms: 2.262931
+  type: 'test'
+  ...
+# Subtest: repair 86: customer projections remain bound to scenario totals, line sums, and the root calculation record
+ok 113 - repair 86: customer projections remain bound to scenario totals, line sums, and the root calculation record
+  ---
+  duration_ms: 5.681379
+  type: 'test'
+  ...
+# Subtest: repair 87: AI confirmation maps reject ignored keys and non-boolean approvals at every activation boundary
+ok 114 - repair 87: AI confirmation maps reject ignored keys and non-boolean approvals at every activation boundary
+  ---
+  duration_ms: 137.601713
+  type: 'test'
+  ...
+# Subtest: repair 88: deeply nested quote data fails closed without executing past the shared snapshot boundary
+ok 115 - repair 88: deeply nested quote data fails closed without executing past the shared snapshot boundary
+  ---
+  duration_ms: 3.758429
+  type: 'test'
+  ...
+# Subtest: repair 89: oversized sparse arrays fail before any dense-array scan can exhaust the request boundary
+ok 116 - repair 89: oversized sparse arrays fail before any dense-array scan can exhaust the request boundary
+  ---
+  duration_ms: 0.380031
+  type: 'test'
+  ...
+# Subtest: repair 90: omitted caller context is customer-safe and only explicit owner paths expose internal evidence
+ok 117 - repair 90: omitted caller context is customer-safe and only explicit owner paths expose internal evidence
+  ---
+  duration_ms: 17.820574
+  type: 'test'
+  ...
+# Subtest: repair 91: the direct calculator never rereads validated proxies or accessor-backed context
+ok 118 - repair 91: the direct calculator never rereads validated proxies or accessor-backed context
+  ---
+  duration_ms: 2.041659
+  type: 'test'
+  ...
+# Subtest: repair 92: standalone validation and owner previews cannot launder nested prototype-backed quote data
+ok 119 - repair 92: standalone validation and owner previews cannot launder nested prototype-backed quote data
+  ---
+  duration_ms: 1.306594
+  type: 'test'
+  ...
+# Subtest: repair 93: exact decimal half-cents round correctly without an epsilon across measured and derived quantities
+ok 120 - repair 93: exact decimal half-cents round correctly without an epsilon across measured and derived quantities
+  ---
+  duration_ms: 6.208352
+  type: 'test'
+  ...
+# Subtest: repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-on, and customer-range rounding
+ok 121 - repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-on, and customer-range rounding
+  ---
+  duration_ms: 5.495289
+  type: 'test'
+  ...
+# Subtest: repair 94: customer sanitization independently rejects forged exact line evidence
+ok 122 - repair 94: customer sanitization independently rejects forged exact line evidence
+  ---
+  duration_ms: 3.577387
+  type: 'test'
+  ...
+# Subtest: repair 95: preview-only results cannot be laundered into customer-ready estimates
+ok 123 - repair 95: preview-only results cannot be laundered into customer-ready estimates
+  ---
+  duration_ms: 22.864676
+  type: 'test'
+  ...
+# Subtest: repair 96: class-instance approvals and fee selections cannot cross plain-data trust boundaries
+ok 124 - repair 96: class-instance approvals and fee selections cannot cross plain-data trust boundaries
+  ---
+  duration_ms: 2.379346
+  type: 'test'
+  ...
+# Subtest: repair 97: every markup percentage accepted by defaults validation has reproducible exact evidence
+ok 125 - repair 97: every markup percentage accepted by defaults validation has reproducible exact evidence
+  ---
+  duration_ms: 67.438093
+  type: 'test'
+  ...
+# Subtest: repair 98: fee selections are accepted only for the matching configured selection mode
+ok 126 - repair 98: fee selections are accepted only for the matching configured selection mode
+  ---
+  duration_ms: 4.482107
+  type: 'test'
+  ...
+# Subtest: repair 99: the exported scenario materializer never returns an unvalidated regular line
+ok 127 - repair 99: the exported scenario materializer never returns an unvalidated regular line
+  ---
+  duration_ms: 2.350253
+  type: 'test'
+  ...
+# Subtest: repair 100: exact concrete dimensions obey the same practical area bound as direct area input
+ok 128 - repair 100: exact concrete dimensions obey the same practical area bound as direct area input
+  ---
+  duration_ms: 154.408794
+  type: 'test'
+  ...
+# Subtest: repair 101: positive quantities and factors below machine epsilon retain exact cents without admitting zero or negative values
+ok 129 - repair 101: positive quantities and factors below machine epsilon retain exact cents without admitting zero or negative values
+  ---
+  duration_ms: 59.837936
+  type: 'test'
+  ...
+# Subtest: repair 102: request diagnostics retain owner versus customer responsibility across direct and price-book boundaries
+ok 130 - repair 102: request diagnostics retain owner versus customer responsibility across direct and price-book boundaries
+  ---
+  duration_ms: 19.294699
+  type: 'test'
+  ...
+# Subtest: repair 103: standard and composite lines calculate from original exact multipliers, never their floating-point projections
+ok 131 - repair 103: standard and composite lines calculate from original exact multipliers, never their floating-point projections
+  ---
+  duration_ms: 36.331686
+  type: 'test'
+  ...
+# Subtest: repair 104: AI approval binds scalar map leaves added leaves rule maps and tiers to exact approved values
+ok 132 - repair 104: AI approval binds scalar map leaves added leaves rule maps and tiers to exact approved values
+  ---
+  duration_ms: 383.786796
+  type: 'test'
+  ...
+# Subtest: repair 105: decking rates stay internal under markup, margin and sell-price basis
+ok 133 - repair 105: decking rates stay internal under markup, margin and sell-price basis
+  ---
+  duration_ms: 56.049861
+  type: 'test'
+  ...
+# Subtest: repair 106: included and explicitly exclusive itemized accessories charge each component once
+ok 134 - repair 106: included and explicitly exclusive itemized accessories charge each component once
+  ---
+  duration_ms: 36.127199
+  type: 'test'
+  ...
+# Subtest: repair 107: flat roof existing membrane selects removal and explicit replacement selects installation
+ok 135 - repair 107: flat roof existing membrane selects removal and explicit replacement selects installation
+  ---
+  duration_ms: 32.862902
+  type: 'test'
+  ...
+# Subtest: repair 108: sod preparation owns old-lawn disposal and common fees require separate declared debris
+ok 136 - repair 108: sod preparation owns old-lawn disposal and common fees require separate declared debris
+  ---
+  duration_ms: 32.866789
+  type: 'test'
+  ...
+# Subtest: repair 109: replaced owner and customer common disposal need no selection but active fees do
+ok 137 - repair 109: replaced owner and customer common disposal need no selection but active fees do
+  ---
+  duration_ms: 56.46189
+  type: 'test'
+  ...
+# Subtest: repair 110: exact derived areas enforce direct minimum maximum and strict partial scope bounds
+ok 138 - repair 110: exact derived areas enforce direct minimum maximum and strict partial scope bounds
+  ---
+  duration_ms: 177.66968
+  type: 'test'
+  ...
+# Subtest: repair 111: decimal flooring bands use exact division at and around the threshold
+ok 139 - repair 111: decimal flooring bands use exact division at and around the threshold
+  ---
+  duration_ms: 32.563913
+  type: 'test'
+  ...
+# Subtest: repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates
+ok 140 - repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates
+  ---
+  duration_ms: 48.050589
+  type: 'test'
+  ...
+# Subtest: repair 113: membrane-specific maps activate without dormant average rates and unknown never falls back
+ok 141 - repair 113: membrane-specific maps activate without dormant average rates and unknown never falls back
+  ---
+  duration_ms: 75.974218
+  type: 'test'
+  ...
+# Subtest: repair 114: unsupported legacy or misspelled service roots are rejected at the exact path
+ok 142 - repair 114: unsupported legacy or misspelled service roots are rejected at the exact path
+  ---
+  duration_ms: 21.756149
+  type: 'test'
+  ...
+# Subtest: repair 115: leads require actionable reasons and matching request identity and submitted scope
+ok 143 - repair 115: leads require actionable reasons and matching request identity and submitted scope
+  ---
+  duration_ms: 2.984906
+  type: 'test'
+  ...
+# Subtest: repair 116: fractional mowing cents represent fifty dollars per ten thousand square feet exactly
+ok 144 - repair 116: fractional mowing cents represent fifty dollars per ten thousand square feet exactly
+  ---
+  duration_ms: 28.238172
+  type: 'test'
+  ...
+# Subtest: repair 117: permits require owner-controlled applicability with always and included controls
+ok 145 - repair 117: permits require owner-controlled applicability with always and included controls
+  ---
+  duration_ms: 28.055096
+  type: 'test'
+  ...
+# Subtest: repair 118: smallest finite factors and their products remain exact while unsupported factors fail validation
+ok 146 - repair 118: smallest finite factors and their products remain exact while unsupported factors fail validation
+  ---
+  duration_ms: 64.259842
+  type: 'test'
+  ...
+# Subtest: repair 119: customer ranges retain cent precision through ten and twenty dollar boundaries
+ok 147 - repair 119: customer ranges retain cent precision through ten and twenty dollar boundaries
+  ---
+  duration_ms: 179.039713
+  type: 'test'
+  ...
+# Subtest: repair 120: stair counts remain review-only until an all-inclusive or allocated owner contract exists
+ok 148 - repair 120: stair counts remain review-only until an all-inclusive or allocated owner contract exists
+  ---
+  duration_ms: 13.01422
+  type: 'test'
+  ...
+# Subtest: repair 121: flooring removal and disposal use only independently measured removal area
+ok 149 - repair 121: flooring removal and disposal use only independently measured removal area
+  ---
+  duration_ms: 66.153708
+  type: 'test'
+  ...
+# Subtest: repair 122: siding removal cannot reuse replacement type and installation area
+ok 150 - repair 122: siding removal cannot reuse replacement type and installation area
+  ---
+  duration_ms: 7.364109
+  type: 'test'
+  ...
+# Subtest: repair 123: concrete rejects impossible geometry and supports a measured closed irregular outline
+ok 151 - repair 123: concrete rejects impossible geometry and supports a measured closed irregular outline
+  ---
+  duration_ms: 80.024315
+  type: 'test'
+  ...
+# Subtest: repair 124: concrete demolition is review-only without existing-slab pricing facts
+ok 152 - repair 124: concrete demolition is review-only without existing-slab pricing facts
+  ---
+  duration_ms: 11.052822
+  type: 'test'
+  ...
+# Subtest: repair 125: commercial building type does not establish insulation or coverboard scope
+ok 153 - repair 125: commercial building type does not establish insulation or coverboard scope
+  ---
+  duration_ms: 17.116175
+  type: 'test'
+  ...
+# Subtest: repair 126: wall uniformity is explicit and ceiling coats are independently measured
+ok 154 - repair 126: wall uniformity is explicit and ceiling coats are independently measured
+  ---
+  duration_ms: 34.75758
+  type: 'test'
+  ...
+# Subtest: repair 127: exterior substrate coating and affected preparation remain review-only without an owner contract
+ok 155 - repair 127: exterior substrate coating and affected preparation remain review-only without an owner contract
+  ---
+  duration_ms: 8.445194
+  type: 'test'
+  ...
+# Subtest: repair 128: explicit zero semantics distinguish core prices free offerings included components and valid tiers
+ok 156 - repair 128: explicit zero semantics distinguish core prices free offerings included components and valid tiers
+  ---
+  duration_ms: 363.628757
+  type: 'test'
+  ...
+# Subtest: repair 129: persisted service UUID survives status preview quote and lead and rejects malformed or missing identity
+ok 157 - repair 129: persisted service UUID survives status preview quote and lead and rejects malformed or missing identity
+  ---
+  duration_ms: 29.980791
+  type: 'test'
+  ...
+# Subtest: repair 130: AI approval cannot be bypassed by deletion ordinary origin edits or same-type service copying
+ok 158 - repair 130: AI approval cannot be bypassed by deletion ordinary origin edits or same-type service copying
+  ---
+  duration_ms: 89.051542
+  type: 'test'
+  ...
+# Subtest: repair 131: price-map aliases require affirmative registered offering facts across materials and repairs
+ok 159 - repair 131: price-map aliases require affirmative registered offering facts across materials and repairs
+  ---
+  duration_ms: 179.588298
+  type: 'test'
+  ...
+# Subtest: repair 132: sod separate disposal uses one shared quote activation metadata and customer contract
+ok 160 - repair 132: sod separate disposal uses one shared quote activation metadata and customer contract
+  ---
+  duration_ms: 48.409338
+  type: 'test'
+  ...
+# Subtest: repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices
+ok 161 - repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices
+  ---
+  duration_ms: 190.234886
+  type: 'test'
+  ...
+# Subtest: repair 134: candidate metadata describes actual review-only scopes and removes obsolete flat Average advice
+ok 162 - repair 134: candidate metadata describes actual review-only scopes and removes obsolete flat Average advice
+  ---
+  duration_ms: 7.441544
+  type: 'test'
+  ...
+# Subtest: repair 135: lead urgency must equal the independently derived roof-leak facts
+ok 163 - repair 135: lead urgency must equal the independently derived roof-leak facts
+  ---
+  duration_ms: 7.074423
+  type: 'test'
+  ...
+# Subtest: repair 136: ready review and lead records require the current immutable behavior build identifier
+ok 164 - repair 136: ready review and lead records require the current immutable behavior build identifier
+  ---
+  duration_ms: 16.426509
+  type: 'test'
+  ...
+# Subtest: repair 137: direct rational projection handles the one-ULP counterexample halfway neighbors and subnormals
+ok 165 - repair 137: direct rational projection handles the one-ULP counterexample halfway neighbors and subnormals
+  ---
+  duration_ms: 13.165818
+  type: 'test'
+  ...
+# Subtest: repair 138: continuing collinear measured edges preserve exact geometry and reject backtracking crossing and nonclosure
+ok 166 - repair 138: continuing collinear measured edges preserve exact geometry and reject backtracking crossing and nonclosure
+  ---
+  duration_ms: 108.791191
+  type: 'test'
+  ...
+# Subtest: owner ruling: customer ranges expand to whole dollars while exact single prices retain cents
+ok 167 - owner ruling: customer ranges expand to whole dollars while exact single prices retain cents
+  ---
+  duration_ms: 92.891965
+  type: 'test'
+  ...
+# Subtest: owner ruling: all safe margins below one hundred percent apply exactly without an arbitrary cap
+ok 168 - owner ruling: all safe margins below one hundred percent apply exactly without an arbitrary cap
+  ---
+  duration_ms: 68.90914
+  type: 'test'
+  ...
+# Subtest: repair 139: offering UUIDs are unique per selector and facts bind the exact field value and UUID
+ok 169 - repair 139: offering UUIDs are unique per selector and facts bind the exact field value and UUID
+  ---
+  duration_ms: 48.087405
+  type: 'test'
+  ...
+# Subtest: repair 140: colliding persisted service IDs diagnose both records while unique IDs retain quote approval and lead identity
+ok 170 - repair 140: colliding persisted service IDs diagnose both records while unique IDs retain quote approval and lead identity
+  ---
+  duration_ms: 76.670144
+  type: 'test'
+  ...
+# Subtest: repair 141: missing registries inconsistent registries unsupported offerings and missing facts have distinct responsibility
+ok 171 - repair 141: missing registries inconsistent registries unsupported offerings and missing facts have distinct responsibility
+  ---
+  duration_ms: 21.09131
+  type: 'test'
+  ...
+# Subtest: repair 142: configured leads require the exact selected service and only explicit lookup reviews accept null identity
+ok 172 - repair 142: configured leads require the exact selected service and only explicit lookup reviews accept null identity
+  ---
+  duration_ms: 2.579357
+  type: 'test'
+  ...
+# Subtest: repair 143: included zero prices retain category and basis with independently calculated tax and markup controls
+ok 173 - repair 143: included zero prices retain category and basis with independently calculated tax and markup controls
+  ---
+  duration_ms: 206.128939
+  type: 'test'
+  ...
+# Subtest: repair 144: review-only metadata names exact supported fields and the actual outstanding scope decisions
+ok 174 - repair 144: review-only metadata names exact supported fields and the actual outstanding scope decisions
+  ---
+  duration_ms: 40.263295
+  type: 'test'
+  ...
+# Subtest: repair 145: fully rebuilt rate multiplier fee tax and markup forgeries cannot detach calculations from retained configuration
+ok 175 - repair 145: fully rebuilt rate multiplier fee tax and markup forgeries cannot detach calculations from retained configuration
+  ---
+  duration_ms: 119.894839
+  type: 'test'
+  ...
+# Subtest: repair 146: free included zero physical scope and sub-cent rounding have distinct private evidence reasons
+ok 176 - repair 146: free included zero physical scope and sub-cent rounding have distinct private evidence reasons
+  ---
+  duration_ms: 145.378172
+  type: 'test'
+  ...
+# Subtest: precision follow-up: composite sub-cent components retain rounding provenance and cannot activate dormant inclusion
+ok 177 - precision follow-up: composite sub-cent components retain rounding provenance and cannot activate dormant inclusion
+  ---
+  duration_ms: 278.484016
+  type: 'test'
+  ...
+# Subtest: repair 147: requested stored and receipt service types agree for every source and ordinary edits cannot convert identity
+ok 178 - repair 147: requested stored and receipt service types agree for every source and ordinary edits cannot convert identity
+  ---
+  duration_ms: 188.29246
+  type: 'test'
+  ...
+# Subtest: repair 147: equivalent UUID spellings canonicalize consistently across identity approvals zero policy offerings facts and duplicate detection
+ok 179 - repair 147: equivalent UUID spellings canonicalize consistently across identity approvals zero policy offerings facts and duplicate detection
+  ---
+  duration_ms: 972.758309
+  type: 'test'
+  ...
+# Subtest: repair 148: explicit free offerings bypass only their own minima with private evidence and paid sibling controls
+ok 180 - repair 148: explicit free offerings bypass only their own minima with private evidence and paid sibling controls
+  ---
+  duration_ms: 388.572408
+  type: 'test'
+  ...
+# Subtest: repair 149: positive cent ranges never display free and retain exact cents only when whole-dollar display would contain zero
+ok 181 - repair 149: positive cent ranges never display free and retain exact cents only when whole-dollar display would contain zero
+  ---
+  duration_ms: 258.621894
+  type: 'test'
+  ...
+# Subtest: repair 150: every inclusion path belongs to the exact configured service price contract
+ok 182 - repair 150: every inclusion path belongs to the exact configured service price contract
+  ---
+  duration_ms: 31.652984
+  type: 'test'
+  ...
+# Subtest: repair 150: dormant tier inclusion is validated using effective tier prices and preserves valid sibling options
+ok 183 - repair 150: dormant tier inclusion is validated using effective tier prices and preserves valid sibling options
+  ---
+  duration_ms: 61.374185
+  type: 'test'
+  ...
+# Subtest: handoff A: unrestricted markup has exact positive boundary and gross-margin controls
+ok 184 - handoff A: unrestricted markup has exact positive boundary and gross-margin controls
+  ---
+  duration_ms: 186.776883
+  type: 'test'
+  ...
+# Subtest: handoff A: quote preview price-book activation and evidence agree above the former cap
+ok 185 - handoff A: quote preview price-book activation and evidence agree above the former cap
+  ---
+  duration_ms: 94.461494
+  type: 'test'
+  ...
+# Subtest: handoff A: high markup preserves category tax fee and tier arithmetic
+ok 186 - handoff A: high markup preserves category tax fee and tier arithmetic
+  ---
+  duration_ms: 51.621967
+  type: 'test'
+  ...
+# Subtest: optional extras: absent prices disclose exclusions; malformed values and disclosure failures still review
+ok 187 - optional extras: absent prices disclose exclusions; malformed values and disclosure failures still review
+  ---
+  duration_ms: 171.77256
+  type: 'test'
+  ...
+# Subtest: handoff B: priced and explicitly zero selections charge once with signed price boundaries
+ok 188 - handoff B: priced and explicitly zero selections charge once with signed price boundaries
+  ---
+  duration_ms: 219.573527
+  type: 'test'
+  ...
+# Subtest: optional extras: tiers disclose their own exclusions and price edits invalidate AI approval
+ok 189 - optional extras: tiers disclose their own exclusions and price edits invalidate AI approval
+  ---
+  duration_ms: 475.590381
+  type: 'test'
+  ...
+# Subtest: handoff C: customer minima retain exact cents across all tax modes service floors and buffers
+ok 190 - handoff C: customer minima retain exact cents across all tax modes service floors and buffers
+  ---
+  duration_ms: 791.970094
+  type: 'test'
+  ...
+# Subtest: handoff C: minimum display agrees across entrypoints and does not change nonbinding ranges
+ok 191 - handoff C: minimum display agrees across entrypoints and does not change nonbinding ranges
+  ---
+  duration_ms: 162.390688
+  type: 'test'
+  ...
+# Subtest: handoff C: free sub-dollar and safe-money boundary controls retain their distinct behavior
+ok 192 - handoff C: free sub-dollar and safe-money boundary controls retain their distinct behavior
+  ---
+  duration_ms: 117.069665
+  type: 'test'
+  ...
+# Subtest: handoff B: candidate metadata identifies missing selected prices without changing production copy
+ok 193 - handoff B: candidate metadata identifies missing selected prices without changing production copy
+  ---
+  duration_ms: 6.309082
+  type: 'test'
+  ...
+# Subtest: customer amount precision: maximum down-error reviews exact and cents-preserving prices while adjacent cents stay distinct
+ok 194 - customer amount precision: maximum down-error reviews exact and cents-preserving prices while adjacent cents stay distinct
+  ---
+  duration_ms: 34.003787
+  type: 'test'
+  ...
+# Subtest: customer amount precision: positive one-cent errors review and both neighboring interior-painting amounts remain exact
+ok 195 - customer amount precision: positive one-cent errors review and both neighboring interior-painting amounts remain exact
+  ---
+  duration_ms: 55.34956
+  type: 'test'
+  ...
+# Subtest: customer amount precision: service minima and entered-rate totals use the same guard in two services
+ok 196 - customer amount precision: service minima and entered-rate totals use the same guard in two services
+  ---
+  duration_ms: 57.026271
+  type: 'test'
+  ...
+# Subtest: customer amount precision: generation live preview and price-book entrypoints preserve the same complete outcome
+ok 197 - customer amount precision: generation live preview and price-book entrypoints preserve the same complete outcome
+  ---
+  duration_ms: 180.415874
+  type: 'test'
+  ...
+# Subtest: customer amount precision: unsupported tier representations preserve supported siblings and exact availability notices
+ok 198 - customer amount precision: unsupported tier representations preserve supported siblings and exact availability notices
+  ---
+  duration_ms: 77.79765
+  type: 'test'
+  ...
+# Subtest: customer amount precision: all-failed tiers retain scope and technical diagnostics in a buildable internal lead
+ok 199 - customer amount precision: all-failed tiers retain scope and technical diagnostics in a buildable internal lead
+  ---
+  duration_ms: 4.861296
+  type: 'test'
+  ...
+# Subtest: customer amount precision: ordinary ranges fractional minima sub-dollar free and unrestricted markup controls retain wire cents
+ok 200 - customer amount precision: ordinary ranges fractional minima sub-dollar free and unrestricted markup controls retain wire cents
+  ---
+  duration_ms: 105.836051
+  type: 'test'
+  ...
+# Subtest: customer amount precision: synchronized public projection copies cannot replace the price fixed by original cents and configuration
+ok 201 - customer amount precision: synchronized public projection copies cannot replace the price fixed by original cents and configuration
+  ---
+  duration_ms: 33.661433
+  type: 'test'
+  ...
+# Subtest: customer amount precision: outward high display and cents-preserving high endpoints fail safely at their own boundaries
+ok 202 - customer amount precision: outward high display and cents-preserving high endpoints fail safely at their own boundaries
+  ---
+  duration_ms: 54.061274
+  type: 'test'
+  ...
+# (node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: voice corrections: changed dimensions require structured confirmation and price the corrected area
+ok 203 - voice corrections: changed dimensions require structured confirmation and price the corrected area
+  ---
+  duration_ms: 1099.362274
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":1,"receiptHashes":["2c055985657241619d3b332756f14f1ad71b47a0d90ccbdf111f834369a69e6e"],"quoteHashes":["009346b7f42fef8bc9aea9dfc8535193df23c54e6f2c65f1f992e6d128485233"]}
+# Subtest: voice corrections: adding stairs and then changing the selected stair package needs its own current scope token
+ok 204 - voice corrections: adding stairs and then changing the selected stair package needs its own current scope token
+  ---
+  duration_ms: 1011.880979
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"quoted","low":1152,"mid":1152,"high":1152,"receiptCount":1,"receiptHashes":["7e635f081567f5d2c8da0dd93e23c945628c56dc19fb80c373482b029e5364cf"],"quoteHashes":["b8bc2b06252a59e2f2c181f5cb75496419b8e115b2627c7978e1d10ac1cfe680"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["7e635f081567f5d2c8da0dd93e23c945628c56dc19fb80c373482b029e5364cf"],"quoteHashes":["b8bc2b06252a59e2f2c181f5cb75496419b8e115b2627c7978e1d10ac1cfe680"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":1332,"mid":1332,"high":1332,"receiptCount":2,"receiptHashes":["7e635f081567f5d2c8da0dd93e23c945628c56dc19fb80c373482b029e5364cf","ea8de5efeaadaa6c06087e1430c8d8502a39550a70a1d2417a169fabf898d806"],"quoteHashes":["b8bc2b06252a59e2f2c181f5cb75496419b8e115b2627c7978e1d10ac1cfe680","82fdc47f5c6b0550bf0420e1cc88b891b2a17ec0269ca6e75a30c9d78f6b5824"]}
+# Subtest: voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable
+ok 205 - voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable
+  ---
+  duration_ms: 909.433461
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["ffa3c72382524914da3d9613b2ee688ddada5dc3fa0d65395c62fe0fd1ab16ef"],"quoteHashes":["9ab07465a02b94942cbfa51982c2e1cf746f0e943e39df53d2809ceae88f284f"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["ffa3c72382524914da3d9613b2ee688ddada5dc3fa0d65395c62fe0fd1ab16ef"],"quoteHashes":["9ab07465a02b94942cbfa51982c2e1cf746f0e943e39df53d2809ceae88f284f"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"quoted","low":1940,"mid":1940,"high":1940,"receiptCount":2,"receiptHashes":["ffa3c72382524914da3d9613b2ee688ddada5dc3fa0d65395c62fe0fd1ab16ef","29cdcbeb7ea03ee002d8894a470a7d76d4ac3d839912f6f7b06d9f1d8a553f9a"],"quoteHashes":["9ab07465a02b94942cbfa51982c2e1cf746f0e943e39df53d2809ceae88f284f","419c3148a6b5216e604460c77ed70c7edf602c576964395c558074eb8ed2d2a2"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["ffa3c72382524914da3d9613b2ee688ddada5dc3fa0d65395c62fe0fd1ab16ef","29cdcbeb7ea03ee002d8894a470a7d76d4ac3d839912f6f7b06d9f1d8a553f9a"],"quoteHashes":["9ab07465a02b94942cbfa51982c2e1cf746f0e943e39df53d2809ceae88f284f","419c3148a6b5216e604460c77ed70c7edf602c576964395c558074eb8ed2d2a2"]}
+# Subtest: voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay
+ok 206 - voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay
+  ---
+  duration_ms: 1150.015746
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["3d8c07408af6d375d8e414de4fa6b72083aa765aaf3ae2c8fe093132a91384be"],"quoteHashes":["70b0bc7921a953510277ba5d489458f705ce7bd24e4403a9449b6d1266cce129"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["3d8c07408af6d375d8e414de4fa6b72083aa765aaf3ae2c8fe093132a91384be"],"quoteHashes":["70b0bc7921a953510277ba5d489458f705ce7bd24e4403a9449b6d1266cce129"]}
+# {"tool":"matchService","id":"correction-5","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":1,"receiptHashes":["3d8c07408af6d375d8e414de4fa6b72083aa765aaf3ae2c8fe093132a91384be"],"quoteHashes":["70b0bc7921a953510277ba5d489458f705ce7bd24e4403a9449b6d1266cce129"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["3d8c07408af6d375d8e414de4fa6b72083aa765aaf3ae2c8fe093132a91384be"],"quoteHashes":["70b0bc7921a953510277ba5d489458f705ce7bd24e4403a9449b6d1266cce129"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000001","status":"quoted","low":1335,"mid":1335,"high":1335,"receiptCount":2,"receiptHashes":["3d8c07408af6d375d8e414de4fa6b72083aa765aaf3ae2c8fe093132a91384be","0856f49a563d2a2b153f8e866185888e84e6480173bdca95a384b576de4428e4"],"quoteHashes":["70b0bc7921a953510277ba5d489458f705ce7bd24e4403a9449b6d1266cce129","8335e36fee24703dcb3d4e8a78f34e239a005503581fe8e4af90489c3520e7d3"]}
+# {"tool":"getQuote","id":"correction-8","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["3d8c07408af6d375d8e414de4fa6b72083aa765aaf3ae2c8fe093132a91384be","0856f49a563d2a2b153f8e866185888e84e6480173bdca95a384b576de4428e4"],"quoteHashes":["70b0bc7921a953510277ba5d489458f705ce7bd24e4403a9449b6d1266cce129","8335e36fee24703dcb3d4e8a78f34e239a005503581fe8e4af90489c3520e7d3"]}
+# Subtest: voice corrections: scope token and service handle cannot authorize another call
+ok 207 - voice corrections: scope token and service handle cannot authorize another call
+  ---
+  duration_ms: 1042.797603
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["7ddf9e7745b5fa98b721e9e69adfb8113fd3822dcbb183d41d15a5b43c11b2b2"],"quoteHashes":["783b605588ce7400b5f4366955ddd18046a12298e06778840985457bba7f1071"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000002","status":"needs_details","receiptCount":1,"receiptHashes":["7ddf9e7745b5fa98b721e9e69adfb8113fd3822dcbb183d41d15a5b43c11b2b2"],"quoteHashes":["783b605588ce7400b5f4366955ddd18046a12298e06778840985457bba7f1071"]}
+# {"tool":"matchService","id":"correction-5","call":"CA00000000000000000000000000000002","status":"matched","receiptCount":1,"receiptHashes":["7ddf9e7745b5fa98b721e9e69adfb8113fd3822dcbb183d41d15a5b43c11b2b2"],"quoteHashes":["783b605588ce7400b5f4366955ddd18046a12298e06778840985457bba7f1071"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000002","status":"needs_details","receiptCount":1,"receiptHashes":["7ddf9e7745b5fa98b721e9e69adfb8113fd3822dcbb183d41d15a5b43c11b2b2"],"quoteHashes":["783b605588ce7400b5f4366955ddd18046a12298e06778840985457bba7f1071"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000002","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["7ddf9e7745b5fa98b721e9e69adfb8113fd3822dcbb183d41d15a5b43c11b2b2","69161f59919f468ec6f79a27d4b1815dc1ea18caced97884d02b2ede94213a4b"],"quoteHashes":["783b605588ce7400b5f4366955ddd18046a12298e06778840985457bba7f1071","6b7b399048ae84885e624ac914af4f9ec550027bf85eb51f8c1b6aefe7c94e11"]}
+# Subtest: voice corrections: same-call same-revision service change cannot reuse another service scope token
+ok 208 - voice corrections: same-call same-revision service change cannot reuse another service scope token
+  ---
+  duration_ms: 1518.173234
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["6a1ea48a7f0d4a916fb49f9c6afeb8ee8f286310a7f6f53c867cd7daf896910e"],"quoteHashes":["d5db0c0b5f6eea375ba0019084af0082a22850f573e971ff19145ceb8e61e5cb"]}
+# {"tool":"matchService","id":"correction-4","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":1,"receiptHashes":["6a1ea48a7f0d4a916fb49f9c6afeb8ee8f286310a7f6f53c867cd7daf896910e"],"quoteHashes":["d5db0c0b5f6eea375ba0019084af0082a22850f573e971ff19145ceb8e61e5cb"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["6a1ea48a7f0d4a916fb49f9c6afeb8ee8f286310a7f6f53c867cd7daf896910e"],"quoteHashes":["d5db0c0b5f6eea375ba0019084af0082a22850f573e971ff19145ceb8e61e5cb"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":1072,"mid":1072,"high":1072,"receiptCount":2,"receiptHashes":["6a1ea48a7f0d4a916fb49f9c6afeb8ee8f286310a7f6f53c867cd7daf896910e","576711eac67ecc9f2ef13dbb2fb2b7c9db6fb7cab8a23c10af08db21de109d9e"],"quoteHashes":["d5db0c0b5f6eea375ba0019084af0082a22850f573e971ff19145ceb8e61e5cb","32f264da4e1e6da81c74531b73cc993afb7cdee1ef968f1b514c379292f9f350"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["6a1ea48a7f0d4a916fb49f9c6afeb8ee8f286310a7f6f53c867cd7daf896910e","576711eac67ecc9f2ef13dbb2fb2b7c9db6fb7cab8a23c10af08db21de109d9e"],"quoteHashes":["d5db0c0b5f6eea375ba0019084af0082a22850f573e971ff19145ceb8e61e5cb","32f264da4e1e6da81c74531b73cc993afb7cdee1ef968f1b514c379292f9f350"]}
+# Subtest: voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct
+ok 209 - voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct
+  ---
+  duration_ms: 1033.536221
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["402161cb39bc82d0ea6b9ac930591198427bc1a592e03a0460bf3972bdf118fd"],"quoteHashes":["30202f0683012ccee8a4b49b94d921bce6c25c02f0ab4b80816c8d0de18232d2"]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["402161cb39bc82d0ea6b9ac930591198427bc1a592e03a0460bf3972bdf118fd"],"quoteHashes":["30202f0683012ccee8a4b49b94d921bce6c25c02f0ab4b80816c8d0de18232d2"]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["402161cb39bc82d0ea6b9ac930591198427bc1a592e03a0460bf3972bdf118fd"],"quoteHashes":["30202f0683012ccee8a4b49b94d921bce6c25c02f0ab4b80816c8d0de18232d2"]}
+# {"tool":"getQuote","id":"confirmed-correction","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":2,"receiptHashes":["402161cb39bc82d0ea6b9ac930591198427bc1a592e03a0460bf3972bdf118fd","30835fde44fa150c5b655d0447c4de9a3734a09a4c6b58e414d480427ff413bc"],"quoteHashes":["30202f0683012ccee8a4b49b94d921bce6c25c02f0ab4b80816c8d0de18232d2","0b49c8853f73fb873d33b212b0090b70a4aaaf9ae5c455e526d65a31049414d7"]}
+# {"tool":"getQuote","id":"fresh-original-replay","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["402161cb39bc82d0ea6b9ac930591198427bc1a592e03a0460bf3972bdf118fd","30835fde44fa150c5b655d0447c4de9a3734a09a4c6b58e414d480427ff413bc"],"quoteHashes":["30202f0683012ccee8a4b49b94d921bce6c25c02f0ab4b80816c8d0de18232d2","0b49c8853f73fb873d33b212b0090b70a4aaaf9ae5c455e526d65a31049414d7"]}
+# {"tool":"getQuote","id":"fresh-correction-replay","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":2,"receiptHashes":["402161cb39bc82d0ea6b9ac930591198427bc1a592e03a0460bf3972bdf118fd","30835fde44fa150c5b655d0447c4de9a3734a09a4c6b58e414d480427ff413bc"],"quoteHashes":["30202f0683012ccee8a4b49b94d921bce6c25c02f0ab4b80816c8d0de18232d2","0b49c8853f73fb873d33b212b0090b70a4aaaf9ae5c455e526d65a31049414d7"]}
+1..209
+# tests 209
+# suites 0
+# pass 209
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69147.749066

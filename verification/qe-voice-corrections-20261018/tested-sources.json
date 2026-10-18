@@ -1,0 +1,8 @@
+{
+  "test/voiceCorrectionSequences20261018.spec.mjs": "b838e1892339addc35498927da8ac3c2c5fb43c46f56c652b22341fb08ae3ee4",
+  "test/auditFixes20261003.spec.mjs": "edc0dc6e8b744fc24b1b2180419ce7ae6b2e816002650f262aecfb4dc73a228c",
+  "test/quoteEngineVNextRepairs.spec.js": "82892ec283deccaa3667ae025a41fd2609cf7a4d15a34a6d1bf7d0dfc2300856",
+  "scripts/testSelection.mjs": "b7395c0de38536403eb51b0cfb4e1c04b7b5a4304e3ccbee22d05e41b8a46197",
+  "verification/qe-voice-corrections-20261018/sequenceFixture.mjs": "caf3a1e652ee653e696e6465e8604d2e5fd60d5f28a297cb7be7314759ce5dc9",
+  "verification/qe-voice-corrections-20261018/EXPECTED.md": "aad8e4246f95ed0006da299608457475b9d7e66ea740a11a462e41c55ce29cb2"
+}
