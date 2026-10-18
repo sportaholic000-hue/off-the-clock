@@ -548,6 +548,9 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const waste=quantityFactor(p.wasteFactorByComplexity[c.roofComplexity],`wasteFactorByComplexity.${c.roofComplexity}`,{allowZero:true});
   const bundles=p.bundlesPerSquare?.[c.replacementRoofType],purchase=purchasedQuantityVNext(squares,waste,bundles===undefined?undefined:exactDivide(1,bundles));
   const layers=count(c.existingLayers,'existingLayers'),story=quantityFactor(p.storyMultiplier[c.stories],`storyMultiplier.${c.stories}`),complexity=quantityFactor(p.complexityLaborMultiplier[c.roofComplexity],`complexityLaborMultiplier.${c.roofComplexity}`);
+  // Subtract before recording evidence: native 1.15 - 1 loses the half-cent tie.
+  // Keep separate adjustment lines and the exact rational through all later pricing.
+  const storyAddition=exactEvidence(exactSubtract(story,1)),complexityAddition=exactEvidence(exactSubtract(complexity,1));
   const exactTearOffSquares=exactMultiply(squares,layers);
   if(c.serviceScope==='partial'&&c.partialAreaSqft===undefined)recordQuantityDerivation(out,{
     name:'selectedRoofAreaSqft',formula:(c.roofSizeMethod==='footprint'?'roofSurfaceAreaSqft':'roofSizeInput')+' * partialPercent / 100',
@@ -567,8 +570,8 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const laborPath=`laborPerSquare.${c.replacementRoofType}`,tearPath=`tearOffPerSquare.${c.existingRoofType}`;
   const laborRate=valueAtPath(p,laborPath),tearRate=valueAtPath(p,tearPath),disposalRate=optionalMoney(p.disposalPerSquare,'disposalPerSquare')??0;
   add(out,makeLine({name:'Roofing labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,customerDriver:`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`}));
-  if(story!==1)add(out,makeLine({name:'Story labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'story addition',value:story-1,path:`storyMultiplier.${c.stories}`}]}));
-  if(complexity!==1)add(out,makeLine({name:'Roof-shape labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'complexity addition',value:complexity-1,path:`complexityLaborMultiplier.${c.roofComplexity}`}]}));
+  if(story!==1)add(out,makeLine({name:'Story labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
+  if(complexity!==1)add(out,makeLine({name:'Roof-shape labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'complexity addition',exactValue:complexityAddition,path:`complexityLaborMultiplier.${c.roofComplexity}`}]}));
   const areas={up_to_six:0,seven_to_nine:0,ten_to_twelve:0,over_twelve:0};
   let assumed=false;
   if(c.pitchMethod==='area_by_pitch')Object.assign(areas,{up_to_six:c.pitchAreaUpTo6Sqft||0,seven_to_nine:c.pitchArea7To9Sqft||0,ten_to_twelve:c.pitchArea10To12Sqft||0,over_twelve:c.pitchAreaOver12Sqft||0});
@@ -592,8 +595,8 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   add(out,makeLine({name:'Tear-off',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath}));
   if(layers>1)add(out,makeLine({name:'Additional-layer tear-off',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})}]}));
   if(story!==1){
-    add(out,makeLine({name:'Story tear-off adjustment',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'story addition',value:story-1,path:`storyMultiplier.${c.stories}`}]}));
-    if(layers>1)add(out,makeLine({name:'Additional-layer story adjustment',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})},{name:'story addition',value:story-1,path:`storyMultiplier.${c.stories}`}]}));
+    add(out,makeLine({name:'Story tear-off adjustment',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
+    if(layers>1)add(out,makeLine({name:'Additional-layer story adjustment',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})},{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
   }
   const underPath=`underlaymentPerSquare.${c.replacementRoofType}`;
   if(!p.scopeDetails?.['roof_underlayment_'+c.replacementRoofType]||p.underlaymentPriceBasis?.[c.replacementRoofType]!=='cost')add(out,makeLine({name:'Underlayment',category:'material',quantity:squares,unit:'measured installed roofing squares',rateCents:valueAtPath(p,underPath),ratePath:underPath,priceBasis:installedAreaSellPriceBasis(valueAtPath(p,`underlaymentPriceBasis.${c.replacementRoofType}`),`underlaymentPriceBasis.${c.replacementRoofType}`)}));

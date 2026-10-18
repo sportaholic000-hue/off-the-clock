@@ -1,0 +1,43 @@
+(node:48) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+(node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/astraQuoteScope.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/billingCustomerLifecycle20261007.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/bookingCalendar20261006.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/claudeScopeEditorOrder.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/everytrade20261017.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/interviewControls.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/leadCaptureRepair20261006.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/leadsServiceArea20261010.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/namedReviewContact20261006.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/overageDashboard20261006.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/ownerAlertRepair20261006.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/ownerAlertsDelivery20261006.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/ownerDashboard20261007.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/priceBookEditor.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/pricebookInterviewSave.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/pricebookPreviewFreshness.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteConcreteLandscape20261016.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteConfigurationInterview.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteDeliveryBatch20261015.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteDisplay20261006.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteFlooring20261016.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteLaneAGroundwork20261016.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteOwnerBatch20261015Editor.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteOwnerBatch20261015Interview.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quotePreviewTier20261005.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteReauditEditor20261006.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteRoofing20261016.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteStartingValues20261017.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/quoteZeroPricingRepair20261014.browser.spec.mjs did not complete every test successfully.
+FAIL: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/websitePriceDraft.browser.spec.mjs did not complete every test successfully.
+FAIL: Missing test results: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/fenceLaneB20261016.browser.spec.mjs
+FAIL: Missing test results: /workspace/scratch/5228524b6f21/qe-roof-exact-subtraction/test/landscapeFollowup20261016.browser.spec.mjs
+FAIL: The complete test summary is missing or contains unsuccessful tests.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

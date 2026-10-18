@@ -1,0 +1,272 @@
+[
+  {
+    "id": "story-1.15",
+    "before": 25,
+    "after": 27,
+    "lines": [
+      {
+        "name": "Story labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      }
+    ]
+  },
+  {
+    "id": "shape-1.15",
+    "before": 24,
+    "after": 25,
+    "lines": [
+      {
+        "name": "Roof-shape labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      }
+    ]
+  },
+  {
+    "id": "additional-layers-tie",
+    "before": 38,
+    "after": 41,
+    "lines": [
+      {
+        "name": "Story labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Additional-layer story adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      }
+    ]
+  },
+  {
+    "id": "mixed-pitch-full",
+    "before": 51,
+    "after": 54,
+    "lines": [
+      {
+        "name": "Story labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      }
+    ]
+  },
+  {
+    "id": "mixed-pitch-partial",
+    "before": 51,
+    "after": 54,
+    "lines": [
+      {
+        "name": "Story labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      }
+    ]
+  },
+  {
+    "id": "all-zero-opt-ins",
+    "before": 27,
+    "after": 29,
+    "lines": [
+      {
+        "name": "Story labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      }
+    ]
+  },
+  {
+    "id": "additive-story-shape",
+    "before": 26,
+    "after": 29,
+    "lines": [
+      {
+        "name": "Story labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "before": 1,
+        "after": 2,
+        "exactBefore": {
+          "numerator": "1499999999999999",
+          "denominator": "1000000000000000"
+        },
+        "exactAfter": {
+          "numerator": "3",
+          "denominator": "2"
+        }
+      }
+    ]
+  }
+]

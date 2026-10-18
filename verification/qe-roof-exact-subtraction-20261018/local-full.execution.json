@@ -1,0 +1,12 @@
+{
+  "command": [
+    "npm",
+    "test"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/qe-roof-exact-subtraction",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T08:17:57.772Z",
+  "endedAt": "2026-10-18T08:29:08.864Z",
+  "code": 1,
+  "signal": null
+}
