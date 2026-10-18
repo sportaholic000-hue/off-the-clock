@@ -1,0 +1,308 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: catalog baseline control: a known 33rd saved gate quotes 455000 cents although the initial list omits it
+ok 1 - catalog baseline control: a known 33rd saved gate quotes 455000 cents although the initial list omits it
+  ---
+  duration_ms: 1190.650435
+  type: 'test'
+  ...
+# Subtest: catalog discovery: truncated saved-service question advertises a callable read-only lookup
+not ok 2 - catalog discovery: truncated saved-service question advertises a callable read-only lookup
+  ---
+  duration_ms: 804.008624
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'lookupQuoteCatalog'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'lookupQuoteCatalog'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:56:9)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog pagination: every one of 31 saved gates is reachable exactly once
+not ok 3 - catalog pagination: every one of 31 saved gates is reachable exactly once
+  ---
+  duration_ms: 722.441172
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:62:34'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:65:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog pagination: every one of 32 saved gates is reachable exactly once
+not ok 4 - catalog pagination: every one of 32 saved gates is reachable exactly once
+  ---
+  duration_ms: 783.934582
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:62:34'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:65:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog pagination: every one of 33 saved gates is reachable exactly once
+not ok 5 - catalog pagination: every one of 33 saved gates is reachable exactly once
+  ---
+  duration_ms: 779.439796
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:62:34'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:65:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog pagination: every one of 65 saved gates is reachable exactly once
+not ok 6 - catalog pagination: every one of 65 saved gates is reachable exactly once
+  ---
+  duration_ms: 3075.177763
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:62:34'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:65:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog planting: later supported plant size is paged, searched, selected and quoted at 15000 cents
+not ok 7 - catalog planting: later supported plant size is paged, searched, selected and quoted at 15000 cents
+  ---
+  duration_ms: 225.546162
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:72:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:74:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog search: duplicate descriptions retain distinct keys and widths; missing results invent nothing
+not ok 8 - catalog search: duplicate descriptions retain distinct keys and widths; missing results invent nothing
+  ---
+  duration_ms: 839.62763
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:79:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:81:41)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog long labels: every complete Unicode gate scope survives byte-bounded pages
+not ok 9 - catalog long labels: every complete Unicode gate scope survives byte-bounded pages
+  ---
+  duration_ms: 775.839737
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:86:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:90:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog authority: lookup is read-only, cursors survive runtime restart, and prices stay private
+not ok 10 - catalog authority: lookup is read-only, cursors survive runtime restart, and prices stay private
+  ---
+  duration_ms: 803.037196
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:96:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:99:21)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog isolation: foreign owner/call handles and cursors, tampering, changed query or scope are rejected
+not ok 11 - catalog isolation: foreign owner/call handles and cursors, tampering, changed query or scope are rejected
+  ---
+  duration_ms: 739.902528
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:106:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:107:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog revision: a saved-book edit invalidates both old handle and cursor without changing the book again
+not ok 12 - catalog revision: a saved-book edit invalidates both old handle and cursor without changing the book again
+  ---
+  duration_ms: 760.836738
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:118:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:119:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog scope: selected fence type controls section gates and lookup never confirms a product
+not ok 13 - catalog scope: selected fence type controls section gates and lookup never confirms a product
+  ---
+  duration_ms: 1940.544811
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:125:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'UNKNOWN_VOICE_TOOL'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:11:30)
+    validateVoiceToolCall (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolSchemas.js:119:62)
+    dispatch (file:///workspace/scratch/8c21149eb366/voice-catalog/server/src/voice/toolDispatcher.js:162:98)
+    Object.tool (file:///workspace/scratch/8c21149eb366/voice-catalog/test/quoteDeliveryBatch20261015Fixture.mjs:54:47)
+    Object.lookup (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:36:35)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:127:41)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog schemas and projection: no mutation ID required, plan gate and existing input/output guards apply
+not ok 14 - catalog schemas and projection: no mutation ID required, plan gate and existing input/output guards apply
+  ---
+  duration_ms: 0.408605
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:132:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/voice-catalog/test/qeVoiceCatalogAccess20261018.spec.mjs:133:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: catalog question projection: duplicate display labels remain separate stable choices
+ok 15 - catalog question projection: duplicate display labels remain separate stable choices
+  ---
+  duration_ms: 0.687834
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 2
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13672.029691

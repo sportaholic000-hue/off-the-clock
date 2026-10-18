@@ -50,11 +50,22 @@ function savedPriceProjection(value,allowFirst=true){
  return Object.fromEntries(Object.entries(value).map(([name,item])=>[name,name==='firstVisit'?savedPriceProjection(item,false):/Estimate$/.test(name)?resultMoney(item):name==='skippedAddons'?resultTextList(item):resultText(item,name==='writtenDisclosure'?VOICE_WRITTEN_LIMIT:2000)]));
 }
 function baseResult(result){assertPlainObject(result,'INVALID_TOOL_RESULT');scanCustomerSafe(result);if(Buffer.byteLength(JSON.stringify(result),'utf8')>VOICE_RESULT_BYTES)fail('UNSAFE_TOOL_RESULT',502);return {status:resultText(result.status,80)};}
+function catalogChoices(value){
+  if(!Array.isArray(value)||value.length>32)fail('INVALID_TOOL_RESULT',502);
+  return value.map(choice=>{
+    assertClosed(choice,['value','label'],['value','label'],'INVALID_TOOL_RESULT');
+    if(!['string','boolean','number'].includes(typeof choice.value)||typeof choice.value==='number'&&!Number.isFinite(choice.value))fail('INVALID_TOOL_RESULT',502);
+    if(typeof choice.value==='string')resultText(choice.value,4000);
+    resultText(choice.label,4000);return {...choice};
+  });
+}
 function publicQuestionContract(value){
   assertClosed(value,['fields','customerFees'],['fields','customerFees'],'INVALID_TOOL_RESULT');
   if(!Array.isArray(value.fields)||value.fields.length>64||!Array.isArray(value.customerFees)||value.customerFees.length>4)fail('INVALID_TOOL_RESULT',502);
   const fields=value.fields.map(field=>{
-    assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','visibleWhen','details','scopeConfirmationRequired','confirmationToken','choices','moreChoicesAvailable','productConfirmationRequired','productConfirmationExemptValues','unknownAllowed','unknownLabel','integer'],['field','label','type'],'INVALID_TOOL_RESULT');
+    assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','visibleWhen','details','scopeConfirmationRequired','confirmationToken','choices','moreChoicesAvailable','catalogLookup','productConfirmationRequired','productConfirmationExemptValues','unknownAllowed','unknownLabel','integer'],['field','label','type'],'INVALID_TOOL_RESULT');
+    if(field.choices!==undefined)catalogChoices(field.choices);
+    if(field.catalogLookup!==undefined&&(field.catalogLookup!=='lookupQuoteCatalog'||field.moreChoicesAvailable!==true))fail('INVALID_TOOL_RESULT',502);
     if(field.unknownAllowed!==undefined&&(!['number_or_unknown','carpet_connections'].includes(field.type)||field.unknownAllowed!==true||field.unknownLabel!=='Not sure'||field.integer!==undefined&&(field.type!=='number_or_unknown'||field.integer!==true)))fail('INVALID_TOOL_RESULT',502);
     if (field.productConfirmationExemptValues !== undefined && (field.field !== 'existingFloorType' || field.type !== 'slug' || !Array.isArray(field.productConfirmationExemptValues) || field.productConfirmationExemptValues.length !== 1 || field.productConfirmationExemptValues[0] !== 'none')) fail('INVALID_TOOL_RESULT',502);
     for(const key of ['field','label','type'])resultText(field[key],4000);
@@ -70,6 +81,16 @@ function publicQuestionContract(value){
   });return {fields,customerFees};
 }
 const PROJECTORS=Object.freeze({
+  lookupQuoteCatalog(result){
+    const output=baseResult(result);
+    assertClosed(result,['status','field','choices','moreChoicesAvailable','nextCursor'],['status','field','choices','moreChoicesAvailable'],'INVALID_TOOL_RESULT');
+    if(result.status!=='choices'||typeof result.moreChoicesAvailable!=='boolean'||Object.hasOwn(result,'nextCursor')!==result.moreChoicesAvailable)fail('INVALID_TOOL_RESULT',502);
+    const field=resultText(result.field,100);if(!/^[a-zA-Z][a-zA-Z0-9_]{0,99}$/.test(field))fail('INVALID_TOOL_RESULT',502);
+    Object.assign(output,{field,choices:catalogChoices(result.choices),moreChoicesAvailable:result.moreChoicesAvailable});
+    if(result.nextCursor!==undefined){output.nextCursor=resultHandle(result.nextCursor);if(!output.choices.length)fail('INVALID_TOOL_RESULT',502);}
+    if(Buffer.byteLength(JSON.stringify(output),'utf8')>20_000)fail('UNSAFE_TOOL_RESULT',502);
+    return output;
+  },
   calculateVoiceArea(result){const output=baseResult(result);if(result.status!=='calculated')fail('INVALID_TOOL_RESULT',502);copyIf(result,output,'areaSqft',value=>{const area=resultText(value,30);if(!/^(?:0|[1-9]\d{0,6})(?:\.\d{1,12})?$/.test(area))fail('INVALID_TOOL_RESULT',502);return area;});if(!output.areaSqft)fail('INVALID_TOOL_RESULT',502);return output;},
   calculateListedPrice(result){
     const output=baseResult(result);

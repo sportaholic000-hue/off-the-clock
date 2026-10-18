@@ -1,0 +1,1462 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Oct16 section questions and complete gate identities are identical for widget and phone; no height options or post-count question
+ok 1 - Oct16 section questions and complete gate identities are identical for widget and phone; no height options or post-count question
+  ---
+  duration_ms: 29.912653
+  type: 'test'
+  ...
+# Subtest: Oct16 section gate names bind stable keys after selecting the fence type and height
+ok 2 - Oct16 section gate names bind stable keys after selecting the fence type and height
+  ---
+  duration_ms: 14.883673
+  type: 'test'
+  ...
+# Subtest: Oct16 production section flow: widget, phone, persistence, and public copy retain 91200 cents, runs and gate positions
+ok 3 - Oct16 production section flow: widget, phone, persistence, and public copy retain 91200 cents, runs and gate positions
+  ---
+  duration_ms: 992.951451
+  type: 'test'
+  ...
+# Subtest: Oct16 four fence types: phone aluminum has its own three 400000/410000/420000-cent options
+ok 4 - Oct16 four fence types: phone aluminum has its own three 400000/410000/420000-cent options
+  ---
+  duration_ms: 2458.63773
+  type: 'test'
+  ...
+# Subtest: Oct16 owner review: nested prices are dollars, row heights are feet, allocations are percentages, and zero choices name exact rows
+ok 5 - Oct16 owner review: nested prices are dollars, row heights are feet, allocations are percentages, and zero choices name exact rows
+  ---
+  duration_ms: 8.911154
+  type: 'test'
+  ...
+# Subtest: Oct16 three tiers share one stable gate choice; upgraded hardware cannot relabel the confirmed opening
+ok 6 - Oct16 three tiers share one stable gate choice; upgraded hardware cannot relabel the confirmed opening
+  ---
+  duration_ms: 9.195853
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed section summaries stay review-only through production intake: no exception and no released cents
+ok 7 - Oct16 malformed section summaries stay review-only through production intake: no exception and no released cents
+  ---
+  duration_ms: 410.832701
+  type: 'test'
+  ...
+# (node:19) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:19) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: every direct database prepare or exec in server is an exact listed exception
+ok 8 - every direct database prepare or exec in server is an exact listed exception
+  ---
+  duration_ms: 1315.441816
+  type: 'test'
+  ...
+# Subtest: scan rejects bracketed database['prepare'] in .js: 1 finding
+ok 9 - scan rejects bracketed database['prepare'] in .js: 1 finding
+  ---
+  duration_ms: 1.318892
+  type: 'test'
+  ...
+# Subtest: scan rejects double quoted and template computed prepare in .js: 1 each
+ok 10 - scan rejects double quoted and template computed prepare in .js: 1 each
+  ---
+  duration_ms: 1.200845
+  type: 'test'
+  ...
+# Subtest: scan rejects dynamic key spelling in .js: 1 finding
+ok 11 - scan rejects dynamic key spelling in .js: 1 finding
+  ---
+  duration_ms: 0.664128
+  type: 'test'
+  ...
+# Subtest: scan rejects database.prepare.bind alias in .js: 1 finding
+ok 12 - scan rejects database.prepare.bind alias in .js: 1 finding
+  ---
+  duration_ms: 0.61884
+  type: 'test'
+  ...
+# Subtest: scan rejects const p = database.prepare alias in .js: 1 finding
+ok 13 - scan rejects const p = database.prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.49863
+  type: 'test'
+  ...
+# Subtest: scan rejects destructured prepare alias in .js: 1 finding
+ok 14 - scan rejects destructured prepare alias in .js: 1 finding
+  ---
+  duration_ms: 0.580682
+  type: 'test'
+  ...
+# Subtest: scan covers .mjs and .cjs: 1 finding in each
+ok 15 - scan covers .mjs and .cjs: 1 finding in each
+  ---
+  duration_ms: 0.994094
+  type: 'test'
+  ...
+# Subtest: scan permits an ownerQuery control and ignores commented prepares: 0 findings
+ok 16 - scan permits an ownerQuery control and ignores commented prepares: 0 findings
+  ---
+  duration_ms: 0.793984
+  type: 'test'
+  ...
+# Subtest: scan does not mistake a slash inside a regex literal for a comment: 1 finding
+ok 17 - scan does not mistake a slash inside a regex literal for a comment: 1 finding
+  ---
+  duration_ms: 0.839071
+  type: 'test'
+  ...
+# Subtest: owner-row predicate preserves owner and staff parent lookup results
+ok 18 - owner-row predicate preserves owner and staff parent lookup results
+  ---
+  duration_ms: 2.882632
+  type: 'test'
+  ...
+# Subtest: voice idempotency receipts persist tenant owner and replay legacy scope records
+ok 19 - voice idempotency receipts persist tenant owner and replay legacy scope records
+  ---
+  duration_ms: 5.529071
+  type: 'test'
+  ...
+# Subtest: scan inventories database.exec tenant deletion: 1 finding
+ok 20 - scan inventories database.exec tenant deletion: 1 finding
+  ---
+  duration_ms: 0.659471
+  type: 'test'
+  ...
+# Subtest: scan detects concatenated database prepare and exec properties: 1 finding each
+ok 21 - scan detects concatenated database prepare and exec properties: 1 finding each
+  ---
+  duration_ms: 0.849887
+  type: 'test'
+  ...
+# Subtest: scan detects bracketed exec and unknown computed database keys: 1 finding each
+ok 22 - scan detects bracketed exec and unknown computed database keys: 1 finding each
+  ---
+  duration_ms: 1.250099
+  type: 'test'
+  ...
+# Subtest: computed access cannot be permitted by an exception or non-query entry
+ok 23 - computed access cannot be permitted by an exception or non-query entry
+  ---
+  duration_ms: 0.533251
+  type: 'test'
+  ...
+# Subtest: scan detects optional, escaped, aliased and destructured computed methods
+ok 24 - scan detects optional, escaped, aliased and destructured computed methods
+  ---
+  duration_ms: 1.500205
+  type: 'test'
+  ...
+# Subtest: RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+ok 25 - RegExp exec is not database SQL; shadowed or unknown receivers still need inventory
+  ---
+  duration_ms: 1.240975
+  type: 'test'
+  ...
+# Subtest: mutable regex-shaped receivers cannot hide a later database exec: 1 finding
+ok 26 - mutable regex-shaped receivers cannot hide a later database exec: 1 finding
+  ---
+  duration_ms: 0.467002
+  type: 'test'
+  ...
+# Subtest: mutable or shadowed computed keys on database objects remain forbidden
+ok 27 - mutable or shadowed computed keys on database objects remain forbidden
+  ---
+  duration_ms: 0.89797
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: auditor renamed exec through call
+ok 28 - scan destructuring 20261011: auditor renamed exec through call
+  ---
+  duration_ms: 0.486862
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: auditor shorthand exec
+ok 29 - scan destructuring 20261011: auditor shorthand exec
+  ---
+  duration_ms: 0.508404
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration shorthand
+ok 30 - scan destructuring 20261011: exec declaration shorthand
+  ---
+  duration_ms: 0.45913
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration renamed
+ok 31 - scan destructuring 20261011: exec declaration renamed
+  ---
+  duration_ms: 0.481864
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration shorthand default
+ok 32 - scan destructuring 20261011: exec declaration shorthand default
+  ---
+  duration_ms: 0.424247
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration renamed default
+ok 33 - scan destructuring 20261011: exec declaration renamed default
+  ---
+  duration_ms: 0.538119
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration quoted key
+ok 34 - scan destructuring 20261011: exec declaration quoted key
+  ---
+  duration_ms: 0.437498
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration computed key
+ok 35 - scan destructuring 20261011: exec declaration computed key
+  ---
+  duration_ms: 0.491429
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested object
+ok 36 - scan destructuring 20261011: exec declaration nested object
+  ---
+  duration_ms: 0.456607
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested array
+ok 37 - scan destructuring 20261011: exec declaration nested array
+  ---
+  duration_ms: 0.497879
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec declaration nested default
+ok 38 - scan destructuring 20261011: exec declaration nested default
+  ---
+  duration_ms: 0.484328
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec parameter nested default
+ok 39 - scan destructuring 20261011: exec parameter nested default
+  ---
+  duration_ms: 0.476746
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec arrow shorthand parameter
+ok 40 - scan destructuring 20261011: exec arrow shorthand parameter
+  ---
+  duration_ms: 0.441213
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec catch binding
+ok 41 - scan destructuring 20261011: exec catch binding
+  ---
+  duration_ms: 0.61835
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec for-of declaration
+ok 42 - scan destructuring 20261011: exec for-of declaration
+  ---
+  duration_ms: 0.441894
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment shorthand
+ok 43 - scan destructuring 20261011: exec assignment shorthand
+  ---
+  duration_ms: 0.493041
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment renamed
+ok 44 - scan destructuring 20261011: exec assignment renamed
+  ---
+  duration_ms: 0.460132
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment shorthand default
+ok 45 - scan destructuring 20261011: exec assignment shorthand default
+  ---
+  duration_ms: 0.560282
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment renamed default
+ok 46 - scan destructuring 20261011: exec assignment renamed default
+  ---
+  duration_ms: 0.500843
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment quoted key
+ok 47 - scan destructuring 20261011: exec assignment quoted key
+  ---
+  duration_ms: 0.521334
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment computed key
+ok 48 - scan destructuring 20261011: exec assignment computed key
+  ---
+  duration_ms: 0.582596
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested object
+ok 49 - scan destructuring 20261011: exec assignment nested object
+  ---
+  duration_ms: 0.526832
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested array
+ok 50 - scan destructuring 20261011: exec assignment nested array
+  ---
+  duration_ms: 0.544008
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment nested default
+ok 51 - scan destructuring 20261011: exec assignment nested default
+  ---
+  duration_ms: 0.581064
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: exec assignment for-of
+ok 52 - scan destructuring 20261011: exec assignment for-of
+  ---
+  duration_ms: 0.518329
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration shorthand
+ok 53 - scan destructuring 20261011: prepare declaration shorthand
+  ---
+  duration_ms: 0.428674
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration renamed
+ok 54 - scan destructuring 20261011: prepare declaration renamed
+  ---
+  duration_ms: 0.443266
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration shorthand default
+ok 55 - scan destructuring 20261011: prepare declaration shorthand default
+  ---
+  duration_ms: 0.463687
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration renamed default
+ok 56 - scan destructuring 20261011: prepare declaration renamed default
+  ---
+  duration_ms: 0.522645
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration quoted key
+ok 57 - scan destructuring 20261011: prepare declaration quoted key
+  ---
+  duration_ms: 0.420232
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration computed key
+ok 58 - scan destructuring 20261011: prepare declaration computed key
+  ---
+  duration_ms: 0.431799
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested object
+ok 59 - scan destructuring 20261011: prepare declaration nested object
+  ---
+  duration_ms: 0.420321
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested array
+ok 60 - scan destructuring 20261011: prepare declaration nested array
+  ---
+  duration_ms: 0.44564
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare declaration nested default
+ok 61 - scan destructuring 20261011: prepare declaration nested default
+  ---
+  duration_ms: 0.426291
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare parameter nested default
+ok 62 - scan destructuring 20261011: prepare parameter nested default
+  ---
+  duration_ms: 0.487222
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare arrow shorthand parameter
+ok 63 - scan destructuring 20261011: prepare arrow shorthand parameter
+  ---
+  duration_ms: 0.428914
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare catch binding
+ok 64 - scan destructuring 20261011: prepare catch binding
+  ---
+  duration_ms: 0.515124
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare for-of declaration
+ok 65 - scan destructuring 20261011: prepare for-of declaration
+  ---
+  duration_ms: 0.422695
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment shorthand
+ok 66 - scan destructuring 20261011: prepare assignment shorthand
+  ---
+  duration_ms: 0.453181
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment renamed
+ok 67 - scan destructuring 20261011: prepare assignment renamed
+  ---
+  duration_ms: 0.450948
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment shorthand default
+ok 68 - scan destructuring 20261011: prepare assignment shorthand default
+  ---
+  duration_ms: 0.48534
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment renamed default
+ok 69 - scan destructuring 20261011: prepare assignment renamed default
+  ---
+  duration_ms: 0.66542
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment quoted key
+ok 70 - scan destructuring 20261011: prepare assignment quoted key
+  ---
+  duration_ms: 0.647964
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment computed key
+ok 71 - scan destructuring 20261011: prepare assignment computed key
+  ---
+  duration_ms: 0.796387
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested object
+ok 72 - scan destructuring 20261011: prepare assignment nested object
+  ---
+  duration_ms: 0.528965
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested array
+ok 73 - scan destructuring 20261011: prepare assignment nested array
+  ---
+  duration_ms: 0.49884
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment nested default
+ok 74 - scan destructuring 20261011: prepare assignment nested default
+  ---
+  duration_ms: 0.453873
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: prepare assignment for-of
+ok 75 - scan destructuring 20261011: prepare assignment for-of
+  ---
+  duration_ms: 0.4656
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation direct
+ok 76 - scan destructuring 20261011: extracted exec invocation direct
+  ---
+  duration_ms: 0.448654
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation call
+ok 77 - scan destructuring 20261011: extracted exec invocation call
+  ---
+  duration_ms: 0.449225
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation apply
+ok 78 - scan destructuring 20261011: extracted exec invocation apply
+  ---
+  duration_ms: 0.442445
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted exec invocation bind
+ok 79 - scan destructuring 20261011: extracted exec invocation bind
+  ---
+  duration_ms: 0.536927
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation direct
+ok 80 - scan destructuring 20261011: extracted prepare invocation direct
+  ---
+  duration_ms: 0.408784
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation call
+ok 81 - scan destructuring 20261011: extracted prepare invocation call
+  ---
+  duration_ms: 0.403767
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation apply
+ok 82 - scan destructuring 20261011: extracted prepare invocation apply
+  ---
+  duration_ms: 0.501443
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted prepare invocation bind
+ok 83 - scan destructuring 20261011: extracted prepare invocation bind
+  ---
+  duration_ms: 0.408414
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: nested dynamic database keys are forbidden
+ok 84 - scan destructuring 20261011: nested dynamic database keys are forbidden
+  ---
+  duration_ms: 1.253624
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: extracted methods cannot be allowlisted
+ok 85 - scan destructuring 20261011: extracted methods cannot be allowlisted
+  ---
+  duration_ms: 4.106573
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: metadata, defaults and safe patterns are not extractions
+ok 86 - scan destructuring 20261011: metadata, defaults and safe patterns are not extractions
+  ---
+  duration_ms: 1.244972
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: multiple methods and nested defaults are counted once
+ok 87 - scan destructuring 20261011: multiple methods and nested defaults are counted once
+  ---
+  duration_ms: 0.849546
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key shorthand parameter declaration
+ok 88 - scan destructuring 20261011: shadowed key shorthand parameter declaration
+  ---
+  duration_ms: 0.55888
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key shorthand parameter assignment
+ok 89 - scan destructuring 20261011: shadowed key shorthand parameter assignment
+  ---
+  duration_ms: 0.451739
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key renamed default parameter declaration
+ok 90 - scan destructuring 20261011: shadowed key renamed default parameter declaration
+  ---
+  duration_ms: 0.748735
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key renamed default parameter assignment
+ok 91 - scan destructuring 20261011: shadowed key renamed default parameter assignment
+  ---
+  duration_ms: 0.444388
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested catch binding declaration
+ok 92 - scan destructuring 20261011: shadowed key nested catch binding declaration
+  ---
+  duration_ms: 0.81165
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested catch binding assignment
+ok 93 - scan destructuring 20261011: shadowed key nested catch binding assignment
+  ---
+  duration_ms: 0.688855
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested variable binding declaration
+ok 94 - scan destructuring 20261011: shadowed key nested variable binding declaration
+  ---
+  duration_ms: 0.615255
+  type: 'test'
+  ...
+# Subtest: scan destructuring 20261011: shadowed key nested variable binding assignment
+ok 95 - scan destructuring 20261011: shadowed key nested variable binding assignment
+  ---
+  duration_ms: 0.648876
+  type: 'test'
+  ...
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: catalog baseline control: a known 33rd saved gate quotes 455000 cents although the initial list omits it
+ok 96 - catalog baseline control: a known 33rd saved gate quotes 455000 cents although the initial list omits it
+  ---
+  duration_ms: 1125.281969
+  type: 'test'
+  ...
+# Subtest: catalog discovery: truncated saved-service question advertises a callable read-only lookup
+ok 97 - catalog discovery: truncated saved-service question advertises a callable read-only lookup
+  ---
+  duration_ms: 974.411391
+  type: 'test'
+  ...
+# Subtest: catalog pagination: every one of 31 saved gates is reachable exactly once
+ok 98 - catalog pagination: every one of 31 saved gates is reachable exactly once
+  ---
+  duration_ms: 749.450234
+  type: 'test'
+  ...
+# Subtest: catalog pagination: every one of 32 saved gates is reachable exactly once
+ok 99 - catalog pagination: every one of 32 saved gates is reachable exactly once
+  ---
+  duration_ms: 785.862274
+  type: 'test'
+  ...
+# Subtest: catalog pagination: every one of 33 saved gates is reachable exactly once
+ok 100 - catalog pagination: every one of 33 saved gates is reachable exactly once
+  ---
+  duration_ms: 834.699742
+  type: 'test'
+  ...
+# Subtest: catalog pagination: every one of 65 saved gates is reachable exactly once
+ok 101 - catalog pagination: every one of 65 saved gates is reachable exactly once
+  ---
+  duration_ms: 3333.035482
+  type: 'test'
+  ...
+# Subtest: catalog planting: later supported plant size is paged, searched, selected and quoted at 15000 cents
+ok 102 - catalog planting: later supported plant size is paged, searched, selected and quoted at 15000 cents
+  ---
+  duration_ms: 392.983185
+  type: 'test'
+  ...
+# Subtest: catalog planting: maximum supported 160-character Unicode identity remains complete and quotes
+ok 103 - catalog planting: maximum supported 160-character Unicode identity remains complete and quotes
+  ---
+  duration_ms: 303.534963
+  type: 'test'
+  ...
+# Subtest: catalog search: duplicate descriptions retain distinct keys and widths; missing results invent nothing
+ok 104 - catalog search: duplicate descriptions retain distinct keys and widths; missing results invent nothing
+  ---
+  duration_ms: 859.806406
+  type: 'test'
+  ...
+# Subtest: catalog long labels: every complete Unicode gate scope survives byte-bounded pages
+ok 105 - catalog long labels: every complete Unicode gate scope survives byte-bounded pages
+  ---
+  duration_ms: 873.284761
+  type: 'test'
+  ...
+# Subtest: catalog authority: lookup is read-only, cursors survive runtime restart, and prices stay private
+ok 106 - catalog authority: lookup is read-only, cursors survive runtime restart, and prices stay private
+  ---
+  duration_ms: 915.106329
+  type: 'test'
+  ...
+# Subtest: catalog isolation: foreign owner/call handles and cursors, tampering, changed query or scope are rejected
+ok 107 - catalog isolation: foreign owner/call handles and cursors, tampering, changed query or scope are rejected
+  ---
+  duration_ms: 1789.961767
+  type: 'test'
+  ...
+# Subtest: catalog revision: a saved-book edit invalidates both old handle and cursor without changing the book again
+ok 108 - catalog revision: a saved-book edit invalidates both old handle and cursor without changing the book again
+  ---
+  duration_ms: 1041.777567
+  type: 'test'
+  ...
+# Subtest: catalog authority: expiry and another saved service reject continuation even on the same owner and call
+ok 109 - catalog authority: expiry and another saved service reject continuation even on the same owner and call
+  ---
+  duration_ms: 2892.0954
+  type: 'test'
+  ...
+# Subtest: catalog scope: selected fence type controls section gates and lookup never confirms a product
+ok 110 - catalog scope: selected fence type controls section gates and lookup never confirms a product
+  ---
+  duration_ms: 2175.06434
+  type: 'test'
+  ...
+# Subtest: catalog schemas and projection: no mutation ID required, plan gate and existing input/output guards apply
+ok 111 - catalog schemas and projection: no mutation ID required, plan gate and existing input/output guards apply
+  ---
+  duration_ms: 0.849417
+  type: 'test'
+  ...
+# Subtest: catalog question projection: duplicate display labels remain separate stable choices
+ok 112 - catalog question projection: duplicate display labels remain separate stable choices
+  ---
+  duration_ms: 0.202925
+  type: 'test'
+  ...
+# Subtest: catalog compiled instructions describe bounded continuation, exact identity and retained confirmation rules
+ok 113 - catalog compiled instructions describe bounded continuation, exact identity and retained confirmation rules
+  ---
+  duration_ms: 1.422157
+  type: 'test'
+  ...
+# Subtest: catalog production fake-provider session: later gate can be discovered, confirmed and quoted
+ok 114 - catalog production fake-provider session: later gate can be discovered, confirmed and quoted
+  ---
+  duration_ms: 1032.568312
+  type: 'test'
+  ...
+# Subtest: catalog production fake-provider session: later plant can be discovered, confirmed and quoted
+ok 115 - catalog production fake-provider session: later plant can be discovered, confirmed and quoted
+  ---
+  duration_ms: 332.235235
+  type: 'test'
+  ...
+# (node:35) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: QE-015 non-gate terrainSlope/enum options 239-character label matches 019ddba0
+ok 116 - QE-015 non-gate terrainSlope/enum options 239-character label matches 019ddba0
+  ---
+  duration_ms: 2.064233
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate terrainSlope/enum options 240-character label matches 019ddba0
+ok 117 - QE-015 non-gate terrainSlope/enum options 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.312109
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate terrainSlope/enum options 241-character label matches 019ddba0
+ok 118 - QE-015 non-gate terrainSlope/enum options 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.140491
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate terrainSlope/enum optionLabels 239-character label matches 019ddba0
+ok 119 - QE-015 non-gate terrainSlope/enum optionLabels 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.113441
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate terrainSlope/enum optionLabels 240-character label matches 019ddba0
+ok 120 - QE-015 non-gate terrainSlope/enum optionLabels 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.09921
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate terrainSlope/enum optionLabels 241-character label matches 019ddba0
+ok 121 - QE-015 non-gate terrainSlope/enum optionLabels 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.190556
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate fenceType/slug options 239-character label matches 019ddba0
+ok 122 - QE-015 non-gate fenceType/slug options 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.331228
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate fenceType/slug options 240-character label matches 019ddba0
+ok 123 - QE-015 non-gate fenceType/slug options 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.15338
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate fenceType/slug options 241-character label matches 019ddba0
+ok 124 - QE-015 non-gate fenceType/slug options 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.37929
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate fenceType/slug optionLabels 239-character label matches 019ddba0
+ok 125 - QE-015 non-gate fenceType/slug optionLabels 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.370126
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate fenceType/slug optionLabels 240-character label matches 019ddba0
+ok 126 - QE-015 non-gate fenceType/slug optionLabels 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.151578
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate fenceType/slug optionLabels 241-character label matches 019ddba0
+ok 127 - QE-015 non-gate fenceType/slug optionLabels 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.07956
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate plants/plant_counts options 239-character label matches 019ddba0
+ok 128 - QE-015 non-gate plants/plant_counts options 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.070757
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate plants/plant_counts options 240-character label matches 019ddba0
+ok 129 - QE-015 non-gate plants/plant_counts options 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.053781
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate plants/plant_counts options 241-character label matches 019ddba0
+ok 130 - QE-015 non-gate plants/plant_counts options 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.056355
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate plants/plant_counts optionLabels 239-character label matches 019ddba0
+ok 131 - QE-015 non-gate plants/plant_counts optionLabels 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.067431
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate plants/plant_counts optionLabels 240-character label matches 019ddba0
+ok 132 - QE-015 non-gate plants/plant_counts optionLabels 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.051317
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate plants/plant_counts optionLabels 241-character label matches 019ddba0
+ok 133 - QE-015 non-gate plants/plant_counts optionLabels 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.051258
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate otherOfferings/offering_counts options 239-character label matches 019ddba0
+ok 134 - QE-015 non-gate otherOfferings/offering_counts options 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.128734
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate otherOfferings/offering_counts options 240-character label matches 019ddba0
+ok 135 - QE-015 non-gate otherOfferings/offering_counts options 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.063465
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate otherOfferings/offering_counts options 241-character label matches 019ddba0
+ok 136 - QE-015 non-gate otherOfferings/offering_counts options 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.05313
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate otherOfferings/offering_counts optionLabels 239-character label matches 019ddba0
+ok 137 - QE-015 non-gate otherOfferings/offering_counts optionLabels 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.160512
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate otherOfferings/offering_counts optionLabels 240-character label matches 019ddba0
+ok 138 - QE-015 non-gate otherOfferings/offering_counts optionLabels 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.045469
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate otherOfferings/offering_counts optionLabels 241-character label matches 019ddba0
+ok 139 - QE-015 non-gate otherOfferings/offering_counts optionLabels 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.047812
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate gates/enum options 239-character label matches 019ddba0
+ok 140 - QE-015 non-gate gates/enum options 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.122524
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate gates/enum options 240-character label matches 019ddba0
+ok 141 - QE-015 non-gate gates/enum options 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.074302
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate gates/enum options 241-character label matches 019ddba0
+ok 142 - QE-015 non-gate gates/enum options 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.056135
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate gates/enum optionLabels 239-character label matches 019ddba0
+ok 143 - QE-015 non-gate gates/enum optionLabels 239-character label matches 019ddba0
+  ---
+  duration_ms: 0.052258
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate gates/enum optionLabels 240-character label matches 019ddba0
+ok 144 - QE-015 non-gate gates/enum optionLabels 240-character label matches 019ddba0
+  ---
+  duration_ms: 0.04627
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate gates/enum optionLabels 241-character label matches 019ddba0
+ok 145 - QE-015 non-gate gates/enum optionLabels 241-character label matches 019ddba0
+  ---
+  duration_ms: 0.949597
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: long primary uses short secondary
+ok 146 - QE-015 non-gate historical fallback: long primary uses short secondary
+  ---
+  duration_ms: 0.182684
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: empty primary uses secondary
+ok 147 - QE-015 non-gate historical fallback: empty primary uses secondary
+  ---
+  duration_ms: 0.061182
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: blank primary uses secondary
+ok 148 - QE-015 non-gate historical fallback: blank primary uses secondary
+  ---
+  duration_ms: 0.04632
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: non-string primary uses secondary
+ok 149 - QE-015 non-gate historical fallback: non-string primary uses secondary
+  ---
+  duration_ms: 0.042845
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: null primary uses secondary
+ok 150 - QE-015 non-gate historical fallback: null primary uses secondary
+  ---
+  duration_ms: 0.080231
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: invalid secondary uses key
+ok 151 - QE-015 non-gate historical fallback: invalid secondary uses key
+  ---
+  duration_ms: 0.059689
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: both labels over cap use key
+ok 152 - QE-015 non-gate historical fallback: both labels over cap use key
+  ---
+  duration_ms: 0.047922
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: valid primary wins and trims
+ok 153 - QE-015 non-gate historical fallback: valid primary wins and trims
+  ---
+  duration_ms: 0.102804
+  type: 'test'
+  ...
+# Subtest: QE-015 non-gate historical fallback: cap applies before trimming
+ok 154 - QE-015 non-gate historical fallback: cap applies before trimming
+  ---
+  duration_ms: 0.050626
+  type: 'test'
+  ...
+# (node:43) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: about10by10 with uncertain chute quotes337000c with150000c pump allowance and estimate sentence
+ok 155 - about10by10 with uncertain chute quotes337000c with150000c pump allowance and estimate sentence
+  ---
+  duration_ms: 557.350182
+  type: 'test'
+  ...
+# Subtest: uncertain chute without owner allowance quotes187000c and preserves extra-cost note in saved public copy
+ok 156 - uncertain chute without owner allowance quotes187000c and preserves extra-cost note in saved public copy
+  ---
+  duration_ms: 612.188047
+  type: 'test'
+  ...
+# Subtest: custom plant sizes reach both question contracts, phone name binding, saved job facts and public copy at30000c
+ok 157 - custom plant sizes reach both question contracts, phone name binding, saved job facts and public copy at30000c
+  ---
+  duration_ms: 204.001415
+  type: 'test'
+  ...
+# Subtest: concrete and sod optional controls have labels, blank new services, exact money conversion and persisted settings
+ok 158 - concrete and sod optional controls have labels, blank new services, exact money conversion and persisted settings
+  ---
+  duration_ms: 107.791657
+  type: 'test'
+  ...
+# Subtest: custom plant definitions and prices survive owner dollars, interview validation and review with exact names
+ok 159 - custom plant definitions and prices survive owner dollars, interview validation and review with exact names
+  ---
+  duration_ms: 60.358467
+  type: 'test'
+  ...
+# Subtest: 4–6 inch concrete rate and custom planting are live;15ft spacing is a warning, not a quote block
+ok 160 - 4–6 inch concrete rate and custom planting are live;15ft spacing is a warning, not a quote block
+  ---
+  duration_ms: 58.995339
+  type: 'test'
+  ...
+# Subtest: phone prompts add concrete/sod/planting blocks while retaining immutable guide and caller-estimate instruction
+ok 161 - phone prompts add concrete/sod/planting blocks while retaining immutable guide and caller-estimate instruction
+  ---
+  duration_ms: 1.914909
+  type: 'test'
+  ...
+# (node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: QE-004/015 production save/approve/match/quote: 1 x 45 G
+ok 162 - QE-004/015 production save/approve/match/quote: 1 x 45 G
+  ---
+  duration_ms: 431.834248
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 1 x 1512 G
+ok 163 - QE-004/015 production save/approve/match/quote: 1 x 1512 G
+  ---
+  duration_ms: 258.202455
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 1512 G
+ok 164 - QE-004/015 production save/approve/match/quote: 3 x 1512 G
+  ---
+  duration_ms: 246.04309
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 G
+ok 165 - QE-004/015 production save/approve/match/quote: 3 x 2000 G
+  ---
+  duration_ms: 244.144445
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 界
+ok 166 - QE-004/015 production save/approve/match/quote: 3 x 2000 界
+  ---
+  duration_ms: 259.040868
+  type: 'test'
+  ...
+# Subtest: QE-004/015 production save/approve/match/quote: 3 x 2000 😀
+ok 167 - QE-004/015 production save/approve/match/quote: 3 x 2000 😀
+  ---
+  duration_ms: 254.003055
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 239-character gate label survives matching
+ok 168 - QE-015 entire 239-character gate label survives matching
+  ---
+  duration_ms: 99.069659
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 240-character gate label survives matching
+ok 169 - QE-015 entire 240-character gate label survives matching
+  ---
+  duration_ms: 100.34104
+  type: 'test'
+  ...
+# Subtest: QE-015 entire 241-character gate label survives matching
+ok 170 - QE-015 entire 241-character gate label survives matching
+  ---
+  duration_ms: 105.829311
+  type: 'test'
+  ...
+# Subtest: QE-015 similar names bind the measured choice and its own price, never another opening
+ok 171 - QE-015 similar names bind the measured choice and its own price, never another opening
+  ---
+  duration_ms: 189.558813
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable characters outcome is durably review-only and idempotent
+ok 172 - QE-004 unpresentable characters outcome is durably review-only and idempotent
+  ---
+  duration_ms: 203.57582
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable bytes outcome is durably review-only and idempotent
+ok 173 - QE-004 unpresentable bytes outcome is durably review-only and idempotent
+  ---
+  duration_ms: 182.949493
+  type: 'test'
+  ...
+# Subtest: QE-004 unpresentable scope count outcome is durably review-only and idempotent
+ok 174 - QE-004 unpresentable scope count outcome is durably review-only and idempotent
+  ---
+  duration_ms: 182.476456
+  type: 'test'
+  ...
+# Subtest: QE-004 presentation fallback never converts pricebook/storage failure into saved review success
+ok 175 - QE-004 presentation fallback never converts pricebook/storage failure into saved review success
+  ---
+  duration_ms: 93.381042
+  type: 'test'
+  ...
+# Subtest: QE-004 combined gate configuration envelope rejects before save instead of truncating
+ok 176 - QE-004 combined gate configuration envelope rejects before save instead of truncating
+  ---
+  duration_ms: 32.047236
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 3999-character scope preserves spaces and Unicode through real transport
+ok 177 - QE-004 aggregate 3999-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.705861
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 4000-character scope preserves spaces and Unicode through real transport
+ok 178 - QE-004 aggregate 4000-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.361693
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 4001-character scope preserves spaces and Unicode through real transport
+ok 179 - QE-004 aggregate 4001-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.305169
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 7999-character scope preserves spaces and Unicode through real transport
+ok 180 - QE-004 aggregate 7999-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.411539
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 8000-character scope preserves spaces and Unicode through real transport
+ok 181 - QE-004 aggregate 8000-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.444358
+  type: 'test'
+  ...
+# Subtest: QE-004 aggregate 8001-character scope preserves spaces and Unicode through real transport
+ok 182 - QE-004 aggregate 8001-character scope preserves spaces and Unicode through real transport
+  ---
+  duration_ms: 0.444559
+  type: 'test'
+  ...
+# Subtest: QE-004 a fallback database write failure is never acknowledged; a clean retry saves exactly once
+ok 183 - QE-004 a fallback database write failure is never acknowledged; a clean retry saves exactly once
+  ---
+  duration_ms: 266.835556
+  type: 'test'
+  ...
+# Subtest: QE-004 an unpresentable partial result saves an owner review without a nonexistent released-quote link
+ok 184 - QE-004 an unpresentable partial result saves an owner review without a nonexistent released-quote link
+  ---
+  duration_ms: 182.257352
+  type: 'test'
+  ...
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:59) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: nonce persistence is atomic, bound, expiring, and one use
+ok 185 - nonce persistence is atomic, bound, expiring, and one use
+  ---
+  duration_ms: 7.559395
+  type: 'test'
+  ...
+# Subtest: session storage binds a call to the nonce hash and exact signed context
+ok 186 - session storage binds a call to the nonce hash and exact signed context
+  ---
+  duration_ms: 4.977592
+  type: 'test'
+  ...
+# Subtest: fallback persistence is idempotent and account context derives metered usage
+ok 187 - fallback persistence is idempotent and account context derives metered usage
+  ---
+  duration_ms: 5.327859
+  type: 'test'
+  ...
+# Subtest: durable tool idempotency replays across store restarts and rejects changed arguments
+ok 188 - durable tool idempotency replays across store restarts and rejects changed arguments
+  ---
+  duration_ms: 2.954442
+  type: 'test'
+  ...
+# Subtest: tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+ok 189 - tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+  ---
+  duration_ms: 3.351388
+  type: 'test'
+  ...
+# Subtest: opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+ok 190 - opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+  ---
+  duration_ms: 4.059002
+  type: 'test'
+  ...
+# Subtest: voice tool runtime persists a safe review quote and lead without exposing internal identities
+ok 191 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+  ---
+  duration_ms: 74.596309
+  type: 'test'
+  ...
+# Subtest: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+ok 192 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+  ---
+  duration_ms: 6.794724
+  type: 'test'
+  ...
+# Subtest: a reused signed CallSid cannot change its tenant, caller, account or destination
+ok 193 - a reused signed CallSid cannot change its tenant, caller, account or destination
+  ---
+  duration_ms: 4.180264
+  type: 'test'
+  ...
+# (node:67) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the compiler authenticates and parses every section of the versioned owner-policy guide
+ok 194 - the compiler authenticates and parses every section of the versioned owner-policy guide
+  ---
+  duration_ms: 3.571128
+  type: 'test'
+  ...
+# Subtest: guide changes, unknown sections, and duplicate flow sections fail closed
+ok 195 - guide changes, unknown sections, and duplicate flow sections fail closed
+  ---
+  duration_ms: 0.894475
+  type: 'test'
+  ...
+# Subtest: compiled instructions include global rules and only quoting-live service headings
+ok 196 - compiled instructions include global rules and only quoting-live service headings
+  ---
+  duration_ms: 1.102397
+  type: 'test'
+  ...
+# Subtest: referenced shared steps are scoped under the active replacement flow, not offered independently
+ok 197 - referenced shared steps are scoped under the active replacement flow, not offered independently
+  ---
+  duration_ms: 0.537828
+  type: 'test'
+  ...
+# Subtest: owner-authored injection text remains inert JSON data and cannot break its boundary
+ok 198 - owner-authored injection text remains inert JSON data and cannot break its boundary
+  ---
+  duration_ms: 0.491428
+  type: 'test'
+  ...
+# Subtest: raw pricing, private owner fields, sensitive offering labels, and unsupported mappings never compile
+ok 199 - raw pricing, private owner fields, sensitive offering labels, and unsupported mappings never compile
+  ---
+  duration_ms: 2.404885
+  type: 'test'
+  ...
+# Subtest: prompt locks quote accuracy, separate-work handling, confirmation, and address-bound booking order
+ok 200 - prompt locks quote accuracy, separate-work handling, confirmation, and address-bound booking order
+  ---
+  duration_ms: 0.433782
+  type: 'test'
+  ...
+# Subtest: Gemini function declarations have exact tool coverage and validator-required fields
+ok 201 - Gemini function declarations have exact tool coverage and validator-required fields
+  ---
+  duration_ms: 3.160181
+  type: 'test'
+  ...
+# Subtest: Owner ruling: ROOFING_REPLACEMENT offers only caller-requested quote email
+ok 202 - Owner ruling: ROOFING_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 7.691342
+  type: 'test'
+  ...
+# Subtest: Owner ruling: ROOFING_REPAIR offers only caller-requested quote email
+ok 203 - Owner ruling: ROOFING_REPAIR offers only caller-requested quote email
+  ---
+  duration_ms: 0.79804
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FLAT_ROOF_REPLACEMENT offers only caller-requested quote email
+ok 204 - Owner ruling: FLAT_ROOF_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 0.395835
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FLAT_ROOF_REPAIR offers only caller-requested quote email
+ok 205 - Owner ruling: FLAT_ROOF_REPAIR offers only caller-requested quote email
+  ---
+  duration_ms: 0.523778
+  type: 'test'
+  ...
+# Subtest: Owner ruling: INTERIOR_PAINTING offers only caller-requested quote email
+ok 206 - Owner ruling: INTERIOR_PAINTING offers only caller-requested quote email
+  ---
+  duration_ms: 0.334943
+  type: 'test'
+  ...
+# Subtest: Owner ruling: EXTERIOR_PAINTING offers only caller-requested quote email
+ok 207 - Owner ruling: EXTERIOR_PAINTING offers only caller-requested quote email
+  ---
+  duration_ms: 0.267532
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FLOORING_INSTALL offers only caller-requested quote email
+ok 208 - Owner ruling: FLOORING_INSTALL offers only caller-requested quote email
+  ---
+  duration_ms: 0.288644
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FLOORING_REPLACEMENT offers only caller-requested quote email
+ok 209 - Owner ruling: FLOORING_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 0.242194
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FENCING_INSTALL offers only caller-requested quote email
+ok 210 - Owner ruling: FENCING_INSTALL offers only caller-requested quote email
+  ---
+  duration_ms: 0.296717
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FENCING_REPLACEMENT offers only caller-requested quote email
+ok 211 - Owner ruling: FENCING_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 0.836518
+  type: 'test'
+  ...
+# Subtest: Owner ruling: CONCRETE_DRIVEWAY offers only caller-requested quote email
+ok 212 - Owner ruling: CONCRETE_DRIVEWAY offers only caller-requested quote email
+  ---
+  duration_ms: 0.238078
+  type: 'test'
+  ...
+# Subtest: Owner ruling: CONCRETE_PATIO_SLAB offers only caller-requested quote email
+ok 213 - Owner ruling: CONCRETE_PATIO_SLAB offers only caller-requested quote email
+  ---
+  duration_ms: 0.254162
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_CLEANUP offers only caller-requested quote email
+ok 214 - Owner ruling: LANDSCAPING_CLEANUP offers only caller-requested quote email
+  ---
+  duration_ms: 0.21309
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_MULCH offers only caller-requested quote email
+ok 215 - Owner ruling: LANDSCAPING_MULCH offers only caller-requested quote email
+  ---
+  duration_ms: 0.204647
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_SOD offers only caller-requested quote email
+ok 216 - Owner ruling: LANDSCAPING_SOD offers only caller-requested quote email
+  ---
+  duration_ms: 0.196065
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_PLANTING offers only caller-requested quote email
+ok 217 - Owner ruling: LANDSCAPING_PLANTING offers only caller-requested quote email
+  ---
+  duration_ms: 0.258538
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_MOWING offers only caller-requested quote email
+ok 218 - Owner ruling: LANDSCAPING_MOWING offers only caller-requested quote email
+  ---
+  duration_ms: 0.201933
+  type: 'test'
+  ...
+# Subtest: Owner ruling: SIDING_REPLACEMENT offers only caller-requested quote email
+ok 219 - Owner ruling: SIDING_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 0.204257
+  type: 'test'
+  ...
+# Subtest: Owner ruling: SIDING_REPAIR offers only caller-requested quote email
+ok 220 - Owner ruling: SIDING_REPAIR offers only caller-requested quote email
+  ---
+  duration_ms: 0.193561
+  type: 'test'
+  ...
+# Subtest: Owner ruling: CUSTOM offers only caller-requested quote email
+ok 221 - Owner ruling: CUSTOM offers only caller-requested quote email
+  ---
+  duration_ms: 0.178368
+  type: 'test'
+  ...
+# (node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Twilio validation fails closed without the official validator dependency
+ok 222 - Twilio validation fails closed without the official validator dependency
+  ---
+  duration_ms: 1.059513
+  type: 'test'
+  ...
+# Subtest: Twilio validation rejects missing and forged signatures
+ok 223 - Twilio validation rejects missing and forged signatures
+  ---
+  duration_ms: 0.69179
+  type: 'test'
+  ...
+# Subtest: Twilio validation uses only the configured public origin
+ok 224 - Twilio validation uses only the configured public origin
+  ---
+  duration_ms: 0.834635
+  type: 'test'
+  ...
+# Subtest: tenant resolution is by normalized To only and rejects cross-tenant selectors
+ok 225 - tenant resolution is by normalized To only and rejects cross-tenant selectors
+  ---
+  duration_ms: 1.101286
+  type: 'test'
+  ...
+# Subtest: tenant resolution fails closed for unknown and duplicate destinations
+ok 226 - tenant resolution fails closed for unknown and duplicate destinations
+  ---
+  duration_ms: 0.367562
+  type: 'test'
+  ...
+# Subtest: session nonces store only a hash, bind every call identity field, and are one-use
+ok 227 - session nonces store only a hash, bind every call identity field, and are one-use
+  ---
+  duration_ms: 3.125749
+  type: 'test'
+  ...
+# Subtest: session nonces reject expiration and every binding mismatch
+ok 228 - session nonces reject expiration and every binding mismatch
+  ---
+  duration_ms: 0.913363
+  type: 'test'
+  ...
+# Subtest: tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+ok 229 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+  ---
+  duration_ms: 0.980934
+  type: 'test'
+  ...
+# Subtest: quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+ok 230 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+  ---
+  duration_ms: 1.42372
+  type: 'test'
+  ...
+# Subtest: dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+ok 231 - dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+  ---
+  duration_ms: 1.261767
+  type: 'test'
+  ...
+# Subtest: dispatcher rejects handler results containing raw rates instead of exposing them
+ok 232 - dispatcher rejects handler results containing raw rates instead of exposing them
+  ---
+  duration_ms: 1.278612
+  type: 'test'
+  ...
+# Subtest: mutations are idempotent and conflicting reuse of a tool call id is rejected
+ok 233 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+  ---
+  duration_ms: 1.036938
+  type: 'test'
+  ...
+# Subtest: mutating tool calls execute sequentially within a call
+ok 234 - mutating tool calls execute sequentially within a call
+  ---
+  duration_ms: 0.569487
+  type: 'test'
+  ...
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Starter lineup: Starter forwarded call answers with switch off and offers only entitled tools
+ok 235 - Starter lineup: Starter forwarded call answers with switch off and offers only entitled tools
+  ---
+  duration_ms: 111.961183
+  type: 'test'
+  ...
+# Subtest: Starter lineup: Operator forwarded call answers with switch off and offers only entitled tools
+ok 236 - Starter lineup: Operator forwarded call answers with switch off and offers only entitled tools
+  ---
+  duration_ms: 71.321265
+  type: 'test'
+  ...
+# Subtest: Starter lineup: QuoteDone forwarded call answers with switch off and offers only entitled tools
+ok 237 - Starter lineup: QuoteDone forwarded call answers with switch off and offers only entitled tools
+  ---
+  duration_ms: 79.637852
+  type: 'test'
+  ...
+# Subtest: Starter lineup: pending warm transfer cannot connect after downgrade to Starter
+ok 238 - Starter lineup: pending warm transfer cannot connect after downgrade to Starter
+  ---
+  duration_ms: 63.512516
+  type: 'test'
+  ...
+1..238
+# tests 238
+# suites 0
+# pass 238
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 33357.096864

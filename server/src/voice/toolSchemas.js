@@ -3,8 +3,8 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FORBIDDEN_KEYS = new Set(['ownerpricing','price','amount','total','offeringid','proto','ownerid','tenantid','tenantownerid','accountsid','callsid','from','to','phonenumber','twilionumber','twilionumbersid','serviceid','quoteid','slotid','appointmentid','customerid','leadid','calendarid','pricebook','bookversion','ownerspricing','pricing','rate','rates','unitrate','baserate','cost','internalcost','markup','margin','datetime','rawdatetime','startdatetime','enddatetime','starttime','endtime','durationminutes','prototype','constructor']);
 const FORBIDDEN_DERIVED_KEYS = new Set(['hourlyrate','laborrate','materialrate','ownerrate','rawrate','unitprice','unitcost','laborcost','materialcost','estimatedcost','estimatedprice','customerprice','ownerprice','requestedatetime','requesteddatetime','scheduleddatetime']);
 const FORBIDDEN_ID_SUFFIXES = ['ownerid','tenantid','accountsid','callsid','serviceid','quoteid','slotid','appointmentid','customerid','leadid','calendarid','offeringid'];
-export const VOICE_TOOL_NAMES = Object.freeze(['matchService','getQuote','calculateListedPrice','calculateVoiceArea','checkAvailability','bookAppointment','captureLead','logQuoteRequest','prepareQuoteEmail','sendQuoteEmail','flagUrgent','transferCall','modifyAppointment','getCustomerContext']);
-export const MUTATING_VOICE_TOOLS = Object.freeze(VOICE_TOOL_NAMES.filter(name => !['matchService','getCustomerContext','calculateListedPrice','calculateVoiceArea'].includes(name)));
+export const VOICE_TOOL_NAMES = Object.freeze(['matchService','lookupQuoteCatalog','getQuote','calculateListedPrice','calculateVoiceArea','checkAvailability','bookAppointment','captureLead','logQuoteRequest','prepareQuoteEmail','sendQuoteEmail','flagUrgent','transferCall','modifyAppointment','getCustomerContext']);
+export const MUTATING_VOICE_TOOLS = Object.freeze(VOICE_TOOL_NAMES.filter(name => !['matchService','lookupQuoteCatalog','getCustomerContext','calculateListedPrice','calculateVoiceArea'].includes(name)));
 export class VoiceToolValidationError extends Error {
   constructor(code) { super('The requested voice action was not valid.'); this.name='VoiceToolValidationError'; this.code=code; this.statusCode=400; }
 }
@@ -52,6 +52,12 @@ function booleanMap(value,allowed){
   if(Object.keys(result).length>32)fail('TOOL_INPUT_TOO_LARGE');return result;
 }
 function matchService(args){return {query:text(args.query,{max:500})};}
+function lookupQuoteCatalog(args){
+  const field=text(args.field,{max:100});if(!/^[a-zA-Z][a-zA-Z0-9_]{0,99}$/.test(field))fail('INVALID_TOOL_FIELD');assertAllowedKey(field);
+  const limit=args.limit??16;if(!Number.isSafeInteger(limit)||limit<1||limit>32)fail('INVALID_TOOL_NUMBER');
+  if(args.customerInputs!==undefined)assertPlainObject(args.customerInputs);
+  return {serviceHandle:handle(args.serviceHandle),field,customerInputs:safeDynamicValue(args.customerInputs||{}),query:args.query===undefined?'':text(args.query,{min:0,max:500}),limit,...(args.cursor!==undefined?{cursor:handle(args.cursor)}:{})};
+}
 function calculateListedPrice(args){
   const quantity=text(args.quantity,{max:19});if(!/^(?:0|[1-9]\d{0,11})(?:\.\d{1,6})?$/.test(quantity)||!/[1-9]/.test(quantity))fail('INVALID_TOOL_NUMBER');
   return {listedItem:text(args.listedItem,{max:2000}),quantity,customerConfirmed:confirmed(args.customerConfirmed)};
@@ -113,7 +119,7 @@ function modifyAppointment(args){
   const result={appointmentHandle:handle(args.appointmentHandle),action,customerConfirmed:confirmed(args.customerConfirmed)};if(args.slotHandle!==undefined)result.slotHandle=handle(args.slotHandle);return result;
 }
 function getCustomerContext(args){if(args.callerConfirmedIdentity!==undefined&&typeof args.callerConfirmedIdentity!=='boolean')fail('INVALID_TOOL_BOOLEAN');return {callerConfirmedIdentity:args.callerConfirmedIdentity===true};}
-const VALIDATORS=Object.freeze({matchService,getQuote,calculateListedPrice,calculateVoiceArea,checkAvailability,bookAppointment,captureLead,logQuoteRequest,prepareQuoteEmail,sendQuoteEmail,flagUrgent,transferCall,modifyAppointment,getCustomerContext});
+const VALIDATORS=Object.freeze({matchService,lookupQuoteCatalog,getQuote,calculateListedPrice,calculateVoiceArea,checkAvailability,bookAppointment,captureLead,logQuoteRequest,prepareQuoteEmail,sendQuoteEmail,flagUrgent,transferCall,modifyAppointment,getCustomerContext});
 function deepFreeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.freeze(value);for(const item of Object.values(value))deepFreeze(item);}return value;}
 export function validateVoiceToolCall(name,args){
   if(typeof name!=='string'||!Object.hasOwn(VALIDATORS,name))fail('UNKNOWN_VOICE_TOOL');
@@ -133,6 +139,7 @@ const opaque=string('Opaque server-issued handle from this call. Never invent or
 const confirmation=boolean('True only after the caller affirmatively confirms the recap, or the exact displayed appointment and address.');
 const declarations={
   matchService:object({query:string("The caller's requested main service, in ordinary words.")},['query']),
+  lookupQuoteCatalog:object({serviceHandle:opaque,field:string('Current question field whose choices are needed, including gates, fenceRuns or plantsBySize.'),customerInputs:{type:'OBJECT',description:'Current caller-stated product and measurement context, with the same restrictions as getQuote. Supply parent choices such as fence type and height; never invent them.'},query:string('Optional literal text to find in the complete choice key or label, including width or installation description. Empty searches all applicable choices.'),limit:{type:'INTEGER',minimum:1,maximum:32,description:'Maximum choices per page; defaults to 16. Complete long labels may produce a smaller page.'},cursor:opaque},['serviceHandle','field']),
   calculateListedPrice:object({listedItem:string('Copy exactly one complete saved item paragraph from knowledge.prices, including its conditions. Never supply or edit a rate.'),quantity:string('The caller-confirmed quantity in the listing unit, as plain decimal text. Never convert units or infer a quantity.'),customerConfirmed:confirmation},['listedItem','quantity','customerConfirmed']),
   calculateVoiceArea:object({length:string('Caller-confirmed length in feet as plain positive decimal text.'),width:string('Caller-confirmed width in feet as plain positive decimal text.'),customerConfirmed:confirmation},['length','width','customerConfirmed']),
   getQuote:object({serviceHandle:opaque,customerInputs:{type:'OBJECT',description:'Only current question field names and caller-stated measurements or ordinary product names returned by matchService. No address, contact, identifiers, money or confirmedFacts.'},customerConfirmed:confirmation,callerMeasurementsEstimated:boolean("True if any supplied measurement is the caller's own approximate number, after digits-then-words read-back and their Yes."),productConfirmations:{type:'OBJECT',description:'Product question fields mapped to true only when the caller has identified and confirmed that exact named product. False or missing means unknown; never assume identification.'},scopeConfirmations:{type:'OBJECT',description:'Scope question field mapped to its current server-issued confirmationToken only after reading that question label and every detail and receiving affirmative confirmation. Never reuse after changing scope.'},customerFeeSelections:object(Object.fromEntries(['travel','disposal','permit','overhead'].map(fee=>[fee,boolean("The caller's Yes/No to this currently offered fee; no amount.")]))),additionalWork:strings('Separate requested work needing its own on-site estimate, not part of the selected-service price.')},['serviceHandle','customerInputs','customerConfirmed']),

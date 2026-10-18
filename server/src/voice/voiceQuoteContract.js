@@ -1,6 +1,7 @@
 import { registeredProductKey, productIdentityRequired } from '../../productNames.js';
 import {createHmac} from 'node:crypto';
 import {customerFieldForInputs,customerFieldVisible} from '../../scopeConfiguration.js';
+import {voiceChoicePage,VOICE_QUESTION_CATALOG_BYTES} from './voiceCatalog.js';
 
 const own = (value, key) => Object.hasOwn(value || {}, key);
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value) &&
@@ -37,13 +38,42 @@ function scopeToken(service, field, inputs, authority) {
   return createHmac('sha256',authority.secret).update(JSON.stringify([authority.binding,service.id,field.name,selected])).digest('base64url');
 }
 
-export function voiceQuestionContract(service, definition, inputs = {}, authority) {
+function voiceFieldsForInputs(service,definition,inputs){
   const carpetRoomMode=service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&(inputs.carpetMeasurementMethod==='rooms'||Array.isArray(inputs.carpetRooms));
   const fields = (Array.isArray(definition?.customerFields) ? definition.customerFields : [])
     .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly && (!field.optionalItemKey||customerFieldVisible(field,inputs)))
     .filter(field => !(service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&field.name==='layoutPattern'))
     .filter(field => !carpetRoomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name)&&!(field.name==='carpetConnectedAreas'&&!(inputs.carpetRooms?.length>1)));
+  return fields;
+}
+function completeChoices(service,field){
+  if(field.type==='fence_runs')return (field.gateChoices||[]).map(g=>{
+    if(!safeText(g.value)||!safeText(g.label,4000))throw new TypeError('Invalid complete fence gate choice.');
+    return {value:g.value,label:g.label};
+  });
+  const exempt=field.type==='slug'&&!productIdentityRequired(field.name,'none')?['none']:[];
+  const values=field.type==='slug'?[...new Set([...exempt,...Object.keys(service.knownOfferings?.[field.name]||{})])]:field.values;
+  if(!Array.isArray(values))return null;
+  return values.filter(value=>['string','number','boolean'].includes(typeof value)).map(value=>{
+    const complete=field.name==='gates'&&field.type==='offering_counts';
+    const label=field.options?.[value]??field.optionLabels?.[value];
+    if(complete&&label!==undefined&&!safeText(label,4000))throw new TypeError('Invalid complete voice choice.');
+    return {value,label:complete?(safeText(label,4000)||human(value)):(safeText(field.options?.[value])||safeText(field.optionLabels?.[value])||human(value))};
+  });
+}
+export function voiceCatalogChoices(service,definition,name,inputs={}){
+  const original=voiceFieldsForInputs(service,definition,inputs).find(field=>field.name===name);
+  if(!original)return null;
+  // The UI can retain a supplied answer after scope changes. It must not make
+  // that old answer authorize catalog discovery for an inapplicable field.
+  const visibilityInputs={...inputs};delete visibilityInputs[name];
+  if(!customerFieldVisible(original,visibilityInputs))return [];
+  return completeChoices(service,customerFieldForInputs(original,inputs));
+}
+export function voiceQuestionContract(service, definition, inputs = {}, authority) {
+  const fields=voiceFieldsForInputs(service,definition,inputs);
   if (fields.length > 64) throw new TypeError('Voice measurement contract exceeds its bounded field limit.');
+  let catalogBytes=VOICE_QUESTION_CATALOG_BYTES;
   const questions = fields.map(original => {
     const field=customerFieldForInputs(original,inputs);
     const pending=scopeField(original)&&!selectedPresentations(original,inputs).length;
@@ -72,20 +102,11 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
       if (condition !== undefined) question[name] = condition;
     }
     const exemptValues = field.type === 'slug' && !productIdentityRequired(field.name, 'none') ? ['none'] : [];
-    const values = field.type === 'slug' ? [...new Set([...exemptValues, ...Object.keys(service.knownOfferings?.[field.name] || {})])] : field.values;
-    if (Array.isArray(values)) {
-      question.choices = values.slice(0, 32).filter(value => typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
-        .map(value => {
-          if(field.name!=='gates'||field.type!=='offering_counts'){
-            return {value,label:safeText(field.options?.[value])||safeText(field.optionLabels?.[value])||human(value)};
-          }
-          // Width and installation scope are part of a gate's identity. The
-          // supported question transport accepts complete 4,000-char labels.
-          const label=field.options?.[value]??field.optionLabels?.[value];
-          if(label!==undefined&&!safeText(label,4000))throw new TypeError('Invalid complete voice choice.');
-          return {value,label:safeText(label,4000)||human(value)};
-        });
-      if (values.length > 32) question.moreChoicesAvailable = true;
+    const choices=completeChoices(service,field);
+    if(choices){
+      const page=voiceChoicePage(choices,{bytes:Math.max(0,catalogBytes)});
+      question.choices=page.choices;catalogBytes-=page.bytes;
+      if(page.nextOffset<choices.length){question.moreChoicesAvailable=true;question.catalogLookup='lookupQuoteCatalog';}
     }
     if (field.type === 'slug') question.productConfirmationRequired = true;
     if(field.type==='multi_enum')question.details=[...(question.details||[]),'Supply an array of selected choice values, or an empty array for none.'];
@@ -94,11 +115,6 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
     }
     if(field.type==='fence_runs'){
       question.details=[field.closedQuestion,field.sectionQuestion].map(v=>{if(!safeText(v,4000))throw new TypeError('Invalid fence measurement question.');return v;});
-      question.choices=(field.gateChoices||[]).slice(0,32).map(g=>{
-        if(!safeText(g.value)||!safeText(g.label,4000))throw new TypeError('Invalid complete fence gate choice.');
-        return {value:g.value,label:g.label};
-      });
-      if((field.gateChoices||[]).length>32)question.moreChoicesAvailable=true;
     }
     if (exemptValues.length) question.productConfirmationExemptValues = exemptValues;
     return question;

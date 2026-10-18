@@ -7,7 +7,7 @@ import {saveCallbackRequest} from '../callbackRequestService.js';
 import {transferDecision} from './voiceSettings.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
-import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
+import {voiceQuestionContract,bindVoiceQuoteInputs,voiceCatalogChoices} from './voiceQuoteContract.js';
 import {projectVoiceQuote} from './voiceQuotePresentation.js';
 import {calculateSavedListedPrice} from './listedPriceCalculation.js';
 import {calculateVoiceArea} from './measurementArea.js';
@@ -30,7 +30,7 @@ import {
   createVoiceHandleStore,
   createVoiceToolIdempotencyStore
 } from './voicePersistence.js';
-
+import {voiceCatalogPage} from './voiceCatalog.js';
 const CALL_SID = /^CA[0-9a-f]{32}$/i;
 const ACCOUNT_SID = /^AC[0-9a-f]{32}$/i;
 const E164 = /^\+[1-9]\d{7,14}$/;
@@ -1222,8 +1222,24 @@ export function createVoiceToolRuntime({
     return output;
   }
 
+  async function lookupQuoteCatalog(input){
+    const args=invocation(input),selected=resolve(args.serviceHandle,'service');
+    const book=quoteApp.loadBook(context.ownerId),revision=quoteApp.revision(book);
+    if(revision!==selected.reference.bookRevision)throw runtimeError('PRICE_BOOK_CHANGED');
+    const matches=quoteApp.serviceMatches(book,selected.reference.serviceId);
+    if(!Array.isArray(matches)||matches.length!==1||!publishedServices(book).some(service=>service===matches[0]))throw runtimeError('SERVICE_NOT_PUBLISHED');
+    const service=matches[0],choices=voiceCatalogChoices(service,quoteApp.definition(service),args.field,args.customerInputs||{});
+    if(!choices)throw runtimeError('INVALID_CATALOG_FIELD');
+    // Stateless signed continuations require no handle insert or update. The
+    // existing service handle supplies call/tenant authority and lifetime.
+    return voiceCatalogPage({choices,field:args.field,query:args.query,limit:args.limit,cursor:args.cursor,secret,
+      binding:json([context,selected.handleHash,service.id,revision,args.customerInputs||{}]),
+      expiresAt:Date.parse(selected.expiresAtUtc),now:instant().getTime()});
+  }
+
   const handlers = Object.freeze({
     matchService,
+    lookupQuoteCatalog,
     getQuote,
     calculateListedPrice,
     calculateVoiceArea:async input=>calculateVoiceArea(invocation(input)),
