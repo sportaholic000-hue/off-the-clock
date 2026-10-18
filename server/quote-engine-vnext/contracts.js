@@ -450,7 +450,7 @@ function concreteContract() {
       demolitionAreaSqft: numberField('Measured demolition area', 'square feet', 0.1, 10_000_000),
       reinforcement: enumField('Reinforcement', ['none', 'wire_mesh', 'rebar']),
       accessDifficulty: enumField('Project access', ACCESS),
-      baseNeeded: booleanField('Base preparation included'),
+      baseNeeded: {...booleanField('Base preparation requested'),summaryLabel:'Base preparation requested'},
       chuteAccess:{...enumField(CUSTOMER_COPY.chuteAccess.label,['yes','no','unknown']),optionLabels:CUSTOMER_COPY.chuteAccess.options,required:false},
       placementMethod:{...enumField(CUSTOMER_COPY.placementMethod.label,PLACEMENT_METHODS),optionLabels:PLACEMENT_LABELS,visibleWhen:[[['chuteAccess','eq','no']]],required:false},
       adjoinsExistingConcrete:{...booleanField('Does any edge touch a house foundation, garage foundation, or existing concrete?'),summaryLabel:'Edges against foundation or existing concrete'},

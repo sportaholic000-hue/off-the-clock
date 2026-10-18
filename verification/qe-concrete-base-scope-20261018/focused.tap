@@ -1,0 +1,906 @@
+(node:3) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:10) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: unchanged pinned quote and book: mowing-control
+ok 1 - unchanged pinned quote and book: mowing-control
+  ---
+  duration_ms: 19.604036
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-unpriced-bagging
+ok 2 - unchanged pinned quote and book: mowing-unpriced-bagging
+  ---
+  duration_ms: 3.8801
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-unpriced-edging
+ok 3 - unchanged pinned quote and book: mowing-unpriced-edging
+  ---
+  duration_ms: 3.470574
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-priced-extras-control
+ok 4 - unchanged pinned quote and book: mowing-priced-extras-control
+  ---
+  duration_ms: 6.693174
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-control
+ok 5 - unchanged pinned quote and book: flat-repair-control
+  ---
+  duration_ms: 7.861983
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-unpriced-ponding
+ok 6 - unchanged pinned quote and book: flat-repair-unpriced-ponding
+  ---
+  duration_ms: 5.829093
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-priced-ponding-control
+ok 7 - unchanged pinned quote and book: flat-repair-priced-ponding-control
+  ---
+  duration_ms: 15.665568
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-200-control
+ok 8 - unchanged pinned quote and book: floor-tile-200-control
+  ---
+  duration_ms: 5.569323
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-150-boundary
+ok 9 - unchanged pinned quote and book: floor-tile-150-boundary
+  ---
+  duration_ms: 5.176772
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-300-boundary
+ok 10 - unchanged pinned quote and book: floor-tile-300-boundary
+  ---
+  duration_ms: 3.835503
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-tile
+ok 11 - unchanged pinned quote and book: floor-type-tile
+  ---
+  duration_ms: 6.715368
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-vinyl_plank
+ok 12 - unchanged pinned quote and book: floor-type-vinyl_plank
+  ---
+  duration_ms: 4.680415
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-hardwood
+ok 13 - unchanged pinned quote and book: floor-type-hardwood
+  ---
+  duration_ms: 2.248084
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-laminate
+ok 14 - unchanged pinned quote and book: floor-type-laminate
+  ---
+  duration_ms: 12.838808
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-carpet
+ok 15 - unchanged pinned quote and book: floor-type-carpet
+  ---
+  duration_ms: 3.176831
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-stairs
+ok 16 - unchanged pinned quote and book: floor-stairs
+  ---
+  duration_ms: 2.400163
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-flat
+ok 17 - unchanged pinned quote and book: custom-flat
+  ---
+  duration_ms: 3.16269
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_hour
+ok 18 - unchanged pinned quote and book: custom-fixed-per_hour
+  ---
+  duration_ms: 3.084712
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_unit
+ok 19 - unchanged pinned quote and book: custom-fixed-per_unit
+  ---
+  duration_ms: 4.156175
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_sqft
+ok 20 - unchanged pinned quote and book: custom-fixed-per_sqft
+  ---
+  duration_ms: 1.650374
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_LF
+ok 21 - unchanged pinned quote and book: custom-fixed-per_LF
+  ---
+  duration_ms: 1.524184
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_square
+ok 22 - unchanged pinned quote and book: custom-fixed-per_square
+  ---
+  duration_ms: 1.623043
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-fractional-rate
+ok 23 - unchanged pinned quote and book: custom-fixed-fractional-rate
+  ---
+  duration_ms: 1.803825
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-range-flat
+ok 24 - unchanged pinned quote and book: custom-range-flat
+  ---
+  duration_ms: 4.08622
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-classification-attempt
+ok 25 - unchanged pinned quote and book: custom-classification-attempt
+  ---
+  duration_ms: 3.104313
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-base-control
+ok 26 - unchanged pinned quote and book: siding-base-control
+  ---
+  duration_ms: 5.059055
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-trim
+ok 27 - unchanged pinned quote and book: siding-trim
+  ---
+  duration_ms: 1.722082
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-removal
+ok 28 - unchanged pinned quote and book: siding-removal
+  ---
+  duration_ms: 3.00312
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-base-control
+ok 29 - unchanged pinned quote and book: concrete-base-control
+  ---
+  duration_ms: 5.729693
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-demolition
+ok 30 - unchanged pinned quote and book: concrete-demolition
+  ---
+  duration_ms: 1.670154
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-exposed-aggregate
+ok 31 - unchanged pinned quote and book: concrete-exposed-aggregate
+  ---
+  duration_ms: 1.557674
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-roof-residential-control
+ok 32 - unchanged pinned quote and book: flat-roof-residential-control
+  ---
+  duration_ms: 3.87392
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-roof-commercial
+ok 33 - unchanged pinned quote and book: flat-roof-commercial
+  ---
+  duration_ms: 2.706523
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_INSTALL-installed-control
+ok 34 - unchanged pinned quote and book: FENCING_INSTALL-installed-control
+  ---
+  duration_ms: 7.572057
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_INSTALL-itemized-control
+ok 35 - unchanged pinned quote and book: FENCING_INSTALL-itemized-control
+  ---
+  duration_ms: 4.585341
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_REPLACEMENT-installed-control
+ok 36 - unchanged pinned quote and book: FENCING_REPLACEMENT-installed-control
+  ---
+  duration_ms: 3.569152
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_REPLACEMENT-itemized-control
+ok 37 - unchanged pinned quote and book: FENCING_REPLACEMENT-itemized-control
+  ---
+  duration_ms: 4.056235
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: INTERIOR_PAINTING-installed-control
+ok 38 - unchanged pinned quote and book: INTERIOR_PAINTING-installed-control
+  ---
+  duration_ms: 5.661001
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: INTERIOR_PAINTING-itemized-control
+ok 39 - unchanged pinned quote and book: INTERIOR_PAINTING-itemized-control
+  ---
+  duration_ms: 8.460143
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: EXTERIOR_PAINTING-installed-control
+ok 40 - unchanged pinned quote and book: EXTERIOR_PAINTING-installed-control
+  ---
+  duration_ms: 3.132244
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: EXTERIOR_PAINTING-itemized-control
+ok 41 - unchanged pinned quote and book: EXTERIOR_PAINTING-itemized-control
+  ---
+  duration_ms: 5.897236
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: painting-itemized-cost-basis
+ok 42 - unchanged pinned quote and book: painting-itemized-cost-basis
+  ---
+  duration_ms: 3.114889
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: requested-976-control
+ok 43 - unchanged pinned quote and book: requested-976-control
+  ---
+  duration_ms: 2.726765
+  type: 'test'
+  ...
+# Subtest: range endpoints, independent service overrides, private settings and unchanged display
+ok 44 - range endpoints, independent service overrides, private settings and unchanged display
+  ---
+  duration_ms: 8.948528
+  type: 'test'
+  ...
+# Subtest: legacy single-buffer evidence retains its 25% bound
+ok 45 - legacy single-buffer evidence retains its 25% bound
+  ---
+  duration_ms: 1.452737
+  type: 'test'
+  ...
+# Subtest: blank range sides fall back; wide high bands, minimum and zero side validation
+ok 46 - blank range sides fall back; wide high bands, minimum and zero side validation
+  ---
+  duration_ms: 6.55111
+  type: 'test'
+  ...
+# Subtest: custom materials share gives exact tax, labor surcharge and total
+ok 47 - custom materials share gives exact tax, labor surcharge and total
+  ---
+  duration_ms: 9.459819
+  type: 'test'
+  ...
+# Subtest: custom split follows labor/material markup flags, sell basis, and intrinsic scenarios
+ok 48 - custom split follows labor/material markup flags, sell basis, and intrinsic scenarios
+  ---
+  duration_ms: 10.501896
+  type: 'test'
+  ...
+# Subtest: custom shares reject invalid values and conserve billed cents at tiny boundaries
+ok 49 - custom shares reject invalid values and conserve billed cents at tiny boundaries
+  ---
+  duration_ms: 23.090183
+  type: 'test'
+  ...
+# Subtest: accuracy independent three-job oracle and metric-specific coverage
+ok 50 - accuracy independent three-job oracle and metric-specific coverage
+  ---
+  duration_ms: 1.641941
+  type: 'test'
+  ...
+# Subtest: metrics exclude missing middles, zero denominators, unknown tiers, currencies and sell-price budgets separately
+ok 51 - metrics exclude missing middles, zero denominators, unknown tiers, currencies and sell-price budgets separately
+  ---
+  duration_ms: 8.380254
+  type: 'test'
+  ...
+# Subtest: owner cost storage is separate, tenant-bound, revisioned, durable and absent from staff views
+ok 52 - owner cost storage is separate, tenant-bound, revisioned, durable and absent from staff views
+  ---
+  duration_ms: 43.493723
+  type: 'test'
+  ...
+# Subtest: new settings and custom share survive the real saved-book, approval and interview paths
+ok 53 - new settings and custom share survive the real saved-book, approval and interview paths
+  ---
+  duration_ms: 372.512528
+  type: 'test'
+  ...
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY none: every numerical output unchanged
+ok 54 - concrete base disclosure CONCRETE_DRIVEWAY none: every numerical output unchanged
+  ---
+  duration_ms: 56.56101
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY legacy: every numerical output unchanged
+ok 55 - concrete base disclosure CONCRETE_DRIVEWAY legacy: every numerical output unchanged
+  ---
+  duration_ms: 16.130278
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY blank: every numerical output unchanged
+ok 56 - concrete base disclosure CONCRETE_DRIVEWAY blank: every numerical output unchanged
+  ---
+  duration_ms: 13.430294
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY gravel: every numerical output unchanged
+ok 57 - concrete base disclosure CONCRETE_DRIVEWAY gravel: every numerical output unchanged
+  ---
+  duration_ms: 13.298686
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY grading: every numerical output unchanged
+ok 58 - concrete base disclosure CONCRETE_DRIVEWAY grading: every numerical output unchanged
+  ---
+  duration_ms: 9.912219
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY both: every numerical output unchanged
+ok 59 - concrete base disclosure CONCRETE_DRIVEWAY both: every numerical output unchanged
+  ---
+  duration_ms: 11.568862
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY zero_gravel: every numerical output unchanged
+ok 60 - concrete base disclosure CONCRETE_DRIVEWAY zero_gravel: every numerical output unchanged
+  ---
+  duration_ms: 13.85258
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY zero_grading: every numerical output unchanged
+ok 61 - concrete base disclosure CONCRETE_DRIVEWAY zero_grading: every numerical output unchanged
+  ---
+  duration_ms: 11.063482
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY zero_both: every numerical output unchanged
+ok 62 - concrete base disclosure CONCRETE_DRIVEWAY zero_both: every numerical output unchanged
+  ---
+  duration_ms: 9.432938
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY invalid_gravel: every numerical output unchanged
+ok 63 - concrete base disclosure CONCRETE_DRIVEWAY invalid_gravel: every numerical output unchanged
+  ---
+  duration_ms: 2.585722
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY invalid_grading: every numerical output unchanged
+ok 64 - concrete base disclosure CONCRETE_DRIVEWAY invalid_grading: every numerical output unchanged
+  ---
+  duration_ms: 1.912889
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY options: every numerical output unchanged
+ok 65 - concrete base disclosure CONCRETE_DRIVEWAY options: every numerical output unchanged
+  ---
+  duration_ms: 18.461146
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY financial: every numerical output unchanged
+ok 66 - concrete base disclosure CONCRETE_DRIVEWAY financial: every numerical output unchanged
+  ---
+  duration_ms: 9.603875
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY fees: every numerical output unchanged
+ok 67 - concrete base disclosure CONCRETE_DRIVEWAY fees: every numerical output unchanged
+  ---
+  duration_ms: 7.046776
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_DRIVEWAY minimum: every numerical output unchanged
+ok 68 - concrete base disclosure CONCRETE_DRIVEWAY minimum: every numerical output unchanged
+  ---
+  duration_ms: 9.829795
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB none: every numerical output unchanged
+ok 69 - concrete base disclosure CONCRETE_PATIO_SLAB none: every numerical output unchanged
+  ---
+  duration_ms: 10.13188
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB legacy: every numerical output unchanged
+ok 70 - concrete base disclosure CONCRETE_PATIO_SLAB legacy: every numerical output unchanged
+  ---
+  duration_ms: 18.763311
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB blank: every numerical output unchanged
+ok 71 - concrete base disclosure CONCRETE_PATIO_SLAB blank: every numerical output unchanged
+  ---
+  duration_ms: 7.76328
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB gravel: every numerical output unchanged
+ok 72 - concrete base disclosure CONCRETE_PATIO_SLAB gravel: every numerical output unchanged
+  ---
+  duration_ms: 7.404615
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB grading: every numerical output unchanged
+ok 73 - concrete base disclosure CONCRETE_PATIO_SLAB grading: every numerical output unchanged
+  ---
+  duration_ms: 10.463548
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB both: every numerical output unchanged
+ok 74 - concrete base disclosure CONCRETE_PATIO_SLAB both: every numerical output unchanged
+  ---
+  duration_ms: 8.781467
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB zero_gravel: every numerical output unchanged
+ok 75 - concrete base disclosure CONCRETE_PATIO_SLAB zero_gravel: every numerical output unchanged
+  ---
+  duration_ms: 6.98979
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB zero_grading: every numerical output unchanged
+ok 76 - concrete base disclosure CONCRETE_PATIO_SLAB zero_grading: every numerical output unchanged
+  ---
+  duration_ms: 8.606614
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB zero_both: every numerical output unchanged
+ok 77 - concrete base disclosure CONCRETE_PATIO_SLAB zero_both: every numerical output unchanged
+  ---
+  duration_ms: 10.841147
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB invalid_gravel: every numerical output unchanged
+ok 78 - concrete base disclosure CONCRETE_PATIO_SLAB invalid_gravel: every numerical output unchanged
+  ---
+  duration_ms: 1.287759
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB invalid_grading: every numerical output unchanged
+ok 79 - concrete base disclosure CONCRETE_PATIO_SLAB invalid_grading: every numerical output unchanged
+  ---
+  duration_ms: 1.143391
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB options: every numerical output unchanged
+ok 80 - concrete base disclosure CONCRETE_PATIO_SLAB options: every numerical output unchanged
+  ---
+  duration_ms: 14.879024
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB financial: every numerical output unchanged
+ok 81 - concrete base disclosure CONCRETE_PATIO_SLAB financial: every numerical output unchanged
+  ---
+  duration_ms: 7.60698
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB fees: every numerical output unchanged
+ok 82 - concrete base disclosure CONCRETE_PATIO_SLAB fees: every numerical output unchanged
+  ---
+  duration_ms: 6.248334
+  type: 'test'
+  ...
+# Subtest: concrete base disclosure CONCRETE_PATIO_SLAB minimum: every numerical output unchanged
+ok 83 - concrete base disclosure CONCRETE_PATIO_SLAB minimum: every numerical output unchanged
+  ---
+  duration_ms: 6.201133
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY none
+ok 84 - concrete base saved widget CONCRETE_DRIVEWAY none
+  ---
+  duration_ms: 1026.357387
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY legacy
+ok 85 - concrete base saved widget CONCRETE_DRIVEWAY legacy
+  ---
+  duration_ms: 346.991952
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY gravel
+ok 86 - concrete base saved widget CONCRETE_DRIVEWAY gravel
+  ---
+  duration_ms: 389.147326
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY grading
+ok 87 - concrete base saved widget CONCRETE_DRIVEWAY grading
+  ---
+  duration_ms: 264.003345
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY both
+ok 88 - concrete base saved widget CONCRETE_DRIVEWAY both
+  ---
+  duration_ms: 272.505809
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_DRIVEWAY options
+ok 89 - concrete base saved widget CONCRETE_DRIVEWAY options
+  ---
+  duration_ms: 524.384953
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB none
+ok 90 - concrete base saved widget CONCRETE_PATIO_SLAB none
+  ---
+  duration_ms: 246.718379
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB legacy
+ok 91 - concrete base saved widget CONCRETE_PATIO_SLAB legacy
+  ---
+  duration_ms: 268.956337
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB gravel
+ok 92 - concrete base saved widget CONCRETE_PATIO_SLAB gravel
+  ---
+  duration_ms: 265.03306
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB grading
+ok 93 - concrete base saved widget CONCRETE_PATIO_SLAB grading
+  ---
+  duration_ms: 243.592906
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB both
+ok 94 - concrete base saved widget CONCRETE_PATIO_SLAB both
+  ---
+  duration_ms: 245.379425
+  type: 'test'
+  ...
+# Subtest: concrete base saved widget CONCRETE_PATIO_SLAB options
+ok 95 - concrete base saved widget CONCRETE_PATIO_SLAB options
+  ---
+  duration_ms: 469.522047
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_DRIVEWAY gravel
+ok 96 - concrete base actual voice tool CONCRETE_DRIVEWAY gravel
+  ---
+  duration_ms: 374.040566
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_DRIVEWAY grading
+ok 97 - concrete base actual voice tool CONCRETE_DRIVEWAY grading
+  ---
+  duration_ms: 389.047235
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_DRIVEWAY both
+ok 98 - concrete base actual voice tool CONCRETE_DRIVEWAY both
+  ---
+  duration_ms: 385.471896
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_DRIVEWAY options
+ok 99 - concrete base actual voice tool CONCRETE_DRIVEWAY options
+  ---
+  duration_ms: 631.625185
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_PATIO_SLAB gravel
+ok 100 - concrete base actual voice tool CONCRETE_PATIO_SLAB gravel
+  ---
+  duration_ms: 381.375422
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_PATIO_SLAB grading
+ok 101 - concrete base actual voice tool CONCRETE_PATIO_SLAB grading
+  ---
+  duration_ms: 362.795417
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_PATIO_SLAB both
+ok 102 - concrete base actual voice tool CONCRETE_PATIO_SLAB both
+  ---
+  duration_ms: 390.800515
+  type: 'test'
+  ...
+# Subtest: concrete base actual voice tool CONCRETE_PATIO_SLAB options
+ok 103 - concrete base actual voice tool CONCRETE_PATIO_SLAB options
+  ---
+  duration_ms: 635.417298
+  type: 'test'
+  ...
+# Subtest: concrete base approved versus invalid zero through saved widget and voice CONCRETE_DRIVEWAY
+ok 104 - concrete base approved versus invalid zero through saved widget and voice CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 1327.881252
+  type: 'test'
+  ...
+# Subtest: concrete base approved versus invalid zero through saved widget and voice CONCRETE_PATIO_SLAB
+ok 105 - concrete base approved versus invalid zero through saved widget and voice CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 1358.28148
+  type: 'test'
+  ...
+# Subtest: concrete base genuine pre-change receipt replay CONCRETE_DRIVEWAY
+ok 106 - concrete base genuine pre-change receipt replay CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 188.687516
+  type: 'test'
+  ...
+# Subtest: concrete base genuine pre-change receipt replay CONCRETE_PATIO_SLAB
+ok 107 - concrete base genuine pre-change receipt replay CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 189.292717
+  type: 'test'
+  ...
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sod disclosure money controls preserve no-prep and legacy combined output
+ok 108 - sod disclosure money controls preserve no-prep and legacy combined output
+  ---
+  duration_ms: 54.478777
+  type: 'test'
+  ...
+# Subtest: sod disclosure names partial and complete split preparation without changing cents
+ok 109 - sod disclosure names partial and complete split preparation without changing cents
+  ---
+  duration_ms: 40.762807
+  type: 'test'
+  ...
+# Subtest: sod disclosure distinguishes valid zero rates, zero deficit and unknown allowance
+ok 110 - sod disclosure distinguishes valid zero rates, zero deficit and unknown allowance
+  ---
+  duration_ms: 22.798834
+  type: 'test'
+  ...
+# Subtest: sod disclosure keeps separate project-debris disposal separate from preparation scope
+ok 111 - sod disclosure keeps separate project-debris disposal separate from preparation scope
+  ---
+  duration_ms: 5.854221
+  type: 'test'
+  ...
+# Subtest: saved-book widget application response uses requested/component wording and replays frozen history
+ok 112 - saved-book widget application response uses requested/component wording and replays frozen history
+  ---
+  duration_ms: 986.082708
+  type: 'test'
+  ...
+# Subtest: real voice tool output uses the same split-preparation scope without private rates
+ok 113 - real voice tool output uses the same split-preparation scope without private rates
+  ---
+  duration_ms: 492.514056
+  type: 'test'
+  ...
+# Subtest: sod customer summary uses request wording rather than an inclusion promise
+ok 114 - sod customer summary uses request wording rather than an inclusion promise
+  ---
+  duration_ms: 10.858768
+  type: 'test'
+  ...
+# (node:18) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: concrete ordered patio 1.5 yd /27000; short 3.5 yd /14000, or flat /15000
+ok 115 - concrete ordered patio 1.5 yd /27000; short 3.5 yd /14000, or flat /15000
+  ---
+  duration_ms: 44.591275
+  type: 'test'
+  ...
+# Subtest: control joints 20x30: 70 LF / 10500 cents
+ok 116 - control joints 20x30: 70 LF / 10500 cents
+  ---
+  duration_ms: 8.768347
+  type: 'test'
+  ...
+# Subtest: control joints 12x18: 30 LF / 4500 cents
+ok 117 - control joints 12x18: 30 LF / 4500 cents
+  ---
+  duration_ms: 7.32845
+  type: 'test'
+  ...
+# Subtest: control joints 20x20: 40 LF / 6000 cents
+ok 118 - control joints 20x20: 40 LF / 6000 cents
+  ---
+  duration_ms: 6.180782
+  type: 'test'
+  ...
+# Subtest: nonrectangle 600 sqft joints square allowance97.98LF /14697 cents; owner spacing warning
+ok 119 - nonrectangle 600 sqft joints square allowance97.98LF /14697 cents; owner spacing warning
+  ---
+  duration_ms: 2.97609
+  type: 'test'
+  ...
+# Subtest: 4–6 inch labor band accepts5, reviews8 naming the band; blank accepts8
+ok 120 - 4–6 inch labor band accepts5, reviews8 naming the band; blank accepts8
+  ---
+  duration_ms: 8.149316
+  type: 'test'
+  ...
+# Subtest: No chute: pump150000; buggy1.5*3000=4500; no offered method reviews
+ok 121 - No chute: pump150000; buggy1.5*3000=4500; no offered method reviews
+  ---
+  duration_ms: 6.46425
+  type: 'test'
+  ...
+# Subtest: Not sure: owner pump150000 with site allowance, or no line and extra-cost note
+ok 122 - Not sure: owner pump150000 with site allowance, or no line and extra-cost note
+  ---
+  duration_ms: 4.496588
+  type: 'test'
+  ...
+# Subtest: 600sqft base4in plus20%: 8.888yd /40000; labor72000 or90000 at1.25 access
+ok 123 - 600sqft base4in plus20%: 8.888yd /40000; labor72000 or90000 at1.25 access
+  ---
+  duration_ms: 5.549893
+  type: 'test'
+  ...
+# Subtest: sod existing3: topsoil 9259 cents
+ok 124 - sod existing3: topsoil 9259 cents
+  ---
+  duration_ms: 3.803895
+  type: 'test'
+  ...
+# Subtest: sod existing4: topsoil 0 cents
+ok 125 - sod existing4: topsoil 0 cents
+  ---
+  duration_ms: 2.813434
+  type: 'test'
+  ...
+# Subtest: sod existingunknown: topsoil 18519 cents
+ok 126 - sod existingunknown: topsoil 18519 cents
+  ---
+  duration_ms: 4.110556
+  type: 'test'
+  ...
+# Subtest: sod removal+grading190000 on flat;218500 with1.15 slope; no duplicate disposal
+ok 127 - sod removal+grading190000 on flat;218500 with1.15 slope; no duplicate disposal
+  ---
+  duration_ms: 6.728667
+  type: 'test'
+  ...
+# Subtest: custom names:4 \#5 shrubs30000 and1 two-inch B&B tree43000
+ok 128 - custom names:4 \#5 shrubs30000 and1 two-inch B&B tree43000
+  ---
+  duration_ms: 7.998579
+  type: 'test'
+  ...
+# Subtest: all42 concrete/sod/planting baseline quotes retain their exact8b53169 cents and quantities
+ok 129 - all42 concrete/sod/planting baseline quotes retain their exact8b53169 cents and quantities
+  ---
+  duration_ms: 129.156445
+  type: 'test'
+  ...
+# Subtest: blank optional values preserve187000-cent patio and355000-cent sod; invalid negative price reviews
+ok 130 - blank optional values preserve187000-cent patio and355000-cent sod; invalid negative price reviews
+  ---
+  duration_ms: 5.993781
+  type: 'test'
+  ...
+# (node:24) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: about10by10 with uncertain chute quotes337000c with150000c pump allowance and estimate sentence
+ok 131 - about10by10 with uncertain chute quotes337000c with150000c pump allowance and estimate sentence
+  ---
+  duration_ms: 750.982042
+  type: 'test'
+  ...
+# Subtest: uncertain chute without owner allowance quotes187000c and preserves extra-cost note in saved public copy
+ok 132 - uncertain chute without owner allowance quotes187000c and preserves extra-cost note in saved public copy
+  ---
+  duration_ms: 845.380479
+  type: 'test'
+  ...
+# Subtest: custom plant sizes reach both question contracts, phone name binding, saved job facts and public copy at30000c
+ok 133 - custom plant sizes reach both question contracts, phone name binding, saved job facts and public copy at30000c
+  ---
+  duration_ms: 355.830578
+  type: 'test'
+  ...
+# Subtest: concrete and sod optional controls have labels, blank new services, exact money conversion and persisted settings
+ok 134 - concrete and sod optional controls have labels, blank new services, exact money conversion and persisted settings
+  ---
+  duration_ms: 133.578931
+  type: 'test'
+  ...
+# Subtest: custom plant definitions and prices survive owner dollars, interview validation and review with exact names
+ok 135 - custom plant definitions and prices survive owner dollars, interview validation and review with exact names
+  ---
+  duration_ms: 71.475571
+  type: 'test'
+  ...
+# Subtest: 4–6 inch concrete rate and custom planting are live;15ft spacing is a warning, not a quote block
+ok 136 - 4–6 inch concrete rate and custom planting are live;15ft spacing is a warning, not a quote block
+  ---
+  duration_ms: 62.319415
+  type: 'test'
+  ...
+# Subtest: phone prompts add concrete/sod/planting blocks while retaining immutable guide and caller-estimate instruction
+ok 137 - phone prompts add concrete/sod/planting blocks while retaining immutable guide and caller-estimate instruction
+  ---
+  duration_ms: 2.039028
+  type: 'test'
+  ...
+# (node:30) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: exact threshold uses ordered5yd, no short load; both fee modes reject
+ok 138 - exact threshold uses ordered5yd, no short load; both fee modes reject
+  ---
+  duration_ms: 56.216452
+  type: 'test'
+  ...
+# Subtest: placement flat plus volume uses150000+4500; Yes ignores both; multiple methods require a choice
+ok 139 - placement flat plus volume uses150000+4500; Yes ignores both; multiple methods require a choice
+  ---
+  duration_ms: 17.654608
+  type: 'test'
+  ...
+# Subtest: unconfigured depths review only selected preparation and never silently charge legacy prep
+ok 140 - unconfigured depths review only selected preparation and never silently charge legacy prep
+  ---
+  duration_ms: 9.749014
+  type: 'test'
+  ...
+# Subtest: topsoil above target and zero typical import need no topsoil material; allowance still disclosed
+ok 141 - topsoil above target and zero typical import need no topsoil material; allowance still disclosed
+  ---
+  duration_ms: 8.410208
+  type: 'test'
+  ...
+# Subtest: outline area600 uses97.98LF too; rectangle10x10 at10ft has no saw-cut line
+ok 142 - outline area600 uses97.98LF too; rectangle10x10 at10ft has no saw-cut line
+  ---
+  duration_ms: 10.602488
+  type: 'test'
+  ...
+# Subtest: tree height/bare-root is supported at43000c; ambiguous size definitions and unknown keys review
+ok 143 - tree height/bare-root is supported at43000c; ambiguous size definitions and unknown keys review
+  ---
+  duration_ms: 8.459884
+  type: 'test'
+  ...
+# Subtest: tier-specific4–6 and8–12 thickness ranges select the supported option
+ok 144 - tier-specific4–6 and8–12 thickness ranges select the supported option
+  ---
+  duration_ms: 5.299717
+  type: 'test'
+  ...
+# Subtest: empty range strings retain live readiness without inferring a zero thickness
+ok 145 - empty range strings retain live readiness without inferring a zero thickness
+  ---
+  duration_ms: 78.210115
+  type: 'test'
+  ...
+# Subtest: new optional notices preserve invalid service-type diagnostics without throwing
+ok 146 - new optional notices preserve invalid service-type diagnostics without throwing
+  ---
+  duration_ms: 0.648286
+  type: 'test'
+  ...
+# Subtest: concrete labor access reaches saw cuts but placement retains its stated per-pour amount
+ok 147 - concrete labor access reaches saw cuts but placement retains its stated per-pour amount
+  ---
+  duration_ms: 3.66778
+  type: 'test'
+  ...
+1..147
+# tests 147
+# suites 0
+# pass 147
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11825.353283
