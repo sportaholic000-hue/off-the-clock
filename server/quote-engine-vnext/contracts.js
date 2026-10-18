@@ -564,7 +564,7 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_SOD = commonContract({
   fields: {
     sodSqft: numberField('Measured sod area', 'square feet', 1, 10_000_000),
     sqftMethod: enumField('Sod area method', ['exact']),
-    groundPrepNeeded: booleanField('Ground preparation included'),
+    groundPrepNeeded: {...booleanField('Ground preparation requested'),summaryLabel:'Ground preparation requested'},
     usableTopsoilDepthInches:{...numberField(CUSTOMER_COPY.usableTopsoilDepthInches.label,'inches',0,120),type:'number_or_unknown',required:false,help:CUSTOMER_COPY.usableTopsoilDepthInches.help,details:[CUSTOMER_COPY.usableTopsoilDepthInches.help],visibleWhen:[[['groundPrepNeeded','eq',true]]]},
     slope: enumField('Terrain slope', SLOPES),
     accessDifficulty: enumField('Project access', ACCESS)

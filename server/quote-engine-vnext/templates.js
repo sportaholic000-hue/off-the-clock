@@ -1138,14 +1138,27 @@ function calculateSod(c, p, ctx) {
   if (c.groundPrepNeeded) {
     if(!separateSodPrep(p))add(out, makeLine({ name: 'Ground preparation', category: 'prep', quantity: sqft, unit: 'measured square feet', rateCents: p.groundPrepPerSqft, ratePath: 'groundPrepPerSqft' }));
     else {
-      for(const [ratePath,name] of [['sodRemovalPerSqft','Old-lawn removal with disposal'],['sodGradingPerSqft','Sod grading']])if(present(p[ratePath]))add(out,makeLine({name,category:'labor',quantity:sqft,unit:'square feet',rateCents:p[ratePath],ratePath,multipliers:[{name:'slope',value:slope,path:`slopeMultiplier.${c.slope}`},{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
+      const included=[],excluded=[],componentDisclosures=[];
+      for(const [ratePath,name,customerName] of [['sodRemovalPerSqft','Old-lawn removal with disposal','old-lawn removal and disposal'],['sodGradingPerSqft','Sod grading','grading']]){
+        if(present(p[ratePath])){
+          add(out,makeLine({name,category:'labor',quantity:sqft,unit:'square feet',rateCents:p[ratePath],ratePath,multipliers:[{name:'slope',value:slope,path:`slopeMultiplier.${c.slope}`},{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
+          included.push(customerName);
+        }else excluded.push(customerName);
+      }
       if(present(p.topsoilPerCubicYard)){
         const soil=topsoilQuantity(c,p);
         recordQuantityDerivation(out,{name:'topsoilCubicYards',formula:soil.unknown?'sodSqft * topsoilTypicalImportDepthInches / 324':'sodSqft * max(0, topsoilTargetDepthInches - usableTopsoilDepthInches) / 324',inputs:{sodSqft:sqft,importDepthInches:exactToNumber(soil.depth),...(soil.unknown?{topsoilTypicalImportDepthInches:p.topsoilTypicalImportDepthInches}:{topsoilTargetDepthInches:p.topsoilTargetDepthInches,usableTopsoilDepthInches:c.usableTopsoilDepthInches})},result:soil.quantity,unit:'cubic yards',usedBy:['Imported topsoil']});
-        if(exactCompare(soil.quantity,0)>0)add(out,makeLine({name:'Imported topsoil',category:'material',quantity:soil.quantity,unit:'cubic yards',rateCents:p.topsoilPerCubicYard,ratePath:'topsoilPerCubicYard'}));
-        out.disclosures.push(`Topsoil import depth: ${exactToNumber(soil.depth)} inches.`);
-        if(soil.unknown)out.disclosures.push(TOPSOIL_SITE_NOTE);
-      }
+        if(exactCompare(soil.quantity,0)>0){
+          add(out,makeLine({name:'Imported topsoil',category:'material',quantity:soil.quantity,unit:'cubic yards',rateCents:p.topsoilPerCubicYard,ratePath:'topsoilPerCubicYard'}));
+          included.push('imported topsoil');
+        }else if(soil.unknown)included.push('imported topsoil');
+        else componentDisclosures.push('No imported topsoil is needed for the supplied depth.');
+        componentDisclosures.push(`Topsoil import depth: ${exactToNumber(soil.depth)} inches.`);
+        if(soil.unknown)componentDisclosures.push(TOPSOIL_SITE_NOTE);
+      }else excluded.push('imported topsoil');
+      if(included.length)out.disclosures.push(`Included ground preparation: ${included.join(', ')}.`);
+      if(excluded.length)out.disclosures.push(`Excluded ground preparation: ${excluded.join(', ')}. Any required excluded work needs a separate on-site estimate.`);
+      out.disclosures.push(...componentDisclosures);
     }
   }
   const separate = ctx.ownerPricing?.disposalScope === 'separate_project_debris';
@@ -1155,7 +1168,7 @@ function calculateSod(c, p, ctx) {
   if((c.groundPrepNeeded || separate) && !out.feeScope.disposal)out.replacedCommonFees.push('disposal');
   recordRuleApplication(out,{name:'sodDisposalOwnership',rule:(separateSodPrep(p)?'Separately priced old-lawn removal includes old-lawn haul-away.':'Ground preparation includes old-lawn haul-away.')+' With ground preparation or a declared separate disposal scope, common disposal covers only explicitly selected separate project debris. Without ground preparation or a separate disposal scope, the configured common fee rule applies.',inputs:{groundPrepNeeded:c.groundPrepNeeded,disposalScope:ctx.ownerPricing?.disposalScope??null,separateDisposalSelected:c.separateDisposalSelected??null},result:{oldLawnDisposalOwner:c.groundPrepNeeded?(separateSodPrep(p)?present(p.sodRemovalPerSqft)?'sodRemovalPerSqft':null:'groundPrepPerSqft'):null,commonDisposalScope:out.feeScope.disposal?'separate_project_debris':!c.groundPrepNeeded&&!separate?'common_fee_rule':null},usedBy:separateSodPrep(p)?['Old-lawn removal with disposal','Disposal']:['Ground preparation','Disposal']});
   recordMeasurement(out, 'sodAreaSqft', sqft, 'square feet');
-  out.priceDrivers.push(`${sqft} measured square feet of sod`, c.groundPrepNeeded ? 'Existing-ground preparation included' : `Slope: ${c.slope}`);
+  out.priceDrivers.push(`${sqft} measured square feet of sod`, c.groundPrepNeeded ? (separateSodPrep(p)?'Ground preparation requested':'Existing-ground preparation included') : `Slope: ${c.slope}`);
   return out;
 }
 
