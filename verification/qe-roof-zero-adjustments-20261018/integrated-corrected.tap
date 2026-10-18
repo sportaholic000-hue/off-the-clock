@@ -1,0 +1,849 @@
+TAP version 13
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: roof zero independent control: positive control
+ok 1 - roof zero independent control: positive control
+  ---
+  duration_ms: 30.920939
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: zero upper installation
+ok 2 - roof zero independent control: zero upper installation
+  ---
+  duration_ms: 7.362808
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: zero upper removal
+ok 3 - roof zero independent control: zero upper removal
+  ---
+  duration_ms: 6.008812
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: three layers zero factor
+ok 4 - roof zero independent control: three layers zero factor
+  ---
+  duration_ms: 4.85039
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: three layers two stories zero factor
+ok 5 - roof zero independent control: three layers two stories zero factor
+  ---
+  duration_ms: 6.603857
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine install full
+ok 6 - roof zero seven_to_nine install full
+  ---
+  duration_ms: 3.747804
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine remove full
+ok 7 - roof zero seven_to_nine remove full
+  ---
+  duration_ms: 3.714673
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine both full
+ok 8 - roof zero seven_to_nine both full
+  ---
+  duration_ms: 3.313461
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine install partial-area
+ok 9 - roof zero seven_to_nine install partial-area
+  ---
+  duration_ms: 3.920713
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine remove partial-area
+ok 10 - roof zero seven_to_nine remove partial-area
+  ---
+  duration_ms: 4.226994
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine both partial-area
+ok 11 - roof zero seven_to_nine both partial-area
+  ---
+  duration_ms: 3.039679
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine install partial-percent
+ok 12 - roof zero seven_to_nine install partial-percent
+  ---
+  duration_ms: 3.130115
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine remove partial-percent
+ok 13 - roof zero seven_to_nine remove partial-percent
+  ---
+  duration_ms: 2.992097
+  type: 'test'
+  ...
+# Subtest: roof zero seven_to_nine both partial-percent
+ok 14 - roof zero seven_to_nine both partial-percent
+  ---
+  duration_ms: 3.490677
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve install full
+ok 15 - roof zero ten_to_twelve install full
+  ---
+  duration_ms: 3.093189
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve remove full
+ok 16 - roof zero ten_to_twelve remove full
+  ---
+  duration_ms: 2.835272
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve both full
+ok 17 - roof zero ten_to_twelve both full
+  ---
+  duration_ms: 2.679818
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve install partial-area
+ok 18 - roof zero ten_to_twelve install partial-area
+  ---
+  duration_ms: 2.857625
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve remove partial-area
+ok 19 - roof zero ten_to_twelve remove partial-area
+  ---
+  duration_ms: 3.25352
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve both partial-area
+ok 20 - roof zero ten_to_twelve both partial-area
+  ---
+  duration_ms: 2.874441
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve install partial-percent
+ok 21 - roof zero ten_to_twelve install partial-percent
+  ---
+  duration_ms: 3.255264
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve remove partial-percent
+ok 22 - roof zero ten_to_twelve remove partial-percent
+  ---
+  duration_ms: 2.915552
+  type: 'test'
+  ...
+# Subtest: roof zero ten_to_twelve both partial-percent
+ok 23 - roof zero ten_to_twelve both partial-percent
+  ---
+  duration_ms: 2.88728
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve install full
+ok 24 - roof zero over_twelve install full
+  ---
+  duration_ms: 3.103625
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve remove full
+ok 25 - roof zero over_twelve remove full
+  ---
+  duration_ms: 2.704435
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve both full
+ok 26 - roof zero over_twelve both full
+  ---
+  duration_ms: 2.670104
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve install partial-area
+ok 27 - roof zero over_twelve install partial-area
+  ---
+  duration_ms: 2.891796
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve remove partial-area
+ok 28 - roof zero over_twelve remove partial-area
+  ---
+  duration_ms: 2.94697
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve both partial-area
+ok 29 - roof zero over_twelve both partial-area
+  ---
+  duration_ms: 3.603106
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve install partial-percent
+ok 30 - roof zero over_twelve install partial-percent
+  ---
+  duration_ms: 2.84021
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve remove partial-percent
+ok 31 - roof zero over_twelve remove partial-percent
+  ---
+  duration_ms: 2.730234
+  type: 'test'
+  ...
+# Subtest: roof zero over_twelve both partial-percent
+ok 32 - roof zero over_twelve both partial-percent
+  ---
+  duration_ms: 3.129874
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install full
+ok 33 - roof zero mixed measured seven_to_nine install full
+  ---
+  duration_ms: 3.992942
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove full
+ok 34 - roof zero mixed measured seven_to_nine remove full
+  ---
+  duration_ms: 3.170897
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both full
+ok 35 - roof zero mixed measured seven_to_nine both full
+  ---
+  duration_ms: 3.634594
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install full
+ok 36 - roof zero mixed measured ten_to_twelve install full
+  ---
+  duration_ms: 3.464808
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove full
+ok 37 - roof zero mixed measured ten_to_twelve remove full
+  ---
+  duration_ms: 3.949055
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both full
+ok 38 - roof zero mixed measured ten_to_twelve both full
+  ---
+  duration_ms: 4.164991
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve install full
+ok 39 - roof zero mixed measured over_twelve install full
+  ---
+  duration_ms: 3.454583
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve remove full
+ok 40 - roof zero mixed measured over_twelve remove full
+  ---
+  duration_ms: 3.378809
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve both full
+ok 41 - roof zero mixed measured over_twelve both full
+  ---
+  duration_ms: 3.137426
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all install full
+ok 42 - roof zero mixed measured all install full
+  ---
+  duration_ms: 3.550777
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all remove full
+ok 43 - roof zero mixed measured all remove full
+  ---
+  duration_ms: 3.314402
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all both full
+ok 44 - roof zero mixed measured all both full
+  ---
+  duration_ms: 3.315794
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install partial-area
+ok 45 - roof zero mixed measured seven_to_nine install partial-area
+  ---
+  duration_ms: 3.540532
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove partial-area
+ok 46 - roof zero mixed measured seven_to_nine remove partial-area
+  ---
+  duration_ms: 4.122367
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both partial-area
+ok 47 - roof zero mixed measured seven_to_nine both partial-area
+  ---
+  duration_ms: 3.317657
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install partial-area
+ok 48 - roof zero mixed measured ten_to_twelve install partial-area
+  ---
+  duration_ms: 3.415314
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove partial-area
+ok 49 - roof zero mixed measured ten_to_twelve remove partial-area
+  ---
+  duration_ms: 3.089103
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both partial-area
+ok 50 - roof zero mixed measured ten_to_twelve both partial-area
+  ---
+  duration_ms: 3.600272
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve install partial-area
+ok 51 - roof zero mixed measured over_twelve install partial-area
+  ---
+  duration_ms: 3.035293
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve remove partial-area
+ok 52 - roof zero mixed measured over_twelve remove partial-area
+  ---
+  duration_ms: 3.27958
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve both partial-area
+ok 53 - roof zero mixed measured over_twelve both partial-area
+  ---
+  duration_ms: 3.130876
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all install partial-area
+ok 54 - roof zero mixed measured all install partial-area
+  ---
+  duration_ms: 3.131748
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all remove partial-area
+ok 55 - roof zero mixed measured all remove partial-area
+  ---
+  duration_ms: 3.569055
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all both partial-area
+ok 56 - roof zero mixed measured all both partial-area
+  ---
+  duration_ms: 3.349134
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install partial-percent
+ok 57 - roof zero mixed measured seven_to_nine install partial-percent
+  ---
+  duration_ms: 3.332099
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove partial-percent
+ok 58 - roof zero mixed measured seven_to_nine remove partial-percent
+  ---
+  duration_ms: 3.272479
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both partial-percent
+ok 59 - roof zero mixed measured seven_to_nine both partial-percent
+  ---
+  duration_ms: 3.626641
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install partial-percent
+ok 60 - roof zero mixed measured ten_to_twelve install partial-percent
+  ---
+  duration_ms: 3.202674
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove partial-percent
+ok 61 - roof zero mixed measured ten_to_twelve remove partial-percent
+  ---
+  duration_ms: 3.132068
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both partial-percent
+ok 62 - roof zero mixed measured ten_to_twelve both partial-percent
+  ---
+  duration_ms: 3.104327
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve install partial-percent
+ok 63 - roof zero mixed measured over_twelve install partial-percent
+  ---
+  duration_ms: 3.716617
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve remove partial-percent
+ok 64 - roof zero mixed measured over_twelve remove partial-percent
+  ---
+  duration_ms: 3.421082
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured over_twelve both partial-percent
+ok 65 - roof zero mixed measured over_twelve both partial-percent
+  ---
+  duration_ms: 3.354261
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all install partial-percent
+ok 66 - roof zero mixed measured all install partial-percent
+  ---
+  duration_ms: 3.30663
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all remove partial-percent
+ok 67 - roof zero mixed measured all remove partial-percent
+  ---
+  duration_ms: 3.582636
+  type: 'test'
+  ...
+# Subtest: roof zero mixed measured all both partial-percent
+ok 68 - roof zero mixed measured all both partial-percent
+  ---
+  duration_ms: 3.10613
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=1 partial=false
+ok 69 - roof zero additional layers=2 stories=1 partial=false
+  ---
+  duration_ms: 2.822704
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=1 partial=true
+ok 70 - roof zero additional layers=2 stories=1 partial=true
+  ---
+  duration_ms: 2.612337
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=1 partial=false
+ok 71 - roof zero additional layers=3 stories=1 partial=false
+  ---
+  duration_ms: 2.892268
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=1 partial=true
+ok 72 - roof zero additional layers=3 stories=1 partial=true
+  ---
+  duration_ms: 4.828989
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=1 partial=false
+ok 73 - roof zero additional layers=4 stories=1 partial=false
+  ---
+  duration_ms: 2.523063
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=1 partial=true
+ok 74 - roof zero additional layers=4 stories=1 partial=true
+  ---
+  duration_ms: 2.611266
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=2 partial=false
+ok 75 - roof zero additional layers=2 stories=2 partial=false
+  ---
+  duration_ms: 2.986559
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=2 partial=true
+ok 76 - roof zero additional layers=2 stories=2 partial=true
+  ---
+  duration_ms: 3.227781
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=2 partial=false
+ok 77 - roof zero additional layers=3 stories=2 partial=false
+  ---
+  duration_ms: 3.537608
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=2 partial=true
+ok 78 - roof zero additional layers=3 stories=2 partial=true
+  ---
+  duration_ms: 2.82087
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=2 partial=false
+ok 79 - roof zero additional layers=4 stories=2 partial=false
+  ---
+  duration_ms: 2.815723
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=2 partial=true
+ok 80 - roof zero additional layers=4 stories=2 partial=true
+  ---
+  duration_ms: 3.175653
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=3 partial=false
+ok 81 - roof zero additional layers=2 stories=3 partial=false
+  ---
+  duration_ms: 2.977706
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=2 stories=3 partial=true
+ok 82 - roof zero additional layers=2 stories=3 partial=true
+  ---
+  duration_ms: 3.533571
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=3 partial=false
+ok 83 - roof zero additional layers=3 stories=3 partial=false
+  ---
+  duration_ms: 3.157145
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=3 stories=3 partial=true
+ok 84 - roof zero additional layers=3 stories=3 partial=true
+  ---
+  duration_ms: 2.962644
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=3 partial=false
+ok 85 - roof zero additional layers=4 stories=3 partial=false
+  ---
+  duration_ms: 3.005388
+  type: 'test'
+  ...
+# Subtest: roof zero additional layers=4 stories=3 partial=true
+ok 86 - roof zero additional layers=4 stories=3 partial=true
+  ---
+  duration_ms: 3.255344
+  type: 'test'
+  ...
+# Subtest: roof zero owner-selected unknown band seven_to_nine
+ok 87 - roof zero owner-selected unknown band seven_to_nine
+  ---
+  duration_ms: 2.829513
+  type: 'test'
+  ...
+# Subtest: roof zero owner-selected unknown band ten_to_twelve
+ok 88 - roof zero owner-selected unknown band ten_to_twelve
+  ---
+  duration_ms: 2.608511
+  type: 'test'
+  ...
+# Subtest: roof zero owner-selected unknown band over_twelve
+ok 89 - roof zero owner-selected unknown band over_twelve
+  ---
+  duration_ms: 2.608681
+  type: 'test'
+  ...
+# Subtest: roof zero up-to-six ignores inactive steep additions
+ok 90 - roof zero up-to-six ignores inactive steep additions
+  ---
+  duration_ms: 2.384063
+  type: 'test'
+  ...
+# Subtest: roof zero combined upper pitch and additional layers preserve two-story first tear-off and disposal
+ok 91 - roof zero combined upper pitch and additional layers preserve two-story first tear-off and disposal
+  ---
+  duration_ms: 3.49267
+  type: 'test'
+  ...
+# Subtest: roof zero keeps half-cent material rounding and exact remaining pitch charge
+ok 92 - roof zero keeps half-cent material rounding and exact remaining pitch charge
+  ---
+  duration_ms: 2.713388
+  type: 'test'
+  ...
+# Subtest: roof positive additional-layer story factor remains unchanged
+ok 93 - roof positive additional-layer story factor remains unchanged
+  ---
+  duration_ms: 3.194082
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install missing
+ok 94 - roof zero rejects install missing
+  ---
+  duration_ms: 2.027547
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install null
+ok 95 - roof zero rejects install null
+  ---
+  duration_ms: 1.242257
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install blank
+ok 96 - roof zero rejects install blank
+  ---
+  duration_ms: 1.401947
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install string-zero
+ok 97 - roof zero rejects install string-zero
+  ---
+  duration_ms: 1.172342
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install negative
+ok 98 - roof zero rejects install negative
+  ---
+  duration_ms: 1.348777
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install infinite
+ok 99 - roof zero rejects install infinite
+  ---
+  duration_ms: 1.981809
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install nan
+ok 100 - roof zero rejects install nan
+  ---
+  duration_ms: 1.432213
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove missing
+ok 101 - roof zero rejects remove missing
+  ---
+  duration_ms: 1.264651
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove null
+ok 102 - roof zero rejects remove null
+  ---
+  duration_ms: 1.344861
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove blank
+ok 103 - roof zero rejects remove blank
+  ---
+  duration_ms: 1.444381
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove string-zero
+ok 104 - roof zero rejects remove string-zero
+  ---
+  duration_ms: 1.2241
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove negative
+ok 105 - roof zero rejects remove negative
+  ---
+  duration_ms: 1.093634
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove infinite
+ok 106 - roof zero rejects remove infinite
+  ---
+  duration_ms: 1.075987
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove nan
+ok 107 - roof zero rejects remove nan
+  ---
+  duration_ms: 1.280065
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra missing
+ok 108 - roof zero rejects extra missing
+  ---
+  duration_ms: 1.112892
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra null
+ok 109 - roof zero rejects extra null
+  ---
+  duration_ms: 1.617511
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra blank
+ok 110 - roof zero rejects extra blank
+  ---
+  duration_ms: 1.211301
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra string-zero
+ok 111 - roof zero rejects extra string-zero
+  ---
+  duration_ms: 1.102196
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra negative
+ok 112 - roof zero rejects extra negative
+  ---
+  duration_ms: 1.083658
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra infinite
+ok 113 - roof zero rejects extra infinite
+  ---
+  duration_ms: 1.072863
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra nan
+ok 114 - roof zero rejects extra nan
+  ---
+  duration_ms: 1.118161
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install missing
+ok 115 - roof zero over12 rejects install missing
+  ---
+  duration_ms: 2.031714
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install null
+ok 116 - roof zero over12 rejects install null
+  ---
+  duration_ms: 1.365102
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install blank
+ok 117 - roof zero over12 rejects install blank
+  ---
+  duration_ms: 1.162087
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install string-zero
+ok 118 - roof zero over12 rejects install string-zero
+  ---
+  duration_ms: 1.10434
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install negative
+ok 119 - roof zero over12 rejects install negative
+  ---
+  duration_ms: 1.556239
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install infinite
+ok 120 - roof zero over12 rejects install infinite
+  ---
+  duration_ms: 1.136339
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove missing
+ok 121 - roof zero over12 rejects remove missing
+  ---
+  duration_ms: 1.817242
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove null
+ok 122 - roof zero over12 rejects remove null
+  ---
+  duration_ms: 1.224411
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove blank
+ok 123 - roof zero over12 rejects remove blank
+  ---
+  duration_ms: 1.447616
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove string-zero
+ok 124 - roof zero over12 rejects remove string-zero
+  ---
+  duration_ms: 1.289618
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove negative
+ok 125 - roof zero over12 rejects remove negative
+  ---
+  duration_ms: 1.19112
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove infinite
+ok 126 - roof zero over12 rejects remove infinite
+  ---
+  duration_ms: 1.419023
+  type: 'test'
+  ...
+# Subtest: roof zero does not supply missing product confirmation
+ok 127 - roof zero does not supply missing product confirmation
+  ---
+  duration_ms: 1.682979
+  type: 'test'
+  ...
+# Subtest: roof zero v9 engine/runtime agree and genuine positive v8 line evidence stays exact
+ok 128 - roof zero v9 engine/runtime agree and genuine positive v8 line evidence stays exact
+  ---
+  duration_ms: 11.70826
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: upper installation zero
+ok 129 - roof zero saved widget and voice parity: upper installation zero
+  ---
+  duration_ms: 956.318384
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: upper removal zero
+ok 130 - roof zero saved widget and voice parity: upper removal zero
+  ---
+  duration_ms: 507.749702
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: upper both zero
+ok 131 - roof zero saved widget and voice parity: upper both zero
+  ---
+  duration_ms: 501.397018
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: over12 both zero partial
+ok 132 - roof zero saved widget and voice parity: over12 both zero partial
+  ---
+  duration_ms: 504.122444
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: three layers two stories zero
+ok 133 - roof zero saved widget and voice parity: three layers two stories zero
+  ---
+  duration_ms: 483.019894
+  type: 'test'
+  ...
+# Subtest: roof zero saved widget and voice parity: mixed partial zero upper installation
+ok 134 - roof zero saved widget and voice parity: mixed partial zero upper installation
+  ---
+  duration_ms: 484.143141
+  type: 'test'
+  ...
+# Subtest: roof zero saved new proposals still need explicit setting confirmation and owner approval
+not ok 135 - roof zero saved new proposals still need explicit setting confirmation and owner approval
+  ---
+  duration_ms: 133.626351
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:145:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /startingValueState/. Input:
+    
+    '{"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-accuracy-20261018-v9","serviceId":"6cad55d8-53d5-4c9c-b58f-8074a2e96ca0","quoteId":"3cb1c739-a0a9-4888-baf2-caf30ea52d99","serviceType":"ROOFING_REPLACEMENT","submittedCustomerInputs":{"roofSizeMethod":"roof_measured","roofSizeInput":1000,"existingRoofType":"asphalt_shingle","replacementRoofType":"asphalt_shingle","pitchMethod":"whole_roof","pitchBand":"ten_to_twelve","stories":1,"existingLayers":1,"roofComplexity":"simple","serviceScope":"full","confirmedFacts":{"existingRoofType":{"status":"identified","field":"existingRoofType","value":"asphalt_shingle","offeringId":"5238c07d-d288-4ed7-8991-eb5bd8ffed4b"},"replacementRoofType":{"status":"identified","field":"replacementRoofType","value":"asphalt_shingle","offeringId":"a4c9ae75-5efb-40f5-8b7f-0e07222f2445"}}},"normalizedScope":null,"validatedMeasurements":[],"unconfirmedOwnerFields":[],"reviewReason":"This service is not active for customer quoting.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":["active"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"failedTierDiagnostics":[],"validationMessages":[],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '{"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-accuracy-20261018-v9","serviceId":"6cad55d8-53d5-4c9c-b58f-8074a2e96ca0","quoteId":"3cb1c739-a0a9-4888-baf2-caf30ea52d99","serviceType":"ROOFING_REPLACEMENT","submittedCustomerInputs":{"roofSizeMethod":"roof_measured","roofSizeInput":1000,"existingRoofType":"asphalt_shingle","replacementRoofType":"asphalt_shingle","pitchMethod":"whole_roof","pitchBand":"ten_to_twelve","stories":1,"existingLayers":1,"roofComplexity":"simple","serviceScope":"full","confirmedFacts":{"existingRoofType":{"status":"identified","field":"existingRoofType","value":"asphalt_shingle","offeringId":"5238c07d-d288-4ed7-8991-eb5bd8ffed4b"},"replacementRoofType":{"status":"identified","field":"replacementRoofType","value":"asphalt_shingle","offeringId":"a4c9ae75-5efb-40f5-8b7f-0e07222f2445"}}},"normalizedScope":null,"validatedMeasurements":[],"unconfirmedOwnerFields":[],"reviewReason":"This service is not active for customer quoting.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":["active"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"failedTierDiagnostics":[],"validationMessages":[],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:162:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero genuine v8 approval remains stale through save; explicit v9 approval and zero correction preserve receipt replay
+ok 136 - roof zero genuine v8 approval remains stale through save; explicit v9 approval and zero correction preserve receipt replay
+  ---
+  duration_ms: 678.753121
+  type: 'test'
+  ...
+1..136
+# tests 136
+# suites 0
+# pass 135
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4923.474264

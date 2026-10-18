@@ -1,0 +1,105 @@
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings
+    # Subtest: 1. production startup passes the release engine guard on a temporary volume
+    ok 1 - 1. production startup passes the release engine guard on a temporary volume
+      ---
+      duration_ms: 25.232779
+      type: 'test'
+      ...
+    # Subtest: 2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP
+    ok 2 - 2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP
+      ---
+      duration_ms: 1384.08826
+      type: 'test'
+      ...
+    # Subtest: 3. graceful production restart preserves exact book, approval, rows and replay receipts
+    ok 3 - 3. graceful production restart preserves exact book, approval, rows and replay receipts
+      ---
+      duration_ms: 665.775866
+      type: 'test'
+      ...
+    # Subtest: 4. real backup CLI includes the SQLite database and every saved price book
+    ok 4 - 4. real backup CLI includes the SQLite database and every saved price book
+      ---
+      duration_ms: 161.771838
+      type: 'test'
+      ...
+    # Subtest: 5. wipe entire fake volume, restore CLI from independent archive, restart, and replay identical receipts without duplicates
+    ok 5 - 5. wipe entire fake volume, restore CLI from independent archive, restart, and replay identical receipts without duplicates
+      ---
+      duration_ms: 831.449944
+      type: 'test'
+      ...
+    # Subtest: 6. invalid JSON after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    ok 6 - 6. invalid JSON after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 676.150044
+      type: 'test'
+      ...
+    # restore-cleanup {"corruption":"invalid JSON","restored":{"at":"2026-10-18T06:46:03.716Z","path":"/workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-synthetic-restore-nRBYp3/volume/restores/synthetic-drill/pricebooks/58415131-033f-4c40-9868-446a7ad29ab8.json","exists":true,"sha256":"528789c3a4e5b1bbb88d900e30f3123dcff8dab92c0a92482a3f74e8361ffac2","bytes":4993,"mtimeMs":1792305963714.4717},"failed":false,"cleanupError":null}
+    # Subtest: 6. invalid structure after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    ok 7 - 6. invalid structure after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 652.034114
+      type: 'test'
+      ...
+    # restore-cleanup {"corruption":"invalid structure","restored":{"at":"2026-10-18T06:46:04.368Z","path":"/workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-synthetic-restore-nRBYp3/volume/restores/synthetic-drill/pricebooks/58415131-033f-4c40-9868-446a7ad29ab8.json","exists":true,"sha256":"528789c3a4e5b1bbb88d900e30f3123dcff8dab92c0a92482a3f74e8361ffac2","bytes":4993,"mtimeMs":1792305964366.4834},"failed":false,"cleanupError":null}
+    # Subtest: 6. missing after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+    ok 8 - 6. missing after restore pauses new quotes, explains owner recovery and keeps server/replays alive
+      ---
+      duration_ms: 714.148084
+      type: 'test'
+      ...
+    # restore-cleanup {"corruption":"missing","restored":{"at":"2026-10-18T06:46:05.083Z","path":"/workspace/scratch/5228524b6f21/qe-voice-runtime/tmp/otc-synthetic-restore-nRBYp3/volume/restores/synthetic-drill/pricebooks/58415131-033f-4c40-9868-446a7ad29ab8.json","exists":true,"sha256":"528789c3a4e5b1bbb88d900e30f3123dcff8dab92c0a92482a3f74e8361ffac2","bytes":4993,"mtimeMs":1792305965082.4963},"failed":false,"cleanupError":null}
+    1..8
+ok 1 - production backup/restore rehearsal uses real approved quotes, leads and confirmed bookings
+  ---
+  duration_ms: 6005.619976
+  type: 'test'
+  ...
+# Synthetic approved book sha256=528789c3a4e5b1bbb88d900e30f3123dcff8dab92c0a92482a3f74e8361ffac2; quote=$100.00; quotes=1; leads=2; appointments=1; submissions=2.
+# Verified bundle: 3 files; both owner books and SQLite integrity/foreign keys/checksums pass.
+# Whole-volume loss simulated; exact book bytes, approval, persisted rows, quote/lead receipts and booking confirmation survived.
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: release guard: production starts with the current compiled v9 engine
+ok 2 - release guard: production starts with the current compiled v9 engine
+  ---
+  duration_ms: 586.609035
+  type: 'test'
+  ...
+# Subtest: release guard: production refuses compiled engine "quote-engine-vnext-launch-fixes-20261005-v6"
+ok 3 - release guard: production refuses compiled engine "quote-engine-vnext-launch-fixes-20261005-v6"
+  ---
+  duration_ms: 493.697833
+  type: 'test'
+  ...
+# Subtest: release guard: production refuses compiled engine "quote-engine-vnext-date-context-20261006-v7"
+ok 4 - release guard: production refuses compiled engine "quote-engine-vnext-date-context-20261006-v7"
+  ---
+  duration_ms: 448.989828
+  type: 'test'
+  ...
+# Subtest: release guard: production refuses compiled engine "quote-engine-vnext-accuracy-20261018-v8"
+ok 5 - release guard: production refuses compiled engine "quote-engine-vnext-accuracy-20261018-v8"
+  ---
+  duration_ms: 477.083639
+  type: 'test'
+  ...
+# Subtest: release guard: production refuses compiled engine ""
+ok 6 - release guard: production refuses compiled engine ""
+  ---
+  duration_ms: 428.375776
+  type: 'test'
+  ...
+1..6
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8693.225383

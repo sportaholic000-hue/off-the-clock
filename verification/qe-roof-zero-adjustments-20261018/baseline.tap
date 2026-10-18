@@ -1,0 +1,2934 @@
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: roof zero independent control: positive control
+ok 1 - roof zero independent control: positive control
+  ---
+  duration_ms: 30.31626
+  type: 'test'
+  ...
+# Subtest: roof zero independent control: zero upper installation
+not ok 2 - roof zero independent control: zero upper installation
+  ---
+  duration_ms: 8.052565
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:24:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":423800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:26:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: roof zero independent control: zero upper removal
+not ok 3 - roof zero independent control: zero upper removal
+  ---
+  duration_ms: 9.023524
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:24:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":453000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:26:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero independent control: three layers zero factor
+not ok 4 - roof zero independent control: three layers zero factor
+  ---
+  duration_ms: 5.234309
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:24:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":431000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:26:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero independent control: three layers two stories zero factor
+not ok 5 - roof zero independent control: three layers two stories zero factor
+  ---
+  duration_ms: 3.498218
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:24:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":457000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:26:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine install full
+not ok 6 - roof zero seven_to_nine install full
+  ---
+  duration_ms: 2.671616
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":411800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine remove full
+not ok 7 - roof zero seven_to_nine remove full
+  ---
+  duration_ms: 2.984176
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":431000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine both full
+not ok 8 - roof zero seven_to_nine both full
+  ---
+  duration_ms: 2.402852
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine install partial-area
+not ok 9 - roof zero seven_to_nine install partial-area
+  ---
+  duration_ms: 2.804836
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":205900,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine remove partial-area
+not ok 10 - roof zero seven_to_nine remove partial-area
+  ---
+  duration_ms: 3.137897
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":215500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine both partial-area
+not ok 11 - roof zero seven_to_nine both partial-area
+  ---
+  duration_ms: 2.308169
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":195500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine install partial-percent
+not ok 12 - roof zero seven_to_nine install partial-percent
+  ---
+  duration_ms: 2.647099
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":205900,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine remove partial-percent
+not ok 13 - roof zero seven_to_nine remove partial-percent
+  ---
+  duration_ms: 2.1288
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":215500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero seven_to_nine both partial-percent
+not ok 14 - roof zero seven_to_nine both partial-percent
+  ---
+  duration_ms: 2.238885
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":195500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve install full
+not ok 15 - roof zero ten_to_twelve install full
+  ---
+  duration_ms: 2.500128
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":423800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve remove full
+not ok 16 - roof zero ten_to_twelve remove full
+  ---
+  duration_ms: 2.112365
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":453000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve both full
+not ok 17 - roof zero ten_to_twelve both full
+  ---
+  duration_ms: 2.260638
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve install partial-area
+not ok 18 - roof zero ten_to_twelve install partial-area
+  ---
+  duration_ms: 2.425196
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":211900,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve remove partial-area
+not ok 19 - roof zero ten_to_twelve remove partial-area
+  ---
+  duration_ms: 2.110192
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":226500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve both partial-area
+not ok 20 - roof zero ten_to_twelve both partial-area
+  ---
+  duration_ms: 2.085215
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":195500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve install partial-percent
+not ok 21 - roof zero ten_to_twelve install partial-percent
+  ---
+  duration_ms: 4.398221
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":211900,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve remove partial-percent
+not ok 22 - roof zero ten_to_twelve remove partial-percent
+  ---
+  duration_ms: 2.271504
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":226500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero ten_to_twelve both partial-percent
+not ok 23 - roof zero ten_to_twelve both partial-percent
+  ---
+  duration_ms: 2.118434
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":195500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve install full
+not ok 24 - roof zero over_twelve install full
+  ---
+  duration_ms: 2.38207
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":439000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve remove full
+not ok 25 - roof zero over_twelve remove full
+  ---
+  duration_ms: 2.047618
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":491000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve both full
+not ok 26 - roof zero over_twelve both full
+  ---
+  duration_ms: 2.063242
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve install partial-area
+not ok 27 - roof zero over_twelve install partial-area
+  ---
+  duration_ms: 2.5085
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":219500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve remove partial-area
+not ok 28 - roof zero over_twelve remove partial-area
+  ---
+  duration_ms: 2.319677
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":245500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve both partial-area
+not ok 29 - roof zero over_twelve both partial-area
+  ---
+  duration_ms: 2.150874
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":195500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve install partial-percent
+not ok 30 - roof zero over_twelve install partial-percent
+  ---
+  duration_ms: 2.839879
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":219500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve remove partial-percent
+not ok 31 - roof zero over_twelve remove partial-percent
+  ---
+  duration_ms: 2.227438
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":245500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero over_twelve both partial-percent
+not ok 32 - roof zero over_twelve both partial-percent
+  ---
+  duration_ms: 2.108399
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":195500,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:36:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install full
+not ok 33 - roof zero mixed measured seven_to_nine install full
+  ---
+  duration_ms: 2.749393
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":482800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove full
+not ok 34 - roof zero mixed measured seven_to_nine remove full
+  ---
+  duration_ms: 2.151774
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":486640,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both full
+not ok 35 - roof zero mixed measured seven_to_nine both full
+  ---
+  duration_ms: 2.70045
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":478640,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install full
+not ok 36 - roof zero mixed measured ten_to_twelve install full
+  ---
+  duration_ms: 2.279277
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":472200,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove full
+not ok 37 - roof zero mixed measured ten_to_twelve remove full
+  ---
+  duration_ms: 2.280939
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":480960,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both full
+not ok 38 - roof zero mixed measured ten_to_twelve both full
+  ---
+  duration_ms: 2.536092
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":462360,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve install full
+not ok 39 - roof zero mixed measured over_twelve install full
+  ---
+  duration_ms: 2.217753
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":450800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve remove full
+not ok 40 - roof zero mixed measured over_twelve remove full
+  ---
+  duration_ms: 2.344634
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":471600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve both full
+not ok 41 - roof zero mixed measured over_twelve both full
+  ---
+  duration_ms: 2.776884
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":431600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all install full
+not ok 42 - roof zero mixed measured all install full
+  ---
+  duration_ms: 2.141539
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":424200,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all remove full
+not ok 43 - roof zero mixed measured all remove full
+  ---
+  duration_ms: 2.387459
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":457600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all both full
+not ok 44 - roof zero mixed measured all both full
+  ---
+  duration_ms: 2.453137
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install partial-area
+not ok 45 - roof zero mixed measured seven_to_nine install partial-area
+  ---
+  duration_ms: 2.422391
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":482800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove partial-area
+not ok 46 - roof zero mixed measured seven_to_nine remove partial-area
+  ---
+  duration_ms: 2.964722
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":486640,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both partial-area
+not ok 47 - roof zero mixed measured seven_to_nine both partial-area
+  ---
+  duration_ms: 2.342111
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":478640,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install partial-area
+not ok 48 - roof zero mixed measured ten_to_twelve install partial-area
+  ---
+  duration_ms: 2.428681
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":472200,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove partial-area
+not ok 49 - roof zero mixed measured ten_to_twelve remove partial-area
+  ---
+  duration_ms: 2.736724
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":480960,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both partial-area
+not ok 50 - roof zero mixed measured ten_to_twelve both partial-area
+  ---
+  duration_ms: 3.825881
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":462360,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve install partial-area
+not ok 51 - roof zero mixed measured over_twelve install partial-area
+  ---
+  duration_ms: 2.84777
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":450800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve remove partial-area
+not ok 52 - roof zero mixed measured over_twelve remove partial-area
+  ---
+  duration_ms: 2.821962
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":471600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve both partial-area
+not ok 53 - roof zero mixed measured over_twelve both partial-area
+  ---
+  duration_ms: 2.62789
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":431600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all install partial-area
+not ok 54 - roof zero mixed measured all install partial-area
+  ---
+  duration_ms: 2.585958
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":424200,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all remove partial-area
+not ok 55 - roof zero mixed measured all remove partial-area
+  ---
+  duration_ms: 2.815052
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":457600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all both partial-area
+not ok 56 - roof zero mixed measured all both partial-area
+  ---
+  duration_ms: 2.683964
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine install partial-percent
+not ok 57 - roof zero mixed measured seven_to_nine install partial-percent
+  ---
+  duration_ms: 2.766197
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":482800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine remove partial-percent
+not ok 58 - roof zero mixed measured seven_to_nine remove partial-percent
+  ---
+  duration_ms: 2.353197
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":486640,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured seven_to_nine both partial-percent
+not ok 59 - roof zero mixed measured seven_to_nine both partial-percent
+  ---
+  duration_ms: 2.380398
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":478640,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve install partial-percent
+not ok 60 - roof zero mixed measured ten_to_twelve install partial-percent
+  ---
+  duration_ms: 2.518376
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":472200,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve remove partial-percent
+not ok 61 - roof zero mixed measured ten_to_twelve remove partial-percent
+  ---
+  duration_ms: 2.230854
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":480960,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured ten_to_twelve both partial-percent
+not ok 62 - roof zero mixed measured ten_to_twelve both partial-percent
+  ---
+  duration_ms: 2.811906
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":462360,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve install partial-percent
+not ok 63 - roof zero mixed measured over_twelve install partial-percent
+  ---
+  duration_ms: 2.59465
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":450800,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve remove partial-percent
+not ok 64 - roof zero mixed measured over_twelve remove partial-percent
+  ---
+  duration_ms: 2.771005
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":471600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured over_twelve both partial-percent
+not ok 65 - roof zero mixed measured over_twelve both partial-percent
+  ---
+  duration_ms: 2.231374
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":431600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all install partial-percent
+not ok 66 - roof zero mixed measured all install partial-percent
+  ---
+  duration_ms: 2.487339
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":424200,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all remove partial-percent
+not ok 67 - roof zero mixed measured all remove partial-percent
+  ---
+  duration_ms: 2.28818
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":457600,"reason":"A quantity factor is missing or invalid.","invalid":["pitchRemovalAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero mixed measured all both partial-percent
+not ok 68 - roof zero mixed measured all both partial-percent
+  ---
+  duration_ms: 2.34163
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:52:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=2 stories=1 partial=false
+not ok 69 - roof zero additional layers=2 stories=1 partial=false
+  ---
+  duration_ms: 3.08645
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":411000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=2 stories=1 partial=true
+not ok 70 - roof zero additional layers=2 stories=1 partial=true
+  ---
+  duration_ms: 2.298314
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":205500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=3 stories=1 partial=false
+not ok 71 - roof zero additional layers=3 stories=1 partial=false
+  ---
+  duration_ms: 2.606538
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":431000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=3 stories=1 partial=true
+not ok 72 - roof zero additional layers=3 stories=1 partial=true
+  ---
+  duration_ms: 2.135811
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":215500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=4 stories=1 partial=false
+not ok 73 - roof zero additional layers=4 stories=1 partial=false
+  ---
+  duration_ms: 2.117764
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":451000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=4 stories=1 partial=true
+not ok 74 - roof zero additional layers=4 stories=1 partial=true
+  ---
+  duration_ms: 2.642041
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":225500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=2 stories=2 partial=false
+not ok 75 - roof zero additional layers=2 stories=2 partial=false
+  ---
+  duration_ms: 2.375571
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":437000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=2 stories=2 partial=true
+not ok 76 - roof zero additional layers=2 stories=2 partial=true
+  ---
+  duration_ms: 2.265405
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":218500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=3 stories=2 partial=false
+not ok 77 - roof zero additional layers=3 stories=2 partial=false
+  ---
+  duration_ms: 2.463803
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":457000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=3 stories=2 partial=true
+not ok 78 - roof zero additional layers=3 stories=2 partial=true
+  ---
+  duration_ms: 2.173507
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":228500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=4 stories=2 partial=false
+not ok 79 - roof zero additional layers=4 stories=2 partial=false
+  ---
+  duration_ms: 2.051294
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":477000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=4 stories=2 partial=true
+not ok 80 - roof zero additional layers=4 stories=2 partial=true
+  ---
+  duration_ms: 3.211998
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":238500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=2 stories=3 partial=false
+not ok 81 - roof zero additional layers=2 stories=3 partial=false
+  ---
+  duration_ms: 2.00901
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":463000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=2 stories=3 partial=true
+not ok 82 - roof zero additional layers=2 stories=3 partial=true
+  ---
+  duration_ms: 2.075029
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":231500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=3 stories=3 partial=false
+not ok 83 - roof zero additional layers=3 stories=3 partial=false
+  ---
+  duration_ms: 2.567299
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":483000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=3 stories=3 partial=true
+not ok 84 - roof zero additional layers=3 stories=3 partial=true
+  ---
+  duration_ms: 3.369845
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":241500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=4 stories=3 partial=false
+not ok 85 - roof zero additional layers=4 stories=3 partial=false
+  ---
+  duration_ms: 3.557187
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":503000,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero additional layers=4 stories=3 partial=true
+not ok 86 - roof zero additional layers=4 stories=3 partial=true
+  ---
+  duration_ms: 3.383867
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:56:92'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":251500,"reason":"A quantity factor is missing or invalid.","invalid":["additionalLayerRemovalFactor"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:58:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero owner-selected unknown band seven_to_nine
+not ok 87 - roof zero owner-selected unknown band seven_to_nine
+  ---
+  duration_ms: 2.226266
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:64:29'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.seven_to_nine"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:67:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero owner-selected unknown band ten_to_twelve
+not ok 88 - roof zero owner-selected unknown band ten_to_twelve
+  ---
+  duration_ms: 1.963921
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:64:29'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:67:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero owner-selected unknown band over_twelve
+not ok 89 - roof zero owner-selected unknown band over_twelve
+  ---
+  duration_ms: 2.373177
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:64:29'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":391000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdderOverTwelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:67:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero up-to-six ignores inactive steep additions
+ok 90 - roof zero up-to-six ignores inactive steep additions
+  ---
+  duration_ms: 13.615927
+  type: 'test'
+  ...
+# Subtest: roof zero combined upper pitch and additional layers preserve two-story first tear-off and disposal
+not ok 91 - roof zero combined upper pitch and additional layers preserve two-story first tear-off and disposal
+  ---
+  duration_ms: 4.126243
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:74:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":457000,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:77:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof zero keeps half-cent material rounding and exact remaining pitch charge
+not ok 92 - roof zero keeps half-cent material rounding and exact remaining pitch charge
+  ---
+  duration_ms: 7.85036
+  type: 'test'
+  location: '/workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:79:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"expected":42502,"reason":"A quantity factor is missing or invalid.","invalid":["pitchInstallationAdder.ten_to_twelve"]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:11:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5228524b6f21/qe-roof-zero-adjustments/test/qeRoofZeroAdjustments20261018.spec.mjs:81:11)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof positive additional-layer story factor remains unchanged
+ok 93 - roof positive additional-layer story factor remains unchanged
+  ---
+  duration_ms: 3.926753
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install missing
+ok 94 - roof zero rejects install missing
+  ---
+  duration_ms: 1.49688
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install null
+ok 95 - roof zero rejects install null
+  ---
+  duration_ms: 1.339474
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install blank
+ok 96 - roof zero rejects install blank
+  ---
+  duration_ms: 1.224832
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install string-zero
+ok 97 - roof zero rejects install string-zero
+  ---
+  duration_ms: 1.280265
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install negative
+ok 98 - roof zero rejects install negative
+  ---
+  duration_ms: 1.555218
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install infinite
+ok 99 - roof zero rejects install infinite
+  ---
+  duration_ms: 1.186694
+  type: 'test'
+  ...
+# Subtest: roof zero rejects install nan
+ok 100 - roof zero rejects install nan
+  ---
+  duration_ms: 1.530331
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove missing
+ok 101 - roof zero rejects remove missing
+  ---
+  duration_ms: 1.934097
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove null
+ok 102 - roof zero rejects remove null
+  ---
+  duration_ms: 1.374937
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove blank
+ok 103 - roof zero rejects remove blank
+  ---
+  duration_ms: 1.180054
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove string-zero
+ok 104 - roof zero rejects remove string-zero
+  ---
+  duration_ms: 1.123459
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove negative
+ok 105 - roof zero rejects remove negative
+  ---
+  duration_ms: 1.242077
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove infinite
+ok 106 - roof zero rejects remove infinite
+  ---
+  duration_ms: 1.155157
+  type: 'test'
+  ...
+# Subtest: roof zero rejects remove nan
+ok 107 - roof zero rejects remove nan
+  ---
+  duration_ms: 1.419674
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra missing
+ok 108 - roof zero rejects extra missing
+  ---
+  duration_ms: 1.411382
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra null
+ok 109 - roof zero rejects extra null
+  ---
+  duration_ms: 1.247986
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra blank
+ok 110 - roof zero rejects extra blank
+  ---
+  duration_ms: 1.313134
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra string-zero
+ok 111 - roof zero rejects extra string-zero
+  ---
+  duration_ms: 1.774528
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra negative
+ok 112 - roof zero rejects extra negative
+  ---
+  duration_ms: 1.193735
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra infinite
+ok 113 - roof zero rejects extra infinite
+  ---
+  duration_ms: 1.32404
+  type: 'test'
+  ...
+# Subtest: roof zero rejects extra nan
+ok 114 - roof zero rejects extra nan
+  ---
+  duration_ms: 1.342949
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install missing
+ok 115 - roof zero over12 rejects install missing
+  ---
+  duration_ms: 2.269591
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install null
+ok 116 - roof zero over12 rejects install null
+  ---
+  duration_ms: 1.602329
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install blank
+ok 117 - roof zero over12 rejects install blank
+  ---
+  duration_ms: 1.295578
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install string-zero
+ok 118 - roof zero over12 rejects install string-zero
+  ---
+  duration_ms: 1.25744
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install negative
+ok 119 - roof zero over12 rejects install negative
+  ---
+  duration_ms: 1.446434
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects install infinite
+ok 120 - roof zero over12 rejects install infinite
+  ---
+  duration_ms: 1.236198
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove missing
+ok 121 - roof zero over12 rejects remove missing
+  ---
+  duration_ms: 2.791296
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove null
+ok 122 - roof zero over12 rejects remove null
+  ---
+  duration_ms: 1.168286
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove blank
+ok 123 - roof zero over12 rejects remove blank
+  ---
+  duration_ms: 1.116358
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove string-zero
+ok 124 - roof zero over12 rejects remove string-zero
+  ---
+  duration_ms: 1.219943
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove negative
+ok 125 - roof zero over12 rejects remove negative
+  ---
+  duration_ms: 1.149438
+  type: 'test'
+  ...
+# Subtest: roof zero over12 rejects remove infinite
+ok 126 - roof zero over12 rejects remove infinite
+  ---
+  duration_ms: 1.159513
+  type: 'test'
+  ...
+# Subtest: roof zero does not supply missing product confirmation
+ok 127 - roof zero does not supply missing product confirmation
+  ---
+  duration_ms: 1.326684
+  type: 'test'
+  ...
+1..127
+# tests 127
+# suites 0
+# pass 37
+# fail 90
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 618.872372

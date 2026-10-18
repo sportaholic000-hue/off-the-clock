@@ -22,8 +22,8 @@ import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 // Expected values were fixed before execution in
 // verification/qe-accuracy-integration-20261018/EXPECTED.md.
 const V7='quote-engine-vnext-date-context-20261006-v7';
-const V8='quote-engine-vnext-accuracy-20261018-v8';
-assert.equal(ENGINE_VERSION,V8);
+const CURRENT='quote-engine-vnext-accuracy-20261018-v9';
+assert.equal(ENGINE_VERSION,CURRENT);
 
 const privateUnderlayment=result=>result.lineItems.find(
   line=>line.calculation?.ratePath===`scopeRates.${scopeKey}`
@@ -43,7 +43,7 @@ for(const row of [
   const widget=webQuote(fixture,[],undefined,{roofRuleMode:'new'});
   const internal=JSON.parse(widget.row.internalOutcomeJson).internalResult;
   const underlayment=privateUnderlayment(internal);
-  assert.equal(internal.engineVersion,V8);
+  assert.equal(internal.engineVersion,CURRENT);
   assert.equal(underlayment.calculation.quantity,row.rolls);
   assert.equal(underlayment.amountCents,row.underlaymentCents);
   assert.equal(privateMiddle(internal),row.totalCents);
@@ -158,7 +158,7 @@ test('accuracy integration: genuine v7 sod approval stays stale while frozen ret
   },date);
   const approved=loadPricebook(owner);
   assert.deepEqual(approved.services[0].pricing,savedPricing);
-  assert.equal(approved.services[0].quoteDoneApproval.engineVersion,V8);
+  assert.equal(approved.services[0].quoteDoneApproval.engineVersion,CURRENT);
   assert.equal(bridge.applicationStatus(approved.services[0],approved).status,'QUOTING LIVE');
 
   newRequest.requestId=randomUUID();

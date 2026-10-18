@@ -1,0 +1,100 @@
+import './pricebookTestEnv.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
+import {validateClass2FactorsDetailed} from '../server/quote-engine-vnext/contracts.js';
+import {roof,pitchBands,setAdder,total} from '../verification/qe-roof-zero-adjustments-20261018/fixture.mjs';
+
+// Independent cents/formulas fixed in EXPECTED.md before base execution.
+function ready(f,expected){
+  const q=generateQuoteVNext(f);
+  assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify({expected,reason:q.reviewReason,invalid:q.invalidOwnerFields}));
+  assert.equal(total(q),expected);
+  assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,expected);
+  return q;
+}
+const amount=(q,name)=>q.lineItems.find(l=>l.name===name)?.amountCents;
+
+for(const [label,change,expected] of [
+  ['positive control',()=>{},485800],
+  ['zero upper installation',f=>setAdder(f,'ten_to_twelve','install',0),423800],
+  ['zero upper removal',f=>setAdder(f,'ten_to_twelve','remove',0),453000],
+  ['three layers zero factor',f=>{f.customerInputs.pitchBand='up_to_six';f.customerInputs.existingLayers=3;f.ownerPricing.pricing.additionalLayerRemovalFactor=0;},431000],
+  ['three layers two stories zero factor',f=>{f.customerInputs.pitchBand='up_to_six';f.customerInputs.existingLayers=3;f.customerInputs.stories=2;f.ownerPricing.pricing.additionalLayerRemovalFactor=0;},457000]
+])test('roof zero independent control: '+label,()=>{
+  const f=roof();change(f);assert.deepEqual(validateClass2FactorsDetailed(f.serviceType,f.ownerPricing.pricing),[]);
+  ready(f,expected);
+});
+
+for(const row of pitchBands)for(const scope of ['full','partial-area','partial-percent'])for(const zero of ['install','remove','both']){
+  test(`roof zero ${row.band} ${zero} ${scope}`,()=>{
+    const customer={pitchBand:row.band,...(scope==='full'?{}:{serviceScope:'partial',...(scope==='partial-area'?{partialAreaSqft:500}:{partialPercent:50})})};
+    const f=roof(customer);
+    if(zero!=='remove')setAdder(f,row.band,'install',0);
+    if(zero!=='install')setAdder(f,row.band,'remove',0);
+    const expected=(391000+(zero==='remove'?row.install:0)+(zero==='install'?row.remove:0))/(scope==='full'?1:2);
+    const q=ready(f,expected);
+    assert.equal(amount(q,'Steep-pitch installation'),zero==='remove'?row.install/(scope==='full'?1:2):0);
+    assert.equal(amount(q,'Steep-pitch removal'),zero==='install'?row.remove/(scope==='full'?1:2):0);
+    assert.equal(amount(q,'Roofing disposal'),scope==='full'?20000:10000);
+  });
+}
+
+for(const scope of ['full','partial-area','partial-percent'])for(const selected of [...pitchBands.map(r=>r.band),'all'])for(const zero of ['install','remove','both']){
+  test(`roof zero mixed measured ${selected} ${zero} ${scope}`,()=>{
+    const f=roof({pitchMethod:'area_by_pitch',pitchAreaUpTo6Sqft:100,pitchArea7To9Sqft:200,pitchArea10To12Sqft:300,pitchAreaOver12Sqft:400,
+      ...(scope==='full'?{}:{roofSizeInput:2000,serviceScope:'partial',...(scope==='partial-area'?{partialAreaSqft:1000}:{partialPercent:50})})});
+    const deductions={seven_to_nine:[8000,4160],ten_to_twelve:[18600,9840],over_twelve:[40000,19200],all:[66600,33200]};
+    for(const {band} of pitchBands)if(selected==='all'||band===selected){
+      if(zero!=='remove')setAdder(f,band,'install',0);
+      if(zero!=='install')setAdder(f,band,'remove',0);
+    }
+    ready(f,490800-(zero==='remove'?0:deductions[selected][0])-(zero==='install'?0:deductions[selected][1]));
+  });
+}
+
+for(const stories of [1,2,3])for(const layers of [2,3,4])for(const partial of [false,true])test(`roof zero additional layers=${layers} stories=${stories} partial=${partial}`,()=>{
+  const f=roof({pitchBand:'up_to_six',existingLayers:layers,stories,...(partial?{serviceScope:'partial',partialAreaSqft:500}:{})},{additionalLayerRemovalFactor:0});
+  const q=ready(f,(391000+(layers-1)*20000+(stories-1)*26000)/(partial?2:1));
+  assert.equal(amount(q,'Additional-layer tear-off'),0);
+  if(stories>1)assert.equal(amount(q,'Additional-layer story adjustment'),0);
+  assert.equal(amount(q,'Roofing disposal'),layers*20000/(partial?2:1));
+});
+
+for(const row of pitchBands)test('roof zero owner-selected unknown band '+row.band,()=>{
+  const f=roof({pitchMethod:'not_sure'},{unknownPitchBand:row.band});
+  setAdder(f,row.band,'install',0);setAdder(f,row.band,'remove',0);
+  assert.ok(ready(f,391000).priceDrivers.some(s=>/owner-selected pitch band/.test(s)));
+});
+test('roof zero up-to-six ignores inactive steep additions',()=>{
+  const f=roof({pitchBand:'up_to_six'});
+  for(const {band} of pitchBands){setAdder(f,band,'install',0);setAdder(f,band,'remove',0);}
+  ready(f,391000);
+});
+test('roof zero combined upper pitch and additional layers preserve two-story first tear-off and disposal',()=>{
+  const f=roof({existingLayers:3,stories:2},{additionalLayerRemovalFactor:0});
+  setAdder(f,'ten_to_twelve','install',0);setAdder(f,'ten_to_twelve','remove',0);
+  const q=ready(f,457000);assert.equal(amount(q,'Story tear-off adjustment'),6000);assert.equal(amount(q,'Roofing disposal'),60000);
+});
+test('roof zero keeps half-cent material rounding and exact remaining pitch charge',()=>{
+  const f=roof({roofSizeInput:100.05});setAdder(f,'ten_to_twelve','install',0);
+  const q=ready(f,42502);assert.equal(amount(q,'Field materials'),11006);assert.equal(amount(q,'Steep-pitch removal'),3282);
+});
+test('roof positive additional-layer story factor remains unchanged',()=>{
+  const q=ready(roof({pitchBand:'up_to_six',existingLayers:3,stories:2}),549400);
+  assert.equal(amount(q,'Additional-layer tear-off'),84000);assert.equal(amount(q,'Additional-layer story adjustment'),8400);
+});
+
+for(const target of ['install','remove','extra'])for(const [label,value] of [['missing',undefined],['null',null],['blank',''],['string-zero','0'],['negative',-.01],['infinite',Infinity],['nan',NaN]])test(`roof zero rejects ${target} ${label}`,()=>{
+  const f=roof({existingLayers:3,stories:2});
+  if(target==='extra')f.ownerPricing.pricing.additionalLayerRemovalFactor=value;else setAdder(f,'ten_to_twelve',target,value);
+  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+});
+for(const target of ['install','remove'])for(const [label,value] of [['missing',undefined],['null',null],['blank',''],['string-zero','0'],['negative',-.01],['infinite',Infinity]])test(`roof zero over12 rejects ${target} ${label}`,()=>{
+  const f=roof({pitchBand:'over_twelve'});setAdder(f,'over_twelve',target,value);
+  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+});
+test('roof zero does not supply missing product confirmation',()=>{
+  const f=roof();setAdder(f,'ten_to_twelve','install',0);delete f.customerInputs.confirmedFacts;
+  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+});

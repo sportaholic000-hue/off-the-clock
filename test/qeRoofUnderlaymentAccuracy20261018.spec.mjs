@@ -14,10 +14,10 @@ import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {integratedBaselineExpectation} from './finalIntegrationMetadata20261017Fixture.mjs';
 
-test('v8 comparison metadata advances only explicit paths on a clone, including results without options',()=>{
+test('v9 comparison metadata advances only explicit paths on a clone, including results without options',()=>{
   // Expected before execution: only the four named engineVersion paths move
-  // v7 -> v8. Historical inputs, amounts and unrelated version text stay exact.
-  const old='quote-engine-vnext-date-context-20261006-v7',current='quote-engine-vnext-accuracy-20261018-v8';
+  // v7 -> v9. Historical inputs, amounts and unrelated version text stay exact.
+  const old='quote-engine-vnext-date-context-20261006-v7',current='quote-engine-vnext-accuracy-20261018-v9';
   const record={engineVersion:old,amountCents:97600,unrelated:{engineVersion:old}};
   for(const options of [false,true]){
     const result={engineVersion:old,amountCents:97600,unrelated:{engineVersion:old}};
@@ -128,13 +128,13 @@ for(const [scope,expected] of [['full',616148],['partial',315575]])test(`roof un
   const estimated=await h.tool('getQuote',{...voice.args,callerMeasurementsEstimated:true});
   assert.equal(estimated.status,'quoted');assert.equal(estimated.midEstimate,expected/100);
   assert.match(estimated.quoteNarration,/This price is based on the measurements you gave us\. The business will confirm them on site\./);
-  assert.equal(JSON.parse(w.row.internalOutcomeJson).internalResult.engineVersion,'quote-engine-vnext-accuracy-20261018-v8');
+  assert.equal(JSON.parse(w.row.internalOutcomeJson).internalResult.engineVersion,'quote-engine-vnext-accuracy-20261018-v9');
   for(const result of [w.result,voice.result])assert.doesNotMatch(JSON.stringify(result),/"(?:lineItems|scopeRates|installedLaborPercent|priceMetadata)"/);
 });
 
-test('roof underlayment v7 approval reviews new requests; explicit v8 reapproval preserves historical retries',async t=>{
+test('roof underlayment v7 approval reviews new requests; explicit v9 reapproval preserves historical retries',async t=>{
   // Genuine pre-repair saved receipt:601148c/v7. New approved full quote:
-  //616148c/v8. No old amount, version or owner rate is rewritten.
+  //616148c/v9. No old amount, version or owner rate is rewritten.
   const historical=JSON.parse(readFileSync(new URL('../verification/qe-roof-underlayment-20261018/historical-v7.json',import.meta.url),'utf8'));
   assert.equal(historical.base,'550728daea4058c37f13952ab78785929bab39b0');
   assert.equal(historical.response.midEstimate,6011.48);

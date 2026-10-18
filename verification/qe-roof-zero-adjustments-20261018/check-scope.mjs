@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {allSpecFiles,quotePricebookSpecFiles} from '../../scripts/testSelection.mjs';
+const base='1857b7779b83b70f7753b41b72c3677270cd4ffc';
+const file='server/quote-engine-vnext/templates.js';
+const before=execFileSync('git',['show',base+':'+file],{encoding:'utf8'}),after=readFileSync(file,'utf8');
+const split=s=>{const start=s.indexOf('function calculateRoofReplacementAdopted('),end=s.indexOf('\nfunction calculateRoofRepair(',start);assert.ok(start>0&&end>start);return [s.slice(0,start),s.slice(start,end),s.slice(end)];};
+const a=split(before),b=split(after);assert.equal(a[0],b[0]);assert.equal(a[2],b[2]);
+assert.equal((b[1].match(/allowZero:true/g)||[]).length-(a[1].match(/allowZero:true/g)||[]).length,4);
+const name='test/qeRoofZeroAdjustments20261018.spec.mjs';
+assert.ok(allSpecFiles(process.cwd()).includes(name));assert.ok(quotePricebookSpecFiles(process.cwd()).includes(name));
+const hash=s=>createHash('sha256').update(s).digest('hex');
+console.log(JSON.stringify({base,unchangedTemplatesPrefixSha256:hash(b[0]),unchangedTemplatesSuffixSha256:hash(b[2]),adoptedRoofZeroOptIns:4,fullSelection:true,quoteSelection:true,sharedQuantityFactorUnchanged:true,concreteAndSodUnchanged:true},null,2));
