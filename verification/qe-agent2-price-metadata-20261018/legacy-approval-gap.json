@@ -1,0 +1,39 @@
+{
+  "expected": "reject without an approval receipt; retain 100.5 cents",
+  "results": [
+    {
+      "location": "base",
+      "value": 100.5,
+      "rejected": false,
+      "success": true,
+      "receiptCreated": true,
+      "statuses": [
+        {
+          "status": "NEEDS PRICING",
+          "approvalCurrent": true,
+          "validationErrors": [
+            "pipeJackEach must be a non-negative integer-cent amount."
+          ]
+        }
+      ],
+      "quoteResult": "ESTIMATE_REQUIRES_REVIEW"
+    },
+    {
+      "location": "tier",
+      "value": 100.5,
+      "rejected": false,
+      "success": true,
+      "receiptCreated": true,
+      "statuses": [
+        {
+          "status": "NEEDS PRICING",
+          "approvalCurrent": true,
+          "validationErrors": [
+            "pipeJackEach must be a non-negative integer-cent amount."
+          ]
+        }
+      ],
+      "quoteResult": "ESTIMATE_REQUIRES_REVIEW"
+    }
+  ]
+}

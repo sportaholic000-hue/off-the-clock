@@ -1,0 +1,376 @@
+TAP version 13
+# Subtest: Agent 2 F16 Chromium: fixed each input rejects fractional cents without rounding; measured input retains them
+ok 1 - Agent 2 F16 Chromium: fixed each input rejects fractional cents without rounding; measured input retains them
+  ---
+  duration_ms: 658.15751
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 independent key inventory covers all painting and surface definitions
+ok 2 - Agent 2 F9 independent key inventory covers all painting and surface definitions
+  ---
+  duration_ms: 4.464781
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+ok 3 - Agent 2 F9 INTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 18.808412
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+ok 4 - Agent 2 F9 INTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 438.718192
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+ok 5 - Agent 2 F9 INTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 14.280016
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+ok 6 - Agent 2 F9 INTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 341.413507
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+ok 7 - Agent 2 F9 INTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 53.304706
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+ok 8 - Agent 2 F9 EXTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 3.71925
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+ok 9 - Agent 2 F9 EXTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 168.282307
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+ok 10 - Agent 2 F9 EXTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 6.330956
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+ok 11 - Agent 2 F9 EXTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 249.283886
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+ok 12 - Agent 2 F9 EXTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 76.721536
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet classifies every base/tier leaf using the configured basis
+ok 13 - Agent 2 F9 SIDING_REPLACEMENT linear_feet classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 2.157112
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet real save/reload retains notes and independently dates every changed leaf
+ok 14 - Agent 2 F9 SIDING_REPLACEMENT linear_feet real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 22.056535
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet unchanged legacy prices gain neither dates nor invented provenance
+ok 15 - Agent 2 F9 SIDING_REPLACEMENT linear_feet unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.750234
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet freshness checks all leaves and respects selling-price exclusions
+ok 16 - Agent 2 F9 SIDING_REPLACEMENT linear_feet freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 5.367208
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet AI adoption and source-note edits preserve every unchanged date
+ok 17 - Agent 2 F9 SIDING_REPLACEMENT linear_feet AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 2.854541
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet classifies every base/tier leaf using the configured basis
+ok 18 - Agent 2 F9 SIDING_REPLACEMENT square_feet classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.078922
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet real save/reload retains notes and independently dates every changed leaf
+ok 19 - Agent 2 F9 SIDING_REPLACEMENT square_feet real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 19.494634
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet unchanged legacy prices gain neither dates nor invented provenance
+ok 20 - Agent 2 F9 SIDING_REPLACEMENT square_feet unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 6.36659
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet freshness checks all leaves and respects selling-price exclusions
+ok 21 - Agent 2 F9 SIDING_REPLACEMENT square_feet freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 7.386874
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet AI adoption and source-note edits preserve every unchanged date
+ok 22 - Agent 2 F9 SIDING_REPLACEMENT square_feet AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 3.995616
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT classifies every base/tier leaf using the configured basis
+ok 23 - Agent 2 F21 ROOFING_REPLACEMENT classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 3.865395
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT real save/reload retains notes and independently dates every changed leaf
+ok 24 - Agent 2 F21 ROOFING_REPLACEMENT real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 49.10012
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT unchanged legacy prices gain neither dates nor invented provenance
+ok 25 - Agent 2 F21 ROOFING_REPLACEMENT unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.943063
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT freshness checks all leaves and respects selling-price exclusions
+ok 26 - Agent 2 F21 ROOFING_REPLACEMENT freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 142.094291
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT AI adoption and source-note edits preserve every unchanged date
+ok 27 - Agent 2 F21 ROOFING_REPLACEMENT AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 9.884969
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB classifies every base/tier leaf using the configured basis
+ok 28 - Agent 2 F21 CONCRETE_PATIO_SLAB classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.625894
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB real save/reload retains notes and independently dates every changed leaf
+ok 29 - Agent 2 F21 CONCRETE_PATIO_SLAB real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 63.109344
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB unchanged legacy prices gain neither dates nor invented provenance
+ok 30 - Agent 2 F21 CONCRETE_PATIO_SLAB unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 6.849676
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB freshness checks all leaves and respects selling-price exclusions
+ok 31 - Agent 2 F21 CONCRETE_PATIO_SLAB freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 71.753849
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB AI adoption and source-note edits preserve every unchanged date
+ok 32 - Agent 2 F21 CONCRETE_PATIO_SLAB AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 11.097672
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY classifies every base/tier leaf using the configured basis
+ok 33 - Agent 2 F21 CONCRETE_DRIVEWAY classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.38392
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY real save/reload retains notes and independently dates every changed leaf
+ok 34 - Agent 2 F21 CONCRETE_DRIVEWAY real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 45.976601
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY unchanged legacy prices gain neither dates nor invented provenance
+ok 35 - Agent 2 F21 CONCRETE_DRIVEWAY unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 6.729556
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY freshness checks all leaves and respects selling-price exclusions
+ok 36 - Agent 2 F21 CONCRETE_DRIVEWAY freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 80.301236
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY AI adoption and source-note edits preserve every unchanged date
+ok 37 - Agent 2 F21 CONCRETE_DRIVEWAY AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 10.765983
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD classifies every base/tier leaf using the configured basis
+ok 38 - Agent 2 F21 LANDSCAPING_SOD classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.863719
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD real save/reload retains notes and independently dates every changed leaf
+ok 39 - Agent 2 F21 LANDSCAPING_SOD real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 22.986432
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD unchanged legacy prices gain neither dates nor invented provenance
+ok 40 - Agent 2 F21 LANDSCAPING_SOD unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.637385
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD freshness checks all leaves and respects selling-price exclusions
+ok 41 - Agent 2 F21 LANDSCAPING_SOD freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 17.315863
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD AI adoption and source-note edits preserve every unchanged date
+ok 42 - Agent 2 F21 LANDSCAPING_SOD AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 1.739635
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 absent/unknown/nested dynamic leaves and non-money settings stay excluded
+ok 43 - Agent 2 F9 absent/unknown/nested dynamic leaves and non-money settings stay excluded
+  ---
+  duration_ms: 0.560272
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 reordered named tiers, removed prices and metadata views remain independent
+ok 44 - Agent 2 F9 reordered named tiers, removed prices and metadata views remain independent
+  ---
+  duration_ms: 1.407516
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 all placement methods use addon basis and quantity/minimum controls stay excluded
+ok 45 - Agent 2 F21 all placement methods use addon basis and quantity/minimum controls stay excluded
+  ---
+  duration_ms: 2.241098
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 pipeJackEach is fixed whole-cent money in server and editor metadata
+ok 46 - Agent 2 F16 pipeJackEach is fixed whole-cent money in server and editor metadata
+  ---
+  duration_ms: 65.679687
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at root
+ok 47 - Agent 2 F16 rejects $1.005 without mutation at root
+  ---
+  duration_ms: 4.288637
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at pricing
+ok 48 - Agent 2 F16 rejects $1.005 without mutation at pricing
+  ---
+  duration_ms: 0.933263
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at tier
+ok 49 - Agent 2 F16 rejects $1.005 without mutation at tier
+  ---
+  duration_ms: 0.942837
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $0 stores 0 cents
+ok 50 - Agent 2 F16 whole-cent control $0 stores 0 cents
+  ---
+  duration_ms: 31.856762
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $1 stores 100 cents
+ok 51 - Agent 2 F16 whole-cent control $1 stores 100 cents
+  ---
+  duration_ms: 29.390978
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $1.01 stores 101 cents
+ok 52 - Agent 2 F16 whole-cent control $1.01 stores 101 cents
+  ---
+  duration_ms: 27.295621
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $12.34 stores 1234 cents
+ok 53 - Agent 2 F16 whole-cent control $12.34 stores 1234 cents
+  ---
+  duration_ms: 21.252205
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 actual application saves reject fractional each-prices and preserve the durable book
+ok 54 - Agent 2 F16 actual application saves reject fractional each-prices and preserve the durable book
+  ---
+  duration_ms: 100.192797
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 legacy fractional each-prices remain visible but fail owner validation and quoting
+ok 55 - Agent 2 F16 legacy fractional each-prices remain visible but fail owner validation and quoting
+  ---
+  duration_ms: 10.834646
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 measured roofing rates retain fractional cents and round only the extended charge
+ok 56 - Agent 2 F16 measured roofing rates retain fractional cents and round only the extended charge
+  ---
+  duration_ms: 148.312474
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 roofing classifications match actual quote lines, linear_feet
+ok 57 - Agent 2 F21 roofing classifications match actual quote lines, linear_feet
+  ---
+  duration_ms: 50.694142
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 roofing classifications match actual quote lines, square_feet
+ok 58 - Agent 2 F21 roofing classifications match actual quote lines, square_feet
+  ---
+  duration_ms: 43.970775
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_PATIO_SLAB
+ok 59 - Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 42.633214
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_DRIVEWAY
+ok 60 - Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 19.973323
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines
+ok 61 - Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines
+  ---
+  duration_ms: 6.299039
+  type: 'test'
+  ...
+1..61
+# tests 61
+# suites 0
+# pass 61
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2456.947528

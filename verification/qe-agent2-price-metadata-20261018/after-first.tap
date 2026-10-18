@@ -1,0 +1,3577 @@
+TAP version 13
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:16:
+#       3 │ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DE...
+#         ╵                 ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: Agent 2 F16 Chromium: fixed each input rejects fractional cents without rounding; measured input retains them
+ok 1 - Agent 2 F16 Chromium: fixed each input rejects fractional cents without rounding; measured input retains them
+  ---
+  duration_ms: 665.517766
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 independent key inventory covers all painting and surface definitions
+ok 2 - Agent 2 F9 independent key inventory covers all painting and surface definitions
+  ---
+  duration_ms: 2.429172
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+not ok 3 - Agent 2 F9 INTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 10.11142
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    legacy root pricing uses the same semantics
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+    +     category: 'material',
+    +     costBasis: true,
+    +     kind: 'unit_rate',
+    +     material: true,
+    +     metadata: undefined,
+    +     path: 'materialPerWallSqftPerCoat',
+    +     scope: 'service',
+    +     value: 345.67
+    +   },
+    +   {
+          category: 'labor',
+          costBasis: true,
+          kind: 'unit_rate',
+          material: false,
+          metadata: undefined,
+    ...
+        {
+    -     category: 'material',
+    -     costBasis: true,
+    -     kind: 'unit_rate',
+    -     material: true,
+    -     metadata: undefined,
+    -     path: 'materialPerWallSqftPerCoat',
+    -     scope: 'service',
+    -     value: 345.67
+    -   },
+    -   {
+          category: 'labor',
+          costBasis: true,
+          kind: 'unit_rate',
+          material: false,
+          metadata: undefined,
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'paintingRates.primerLaborPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    1:
+      path: 'paintingRates.primerMaterialPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    3:
+      path: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    4:
+      path: 'paintingRates.trimLaborPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    5:
+      path: 'paintingRates.trimMaterialPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    6:
+      path: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    7:
+      path: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    8:
+      path: 'paintingRates.trimPrepLaborPerLF_good'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    9:
+      path: 'paintingRates.trimPrepMaterialPerLF_good'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    10:
+      path: 'paintingRates.trimPrepLaborPerLF_fair'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    11:
+      path: 'paintingRates.trimPrepMaterialPerLF_fair'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    12:
+      path: 'paintingRates.trimPrepLaborPerLF_poor'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    13:
+      path: 'paintingRates.trimPrepMaterialPerLF_poor'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    14:
+      path: 'surfaceExtraRates.doorSides'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    15:
+      path: 'surfaceExtraRates.doorFrames'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    16:
+      path: 'surfaceExtraRates.windows'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    17:
+      path: 'surfaceExtraRates.cabinetFaces'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    18:
+      path: 'materialPerWallSqftPerCoat'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    19:
+      path: 'paintingRates.primerLaborPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    20:
+      path: 'paintingRates.primerMaterialPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    21:
+      path: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    22:
+      path: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    23:
+      path: 'paintingRates.trimLaborPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    24:
+      path: 'paintingRates.trimMaterialPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    25:
+      path: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    26:
+      path: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    27:
+      path: 'paintingRates.trimPrepLaborPerLF_good'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    28:
+      path: 'paintingRates.trimPrepMaterialPerLF_good'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    29:
+      path: 'paintingRates.trimPrepLaborPerLF_fair'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    30:
+      path: 'paintingRates.trimPrepMaterialPerLF_fair'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    31:
+      path: 'paintingRates.trimPrepLaborPerLF_poor'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    32:
+      path: 'paintingRates.trimPrepMaterialPerLF_poor'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    33:
+      path: 'surfaceExtraRates.doorSides'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    34:
+      path: 'surfaceExtraRates.doorFrames'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    35:
+      path: 'surfaceExtraRates.windows'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    36:
+      path: 'surfaceExtraRates.cabinetFaces'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    37:
+      path: 'materialPerWallSqftPerCoat'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  actual:
+    0:
+      path: 'materialPerWallSqftPerCoat'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'paintingRates.primerLaborPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    2:
+      path: 'paintingRates.primerMaterialPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    4:
+      path: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    5:
+      path: 'paintingRates.trimLaborPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    6:
+      path: 'paintingRates.trimMaterialPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    7:
+      path: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    8:
+      path: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    9:
+      path: 'paintingRates.trimPrepLaborPerLF_good'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    10:
+      path: 'paintingRates.trimPrepMaterialPerLF_good'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    11:
+      path: 'paintingRates.trimPrepLaborPerLF_fair'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    12:
+      path: 'paintingRates.trimPrepMaterialPerLF_fair'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    13:
+      path: 'paintingRates.trimPrepLaborPerLF_poor'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    14:
+      path: 'paintingRates.trimPrepMaterialPerLF_poor'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    15:
+      path: 'surfaceExtraRates.doorSides'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    16:
+      path: 'surfaceExtraRates.doorFrames'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    17:
+      path: 'surfaceExtraRates.windows'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    18:
+      path: 'surfaceExtraRates.cabinetFaces'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    19:
+      path: 'paintingRates.primerLaborPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    20:
+      path: 'paintingRates.primerMaterialPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    21:
+      path: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    22:
+      path: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    23:
+      path: 'paintingRates.trimLaborPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    24:
+      path: 'paintingRates.trimMaterialPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    25:
+      path: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    26:
+      path: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    27:
+      path: 'paintingRates.trimPrepLaborPerLF_good'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    28:
+      path: 'paintingRates.trimPrepMaterialPerLF_good'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    29:
+      path: 'paintingRates.trimPrepLaborPerLF_fair'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    30:
+      path: 'paintingRates.trimPrepMaterialPerLF_fair'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    31:
+      path: 'paintingRates.trimPrepLaborPerLF_poor'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    32:
+      path: 'paintingRates.trimPrepMaterialPerLF_poor'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    33:
+      path: 'surfaceExtraRates.doorSides'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    34:
+      path: 'surfaceExtraRates.doorFrames'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    35:
+      path: 'surfaceExtraRates.windows'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    36:
+      path: 'surfaceExtraRates.cabinetFaces'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    37:
+      path: 'materialPerWallSqftPerCoat'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:56:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+ok 4 - Agent 2 F9 INTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 299.674243
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+ok 5 - Agent 2 F9 INTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 8.818987
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+ok 6 - Agent 2 F9 INTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 375.944618
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+ok 7 - Agent 2 F9 INTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 56.947294
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+not ok 8 - Agent 2 F9 EXTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 8.874741
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    legacy root pricing uses the same semantics
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+    +     category: 'material',
+    +     costBasis: true,
+    +     kind: 'unit_rate',
+    +     material: true,
+    +     metadata: undefined,
+    +     path: 'materialPerSqftPerCoat',
+    +     scope: 'service',
+    +     value: 345.67
+    +   },
+    +   {
+          category: 'labor',
+          costBasis: true,
+          kind: 'unit_rate',
+          material: false,
+          metadata: undefined,
+    ...
+        {
+    -     category: 'material',
+    -     costBasis: true,
+    -     kind: 'unit_rate',
+    -     material: true,
+    -     metadata: undefined,
+    -     path: 'materialPerSqftPerCoat',
+    -     scope: 'service',
+    -     value: 345.67
+    -   },
+    -   {
+          category: 'labor',
+          costBasis: true,
+          kind: 'unit_rate',
+          material: false,
+          metadata: undefined,
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'paintingRates.primerLaborPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    1:
+      path: 'paintingRates.primerMaterialPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    3:
+      path: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    4:
+      path: 'paintingRates.trimLaborPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    5:
+      path: 'paintingRates.trimMaterialPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    6:
+      path: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    7:
+      path: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    8:
+      path: 'paintingRates.trimPrepLaborPerLF_good'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    9:
+      path: 'paintingRates.trimPrepMaterialPerLF_good'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    10:
+      path: 'paintingRates.trimPrepLaborPerLF_fair'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    11:
+      path: 'paintingRates.trimPrepMaterialPerLF_fair'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    12:
+      path: 'paintingRates.trimPrepLaborPerLF_poor'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    13:
+      path: 'paintingRates.trimPrepMaterialPerLF_poor'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    14:
+      path: 'surfaceExtraRates.windows'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    15:
+      path: 'surfaceExtraRates.doors'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    16:
+      path: 'surfaceExtraRates.shutters'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    17:
+      path: 'surfaceExtraRates.garageDoors'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    18:
+      path: 'surfaceExtraRates.exteriorTrim'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    19:
+      path: 'surfaceExtraRates.soffit'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    20:
+      path: 'surfaceExtraRates.fascia'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    21:
+      path: 'surfaceExtraRates.powerWashing'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    22:
+      path: 'materialPerSqftPerCoat'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    23:
+      path: 'paintingRates.primerLaborPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    24:
+      path: 'paintingRates.primerMaterialPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    25:
+      path: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    26:
+      path: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    27:
+      path: 'paintingRates.trimLaborPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    28:
+      path: 'paintingRates.trimMaterialPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    29:
+      path: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    30:
+      path: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    31:
+      path: 'paintingRates.trimPrepLaborPerLF_good'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    32:
+      path: 'paintingRates.trimPrepMaterialPerLF_good'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    33:
+      path: 'paintingRates.trimPrepLaborPerLF_fair'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    34:
+      path: 'paintingRates.trimPrepMaterialPerLF_fair'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    35:
+      path: 'paintingRates.trimPrepLaborPerLF_poor'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    36:
+      path: 'paintingRates.trimPrepMaterialPerLF_poor'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    37:
+      path: 'surfaceExtraRates.windows'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    38:
+      path: 'surfaceExtraRates.doors'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    39:
+      path: 'surfaceExtraRates.shutters'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    40:
+      path: 'surfaceExtraRates.garageDoors'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    41:
+      path: 'surfaceExtraRates.exteriorTrim'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    42:
+      path: 'surfaceExtraRates.soffit'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    43:
+      path: 'surfaceExtraRates.fascia'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    44:
+      path: 'surfaceExtraRates.powerWashing'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    45:
+      path: 'materialPerSqftPerCoat'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  actual:
+    0:
+      path: 'materialPerSqftPerCoat'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'paintingRates.primerLaborPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    2:
+      path: 'paintingRates.primerMaterialPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    4:
+      path: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    5:
+      path: 'paintingRates.trimLaborPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    6:
+      path: 'paintingRates.trimMaterialPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    7:
+      path: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    8:
+      path: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    9:
+      path: 'paintingRates.trimPrepLaborPerLF_good'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    10:
+      path: 'paintingRates.trimPrepMaterialPerLF_good'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    11:
+      path: 'paintingRates.trimPrepLaborPerLF_fair'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    12:
+      path: 'paintingRates.trimPrepMaterialPerLF_fair'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    13:
+      path: 'paintingRates.trimPrepLaborPerLF_poor'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'service'
+      material: false
+      costBasis: true
+    14:
+      path: 'paintingRates.trimPrepMaterialPerLF_poor'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    15:
+      path: 'surfaceExtraRates.windows'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    16:
+      path: 'surfaceExtraRates.doors'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    17:
+      path: 'surfaceExtraRates.shutters'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    18:
+      path: 'surfaceExtraRates.garageDoors'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    19:
+      path: 'surfaceExtraRates.exteriorTrim'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    20:
+      path: 'surfaceExtraRates.soffit'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    21:
+      path: 'surfaceExtraRates.fascia'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    22:
+      path: 'surfaceExtraRates.powerWashing'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    23:
+      path: 'paintingRates.primerLaborPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    24:
+      path: 'paintingRates.primerMaterialPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    25:
+      path: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    26:
+      path: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    27:
+      path: 'paintingRates.trimLaborPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    28:
+      path: 'paintingRates.trimMaterialPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    29:
+      path: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    30:
+      path: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    31:
+      path: 'paintingRates.trimPrepLaborPerLF_good'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    32:
+      path: 'paintingRates.trimPrepMaterialPerLF_good'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    33:
+      path: 'paintingRates.trimPrepLaborPerLF_fair'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    34:
+      path: 'paintingRates.trimPrepMaterialPerLF_fair'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    35:
+      path: 'paintingRates.trimPrepLaborPerLF_poor'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'prep'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    36:
+      path: 'paintingRates.trimPrepMaterialPerLF_poor'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    37:
+      path: 'surfaceExtraRates.windows'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    38:
+      path: 'surfaceExtraRates.doors'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    39:
+      path: 'surfaceExtraRates.shutters'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    40:
+      path: 'surfaceExtraRates.garageDoors'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    41:
+      path: 'surfaceExtraRates.exteriorTrim'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    42:
+      path: 'surfaceExtraRates.soffit'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    43:
+      path: 'surfaceExtraRates.fascia'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    44:
+      path: 'surfaceExtraRates.powerWashing'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    45:
+      path: 'materialPerSqftPerCoat'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:56:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+ok 9 - Agent 2 F9 EXTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 239.926097
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+ok 10 - Agent 2 F9 EXTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 6.602154
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+ok 11 - Agent 2 F9 EXTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 257.69357
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+ok 12 - Agent 2 F9 EXTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 75.21123
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet classifies every base/tier leaf using the configured basis
+not ok 13 - Agent 2 F9 SIDING_REPLACEMENT linear_feet classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.112843
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    legacy root pricing uses the same semantics
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+    +     category: 'material',
+    +     costBasis: true,
+    +     kind: 'unit_rate',
+    +     material: true,
+    +     metadata: undefined,
+    +     path: 'materialPerSqft.vinyl',
+    +     scope: 'service',
+    +     value: 345.67
+    +   },
+    +   {
+          category: 'addon',
+          costBasis: false,
+          kind: 'unit_rate',
+          material: false,
+          metadata: undefined,
+    ...
+        {
+    -     category: 'material',
+    -     costBasis: true,
+    -     kind: 'unit_rate',
+    -     material: true,
+    -     metadata: undefined,
+    -     path: 'materialPerSqft.vinyl',
+    -     scope: 'service',
+    -     value: 345.67
+    -   },
+    -   {
+          category: 'addon',
+          costBasis: false,
+          kind: 'unit_rate',
+          material: false,
+          metadata: undefined,
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'surfaceExtraRates.soffit'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    1:
+      path: 'surfaceExtraRates.fascia'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    2:
+      path: 'materialPerSqft.vinyl'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'surfaceExtraRates.soffit'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    4:
+      path: 'surfaceExtraRates.fascia'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    5:
+      path: 'materialPerSqft.vinyl'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  actual:
+    0:
+      path: 'materialPerSqft.vinyl'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'surfaceExtraRates.soffit'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    2:
+      path: 'surfaceExtraRates.fascia'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    3:
+      path: 'surfaceExtraRates.soffit'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    4:
+      path: 'surfaceExtraRates.fascia'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    5:
+      path: 'materialPerSqft.vinyl'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:56:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet real save/reload retains notes and independently dates every changed leaf
+ok 14 - Agent 2 F9 SIDING_REPLACEMENT linear_feet real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 24.070654
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet unchanged legacy prices gain neither dates nor invented provenance
+ok 15 - Agent 2 F9 SIDING_REPLACEMENT linear_feet unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 4.900336
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet freshness checks all leaves and respects selling-price exclusions
+ok 16 - Agent 2 F9 SIDING_REPLACEMENT linear_feet freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 4.274105
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet AI adoption and source-note edits preserve every unchanged date
+ok 17 - Agent 2 F9 SIDING_REPLACEMENT linear_feet AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 2.058504
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet classifies every base/tier leaf using the configured basis
+not ok 18 - Agent 2 F9 SIDING_REPLACEMENT square_feet classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.577238
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    legacy root pricing uses the same semantics
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+    +     category: 'material',
+    +     costBasis: true,
+    +     kind: 'unit_rate',
+    +     material: true,
+    +     metadata: undefined,
+    +     path: 'materialPerSqft.vinyl',
+    +     scope: 'service',
+    +     value: 345.67
+    +   },
+    +   {
+          category: 'addon',
+          costBasis: false,
+          kind: 'unit_rate',
+          material: false,
+          metadata: undefined,
+    ...
+        {
+    -     category: 'material',
+    -     costBasis: true,
+    -     kind: 'unit_rate',
+    -     material: true,
+    -     metadata: undefined,
+    -     path: 'materialPerSqft.vinyl',
+    -     scope: 'service',
+    -     value: 345.67
+    -   },
+    -   {
+          category: 'addon',
+          costBasis: false,
+          kind: 'unit_rate',
+          material: false,
+          metadata: undefined,
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'surfaceExtraRates.soffit'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    1:
+      path: 'surfaceExtraRates.fascia'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    2:
+      path: 'materialPerSqft.vinyl'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'surfaceExtraRates.soffit'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    4:
+      path: 'surfaceExtraRates.fascia'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    5:
+      path: 'materialPerSqft.vinyl'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  actual:
+    0:
+      path: 'materialPerSqft.vinyl'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'surfaceExtraRates.soffit'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    2:
+      path: 'surfaceExtraRates.fascia'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'service'
+      material: false
+      costBasis: false
+    3:
+      path: 'surfaceExtraRates.soffit'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    4:
+      path: 'surfaceExtraRates.fascia'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      priceBasis: 'sell_price'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: false
+    5:
+      path: 'materialPerSqft.vinyl'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:56:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet real save/reload retains notes and independently dates every changed leaf
+ok 19 - Agent 2 F9 SIDING_REPLACEMENT square_feet real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 17.4492
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet unchanged legacy prices gain neither dates nor invented provenance
+ok 20 - Agent 2 F9 SIDING_REPLACEMENT square_feet unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.14927
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet freshness checks all leaves and respects selling-price exclusions
+ok 21 - Agent 2 F9 SIDING_REPLACEMENT square_feet freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 4.098772
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet AI adoption and source-note edits preserve every unchanged date
+ok 22 - Agent 2 F9 SIDING_REPLACEMENT square_feet AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 2.123873
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT classifies every base/tier leaf using the configured basis
+not ok 23 - Agent 2 F21 ROOFING_REPLACEMENT classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.238041
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    legacy root pricing uses the same semantics
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          category: 'material',
+          costBasis: true,
+          kind: 'unit_rate',
+          material: true,
+          metadata: undefined,
+    +     path: 'materialCostPerSquare.asphalt_shingle',
+    +     scope: 'service',
+    +     value: 345.67
+    +   },
+    +   {
+    +     category: 'material',
+    +     costBasis: true,
+    +     kind: 'unit_rate',
+    +     material: true,
+    +     metadata: undefined,
+          path: 'iceWaterBarrierPerSqft',
+          scope: 'service',
+          value: 123.45
+        },
+        {
+    ...
+          metadata: undefined,
+    -     path: 'materialCostPerSquare.asphalt_shingle',
+    -     scope: 'service',
+    -     value: 345.67
+    -   },
+    -   {
+    -     category: 'material',
+    -     costBasis: true,
+    -     kind: 'unit_rate',
+    -     material: true,
+    -     metadata: undefined,
+          path: 'iceWaterBarrierPerSqft',
+          scope: 'tier',
+          tierIndex: 0,
+          tierName: '[SYNTHETIC] Explicit tier',
+          value: 234.56
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'iceWaterBarrierPerSqft'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'iceWaterBarrierPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'valleyPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'stepFlashingPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    4:
+      path: 'pipeJackEach'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    5:
+      path: 'ridgeVentPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    6:
+      path: 'materialCostPerSquare.asphalt_shingle'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    7:
+      path: 'iceWaterBarrierPerSqft'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    8:
+      path: 'iceWaterBarrierPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    9:
+      path: 'valleyPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    10:
+      path: 'stepFlashingPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    11:
+      path: 'pipeJackEach'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    12:
+      path: 'ridgeVentPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    13:
+      path: 'materialCostPerSquare.asphalt_shingle'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  actual:
+    0:
+      path: 'materialCostPerSquare.asphalt_shingle'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'iceWaterBarrierPerSqft'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'iceWaterBarrierPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'valleyPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    4:
+      path: 'stepFlashingPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    5:
+      path: 'pipeJackEach'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    6:
+      path: 'ridgeVentPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    7:
+      path: 'iceWaterBarrierPerSqft'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    8:
+      path: 'iceWaterBarrierPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    9:
+      path: 'valleyPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    10:
+      path: 'stepFlashingPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    11:
+      path: 'pipeJackEach'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    12:
+      path: 'ridgeVentPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    13:
+      path: 'materialCostPerSquare.asphalt_shingle'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:56:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT real save/reload retains notes and independently dates every changed leaf
+ok 24 - Agent 2 F21 ROOFING_REPLACEMENT real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 41.138991
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT unchanged legacy prices gain neither dates nor invented provenance
+ok 25 - Agent 2 F21 ROOFING_REPLACEMENT unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.131994
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT freshness checks all leaves and respects selling-price exclusions
+ok 26 - Agent 2 F21 ROOFING_REPLACEMENT freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 102.721613
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT AI adoption and source-note edits preserve every unchanged date
+ok 27 - Agent 2 F21 ROOFING_REPLACEMENT AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 9.740982
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB classifies every base/tier leaf using the configured basis
+not ok 28 - Agent 2 F21 CONCRETE_PATIO_SLAB classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.967364
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    legacy root pricing uses the same semantics
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          category: 'material',
+          costBasis: true,
+          kind: 'unit_rate',
+          material: true,
+          metadata: undefined,
+    +     path: 'concreteCostPerCubicYard',
+    +     scope: 'service',
+    +     value: 345.67
+    +   },
+    +   {
+    +     category: 'material',
+    +     costBasis: true,
+    +     kind: 'unit_rate',
+    +     material: true,
+    +     metadata: undefined,
+          path: 'shortLoadPerYard',
+          scope: 'service',
+          value: 123.45
+        },
+        {
+    ...
+          metadata: undefined,
+    -     path: 'concreteCostPerCubicYard',
+    -     scope: 'service',
+    -     value: 345.67
+    -   },
+    -   {
+    -     category: 'material',
+    -     costBasis: true,
+    -     kind: 'unit_rate',
+    -     material: true,
+    -     metadata: undefined,
+          path: 'shortLoadPerYard',
+          scope: 'tier',
+          tierIndex: 0,
+          tierName: '[SYNTHETIC] Explicit tier',
+          value: 234.56
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'shortLoadPerYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'shortLoadFlatFee'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'sawCutPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    3:
+      path: 'baseGravelPerCubicYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    4:
+      path: 'baseExcavationGradingPerSqft'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    5:
+      path: 'placementFlat.pump'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      scope: 'service'
+      material: false
+      costBasis: true
+    6:
+      path: 'placementPerCubicYard.pump'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      scope: 'service'
+      material: false
+      costBasis: true
+    7:
+      path: 'concreteCostPerCubicYard'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    8:
+      path: 'shortLoadPerYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    9:
+      path: 'shortLoadFlatFee'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    10:
+      path: 'sawCutPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    11:
+      path: 'baseGravelPerCubicYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    12:
+      path: 'baseExcavationGradingPerSqft'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    13:
+      path: 'placementFlat.pump'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    14:
+      path: 'placementPerCubicYard.pump'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    15:
+      path: 'concreteCostPerCubicYard'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  actual:
+    0:
+      path: 'concreteCostPerCubicYard'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'shortLoadPerYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'shortLoadFlatFee'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'sawCutPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    4:
+      path: 'baseGravelPerCubicYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    5:
+      path: 'baseExcavationGradingPerSqft'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    6:
+      path: 'placementFlat.pump'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      scope: 'service'
+      material: false
+      costBasis: true
+    7:
+      path: 'placementPerCubicYard.pump'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      scope: 'service'
+      material: false
+      costBasis: true
+    8:
+      path: 'shortLoadPerYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    9:
+      path: 'shortLoadFlatFee'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    10:
+      path: 'sawCutPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    11:
+      path: 'baseGravelPerCubicYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    12:
+      path: 'baseExcavationGradingPerSqft'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    13:
+      path: 'placementFlat.pump'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    14:
+      path: 'placementPerCubicYard.pump'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    15:
+      path: 'concreteCostPerCubicYard'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:56:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB real save/reload retains notes and independently dates every changed leaf
+ok 29 - Agent 2 F21 CONCRETE_PATIO_SLAB real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 41.404549
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB unchanged legacy prices gain neither dates nor invented provenance
+ok 30 - Agent 2 F21 CONCRETE_PATIO_SLAB unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.094408
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB freshness checks all leaves and respects selling-price exclusions
+ok 31 - Agent 2 F21 CONCRETE_PATIO_SLAB freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 68.420753
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB AI adoption and source-note edits preserve every unchanged date
+ok 32 - Agent 2 F21 CONCRETE_PATIO_SLAB AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 9.921354
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY classifies every base/tier leaf using the configured basis
+not ok 33 - Agent 2 F21 CONCRETE_DRIVEWAY classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.860524
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    legacy root pricing uses the same semantics
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          category: 'material',
+          costBasis: true,
+          kind: 'unit_rate',
+          material: true,
+          metadata: undefined,
+    +     path: 'concreteCostPerCubicYard',
+    +     scope: 'service',
+    +     value: 345.67
+    +   },
+    +   {
+    +     category: 'material',
+    +     costBasis: true,
+    +     kind: 'unit_rate',
+    +     material: true,
+    +     metadata: undefined,
+          path: 'shortLoadPerYard',
+          scope: 'service',
+          value: 123.45
+        },
+        {
+    ...
+          metadata: undefined,
+    -     path: 'concreteCostPerCubicYard',
+    -     scope: 'service',
+    -     value: 345.67
+    -   },
+    -   {
+    -     category: 'material',
+    -     costBasis: true,
+    -     kind: 'unit_rate',
+    -     material: true,
+    -     metadata: undefined,
+          path: 'shortLoadPerYard',
+          scope: 'tier',
+          tierIndex: 0,
+          tierName: '[SYNTHETIC] Explicit tier',
+          value: 234.56
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'shortLoadPerYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'shortLoadFlatFee'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'sawCutPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    3:
+      path: 'baseGravelPerCubicYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    4:
+      path: 'baseExcavationGradingPerSqft'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    5:
+      path: 'placementFlat.pump'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      scope: 'service'
+      material: false
+      costBasis: true
+    6:
+      path: 'placementPerCubicYard.pump'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      scope: 'service'
+      material: false
+      costBasis: true
+    7:
+      path: 'concreteCostPerCubicYard'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    8:
+      path: 'shortLoadPerYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    9:
+      path: 'shortLoadFlatFee'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    10:
+      path: 'sawCutPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    11:
+      path: 'baseGravelPerCubicYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    12:
+      path: 'baseExcavationGradingPerSqft'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    13:
+      path: 'placementFlat.pump'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    14:
+      path: 'placementPerCubicYard.pump'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    15:
+      path: 'concreteCostPerCubicYard'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  actual:
+    0:
+      path: 'concreteCostPerCubicYard'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'shortLoadPerYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'shortLoadFlatFee'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'sawCutPerLF'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    4:
+      path: 'baseGravelPerCubicYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    5:
+      path: 'baseExcavationGradingPerSqft'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    6:
+      path: 'placementFlat.pump'
+      value: 1234
+      kind: 'fixed_amount'
+      category: 'addon'
+      scope: 'service'
+      material: false
+      costBasis: true
+    7:
+      path: 'placementPerCubicYard.pump'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'addon'
+      scope: 'service'
+      material: false
+      costBasis: true
+    8:
+      path: 'shortLoadPerYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    9:
+      path: 'shortLoadFlatFee'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    10:
+      path: 'sawCutPerLF'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    11:
+      path: 'baseGravelPerCubicYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    12:
+      path: 'baseExcavationGradingPerSqft'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    13:
+      path: 'placementFlat.pump'
+      value: 2345
+      kind: 'fixed_amount'
+      category: 'addon'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    14:
+      path: 'placementPerCubicYard.pump'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'addon'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    15:
+      path: 'concreteCostPerCubicYard'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:56:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY real save/reload retains notes and independently dates every changed leaf
+ok 34 - Agent 2 F21 CONCRETE_DRIVEWAY real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 48.265213
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY unchanged legacy prices gain neither dates nor invented provenance
+ok 35 - Agent 2 F21 CONCRETE_DRIVEWAY unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 4.875729
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY freshness checks all leaves and respects selling-price exclusions
+ok 36 - Agent 2 F21 CONCRETE_DRIVEWAY freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 66.022116
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY AI adoption and source-note edits preserve every unchanged date
+ok 37 - Agent 2 F21 CONCRETE_DRIVEWAY AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 10.378511
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD classifies every base/tier leaf using the configured basis
+not ok 38 - Agent 2 F21 LANDSCAPING_SOD classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.576076
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    legacy root pricing uses the same semantics
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+    +     category: 'material',
+    -     category: 'labor',
+          costBasis: true,
+          kind: 'unit_rate',
+    +     material: true,
+    -     material: false,
+          metadata: undefined,
+    +     path: 'sodMaterialPerSqft',
+    -     path: 'sodGradingPerSqft',
+          scope: 'service',
+    +     value: 345.67
+    -     value: 123.45
+        },
+        {
+    +     category: 'labor',
+    -     category: 'material',
+          costBasis: true,
+          kind: 'unit_rate',
+    +     material: false,
+    -     material: true,
+          metadata: undefined,
+    +     path: 'sodGradingPerSqft',
+    -     path: 'topsoilPerCubicYard',
+          scope: 'service',
+          value: 123.45
+        },
+        {
+          category: 'material',
+    ...
+          metadata: undefined,
+    +     path: 'topsoilPerCubicYard',
+    -     path: 'sodMaterialPerSqft',
+          scope: 'service',
+    +     value: 123.45
+    -     value: 345.67
+        },
+        {
+          category: 'labor',
+          costBasis: true,
+          kind: 'unit_rate',
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'sodGradingPerSqft'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    1:
+      path: 'topsoilPerCubicYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    2:
+      path: 'sodMaterialPerSqft'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'sodGradingPerSqft'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    4:
+      path: 'topsoilPerCubicYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    5:
+      path: 'sodMaterialPerSqft'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  actual:
+    0:
+      path: 'sodMaterialPerSqft'
+      value: 345.67
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    1:
+      path: 'sodGradingPerSqft'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'service'
+      material: false
+      costBasis: true
+    2:
+      path: 'topsoilPerCubicYard'
+      value: 123.45
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'service'
+      material: true
+      costBasis: true
+    3:
+      path: 'sodGradingPerSqft'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'labor'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: false
+      costBasis: true
+    4:
+      path: 'topsoilPerCubicYard'
+      value: 234.56
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+    5:
+      path: 'sodMaterialPerSqft'
+      value: 456.78
+      kind: 'unit_rate'
+      category: 'material'
+      scope: 'tier'
+      tierIndex: 0
+      tierName: '[SYNTHETIC] Explicit tier'
+      material: true
+      costBasis: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:56:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD real save/reload retains notes and independently dates every changed leaf
+ok 39 - Agent 2 F21 LANDSCAPING_SOD real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 22.733644
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD unchanged legacy prices gain neither dates nor invented provenance
+ok 40 - Agent 2 F21 LANDSCAPING_SOD unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.522862
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD freshness checks all leaves and respects selling-price exclusions
+ok 41 - Agent 2 F21 LANDSCAPING_SOD freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 12.638097
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD AI adoption and source-note edits preserve every unchanged date
+ok 42 - Agent 2 F21 LANDSCAPING_SOD AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 1.758513
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 absent/unknown/nested dynamic leaves and non-money settings stay excluded
+ok 43 - Agent 2 F9 absent/unknown/nested dynamic leaves and non-money settings stay excluded
+  ---
+  duration_ms: 0.602345
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 reordered named tiers, removed prices and metadata views remain independent
+ok 44 - Agent 2 F9 reordered named tiers, removed prices and metadata views remain independent
+  ---
+  duration_ms: 1.380716
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 all placement methods use addon basis and quantity/minimum controls stay excluded
+ok 45 - Agent 2 F21 all placement methods use addon basis and quantity/minimum controls stay excluded
+  ---
+  duration_ms: 0.98445
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 pipeJackEach is fixed whole-cent money in server and editor metadata
+ok 46 - Agent 2 F16 pipeJackEach is fixed whole-cent money in server and editor metadata
+  ---
+  duration_ms: 38.980076
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at root
+ok 47 - Agent 2 F16 rejects $1.005 without mutation at root
+  ---
+  duration_ms: 3.961013
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at pricing
+ok 48 - Agent 2 F16 rejects $1.005 without mutation at pricing
+  ---
+  duration_ms: 0.759741
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at tier
+ok 49 - Agent 2 F16 rejects $1.005 without mutation at tier
+  ---
+  duration_ms: 1.014835
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $0 stores 0 cents
+ok 50 - Agent 2 F16 whole-cent control $0 stores 0 cents
+  ---
+  duration_ms: 23.030951
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $1 stores 100 cents
+ok 51 - Agent 2 F16 whole-cent control $1 stores 100 cents
+  ---
+  duration_ms: 25.669056
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $1.01 stores 101 cents
+ok 52 - Agent 2 F16 whole-cent control $1.01 stores 101 cents
+  ---
+  duration_ms: 21.882099
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $12.34 stores 1234 cents
+ok 53 - Agent 2 F16 whole-cent control $12.34 stores 1234 cents
+  ---
+  duration_ms: 22.385656
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 actual application saves reject fractional each-prices and preserve the durable book
+ok 54 - Agent 2 F16 actual application saves reject fractional each-prices and preserve the durable book
+  ---
+  duration_ms: 94.008685
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 legacy fractional each-prices remain visible but fail owner validation and quoting
+ok 55 - Agent 2 F16 legacy fractional each-prices remain visible but fail owner validation and quoting
+  ---
+  duration_ms: 10.486524
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 measured roofing rates retain fractional cents and round only the extended charge
+ok 56 - Agent 2 F16 measured roofing rates retain fractional cents and round only the extended charge
+  ---
+  duration_ms: 152.613556
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 roofing classifications match actual quote lines, linear_feet
+ok 57 - Agent 2 F21 roofing classifications match actual quote lines, linear_feet
+  ---
+  duration_ms: 68.398719
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 roofing classifications match actual quote lines, square_feet
+ok 58 - Agent 2 F21 roofing classifications match actual quote lines, square_feet
+  ---
+  duration_ms: 38.101624
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_PATIO_SLAB
+ok 59 - Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 46.949376
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_DRIVEWAY
+ok 60 - Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 29.869149
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines
+ok 61 - Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines
+  ---
+  duration_ms: 5.595531
+  type: 'test'
+  ...
+1..61
+# tests 61
+# suites 0
+# pass 53
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2258.370157

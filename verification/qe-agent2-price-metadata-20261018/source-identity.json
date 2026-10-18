@@ -1,0 +1,22 @@
+{
+  "base": "0b59a401e1d8f2c2c43188c7355abb9939504b9b",
+  "base_tree": "2cca6042c51fdcea4c89f559c4e465e3f03ee845",
+  "branch": "codex/qe-agent2-price-metadata-20261018",
+  "changed_production": [
+    "server/priceBookMoney.js",
+    "server/pricePrecision.js"
+  ],
+  "unchanged_owned_module": "server/priceMetadata.js",
+  "test_runtime": "v22.23.3",
+  "sha256": {
+    "server/priceBookMoney.js": "73fb97c42fad17445fd35db8b2f08042dd6fed3e3a0236aedbcec4075c6e547c",
+    "server/priceMetadata.js": "d88a0f5c753333cb891a270fa299a1358796377a27b3ca025ac0f0e42a046e64",
+    "server/pricePrecision.js": "5d80c8da286eb1836dbafcca6b2d0868d863a58af58394f1052e4db270696087",
+    "test/qeAgent2PriceMetadata.spec.mjs": "c21554f2d1932184fcb423f529492221f0dc156018d6be23316f59b2d40b4e7f",
+    "test/qeAgent2PricePrecision.spec.mjs": "9aad10a63303140cd3e01171305051e9f7b60a9d3ec553cc13deda4e385a9380",
+    "test/qeAgent2PriceEditor.browser.spec.mjs": "2752c2e3437854f0cd874ecc870651f0afd54570d8c476fdf743284ec7df0b88",
+    "verification/qe-agent2-price-metadata-20261018/fixtures.mjs": "2a31ba3e3b33058fdf5482e84571de55ca571d91743d133d5c9d95f719eec325"
+  },
+  "baseline_test_sources_identical": true,
+  "protected_tracked_files_unchanged": true
+}

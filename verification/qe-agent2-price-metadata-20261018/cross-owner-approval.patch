@@ -1,0 +1,14 @@
+diff --git a/server/src/quoteDoneBridge.js b/server/src/quoteDoneBridge.js
+--- a/server/src/quoteDoneBridge.js
++++ b/server/src/quoteDoneBridge.js
+@@ -398,6 +398,10 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}) {
+     if(presentationIssues.length)throw problem(presentationIssues.join(' '),422,{code:'INVALID_QUOTE_PRESENTATION',issues:presentationIssues});
+     if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
+     if(raw.serviceType==='ROOFING_REPLACEMENT'&&[raw.minimumJob,raw.pricing?.minimumJob,...(Array.isArray(raw.tiers)?raw.tiers:[]).map(t=>t.overrides?.minimumJob)].some(value=>typeof value==='number'&&!Number.isSafeInteger(value)))throw problem('Correct the roof replacement minimum, including price options, to an exact dollar-and-cent amount before confirming it. The stored value has not been rounded.',422);
++    // Apply the existing save-boundary precision rules before creating an
++    // approval receipt for a retained legacy price, including tier overrides.
++    // Display conversion preserves the original value; validation never rounds.
++    validateApplicationNumericDraft(convertApplicationBook({services:[raw]},'toDollars'));
+     if(legacySettings(raw,book,true).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
+     const now=new Date().toISOString(),operationId=crypto.randomUUID();
+     if(raw.origin&&raw.origin.ownerId!==ownerId)throw problem('This service origin belongs to another owner.',409);
