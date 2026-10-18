@@ -23,7 +23,8 @@ arithmetic/rounding/currency tail are unchanged.
 `EXPECTED.md` records the policy and hand-calculated positive controls. The new
 regressions run both the direct parser and the actual dispatcher, runtime,
 tenant-scoped saved knowledge lookup, input validator and result projector.
-They cover qualifiers before/after prices and inside labels, Unicode/case,
+They cover qualifiers before/after prices and inside labels, in-store and
+account-holder conditions, Unicode/case,
 multiple sentences, composite units, product-number names, word boundaries,
 exact decimals, half-up ties, rounding wording, currency, draft rejection,
 saved identity, duplicates, foreign tenant listings and confirmation. Listed
@@ -34,9 +35,9 @@ calculations/refusals assert no business-data writes.
 | Check | Actual result |
 | --- | --- |
 | Cold `npm ci --no-audit --no-fund` | Passed, 328 packages |
-| Final regression file on pristine base | 194 tests: 78 passed, 116 failed |
-| Final regression file on repaired source | 194/194 passed |
-| Focused file and six neighboring suites | 327/327 passed |
+| Final regression file on pristine base | 206 tests: 82 passed, 124 failed |
+| Final regression file on repaired source | 206/206 passed |
+| Focused file and six neighboring suites | 339/339 passed |
 | Owner app and widget `npm run build` | Passed |
 | Existing test selectors | Full includes new file; strict excludes it |
 | Failures/skips/cancellations/TODOs on repaired checks | 0/0/0/0 |

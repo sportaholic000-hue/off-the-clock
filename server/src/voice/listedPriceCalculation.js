@@ -11,7 +11,7 @@ const conditionalPricePrefix=/\b(?:if|unless|when(?:ever)?|where(?:ver)?|whether
 // A prepositional qualification cannot safely be classified as a product
 // name. Keep ambiguous listings on the verbatim path. Word starts preserve
 // ordinary compounds such as board-on-board and substring names (Aftercare).
-const unclassifiedPricePrefix=/(?:^|\s|\(|\[)(?:for|with|without|under|on|at|by|as|via|through)\b/iu;
+const unclassifiedPricePrefix=/(?:^|\s|\(|\[)(?:for|with|without|under|on|in|at|by|as|to|via|through)\b/iu;
 // Only numbers with a recognizable product-name role may precede the one
 // saved unit price. Any remaining number might be a quantity or condition.
 const withoutProductNumbers=item=>item

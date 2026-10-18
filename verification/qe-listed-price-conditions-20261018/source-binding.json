@@ -2,8 +2,8 @@
   "base": "c1817621f6eccb31822979bf994efc4902682d34",
   "branch": "codex/qe-listed-price-conditions-20261018",
   "node": "v22.23.3",
-  "productionSha256": "3f4e2843091908d4e3950ed73b1a8bb3b6151f65b0f0402b9e7e2e48478e764c",
-  "regressionSha256": "7eeb5e8d46c36399e766c90a3dc7182e6956dd16b4aa01abb33bf6d1c41e2537",
+  "productionSha256": "69119c8197d71b38aea1784e1d77301a5e64fb867b2a2cefb17365e320d6b931",
+  "regressionSha256": "4bc62dff77767cc09eaebfd49c21772c473905bcb196da88c86f6b5a37ae4c57",
   "unchangedMonetaryTailSha256": "4ca80b5a33f92c15ce18e732ab3cbfb8460dc6bd2054adac0354201f8bd0ba41",
   "unchangedControls": {
     "scripts/testSelection.mjs": "b7395c0de38536403eb51b0cfb4e1c04b7b5a4304e3ccbee22d05e41b8a46197",
@@ -15,19 +15,28 @@
   },
   "results": {
     "base": {
-      "tests": 194,
-      "pass": 78,
-      "fail": 116
+      "tests": 206,
+      "pass": 82,
+      "fail": 124,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
     },
     "repaired": {
-      "tests": 194,
-      "pass": 194,
-      "fail": 0
+      "tests": 206,
+      "pass": 206,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
     },
     "neighboring": {
-      "tests": 327,
-      "pass": 327,
-      "fail": 0
+      "tests": 339,
+      "pass": 339,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
     },
     "build": "passed"
   }
