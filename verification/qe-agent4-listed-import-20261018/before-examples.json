@@ -1,0 +1,201 @@
+{
+  "F7": [
+    {
+      "listedItem": "Widgets/on collection $10 each",
+      "direct": {
+        "status": "calculated",
+        "listedItem": "Widgets/on collection $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      },
+      "dispatcher": {
+        "status": "calculated",
+        "listedItem": "Widgets/on collection $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    },
+    {
+      "listedItem": "Widgets.by arrangement $10 each",
+      "direct": {
+        "status": "calculated",
+        "listedItem": "Widgets.by arrangement $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Widgets.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      },
+      "dispatcher": {
+        "status": "calculated",
+        "listedItem": "Widgets.by arrangement $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Widgets.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    },
+    {
+      "listedItem": "Widgets-on collection $10 each",
+      "direct": {
+        "status": "calculated",
+        "listedItem": "Widgets-on collection $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Widgets-on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      },
+      "dispatcher": {
+        "status": "calculated",
+        "listedItem": "Widgets-on collection $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Widgets-on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    },
+    {
+      "listedItem": "Weather permitting $10 each",
+      "direct": {
+        "status": "calculated",
+        "listedItem": "Weather permitting $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      },
+      "dispatcher": {
+        "status": "calculated",
+        "listedItem": "Weather permitting $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    },
+    {
+      "listedItem": "Online orders $10 each",
+      "direct": {
+        "status": "calculated",
+        "listedItem": "Online orders $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      },
+      "dispatcher": {
+        "status": "calculated",
+        "listedItem": "Online orders $10 each",
+        "quantity": "3",
+        "extendedAmount": "30.00",
+        "currency": "$",
+        "voiceSummary": "Online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+      }
+    }
+  ],
+  "F8": [
+    {
+      "qualification": "Available exclusively to members",
+      "html": "<html><body><p>Available exclusively to members</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ]
+          }
+        ],
+        "conditions": [],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    },
+    {
+      "qualification": "Available to account holders",
+      "html": "<html><body><p>Available to account holders</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ]
+          }
+        ],
+        "conditions": [],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    },
+    {
+      "qualification": "Payment by cash",
+      "html": "<html><body><p>Payment by cash</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ]
+          }
+        ],
+        "conditions": [],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    },
+    {
+      "qualification": "Eligible customers: account holders",
+      "html": "<html><body><p>Eligible customers: account holders</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ]
+          }
+        ],
+        "conditions": [],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    },
+    {
+      "qualification": "Prices apply to cash payments",
+      "html": "<html><body><p>Prices apply to cash payments</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ],
+            "conditions": [
+              "Prices apply to cash payments"
+            ]
+          }
+        ],
+        "conditions": [
+          "Prices apply to cash payments"
+        ],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    }
+  ]
+}

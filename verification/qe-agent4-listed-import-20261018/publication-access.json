@@ -1,0 +1,52 @@
+{
+  "repository": "sportaholic000-hue/off-the-clock",
+  "branch": "codex/qe-agent4-listed-import-20261018",
+  "readConnectionPermissions": {
+    "admin": true,
+    "maintain": true,
+    "pull": true,
+    "push": true
+  },
+  "gitDryRun": {
+    "exitCode": 128,
+    "message": "fatal: could not read Username for 'https://github.com': terminal prompts disabled"
+  },
+  "requiredMergeLookup": {
+    "content": [
+      {
+        "type": "text",
+        "text": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/git/commits#get-a-commit-object\",\"status\":\"404\"}"
+      }
+    ],
+    "structuredContent": {
+      "error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/git/commits#get-a-commit-object\",\"status\":\"404\"}",
+      "error_code": "NOT_FOUND",
+      "error_data": {
+        "message": "Not Found",
+        "documentation_url": "https://docs.github.com/rest/git/commits#get-a-commit-object",
+        "status": "404"
+      }
+    },
+    "isError": true
+  },
+  "requiredMergeBranchCreate": {
+    "content": [
+      {
+        "type": "text",
+        "text": "GitHub API error 422: {\"message\":\"Object does not exist\",\"documentation_url\":\"https://docs.github.com/rest/git/refs#create-a-reference\",\"status\":\"422\"}"
+      }
+    ],
+    "structuredContent": {
+      "error": "GitHub API error 422: {\"message\":\"Object does not exist\",\"documentation_url\":\"https://docs.github.com/rest/git/refs#create-a-reference\",\"status\":\"422\"}",
+      "error_code": "INVALID_ARGUMENT",
+      "error_data": {
+        "message": "Object does not exist",
+        "documentation_url": "https://docs.github.com/rest/git/refs#create-a-reference",
+        "status": "422"
+      }
+    },
+    "isError": true
+  },
+  "limitation": "Available create_commit tool does not accept original author/committer timestamps or raw commit bytes; rewriting required merge or ancestor commit identities is not permitted.",
+  "hostedFinalVerification": "NOT RUN: exact required merge is not published and authenticated Git transport is unavailable."
+}

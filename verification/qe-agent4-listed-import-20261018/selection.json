@@ -1,0 +1,16 @@
+{
+  "allFiles": 334,
+  "strictFiles": 268,
+  "newFiles": [
+    {
+      "file": "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "inFull": 1,
+      "inStrict": 0
+    },
+    {
+      "file": "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "inFull": 1,
+      "inStrict": 0
+    }
+  ]
+}

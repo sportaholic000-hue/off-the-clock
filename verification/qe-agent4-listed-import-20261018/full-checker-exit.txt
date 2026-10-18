@@ -1,0 +1,1 @@
+full_checker_exit=1

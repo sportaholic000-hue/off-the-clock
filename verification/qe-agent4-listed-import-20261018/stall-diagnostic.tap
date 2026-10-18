@@ -1,0 +1,250 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Oct16 layout refuses missing closure with no released price
+ok 1 - Oct16 layout refuses missing closure with no released price
+  ---
+  duration_ms: 12.395383
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses zero section with no released price
+ok 2 - Oct16 layout refuses zero section with no released price
+  ---
+  duration_ms: 3.027821
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses negative section with no released price
+ok 3 - Oct16 layout refuses negative section with no released price
+  ---
+  duration_ms: 2.901943
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses unknown gate with no released price
+ok 4 - Oct16 layout refuses unknown gate with no released price
+  ---
+  duration_ms: 3.395293
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses gate at open end with no released price
+ok 5 - Oct16 layout refuses gate at open end with no released price
+  ---
+  duration_ms: 3.861735
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses empty runs with no released price
+ok 6 - Oct16 layout refuses empty runs with no released price
+  ---
+  duration_ms: 2.442982
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses fractional run count with no released price
+ok 7 - Oct16 layout refuses fractional run count with no released price
+  ---
+  duration_ms: 1.997983
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses contradictory run count with no released price
+ok 8 - Oct16 layout refuses contradictory run count with no released price
+  ---
+  duration_ms: 2.370644
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses contradictory total with no released price
+ok 9 - Oct16 layout refuses contradictory total with no released price
+  ---
+  duration_ms: 2.944336
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses contradictory corners with no released price
+ok 10 - Oct16 layout refuses contradictory corners with no released price
+  ---
+  duration_ms: 4.223018
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses text total with no released price
+ok 11 - Oct16 layout refuses text total with no released price
+  ---
+  duration_ms: 1.896842
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses unmeasured method with no released price
+ok 12 - Oct16 layout refuses unmeasured method with no released price
+  ---
+  duration_ms: 1.653635
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses unknown zero gate with no released price
+ok 13 - Oct16 layout refuses unknown zero gate with no released price
+  ---
+  duration_ms: 1.77611
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses contradictory gates with no released price
+ok 14 - Oct16 layout refuses contradictory gates with no released price
+  ---
+  duration_ms: 1.66961
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses extra section input with no released price
+ok 15 - Oct16 layout refuses extra section input with no released price
+  ---
+  duration_ms: 1.666736
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 4 ft: review
+ok 16 - Oct16 exclusive/inclusive row boundary 4 ft: review
+  ---
+  duration_ms: 5.054198
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 6 ft: 400000
+ok 17 - Oct16 exclusive/inclusive row boundary 6 ft: 400000
+  ---
+  duration_ms: 18.371656
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 6.01 ft: 600000
+ok 18 - Oct16 exclusive/inclusive row boundary 6.01 ft: 600000
+  ---
+  duration_ms: 10.259813
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 7 ft: 600000
+ok 19 - Oct16 exclusive/inclusive row boundary 7 ft: 600000
+  ---
+  duration_ms: 4.196383
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 8 ft: 600000
+ok 20 - Oct16 exclusive/inclusive row boundary 8 ft: 600000
+  ---
+  duration_ms: 5.073306
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 9 ft: review
+ok 21 - Oct16 exclusive/inclusive row boundary 9 ft: review
+  ---
+  duration_ms: 1.429905
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed catalog null remains review-only without throwing
+ok 22 - Oct16 malformed catalog null remains review-only without throwing
+  ---
+  duration_ms: 6.251758
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed catalog [] remains review-only without throwing
+ok 23 - Oct16 malformed catalog [] remains review-only without throwing
+  ---
+  duration_ms: 2.019145
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed catalog 42 remains review-only without throwing
+ok 24 - Oct16 malformed catalog 42 remains review-only without throwing
+  ---
+  duration_ms: 2.579017
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed catalog "bad" remains review-only without throwing
+ok 25 - Oct16 malformed catalog "bad" remains review-only without throwing
+  ---
+  duration_ms: 1.871223
+  type: 'test'
+  ...
+# Subtest: Oct16 row validation rejects exact/range overlaps and unsupported inch precision; adjacent rows do not overlap
+ok 26 - Oct16 row validation rejects exact/range overlaps and unsupported inch precision; adjacent rows do not overlap
+  ---
+  duration_ms: 1.257551
+  type: 'test'
+  ...
+# Subtest: Oct16 installed gates cannot exclude their own posts, even when the base row would not need extra posts
+ok 27 - Oct16 installed gates cannot exclude their own posts, even when the base row would not need extra posts
+  ---
+  duration_ms: 3.246199
+  type: 'test'
+  ...
+# Subtest: Oct16 explicit zero classification is local to its height row: 16 LF straight totals 56200 cents and records included terminal materials
+ok 28 - Oct16 explicit zero classification is local to its height row: 16 LF straight totals 56200 cents and records included terminal materials
+  ---
+  duration_ms: 27.337353
+  type: 'test'
+  ...
+# Subtest: Oct16 free tiers are scoped to a fence type: aluminum Good can be zero; wood Good remains its positive 100000-cent offering
+ok 29 - Oct16 free tiers are scoped to a fence type: aluminum Good can be zero; wood Good remains its positive 100000-cent offering
+  ---
+  duration_ms: 142.627805
+  type: 'test'
+  ...
+# Subtest: Oct16 exact spans do not add a post on binary decimal boundaries: 0.3 ft / 0.1 ft has 4 posts, not 5
+ok 30 - Oct16 exact spans do not add a post on binary decimal boundaries: 0.3 ft / 0.1 ft has 4 posts, not 5
+  ---
+  duration_ms: 0.317016
+  type: 'test'
+  ...
+# Subtest: Oct16 new total-only rows require the run count instead of assuming one run
+ok 31 - Oct16 new total-only rows require the run count instead of assuming one run
+  ---
+  duration_ms: 1.881157
+  type: 'test'
+  ...
+# Subtest: Oct16 quarter-foot sections preserve the 1 ft project minimum: 0.25 ft reviews; 0.25+0.75 ft quotes 3 terminal posts / 12200 cents
+ok 32 - Oct16 quarter-foot sections preserve the 1 ft project minimum: 0.25 ft reviews; 0.25+0.75 ft quotes 3 terminal posts / 12200 cents
+  ---
+  duration_ms: 6.098126
+  type: 'test'
+  ...
+# (node:19) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Oct16 section questions and complete gate identities are identical for widget and phone; no height options or post-count question
+ok 33 - Oct16 section questions and complete gate identities are identical for widget and phone; no height options or post-count question
+  ---
+  duration_ms: 41.829028
+  type: 'test'
+  ...
+# Subtest: Oct16 section gate names bind stable keys after selecting the fence type and height
+ok 34 - Oct16 section gate names bind stable keys after selecting the fence type and height
+  ---
+  duration_ms: 15.311156
+  type: 'test'
+  ...
+# Subtest: Oct16 production section flow: widget, phone, persistence, and public copy retain 91200 cents, runs and gate positions
+ok 35 - Oct16 production section flow: widget, phone, persistence, and public copy retain 91200 cents, runs and gate positions
+  ---
+  duration_ms: 1103.132474
+  type: 'test'
+  ...
+# Subtest: Oct16 four fence types: phone aluminum has its own three 400000/410000/420000-cent options
+ok 36 - Oct16 four fence types: phone aluminum has its own three 400000/410000/420000-cent options
+  ---
+  duration_ms: 2945.09475
+  type: 'test'
+  ...
+# Subtest: Oct16 owner review: nested prices are dollars, row heights are feet, allocations are percentages, and zero choices name exact rows
+ok 37 - Oct16 owner review: nested prices are dollars, row heights are feet, allocations are percentages, and zero choices name exact rows
+  ---
+  duration_ms: 9.7259
+  type: 'test'
+  ...
+# Subtest: Oct16 three tiers share one stable gate choice; upgraded hardware cannot relabel the confirmed opening
+ok 38 - Oct16 three tiers share one stable gate choice; upgraded hardware cannot relabel the confirmed opening
+  ---
+  duration_ms: 10.686384
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed section summaries stay review-only through production intake: no exception and no released cents
+ok 39 - Oct16 malformed section summaries stay review-only through production intake: no exception and no released cents
+  ---
+  duration_ms: 505.896749
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5468.610033

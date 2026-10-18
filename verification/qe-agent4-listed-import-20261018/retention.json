@@ -1,0 +1,27 @@
+{
+  "base": "c58ca997e9cf63739d399939bcdade83e97874d2",
+  "parents": [
+    "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "4f6152413a650085a7fe6002dfd077a542f9c0c2"
+  ],
+  "existingFiles": 3129,
+  "byteIdentical": 3127,
+  "changedExistingFiles": [
+    "server/src/voice/listedPriceCalculation.js",
+    "server/src/websitePriceExtraction.js"
+  ],
+  "missingExistingFiles": [],
+  "unexpectedChanges": [],
+  "existingTestFiles": 393,
+  "existingVerificationFiles": 2034,
+  "retained305FileSHA256": "e522c4a0f86b30d51578d9e235c25d15e37f715d5b8cbe897c4e410e28d27bc9",
+  "retained305FileUnchanged": true,
+  "allRequiredAncestorsPreserved": true,
+  "arithmeticCurrencyTailUnchanged": true,
+  "candidateSHA256": {
+    "server/src/voice/listedPriceCalculation.js": "81f690f592eb37f920234af1bd84e3e27d961c9f843ff9662bfe2015e4a6c01b",
+    "server/src/websitePriceExtraction.js": "17481959fa4f66bceb49093ea874270a83e6c20cd3f2bc0f49a5f2da62f4ae51",
+    "test/voiceAgent4ListedImport20261018.spec.mjs": "afd674fa4ea0f5f8df5235ddff7949ba1880aa7d217752dddcb2b9ff2468a374",
+    "test/voiceAgent4WebsiteQualifications20261018.spec.mjs": "c9bcec6d071776c1b3bff96d3a2afcc22f7318fe1ec44c47abf32b149936014a"
+  }
+}

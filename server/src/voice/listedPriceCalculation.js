@@ -10,9 +10,14 @@ const qualifiedPricePrefix=/\p{N}|\b(?:minimum|min|maximum|max|from|starting|sta
 // conditions. Refuse clause markers anywhere in that text, including inside
 // parentheses or after a product number. Do not attempt to evaluate the clause.
 const conditionalPricePrefix=/\b(?:if|unless|when(?:ever)?|where(?:ver)?|whether|before|after|until|while|once|upon|provided|providing|assuming|subject|conditional(?:ly)?|condition(?:s)?|contingent|depend(?:s|ing|ent)?|pending|based|except|otherwise|during|since)\b/iu;
-// Recognize prepositional phrases without rejecting ordinary compounds such
-// as board-on-board panels, nail-in anchors and plug-in adapters.
-const prepositionalPricePrefix=/(?:^|\s|:|\(|\[)(?:with|without|for|on|in|at|by|under|as|to|via|through)\b/iu;
+// A punctuation separator can start a qualification just like whitespace.
+// Only these established product compounds are exempt, not arbitrary hyphenated
+// text: "Widgets-on collection" and "Widgets-on-collection" remain conditional.
+const productCompounds=/(?<![\p{L}\p{M}\p{N}])(?:board-on-board|nail-in|plug-in)(?![\p{L}\p{M}\p{N}])/giu;
+const prepositionalPricePrefix=/(?:^|[^\p{L}\p{M}\p{N}])(?:with|without|for|on|in|at|by|under|as|to|via|through)(?![\p{L}\p{M}\p{N}])/iu;
+// Bounded phrase recognition, not a claim to understand unrestricted English.
+// Keep genuine names such as "Weather station" and "Online training manual".
+const circumstancePricePrefix=/\b(?:weather[\s./:-]+permitting|online[\s./:-]+orders?)\b/iu;
 // Other qualifiers do not need an explicit "if" to make a rate non-flat.
 // Unclassified eligibility/payment/time/charge wording also takes the existing
 // verbatim-listing fallback, even when it could be part of a genuine item name.
@@ -49,7 +54,7 @@ export function calculateSavedListedPrice(knowledge,args){
    // Normalize qualification detection only; saved identity, product numbers,
    // currencies and the exact arithmetic below retain their original spelling.
    const qualification=item.normalize('NFKC');
-   if(price||qualifiedPricePrefix.test(withoutProductNumbers(item))||conditionalPricePrefix.test(qualification)||prepositionalPricePrefix.test(qualification)||uncertainPricePrefix.test(qualification)||unclassifiedPricePrefix.test(qualification))return refusal();
+   if(price||qualifiedPricePrefix.test(withoutProductNumbers(item))||conditionalPricePrefix.test(qualification)||prepositionalPricePrefix.test(qualification.replace(productCompounds,'product'))||circumstancePricePrefix.test(qualification)||uncertainPricePrefix.test(qualification)||unclassifiedPricePrefix.test(qualification))return refusal();
    price=match.groups;
   }else if(!taxSentence.test(sentence)&&!contactSentence.test(sentence))return refusal();
  }
