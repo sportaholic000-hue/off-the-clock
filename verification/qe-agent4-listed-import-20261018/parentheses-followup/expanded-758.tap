@@ -1,0 +1,4590 @@
+(node:140) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: listed unit: "Sod: $1.20 per square foot" x 500 = $600.00
+ok 1 - listed unit: "Sod: $1.20 per square foot" x 500 = $600.00
+  ---
+  duration_ms: 11.233064
+  type: 'test'
+  ...
+# Subtest: listed unit: "Gutter cleaning: $2.50 per linear foot" x 120 = $300.00
+ok 2 - listed unit: "Gutter cleaning: $2.50 per linear foot" x 120 = $300.00
+  ---
+  duration_ms: 5.134939
+  type: 'test'
+  ...
+# Subtest: listed unit: "Mulch: $45 per cubic yard" x 4 = $180.00
+ok 3 - listed unit: "Mulch: $45 per cubic yard" x 4 = $180.00
+  ---
+  duration_ms: 0.135183
+  type: 'test'
+  ...
+# Subtest: listed unit: "Tile: $8 per sq ft" x 25 = $200.00
+ok 4 - listed unit: "Tile: $8 per sq ft" x 25 = $200.00
+  ---
+  duration_ms: 0.111077
+  type: 'test'
+  ...
+# Subtest: listed unit: "Tile: $8/sq ft" x 25 = $200.00
+ok 5 - listed unit: "Tile: $8/sq ft" x 25 = $200.00
+  ---
+  duration_ms: 0.170817
+  type: 'test'
+  ...
+# Subtest: listed unit: "Trim: $3 per lin ft" x 10 = $30.00
+ok 6 - listed unit: "Trim: $3 per lin ft" x 10 = $30.00
+  ---
+  duration_ms: 0.139078
+  type: 'test'
+  ...
+# Subtest: listed unit: "Stump grinding: $75 per stump" x 3 = $225.00
+ok 7 - listed unit: "Stump grinding: $75 per stump" x 3 = $225.00
+  ---
+  duration_ms: 0.188342
+  type: 'test'
+  ...
+# Subtest: listed unit: "Labour: $20 per hour" x 1.25 = $25.00
+ok 8 - listed unit: "Labour: $20 per hour" x 1.25 = $25.00
+  ---
+  duration_ms: 0.116345
+  type: 'test'
+  ...
+# Subtest: listed unit with a second word that may change the charge is not multiplied: "Service: $75 per hour minimum"
+ok 9 - listed unit with a second word that may change the charge is not multiplied: "Service: $75 per hour minimum"
+  ---
+  duration_ms: 0.862374
+  type: 'test'
+  ...
+# Subtest: listed unit with a second word that may change the charge is not multiplied: "Rental: $10 per item daily"
+ok 10 - listed unit with a second word that may change the charge is not multiplied: "Rental: $10 per item daily"
+  ---
+  duration_ms: 0.836626
+  type: 'test'
+  ...
+# Subtest: listed unit with a second word that may change the charge is not multiplied: "Paint: $2 per sqft twice"
+ok 11 - listed unit with a second word that may change the charge is not multiplied: "Paint: $2 per sqft twice"
+  ---
+  duration_ms: 0.142103
+  type: 'test'
+  ...
+# Subtest: listed unit with a second word that may change the charge is not multiplied: "Stump grinding: $50 per tree stump"
+ok 12 - listed unit with a second word that may change the charge is not multiplied: "Stump grinding: $50 per tree stump"
+  ---
+  duration_ms: 0.074792
+  type: 'test'
+  ...
+# Subtest: listed unit with a second word that may change the charge is not multiplied: "Labour: $90 per hour extra"
+ok 13 - listed unit with a second word that may change the charge is not multiplied: "Labour: $90 per hour extra"
+  ---
+  duration_ms: 0.059309
+  type: 'test'
+  ...
+# (node:155) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: engine audit listed prices: pre-price condition requires review: Minimum charge of $10 per hour
+ok 14 - engine audit listed prices: pre-price condition requires review: Minimum charge of $10 per hour
+  ---
+  duration_ms: 8.377627
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: pre-price condition requires review: Minimum charge $50 per hour.
+ok 15 - engine audit listed prices: pre-price condition requires review: Minimum charge $50 per hour.
+  ---
+  duration_ms: 3.086724
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: pre-price condition requires review: Up to $10 per acre
+ok 16 - engine audit listed prices: pre-price condition requires review: Up to $10 per acre
+  ---
+  duration_ms: 0.177366
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: pre-price condition requires review: About $10 per acre
+ok 17 - engine audit listed prices: pre-price condition requires review: About $10 per acre
+  ---
+  duration_ms: 0.162313
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: pre-price condition requires review: From only $10 per acre
+ok 18 - engine audit listed prices: pre-price condition requires review: From only $10 per acre
+  ---
+  duration_ms: 0.111598
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: pre-price condition requires review: Half price on Tuesdays: $10 per item
+ok 19 - engine audit listed prices: pre-price condition requires review: Half price on Tuesdays: $10 per item
+  ---
+  duration_ms: 0.087401
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: pre-price condition requires review: First item $10 each
+ok 20 - engine audit listed prices: pre-price condition requires review: First item $10 each
+  ---
+  duration_ms: 0.13977
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: pre-price condition requires review: Second item half price $10 each.
+ok 21 - engine audit listed prices: pre-price condition requires review: Second item half price $10 each.
+  ---
+  duration_ms: 0.088092
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: pre-price condition requires review: Starting price $10 per item.
+ok 22 - engine audit listed prices: pre-price condition requires review: Starting price $10 per item.
+  ---
+  duration_ms: 0.391367
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: minimum
+ok 23 - engine audit listed prices: qualification anywhere in item prefix requires review: minimum
+  ---
+  duration_ms: 0.356475
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: min
+ok 24 - engine audit listed prices: qualification anywhere in item prefix requires review: min
+  ---
+  duration_ms: 0.15996
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: maximum
+ok 25 - engine audit listed prices: qualification anywhere in item prefix requires review: maximum
+  ---
+  duration_ms: 0.217256
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: max
+ok 26 - engine audit listed prices: qualification anywhere in item prefix requires review: max
+  ---
+  duration_ms: 0.094592
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: from
+ok 27 - engine audit listed prices: qualification anywhere in item prefix requires review: from
+  ---
+  duration_ms: 0.072699
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: starting
+ok 28 - engine audit listed prices: qualification anywhere in item prefix requires review: starting
+  ---
+  duration_ms: 0.069604
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: start
+ok 29 - engine audit listed prices: qualification anywhere in item prefix requires review: start
+  ---
+  duration_ms: 0.067181
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: up to
+ok 30 - engine audit listed prices: qualification anywhere in item prefix requires review: up to
+  ---
+  duration_ms: 0.158648
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: about
+ok 31 - engine audit listed prices: qualification anywhere in item prefix requires review: about
+  ---
+  duration_ms: 0.09353
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: approx
+ok 32 - engine audit listed prices: qualification anywhere in item prefix requires review: approx
+  ---
+  duration_ms: 0.10691
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: around
+ok 33 - engine audit listed prices: qualification anywhere in item prefix requires review: around
+  ---
+  duration_ms: 0.071708
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: only
+ok 34 - engine audit listed prices: qualification anywhere in item prefix requires review: only
+  ---
+  duration_ms: 0.085749
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: first
+ok 35 - engine audit listed prices: qualification anywhere in item prefix requires review: first
+  ---
+  duration_ms: 0.071197
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: second
+ok 36 - engine audit listed prices: qualification anywhere in item prefix requires review: second
+  ---
+  duration_ms: 0.062214
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: half
+ok 37 - engine audit listed prices: qualification anywhere in item prefix requires review: half
+  ---
+  duration_ms: 0.060831
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: discount
+ok 38 - engine audit listed prices: qualification anywhere in item prefix requires review: discount
+  ---
+  duration_ms: 0.064367
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: off
+ok 39 - engine audit listed prices: qualification anywhere in item prefix requires review: off
+  ---
+  duration_ms: 0.063155
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: sale
+ok 40 - engine audit listed prices: qualification anywhere in item prefix requires review: sale
+  ---
+  duration_ms: 0.05282
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: special
+ok 41 - engine audit listed prices: qualification anywhere in item prefix requires review: special
+  ---
+  duration_ms: 0.116595
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: promo
+ok 42 - engine audit listed prices: qualification anywhere in item prefix requires review: promo
+  ---
+  duration_ms: 0.067802
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: deal
+ok 43 - engine audit listed prices: qualification anywhere in item prefix requires review: deal
+  ---
+  duration_ms: 0.059049
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: free
+ok 44 - engine audit listed prices: qualification anywhere in item prefix requires review: free
+  ---
+  duration_ms: 0.055384
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: extra
+ok 45 - engine audit listed prices: qualification anywhere in item prefix requires review: extra
+  ---
+  duration_ms: 0.097907
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: additional
+ok 46 - engine audit listed prices: qualification anywhere in item prefix requires review: additional
+  ---
+  duration_ms: 0.067071
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: each additional
+ok 47 - engine audit listed prices: qualification anywhere in item prefix requires review: each additional
+  ---
+  duration_ms: 0.083575
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification anywhere in item prefix requires review: per
+ok 48 - engine audit listed prices: qualification anywhere in item prefix requires review: per
+  ---
+  duration_ms: 0.115213
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: numeric and qualified item names require review: Synthetic 2 item $10 each
+ok 49 - engine audit listed prices: numeric and qualified item names require review: Synthetic 2 item $10 each
+  ---
+  duration_ms: 0.186891
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: numeric and qualified item names require review: 2 synthetic items $10 each
+ok 50 - engine audit listed prices: numeric and qualified item names require review: 2 synthetic items $10 each
+  ---
+  duration_ms: 0.21991
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: numeric and qualified item names require review: Synthetic item 2 $10 each
+ok 51 - engine audit listed prices: numeric and qualified item names require review: Synthetic item 2 $10 each
+  ---
+  duration_ms: 0.05318
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: numeric and qualified item names require review: Synthetic ½ item $10 each
+ok 52 - engine audit listed prices: numeric and qualified item names require review: Synthetic ½ item $10 each
+  ---
+  duration_ms: 0.11997
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: numeric and qualified item names require review: Half-round gutter: $10 per linear foot
+ok 53 - engine audit listed prices: numeric and qualified item names require review: Half-round gutter: $10 per linear foot
+  ---
+  duration_ms: 0.055102
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: numeric and qualified item names require review: Synthetic per-visit service: $10 each
+ok 54 - engine audit listed prices: numeric and qualified item names require review: Synthetic per-visit service: $10 each
+  ---
+  duration_ms: 0.04717
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: flat listing retains exact product: Bricks $2 each x 500
+ok 55 - engine audit listed prices: flat listing retains exact product: Bricks $2 each x 500
+  ---
+  duration_ms: 3.731202
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: flat listing retains exact product: Gutter cleaning: $2.50 per linear foot x 120
+ok 56 - engine audit listed prices: flat listing retains exact product: Gutter cleaning: $2.50 per linear foot x 120
+  ---
+  duration_ms: 2.347474
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: flat listing retains exact product: Service call: $95 each. x 3
+ok 57 - engine audit listed prices: flat listing retains exact product: Service call: $95 each. x 3
+  ---
+  duration_ms: 0.094852
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: flat listing retains exact product: Custom text engraving: $25 each x 2
+ok 58 - engine audit listed prices: flat listing retains exact product: Custom text engraving: $25 each x 2
+  ---
+  duration_ms: 0.072469
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: flat listing retains exact product: Furnace tune-up: $129 each. x 2
+ok 59 - engine audit listed prices: flat listing retains exact product: Furnace tune-up: $129 each. x 2
+  ---
+  duration_ms: 0.074612
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: flat listing retains exact product: Synthetic item: $1.25 each x 2.5
+ok 60 - engine audit listed prices: flat listing retains exact product: Synthetic item: $1.25 each x 2.5
+  ---
+  duration_ms: 0.070385
+  type: 'test'
+  ...
+# Subtest: engine audit listed prices: qualification words use word boundaries
+ok 61 - engine audit listed prices: qualification words use word boundaries
+  ---
+  duration_ms: 0.448053
+  type: 'test'
+  ...
+# (node:163) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the knowledge section saves the owner listed prices and website
+ok 62 - the knowledge section saves the owner listed prices and website
+  ---
+  duration_ms: 12.470752
+  type: 'test'
+  ...
+# Subtest: an invalid website or oversized price list is refused, not silently saved
+ok 63 - an invalid website or oversized price list is refused, not silently saved
+  ---
+  duration_ms: 0.649274
+  type: 'test'
+  ...
+# Subtest: the call instructions carry the knowledge section and allow listed prices verbatim for a business with no quote-engine service
+ok 64 - the call instructions carry the knowledge section and allow listed prices verbatim for a business with no quote-engine service
+  ---
+  duration_ms: 0.765739
+  type: 'test'
+  ...
+# Subtest: owner knowledge text cannot close the facts block or add instructions outside it
+ok 65 - owner knowledge text cannot close the facts block or add instructions outside it
+  ---
+  duration_ms: 0.330066
+  type: 'test'
+  ...
+# Subtest: malformed knowledge is refused rather than partly used
+ok 66 - malformed knowledge is refused rather than partly used
+  ---
+  duration_ms: 0.529926
+  type: 'test'
+  ...
+# (node:171) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 F7 direct refuses: Widgets/on collection $10 each
+ok 67 - Agent4 F7 direct refuses: Widgets/on collection $10 each
+  ---
+  duration_ms: 7.990567
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets/on collection $10 each
+ok 68 - Agent4 F7 real dispatcher refuses: Widgets/on collection $10 each
+  ---
+  duration_ms: 32.630717
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets.by arrangement $10 each
+ok 69 - Agent4 F7 direct refuses: Widgets.by arrangement $10 each
+  ---
+  duration_ms: 0.146169
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets.by arrangement $10 each
+ok 70 - Agent4 F7 real dispatcher refuses: Widgets.by arrangement $10 each
+  ---
+  duration_ms: 21.430173
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets-on collection $10 each
+ok 71 - Agent4 F7 direct refuses: Widgets-on collection $10 each
+  ---
+  duration_ms: 0.147482
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets-on collection $10 each
+ok 72 - Agent4 F7 real dispatcher refuses: Widgets-on collection $10 each
+  ---
+  duration_ms: 21.663573
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Weather permitting $10 each
+ok 73 - Agent4 F7 direct refuses: Weather permitting $10 each
+  ---
+  duration_ms: 0.568905
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Weather permitting $10 each
+ok 74 - Agent4 F7 real dispatcher refuses: Weather permitting $10 each
+  ---
+  duration_ms: 22.344415
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Online orders $10 each
+ok 75 - Agent4 F7 direct refuses: Online orders $10 each
+  ---
+  duration_ms: 0.305719
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Online orders $10 each
+ok 76 - Agent4 F7 real dispatcher refuses: Online orders $10 each
+  ---
+  duration_ms: 22.701461
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets:by arrangement $10 each
+ok 77 - Agent4 F7 direct refuses: Widgets:by arrangement $10 each
+  ---
+  duration_ms: 0.294402
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets:by arrangement $10 each
+ok 78 - Agent4 F7 real dispatcher refuses: Widgets:by arrangement $10 each
+  ---
+  duration_ms: 22.332717
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets[on collection] $10 each
+ok 79 - Agent4 F7 direct refuses: Widgets[on collection] $10 each
+  ---
+  duration_ms: 0.109745
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets[on collection] $10 each
+ok 80 - Agent4 F7 real dispatcher refuses: Widgets[on collection] $10 each
+  ---
+  duration_ms: 21.903143
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets(on collection) $10 each
+ok 81 - Agent4 F7 direct refuses: Widgets(on collection) $10 each
+  ---
+  duration_ms: 0.147001
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets(on collection) $10 each
+ok 82 - Agent4 F7 real dispatcher refuses: Widgets(on collection) $10 each
+  ---
+  duration_ms: 22.242011
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets'on collection $10 each
+ok 83 - Agent4 F7 direct refuses: Widgets'on collection $10 each
+  ---
+  duration_ms: 0.09965
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets'on collection $10 each
+ok 84 - Agent4 F7 real dispatcher refuses: Widgets'on collection $10 each
+  ---
+  duration_ms: 23.611257
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets’by arrangement $10 each
+ok 85 - Agent4 F7 direct refuses: Widgets’by arrangement $10 each
+  ---
+  duration_ms: 4.68227
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets’by arrangement $10 each
+ok 86 - Agent4 F7 real dispatcher refuses: Widgets’by arrangement $10 each
+  ---
+  duration_ms: 22.177154
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets/on collection $10 each
+ok 87 - Agent4 F7 direct refuses: Widgets/on collection $10 each
+  ---
+  duration_ms: 0.198618
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets/on collection $10 each
+ok 88 - Agent4 F7 real dispatcher refuses: Widgets/on collection $10 each
+  ---
+  duration_ms: 22.333889
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets.ＩＮ store $10 each
+ok 89 - Agent4 F7 direct refuses: Widgets.ＩＮ store $10 each
+  ---
+  duration_ms: 0.165278
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets.ＩＮ store $10 each
+ok 90 - Agent4 F7 real dispatcher refuses: Widgets.ＩＮ store $10 each
+  ---
+  duration_ms: 26.503839
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets—on collection $10 each
+ok 91 - Agent4 F7 direct refuses: Widgets—on collection $10 each
+  ---
+  duration_ms: 0.678819
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets—on collection $10 each
+ok 92 - Agent4 F7 real dispatcher refuses: Widgets—on collection $10 each
+  ---
+  duration_ms: 22.086808
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets／on collection $10 each
+ok 93 - Agent4 F7 direct refuses: Widgets／on collection $10 each
+  ---
+  duration_ms: 0.142033
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets／on collection $10 each
+ok 94 - Agent4 F7 real dispatcher refuses: Widgets／on collection $10 each
+  ---
+  duration_ms: 24.075233
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets-on-collection $10 each
+ok 95 - Agent4 F7 direct refuses: Widgets-on-collection $10 each
+  ---
+  duration_ms: 0.127502
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets-on-collection $10 each
+ok 96 - Agent4 F7 real dispatcher refuses: Widgets-on-collection $10 each
+  ---
+  duration_ms: 23.229684
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets-by-arrangement $10 each
+ok 97 - Agent4 F7 direct refuses: Widgets-by-arrangement $10 each
+  ---
+  duration_ms: 0.123565
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets-by-arrangement $10 each
+ok 98 - Agent4 F7 real dispatcher refuses: Widgets-by-arrangement $10 each
+  ---
+  duration_ms: 25.585951
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Weather-permitting $10 each
+ok 99 - Agent4 F7 direct refuses: Weather-permitting $10 each
+  ---
+  duration_ms: 0.1066
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Weather-permitting $10 each
+ok 100 - Agent4 F7 real dispatcher refuses: Weather-permitting $10 each
+  ---
+  duration_ms: 24.749625
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets/weather permitting $10 each
+ok 101 - Agent4 F7 direct refuses: Widgets/weather permitting $10 each
+  ---
+  duration_ms: 0.648043
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets/weather permitting $10 each
+ok 102 - Agent4 F7 real dispatcher refuses: Widgets/weather permitting $10 each
+  ---
+  duration_ms: 22.670044
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Online-orders $10 each
+ok 103 - Agent4 F7 direct refuses: Online-orders $10 each
+  ---
+  duration_ms: 0.117676
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Online-orders $10 each
+ok 104 - Agent4 F7 real dispatcher refuses: Online-orders $10 each
+  ---
+  duration_ms: 20.737733
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets.online orders $10 each
+ok 105 - Agent4 F7 direct refuses: Widgets.online orders $10 each
+  ---
+  duration_ms: 0.128553
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets.online orders $10 each
+ok 106 - Agent4 F7 real dispatcher refuses: Widgets.online orders $10 each
+  ---
+  duration_ms: 24.502845
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Board-on-board panel/on collection $10 each
+ok 107 - Agent4 F7 direct refuses: Board-on-board panel/on collection $10 each
+  ---
+  duration_ms: 0.207271
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Board-on-board panel/on collection $10 each
+ok 108 - Agent4 F7 real dispatcher refuses: Board-on-board panel/on collection $10 each
+  ---
+  duration_ms: 22.257674
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Nail-in anchor.by arrangement $10 each
+ok 109 - Agent4 F7 direct refuses: Nail-in anchor.by arrangement $10 each
+  ---
+  duration_ms: 0.139209
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Nail-in anchor.by arrangement $10 each
+ok 110 - Agent4 F7 real dispatcher refuses: Nail-in anchor.by arrangement $10 each
+  ---
+  duration_ms: 21.014699
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Plug-in adapter-online orders $10 each
+ok 111 - Agent4 F7 direct refuses: Plug-in adapter-online orders $10 each
+  ---
+  duration_ms: 0.114392
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Plug-in adapter-online orders $10 each
+ok 112 - Agent4 F7 real dispatcher refuses: Plug-in adapter-online orders $10 each
+  ---
+  duration_ms: 21.227538
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Board-on-board panel $10 each
+ok 113 - Agent4 F7 genuine name/arithmetic control: Board-on-board panel $10 each
+  ---
+  duration_ms: 25.995226
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Nail-in anchor $10 each
+ok 114 - Agent4 F7 genuine name/arithmetic control: Nail-in anchor $10 each
+  ---
+  duration_ms: 22.108501
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Plug-in adapter $10 each
+ok 115 - Agent4 F7 genuine name/arithmetic control: Plug-in adapter $10 each
+  ---
+  duration_ms: 23.991798
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Weather station $10 each
+ok 116 - Agent4 F7 genuine name/arithmetic control: Weather station $10 each
+  ---
+  duration_ms: 20.751203
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Online training manual $10 each
+ok 117 - Agent4 F7 genuine name/arithmetic control: Online training manual $10 each
+  ---
+  duration_ms: 20.206045
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Onyx tile $10 each
+ok 118 - Agent4 F7 genuine name/arithmetic control: Onyx tile $10 each
+  ---
+  duration_ms: 22.899989
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Inline filter $10 each
+ok 119 - Agent4 F7 genuine name/arithmetic control: Inline filter $10 each
+  ---
+  duration_ms: 22.703514
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Standby lamp $10 each
+ok 120 - Agent4 F7 genuine name/arithmetic control: Standby lamp $10 each
+  ---
+  duration_ms: 22.831286
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Porcelain basin $10 each
+ok 121 - Agent4 F7 genuine name/arithmetic control: Porcelain basin $10 each
+  ---
+  duration_ms: 22.255491
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Weatherproof plug-in adapter $10 each
+ok 122 - Agent4 F7 genuine name/arithmetic control: Weatherproof plug-in adapter $10 each
+  ---
+  duration_ms: 26.103468
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Trim CAD 0.035 per linear foot
+ok 123 - Agent4 F7 genuine name/arithmetic control: Trim CAD 0.035 per linear foot
+  ---
+  duration_ms: 33.442576
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Widget US$1,234.50 each
+ok 124 - Agent4 F7 genuine name/arithmetic control: Widget US$1,234.50 each
+  ---
+  duration_ms: 22.663985
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Widget EUR 2.50 each
+ok 125 - Agent4 F7 genuine name/arithmetic control: Widget EUR 2.50 each
+  ---
+  duration_ms: 24.121482
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 fallback keeps all five exact saved listings in compiled facts
+ok 126 - Agent4 F7 fallback keeps all five exact saved listings in compiled facts
+  ---
+  duration_ms: 4.180576
+  type: 'test'
+  ...
+# Subtest: Agent4 new voice files execute in full and stay outside strict through unchanged conventions
+ok 127 - Agent4 new voice files execute in full and stay outside strict through unchanged conventions
+  ---
+  duration_ms: 3248.091972
+  type: 'test'
+  ...
+# (node:179) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 parentheses direct refuses: Weather (permitting) $10 each
+ok 128 - Agent4 parentheses direct refuses: Weather (permitting) $10 each
+  ---
+  duration_ms: 8.738546
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather (permitting) $10 each
+ok 129 - Agent4 parentheses real dispatcher refuses: Weather (permitting) $10 each
+  ---
+  duration_ms: 31.952944
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online (orders) $10 each
+ok 130 - Agent4 parentheses direct refuses: Online (orders) $10 each
+  ---
+  duration_ms: 0.142965
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online (orders) $10 each
+ok 131 - Agent4 parentheses real dispatcher refuses: Online (orders) $10 each
+  ---
+  duration_ms: 22.739613
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather(permitting) $10 each
+ok 132 - Agent4 parentheses direct refuses: Weather(permitting) $10 each
+  ---
+  duration_ms: 0.156345
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather(permitting) $10 each
+ok 133 - Agent4 parentheses real dispatcher refuses: Weather(permitting) $10 each
+  ---
+  duration_ms: 22.711762
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online(orders) $10 each
+ok 134 - Agent4 parentheses direct refuses: Online(orders) $10 each
+  ---
+  duration_ms: 0.341484
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online(orders) $10 each
+ok 135 - Agent4 parentheses real dispatcher refuses: Online(orders) $10 each
+  ---
+  duration_ms: 21.691548
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: (Weather) permitting $10 each
+ok 136 - Agent4 parentheses direct refuses: (Weather) permitting $10 each
+  ---
+  duration_ms: 0.825711
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: (Weather) permitting $10 each
+ok 137 - Agent4 parentheses real dispatcher refuses: (Weather) permitting $10 each
+  ---
+  duration_ms: 21.370366
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: (Online) orders $10 each
+ok 138 - Agent4 parentheses direct refuses: (Online) orders $10 each
+  ---
+  duration_ms: 0.143926
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: (Online) orders $10 each
+ok 139 - Agent4 parentheses real dispatcher refuses: (Online) orders $10 each
+  ---
+  duration_ms: 21.342584
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather [permitting] $10 each
+ok 140 - Agent4 parentheses direct refuses: Weather [permitting] $10 each
+  ---
+  duration_ms: 0.152439
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather [permitting] $10 each
+ok 141 - Agent4 parentheses real dispatcher refuses: Weather [permitting] $10 each
+  ---
+  duration_ms: 20.087376
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online [orders] $10 each
+ok 142 - Agent4 parentheses direct refuses: Online [orders] $10 each
+  ---
+  duration_ms: 0.137156
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online [orders] $10 each
+ok 143 - Agent4 parentheses real dispatcher refuses: Online [orders] $10 each
+  ---
+  duration_ms: 20.615762
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather ’permitting’ $10 each
+ok 144 - Agent4 parentheses direct refuses: Weather ’permitting’ $10 each
+  ---
+  duration_ms: 5.277794
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather ’permitting’ $10 each
+ok 145 - Agent4 parentheses real dispatcher refuses: Weather ’permitting’ $10 each
+  ---
+  duration_ms: 21.465047
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online 'orders' $10 each
+ok 146 - Agent4 parentheses direct refuses: Online 'orders' $10 each
+  ---
+  duration_ms: 0.114292
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online 'orders' $10 each
+ok 147 - Agent4 parentheses real dispatcher refuses: Online 'orders' $10 each
+  ---
+  duration_ms: 20.950805
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Widget (weather-permitting) $10 each
+ok 148 - Agent4 parentheses direct refuses: Widget (weather-permitting) $10 each
+  ---
+  duration_ms: 0.147862
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Widget (weather-permitting) $10 each
+ok 149 - Agent4 parentheses real dispatcher refuses: Widget (weather-permitting) $10 each
+  ---
+  duration_ms: 20.840419
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Widget (online/orders) $10 each
+ok 150 - Agent4 parentheses direct refuses: Widget (online/orders) $10 each
+  ---
+  duration_ms: 0.131327
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Widget (online/orders) $10 each
+ok 151 - Agent4 parentheses real dispatcher refuses: Widget (online/orders) $10 each
+  ---
+  duration_ms: 19.825003
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Weather (station)
+ok 152 - Agent4 parentheses genuine product: Weather (station)
+  ---
+  duration_ms: 23.806268
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Online (training manual)
+ok 153 - Agent4 parentheses genuine product: Online (training manual)
+  ---
+  duration_ms: 23.271133
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Widget (Weather station)
+ok 154 - Agent4 parentheses genuine product: Widget (Weather station)
+  ---
+  duration_ms: 23.888141
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Manual (Online training)
+ok 155 - Agent4 parentheses genuine product: Manual (Online training)
+  ---
+  duration_ms: 20.583793
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Weatherproof (sensor)
+ok 156 - Agent4 parentheses genuine product: Weatherproof (sensor)
+  ---
+  duration_ms: 20.170763
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Online ordering manual
+ok 157 - Agent4 parentheses genuine product: Online ordering manual
+  ---
+  duration_ms: 24.612609
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Board-on-board (panel)
+ok 158 - Agent4 parentheses genuine product: Board-on-board (panel)
+  ---
+  duration_ms: 21.42682
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Nail-in (anchor)
+ok 159 - Agent4 parentheses genuine product: Nail-in (anchor)
+  ---
+  duration_ms: 21.428243
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Plug-in (adapter)
+ok 160 - Agent4 parentheses genuine product: Plug-in (adapter)
+  ---
+  duration_ms: 20.053135
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses retain exact saved identity through both paths
+ok 161 - Agent4 parentheses retain exact saved identity through both paths
+  ---
+  duration_ms: 21.198817
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses preserve verbatim qualified facts and fallback guidance
+ok 162 - Agent4 parentheses preserve verbatim qualified facts and fallback guidance
+  ---
+  duration_ms: 1.743601
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses file uses unchanged voice selection conventions
+ok 163 - Agent4 parentheses file uses unchanged voice selection conventions
+  ---
+  duration_ms: 1670.929891
+  type: 'test'
+  ...
+# (node:187) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 F8 exact HTML separate card: Available exclusively to members
+ok 164 - Agent4 F8 exact HTML separate card: Available exclusively to members
+  ---
+  duration_ms: 416.07205
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Available exclusively to members
+ok 165 - Agent4 F8 leading plain note and blank boundary: Available exclusively to members
+  ---
+  duration_ms: 3.342569
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Available exclusively to members
+ok 166 - Agent4 F8 HTML note applies to both cards: Available exclusively to members
+  ---
+  duration_ms: 2.39102
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Available exclusively to members
+ok 167 - Agent4 F8 plain note applies to both prices: Available exclusively to members
+  ---
+  duration_ms: 0.539911
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Available exclusively to members
+ok 168 - Agent4 F8 trailing detached plain note is ambiguous: Available exclusively to members
+  ---
+  duration_ms: 0.505308
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Available exclusively to members
+ok 169 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Available exclusively to members
+  ---
+  duration_ms: 0.187551
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 exact HTML separate card: Available to account holders
+ok 170 - Agent4 F8 exact HTML separate card: Available to account holders
+  ---
+  duration_ms: 0.81244
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Available to account holders
+ok 171 - Agent4 F8 leading plain note and blank boundary: Available to account holders
+  ---
+  duration_ms: 0.583757
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Available to account holders
+ok 172 - Agent4 F8 HTML note applies to both cards: Available to account holders
+  ---
+  duration_ms: 0.557597
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Available to account holders
+ok 173 - Agent4 F8 plain note applies to both prices: Available to account holders
+  ---
+  duration_ms: 0.323576
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Available to account holders
+ok 174 - Agent4 F8 trailing detached plain note is ambiguous: Available to account holders
+  ---
+  duration_ms: 0.18643
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Available to account holders
+ok 175 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Available to account holders
+  ---
+  duration_ms: 0.108744
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 exact HTML separate card: Payment by cash
+ok 176 - Agent4 F8 exact HTML separate card: Payment by cash
+  ---
+  duration_ms: 0.21297
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Payment by cash
+ok 177 - Agent4 F8 leading plain note and blank boundary: Payment by cash
+  ---
+  duration_ms: 0.087161
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Payment by cash
+ok 178 - Agent4 F8 HTML note applies to both cards: Payment by cash
+  ---
+  duration_ms: 0.20632
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Payment by cash
+ok 179 - Agent4 F8 plain note applies to both prices: Payment by cash
+  ---
+  duration_ms: 1.987474
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Payment by cash
+ok 180 - Agent4 F8 trailing detached plain note is ambiguous: Payment by cash
+  ---
+  duration_ms: 0.187011
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Payment by cash
+ok 181 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Payment by cash
+  ---
+  duration_ms: 0.13976
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 exact HTML separate card: Eligible customers: account holders
+ok 182 - Agent4 F8 exact HTML separate card: Eligible customers: account holders
+  ---
+  duration_ms: 0.197837
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Eligible customers: account holders
+ok 183 - Agent4 F8 leading plain note and blank boundary: Eligible customers: account holders
+  ---
+  duration_ms: 0.074161
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Eligible customers: account holders
+ok 184 - Agent4 F8 HTML note applies to both cards: Eligible customers: account holders
+  ---
+  duration_ms: 0.22662
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Eligible customers: account holders
+ok 185 - Agent4 F8 plain note applies to both prices: Eligible customers: account holders
+  ---
+  duration_ms: 0.085629
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Eligible customers: account holders
+ok 186 - Agent4 F8 trailing detached plain note is ambiguous: Eligible customers: account holders
+  ---
+  duration_ms: 0.062484
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Eligible customers: account holders
+ok 187 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Eligible customers: account holders
+  ---
+  duration_ms: 0.061552
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 exact HTML separate card: Prices apply to cash payments
+ok 188 - Agent4 F8 exact HTML separate card: Prices apply to cash payments
+  ---
+  duration_ms: 0.282925
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Prices apply to cash payments
+ok 189 - Agent4 F8 leading plain note and blank boundary: Prices apply to cash payments
+  ---
+  duration_ms: 0.070757
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Prices apply to cash payments
+ok 190 - Agent4 F8 HTML note applies to both cards: Prices apply to cash payments
+  ---
+  duration_ms: 0.227351
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Prices apply to cash payments
+ok 191 - Agent4 F8 plain note applies to both prices: Prices apply to cash payments
+  ---
+  duration_ms: 0.071137
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Prices apply to cash payments
+ok 192 - Agent4 F8 trailing detached plain note is ambiguous: Prices apply to cash payments
+  ---
+  duration_ms: 0.115383
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Prices apply to cash payments
+ok 193 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Prices apply to cash payments
+  ---
+  duration_ms: 0.129735
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML section binding: Available exclusively to members
+ok 194 - Agent4 F8 HTML section binding: Available exclusively to members
+  ---
+  duration_ms: 0.722404
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML section binding: Available to account holders
+ok 195 - Agent4 F8 HTML section binding: Available to account holders
+  ---
+  duration_ms: 0.605749
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML section binding: Payment by cash
+ok 196 - Agent4 F8 HTML section binding: Payment by cash
+  ---
+  duration_ms: 0.430877
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML section binding: Eligible customers: account holders
+ok 197 - Agent4 F8 HTML section binding: Eligible customers: account holders
+  ---
+  duration_ms: 0.458178
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML headings delimit qualifications
+ok 198 - Agent4 F8 HTML headings delimit qualifications
+  ---
+  duration_ms: 0.299329
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 separate named condition section cannot be silently discarded
+ok 199 - Agent4 F8 separate named condition section cannot be silently discarded
+  ---
+  duration_ms: 0.23297
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 unknown selected-item association withholds only affected section
+ok 200 - Agent4 F8 unknown selected-item association withholds only affected section
+  ---
+  duration_ms: 0.336826
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain section labels do not establish a safe cross-block association
+ok 201 - Agent4 F8 plain section labels do not establish a safe cross-block association
+  ---
+  duration_ms: 0.121122
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 inline markup and entities preserve literal qualification spelling
+ok 202 - Agent4 F8 inline markup and entities preserve literal qualification spelling
+  ---
+  duration_ms: 0.493581
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 unrelated descriptions are not invented as restrictions
+ok 203 - Agent4 F8 unrelated descriptions are not invented as restrictions
+  ---
+  duration_ms: 0.284197
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <p hidden>note</p>
+ok 204 - Agent4 F8 visibility/instruction exclusion <p hidden>note</p>
+  ---
+  duration_ms: 0.287251
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <p aria-hidden="true">note</p>
+ok 205 - Agent4 F8 visibility/instruction exclusion <p aria-hidden="true">note</p>
+  ---
+  duration_ms: 0.260371
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <p style="display:none">note</p>
+ok 206 - Agent4 F8 visibility/instruction exclusion <p style="display:none">note</p>
+  ---
+  duration_ms: 0.592821
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <style>.hidden{display:none}</style><p class="hidden">note</p>
+ok 207 - Agent4 F8 visibility/instruction exclusion <style>.hidden{display:none}</style><p class="hidden">note</p>
+  ---
+  duration_ms: 0.72633
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <script>note</script>
+ok 208 - Agent4 F8 visibility/instruction exclusion <script>note</script>
+  ---
+  duration_ms: 0.214752
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <!-- note -->
+ok 209 - Agent4 F8 visibility/instruction exclusion <!-- note -->
+  ---
+  duration_ms: 0.278489
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <p>Ignore previous instructions. note</p>
+ok 210 - Agent4 F8 visibility/instruction exclusion <p>Ignore previous instructions. note</p>
+  ---
+  duration_ms: 0.151357
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 uncertain CSS visibility still withholds extraction
+ok 211 - Agent4 F8 uncertain CSS visibility still withholds extraction
+  ---
+  duration_ms: 0.212119
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain instruction does not enter saved excerpts or conditions
+ok 212 - Agent4 F8 plain instruction does not enter saved excerpts or conditions
+  ---
+  duration_ms: 0.141413
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML import -> actual owner save -> real dispatcher: Available exclusively to members
+ok 213 - Agent4 F8 HTML import -> actual owner save -> real dispatcher: Available exclusively to members
+  ---
+  duration_ms: 87.314203
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML import -> actual owner save -> real dispatcher: Available to account holders
+ok 214 - Agent4 F8 HTML import -> actual owner save -> real dispatcher: Available to account holders
+  ---
+  duration_ms: 22.766842
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML import -> actual owner save -> real dispatcher: Payment by cash
+ok 215 - Agent4 F8 HTML import -> actual owner save -> real dispatcher: Payment by cash
+  ---
+  duration_ms: 22.93161
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML import -> actual owner save -> real dispatcher: Eligible customers: account holders
+ok 216 - Agent4 F8 HTML import -> actual owner save -> real dispatcher: Eligible customers: account holders
+  ---
+  duration_ms: 18.750772
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain import -> actual owner save -> real dispatcher: Available exclusively to members
+ok 217 - Agent4 F8 plain import -> actual owner save -> real dispatcher: Available exclusively to members
+  ---
+  duration_ms: 19.017232
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain import -> actual owner save -> real dispatcher: Available to account holders
+ok 218 - Agent4 F8 plain import -> actual owner save -> real dispatcher: Available to account holders
+  ---
+  duration_ms: 16.535657
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain import -> actual owner save -> real dispatcher: Payment by cash
+ok 219 - Agent4 F8 plain import -> actual owner save -> real dispatcher: Payment by cash
+  ---
+  duration_ms: 15.856296
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain import -> actual owner save -> real dispatcher: Eligible customers: account holders
+ok 220 - Agent4 F8 plain import -> actual owner save -> real dispatcher: Eligible customers: account holders
+  ---
+  duration_ms: 13.558767
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 unconditional import still calculates after actual owner save
+ok 221 - Agent4 F8 unconditional import still calculates after actual owner save
+  ---
+  duration_ms: 13.78749
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 ambiguous import warns and does not mutate existing saved prices
+ok 222 - Agent4 F8 ambiguous import warns and does not mutate existing saved prices
+  ---
+  duration_ms: 9.913655
+  type: 'test'
+  ...
+# (node:195) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: voice-core 1 Operator books a fresh appointment without any calculated quote
+ok 223 - voice-core 1 Operator books a fresh appointment without any calculated quote
+  ---
+  duration_ms: 116.727915
+  type: 'test'
+  ...
+# Subtest: voice-core 2 saved male voice and greeting reach the real live adapter
+ok 224 - voice-core 2 saved male voice and greeting reach the real live adapter
+  ---
+  duration_ms: 87.752612
+  type: 'test'
+  ...
+# Subtest: voice-core 2 saved female voice and greeting reach the real live adapter
+ok 225 - voice-core 2 saved female voice and greeting reach the real live adapter
+  ---
+  duration_ms: 48.800448
+  type: 'test'
+  ...
+# Subtest: voice-core 3 callback contact is saved, corrected and shown without changing trusted caller identity
+ok 226 - voice-core 3 callback contact is saved, corrected and shown without changing trusted caller identity
+  ---
+  duration_ms: 26.684284
+  type: 'test'
+  ...
+# Subtest: voice-core 4 unreadable quote storage keeps ordinary answering live and queues an owner alert
+ok 227 - voice-core 4 unreadable quote storage keeps ordinary answering live and queues an owner alert
+  ---
+  duration_ms: 46.275629
+  type: 'test'
+  ...
+# Subtest: voice-core 5 voice settings reject values that cannot compile before persisting them
+ok 228 - voice-core 5 voice settings reject values that cannot compile before persisting them
+  ---
+  duration_ms: 280.234663
+  type: 'test'
+  ...
+# Subtest: voice-core 6 old switch and carrier state cannot prevent answering a forwarded call
+ok 229 - voice-core 6 old switch and carrier state cannot prevent answering a forwarded call
+  ---
+  duration_ms: 28.034451
+  type: 'test'
+  ...
+# Subtest: voice-core 7 transfers obey saved owner windows and save a callback outside them
+ok 230 - voice-core 7 transfers obey saved owner windows and save a callback outside them
+  ---
+  duration_ms: 24.786715
+  type: 'test'
+  ...
+# Subtest: voice-core 8 Calls feed and details render in the saved owner time zone
+ok 231 - voice-core 8 Calls feed and details render in the saved owner time zone
+  ---
+  duration_ms: 623.913186
+  type: 'test'
+  ...
+# Subtest: voice-core Operator can configure appointments through the existing owner calendar service without a price book
+ok 232 - voice-core Operator can configure appointments through the existing owner calendar service without a price book
+  ---
+  duration_ms: 25.473225
+  type: 'test'
+  ...
+# Subtest: voice-core quote-free booking remains unavailable without policy
+ok 233 - voice-core quote-free booking remains unavailable without policy
+  ---
+  duration_ms: 24.043139
+  type: 'test'
+  ...
+# Subtest: voice-core quote-free booking remains unavailable without address
+ok 234 - voice-core quote-free booking remains unavailable without address
+  ---
+  duration_ms: 23.307463
+  type: 'test'
+  ...
+# Subtest: voice-core quote-free booking remains unavailable without area
+ok 235 - voice-core quote-free booking remains unavailable without area
+  ---
+  duration_ms: 28.373199
+  type: 'test'
+  ...
+# Subtest: voice-core quote-free booking remains unavailable without calendar
+ok 236 - voice-core quote-free booking remains unavailable without calendar
+  ---
+  duration_ms: 23.275797
+  type: 'test'
+  ...
+# Subtest: voice-core general appointment intent cannot reference a foreign lead or service
+ok 237 - voice-core general appointment intent cannot reference a foreign lead or service
+  ---
+  duration_ms: 22.980373
+  type: 'test'
+  ...
+# Subtest: voice-core callback contact does not unlock another caller history or a foreign lead handle
+ok 238 - voice-core callback contact does not unlock another caller history or a foreign lead handle
+  ---
+  duration_ms: 26.595961
+  type: 'test'
+  ...
+# Subtest: voice-core callback owner emails contain the usable corrected contact
+ok 239 - voice-core callback owner emails contain the usable corrected contact
+  ---
+  duration_ms: 27.964195
+  type: 'test'
+  ...
+# Subtest: voice-core old pending carrier state has no effect on signed inbound answering
+ok 240 - voice-core old pending carrier state has no effect on signed inbound answering
+  ---
+  duration_ms: 32.200866
+  type: 'test'
+  ...
+# Subtest: voice-core old failed carrier state has no effect on signed inbound answering
+ok 241 - voice-core old failed carrier state has no effect on signed inbound answering
+  ---
+  duration_ms: 46.096149
+  type: 'test'
+  ...
+# Subtest: voice-core signed completion after an unanswered media start keeps the existing Twilio duration calculation
+ok 242 - voice-core signed completion after an unanswered media start keeps the existing Twilio duration calculation
+  ---
+  duration_ms: 35.422603
+  type: 'test'
+  ...
+# Subtest: voice-core owner-local transfer boundary 2026-10-06T12:59:59.000Z
+ok 243 - voice-core owner-local transfer boundary 2026-10-06T12:59:59.000Z
+  ---
+  duration_ms: 23.489717
+  type: 'test'
+  ...
+# Subtest: voice-core owner-local transfer boundary 2026-10-06T13:00:00.000Z
+ok 244 - voice-core owner-local transfer boundary 2026-10-06T13:00:00.000Z
+  ---
+  duration_ms: 21.808193
+  type: 'test'
+  ...
+# Subtest: voice-core owner-local transfer boundary 2026-10-06T19:59:59.000Z
+ok 245 - voice-core owner-local transfer boundary 2026-10-06T19:59:59.000Z
+  ---
+  duration_ms: 21.060029
+  type: 'test'
+  ...
+# Subtest: voice-core owner-local transfer boundary 2026-10-06T20:00:00.000Z
+ok 246 - voice-core owner-local transfer boundary 2026-10-06T20:00:00.000Z
+  ---
+  duration_ms: 23.65856
+  type: 'test'
+  ...
+# Subtest: voice-core owner-local transfer boundary 2026-11-03T14:00:00.000Z
+ok 247 - voice-core owner-local transfer boundary 2026-11-03T14:00:00.000Z
+  ---
+  duration_ms: 26.6217
+  type: 'test'
+  ...
+# Subtest: voice-core owner-local transfer boundary 2026-11-03T13:59:59.000Z
+ok 248 - voice-core owner-local transfer boundary 2026-11-03T13:59:59.000Z
+  ---
+  duration_ms: 27.079107
+  type: 'test'
+  ...
+# Subtest: voice-core malformed transfer settings are rejected before storage
+ok 249 - voice-core malformed transfer settings are rejected before storage
+  ---
+  duration_ms: 0.579049
+  type: 'test'
+  ...
+# Subtest: voice-core production Operator completes quote-free booking through signed HTTP and live WS tools
+ok 250 - voice-core production Operator completes quote-free booking through signed HTTP and live WS tools
+  ---
+  duration_ms: 110.97667
+  type: 'test'
+  ...
+# Subtest: voice-core a callback number supplied after an earlier owner email produces a new usable alert
+ok 251 - voice-core a callback number supplied after an earlier owner email produces a new usable alert
+  ---
+  duration_ms: 26.130662
+  type: 'test'
+  ...
+# Subtest: voice-core unavailable inactive account uses message capture
+ok 252 - voice-core unavailable inactive account uses message capture
+  ---
+  duration_ms: 29.424098
+  type: 'test'
+  ...
+# Subtest: voice-core unavailable payment_failed account uses message capture
+ok 253 - voice-core unavailable payment_failed account uses message capture
+  ---
+  duration_ms: 28.739479
+  type: 'test'
+  ...
+# (node:219) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: listed conditions direct: If prepaid $10 per item
+ok 254 - listed conditions direct: If prepaid $10 per item
+  ---
+  duration_ms: 5.49028
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: If prepaid $10 per item
+ok 255 - listed conditions dispatcher: If prepaid $10 per item
+  ---
+  duration_ms: 27.583698
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: Unless delivered $10 per item
+ok 256 - listed conditions direct: Unless delivered $10 per item
+  ---
+  duration_ms: 0.168212
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: Unless delivered $10 per item
+ok 257 - listed conditions dispatcher: Unless delivered $10 per item
+  ---
+  duration_ms: 22.242372
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: When booked online $10 per item
+ok 258 - listed conditions direct: When booked online $10 per item
+  ---
+  duration_ms: 2.593296
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: When booked online $10 per item
+ok 259 - listed conditions dispatcher: When booked online $10 per item
+  ---
+  duration_ms: 22.267269
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: After inspection $10 per item
+ok 260 - listed conditions direct: After inspection $10 per item
+  ---
+  duration_ms: 0.244818
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: After inspection $10 per item
+ok 261 - listed conditions dispatcher: After inspection $10 per item
+  ---
+  duration_ms: 20.911462
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: Subject to approval $10 per item
+ok 262 - listed conditions direct: Subject to approval $10 per item
+  ---
+  duration_ms: 0.236145
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: Subject to approval $10 per item
+ok 263 - listed conditions dispatcher: Subject to approval $10 per item
+  ---
+  duration_ms: 21.589561
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: IF PREPAID: $10 per item
+ok 264 - listed conditions qualifier: IF PREPAID: $10 per item
+  ---
+  duration_ms: 20.861006
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets unless delivered: $10 per item
+ok 265 - listed conditions qualifier: Widgets unless delivered: $10 per item
+  ---
+  duration_ms: 20.790951
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets (when booked online): $10 per item
+ok 266 - listed conditions qualifier: Widgets (when booked online): $10 per item
+  ---
+  duration_ms: 20.421716
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets after inspection $10 each
+ok 267 - listed conditions qualifier: Widgets after inspection $10 each
+  ---
+  duration_ms: 26.762779
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets subject to approval $10 each
+ok 268 - listed conditions qualifier: Widgets subject to approval $10 each
+  ---
+  duration_ms: 25.129284
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Provided payment clears $10 each
+ok 269 - listed conditions qualifier: Provided payment clears $10 each
+  ---
+  duration_ms: 20.57798
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Providing access is available $10 each
+ok 270 - listed conditions qualifier: Providing access is available $10 each
+  ---
+  duration_ms: 20.505482
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Assuming pickup $10 each
+ok 271 - listed conditions qualifier: Assuming pickup $10 each
+  ---
+  duration_ms: 20.540545
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Pending inspection $10 each
+ok 272 - listed conditions qualifier: Pending inspection $10 each
+  ---
+  duration_ms: 21.577082
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Conditional upon approval $10 each
+ok 273 - listed conditions qualifier: Conditional upon approval $10 each
+  ---
+  duration_ms: 20.476718
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Before delivery $10 each
+ok 274 - listed conditions qualifier: Before delivery $10 each
+  ---
+  duration_ms: 19.706632
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Until supplies run out $10 each
+ok 275 - listed conditions qualifier: Until supplies run out $10 each
+  ---
+  duration_ms: 21.212564
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: While stock lasts $10 each
+ok 276 - listed conditions qualifier: While stock lasts $10 each
+  ---
+  duration_ms: 20.739924
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Once approved $10 each
+ok 277 - listed conditions qualifier: Once approved $10 each
+  ---
+  duration_ms: 20.664631
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Whenever collected $10 each
+ok 278 - listed conditions qualifier: Whenever collected $10 each
+  ---
+  duration_ms: 21.016961
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Depending on access $10 each
+ok 279 - listed conditions qualifier: Depending on access $10 each
+  ---
+  duration_ms: 21.215087
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Based on availability $10 each
+ok 280 - listed conditions qualifier: Based on availability $10 each
+  ---
+  duration_ms: 20.863059
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: With owner consent $10 each
+ok 281 - listed conditions qualifier: With owner consent $10 each
+  ---
+  duration_ms: 23.278809
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Without delivery $10 each
+ok 282 - listed conditions qualifier: Without delivery $10 each
+  ---
+  duration_ms: 20.819845
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: For members $10 each
+ok 283 - listed conditions qualifier: For members $10 each
+  ---
+  duration_ms: 21.603171
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Upon payment $10 each
+ok 284 - listed conditions qualifier: Upon payment $10 each
+  ---
+  duration_ms: 21.507457
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: On collection $10 each
+ok 285 - listed conditions qualifier: On collection $10 each
+  ---
+  duration_ms: 21.197021
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: At pickup $10 each
+ok 286 - listed conditions qualifier: At pickup $10 each
+  ---
+  duration_ms: 20.838813
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: By appointment $10 each
+ok 287 - listed conditions qualifier: By appointment $10 each
+  ---
+  duration_ms: 24.215396
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Prepaid widgets $10 each
+ok 288 - listed conditions qualifier: Prepaid widgets $10 each
+  ---
+  duration_ms: 33.939447
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Cash price $10 each
+ok 289 - listed conditions qualifier: Cash price $10 each
+  ---
+  duration_ms: 34.290215
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Members price $10 each
+ok 290 - listed conditions qualifier: Members price $10 each
+  ---
+  duration_ms: 21.863332
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Weekday service $10 each
+ok 291 - listed conditions qualifier: Weekday service $10 each
+  ---
+  duration_ms: 20.360513
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Monday service $10 each
+ok 292 - listed conditions qualifier: Monday service $10 each
+  ---
+  duration_ms: 20.47157
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Advance booking $10 each
+ok 293 - listed conditions qualifier: Advance booking $10 each
+  ---
+  duration_ms: 20.78403
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Approved orders $10 each
+ok 294 - listed conditions qualifier: Approved orders $10 each
+  ---
+  duration_ms: 20.436979
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Eligible orders $10 each
+ok 295 - listed conditions qualifier: Eligible orders $10 each
+  ---
+  duration_ms: 21.799375
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Deposit required $10 each
+ok 296 - listed conditions qualifier: Deposit required $10 each
+  ---
+  duration_ms: 21.394297
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Delivery excluded $10 each
+ok 297 - listed conditions qualifier: Delivery excluded $10 each
+  ---
+  duration_ms: 22.870355
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Materials billed separately $10 each
+ok 298 - listed conditions qualifier: Materials billed separately $10 each
+  ---
+  duration_ms: 20.261736
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Prices may vary $10 each
+ok 299 - listed conditions qualifier: Prices may vary $10 each
+  ---
+  duration_ms: 23.088122
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Payment terms apply $10 each
+ok 300 - listed conditions qualifier: Payment terms apply $10 each
+  ---
+  duration_ms: 21.385524
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Price negotiable $10 each
+ok 301 - listed conditions qualifier: Price negotiable $10 each
+  ---
+  duration_ms: 23.653131
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Approximate price $10 each
+ok 302 - listed conditions qualifier: Approximate price $10 each
+  ---
+  duration_ms: 21.910513
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Estimated price $10 each
+ok 303 - listed conditions qualifier: Estimated price $10 each
+  ---
+  duration_ms: 20.490509
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Grade 2 lumber if prepaid $10 each
+ok 304 - listed conditions qualifier: Grade 2 lumber if prepaid $10 each
+  ---
+  duration_ms: 21.407357
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: 2x4 stud when collected $10 each
+ok 305 - listed conditions qualifier: 2x4 stud when collected $10 each
+  ---
+  duration_ms: 20.460965
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: 3/4 inch plywood subject to inspection $10 each
+ok 306 - listed conditions qualifier: 3/4 inch plywood subject to inspection $10 each
+  ---
+  duration_ms: 21.308348
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: \#2 lumber after approval $10 each
+ok 307 - listed conditions qualifier: \#2 lumber after approval $10 each
+  ---
+  duration_ms: 21.073134
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets IF\\tprepaid $10 each
+ok 308 - listed conditions qualifier: Widgets IF\\tprepaid $10 each
+  ---
+  duration_ms: 20.17864
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets when booked online $10 each
+ok 309 - listed conditions qualifier: Widgets when booked online $10 each
+  ---
+  duration_ms: 21.567667
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets if-prepaid $10 each
+ok 310 - listed conditions qualifier: Widgets if-prepaid $10 each
+  ---
+  duration_ms: 20.829008
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets (subject-to-approval) $10 each
+ok 311 - listed conditions qualifier: Widgets (subject-to-approval) $10 each
+  ---
+  duration_ms: 20.745191
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each if prepaid
+ok 312 - listed conditions qualifier: Widgets $10 each if prepaid
+  ---
+  duration_ms: 23.288904
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each. Unclassified access restriction.
+ok 313 - listed conditions qualifier: Widgets $10 each. Unclassified access restriction.
+  ---
+  duration_ms: 23.75867
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: If prepaid $10 per item. Taxes extra.
+ok 314 - listed conditions qualifier: If prepaid $10 per item. Taxes extra.
+  ---
+  duration_ms: 21.295779
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each. If prepaid.
+ok 315 - listed conditions qualifier: Widgets $10 each. If prepaid.
+  ---
+  duration_ms: 20.713825
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each; subject to approval
+ok 316 - listed conditions qualifier: Widgets $10 each; subject to approval
+  ---
+  duration_ms: 21.494958
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Bricks $2 each
+ok 317 - listed conditions control: Bricks $2 each
+  ---
+  duration_ms: 21.129219
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Gutter cleaning: $2.50 per linear foot\\nAll prices plus HST.
+ok 318 - listed conditions control: Gutter cleaning: $2.50 per linear foot\\nAll prices plus HST.
+  ---
+  duration_ms: 23.178268
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Pressure-treated 2x4 $3.50 each.
+ok 319 - listed conditions control: Pressure-treated 2x4 $3.50 each.
+  ---
+  duration_ms: 22.269182
+  type: 'test'
+  ...
+# Subtest: listed conditions control: 2×4 stud $3.50 each
+ok 320 - listed conditions control: 2×4 stud $3.50 each
+  ---
+  duration_ms: 21.711313
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Grade 2 lumber $5 each
+ok 321 - listed conditions control: Grade 2 lumber $5 each
+  ---
+  duration_ms: 21.703121
+  type: 'test'
+  ...
+# Subtest: listed conditions control: 3/4 inch plywood $5 each
+ok 322 - listed conditions control: 3/4 inch plywood $5 each
+  ---
+  duration_ms: 21.747628
+  type: 'test'
+  ...
+# Subtest: listed conditions control: \#2 lumber $5 each
+ok 323 - listed conditions control: \#2 lumber $5 each
+  ---
+  duration_ms: 21.571363
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Custom text engraving: $25 each
+ok 324 - listed conditions control: Custom text engraving: $25 each
+  ---
+  duration_ms: 21.006655
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Furnace tune-up: $129 each.
+ok 325 - listed conditions control: Furnace tune-up: $129 each.
+  ---
+  duration_ms: 22.315922
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Synthetic offshore periwinkle service: $10 each
+ok 326 - listed conditions control: Synthetic offshore periwinkle service: $10 each
+  ---
+  duration_ms: 20.762238
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Gift wrapping: $1.25 each
+ok 327 - listed conditions control: Gift wrapping: $1.25 each
+  ---
+  duration_ms: 21.258283
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Window washing $0.035 each
+ok 328 - listed conditions control: Window washing $0.035 each
+  ---
+  duration_ms: 20.350458
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget $0.005 each
+ok 329 - listed conditions control: Widget $0.005 each
+  ---
+  duration_ms: 21.137071
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget $0.10 each
+ok 330 - listed conditions control: Widget $0.10 each
+  ---
+  duration_ms: 21.462255
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget CAD 19.99 each. Taxes extra.
+ok 331 - listed conditions control: Widget CAD 19.99 each. Taxes extra.
+  ---
+  duration_ms: 21.399025
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget US$1,234.50 each
+ok 332 - listed conditions control: Widget US$1,234.50 each
+  ---
+  duration_ms: 20.231239
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget €2.50 each
+ok 333 - listed conditions control: Widget €2.50 each
+  ---
+  duration_ms: 23.504618
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget £10 each
+ok 334 - listed conditions control: Widget £10 each
+  ---
+  duration_ms: 19.796577
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget (blue): $10 each
+ok 335 - listed conditions control: Widget (blue): $10 each
+  ---
+  duration_ms: 19.701724
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Inspection $10 each
+ok 336 - listed conditions control: Inspection $10 each
+  ---
+  duration_ms: 19.542785
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Delivery $10 each
+ok 337 - listed conditions control: Delivery $10 each
+  ---
+  duration_ms: 20.135265
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Board-on-board panel $10 each
+ok 338 - listed conditions control: Board-on-board panel $10 each
+  ---
+  duration_ms: 20.266533
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Nail-in anchor $10 each
+ok 339 - listed conditions control: Nail-in anchor $10 each
+  ---
+  duration_ms: 19.68521
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Plug-in adapter $10 each
+ok 340 - listed conditions control: Plug-in adapter $10 each
+  ---
+  duration_ms: 19.844048
+  type: 'test'
+  ...
+# Subtest: listed conditions saved identity: edits, draft, foreign owner, duplicate and partial listings refuse
+ok 341 - listed conditions saved identity: edits, draft, foreign owner, duplicate and partial listings refuse
+  ---
+  duration_ms: 21.273065
+  type: 'test'
+  ...
+# Subtest: listed conditions confirmation and numeric domain are not relaxed
+ok 342 - listed conditions confirmation and numeric domain are not relaxed
+  ---
+  duration_ms: 22.318526
+  type: 'test'
+  ...
+# Subtest: listed conditions compiled fallback retains verbatim condition and ordinary contact rewrite
+ok 343 - listed conditions compiled fallback retains verbatim condition and ordinary contact rewrite
+  ---
+  duration_ms: 25.886787
+  type: 'test'
+  ...
+# Subtest: listed conditions selectors include this file only in the full suite
+ok 344 - listed conditions selectors include this file only in the full suite
+  ---
+  duration_ms: 1613.085016
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: If prepaid $10 per item
+ok 345 - listed conditions direct refuses: If prepaid $10 per item
+  ---
+  duration_ms: 0.336857
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: If prepaid $10 per item
+ok 346 - listed conditions dispatcher refuses: If prepaid $10 per item
+  ---
+  duration_ms: 21.946557
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Unless delivered $10 per item
+ok 347 - listed conditions direct refuses: Unless delivered $10 per item
+  ---
+  duration_ms: 0.097908
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Unless delivered $10 per item
+ok 348 - listed conditions dispatcher refuses: Unless delivered $10 per item
+  ---
+  duration_ms: 20.150628
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: When booked online $10 per item
+ok 349 - listed conditions direct refuses: When booked online $10 per item
+  ---
+  duration_ms: 0.117356
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: When booked online $10 per item
+ok 350 - listed conditions dispatcher refuses: When booked online $10 per item
+  ---
+  duration_ms: 20.049546
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: After inspection $10 per item
+ok 351 - listed conditions direct refuses: After inspection $10 per item
+  ---
+  duration_ms: 0.114983
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: After inspection $10 per item
+ok 352 - listed conditions dispatcher refuses: After inspection $10 per item
+  ---
+  duration_ms: 20.432662
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Subject to approval $10 per item
+ok 353 - listed conditions direct refuses: Subject to approval $10 per item
+  ---
+  duration_ms: 0.122204
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Subject to approval $10 per item
+ok 354 - listed conditions dispatcher refuses: Subject to approval $10 per item
+  ---
+  duration_ms: 21.757443
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item IF PREPAID: $10 each
+ok 355 - listed conditions direct refuses: [PLACEHOLDER] Item IF PREPAID: $10 each
+  ---
+  duration_ms: 0.08692
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item IF PREPAID: $10 each
+ok 356 - listed conditions dispatcher refuses: [PLACEHOLDER] Item IF PREPAID: $10 each
+  ---
+  duration_ms: 21.832636
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item (unless delivered): $10 each
+ok 357 - listed conditions direct refuses: [PLACEHOLDER] Item (unless delivered): $10 each
+  ---
+  duration_ms: 0.076836
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item (unless delivered): $10 each
+ok 358 - listed conditions dispatcher refuses: [PLACEHOLDER] Item (unless delivered): $10 each
+  ---
+  duration_ms: 20.348265
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: WhEn booked online $10 per item
+ok 359 - listed conditions direct refuses: WhEn booked online $10 per item
+  ---
+  duration_ms: 0.134963
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: WhEn booked online $10 per item
+ok 360 - listed conditions dispatcher refuses: WhEn booked online $10 per item
+  ---
+  duration_ms: 20.999524
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item subject-to-approval: $10 each
+ok 361 - listed conditions direct refuses: [PLACEHOLDER] Item subject-to-approval: $10 each
+  ---
+  duration_ms: 0.109385
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item subject-to-approval: $10 each
+ok 362 - listed conditions dispatcher refuses: [PLACEHOLDER] Item subject-to-approval: $10 each
+  ---
+  duration_ms: 20.860135
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Before payment clears $10 each
+ok 363 - listed conditions direct refuses: Before payment clears $10 each
+  ---
+  duration_ms: 0.238128
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Before payment clears $10 each
+ok 364 - listed conditions dispatcher refuses: Before payment clears $10 each
+  ---
+  duration_ms: 20.955528
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Until stock runs out $10 each
+ok 365 - listed conditions direct refuses: Until stock runs out $10 each
+  ---
+  duration_ms: 0.121172
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Until stock runs out $10 each
+ok 366 - listed conditions dispatcher refuses: Until stock runs out $10 each
+  ---
+  duration_ms: 20.699793
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: While supplies last $10 each
+ok 367 - listed conditions direct refuses: While supplies last $10 each
+  ---
+  duration_ms: 0.208453
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: While supplies last $10 each
+ok 368 - listed conditions dispatcher refuses: While supplies last $10 each
+  ---
+  duration_ms: 20.434145
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Whenever booked online $10 each
+ok 369 - listed conditions direct refuses: Whenever booked online $10 each
+  ---
+  duration_ms: 0.121061
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Whenever booked online $10 each
+ok 370 - listed conditions dispatcher refuses: Whenever booked online $10 each
+  ---
+  duration_ms: 20.740755
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Once approved $10 each
+ok 371 - listed conditions direct refuses: Once approved $10 each
+  ---
+  duration_ms: 0.118067
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Once approved $10 each
+ok 372 - listed conditions dispatcher refuses: Once approved $10 each
+  ---
+  duration_ms: 20.372302
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Upon inspection $10 each
+ok 373 - listed conditions direct refuses: Upon inspection $10 each
+  ---
+  duration_ms: 0.129694
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Upon inspection $10 each
+ok 374 - listed conditions dispatcher refuses: Upon inspection $10 each
+  ---
+  duration_ms: 21.473616
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: During business hours $10 each
+ok 375 - listed conditions direct refuses: During business hours $10 each
+  ---
+  duration_ms: 0.122914
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: During business hours $10 each
+ok 376 - listed conditions dispatcher refuses: During business hours $10 each
+  ---
+  duration_ms: 20.420014
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Provided payment clears $10 each
+ok 377 - listed conditions direct refuses: Provided payment clears $10 each
+  ---
+  duration_ms: 0.10646
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Provided payment clears $10 each
+ok 378 - listed conditions dispatcher refuses: Provided payment clears $10 each
+  ---
+  duration_ms: 20.649638
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Providing access is clear $10 each
+ok 379 - listed conditions direct refuses: Providing access is clear $10 each
+  ---
+  duration_ms: 0.103786
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Providing access is clear $10 each
+ok 380 - listed conditions dispatcher refuses: Providing access is clear $10 each
+  ---
+  duration_ms: 20.163728
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Pending assessment $10 each
+ok 381 - listed conditions direct refuses: Pending assessment $10 each
+  ---
+  duration_ms: 0.1063
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Pending assessment $10 each
+ok 382 - listed conditions dispatcher refuses: Pending assessment $10 each
+  ---
+  duration_ms: 21.288468
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Conditional service $10 each
+ok 383 - listed conditions direct refuses: Conditional service $10 each
+  ---
+  duration_ms: 0.128753
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Conditional service $10 each
+ok 384 - listed conditions dispatcher refuses: Conditional service $10 each
+  ---
+  duration_ms: 21.94821
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Contingent service $10 each
+ok 385 - listed conditions direct refuses: Contingent service $10 each
+  ---
+  duration_ms: 0.123625
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Contingent service $10 each
+ok 386 - listed conditions dispatcher refuses: Contingent service $10 each
+  ---
+  duration_ms: 21.00315
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Depending on access $10 each
+ok 387 - listed conditions direct refuses: Depending on access $10 each
+  ---
+  duration_ms: 0.128613
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Depending on access $10 each
+ok 388 - listed conditions dispatcher refuses: Depending on access $10 each
+  ---
+  duration_ms: 20.769088
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Payment required $10 each
+ok 389 - listed conditions direct refuses: Payment required $10 each
+  ---
+  duration_ms: 0.118669
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Payment required $10 each
+ok 390 - listed conditions dispatcher refuses: Payment required $10 each
+  ---
+  duration_ms: 19.944949
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Approval must be obtained $10 each
+ok 391 - listed conditions direct refuses: Approval must be obtained $10 each
+  ---
+  duration_ms: 0.095323
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Approval must be obtained $10 each
+ok 392 - listed conditions dispatcher refuses: Approval must be obtained $10 each
+  ---
+  duration_ms: 21.483471
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Price may change $10 each
+ok 393 - listed conditions direct refuses: Price may change $10 each
+  ---
+  duration_ms: 0.181303
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Price may change $10 each
+ok 394 - listed conditions dispatcher refuses: Price may change $10 each
+  ---
+  duration_ms: 20.257649
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Price might change $10 each
+ok 395 - listed conditions direct refuses: Price might change $10 each
+  ---
+  duration_ms: 0.075673
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Price might change $10 each
+ok 396 - listed conditions dispatcher refuses: Price might change $10 each
+  ---
+  duration_ms: 20.057559
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Price can change $10 each
+ok 397 - listed conditions direct refuses: Price can change $10 each
+  ---
+  duration_ms: 0.071638
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Price can change $10 each
+ok 398 - listed conditions dispatcher refuses: Price can change $10 each
+  ---
+  duration_ms: 20.032571
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Eligible accounts $10 each
+ok 399 - listed conditions direct refuses: Eligible accounts $10 each
+  ---
+  duration_ms: 0.075434
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Eligible accounts $10 each
+ok 400 - listed conditions dispatcher refuses: Eligible accounts $10 each
+  ---
+  duration_ms: 21.373135
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Qualifying orders $10 each
+ok 401 - listed conditions direct refuses: Qualifying orders $10 each
+  ---
+  duration_ms: 0.159199
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Qualifying orders $10 each
+ok 402 - listed conditions dispatcher refuses: Qualifying orders $10 each
+  ---
+  duration_ms: 21.465164
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Terms apply $10 each
+ok 403 - listed conditions direct refuses: Terms apply $10 each
+  ---
+  duration_ms: 0.142494
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Terms apply $10 each
+ok 404 - listed conditions dispatcher refuses: Terms apply $10 each
+  ---
+  duration_ms: 20.257279
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Restrictions apply $10 each
+ok 405 - listed conditions direct refuses: Restrictions apply $10 each
+  ---
+  duration_ms: 0.138137
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Restrictions apply $10 each
+ok 406 - listed conditions dispatcher refuses: Restrictions apply $10 each
+  ---
+  duration_ms: 19.979261
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Estimated service $10 each
+ok 407 - listed conditions direct refuses: Estimated service $10 each
+  ---
+  duration_ms: 0.164337
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Estimated service $10 each
+ok 408 - listed conditions dispatcher refuses: Estimated service $10 each
+  ---
+  duration_ms: 20.093081
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Provisional service $10 each
+ok 409 - listed conditions direct refuses: Provisional service $10 each
+  ---
+  duration_ms: 0.142223
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Provisional service $10 each
+ok 410 - listed conditions dispatcher refuses: Provisional service $10 each
+  ---
+  duration_ms: 20.192371
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Negotiable service $10 each
+ok 411 - listed conditions direct refuses: Negotiable service $10 each
+  ---
+  duration_ms: 0.127141
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Negotiable service $10 each
+ok 412 - listed conditions dispatcher refuses: Negotiable service $10 each
+  ---
+  duration_ms: 21.168838
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: For members $10 each
+ok 413 - listed conditions direct refuses: For members $10 each
+  ---
+  duration_ms: 0.150065
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: For members $10 each
+ok 414 - listed conditions dispatcher refuses: For members $10 each
+  ---
+  duration_ms: 20.568496
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: With a coupon $10 each
+ok 415 - listed conditions direct refuses: With a coupon $10 each
+  ---
+  duration_ms: 0.07935
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: With a coupon $10 each
+ok 416 - listed conditions dispatcher refuses: With a coupon $10 each
+  ---
+  duration_ms: 20.633645
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Without delivery $10 each
+ok 417 - listed conditions direct refuses: Without delivery $10 each
+  ---
+  duration_ms: 0.141382
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Without delivery $10 each
+ok 418 - listed conditions dispatcher refuses: Without delivery $10 each
+  ---
+  duration_ms: 20.23852
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Under contract $10 each
+ok 419 - listed conditions direct refuses: Under contract $10 each
+  ---
+  duration_ms: 0.182223
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Under contract $10 each
+ok 420 - listed conditions dispatcher refuses: Under contract $10 each
+  ---
+  duration_ms: 20.103428
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: On request $10 each
+ok 421 - listed conditions direct refuses: On request $10 each
+  ---
+  duration_ms: 0.072619
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: On request $10 each
+ok 422 - listed conditions dispatcher refuses: On request $10 each
+  ---
+  duration_ms: 21.64196
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: At owner discretion $10 each
+ok 423 - listed conditions direct refuses: At owner discretion $10 each
+  ---
+  duration_ms: 0.094592
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: At owner discretion $10 each
+ok 424 - listed conditions dispatcher refuses: At owner discretion $10 each
+  ---
+  duration_ms: 19.762075
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: By arrangement $10 each
+ok 425 - listed conditions direct refuses: By arrangement $10 each
+  ---
+  duration_ms: 0.201833
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: By arrangement $10 each
+ok 426 - listed conditions dispatcher refuses: By arrangement $10 each
+  ---
+  duration_ms: 20.219241
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: As agreed $10 each
+ok 427 - listed conditions direct refuses: As agreed $10 each
+  ---
+  duration_ms: 0.145419
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: As agreed $10 each
+ok 428 - listed conditions dispatcher refuses: As agreed $10 each
+  ---
+  duration_ms: 21.075959
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: ＩＦ prepaid $10 each
+ok 429 - listed conditions direct refuses: ＩＦ prepaid $10 each
+  ---
+  duration_ms: 0.530437
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: ＩＦ prepaid $10 each
+ok 430 - listed conditions dispatcher refuses: ＩＦ prepaid $10 each
+  ---
+  duration_ms: 20.806675
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Approximately $10 each
+ok 431 - listed conditions direct refuses: Approximately $10 each
+  ---
+  duration_ms: 0.131818
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Approximately $10 each
+ok 432 - listed conditions dispatcher refuses: Approximately $10 each
+  ---
+  duration_ms: 21.51631
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Approximate service $10 each
+ok 433 - listed conditions direct refuses: Approximate service $10 each
+  ---
+  duration_ms: 0.128603
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Approximate service $10 each
+ok 434 - listed conditions dispatcher refuses: Approximate service $10 each
+  ---
+  duration_ms: 23.003459
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Roughly $10 each
+ok 435 - listed conditions direct refuses: Roughly $10 each
+  ---
+  duration_ms: 0.438269
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Roughly $10 each
+ok 436 - listed conditions dispatcher refuses: Roughly $10 each
+  ---
+  duration_ms: 21.183851
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Ballpark service $10 each
+ok 437 - listed conditions direct refuses: Ballpark service $10 each
+  ---
+  duration_ms: 0.122834
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Ballpark service $10 each
+ok 438 - listed conditions dispatcher refuses: Ballpark service $10 each
+  ---
+  duration_ms: 22.654741
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Suggested service $10 each
+ok 439 - listed conditions direct refuses: Suggested service $10 each
+  ---
+  duration_ms: 0.129665
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Suggested service $10 each
+ok 440 - listed conditions dispatcher refuses: Suggested service $10 each
+  ---
+  duration_ms: 22.050383
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Variable service $10 each
+ok 441 - listed conditions direct refuses: Variable service $10 each
+  ---
+  duration_ms: 0.1861
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Variable service $10 each
+ok 442 - listed conditions dispatcher refuses: Variable service $10 each
+  ---
+  duration_ms: 21.515539
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Usually $10 each
+ok 443 - listed conditions direct refuses: Usually $10 each
+  ---
+  duration_ms: 0.120672
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Usually $10 each
+ok 444 - listed conditions dispatcher refuses: Usually $10 each
+  ---
+  duration_ms: 20.741887
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Prepaid service $10 each
+ok 445 - listed conditions direct refuses: Prepaid service $10 each
+  ---
+  duration_ms: 0.150155
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Prepaid service $10 each
+ok 446 - listed conditions dispatcher refuses: Prepaid service $10 each
+  ---
+  duration_ms: 27.133591
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Member service $10 each
+ok 447 - listed conditions direct refuses: Member service $10 each
+  ---
+  duration_ms: 0.413802
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Member service $10 each
+ok 448 - listed conditions dispatcher refuses: Member service $10 each
+  ---
+  duration_ms: 23.051257
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Daily rental $10 per item
+ok 449 - listed conditions direct refuses: Daily rental $10 per item
+  ---
+  duration_ms: 0.147471
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Daily rental $10 per item
+ok 450 - listed conditions dispatcher refuses: Daily rental $10 per item
+  ---
+  duration_ms: 22.868752
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Monthly rental $10 per item
+ok 451 - listed conditions direct refuses: Monthly rental $10 per item
+  ---
+  duration_ms: 0.142724
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Monthly rental $10 per item
+ok 452 - listed conditions dispatcher refuses: Monthly rental $10 per item
+  ---
+  duration_ms: 23.702836
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Weekday service $10 each
+ok 453 - listed conditions direct refuses: Weekday service $10 each
+  ---
+  duration_ms: 0.128503
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Weekday service $10 each
+ok 454 - listed conditions dispatcher refuses: Weekday service $10 each
+  ---
+  duration_ms: 22.096583
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Plus delivery $10 each
+ok 455 - listed conditions direct refuses: Plus delivery $10 each
+  ---
+  duration_ms: 0.082925
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Plus delivery $10 each
+ok 456 - listed conditions dispatcher refuses: Plus delivery $10 each
+  ---
+  duration_ms: 22.90016
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item [for members] $10 each
+ok 457 - listed conditions direct refuses: [PLACEHOLDER] Item [for members] $10 each
+  ---
+  duration_ms: 0.1998
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item [for members] $10 each
+ok 458 - listed conditions dispatcher refuses: [PLACEHOLDER] Item [for members] $10 each
+  ---
+  duration_ms: 24.91349
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item (with delivery) $10 each
+ok 459 - listed conditions direct refuses: [PLACEHOLDER] Item (with delivery) $10 each
+  ---
+  duration_ms: 0.101182
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item (with delivery) $10 each
+ok 460 - listed conditions dispatcher refuses: [PLACEHOLDER] Item (with delivery) $10 each
+  ---
+  duration_ms: 21.794709
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: In store $10 each
+ok 461 - listed conditions direct refuses: In store $10 each
+  ---
+  duration_ms: 0.100301
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: In store $10 each
+ok 462 - listed conditions dispatcher refuses: In store $10 each
+  ---
+  duration_ms: 21.132204
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: In-store $10 each
+ok 463 - listed conditions direct refuses: In-store $10 each
+  ---
+  duration_ms: 0.081452
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: In-store $10 each
+ok 464 - listed conditions dispatcher refuses: In-store $10 each
+  ---
+  duration_ms: 22.255281
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item (in store): $10 each
+ok 465 - listed conditions direct refuses: [PLACEHOLDER] Item (in store): $10 each
+  ---
+  duration_ms: 0.160221
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item (in store): $10 each
+ok 466 - listed conditions dispatcher refuses: [PLACEHOLDER] Item (in store): $10 each
+  ---
+  duration_ms: 21.476761
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: To account holders $10 each
+ok 467 - listed conditions direct refuses: To account holders $10 each
+  ---
+  duration_ms: 0.140061
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: To account holders $10 each
+ok 468 - listed conditions dispatcher refuses: To account holders $10 each
+  ---
+  duration_ms: 21.588078
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each if prepaid
+ok 469 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each if prepaid
+  ---
+  duration_ms: 0.162174
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each if prepaid
+ok 470 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each if prepaid
+  ---
+  duration_ms: 23.759631
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each. Subject to approval.
+ok 471 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each. Subject to approval.
+  ---
+  duration_ms: 0.169835
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each. Subject to approval.
+ok 472 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each. Subject to approval.
+  ---
+  duration_ms: 24.868147
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each\\nUnless delivered
+ok 473 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each\\nUnless delivered
+  ---
+  duration_ms: 0.176956
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each\\nUnless delivered
+ok 474 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each\\nUnless delivered
+  ---
+  duration_ms: 21.19685
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each minimum
+ok 475 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each minimum
+  ---
+  duration_ms: 0.137606
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each minimum
+ok 476 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each minimum
+  ---
+  duration_ms: 20.496564
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 per hour or part thereof
+ok 477 - listed conditions direct refuses: [PLACEHOLDER] Item $10 per hour or part thereof
+  ---
+  duration_ms: 0.067171
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per hour or part thereof
+ok 478 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per hour or part thereof
+  ---
+  duration_ms: 21.117909
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 per sqft per coat
+ok 479 - listed conditions direct refuses: [PLACEHOLDER] Item $10 per sqft per coat
+  ---
+  duration_ms: 0.084046
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per sqft per coat
+ok 480 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per sqft per coat
+  ---
+  duration_ms: 25.749514
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 per item daily
+ok 481 - listed conditions direct refuses: [PLACEHOLDER] Item $10 per item daily
+  ---
+  duration_ms: 0.072789
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per item daily
+ok 482 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per item daily
+  ---
+  duration_ms: 22.180586
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each. Second item half price.
+ok 483 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each. Second item half price.
+  ---
+  duration_ms: 0.111077
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each. Second item half price.
+ok 484 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each. Second item half price.
+  ---
+  duration_ms: 22.104922
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each or $8 each for bulk orders
+ok 485 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each or $8 each for bulk orders
+  ---
+  duration_ms: 0.070566
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each or $8 each for bulk orders
+ok 486 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each or $8 each for bulk orders
+  ---
+  duration_ms: 24.40106
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item 3 $10 each
+ok 487 - listed conditions direct refuses: [PLACEHOLDER] Item 3 $10 each
+  ---
+  duration_ms: 0.23303
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item 3 $10 each
+ok 488 - listed conditions dispatcher refuses: [PLACEHOLDER] Item 3 $10 each
+  ---
+  duration_ms: 23.683562
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: First [PLACEHOLDER] item $10 each
+ok 489 - listed conditions direct refuses: First [PLACEHOLDER] item $10 each
+  ---
+  duration_ms: 0.084747
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: First [PLACEHOLDER] item $10 each
+ok 490 - listed conditions dispatcher refuses: First [PLACEHOLDER] item $10 each
+  ---
+  duration_ms: 24.527389
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $10 each
+ok 491 - listed conditions direct preserves flat: [PLACEHOLDER] Item $10 each
+  ---
+  duration_ms: 0.238768
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $10 each
+ok 492 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $10 each
+  ---
+  duration_ms: 22.378243
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Gutter cleaning: $2.50 per linear foot
+ok 493 - listed conditions direct preserves flat: Gutter cleaning: $2.50 per linear foot
+  ---
+  duration_ms: 0.154783
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Gutter cleaning: $2.50 per linear foot
+ok 494 - listed conditions dispatcher preserves flat: Gutter cleaning: $2.50 per linear foot
+  ---
+  duration_ms: 22.200155
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Trim CAD 0.035 per linear foot
+ok 495 - listed conditions direct preserves flat: Trim CAD 0.035 per linear foot
+  ---
+  duration_ms: 0.327101
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Trim CAD 0.035 per linear foot
+ok 496 - listed conditions dispatcher preserves flat: Trim CAD 0.035 per linear foot
+  ---
+  duration_ms: 26.330227
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $0.025 each
+ok 497 - listed conditions direct preserves flat: [PLACEHOLDER] Item $0.025 each
+  ---
+  duration_ms: 0.144667
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $0.025 each
+ok 498 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $0.025 each
+  ---
+  duration_ms: 21.332112
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $0.004 each
+ok 499 - listed conditions direct preserves flat: [PLACEHOLDER] Item $0.004 each
+  ---
+  duration_ms: 0.204988
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $0.004 each
+ok 500 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $0.004 each
+  ---
+  duration_ms: 22.240746
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $1.25 each
+ok 501 - listed conditions direct preserves flat: [PLACEHOLDER] Item $1.25 each
+  ---
+  duration_ms: 0.156956
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1.25 each
+ok 502 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1.25 each
+  ---
+  duration_ms: 20.959141
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $1.000000 each
+ok 503 - listed conditions direct preserves flat: [PLACEHOLDER] Item $1.000000 each
+  ---
+  duration_ms: 0.148443
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1.000000 each
+ok 504 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1.000000 each
+  ---
+  duration_ms: 22.562409
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $1,234.50 each
+ok 505 - listed conditions direct preserves flat: [PLACEHOLDER] Item $1,234.50 each
+  ---
+  duration_ms: 0.123546
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1,234.50 each
+ok 506 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1,234.50 each
+  ---
+  duration_ms: 23.846326
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item EUR 2.50 each
+ok 507 - listed conditions direct preserves flat: [PLACEHOLDER] Item EUR 2.50 each
+  ---
+  duration_ms: 0.13948
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item EUR 2.50 each
+ok 508 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item EUR 2.50 each
+  ---
+  duration_ms: 22.42295
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Sod $1.20 per square foot
+ok 509 - listed conditions direct preserves flat: Sod $1.20 per square foot
+  ---
+  duration_ms: 0.133701
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Sod $1.20 per square foot
+ok 510 - listed conditions dispatcher preserves flat: Sod $1.20 per square foot
+  ---
+  duration_ms: 22.000205
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: 2x4 Lumber $10 each
+ok 511 - listed conditions direct preserves flat: 2x4 Lumber $10 each
+  ---
+  duration_ms: 0.121652
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: 2x4 Lumber $10 each
+ok 512 - listed conditions dispatcher preserves flat: 2x4 Lumber $10 each
+  ---
+  duration_ms: 24.826664
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: 2×4 Lumber $10 each
+ok 513 - listed conditions direct preserves flat: 2×4 Lumber $10 each
+  ---
+  duration_ms: 0.116525
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: 2×4 Lumber $10 each
+ok 514 - listed conditions dispatcher preserves flat: 2×4 Lumber $10 each
+  ---
+  duration_ms: 20.362686
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Grade 2 Lumber $10 each
+ok 515 - listed conditions direct preserves flat: Grade 2 Lumber $10 each
+  ---
+  duration_ms: 0.108704
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Grade 2 Lumber $10 each
+ok 516 - listed conditions dispatcher preserves flat: Grade 2 Lumber $10 each
+  ---
+  duration_ms: 19.634432
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: 3/4 inch Plywood $10 each
+ok 517 - listed conditions direct preserves flat: 3/4 inch Plywood $10 each
+  ---
+  duration_ms: 0.111007
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: 3/4 inch Plywood $10 each
+ok 518 - listed conditions dispatcher preserves flat: 3/4 inch Plywood $10 each
+  ---
+  duration_ms: 20.346722
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: \#2 Lumber $10 each
+ok 519 - listed conditions direct preserves flat: \#2 Lumber $10 each
+  ---
+  duration_ms: 0.111978
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: \#2 Lumber $10 each
+ok 520 - listed conditions dispatcher preserves flat: \#2 Lumber $10 each
+  ---
+  duration_ms: 19.538659
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: 2x4 Grade 2 \#2 Lumber $10 each
+ok 521 - listed conditions direct preserves flat: 2x4 Grade 2 \#2 Lumber $10 each
+  ---
+  duration_ms: 0.079219
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: 2x4 Grade 2 \#2 Lumber $10 each
+ok 522 - listed conditions dispatcher preserves flat: 2x4 Grade 2 \#2 Lumber $10 each
+  ---
+  duration_ms: 19.497157
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Offshore periwinkle service $10 each
+ok 523 - listed conditions direct preserves flat: Offshore periwinkle service $10 each
+  ---
+  duration_ms: 0.118197
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Offshore periwinkle service $10 each
+ok 524 - listed conditions dispatcher preserves flat: Offshore periwinkle service $10 each
+  ---
+  duration_ms: 21.09766
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Aftercare kit $10 each
+ok 525 - listed conditions direct preserves flat: Aftercare kit $10 each
+  ---
+  duration_ms: 0.081472
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Aftercare kit $10 each
+ok 526 - listed conditions dispatcher preserves flat: Aftercare kit $10 each
+  ---
+  duration_ms: 20.225059
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Tin can $10 each
+ok 527 - listed conditions direct preserves flat: Tin can $10 each
+  ---
+  duration_ms: 0.083606
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Tin can $10 each
+ok 528 - listed conditions dispatcher preserves flat: Tin can $10 each
+  ---
+  duration_ms: 21.956519
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Can of paint $10 each
+ok 529 - listed conditions direct preserves flat: Can of paint $10 each
+  ---
+  duration_ms: 0.082514
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Can of paint $10 each
+ok 530 - listed conditions dispatcher preserves flat: Can of paint $10 each
+  ---
+  duration_ms: 20.016165
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Board-on-board panel $10 each
+ok 531 - listed conditions direct preserves flat: Board-on-board panel $10 each
+  ---
+  duration_ms: 0.083675
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Board-on-board panel $10 each
+ok 532 - listed conditions dispatcher preserves flat: Board-on-board panel $10 each
+  ---
+  duration_ms: 19.613962
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Nail-in anchor $10 each
+ok 533 - listed conditions direct preserves flat: Nail-in anchor $10 each
+  ---
+  duration_ms: 0.081983
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Nail-in anchor $10 each
+ok 534 - listed conditions dispatcher preserves flat: Nail-in anchor $10 each
+  ---
+  duration_ms: 20.806172
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Plug-in adapter $10 each
+ok 535 - listed conditions direct preserves flat: Plug-in adapter $10 each
+  ---
+  duration_ms: 0.083946
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Plug-in adapter $10 each
+ok 536 - listed conditions dispatcher preserves flat: Plug-in adapter $10 each
+  ---
+  duration_ms: 19.461753
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Custom text engraving $10 each
+ok 537 - listed conditions direct preserves flat: Custom text engraving $10 each
+  ---
+  duration_ms: 0.082174
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Custom text engraving $10 each
+ok 538 - listed conditions dispatcher preserves flat: Custom text engraving $10 each
+  ---
+  duration_ms: 19.63306
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item CA$10 each. Plus HST.
+ok 539 - listed conditions direct preserves flat: [PLACEHOLDER] Item CA$10 each. Plus HST.
+  ---
+  duration_ms: 0.089484
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item CA$10 each. Plus HST.
+ok 540 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item CA$10 each. Plus HST.
+  ---
+  duration_ms: 19.888013
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item US$10 each\\nTaxes extra.
+ok 541 - listed conditions direct preserves flat: [PLACEHOLDER] Item US$10 each\\nTaxes extra.
+  ---
+  duration_ms: 0.091127
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item US$10 each\\nTaxes extra.
+ok 542 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item US$10 each\\nTaxes extra.
+  ---
+  duration_ms: 20.069135
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item £10 each
+ok 543 - listed conditions direct preserves flat: [PLACEHOLDER] Item £10 each
+  ---
+  duration_ms: 0.078929
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item £10 each
+ok 544 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item £10 each
+  ---
+  duration_ms: 20.553082
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item €10 each
+ok 545 - listed conditions direct preserves flat: [PLACEHOLDER] Item €10 each
+  ---
+  duration_ms: 2.867015
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item €10 each
+ok 546 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item €10 each
+  ---
+  duration_ms: 20.024688
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves draft, identity, duplicate, confirmation and decimal controls
+ok 547 - listed conditions direct preserves draft, identity, duplicate, confirmation and decimal controls
+  ---
+  duration_ms: 0.348323
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher uses saved tenant knowledge, never caller-supplied listing identity
+ok 548 - listed conditions dispatcher uses saved tenant knowledge, never caller-supplied listing identity
+  ---
+  duration_ms: 21.073984
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses draft and duplicate saved listings
+ok 549 - listed conditions dispatcher refuses draft and duplicate saved listings
+  ---
+  duration_ms: 40.389488
+  type: 'test'
+  ...
+# Subtest: listed conditions conditional financial text remains unchanged by knowledge rewriting
+ok 550 - listed conditions conditional financial text remains unchanged by knowledge rewriting
+  ---
+  duration_ms: 0.221693
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation direct: Widgets:on collection $10 each
+ok 551 - listed conditions reconciliation direct: Widgets:on collection $10 each
+  ---
+  duration_ms: 0.121091
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation dispatcher: Widgets:on collection $10 each
+ok 552 - listed conditions reconciliation dispatcher: Widgets:on collection $10 each
+  ---
+  duration_ms: 20.216256
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation direct: Widgets:in store $10 each
+ok 553 - listed conditions reconciliation direct: Widgets:in store $10 each
+  ---
+  duration_ms: 0.114161
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation dispatcher: Widgets:in store $10 each
+ok 554 - listed conditions reconciliation dispatcher: Widgets:in store $10 each
+  ---
+  duration_ms: 19.491598
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation direct: Widgets:by arrangement $10 each
+ok 555 - listed conditions reconciliation direct: Widgets:by arrangement $10 each
+  ---
+  duration_ms: 0.116094
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation dispatcher: Widgets:by arrangement $10 each
+ok 556 - listed conditions reconciliation dispatcher: Widgets:by arrangement $10 each
+  ---
+  duration_ms: 19.341673
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation direct: Widgets:ＩＮ store $10 each
+ok 557 - listed conditions reconciliation direct: Widgets:ＩＮ store $10 each
+  ---
+  duration_ms: 0.181573
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation dispatcher: Widgets:ＩＮ store $10 each
+ok 558 - listed conditions reconciliation dispatcher: Widgets:ＩＮ store $10 each
+  ---
+  duration_ms: 19.168322
+  type: 'test'
+  ...
+# (node:227) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the compiler authenticates and parses every section of the versioned owner-policy guide
+ok 559 - the compiler authenticates and parses every section of the versioned owner-policy guide
+  ---
+  duration_ms: 3.037762
+  type: 'test'
+  ...
+# Subtest: guide changes, unknown sections, and duplicate flow sections fail closed
+ok 560 - guide changes, unknown sections, and duplicate flow sections fail closed
+  ---
+  duration_ms: 0.807903
+  type: 'test'
+  ...
+# Subtest: compiled instructions include global rules and only quoting-live service headings
+ok 561 - compiled instructions include global rules and only quoting-live service headings
+  ---
+  duration_ms: 0.957508
+  type: 'test'
+  ...
+# Subtest: referenced shared steps are scoped under the active replacement flow, not offered independently
+ok 562 - referenced shared steps are scoped under the active replacement flow, not offered independently
+  ---
+  duration_ms: 0.409205
+  type: 'test'
+  ...
+# Subtest: owner-authored injection text remains inert JSON data and cannot break its boundary
+ok 563 - owner-authored injection text remains inert JSON data and cannot break its boundary
+  ---
+  duration_ms: 0.365088
+  type: 'test'
+  ...
+# Subtest: raw pricing, private owner fields, sensitive offering labels, and unsupported mappings never compile
+ok 564 - raw pricing, private owner fields, sensitive offering labels, and unsupported mappings never compile
+  ---
+  duration_ms: 2.518291
+  type: 'test'
+  ...
+# Subtest: prompt locks quote accuracy, separate-work handling, confirmation, and address-bound booking order
+ok 565 - prompt locks quote accuracy, separate-work handling, confirmation, and address-bound booking order
+  ---
+  duration_ms: 0.396675
+  type: 'test'
+  ...
+# Subtest: Gemini function declarations have exact tool coverage and validator-required fields
+ok 566 - Gemini function declarations have exact tool coverage and validator-required fields
+  ---
+  duration_ms: 3.083009
+  type: 'test'
+  ...
+# Subtest: Owner ruling: ROOFING_REPLACEMENT offers only caller-requested quote email
+ok 567 - Owner ruling: ROOFING_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 6.961463
+  type: 'test'
+  ...
+# Subtest: Owner ruling: ROOFING_REPAIR offers only caller-requested quote email
+ok 568 - Owner ruling: ROOFING_REPAIR offers only caller-requested quote email
+  ---
+  duration_ms: 0.730527
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FLAT_ROOF_REPLACEMENT offers only caller-requested quote email
+ok 569 - Owner ruling: FLAT_ROOF_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 0.395524
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FLAT_ROOF_REPAIR offers only caller-requested quote email
+ok 570 - Owner ruling: FLAT_ROOF_REPAIR offers only caller-requested quote email
+  ---
+  duration_ms: 0.331398
+  type: 'test'
+  ...
+# Subtest: Owner ruling: INTERIOR_PAINTING offers only caller-requested quote email
+ok 571 - Owner ruling: INTERIOR_PAINTING offers only caller-requested quote email
+  ---
+  duration_ms: 0.343446
+  type: 'test'
+  ...
+# Subtest: Owner ruling: EXTERIOR_PAINTING offers only caller-requested quote email
+ok 572 - Owner ruling: EXTERIOR_PAINTING offers only caller-requested quote email
+  ---
+  duration_ms: 0.255233
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FLOORING_INSTALL offers only caller-requested quote email
+ok 573 - Owner ruling: FLOORING_INSTALL offers only caller-requested quote email
+  ---
+  duration_ms: 0.236865
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FLOORING_REPLACEMENT offers only caller-requested quote email
+ok 574 - Owner ruling: FLOORING_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 0.226039
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FENCING_INSTALL offers only caller-requested quote email
+ok 575 - Owner ruling: FENCING_INSTALL offers only caller-requested quote email
+  ---
+  duration_ms: 0.336916
+  type: 'test'
+  ...
+# Subtest: Owner ruling: FENCING_REPLACEMENT offers only caller-requested quote email
+ok 576 - Owner ruling: FENCING_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 0.746742
+  type: 'test'
+  ...
+# Subtest: Owner ruling: CONCRETE_DRIVEWAY offers only caller-requested quote email
+ok 577 - Owner ruling: CONCRETE_DRIVEWAY offers only caller-requested quote email
+  ---
+  duration_ms: 0.222835
+  type: 'test'
+  ...
+# Subtest: Owner ruling: CONCRETE_PATIO_SLAB offers only caller-requested quote email
+ok 578 - Owner ruling: CONCRETE_PATIO_SLAB offers only caller-requested quote email
+  ---
+  duration_ms: 0.200772
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_CLEANUP offers only caller-requested quote email
+ok 579 - Owner ruling: LANDSCAPING_CLEANUP offers only caller-requested quote email
+  ---
+  duration_ms: 0.182023
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_MULCH offers only caller-requested quote email
+ok 580 - Owner ruling: LANDSCAPING_MULCH offers only caller-requested quote email
+  ---
+  duration_ms: 0.229906
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_SOD offers only caller-requested quote email
+ok 581 - Owner ruling: LANDSCAPING_SOD offers only caller-requested quote email
+  ---
+  duration_ms: 0.225799
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_PLANTING offers only caller-requested quote email
+ok 582 - Owner ruling: LANDSCAPING_PLANTING offers only caller-requested quote email
+  ---
+  duration_ms: 0.192088
+  type: 'test'
+  ...
+# Subtest: Owner ruling: LANDSCAPING_MOWING offers only caller-requested quote email
+ok 583 - Owner ruling: LANDSCAPING_MOWING offers only caller-requested quote email
+  ---
+  duration_ms: 0.18664
+  type: 'test'
+  ...
+# Subtest: Owner ruling: SIDING_REPLACEMENT offers only caller-requested quote email
+ok 584 - Owner ruling: SIDING_REPLACEMENT offers only caller-requested quote email
+  ---
+  duration_ms: 0.184056
+  type: 'test'
+  ...
+# Subtest: Owner ruling: SIDING_REPAIR offers only caller-requested quote email
+ok 585 - Owner ruling: SIDING_REPAIR offers only caller-requested quote email
+  ---
+  duration_ms: 0.207101
+  type: 'test'
+  ...
+# Subtest: Owner ruling: CUSTOM offers only caller-requested quote email
+ok 586 - Owner ruling: CUSTOM offers only caller-requested quote email
+  ---
+  duration_ms: 0.183656
+  type: 'test'
+  ...
+# (node:235) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: forged inbound signatures are rejected before tenant lookup or session creation
+ok 587 - forged inbound signatures are rejected before tenant lookup or session creation
+  ---
+  duration_ms: 40.305211
+  type: 'test'
+  ...
+# Subtest: the independently enforced account allowlist rejects an otherwise signed account
+ok 588 - the independently enforced account allowlist rejects an otherwise signed account
+  ---
+  duration_ms: 7.55882
+  type: 'test'
+  ...
+# Subtest: tenant identity comes only from signed To and the stream URL contains only a one-use nonce
+ok 589 - tenant identity comes only from signed To and the stream URL contains only a one-use nonce
+  ---
+  duration_ms: 6.315393
+  type: 'test'
+  ...
+# Subtest: unknown and ambiguous signed destinations fail closed without choosing a tenant
+ok 590 - unknown and ambiguous signed destinations fail closed without choosing a tenant
+  ---
+  duration_ms: 6.799409
+  type: 'test'
+  ...
+# Subtest: operator-off calls deterministically forward to the configured business number
+ok 591 - operator-off calls deterministically forward to the configured business number
+  ---
+  duration_ms: 5.146218
+  type: 'test'
+  ...
+# Subtest: runtime-disabled calls never run entitlement checks or allocate an AI session
+ok 592 - runtime-disabled calls never run entitlement checks or allocate an AI session
+  ---
+  duration_ms: 4.138364
+  type: 'test'
+  ...
+# Subtest: a reached voice cap uses message fallback and escapes owner-authored XML
+ok 593 - a reached voice cap uses message fallback and escapes owner-authored XML
+  ---
+  duration_ms: 6.554362
+  type: 'test'
+  ...
+# Subtest: invalid or self-referential forwarding cannot create a dial loop
+ok 594 - invalid or self-referential forwarding cannot create a dial loop
+  ---
+  duration_ms: 14.792402
+  type: 'test'
+  ...
+# Subtest: nonce or session persistence failure falls back instead of returning a dead stream
+ok 595 - nonce or session persistence failure falls back instead of returning a dead stream
+  ---
+  duration_ms: 3.980527
+  type: 'test'
+  ...
+# Subtest: signed WebSocket authorization consumes the nonce once and starts one injected media session
+ok 596 - signed WebSocket authorization consumes the nonce once and starts one injected media session
+  ---
+  duration_ms: 4.724354
+  type: 'test'
+  ...
+# Subtest: forged WebSocket signatures cannot load sessions and mismatched bindings cannot consume a nonce
+ok 597 - forged WebSocket signatures cannot load sessions and mismatched bindings cannot consume a nonce
+  ---
+  duration_ms: 3.381818
+  type: 'test'
+  ...
+# Subtest: stream paths reject query data so secrets or identity cannot ride beside the nonce
+ok 598 - stream paths reject query data so secrets or identity cannot ride beside the nonce
+  ---
+  duration_ms: 2.655779
+  type: 'test'
+  ...
+# Subtest: CallSid binding is checked before resolving the other business phone number
+ok 599 - CallSid binding is checked before resolving the other business phone number
+  ---
+  duration_ms: 2.536128
+  type: 'test'
+  ...
+# Subtest: a binding collision during persistence cannot fall through to a private forwarding number
+ok 600 - a binding collision during persistence cannot fall through to a private forwarding number
+  ---
+  duration_ms: 2.696599
+  type: 'test'
+  ...
+# (node:243) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Twilio validation fails closed without the official validator dependency
+ok 601 - Twilio validation fails closed without the official validator dependency
+  ---
+  duration_ms: 1.058129
+  type: 'test'
+  ...
+# Subtest: Twilio validation rejects missing and forged signatures
+ok 602 - Twilio validation rejects missing and forged signatures
+  ---
+  duration_ms: 0.741654
+  type: 'test'
+  ...
+# Subtest: Twilio validation uses only the configured public origin
+ok 603 - Twilio validation uses only the configured public origin
+  ---
+  duration_ms: 0.791108
+  type: 'test'
+  ...
+# Subtest: tenant resolution is by normalized To only and rejects cross-tenant selectors
+ok 604 - tenant resolution is by normalized To only and rejects cross-tenant selectors
+  ---
+  duration_ms: 0.508894
+  type: 'test'
+  ...
+# Subtest: tenant resolution fails closed for unknown and duplicate destinations
+ok 605 - tenant resolution fails closed for unknown and duplicate destinations
+  ---
+  duration_ms: 0.212389
+  type: 'test'
+  ...
+# Subtest: session nonces store only a hash, bind every call identity field, and are one-use
+ok 606 - session nonces store only a hash, bind every call identity field, and are one-use
+  ---
+  duration_ms: 1.326622
+  type: 'test'
+  ...
+# Subtest: session nonces reject expiration and every binding mismatch
+ok 607 - session nonces reject expiration and every binding mismatch
+  ---
+  duration_ms: 0.928905
+  type: 'test'
+  ...
+# Subtest: tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+ok 608 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+  ---
+  duration_ms: 0.958509
+  type: 'test'
+  ...
+# Subtest: quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+ok 609 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+  ---
+  duration_ms: 1.264659
+  type: 'test'
+  ...
+# Subtest: dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+ok 610 - dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+  ---
+  duration_ms: 1.321474
+  type: 'test'
+  ...
+# Subtest: dispatcher rejects handler results containing raw rates instead of exposing them
+ok 611 - dispatcher rejects handler results containing raw rates instead of exposing them
+  ---
+  duration_ms: 1.052861
+  type: 'test'
+  ...
+# Subtest: mutations are idempotent and conflicting reuse of a tool call id is rejected
+ok 612 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+  ---
+  duration_ms: 0.908174
+  type: 'test'
+  ...
+# Subtest: mutating tool calls execute sequentially within a call
+ok 613 - mutating tool calls execute sequentially within a call
+  ---
+  duration_ms: 0.963026
+  type: 'test'
+  ...
+# (node:251) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: surface voice Oct16: confirmed estimated room dimensions quote through the actual tool runtime
+ok 614 - surface voice Oct16: confirmed estimated room dimensions quote through the actual tool runtime
+  ---
+  duration_ms: 337.451575
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: service-specific blocks preserve shared instructions and require independent surfaces
+ok 615 - surface voice Oct16: service-specific blocks preserve shared instructions and require independent surfaces
+  ---
+  duration_ms: 1.377738
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: selected door sides are excluded without a quantity
+ok 616 - surface voice Oct16: selected door sides are excluded without a quantity
+  ---
+  duration_ms: 188.320015
+  type: 'test'
+  ...
+# Subtest: surface voice Oct16: selected door sides ask a priced count
+ok 617 - surface voice Oct16: selected door sides ask a priced count
+  ---
+  duration_ms: 200.542387
+  type: 'test'
+  ...
+# (node:259) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: website audit preserves HTML qualification: A minimum charge applies to every visit.
+ok 618 - website audit preserves HTML qualification: A minimum charge applies to every visit.
+  ---
+  duration_ms: 80.089409
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Minimum booking: two hours.
+ok 619 - website audit preserves HTML qualification: Minimum booking: two hours.
+  ---
+  duration_ms: 6.682614
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Tax is not included.
+ok 620 - website audit preserves HTML qualification: Tax is not included.
+  ---
+  duration_ms: 1.87123
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Travel surcharges apply.
+ok 621 - website audit preserves HTML qualification: Travel surcharges apply.
+  ---
+  duration_ms: 0.738399
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: A booking fee applies.
+ok 622 - website audit preserves HTML qualification: A booking fee applies.
+  ---
+  duration_ms: 0.451918
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: A deposit is required.
+ok 623 - website audit preserves HTML qualification: A deposit is required.
+  ---
+  duration_ms: 0.294682
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Materials are billed separately.
+ok 624 - website audit preserves HTML qualification: Materials are billed separately.
+  ---
+  duration_ms: 2.129487
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: All prices are estimates.
+ok 625 - website audit preserves HTML qualification: All prices are estimates.
+  ---
+  duration_ms: 0.622084
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Rates are estimates.
+ok 626 - website audit preserves HTML qualification: Rates are estimates.
+  ---
+  duration_ms: 0.520471
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Prices valid Monday to Friday.
+ok 627 - website audit preserves HTML qualification: Prices valid Monday to Friday.
+  ---
+  duration_ms: 0.594052
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Half price on Tuesdays.
+ok 628 - website audit preserves HTML qualification: Half price on Tuesdays.
+  ---
+  duration_ms: 0.277016
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Weekend pricing applies.
+ok 629 - website audit preserves HTML qualification: Weekend pricing applies.
+  ---
+  duration_ms: 0.238018
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Costs vary.
+ok 630 - website audit preserves HTML qualification: Costs vary.
+  ---
+  duration_ms: 0.453732
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Minimums apply.
+ok 631 - website audit preserves HTML qualification: Minimums apply.
+  ---
+  duration_ms: 0.191849
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Maximums apply.
+ok 632 - website audit preserves HTML qualification: Maximums apply.
+  ---
+  duration_ms: 0.172589
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: Special promotion applies.
+ok 633 - website audit preserves HTML qualification: Special promotion applies.
+  ---
+  duration_ms: 0.243125
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: A surcharge of $20 applies to every visit.
+ok 634 - website audit preserves HTML qualification: A surcharge of $20 applies to every visit.
+  ---
+  duration_ms: 0.563646
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: For every visit, a minimum charge of $50 applies.
+ok 635 - website audit preserves HTML qualification: For every visit, a minimum charge of $50 applies.
+  ---
+  duration_ms: 0.201623
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: A charge of $20 applies to every visit.
+ok 636 - website audit preserves HTML qualification: A charge of $20 applies to every visit.
+  ---
+  duration_ms: 0.21991
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: We charge $20 per visit.
+ok 637 - website audit preserves HTML qualification: We charge $20 per visit.
+  ---
+  duration_ms: 1.422586
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: For every visit, a $50 minimum applies.
+ok 638 - website audit preserves HTML qualification: For every visit, a $50 minimum applies.
+  ---
+  duration_ms: 0.282955
+  type: 'test'
+  ...
+# Subtest: website audit preserves HTML qualification: We add a $20 surcharge to every visit.
+ok 639 - website audit preserves HTML qualification: We add a $20 surcharge to every visit.
+  ---
+  duration_ms: 0.247502
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: A minimum charge applies to every visit.
+ok 640 - website audit preserves plain qualification: A minimum charge applies to every visit.
+  ---
+  duration_ms: 0.264627
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Minimum booking: two hours.
+ok 641 - website audit preserves plain qualification: Minimum booking: two hours.
+  ---
+  duration_ms: 0.123936
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Tax is not included.
+ok 642 - website audit preserves plain qualification: Tax is not included.
+  ---
+  duration_ms: 0.147091
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Travel surcharges apply.
+ok 643 - website audit preserves plain qualification: Travel surcharges apply.
+  ---
+  duration_ms: 0.112209
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: A booking fee applies.
+ok 644 - website audit preserves plain qualification: A booking fee applies.
+  ---
+  duration_ms: 0.141523
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: A deposit is required.
+ok 645 - website audit preserves plain qualification: A deposit is required.
+  ---
+  duration_ms: 0.128493
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Materials are billed separately.
+ok 646 - website audit preserves plain qualification: Materials are billed separately.
+  ---
+  duration_ms: 0.715935
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: All prices are estimates.
+ok 647 - website audit preserves plain qualification: All prices are estimates.
+  ---
+  duration_ms: 0.117105
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Rates are estimates.
+ok 648 - website audit preserves plain qualification: Rates are estimates.
+  ---
+  duration_ms: 2.022377
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Prices valid Monday to Friday.
+ok 649 - website audit preserves plain qualification: Prices valid Monday to Friday.
+  ---
+  duration_ms: 0.11934
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Half price on Tuesdays.
+ok 650 - website audit preserves plain qualification: Half price on Tuesdays.
+  ---
+  duration_ms: 0.091678
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Weekend pricing applies.
+ok 651 - website audit preserves plain qualification: Weekend pricing applies.
+  ---
+  duration_ms: 0.082895
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Costs vary.
+ok 652 - website audit preserves plain qualification: Costs vary.
+  ---
+  duration_ms: 0.129214
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Minimums apply.
+ok 653 - website audit preserves plain qualification: Minimums apply.
+  ---
+  duration_ms: 0.100311
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Maximums apply.
+ok 654 - website audit preserves plain qualification: Maximums apply.
+  ---
+  duration_ms: 0.083956
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: Special promotion applies.
+ok 655 - website audit preserves plain qualification: Special promotion applies.
+  ---
+  duration_ms: 0.115263
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: A surcharge of $20 applies to every visit.
+ok 656 - website audit preserves plain qualification: A surcharge of $20 applies to every visit.
+  ---
+  duration_ms: 0.237687
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: For every visit, a minimum charge of $50 applies.
+ok 657 - website audit preserves plain qualification: For every visit, a minimum charge of $50 applies.
+  ---
+  duration_ms: 0.114552
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: A charge of $20 applies to every visit.
+ok 658 - website audit preserves plain qualification: A charge of $20 applies to every visit.
+  ---
+  duration_ms: 0.0934
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: We charge $20 per visit.
+ok 659 - website audit preserves plain qualification: We charge $20 per visit.
+  ---
+  duration_ms: 0.088653
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: For every visit, a $50 minimum applies.
+ok 660 - website audit preserves plain qualification: For every visit, a $50 minimum applies.
+  ---
+  duration_ms: 0.080681
+  type: 'test'
+  ...
+# Subtest: website audit preserves plain qualification: We add a $20 surcharge to every visit.
+ok 661 - website audit preserves plain qualification: We add a $20 surcharge to every visit.
+  ---
+  duration_ms: 0.082294
+  type: 'test'
+  ...
+# Subtest: website audit attaches minimum booking to both sibling HTML prices
+ok 662 - website audit attaches minimum booking to both sibling HTML prices
+  ---
+  duration_ms: 0.283065
+  type: 'test'
+  ...
+# Subtest: website audit attaches minimum booking to both sibling plain prices
+ok 663 - website audit attaches minimum booking to both sibling plain prices
+  ---
+  duration_ms: 0.179289
+  type: 'test'
+  ...
+# Subtest: website audit binds section conditions to all sibling prices without leaking to another section
+ok 664 - website audit binds section conditions to all sibling prices without leaking to another section
+  ---
+  duration_ms: 0.40669
+  type: 'test'
+  ...
+# Subtest: website audit binds direct div condition text to its own sibling prices
+ok 665 - website audit binds direct div condition text to its own sibling prices
+  ---
+  duration_ms: 0.268473
+  type: 'test'
+  ...
+# Subtest: website audit binds direct section condition text to its own sibling prices
+ok 666 - website audit binds direct section condition text to its own sibling prices
+  ---
+  duration_ms: 0.236796
+  type: 'test'
+  ...
+# Subtest: website audit attaches conditions to nested list prices even when a wrapping entry already contains them
+ok 667 - website audit attaches conditions to nested list prices even when a wrapping entry already contains them
+  ---
+  duration_ms: 0.362965
+  type: 'test'
+  ...
+# Subtest: website audit attaches conditions to nested table prices even when a wrapping entry already contains them
+ok 668 - website audit attaches conditions to nested table prices even when a wrapping entry already contains them
+  ---
+  duration_ms: 0.398608
+  type: 'test'
+  ...
+# Subtest: website audit finds qualifications in a complete HTML document
+ok 669 - website audit finds qualifications in a complete HTML document
+  ---
+  duration_ms: 0.49282
+  type: 'test'
+  ...
+# Subtest: website audit binds heading sections and retains page-wide footer conditions
+ok 670 - website audit binds heading sections and retains page-wide footer conditions
+  ---
+  duration_ms: 0.316095
+  type: 'test'
+  ...
+# Subtest: website audit preserves the condition on a numeric table price under its currency heading
+ok 671 - website audit preserves the condition on a numeric table price under its currency heading
+  ---
+  duration_ms: 0.766161
+  type: 'test'
+  ...
+# Subtest: website audit retains equal prices with different section conditions
+ok 672 - website audit retains equal prices with different section conditions
+  ---
+  duration_ms: 0.24023
+  type: 'test'
+  ...
+# Subtest: website audit withholds ambiguous interleaved plain-text conditions
+ok 673 - website audit withholds ambiguous interleaved plain-text conditions
+  ---
+  duration_ms: 0.145268
+  type: 'test'
+  ...
+# Subtest: website audit withholds ambiguous trailing plain-text conditions
+ok 674 - website audit withholds ambiguous trailing plain-text conditions
+  ---
+  duration_ms: 0.078517
+  type: 'test'
+  ...
+# Subtest: website audit attaches explicit page-wide interleaved plain-text conditions to every price
+ok 675 - website audit attaches explicit page-wide interleaved plain-text conditions to every price
+  ---
+  duration_ms: 0.191277
+  type: 'test'
+  ...
+# Subtest: website audit attaches explicit page-wide trailing plain-text conditions to every price
+ok 676 - website audit attaches explicit page-wide trailing plain-text conditions to every price
+  ---
+  duration_ms: 0.115644
+  type: 'test'
+  ...
+# Subtest: website audit withholds prices when a qualification sits outside a clear containing section
+ok 677 - website audit withholds prices when a qualification sits outside a clear containing section
+  ---
+  duration_ms: 0.23325
+  type: 'test'
+  ...
+# Subtest: website audit withholds the affected section when a note refers to unidentified selected services
+ok 678 - website audit withholds the affected section when a note refers to unidentified selected services
+  ---
+  duration_ms: 0.231798
+  type: 'test'
+  ...
+# Subtest: website audit full HTML import -> owner save -> no-price review (single price)
+ok 679 - website audit full HTML import -> owner save -> no-price review (single price)
+  ---
+  duration_ms: 69.74136
+  type: 'test'
+  ...
+# Subtest: website audit full HTML import -> owner save -> no-price review (sibling prices)
+ok 680 - website audit full HTML import -> owner save -> no-price review (sibling prices)
+  ---
+  duration_ms: 17.652376
+  type: 'test'
+  ...
+# Subtest: website audit full plain import -> owner save -> no-price review (single price)
+ok 681 - website audit full plain import -> owner save -> no-price review (single price)
+  ---
+  duration_ms: 15.918613
+  type: 'test'
+  ...
+# Subtest: website audit full plain import -> owner save -> no-price review (sibling prices)
+ok 682 - website audit full plain import -> owner save -> no-price review (sibling prices)
+  ---
+  duration_ms: 13.281734
+  type: 'test'
+  ...
+# Subtest: website audit import gives the owner a manual-review warning for withheld conditions
+ok 683 - website audit import gives the owner a manual-review warning for withheld conditions
+  ---
+  duration_ms: 11.525255
+  type: 'test'
+  ...
+# (node:267) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: website draft uses saved URL, never writes knowledge, and becomes voice facts only on explicit owner save
+ok 684 - website draft uses saved URL, never writes knowledge, and becomes voice facts only on explicit owner save
+  ---
+  duration_ms: 80.280906
+  type: 'test'
+  ...
+# Subtest: website empty and rejected drafts leave all saved knowledge unchanged
+ok 685 - website empty and rejected drafts leave all saved knowledge unchanged
+  ---
+  duration_ms: 18.373631
+  type: 'test'
+  ...
+# Subtest: website drafting and saving require the owner role and do not honor body owner IDs
+ok 686 - website drafting and saving require the owner role and do not honor body owner IDs
+  ---
+  duration_ms: 18.589414
+  type: 'test'
+  ...
+# Subtest: website legacy persisted drafts are withheld from compiled voice facts
+ok 687 - website legacy persisted drafts are withheld from compiled voice facts
+  ---
+  duration_ms: 6.959113
+  type: 'test'
+  ...
+# (node:275) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: website prices: real synthetic pages retain literal amounts, names, conditions and sources
+ok 688 - website prices: real synthetic pages retain literal amounts, names, conditions and sources
+  ---
+  duration_ms: 36.241571
+  type: 'test'
+  ...
+# Subtest: website prices: cards, table rows, entities and price conditions are preserved
+ok 689 - website prices: cards, table rows, entities and price conditions are preserved
+  ---
+  duration_ms: 2.357341
+  type: 'test'
+  ...
+# Subtest: website prices: no-price site explicitly says none were found
+ok 690 - website prices: no-price site explicitly says none were found
+  ---
+  duration_ms: 3.523247
+  type: 'test'
+  ...
+# Subtest: website import carries adjacent minimums and discloses omitted oversized conditions
+ok 691 - website import carries adjacent minimums and discloses omitted oversized conditions
+  ---
+  duration_ms: 2.888679
+  type: 'test'
+  ...
+# Subtest: website prices: instructions, comments, scripts, hidden content and metadata never become prices
+ok 692 - website prices: instructions, comments, scripts, hidden content and metadata never become prices
+  ---
+  duration_ms: 3.231624
+  type: 'test'
+  ...
+# Subtest: website prices: plain text uses literal price lines only
+ok 693 - website prices: plain text uses literal price lines only
+  ---
+  duration_ms: 2.474237
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 0.0.0.0
+ok 694 - website blocks non-public address 0.0.0.0
+  ---
+  duration_ms: 0.143896
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 10.0.0.1
+ok 695 - website blocks non-public address 10.0.0.1
+  ---
+  duration_ms: 0.070676
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 127.0.0.1
+ok 696 - website blocks non-public address 127.0.0.1
+  ---
+  duration_ms: 0.121042
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 169.254.169.254
+ok 697 - website blocks non-public address 169.254.169.254
+  ---
+  duration_ms: 0.153971
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 172.16.0.1
+ok 698 - website blocks non-public address 172.16.0.1
+  ---
+  duration_ms: 0.056665
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 192.168.1.1
+ok 699 - website blocks non-public address 192.168.1.1
+  ---
+  duration_ms: 0.049694
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 100.100.100.200
+ok 700 - website blocks non-public address 100.100.100.200
+  ---
+  duration_ms: 0.039359
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 192.0.2.1
+ok 701 - website blocks non-public address 192.0.2.1
+  ---
+  duration_ms: 0.037767
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 198.18.0.1
+ok 702 - website blocks non-public address 198.18.0.1
+  ---
+  duration_ms: 0.034722
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 198.51.100.1
+ok 703 - website blocks non-public address 198.51.100.1
+  ---
+  duration_ms: 0.039439
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 203.0.113.1
+ok 704 - website blocks non-public address 203.0.113.1
+  ---
+  duration_ms: 0.034762
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 224.0.0.1
+ok 705 - website blocks non-public address 224.0.0.1
+  ---
+  duration_ms: 0.034361
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 255.255.255.255
+ok 706 - website blocks non-public address 255.255.255.255
+  ---
+  duration_ms: 0.032499
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address ::
+ok 707 - website blocks non-public address ::
+  ---
+  duration_ms: 0.58612
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address ::1
+ok 708 - website blocks non-public address ::1
+  ---
+  duration_ms: 0.078538
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address ::ffff:127.0.0.1
+ok 709 - website blocks non-public address ::ffff:127.0.0.1
+  ---
+  duration_ms: 0.469305
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address fc00::1
+ok 710 - website blocks non-public address fc00::1
+  ---
+  duration_ms: 0.072058
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address fe80::1
+ok 711 - website blocks non-public address fe80::1
+  ---
+  duration_ms: 0.048633
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 2001:db8::1
+ok 712 - website blocks non-public address 2001:db8::1
+  ---
+  duration_ms: 0.050846
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address 2002:7f00:1::
+ok 713 - website blocks non-public address 2002:7f00:1::
+  ---
+  duration_ms: 0.045668
+  type: 'test'
+  ...
+# Subtest: website blocks non-public address ff02::1
+ok 714 - website blocks non-public address ff02::1
+  ---
+  duration_ms: 0.0395
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS http://localhost
+ok 715 - website rejects URL before DNS http://localhost
+  ---
+  duration_ms: 0.444648
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS http://admin.internal
+ok 716 - website rejects URL before DNS http://admin.internal
+  ---
+  duration_ms: 0.108253
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS http://service.local
+ok 717 - website rejects URL before DNS http://service.local
+  ---
+  duration_ms: 0.088032
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS http://127.0.0.1
+ok 718 - website rejects URL before DNS http://127.0.0.1
+  ---
+  duration_ms: 0.099249
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS http://2130706433
+ok 719 - website rejects URL before DNS http://2130706433
+  ---
+  duration_ms: 0.18638
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS http://0x7f000001
+ok 720 - website rejects URL before DNS http://0x7f000001
+  ---
+  duration_ms: 0.135664
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS http://0177.0.0.1
+ok 721 - website rejects URL before DNS http://0177.0.0.1
+  ---
+  duration_ms: 0.127742
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS http://[::ffff:127.0.0.1]
+ok 722 - website rejects URL before DNS http://[::ffff:127.0.0.1]
+  ---
+  duration_ms: 0.18646
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS file:///etc/passwd
+ok 723 - website rejects URL before DNS file:///etc/passwd
+  ---
+  duration_ms: 0.167071
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS ftp://business.example
+ok 724 - website rejects URL before DNS ftp://business.example
+  ---
+  duration_ms: 0.090445
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS https://user:password@business.example
+ok 725 - website rejects URL before DNS https://user:password@business.example
+  ---
+  duration_ms: 0.081583
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS https://business.example:8080
+ok 726 - website rejects URL before DNS https://business.example:8080
+  ---
+  duration_ms: 0.068202
+  type: 'test'
+  ...
+# Subtest: website rejects URL before DNS https://business.example\\@127.0.0.1
+ok 727 - website rejects URL before DNS https://business.example\\@127.0.0.1
+  ---
+  duration_ms: 0.132129
+  type: 'test'
+  ...
+# Subtest: website public literal IP remains valid
+ok 728 - website public literal IP remains valid
+  ---
+  duration_ms: 0.133
+  type: 'test'
+  ...
+# Subtest: website blocks unsafe or inconsistent DNS records [{"address":"127.0.0.1","family":4}]
+ok 729 - website blocks unsafe or inconsistent DNS records [{"address":"127.0.0.1","family":4}]
+  ---
+  duration_ms: 0.234702
+  type: 'test'
+  ...
+# Subtest: website blocks unsafe or inconsistent DNS records [{"address":"8.8.8.8","family":4},{"address":"10.0.0.1","family":4}]
+ok 730 - website blocks unsafe or inconsistent DNS records [{"address":"8.8.8.8","family":4},{"address":"10.0.0.1","family":4}]
+  ---
+  duration_ms: 0.13929
+  type: 'test'
+  ...
+# Subtest: website blocks unsafe or inconsistent DNS records [{"address":"8.8.8.8","family":6}]
+ok 731 - website blocks unsafe or inconsistent DNS records [{"address":"8.8.8.8","family":6}]
+  ---
+  duration_ms: 0.123666
+  type: 'test'
+  ...
+# Subtest: website rejects forbidden redirect http://127.0.0.1/secret
+ok 732 - website rejects forbidden redirect http://127.0.0.1/secret
+  ---
+  duration_ms: 8.140448
+  type: 'test'
+  ...
+# Subtest: website rejects forbidden redirect http://169.254.169.254/latest
+ok 733 - website rejects forbidden redirect http://169.254.169.254/latest
+  ---
+  duration_ms: 1.540223
+  type: 'test'
+  ...
+# Subtest: website rejects forbidden redirect http://[::1]/
+ok 734 - website rejects forbidden redirect http://[::1]/
+  ---
+  duration_ms: 1.8975
+  type: 'test'
+  ...
+# Subtest: website rejects forbidden redirect https://other.example/
+ok 735 - website rejects forbidden redirect https://other.example/
+  ---
+  duration_ms: 1.703469
+  type: 'test'
+  ...
+# Subtest: website rejects forbidden redirect https://business.example:8443/
+ok 736 - website rejects forbidden redirect https://business.example:8443/
+  ---
+  duration_ms: 1.416888
+  type: 'test'
+  ...
+# Subtest: website revalidates DNS on same-host redirects and blocks rebinding
+ok 737 - website revalidates DNS on same-host redirects and blocks rebinding
+  ---
+  duration_ms: 1.451941
+  type: 'test'
+  ...
+# Subtest: website follows bounded public same-host redirects and pins every connection
+ok 738 - website follows bounded public same-host redirects and pins every connection
+  ---
+  duration_ms: 2.378113
+  type: 'test'
+  ...
+# Subtest: website caps redirects and repeated URLs
+ok 739 - website caps redirects and repeated URLs
+  ---
+  duration_ms: 4.215542
+  type: 'test'
+  ...
+# Subtest: website page limit stops crawling and discloses incomplete coverage
+ok 740 - website page limit stops crawling and discloses incomplete coverage
+  ---
+  duration_ms: 3.337954
+  type: 'test'
+  ...
+# Subtest: website request budget counts redirects and pages together
+ok 741 - website request budget counts redirects and pages together
+  ---
+  duration_ms: 2.172483
+  type: 'test'
+  ...
+# Subtest: website blocks declared oversized bodies before extracting partial prices
+ok 742 - website blocks declared oversized bodies before extracting partial prices
+  ---
+  duration_ms: 1.441966
+  type: 'test'
+  ...
+# Subtest: website blocks streamed oversized bodies before extracting partial prices
+ok 743 - website blocks streamed oversized bodies before extracting partial prices
+  ---
+  duration_ms: 1.714916
+  type: 'test'
+  ...
+# Subtest: website blocks gzip oversized bodies before extracting partial prices
+ok 744 - website blocks gzip oversized bodies before extracting partial prices
+  ---
+  duration_ms: 2.23001
+  type: 'test'
+  ...
+# Subtest: website total bytes cap applies across pages
+ok 745 - website total bytes cap applies across pages
+  ---
+  duration_ms: 2.024591
+  type: 'test'
+  ...
+# Subtest: website deadline includes slow headers
+ok 746 - website deadline includes slow headers
+  ---
+  duration_ms: 41.869895
+  type: 'test'
+  ...
+# Subtest: website deadline includes slow body
+ok 747 - website deadline includes slow body
+  ---
+  duration_ms: 41.377561
+  type: 'test'
+  ...
+# Subtest: website deadline includes DNS
+ok 748 - website deadline includes DNS
+  ---
+  duration_ms: 31.302171
+  type: 'test'
+  ...
+# Subtest: website total deadline is shared across DNS lookups and pages
+ok 749 - website total deadline is shared across DNS lookups and pages
+  ---
+  duration_ms: 61.040546
+  type: 'test'
+  ...
+# Subtest: website parser caps nesting and nodes
+ok 750 - website parser caps nesting and nodes
+  ---
+  duration_ms: 0.73857
+  type: 'test'
+  ...
+# Subtest: website rejects non-page content and malformed encoding
+ok 751 - website rejects non-page content and malformed encoding
+  ---
+  duration_ms: 6.360735
+  type: 'test'
+  ...
+# Subtest: website price draft limit never truncates an amount or condition
+ok 752 - website price draft limit never truncates an amount or condition
+  ---
+  duration_ms: 1.814475
+  type: 'test'
+  ...
+# Subtest: website editor preserves existing prices and no-price drafts; repeated draft does not duplicate excerpts
+ok 753 - website editor preserves existing prices and no-price drafts; repeated draft does not duplicate excerpts
+  ---
+  duration_ms: 0.403766
+  type: 'test'
+  ...
+# Subtest: website price-entry and link limits disclose partial extraction
+ok 754 - website price-entry and link limits disclose partial extraction
+  ---
+  duration_ms: 1.676839
+  type: 'test'
+  ...
+# Subtest: website fragments retain literal prices without requiring a body tag
+ok 755 - website fragments retain literal prices without requiring a body tag
+  ---
+  duration_ms: 0.2336
+  type: 'test'
+  ...
+# Subtest: website table prices retain an explicit currency heading and numeric spelling
+ok 756 - website table prices retain an explicit currency heading and numeric spelling
+  ---
+  duration_ms: 0.8188
+  type: 'test'
+  ...
+# Subtest: website current prices exclude crossed-out amounts and keep quantity conditions separate
+ok 757 - website current prices exclude crossed-out amounts and keep quantity conditions separate
+  ---
+  duration_ms: 0.173601
+  type: 'test'
+  ...
+# Subtest: website parser handles many tables and adversarial inline styles within its time budget
+ok 758 - website parser handles many tables and adversarial inline styles within its time budget
+  ---
+  duration_ms: 35.387126
+  type: 'test'
+  ...
+1..758
+# tests 758
+# suites 0
+# pass 758
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19554.193978

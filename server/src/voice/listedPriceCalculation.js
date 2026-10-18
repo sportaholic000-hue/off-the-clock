@@ -17,7 +17,9 @@ const productCompounds=/(?<![\p{L}\p{M}\p{N}])(?:board-on-board|nail-in|plug-in)
 const prepositionalPricePrefix=/(?:^|[^\p{L}\p{M}\p{N}])(?:with|without|for|on|in|at|by|under|as|to|via|through)(?![\p{L}\p{M}\p{N}])/iu;
 // Bounded phrase recognition, not a claim to understand unrestricted English.
 // Keep genuine names such as "Weather station" and "Online training manual".
-const circumstancePricePrefix=/\b(?:weather[\s./:-]+permitting|online[\s./:-]+orders?)\b/iu;
+// Any punctuation between these words is a separator, including parentheses,
+// brackets and quotes. Do not erase intervening words or alter the saved text.
+const circumstancePricePrefix=/\b(?:weather[\s\p{P}]+permitting|online[\s\p{P}]+orders?)\b/iu;
 // Other qualifiers do not need an explicit "if" to make a rate non-flat.
 // Unclassified eligibility/payment/time/charge wording also takes the existing
 // verbatim-listing fallback, even when it could be part of a genuine item name.

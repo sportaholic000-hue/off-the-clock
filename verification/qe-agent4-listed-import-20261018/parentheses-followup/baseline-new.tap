@@ -1,0 +1,836 @@
+(node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:19) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 parentheses direct refuses: Weather (permitting) $10 each
+not ok 1 - Agent4 parentheses direct refuses: Weather (permitting) $10 each
+  ---
+  duration_ms: 13.609902
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather (permitting) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather (permitting) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather (permitting) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather (permitting) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather (permitting) $10 each
+not ok 2 - Agent4 parentheses real dispatcher refuses: Weather (permitting) $10 each
+  ---
+  duration_ms: 42.509135
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather (permitting) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather (permitting) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather (permitting) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather (permitting) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:35:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online (orders) $10 each
+not ok 3 - Agent4 parentheses direct refuses: Online (orders) $10 each
+  ---
+  duration_ms: 0.501604
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online (orders) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online (orders) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online (orders) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online (orders) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online (orders) $10 each
+not ok 4 - Agent4 parentheses real dispatcher refuses: Online (orders) $10 each
+  ---
+  duration_ms: 31.425134
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online (orders) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online (orders) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online (orders) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online (orders) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:35:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather(permitting) $10 each
+not ok 5 - Agent4 parentheses direct refuses: Weather(permitting) $10 each
+  ---
+  duration_ms: 0.494534
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather(permitting) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather(permitting) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather(permitting) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather(permitting) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather(permitting) $10 each
+not ok 6 - Agent4 parentheses real dispatcher refuses: Weather(permitting) $10 each
+  ---
+  duration_ms: 30.782107
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather(permitting) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather(permitting) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather(permitting) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather(permitting) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:35:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online(orders) $10 each
+not ok 7 - Agent4 parentheses direct refuses: Online(orders) $10 each
+  ---
+  duration_ms: 0.659141
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online(orders) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online(orders) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online(orders) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online(orders) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online(orders) $10 each
+not ok 8 - Agent4 parentheses real dispatcher refuses: Online(orders) $10 each
+  ---
+  duration_ms: 30.225972
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online(orders) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online(orders) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online(orders) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online(orders) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:35:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses direct refuses: (Weather) permitting $10 each
+ok 9 - Agent4 parentheses direct refuses: (Weather) permitting $10 each
+  ---
+  duration_ms: 1.44367
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: (Weather) permitting $10 each
+ok 10 - Agent4 parentheses real dispatcher refuses: (Weather) permitting $10 each
+  ---
+  duration_ms: 30.229026
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: (Online) orders $10 each
+ok 11 - Agent4 parentheses direct refuses: (Online) orders $10 each
+  ---
+  duration_ms: 0.21988
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: (Online) orders $10 each
+ok 12 - Agent4 parentheses real dispatcher refuses: (Online) orders $10 each
+  ---
+  duration_ms: 29.85883
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather [permitting] $10 each
+not ok 13 - Agent4 parentheses direct refuses: Weather [permitting] $10 each
+  ---
+  duration_ms: 0.697147
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather [permitting] $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather [permitting] $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather [permitting] $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather [permitting] $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather [permitting] $10 each
+not ok 14 - Agent4 parentheses real dispatcher refuses: Weather [permitting] $10 each
+  ---
+  duration_ms: 30.031599
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather [permitting] $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather [permitting] $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather [permitting] $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather [permitting] $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:35:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online [orders] $10 each
+not ok 15 - Agent4 parentheses direct refuses: Online [orders] $10 each
+  ---
+  duration_ms: 0.30635
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online [orders] $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online [orders] $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online [orders] $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online [orders] $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online [orders] $10 each
+not ok 16 - Agent4 parentheses real dispatcher refuses: Online [orders] $10 each
+  ---
+  duration_ms: 30.461987
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online [orders] $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online [orders] $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online [orders] $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online [orders] $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:35:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather ’permitting’ $10 each
+not ok 17 - Agent4 parentheses direct refuses: Weather ’permitting’ $10 each
+  ---
+  duration_ms: 8.252805
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather ’permitting’ $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather ’permitting’ $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather ’permitting’ $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather ’permitting’ $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather ’permitting’ $10 each
+not ok 18 - Agent4 parentheses real dispatcher refuses: Weather ’permitting’ $10 each
+  ---
+  duration_ms: 22.510745
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather ’permitting’ $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather ’permitting’ $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather ’permitting’ $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather ’permitting’ $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:35:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online 'orders' $10 each
+not ok 19 - Agent4 parentheses direct refuses: Online 'orders' $10 each
+  ---
+  duration_ms: 0.363476
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: "Online 'orders' $10 each",
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: "Online 'orders' $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: "Online 'orders' $10 each"
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: "Online 'orders' $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:29:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online 'orders' $10 each
+not ok 20 - Agent4 parentheses real dispatcher refuses: Online 'orders' $10 each
+  ---
+  duration_ms: 21.027195
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: "Online 'orders' $10 each",
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: "Online 'orders' $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: "Online 'orders' $10 each"
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: "Online 'orders' $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertReview (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:24:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ParenthesizedConditions20261018.spec.mjs:35:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 parentheses direct refuses: Widget (weather-permitting) $10 each
+ok 21 - Agent4 parentheses direct refuses: Widget (weather-permitting) $10 each
+  ---
+  duration_ms: 0.190456
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Widget (weather-permitting) $10 each
+ok 22 - Agent4 parentheses real dispatcher refuses: Widget (weather-permitting) $10 each
+  ---
+  duration_ms: 20.80405
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Widget (online/orders) $10 each
+ok 23 - Agent4 parentheses direct refuses: Widget (online/orders) $10 each
+  ---
+  duration_ms: 0.131958
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Widget (online/orders) $10 each
+ok 24 - Agent4 parentheses real dispatcher refuses: Widget (online/orders) $10 each
+  ---
+  duration_ms: 20.264118
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Weather (station)
+ok 25 - Agent4 parentheses genuine product: Weather (station)
+  ---
+  duration_ms: 20.646803
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Online (training manual)
+ok 26 - Agent4 parentheses genuine product: Online (training manual)
+  ---
+  duration_ms: 23.327993
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Widget (Weather station)
+ok 27 - Agent4 parentheses genuine product: Widget (Weather station)
+  ---
+  duration_ms: 24.774728
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Manual (Online training)
+ok 28 - Agent4 parentheses genuine product: Manual (Online training)
+  ---
+  duration_ms: 29.790802
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Weatherproof (sensor)
+ok 29 - Agent4 parentheses genuine product: Weatherproof (sensor)
+  ---
+  duration_ms: 20.395897
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Online ordering manual
+ok 30 - Agent4 parentheses genuine product: Online ordering manual
+  ---
+  duration_ms: 20.328716
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Board-on-board (panel)
+ok 31 - Agent4 parentheses genuine product: Board-on-board (panel)
+  ---
+  duration_ms: 20.886123
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Nail-in (anchor)
+ok 32 - Agent4 parentheses genuine product: Nail-in (anchor)
+  ---
+  duration_ms: 20.285901
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Plug-in (adapter)
+ok 33 - Agent4 parentheses genuine product: Plug-in (adapter)
+  ---
+  duration_ms: 20.272151
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses retain exact saved identity through both paths
+ok 34 - Agent4 parentheses retain exact saved identity through both paths
+  ---
+  duration_ms: 29.578689
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses preserve verbatim qualified facts and fallback guidance
+ok 35 - Agent4 parentheses preserve verbatim qualified facts and fallback guidance
+  ---
+  duration_ms: 2.379917
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses file uses unchanged voice selection conventions
+ok 36 - Agent4 parentheses file uses unchanged voice selection conventions
+  ---
+  duration_ms: 1610.779382
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 20
+# fail 16
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2497.161168

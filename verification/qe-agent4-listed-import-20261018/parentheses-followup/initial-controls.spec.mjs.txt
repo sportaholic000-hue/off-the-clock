@@ -1,0 +1,77 @@
+import './pricebookTestEnv.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {calculateSavedListedPrice} from '../server/src/voice/listedPriceCalculation.js';
+import {compileVoiceSystemInstruction} from '../server/src/voice/voicePromptCompiler.js';
+import {fixture} from './leadCaptureRepair20261006Fixture.mjs';
+import {allSpecFiles,quotePricebookSpecFiles} from '../scripts/testSelection.mjs';
+
+// Synthetic cases. Expectations were recorded before changing production.
+const review={status:'needs_review',message:'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'};
+const args=listedItem=>({listedItem,quantity:'3',customerConfirmed:true});
+const direct=listing=>calculateSavedListedPrice({prices:listing},args(listing));
+const reported=['Weather (permitting) $10 each','Online (orders) $10 each'];
+const qualified=[...reported,
+  'Weather(permitting) $10 each','Online(orders) $10 each',
+  '(Weather) permitting $10 each','(Online) orders $10 each',
+  'Weather [permitting] $10 each','Online [orders] $10 each',
+  'Weather ’permitting’ $10 each',"Online 'orders' $10 each",
+  'Widget (weather-permitting) $10 each','Widget (online/orders) $10 each'
+];
+const assertReview=result=>{
+  assert.deepEqual(result,review);
+  assert.equal(Object.hasOwn(result,'extendedAmount'),false);
+  assert.equal(Object.hasOwn(result,'voiceSummary'),false);
+};
+for(const listing of qualified){
+  test('Agent4 parentheses direct refuses: '+listing,()=>assertReview(direct(listing)));
+  test('Agent4 parentheses real dispatcher refuses: '+listing,async t=>{
+    const f=fixture(t),c=f.context();
+    const knowledge={prices:listing,about:'[SYNTHETIC] Shop',privateRate:'SYNTHETIC_PRIVATE_RATE_7391',privateCustomer:'SYNTHETIC_PRIVATE_CUSTOMER'};
+    f.ownerQuery('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify(knowledge),c.ownerId);
+    const before=f.db.prepare('SELECT total_changes() n').get().n;
+    assertReview(await f.voice(c).tool('calculateListedPrice',args(listing)));
+    assert.equal(f.db.prepare('SELECT total_changes() n').get().n,before);
+    assert.deepEqual(JSON.parse(f.ownerQuery('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId=?').get(c.ownerId).knowledgeBaseJson),knowledge);
+  });
+}
+const genuine=[
+  'Weather (station)','Online (training manual)','(Weather) station',
+  '(Online) training manual','Weatherproof (sensor)','Online ordering manual',
+  'Board-on-board (panel)','Nail-in (anchor)','Plug-in (adapter)'
+];
+for(const name of genuine)test('Agent4 parentheses genuine product: '+name,async t=>{
+  const listing=name+' $10 each',result=direct(listing);
+  assert.equal(result.status,'calculated');assert.equal(result.extendedAmount,'30.00');
+  assert.equal(result.currency,'$');assert.equal(result.quantity,'3');assert.equal(result.listedItem,listing);
+  assert.equal(result.voiceSummary,listing+'. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.');
+  const f=fixture(t),c=f.context();
+  f.ownerQuery('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({prices:listing}),c.ownerId);
+  assert.deepEqual(await f.voice(c).tool('calculateListedPrice',args(listing)),result);
+});
+test('Agent4 parentheses retain exact saved identity through both paths',async t=>{
+  const f=fixture(t),c=f.context();
+  for(const name of ['Weather (station)','Online (training manual)']){
+    const listing=name+' $10 each',altered=listing.replace(/[()]/g,'');
+    assert.equal(direct(altered).status,'calculated');
+    assertReview(calculateSavedListedPrice({prices:listing},args(altered)));
+    f.ownerQuery('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({prices:listing}),c.ownerId);
+    assertReview(await f.voice(c).tool('calculateListedPrice',args(altered)));
+    assert.deepEqual(await f.voice(c).tool('calculateListedPrice',args(listing)),direct(listing));
+  }
+});
+test('Agent4 parentheses preserve verbatim qualified facts and fallback guidance',()=>{
+  const guideText=readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8');
+  for(const listing of reported){
+    const prompt=compileVoiceSystemInstruction({guideText,business:{businessName:'[SYNTHETIC] Shop',agentName:'Synthetic'},services:[],knowledge:{prices:listing}});
+    assert.equal(JSON.parse(prompt.match(/<OWNER_FACTS_JSON>\s*([\s\S]*?)\s*<\/OWNER_FACTS_JSON>/)[1]).knowledge.prices,listing);
+    assert.match(prompt,/If the tool cannot calculate, repeat only the original listing and arrange review\./);
+  }
+});
+test('Agent4 parentheses file uses unchanged voice selection conventions',()=>{
+  const root=fileURLToPath(new URL('../',import.meta.url)),file='test/voiceAgent4ParenthesizedConditions20261018.spec.mjs';
+  assert.equal(allSpecFiles(root).filter(value=>value===file).length,1);
+  assert.equal(quotePricebookSpecFiles(root).includes(file),false);
+});

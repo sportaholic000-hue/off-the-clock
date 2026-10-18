@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs"
+  ],
+  "exitCode": 1,
+  "productionUnchanged": true,
+  "newTestSha256": "f40d634448028e4192eea53c64581bdf22f9e3c06b1fd2056f3ab47d3f8f4a3d"
+}

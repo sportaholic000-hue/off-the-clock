@@ -1,0 +1,57 @@
+{
+  "baseline-initial-controls-new.tap": {
+    "sha256": "e7ebc0c9780e5ed42d176b5e655224b8c86ed14206a5c86e21e6a77c71a7ebc6",
+    "tests": 36,
+    "suites": 0,
+    "pass": 18,
+    "fail": 18,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 2656.154484
+  },
+  "baseline-new.tap": {
+    "sha256": "dcc713d6bb573ee471069ffd4cbab2de9260f1d931fa23cab9080495bca3df29",
+    "tests": 36,
+    "suites": 0,
+    "pass": 20,
+    "fail": 16,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 2497.161168
+  },
+  "after-new.tap": {
+    "sha256": "96f3618a8a2c7f377ce5b08b11ad628e974d467837392c755469666ef30cb403",
+    "tests": 36,
+    "suites": 0,
+    "pass": 36,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 2374.30787
+  },
+  "retained-722.tap": {
+    "sha256": "b950ec21489b83415ab6fb7d8864721c01a1145fa095613b7fb8deefe1692a25",
+    "tests": 722,
+    "suites": 0,
+    "pass": 722,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 16933.129398
+  },
+  "expanded-758.tap": {
+    "sha256": "720d4d0bb0ca0849ea7374b9c4c14166e4642edf8f105a88554142383a54e0bc",
+    "tests": 758,
+    "suites": 0,
+    "pass": 758,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 19554.193978
+  }
+}
