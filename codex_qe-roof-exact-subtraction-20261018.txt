@@ -1,9 +1,17 @@
 run 39111846923 sha 1fa0182458fbe8b6950e42362f2711a9293e2978
 Earlier gate outcomes: install=success; build=success; browser=success; quote=success
-Full-suite outcome: cancelled; checker outcome: skipped
-Checker output unavailable: test-check.txt was not created (checker skipped; an earlier failed/skipped stage may have prevented it). No checker pass is inferred.
+Full-suite outcome: success; checker outcome: success
+Checker output:
+Summary: {"tests":6109,"suites":0,"pass":6109,"fail":0,"cancelled":0,"skipped":0,"todo":0}
+Known failures still failing: 0/0
 Available TAP failures (including nested subtests):
 [none recorded; absence alone is not a pass]
 Available TAP summary:
-[summary missing; run incomplete/unverified]
+# tests 6109
+# pass 6109
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 889562.716214
 This summary does not override the original gate outcomes.
