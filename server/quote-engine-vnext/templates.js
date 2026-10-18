@@ -1,7 +1,7 @@
 import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES} from './flatRoofRepairPricing.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
-import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,pricePresent,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
+import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
@@ -548,6 +548,9 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const waste=quantityFactor(p.wasteFactorByComplexity[c.roofComplexity],`wasteFactorByComplexity.${c.roofComplexity}`,{allowZero:true});
   const bundles=p.bundlesPerSquare?.[c.replacementRoofType],purchase=purchasedQuantityVNext(squares,waste,bundles===undefined?undefined:exactDivide(1,bundles));
   const layers=count(c.existingLayers,'existingLayers'),story=quantityFactor(p.storyMultiplier[c.stories],`storyMultiplier.${c.stories}`),complexity=quantityFactor(p.complexityLaborMultiplier[c.roofComplexity],`complexityLaborMultiplier.${c.roofComplexity}`);
+  // Subtract before recording evidence: native 1.15 - 1 loses the half-cent tie.
+  // Keep separate adjustment lines and the exact rational through all later pricing.
+  const storyAddition=exactEvidence(exactSubtract(story,1)),complexityAddition=exactEvidence(exactSubtract(complexity,1));
   const exactTearOffSquares=exactMultiply(squares,layers);
   if(c.serviceScope==='partial'&&c.partialAreaSqft===undefined)recordQuantityDerivation(out,{
     name:'selectedRoofAreaSqft',formula:(c.roofSizeMethod==='footprint'?'roofSurfaceAreaSqft':'roofSizeInput')+' * partialPercent / 100',
@@ -567,8 +570,8 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const laborPath=`laborPerSquare.${c.replacementRoofType}`,tearPath=`tearOffPerSquare.${c.existingRoofType}`;
   const laborRate=valueAtPath(p,laborPath),tearRate=valueAtPath(p,tearPath),disposalRate=optionalMoney(p.disposalPerSquare,'disposalPerSquare')??0;
   add(out,makeLine({name:'Roofing labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,customerDriver:`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`}));
-  if(story!==1)add(out,makeLine({name:'Story labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'story addition',value:story-1,path:`storyMultiplier.${c.stories}`}]}));
-  if(complexity!==1)add(out,makeLine({name:'Roof-shape labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'complexity addition',value:complexity-1,path:`complexityLaborMultiplier.${c.roofComplexity}`}]}));
+  if(story!==1)add(out,makeLine({name:'Story labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
+  if(complexity!==1)add(out,makeLine({name:'Roof-shape labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'complexity addition',exactValue:complexityAddition,path:`complexityLaborMultiplier.${c.roofComplexity}`}]}));
   const areas={up_to_six:0,seven_to_nine:0,ten_to_twelve:0,over_twelve:0};
   let assumed=false;
   if(c.pitchMethod==='area_by_pitch')Object.assign(areas,{up_to_six:c.pitchAreaUpTo6Sqft||0,seven_to_nine:c.pitchArea7To9Sqft||0,ten_to_twelve:c.pitchArea10To12Sqft||0,over_twelve:c.pitchAreaOver12Sqft||0});
@@ -592,14 +595,14 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   add(out,makeLine({name:'Tear-off',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath}));
   if(layers>1)add(out,makeLine({name:'Additional-layer tear-off',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})}]}));
   if(story!==1){
-    add(out,makeLine({name:'Story tear-off adjustment',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'story addition',value:story-1,path:`storyMultiplier.${c.stories}`}]}));
-    if(layers>1)add(out,makeLine({name:'Additional-layer story adjustment',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})},{name:'story addition',value:story-1,path:`storyMultiplier.${c.stories}`}]}));
+    add(out,makeLine({name:'Story tear-off adjustment',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
+    if(layers>1)add(out,makeLine({name:'Additional-layer story adjustment',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})},{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
   }
   const underPath=`underlaymentPerSquare.${c.replacementRoofType}`;
   if(!p.scopeDetails?.['roof_underlayment_'+c.replacementRoofType]||p.underlaymentPriceBasis?.[c.replacementRoofType]!=='cost')add(out,makeLine({name:'Underlayment',category:'material',quantity:squares,unit:'measured installed roofing squares',rateCents:valueAtPath(p,underPath),ratePath:underPath,priceBasis:installedAreaSellPriceBasis(valueAtPath(p,`underlaymentPriceBasis.${c.replacementRoofType}`),`underlaymentPriceBasis.${c.replacementRoofType}`)}));
   if(p.accessoryPricingMode==='itemized')for(const [name,inputField,priceField] of [['Starter strip','starterLengthLF','starterPerLF'],['Drip edge','dripEdgeLengthLF','dripEdgePerLF'],['Hip-and-ridge cap','ridgeCapLengthLF','ridgeCapPerLF']])if(c[inputField]>0)add(out,makeLine({name,category:'material',quantity:c[inputField],unit:'measured linear feet',rateCents:p[priceField],ratePath:priceField}));
   const dependent=roofFlashingVentDefinitionVNext(c.replacementRoofType);
-  if(dependentLineEnabledVNext(ctx.ownerPricing,dependent)){
+  if(dependentLineEnabledVNext(ctx.ownerPricing,dependent,p,ctx.tierName)){
     const optional=[
       ['Ice and water barrier',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierSqft':'iceWaterBarrierLengthLF',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierPerSqft':'iceWaterBarrierPerLF',p.iceWaterBarrierUnit==='square_feet'?'square feet':'linear feet'],
       ['Valley preparation','valleyLengthLF','valleyPerLF','linear feet'],['Step flashing','stepFlashingLengthLF','stepFlashingPerLF','linear feet'],['Pipe jacks','pipeJackCount','pipeJackEach','each'],['Ridge vent','ridgeVentLengthLF','ridgeVentPerLF','linear feet']
@@ -866,7 +869,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
       if(quantity==='unknown'){ctx.skipAddon(addon.label);out.disclosures.push(LEVELING_UNKNOWN_NOTE);continue;}
     }
     if(!(typeof quantity==='number'&&quantity>0))continue;
-    if(!pricePresent(p[addon.rate])){ctx.skipAddon(addon.label);continue;}
+    if(!flooringAddonConfigured(p[addon.rate])){ctx.skipAddon(addon.label);continue;}
     add(out,makeLine({name:addon.label,category:addon.category,quantity,unit:addon.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?'job':addon.unit,rateCents:p[addon.rate],ratePath:addon.rate,...(addon.installed?{priceBasis:'sell_price'}:{})}));
   }
   if (c.removalNeeded) add(out, makeLine({ name: 'Existing flooring removal', category: 'removal', quantity: c.removalAreaSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `removalPerSqft.${c.existingFloorType}`), ratePath: `removalPerSqft.${c.existingFloorType}` }));
@@ -1393,7 +1396,8 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   pricing = pricingSnapshot.value;
   if(fenceType(serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,customerInputs);}catch(error){throw new QuoteReviewError(error.message,{invalidCustomerFields:[error.fenceField||'fenceHeight']});}
   const serviceRules = serviceRulesFromContext(ctx);
-  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, serviceRules);
+  const tier = ownDataValue(ctx, 'tierName');
+  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, serviceRules, tier.ok && tier.present ? tier.value : null);
   if (!customerValidation.ok) {
     throw new QuoteReviewError(customerValidation.reviewReason, {
       ...customerValidation,
@@ -1401,7 +1405,6 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     });
   }
   customerInputs = customerValidation.normalized;
-  const tier = ownDataValue(ctx, 'tierName');
   const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, serviceRules, tier.ok && tier.present ? tier.value : null);
   if (!ownerValidation.ok) {
     throw new QuoteReviewError('Pricing not fully configured for the measured scope.', ownerValidation);

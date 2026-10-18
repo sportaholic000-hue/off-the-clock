@@ -1,0 +1,50 @@
+[
+  {
+    "case": "story-1.15",
+    "historicalWidgetCents": 25,
+    "historicalVoiceCents": 25,
+    "newWidgetCents": 27,
+    "newVoiceCents": 27,
+    "storedRecords": "unchanged",
+    "wording": "unchanged",
+    "ordinarySaveApproval": "stale",
+    "explicitApproval": "quote-engine-vnext-accuracy-20261018-v10",
+    "providerCalls": 0
+  },
+  {
+    "case": "shape-1.15",
+    "historicalWidgetCents": 24,
+    "historicalVoiceCents": 24,
+    "newWidgetCents": 25,
+    "newVoiceCents": 25,
+    "storedRecords": "unchanged",
+    "wording": "unchanged",
+    "ordinarySaveApproval": "stale",
+    "explicitApproval": "quote-engine-vnext-accuracy-20261018-v10",
+    "providerCalls": 0
+  },
+  {
+    "case": "separate-line-control",
+    "historicalWidgetCents": 9,
+    "historicalVoiceCents": 9,
+    "newWidgetCents": 9,
+    "newVoiceCents": 9,
+    "storedRecords": "unchanged",
+    "wording": "unchanged",
+    "ordinarySaveApproval": "stale",
+    "explicitApproval": "quote-engine-vnext-accuracy-20261018-v10",
+    "providerCalls": 0
+  },
+  {
+    "case": "additional-layers-tie",
+    "historicalWidgetCents": 38,
+    "historicalVoiceCents": 38,
+    "newWidgetCents": 41,
+    "newVoiceCents": 41,
+    "storedRecords": "unchanged",
+    "wording": "unchanged",
+    "ordinarySaveApproval": "stale",
+    "explicitApproval": "quote-engine-vnext-accuracy-20261018-v10",
+    "providerCalls": 0
+  }
+]

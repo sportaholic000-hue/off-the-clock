@@ -1,0 +1,24 @@
+{
+  "base": "21f0ccf9ba3cd6859697483745bd4c8152274169",
+  "legacyAndOtherCalculators": "byte-identical",
+  "genericGuards": "byte-identical",
+  "zeroOptIns": 4,
+  "exactStoryDeltas": 3,
+  "exactShapeDeltas": 1,
+  "productionVersionEditsOnly": true,
+  "files": [
+    "server/quote-engine-vnext/engine.js",
+    "server/quote-engine-vnext/templates.js",
+    "server/src/runtimeConfig.js",
+    "test/backupRestoreRehearsal.spec.mjs",
+    "test/finalIntegrationMetadata20261017Fixture.mjs",
+    "test/qeAccuracyIntegration20261018.spec.mjs",
+    "test/qeRoofExactSubtraction20261018.spec.mjs",
+    "test/qeRoofUnderlaymentAccuracy20261018.spec.mjs",
+    "test/qeRoofZeroAdjustments20261018.spec.mjs",
+    "test/quoteReviewFixes.spec.mjs",
+    "test/quoteStartingValues20261017.browser.spec.mjs",
+    "test/quoteStartingValues20261017.spec.mjs",
+    "test/releaseProductionEngineGuard.spec.mjs"
+  ]
+}

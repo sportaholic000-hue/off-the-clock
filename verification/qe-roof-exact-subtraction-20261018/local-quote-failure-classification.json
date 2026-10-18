@@ -1,0 +1,474 @@
+[
+  {
+    "name": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "expired export window disables all CSV buttons and no longer offers setup/service",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "scope editor groups entries of the same kind and names them by their matching facts",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "compiled owner job costs, changes, reload, report coverage and staff privacy",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "test/fenceLaneB20261016.browser.spec.mjs",
+    "kind": "parent/file summary"
+  },
+  {
+    "name": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "F13 browser legacy flat and two-level controls use the same exact parser",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "test/landscapeFollowup20261016.browser.spec.mjs",
+    "kind": "parent/file summary"
+  },
+  {
+    "name": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "Operator: service-area city entry, validation, save and reopening in Chromium",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QuoteDone: service-area city entry, validation, save and reopening in Chromium",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "Calendar exposes missing booking requirements and links to service-area setup in Chromium",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "unverified period and pending historical charge are visible without an invented zero balance",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "owner alert retry: paused worker renders PENDING, accepts once and never resends",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "owner alert retry: worker before refresh renders BLOCKED, accepts once and never resends",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+    "kind": "parent/file summary"
+  },
+  {
+    "name": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "pending manual save preserves a newer numeric edit and its question",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "pending manual save preserves a newer structured price-map edit",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "pending manual save prevents duplicate confirmation and premature review",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "unchanged confirmed value saves once and advances normally",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "failed manual save keeps the confirmed value available for retry",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "late 200 response cannot replace a new service preview",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "late 400 response cannot replace a new service preview",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "old completion cannot clear current loading and invalid input cannot retain old ready",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "concrete browser owner saves dollar rates and unscaled depths, warns about spacing and reloads",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "planting browser edits owner size names and per-plant prices and persists both",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "customer browser answers Not sure for chute/topsoil and uses exact custom size names",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "interview owner can add separate demolition entries and explicitly choose up-to access",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "interview accepts ordinary floor names and retains invalid drafts for correction",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-004/015 Chromium: full multi-gate widget choices, phone quote, saved scope, and owner copy agree",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-015 Chromium: distinct similar gates retain their keys and $4,550 across widget, phone, persistence, and public copy",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-005 Chromium: actual saved partial public page keeps measurement, unpriced work, and exact cents",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "display browser: actual dashboard and owner preview show production missing-price labels",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "flooring Chromium owner: per-type waste is entered as percent; new prices, roll widths and furniture units save and reload",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "flooring Chromium customer: estimated room dimensions replace area questions and quote labor on measured area",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "flooring Chromium customer: connection selection supports Not sure, separate and manually grouped rooms",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "flooring Chromium actual widget and saved public page keep the carpet seaming qualification",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "lane A Chromium: owner package, freshness, validity and source controls save and reload exactly",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "lane A Chromium: an unchanged confirmed AI number stays marked until This is my price is saved",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "lane A Chromium: widget and actual public page show frozen validity, while blank stays silent",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-017: complete owner preview shows the authoritative withheld-option notice exactly once",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-017: one withheld option preserves the ready amount and the same authoritative notice",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-017: all unavailable options remain review-only and do not invent an availability notice",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-018: percent-entry waste help, conversion, save/reload, and concrete amount agree",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-019: rendered roof material copy changes completely with accessory mode and restores exactly",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-011/QE-012: tier allocations use exact paths and structured scope never renders as a decimal",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-013: real remove control saves cleanup while a complete tier remains quotable",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-013 follow-up: real removal, reload and owner reapproval preserve inherited materials tax and 268125 cents",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-016 owner decision: actual editor rejects 81 characters without truncation and preserves the saved name",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-016 owner decision: guided name rejects 81 without saving and resumes an exact 80-character Unicode name",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-008: Chromium guided allocation control preserves an exact dotted path and percentage",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-008: Chromium guided allocation control represents explicit no-allocation as an empty map",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-008: full guided interview persists and resumes exact paths and explicit empty allocation answers",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-009: full guided interview switches roof modes without confirming or reviewing inactive accessory fields",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "roofing Chromium: historical service shows sources and adopts every new starting value in one action",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "painting Chromium: one adoption preserves owner values and the saved approval",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "painting Chromium: new proposals show source and assumption and require explicit confirmation",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "flooring Chromium: one adoption preserves owner values and the saved approval",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "flooring Chromium: new proposals show source and assumption and require explicit confirmation",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 browser: approved free flooring product rows survive save/reload and approval invalidates on later edits",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 browser: approved included flooring zero is READY only with its selected positive covering charge",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 browser: unclassified zero is not READY, while a positive flooring price is READY",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 browser: an offered product with a missing price is NEEDS PRICE",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 browser: approved free and positive siding product rows are distinguished correctly",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 follow-up: FLOORING_INSTALL laborPerSqft toggle coherently disables and re-enables its paired product",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 follow-up: FLOORING_INSTALL materialPerSqft toggle coherently disables and re-enables its paired product",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 follow-up: FLOORING_REPLACEMENT laborPerSqft toggle coherently disables and re-enables its paired product",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 follow-up: FLOORING_REPLACEMENT materialPerSqft toggle coherently disables and re-enables its paired product",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 follow-up: SIDING_REPLACEMENT laborPerSqft toggle coherently disables and re-enables its paired product",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 follow-up: SIDING_REPLACEMENT materialPerSqft toggle coherently disables and re-enables its paired product",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 second follow-up: FLOORING_INSTALL laborPerSqft base-off control discloses retained tier availability and still quotes the exact Premium amount after reapproval",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 second follow-up: FLOORING_INSTALL materialPerSqft base-off control discloses retained tier availability and still quotes the exact Premium amount after reapproval",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 second follow-up: FLOORING_INSTALL laborPerSqft blank product selection is retained in the draft and blocked from disappearing on save",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 second follow-up: FLOORING_INSTALL materialPerSqft blank product selection is retained in the draft and blocked from disappearing on save",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 second follow-up: FLOORING_REPLACEMENT laborPerSqft blank product selection is retained in the draft and blocked from disappearing on save",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 second follow-up: FLOORING_REPLACEMENT materialPerSqft blank product selection is retained in the draft and blocked from disappearing on save",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 second follow-up: SIDING_REPLACEMENT laborPerSqft blank product selection is retained in the draft and blocked from disappearing on save",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 second follow-up: SIDING_REPLACEMENT materialPerSqft blank product selection is retained in the draft and blocked from disappearing on save",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 follow-up: a partially configured flooring pair can be turned off from its missing side",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "QE-007 follow-up: re-enabling an approved free pair does not manufacture free zero prices",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+    "kind": "missing Chromium"
+  },
+  {
+    "name": "website owner screen says no prices found and preserves the current prices",
+    "kind": "missing Chromium"
+  }
+]

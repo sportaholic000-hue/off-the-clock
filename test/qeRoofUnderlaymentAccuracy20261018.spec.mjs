@@ -17,7 +17,7 @@ import {integratedBaselineExpectation} from './finalIntegrationMetadata20261017F
 test('v9 comparison metadata advances only explicit paths on a clone, including results without options',()=>{
   // Expected before execution: only the four named engineVersion paths move
   // v7 -> v9. Historical inputs, amounts and unrelated version text stay exact.
-  const old='quote-engine-vnext-date-context-20261006-v7',current='quote-engine-vnext-accuracy-20261018-v9';
+  const old='quote-engine-vnext-date-context-20261006-v7',current='quote-engine-vnext-accuracy-20261018-v11';
   const record={engineVersion:old,amountCents:97600,unrelated:{engineVersion:old}};
   for(const options of [false,true]){
     const result={engineVersion:old,amountCents:97600,unrelated:{engineVersion:old}};
@@ -128,7 +128,7 @@ for(const [scope,expected] of [['full',616148],['partial',315575]])test(`roof un
   const estimated=await h.tool('getQuote',{...voice.args,callerMeasurementsEstimated:true});
   assert.equal(estimated.status,'quoted');assert.equal(estimated.midEstimate,expected/100);
   assert.match(estimated.quoteNarration,/This price is based on the measurements you gave us\. The business will confirm them on site\./);
-  assert.equal(JSON.parse(w.row.internalOutcomeJson).internalResult.engineVersion,'quote-engine-vnext-accuracy-20261018-v9');
+  assert.equal(JSON.parse(w.row.internalOutcomeJson).internalResult.engineVersion,'quote-engine-vnext-accuracy-20261018-v11');
   for(const result of [w.result,voice.result])assert.doesNotMatch(JSON.stringify(result),/"(?:lineItems|scopeRates|installedLaborPercent|priceMetadata)"/);
 });
 

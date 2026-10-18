@@ -1,0 +1,15 @@
+{
+  "server/quote-engine-vnext/templates.js": "15f1b946648e95c235fd9207de132669d7a11b902580311fc70c1154528a6e90",
+  "server/quote-engine-vnext/engine.js": "12df151d4bd3c30b7f11bbd75a35e2a449cfa2db6a420748aeef45781df2ce6b",
+  "server/src/runtimeConfig.js": "3c3d6bc352db19524311f2520c5314c2ba79ac4d8745c26126a50543b352d5c9",
+  "test/qeRoofExactSubtraction20261018.spec.mjs": "02ea601b41a55bcbbc38f13c0be8ae637a029f4be0ed2f25afbef397376ee9c1",
+  "test/qeRoofZeroAdjustments20261018.spec.mjs": "209513e23152eca61ea0695835f6a7cfc470befa45d9cb6064cef41613e9f318",
+  "test/finalIntegrationMetadata20261017Fixture.mjs": "df6016d74ba9637fef84879cf957b7c44012157a263ae552fc8847c4d7eec0b1",
+  "test/quoteReviewFixes.spec.mjs": "ef74c5b9adb09433bd582dbf7eb39b4b53839baebe1d5fbdf42ce0312cbd6ff8",
+  "test/quoteStartingValues20261017.spec.mjs": "c382d931adaef039ecc3bb2fbe4ba50bb2491fac05c60a015fed6307db87d828",
+  "test/quoteStartingValues20261017.browser.spec.mjs": "abfe3c5746ecc49588d81da7a9ee0eaca673f62a3716ceef6811f5a399460e8f",
+  "test/qeAccuracyIntegration20261018.spec.mjs": "73e399f96f4d15b0352a9555a9744bea3c02e5346366c868850d25d5795d9477",
+  "test/releaseProductionEngineGuard.spec.mjs": "a9f8ec893816e95700ee4c2c1ad42b9ed50dddf8b70f182f80c0e4d3f9cfb8f6",
+  "test/backupRestoreRehearsal.spec.mjs": "138c4fd4e937db20d1fc5ac07042a8f20f8e4d496c5321d301934faeac8a4b29",
+  "test/qeRoofUnderlaymentAccuracy20261018.spec.mjs": "80eb94569f570813b71e368e2a451ca012b1b7ec6273b0637419e6bc1ae32e85"
+}

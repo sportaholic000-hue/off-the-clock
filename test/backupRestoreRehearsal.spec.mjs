@@ -74,7 +74,7 @@ async function launch(env,registry) {
     child.once('exit',(code,signal)=>{clearTimeout(timer);reject(Error('Startup failed: '+JSON.stringify({pid:child.pid,requestedPort:port,code,signal})));});
   });
   assert.equal(ready.ready,true);
-  assert.equal(ready.engineVersion,'quote-engine-vnext-accuracy-20261018-v9');
+  assert.equal(ready.engineVersion,'quote-engine-vnext-accuracy-20261018-v11');
   assert.equal(ready.identity.pid,child.pid);assert.equal(ready.identity.port,port);
   let observationId=0,stopPromise;
   return {url:'http://127.0.0.1:'+port,identity:ready.identity,

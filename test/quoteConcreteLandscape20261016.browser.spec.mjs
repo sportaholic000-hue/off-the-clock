@@ -43,7 +43,7 @@ test('concrete browser owner saves dollar rates and unscaled depths, warns about
   await save(page);const p=loadPricebook(owner).services[0].pricing;assert.equal(p.shortLoadPerYard,4000);assert.equal(p.placementFlat.pump,150000);assert.equal(p.sawCutPerLF,150);assert.equal(p.baseDepthInches,4);assert.equal(p.baseCompactionAllowance,.2);assert.deepEqual(errors,[]);
   await page.reload();await page.getByRole('button',{name:/Optional prices and add-on charges/}).click();assert.equal(await page.locator('#field-shortLoadPerYard input').inputValue(),'40');
   // Reloaded prices render before the asynchronous validation response.
-  await page.getByText(/Control-joint spacing of 15 feet exceeds the NRMCA cap of 10 feet/).waitFor();
+  await page.getByText(/Control-joint spacing of 15 feet exceeds the configured spacing limit of 10 feet/).waitFor();
   assert.match(await page.locator('body').innerText(),/15 feet.*10 feet/);
 });
 test('planting browser edits owner size names and per-plant prices and persists both',async t=>{

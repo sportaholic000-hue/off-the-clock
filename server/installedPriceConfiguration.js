@@ -1,3 +1,4 @@
+import {surfaceExtraDefinitions} from './quote-engine-vnext/surfacePricing.js';
 import {FLAT_ROOF_ITEMS,REPAIR_SERVICES,repairUnitRows,repairRatePaths,hasSurfacePrice,remainingMaterialsShare} from './quote-engine-vnext/flatRoofRepairPricing.js';
 import {offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 import {scopeRateDefinitions} from './scopeConfiguration.js';
@@ -22,6 +23,7 @@ export function installedPriceDefinitions(type,p={}) {
   if(type.startsWith('FLOORING_')&&p.underlaymentPriceBasis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSqft))fields.underlaymentPerSqft='Installed vinyl-plank underlayment';
   if(type.startsWith('FLOORING_'))for(const addon of FLOORING_ADDONS)if(addon.installed&&pricePresent(p[addon.rate]))fields[addon.rate]=addon.label;
   for(const [key,definition] of Object.entries(scopeRateDefinitions(type,p)))if((key.endsWith('_installed')||p.scopeDetails?.[definition.scopeKey]?.mode==='installed_area_sell_price')&&positiveInstalledPrice(p.scopeRates?.[key]))fields['scopeRates.'+key]=definition.label;
+  for(const [key,definition] of Object.entries(surfaceExtraDefinitions(type,p)))if(positiveInstalledPrice(p.surfaceExtraRates?.[key]))fields['surfaceExtraRates.'+key]=definition.label;
   return fields;
 }
 
@@ -34,6 +36,7 @@ function positiveInstalledPrice(value) {
 }
 
 export function installedLaborFactorPath(type,c,ratePath) {
+  if(ratePath.startsWith('surfaceExtraRates.'))return null;
   // Wall height changes wall and ceiling labor, never separately measured trim.
   if(type==='INTERIOR_PAINTING'&&ratePath==='offeringRates.installedTrimPerLF')return null;
   if(type.startsWith('FENCING_'))return 'terrainLaborMultiplier.'+c.terrainSlope;

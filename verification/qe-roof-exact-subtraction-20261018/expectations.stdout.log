@@ -1,0 +1,106 @@
+[
+  {
+    "id": "story-1.15",
+    "expectedCents": 27
+  },
+  {
+    "id": "shape-1.15",
+    "expectedCents": 25
+  },
+  {
+    "id": "separate-line-control",
+    "expectedCents": 9
+  },
+  {
+    "id": "story-below-half",
+    "expectedCents": 25
+  },
+  {
+    "id": "story-above-half",
+    "expectedCents": 27
+  },
+  {
+    "id": "story-neutral",
+    "expectedCents": 23
+  },
+  {
+    "id": "story-exact-quarter",
+    "expectedCents": 29
+  },
+  {
+    "id": "story-small-positive",
+    "expectedCents": 23
+  },
+  {
+    "id": "story-upper-bound",
+    "expectedCents": 103
+  },
+  {
+    "id": "shape-below-half",
+    "expectedCents": 24
+  },
+  {
+    "id": "shape-above-half",
+    "expectedCents": 25
+  },
+  {
+    "id": "shape-neutral",
+    "expectedCents": 23
+  },
+  {
+    "id": "shape-exact-quarter",
+    "expectedCents": 26
+  },
+  {
+    "id": "shape-small-positive",
+    "expectedCents": 23
+  },
+  {
+    "id": "shape-upper-bound",
+    "expectedCents": 63
+  },
+  {
+    "id": "additional-layers-below",
+    "expectedCents": 38
+  },
+  {
+    "id": "additional-layers-tie",
+    "expectedCents": 41
+  },
+  {
+    "id": "additional-layers-above",
+    "expectedCents": 41
+  },
+  {
+    "id": "fractional-area",
+    "expectedCents": 38
+  },
+  {
+    "id": "partial-measured",
+    "expectedCents": 38
+  },
+  {
+    "id": "partial-percent",
+    "expectedCents": 38
+  },
+  {
+    "id": "mixed-pitch-full",
+    "expectedCents": 54
+  },
+  {
+    "id": "mixed-pitch-partial",
+    "expectedCents": 54
+  },
+  {
+    "id": "positive-market-scale",
+    "expectedCents": 644200
+  },
+  {
+    "id": "all-zero-opt-ins",
+    "expectedCents": 29
+  },
+  {
+    "id": "additive-story-shape",
+    "expectedCents": 29
+  }
+]

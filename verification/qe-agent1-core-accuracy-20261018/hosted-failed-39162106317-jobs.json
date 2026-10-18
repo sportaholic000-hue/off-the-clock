@@ -1,0 +1,357 @@
+{
+  "jobs": [
+    {
+      "id": 117777375270,
+      "name": "test",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Install from lockfile (ignores committed node_modules)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Install Playwright test dependency without changing the lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Install Chromium for the browser tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Verify Chromium can launch; install system libraries if needed",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Build owner app and widget",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Candidate l controlled owner-alert browser reproduction",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Owner alerts and dashboard browser regressions",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Candidate l harness and CI safety regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 11
+        },
+        {
+          "name": "Candidate l shared HTTP fixture consumers and alert worker regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12
+        },
+        {
+          "name": "Candidate m runner and tag qualification regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13
+        },
+        {
+          "name": "Candidate n booking repair and tag qualification regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14
+        },
+        {
+          "name": "Strict quote engine and price book gate",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 15
+        },
+        {
+          "name": "Full test suite",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16
+        },
+        {
+          "name": "Candidate h standalone regressions (each file independently)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 17
+        },
+        {
+          "name": "Candidate i standalone regressions (each file independently)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18
+        },
+        {
+          "name": "Candidate i confirms required test names in the full-suite log",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19
+        },
+        {
+          "name": "Candidate k backup coordination regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 20
+        },
+        {
+          "name": "Candidate j and k standalone regressions (each file independently)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 21
+        },
+        {
+          "name": "Candidate j and k confirm required lock test names in the full-suite log",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 22
+        },
+        {
+          "name": "Candidate k confirms coordination test names in the full-suite log",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 23
+        },
+        {
+          "name": "Candidate l expiry regressions and required passing names",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 24
+        },
+        {
+          "name": "Candidate l follow-up required passing names",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 25
+        },
+        {
+          "name": "Candidate m confirms every CI-runner regression passed",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 26
+        },
+        {
+          "name": "Candidate n confirms every booking service-end regression passed",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 27
+        },
+        {
+          "name": "No failures beyond the known list",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 28
+        },
+        {
+          "name": "Publish test summary to claude/ci-results (push events only)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 29
+        },
+        {
+          "name": "Production dependency audit",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 30
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 59
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 60
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 61
+        }
+      ]
+    },
+    {
+      "id": 117777375557,
+      "name": "voice-docker-startup",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Build production runtime image",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Voice enabled with synthetic credentials and no provider network",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Candidate h Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6
+        },
+        {
+          "name": "Candidate i Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7
+        },
+        {
+          "name": "Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8
+        },
+        {
+          "name": "Candidate j and k production-user lock database proof",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    },
+    {
+      "id": 117780955030,
+      "name": "tag-candidate-k",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 117780955053,
+      "name": "tag-candidate-h",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 117780955191,
+      "name": "tag-candidate-j",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 117780955421,
+      "name": "tag-candidate-m",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 117780955433,
+      "name": "tag-candidate-i",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 117780955465,
+      "name": "tag-candidate-n",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 117780955516,
+      "name": "tag-candidate-l",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 39162106317,
+      "logs_url": null,
+      "steps": null
+    }
+  ]
+}

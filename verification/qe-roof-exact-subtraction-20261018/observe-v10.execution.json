@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "verification/qe-roof-exact-subtraction-20261018/observe.mjs",
+    "v10"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/qe-roof-exact-subtraction",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T08:07:19.286Z",
+  "endedAt": "2026-10-18T08:07:19.488Z",
+  "code": 0,
+  "signal": null
+}

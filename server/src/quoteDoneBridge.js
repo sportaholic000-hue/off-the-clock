@@ -18,7 +18,7 @@ import {
   PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES, MEASUREMENT_CONTRACTS,
   configuredOffering, mergePricingVNext
 } from '../quote-engine-vnext/index.js';
-import {synchronizeStartingValuesVNext,startingValueDefinitionsVNext,startingValueGroupsVNext,synchronizeDependentLinesVNext,roofFlashingVentDefinitionVNext} from '../quote-engine-vnext/priceGroundwork.js';
+import {synchronizeStartingValuesVNext,startingValueDefinitionsVNext,startingValueGroupsVNext,synchronizeDependentLinesVNext,roofDependentDefinitionsVNext} from '../quote-engine-vnext/priceGroundwork.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
 import { missingPricebookServiceId } from '../priceBookStructure.js';
@@ -243,7 +243,7 @@ function synchronizedStartingService(raw,now){
 }
 function roofDependentDefinitions(service){
   if(service?.serviceType!=='ROOFING_REPLACEMENT')return [];
-  return Object.keys(service.pricing?.materialCostPerSquare||{}).map(roofFlashingVentDefinitionVNext);
+  return roofDependentDefinitionsVNext(service);
 }
 export function readApplicationBook(ownerId) {
   const book=loadPricebook(ownerId);
@@ -479,7 +479,7 @@ export function prepareApplicationIntake(ownerId,submission,dateContext={}) {
   const revision=bookRevision(book),definition=applicationServiceDefinition(raw);
   const outcome=calculateApplicationQuote(book,raw,submission,{...dateContext,ownerId,preparingIntake:true});
   const ready=['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(outcome.customerResult.resultType);
-  const fields=new Map((definition?.customerFields||[]).map(field=>[field.name,field.label]));
+  const fields=new Map((definition?.customerFields||[]).map(field=>[field.name,['iceWaterBarrierSqft','iceWaterBarrierLengthLF'].includes(field.name)?field.label+' in '+field.unit:field.label]));
   const missing=[...(outcome.internalResult?.missingCustomerFields||[]),...(outcome.internalResult?.invalidCustomerFields||[])];
   const followUps=[...new Set(missing.map(key=>fields.get(key)||fields.get(key.split('.')[0])).filter(Boolean))].map(label=>'Check '+label+'.');
   if(outcome.applicationReview)followUps.push(...outcome.applicationReview.issues);

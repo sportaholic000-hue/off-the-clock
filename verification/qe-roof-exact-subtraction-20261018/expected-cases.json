@@ -1,0 +1,2380 @@
+[
+  {
+    "id": "story-1.15",
+    "customer": {},
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1.15,
+        "2": 1.1,
+        "3": 1.2
+      }
+    },
+    "expectedCents": 27,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "shape-1.15",
+    "customer": {},
+    "pricing": {
+      "complexityLaborMultiplier": {
+        "simple": 1.15,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 25,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "separate-line-control",
+    "customer": {},
+    "pricing": {
+      "laborPerSquare": {
+        "asphalt_shingle": 1
+      },
+      "tearOffPerSquare": {
+        "asphalt_shingle": 2
+      },
+      "storyMultiplier": {
+        "1": 1.5,
+        "2": 1.1,
+        "3": 1.2
+      },
+      "complexityLaborMultiplier": {
+        "simple": 1.5,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 9,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "2"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "1",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "2"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "1",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "2",
+          "denominator": "1"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "1",
+          "denominator": "2"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "story-below-half",
+    "customer": {},
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1.14999999,
+        "2": 1.1,
+        "3": 1.2
+      }
+    },
+    "expectedCents": 25,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "14999999",
+          "denominator": "10000000"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "14999999",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "14999999",
+          "denominator": "10000000"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "14999999",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "story-above-half",
+    "customer": {},
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1.15000001,
+        "2": 1.1,
+        "3": 1.2
+      }
+    },
+    "expectedCents": 27,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "15000001",
+          "denominator": "10000000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "15000001",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "15000001",
+          "denominator": "10000000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "15000001",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "story-neutral",
+    "customer": {},
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1,
+        "2": 1.1,
+        "3": 1.2
+      }
+    },
+    "expectedCents": 23,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "story-exact-quarter",
+    "customer": {},
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1.25,
+        "2": 1.1,
+        "3": 1.2
+      }
+    },
+    "expectedCents": 29,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "5",
+          "denominator": "2"
+        },
+        "cents": 3,
+        "delta": {
+          "numerator": "1",
+          "denominator": "4"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "5",
+          "denominator": "2"
+        },
+        "cents": 3,
+        "delta": {
+          "numerator": "1",
+          "denominator": "4"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "story-small-positive",
+    "customer": {},
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1.00000001,
+        "2": 1.1,
+        "3": 1.2
+      }
+    },
+    "expectedCents": 23,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "10000000"
+        },
+        "cents": 0,
+        "delta": {
+          "numerator": "1",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "10000000"
+        },
+        "cents": 0,
+        "delta": {
+          "numerator": "1",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "story-upper-bound",
+    "customer": {},
+    "pricing": {
+      "storyMultiplier": {
+        "1": 5,
+        "2": 1.1,
+        "3": 1.2
+      }
+    },
+    "expectedCents": 103,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "40",
+          "denominator": "1"
+        },
+        "cents": 40,
+        "delta": {
+          "numerator": "4",
+          "denominator": "1"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "40",
+          "denominator": "1"
+        },
+        "cents": 40,
+        "delta": {
+          "numerator": "4",
+          "denominator": "1"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "shape-below-half",
+    "customer": {},
+    "pricing": {
+      "complexityLaborMultiplier": {
+        "simple": 1.14999999,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 24,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "14999999",
+          "denominator": "10000000"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "14999999",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "shape-above-half",
+    "customer": {},
+    "pricing": {
+      "complexityLaborMultiplier": {
+        "simple": 1.15000001,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 25,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "15000001",
+          "denominator": "10000000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "15000001",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "shape-neutral",
+    "customer": {},
+    "pricing": {
+      "complexityLaborMultiplier": {
+        "simple": 1,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 23,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "shape-exact-quarter",
+    "customer": {},
+    "pricing": {
+      "complexityLaborMultiplier": {
+        "simple": 1.25,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 26,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "5",
+          "denominator": "2"
+        },
+        "cents": 3,
+        "delta": {
+          "numerator": "1",
+          "denominator": "4"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "shape-small-positive",
+    "customer": {},
+    "pricing": {
+      "complexityLaborMultiplier": {
+        "simple": 1.00000001,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 23,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "10000000"
+        },
+        "cents": 0,
+        "delta": {
+          "numerator": "1",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "shape-upper-bound",
+    "customer": {},
+    "pricing": {
+      "complexityLaborMultiplier": {
+        "simple": 5,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 63,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "40",
+          "denominator": "1"
+        },
+        "cents": 40,
+        "delta": {
+          "numerator": "4",
+          "denominator": "1"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  },
+  {
+    "id": "additional-layers-below",
+    "customer": {
+      "existingLayers": 3,
+      "stories": 2
+    },
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1,
+        "2": 1.14999999,
+        "3": 1.2
+      },
+      "additionalLayerRemovalFactor": 0.5
+    },
+    "expectedCents": 38,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "14999999",
+          "denominator": "10000000"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "14999999",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Additional-layer tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "14999999",
+          "denominator": "10000000"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "14999999",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Additional-layer story adjustment",
+        "unrounded": {
+          "numerator": "14999999",
+          "denominator": "10000000"
+        },
+        "cents": 1,
+        "delta": {
+          "numerator": "14999999",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "1"
+        },
+        "cents": 3
+      }
+    ]
+  },
+  {
+    "id": "additional-layers-tie",
+    "customer": {
+      "existingLayers": 3,
+      "stories": 2
+    },
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1,
+        "2": 1.15,
+        "3": 1.2
+      },
+      "additionalLayerRemovalFactor": 0.5
+    },
+    "expectedCents": 41,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Additional-layer tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Additional-layer story adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "1"
+        },
+        "cents": 3
+      }
+    ]
+  },
+  {
+    "id": "additional-layers-above",
+    "customer": {
+      "existingLayers": 3,
+      "stories": 2
+    },
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1,
+        "2": 1.15000001,
+        "3": 1.2
+      },
+      "additionalLayerRemovalFactor": 0.5
+    },
+    "expectedCents": 41,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "15000001",
+          "denominator": "10000000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "15000001",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Additional-layer tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "15000001",
+          "denominator": "10000000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "15000001",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Additional-layer story adjustment",
+        "unrounded": {
+          "numerator": "15000001",
+          "denominator": "10000000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "15000001",
+          "denominator": "100000000"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "1"
+        },
+        "cents": 3
+      }
+    ]
+  },
+  {
+    "id": "fractional-area",
+    "customer": {
+      "roofSizeInput": 150.5
+    },
+    "pricing": {
+      "laborPerSquare": {
+        "asphalt_shingle": 10.25
+      },
+      "tearOffPerSquare": {
+        "asphalt_shingle": 7.5
+      },
+      "storyMultiplier": {
+        "1": 1.15,
+        "2": 1.1,
+        "3": 1.2
+      },
+      "complexityLaborMultiplier": {
+        "simple": 1.15,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 38,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "12341",
+          "denominator": "800"
+        },
+        "cents": 15
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "37023",
+          "denominator": "16000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "37023",
+          "denominator": "16000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "3311",
+          "denominator": "2000"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "903",
+          "denominator": "80"
+        },
+        "cents": 11
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "2709",
+          "denominator": "1600"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "301",
+          "denominator": "200"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "301",
+          "denominator": "200"
+        },
+        "cents": 2
+      }
+    ]
+  },
+  {
+    "id": "partial-measured",
+    "customer": {
+      "roofSizeInput": 1000,
+      "serviceScope": "partial",
+      "partialAreaSqft": 150.5
+    },
+    "pricing": {
+      "laborPerSquare": {
+        "asphalt_shingle": 10.25
+      },
+      "tearOffPerSquare": {
+        "asphalt_shingle": 7.5
+      },
+      "storyMultiplier": {
+        "1": 1.15,
+        "2": 1.1,
+        "3": 1.2
+      },
+      "complexityLaborMultiplier": {
+        "simple": 1.15,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 38,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "12341",
+          "denominator": "800"
+        },
+        "cents": 15
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "37023",
+          "denominator": "16000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "37023",
+          "denominator": "16000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "3311",
+          "denominator": "2000"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "903",
+          "denominator": "80"
+        },
+        "cents": 11
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "2709",
+          "denominator": "1600"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "301",
+          "denominator": "200"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "301",
+          "denominator": "200"
+        },
+        "cents": 2
+      }
+    ]
+  },
+  {
+    "id": "partial-percent",
+    "customer": {
+      "roofSizeInput": 301,
+      "serviceScope": "partial",
+      "partialPercent": 50
+    },
+    "pricing": {
+      "laborPerSquare": {
+        "asphalt_shingle": 10.25
+      },
+      "tearOffPerSquare": {
+        "asphalt_shingle": 7.5
+      },
+      "storyMultiplier": {
+        "1": 1.15,
+        "2": 1.1,
+        "3": 1.2
+      },
+      "complexityLaborMultiplier": {
+        "simple": 1.15,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 38,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "12341",
+          "denominator": "800"
+        },
+        "cents": 15
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "37023",
+          "denominator": "16000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "37023",
+          "denominator": "16000"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "3311",
+          "denominator": "2000"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "903",
+          "denominator": "80"
+        },
+        "cents": 11
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "2709",
+          "denominator": "1600"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "301",
+          "denominator": "200"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "301",
+          "denominator": "200"
+        },
+        "cents": 2
+      }
+    ]
+  },
+  {
+    "id": "mixed-pitch-full",
+    "customer": {
+      "pitchMethod": "area_by_pitch",
+      "pitchAreaUpTo6Sqft": 25,
+      "pitchArea7To9Sqft": 25,
+      "pitchArea10To12Sqft": 25,
+      "pitchAreaOver12Sqft": 25,
+      "existingLayers": 3
+    },
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1.15,
+        "2": 1.1,
+        "3": 1.2
+      },
+      "complexityLaborMultiplier": {
+        "simple": 1.15,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 54,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Steep-pitch installation",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "2"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "143",
+          "denominator": "200"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch installation",
+        "unrounded": {
+          "numerator": "31",
+          "denominator": "40"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "451",
+          "denominator": "400"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch installation",
+        "unrounded": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "33",
+          "denominator": "20"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Additional-layer tear-off",
+        "unrounded": {
+          "numerator": "14",
+          "denominator": "1"
+        },
+        "cents": 14
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Additional-layer story adjustment",
+        "unrounded": {
+          "numerator": "21",
+          "denominator": "10"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "1"
+        },
+        "cents": 3
+      }
+    ]
+  },
+  {
+    "id": "mixed-pitch-partial",
+    "customer": {
+      "roofSizeInput": 200,
+      "serviceScope": "partial",
+      "partialAreaSqft": 100,
+      "pitchMethod": "area_by_pitch",
+      "pitchAreaUpTo6Sqft": 25,
+      "pitchArea7To9Sqft": 25,
+      "pitchArea10To12Sqft": 25,
+      "pitchAreaOver12Sqft": 25,
+      "existingLayers": 3
+    },
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1.15,
+        "2": 1.1,
+        "3": 1.2
+      },
+      "complexityLaborMultiplier": {
+        "simple": 1.15,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 54,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Steep-pitch installation",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "2"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "143",
+          "denominator": "200"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch installation",
+        "unrounded": {
+          "numerator": "31",
+          "denominator": "40"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "451",
+          "denominator": "400"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch installation",
+        "unrounded": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "33",
+          "denominator": "20"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Additional-layer tear-off",
+        "unrounded": {
+          "numerator": "14",
+          "denominator": "1"
+        },
+        "cents": 14
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Additional-layer story adjustment",
+        "unrounded": {
+          "numerator": "21",
+          "denominator": "10"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "1"
+        },
+        "cents": 3
+      }
+    ]
+  },
+  {
+    "id": "positive-market-scale",
+    "customer": {
+      "roofSizeInput": 1000,
+      "pitchBand": "ten_to_twelve",
+      "stories": 2,
+      "existingLayers": 3
+    },
+    "pricing": {
+      "laborPerSquare": {
+        "asphalt_shingle": 20000
+      },
+      "materialCostPerSquare": {
+        "asphalt_shingle": 10000
+      },
+      "tearOffPerSquare": {
+        "asphalt_shingle": 6000
+      },
+      "underlaymentPerSquare": {
+        "asphalt_shingle": 100
+      },
+      "disposalPerSquare": 2000
+    },
+    "expectedCents": 644200,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "200000",
+          "denominator": "1"
+        },
+        "cents": 200000
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "20000",
+          "denominator": "1"
+        },
+        "cents": 20000,
+        "delta": {
+          "numerator": "1",
+          "denominator": "10"
+        }
+      },
+      {
+        "name": "Steep-pitch installation",
+        "unrounded": {
+          "numerator": "62000",
+          "denominator": "1"
+        },
+        "cents": 62000
+      },
+      {
+        "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "32800",
+          "denominator": "1"
+        },
+        "cents": 32800
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "110000",
+          "denominator": "1"
+        },
+        "cents": 110000
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "60000",
+          "denominator": "1"
+        },
+        "cents": 60000
+      },
+      {
+        "name": "Additional-layer tear-off",
+        "unrounded": {
+          "numerator": "84000",
+          "denominator": "1"
+        },
+        "cents": 84000
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "6000",
+          "denominator": "1"
+        },
+        "cents": 6000,
+        "delta": {
+          "numerator": "1",
+          "denominator": "10"
+        }
+      },
+      {
+        "name": "Additional-layer story adjustment",
+        "unrounded": {
+          "numerator": "8400",
+          "denominator": "1"
+        },
+        "cents": 8400,
+        "delta": {
+          "numerator": "1",
+          "denominator": "10"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1000",
+          "denominator": "1"
+        },
+        "cents": 1000
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "60000",
+          "denominator": "1"
+        },
+        "cents": 60000
+      }
+    ]
+  },
+  {
+    "id": "all-zero-opt-ins",
+    "customer": {
+      "pitchBand": "over_twelve",
+      "stories": 2,
+      "existingLayers": 3
+    },
+    "pricing": {
+      "pitchInstallationAdderOverTwelve": 0,
+      "pitchRemovalAdderOverTwelve": 0,
+      "additionalLayerRemovalFactor": 0,
+      "storyMultiplier": {
+        "1": 1,
+        "2": 1.15,
+        "3": 1.2
+      }
+    },
+    "expectedCents": 29,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Steep-pitch installation",
+        "unrounded": {
+          "numerator": "0",
+          "denominator": "1"
+        },
+        "cents": 0
+      },
+      {
+        "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "0",
+          "denominator": "1"
+        },
+        "cents": 0
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Additional-layer tear-off",
+        "unrounded": {
+          "numerator": "0",
+          "denominator": "1"
+        },
+        "cents": 0
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Additional-layer story adjustment",
+        "unrounded": {
+          "numerator": "0",
+          "denominator": "1"
+        },
+        "cents": 0,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "1"
+        },
+        "cents": 3
+      }
+    ]
+  },
+  {
+    "id": "additive-story-shape",
+    "customer": {},
+    "pricing": {
+      "storyMultiplier": {
+        "1": 1.15,
+        "2": 1.1,
+        "3": 1.2
+      },
+      "complexityLaborMultiplier": {
+        "simple": 1.15,
+        "moderate": 1.2,
+        "complex": 1.4
+      }
+    },
+    "expectedCents": 29,
+    "lines": [
+      {
+        "name": "Roofing labor",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Roof-shape labor adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Field materials",
+        "unrounded": {
+          "numerator": "11",
+          "denominator": "10"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Tear-off",
+        "unrounded": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "cents": 10
+      },
+      {
+        "name": "Story tear-off adjustment",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "cents": 2,
+        "delta": {
+          "numerator": "3",
+          "denominator": "20"
+        }
+      },
+      {
+        "name": "Underlayment",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Roofing disposal",
+        "unrounded": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "cents": 1
+      }
+    ]
+  }
+]
