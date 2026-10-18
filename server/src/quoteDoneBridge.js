@@ -377,6 +377,11 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
     const book=loadPricebook(ownerId);requireRevision(book,input.revision);
     const selected=uniqueApplicationService(book,serviceId),index=book.services.indexOf(selected);if(index<0)throw problem('Service not found.',404);
     const raw=clone(book.services[index]);
+    if(raw.serviceType==='ROOFING_REPLACEMENT'&&[raw.minimumJob,raw.pricing?.minimumJob,...(Array.isArray(raw.tiers)?raw.tiers:[]).map(t=>t.overrides?.minimumJob)].some(value=>typeof value==='number'&&!Number.isSafeInteger(value)))throw problem('Correct the roof replacement minimum, including price options, to an exact dollar-and-cent amount before confirming it. The stored value has not been rounded.',422);
+    // Both approval and adoption must satisfy the save-boundary numeric rules
+    // before changing any receipt or adoption state. Display conversion retains
+    // fractional legacy values so the shared validator can reject, never round.
+    validateApplicationNumericDraft(convertPricebookMoney({services:[raw]},'toDollars'));
     if(typeof input.adoptStartingValueGroup==='string'){
       if(!approvalEvaluation(raw,book).current)throw problem('Only a service with a current saved approval can adopt its new starting values in one action.',409);
       const definitions=CLASS2_DEFINITIONS[raw.serviceType]||{},groups=startingValueGroupsVNext(definitions);
@@ -398,7 +403,6 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
     const presentationIssues=applicationPresentationIssues(raw);
     if(presentationIssues.length)throw problem(presentationIssues.join(' '),422,{code:'INVALID_QUOTE_PRESENTATION',issues:presentationIssues});
     if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
-    if(raw.serviceType==='ROOFING_REPLACEMENT'&&[raw.minimumJob,raw.pricing?.minimumJob,...(Array.isArray(raw.tiers)?raw.tiers:[]).map(t=>t.overrides?.minimumJob)].some(value=>typeof value==='number'&&!Number.isSafeInteger(value)))throw problem('Correct the roof replacement minimum, including price options, to an exact dollar-and-cent amount before confirming it. The stored value has not been rounded.',422);
     if(legacySettings(raw,book,true).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
     const now=new Date().toISOString(),operationId=crypto.randomUUID();
     if(raw.origin&&raw.origin.ownerId!==ownerId)throw problem('This service origin belongs to another owner.',409);

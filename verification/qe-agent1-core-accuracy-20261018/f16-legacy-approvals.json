@@ -1,0 +1,2940 @@
+{
+  "agent1Source": "3b1e4b32c1cf31260ba2344fbf3bbdf418c81b5c",
+  "agent2Source": "7e9dfcedc6f11f80b45b8ca0554aa5b83935d15b",
+  "cases": [
+    {
+      "field": "deckingPerSheet",
+      "location": "base",
+      "source": "MANUAL",
+      "book": {
+        "services": [
+          {
+            "id": "13b7fab2-15b4-443b-ba49-e8c225dabf83",
+            "source": "MANUAL",
+            "origin": {
+              "serviceId": "13b7fab2-15b4-443b-ba49-e8c225dabf83",
+              "serviceType": "ROOFING_REPLACEMENT",
+              "source": "MANUAL",
+              "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-MANUAL",
+              "operationId": "fixture-created",
+              "createdAt": "2026-09-09T12:00:00.000Z"
+            },
+            "knownOfferings": {
+              "existingRoofType": {
+                "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+              },
+              "replacementRoofType": {
+                "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+              }
+            },
+            "active": true,
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] F16 legacy approval",
+            "pricing": {
+              "laborPerSquare": {
+                "asphalt_shingle": 20000
+              },
+              "materialCostPerSquare": {
+                "asphalt_shingle": 10000
+              },
+              "tearOffPerSquare": {
+                "asphalt_shingle": 6000
+              },
+              "underlaymentPerSquare": {
+                "asphalt_shingle": 100
+              },
+              "underlaymentPriceBasis": {
+                "asphalt_shingle": "installed_area_sell_price"
+              },
+              "disposalPerSquare": 2000,
+              "accessoryPricingMode": "per_square_allin",
+              "minimumJob": 0,
+              "deckingPerSheet": 100.5,
+              "dripEdgePerLF": 100.5,
+              "wasteFactorByComplexity": {
+                "simple": 0.1,
+                "moderate": 0.13,
+                "complex": 0.18
+              },
+              "pitchMultiplier": {
+                "low": 1,
+                "medium": 1.15,
+                "steep": 1.25,
+                "very_steep": 1.4
+              },
+              "storyMultiplier": {
+                "1": 1,
+                "2": 1.1,
+                "3": 1.2
+              },
+              "accessoryWasteFactor": {
+                "starterPerLF": 0.1,
+                "dripEdgePerLF": 0.1,
+                "ridgeCapPerLF": 0.1
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "priceMetadata": {
+              "laborPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.780Z"
+              },
+              "materialCostPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.780Z"
+              },
+              "tearOffPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.780Z"
+              },
+              "underlaymentPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.780Z"
+              },
+              "disposalPerSquare": {
+                "changedAt": "2026-10-18T23:03:08.780Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-18T23:03:08.780Z"
+              },
+              "deckingPerSheet": {
+                "changedAt": "2026-10-18T23:03:08.780Z"
+              },
+              "dripEdgePerLF": {
+                "changedAt": "2026-10-18T23:03:08.780Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-MANUAL",
+              "serviceId": "13b7fab2-15b4-443b-ba49-e8c225dabf83",
+              "operationId": "853c50c6-43a5-4f51-8002-4a4d34f410a2",
+              "approvedAt": "2026-10-18T23:03:08.876Z",
+              "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "afc418bcfae5661f00bd585cad36e34bd730c1407567cab1cf762d866854cce5",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "91ed82744bc2ed48fd74e5d68aa5470f728cbb98acec94e0457dcb8a5484ed19",
+                "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+                "service.origin": "36ea7433c23ca1b35bcdfe367a03eed6dd74ac18abba98cf5d5f7b364a630b8b",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "b81799e5edcd41936e8e93e9cfd1b551fcc18ded4e05df3e6c781cead9814028",
+                "service.service": "dbdbcd38209480f05ea24a4663a41ea7088f464dee62eb2c4a883040d97ac149",
+                "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "CAD",
+          "quoteTimeZone": "UTC"
+        },
+        "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-MANUAL",
+        "updatedAt": "2026-10-18T23:03:08.879Z"
+      }
+    },
+    {
+      "field": "deckingPerSheet",
+      "location": "base",
+      "source": "AI_SUGGESTED",
+      "book": {
+        "services": [
+          {
+            "id": "aa547c10-608f-4954-9997-ca4b8953430b",
+            "source": "AI_SUGGESTED",
+            "origin": {
+              "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+              "serviceType": "ROOFING_REPLACEMENT",
+              "source": "AI_SUGGESTED",
+              "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+              "operationId": "fixture-created",
+              "createdAt": "2026-09-09T12:00:00.000Z"
+            },
+            "knownOfferings": {
+              "existingRoofType": {
+                "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+              },
+              "replacementRoofType": {
+                "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+              }
+            },
+            "active": true,
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] F16 legacy approval",
+            "pricing": {
+              "laborPerSquare": {
+                "asphalt_shingle": 20000
+              },
+              "materialCostPerSquare": {
+                "asphalt_shingle": 10000
+              },
+              "tearOffPerSquare": {
+                "asphalt_shingle": 6000
+              },
+              "underlaymentPerSquare": {
+                "asphalt_shingle": 100
+              },
+              "underlaymentPriceBasis": {
+                "asphalt_shingle": "installed_area_sell_price"
+              },
+              "disposalPerSquare": 2000,
+              "accessoryPricingMode": "per_square_allin",
+              "minimumJob": 0,
+              "deckingPerSheet": 100.5,
+              "dripEdgePerLF": 100.5,
+              "wasteFactorByComplexity": {
+                "simple": 0.1,
+                "moderate": 0.13,
+                "complex": 0.18
+              },
+              "pitchMultiplier": {
+                "low": 1,
+                "medium": 1.15,
+                "steep": 1.25,
+                "very_steep": 1.4
+              },
+              "storyMultiplier": {
+                "1": 1,
+                "2": 1.1,
+                "3": 1.2
+              },
+              "accessoryWasteFactor": {
+                "starterPerLF": 0.1,
+                "dripEdgePerLF": 0.1,
+                "ridgeCapPerLF": 0.1
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "priceMetadata": {
+              "laborPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.919Z",
+                "aiPlaceholder": true
+              },
+              "materialCostPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.919Z",
+                "aiPlaceholder": true
+              },
+              "tearOffPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.919Z",
+                "aiPlaceholder": true
+              },
+              "underlaymentPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.919Z",
+                "aiPlaceholder": true
+              },
+              "disposalPerSquare": {
+                "changedAt": "2026-10-18T23:03:08.919Z",
+                "aiPlaceholder": true
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-18T23:03:08.919Z",
+                "aiPlaceholder": true
+              },
+              "deckingPerSheet": {
+                "changedAt": "2026-10-18T23:03:08.919Z",
+                "aiPlaceholder": true
+              },
+              "dripEdgePerLF": {
+                "changedAt": "2026-10-18T23:03:08.919Z",
+                "aiPlaceholder": true
+              }
+            },
+            "confirmedFields": {
+              "laborPerSquare": true,
+              "materialCostPerSquare": true,
+              "tearOffPerSquare": true,
+              "underlaymentPerSquare": true,
+              "underlaymentPriceBasis": true,
+              "disposalPerSquare": true,
+              "accessoryPricingMode": true,
+              "minimumJob": true,
+              "deckingPerSheet": true,
+              "dripEdgePerLF": true,
+              "wasteFactorByComplexity": true,
+              "pitchMultiplier": true,
+              "storyMultiplier": true,
+              "accessoryWasteFactor": true,
+              "pitchInstallationAdder": true,
+              "pitchRemovalAdder": true,
+              "complexityLaborMultiplier": true,
+              "additionalLayerRemovalFactor": true,
+              "feeRules": true,
+              "priceBasisByCategory": true,
+              "taxabilityByCategory": true,
+              "peakMonths": true,
+              "peakSurchargePercent": true,
+              "knownOfferings": true
+            },
+            "approvedValues": {
+              "laborPerSquare": {
+                "value": {
+                  "asphalt_shingle": 20000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "materialCostPerSquare": {
+                "value": {
+                  "asphalt_shingle": 10000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "tearOffPerSquare": {
+                "value": {
+                  "asphalt_shingle": 6000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "underlaymentPerSquare": {
+                "value": {
+                  "asphalt_shingle": 100
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "underlaymentPriceBasis": {
+                "value": {
+                  "asphalt_shingle": "installed_area_sell_price"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "disposalPerSquare": {
+                "value": 2000,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "accessoryPricingMode": {
+                "value": "per_square_allin",
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "minimumJob": {
+                "value": 0,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "deckingPerSheet": {
+                "value": 100.5,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "dripEdgePerLF": {
+                "value": 100.5,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "wasteFactorByComplexity": {
+                "value": {
+                  "simple": 0.1,
+                  "moderate": 0.13,
+                  "complex": 0.18
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "pitchMultiplier": {
+                "value": {
+                  "low": 1,
+                  "medium": 1.15,
+                  "steep": 1.25,
+                  "very_steep": 1.4
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "storyMultiplier": {
+                "value": {
+                  "1": 1,
+                  "2": 1.1,
+                  "3": 1.2
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "accessoryWasteFactor": {
+                "value": {
+                  "starterPerLF": 0.1,
+                  "dripEdgePerLF": 0.1,
+                  "ridgeCapPerLF": 0.1
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "pitchInstallationAdder": {
+                "value": {
+                  "seven_to_nine": 0.2,
+                  "ten_to_twelve": 0.31
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "pitchRemovalAdder": {
+                "value": {
+                  "seven_to_nine": 0.26,
+                  "ten_to_twelve": 0.41
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "complexityLaborMultiplier": {
+                "value": {
+                  "simple": 1,
+                  "moderate": 1.2,
+                  "complex": 1.4
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "additionalLayerRemovalFactor": {
+                "value": 0.7,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "feeRules": {
+                "value": {
+                  "travel": "not_applicable",
+                  "disposal": "not_applicable",
+                  "permit": "not_applicable",
+                  "overhead": "not_applicable"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "priceBasisByCategory": {
+                "value": {
+                  "labor": "cost",
+                  "material": "cost",
+                  "removal": "cost",
+                  "prep": "cost",
+                  "addon": "cost",
+                  "equipment": "cost",
+                  "travel": "cost",
+                  "disposal": "cost",
+                  "permit": "cost",
+                  "overhead": "cost",
+                  "surcharge": "cost"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "taxabilityByCategory": {
+                "value": {
+                  "labor": false,
+                  "material": false,
+                  "removal": false,
+                  "prep": false,
+                  "addon": false,
+                  "equipment": false,
+                  "travel": false,
+                  "disposal": false,
+                  "permit": false,
+                  "overhead": false,
+                  "surcharge": false
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "peakMonths": {
+                "value": [],
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "peakSurchargePercent": {
+                "value": 0,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              },
+              "knownOfferings": {
+                "value": {
+                  "existingRoofType": {
+                    "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                    "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                    "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                    "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+                  },
+                  "replacementRoofType": {
+                    "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                    "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                    "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                    "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+                  }
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+                "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+                "approvedAt": "2026-10-18T23:03:08.948Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+              "serviceId": "aa547c10-608f-4954-9997-ca4b8953430b",
+              "operationId": "de7b5cb9-d88a-4ae4-bf2e-5c6b30592ea7",
+              "approvedAt": "2026-10-18T23:03:08.948Z",
+              "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "61c1af4098e71c9df6f3d57a27eb6c3aa6b720447c478578418c91476b9c1399",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "1d628cf6bdd21aa2039e80d48e58b92cb19416d3007db9af84ed0b981364ffb0",
+                "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+                "service.origin": "8a64bc980450bab84922bf89ec24645d0e8be470d9d6b3e14f1f33dc00ab8a8f",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "b81799e5edcd41936e8e93e9cfd1b551fcc18ded4e05df3e6c781cead9814028",
+                "service.service": "dbdbcd38209480f05ea24a4663a41ea7088f464dee62eb2c4a883040d97ac149",
+                "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+                "service.source": "1748a8364ecb5e13f134074f10903771c281e9d0baed5551748dfe1ca7894ed4",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "CAD",
+          "quoteTimeZone": "UTC"
+        },
+        "ownerId": "synthetic-agent1-f16-deckingPerSheet-base-AI_SUGGESTED",
+        "updatedAt": "2026-10-18T23:03:08.951Z"
+      }
+    },
+    {
+      "field": "deckingPerSheet",
+      "location": "tier",
+      "source": "MANUAL",
+      "book": {
+        "services": [
+          {
+            "id": "aaa506e0-c9b4-46bc-a9c7-107a2bb72e64",
+            "source": "MANUAL",
+            "origin": {
+              "serviceId": "aaa506e0-c9b4-46bc-a9c7-107a2bb72e64",
+              "serviceType": "ROOFING_REPLACEMENT",
+              "source": "MANUAL",
+              "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-MANUAL",
+              "operationId": "fixture-created",
+              "createdAt": "2026-09-09T12:00:00.000Z"
+            },
+            "knownOfferings": {
+              "existingRoofType": {
+                "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+              },
+              "replacementRoofType": {
+                "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+              }
+            },
+            "active": true,
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] F16 legacy approval",
+            "pricing": {
+              "laborPerSquare": {
+                "asphalt_shingle": 20000
+              },
+              "materialCostPerSquare": {
+                "asphalt_shingle": 10000
+              },
+              "tearOffPerSquare": {
+                "asphalt_shingle": 6000
+              },
+              "underlaymentPerSquare": {
+                "asphalt_shingle": 100
+              },
+              "underlaymentPriceBasis": {
+                "asphalt_shingle": "installed_area_sell_price"
+              },
+              "disposalPerSquare": 2000,
+              "accessoryPricingMode": "per_square_allin",
+              "minimumJob": 0,
+              "deckingPerSheet": 100,
+              "dripEdgePerLF": 100.5,
+              "wasteFactorByComplexity": {
+                "simple": 0.1,
+                "moderate": 0.13,
+                "complex": 0.18
+              },
+              "pitchMultiplier": {
+                "low": 1,
+                "medium": 1.15,
+                "steep": 1.25,
+                "very_steep": 1.4
+              },
+              "storyMultiplier": {
+                "1": 1,
+                "2": 1.1,
+                "3": 1.2
+              },
+              "accessoryWasteFactor": {
+                "starterPerLF": 0.1,
+                "dripEdgePerLF": 0.1,
+                "ridgeCapPerLF": 0.1
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "tiers": [
+              {
+                "name": "[SYNTHETIC] Premium",
+                "overrides": {
+                  "deckingPerSheet": 100.5,
+                  "dripEdgePerLF": 100.5
+                },
+                "priceMetadata": {
+                  "deckingPerSheet": {
+                    "changedAt": "2026-10-18T23:03:08.999Z"
+                  },
+                  "dripEdgePerLF": {
+                    "changedAt": "2026-10-18T23:03:08.999Z"
+                  }
+                }
+              }
+            ],
+            "priceMetadata": {
+              "laborPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.999Z"
+              },
+              "materialCostPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.999Z"
+              },
+              "tearOffPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.999Z"
+              },
+              "underlaymentPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:08.999Z"
+              },
+              "disposalPerSquare": {
+                "changedAt": "2026-10-18T23:03:08.999Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-18T23:03:08.999Z"
+              },
+              "deckingPerSheet": {
+                "changedAt": "2026-10-18T23:03:08.999Z"
+              },
+              "dripEdgePerLF": {
+                "changedAt": "2026-10-18T23:03:08.999Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-MANUAL",
+              "serviceId": "aaa506e0-c9b4-46bc-a9c7-107a2bb72e64",
+              "operationId": "98ac3d92-ef12-43ad-9409-8769adec4049",
+              "approvedAt": "2026-10-18T23:03:09.026Z",
+              "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "cf892de519ff352a1b9da67a9273a2b9bf7909648894f7d2a72e23b9b7bf9a52",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "46f2c60786ec6f551b3eb00acae13ce24e839363ba1d4fc0e16b1a0465353cf3",
+                "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+                "service.origin": "4373548836cdae4970c307c81f2fdfaa7fdc9514673eafc16790213e56df16ba",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "c21e8f3ce91cd3d3a6578072a70bf94f515c41b21e2003714ff53ee35354ea24",
+                "service.service": "dbdbcd38209480f05ea24a4663a41ea7088f464dee62eb2c4a883040d97ac149",
+                "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "44a73c2a52f3cbe3a38eb15e2fd8b894498ac7f6b2acd894df157bcc5170a6a6",
+                "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "CAD",
+          "quoteTimeZone": "UTC"
+        },
+        "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-MANUAL",
+        "updatedAt": "2026-10-18T23:03:09.027Z"
+      }
+    },
+    {
+      "field": "deckingPerSheet",
+      "location": "tier",
+      "source": "AI_SUGGESTED",
+      "book": {
+        "services": [
+          {
+            "id": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+            "source": "AI_SUGGESTED",
+            "origin": {
+              "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+              "serviceType": "ROOFING_REPLACEMENT",
+              "source": "AI_SUGGESTED",
+              "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+              "operationId": "fixture-created",
+              "createdAt": "2026-09-09T12:00:00.000Z"
+            },
+            "knownOfferings": {
+              "existingRoofType": {
+                "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+              },
+              "replacementRoofType": {
+                "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+              }
+            },
+            "active": true,
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] F16 legacy approval",
+            "pricing": {
+              "laborPerSquare": {
+                "asphalt_shingle": 20000
+              },
+              "materialCostPerSquare": {
+                "asphalt_shingle": 10000
+              },
+              "tearOffPerSquare": {
+                "asphalt_shingle": 6000
+              },
+              "underlaymentPerSquare": {
+                "asphalt_shingle": 100
+              },
+              "underlaymentPriceBasis": {
+                "asphalt_shingle": "installed_area_sell_price"
+              },
+              "disposalPerSquare": 2000,
+              "accessoryPricingMode": "per_square_allin",
+              "minimumJob": 0,
+              "deckingPerSheet": 100,
+              "dripEdgePerLF": 100.5,
+              "wasteFactorByComplexity": {
+                "simple": 0.1,
+                "moderate": 0.13,
+                "complex": 0.18
+              },
+              "pitchMultiplier": {
+                "low": 1,
+                "medium": 1.15,
+                "steep": 1.25,
+                "very_steep": 1.4
+              },
+              "storyMultiplier": {
+                "1": 1,
+                "2": 1.1,
+                "3": 1.2
+              },
+              "accessoryWasteFactor": {
+                "starterPerLF": 0.1,
+                "dripEdgePerLF": 0.1,
+                "ridgeCapPerLF": 0.1
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "tiers": [
+              {
+                "name": "[SYNTHETIC] Premium",
+                "overrides": {
+                  "deckingPerSheet": 100.5,
+                  "dripEdgePerLF": 100.5
+                },
+                "priceMetadata": {
+                  "deckingPerSheet": {
+                    "changedAt": "2026-10-18T23:03:09.061Z",
+                    "aiPlaceholder": true
+                  },
+                  "dripEdgePerLF": {
+                    "changedAt": "2026-10-18T23:03:09.061Z",
+                    "aiPlaceholder": true
+                  }
+                }
+              }
+            ],
+            "priceMetadata": {
+              "laborPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.061Z",
+                "aiPlaceholder": true
+              },
+              "materialCostPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.061Z",
+                "aiPlaceholder": true
+              },
+              "tearOffPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.061Z",
+                "aiPlaceholder": true
+              },
+              "underlaymentPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.061Z",
+                "aiPlaceholder": true
+              },
+              "disposalPerSquare": {
+                "changedAt": "2026-10-18T23:03:09.061Z",
+                "aiPlaceholder": true
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-18T23:03:09.061Z",
+                "aiPlaceholder": true
+              },
+              "deckingPerSheet": {
+                "changedAt": "2026-10-18T23:03:09.061Z",
+                "aiPlaceholder": true
+              },
+              "dripEdgePerLF": {
+                "changedAt": "2026-10-18T23:03:09.061Z",
+                "aiPlaceholder": true
+              }
+            },
+            "confirmedFields": {
+              "laborPerSquare": true,
+              "materialCostPerSquare": true,
+              "tearOffPerSquare": true,
+              "underlaymentPerSquare": true,
+              "underlaymentPriceBasis": true,
+              "disposalPerSquare": true,
+              "accessoryPricingMode": true,
+              "minimumJob": true,
+              "deckingPerSheet": true,
+              "dripEdgePerLF": true,
+              "wasteFactorByComplexity": true,
+              "pitchMultiplier": true,
+              "storyMultiplier": true,
+              "accessoryWasteFactor": true,
+              "pitchInstallationAdder": true,
+              "pitchRemovalAdder": true,
+              "complexityLaborMultiplier": true,
+              "additionalLayerRemovalFactor": true,
+              "feeRules": true,
+              "priceBasisByCategory": true,
+              "taxabilityByCategory": true,
+              "peakMonths": true,
+              "peakSurchargePercent": true,
+              "knownOfferings": true,
+              "tiers": true
+            },
+            "approvedValues": {
+              "laborPerSquare": {
+                "value": {
+                  "asphalt_shingle": 20000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "materialCostPerSquare": {
+                "value": {
+                  "asphalt_shingle": 10000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "tearOffPerSquare": {
+                "value": {
+                  "asphalt_shingle": 6000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "underlaymentPerSquare": {
+                "value": {
+                  "asphalt_shingle": 100
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "underlaymentPriceBasis": {
+                "value": {
+                  "asphalt_shingle": "installed_area_sell_price"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "disposalPerSquare": {
+                "value": 2000,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "accessoryPricingMode": {
+                "value": "per_square_allin",
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "minimumJob": {
+                "value": 0,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "deckingPerSheet": {
+                "value": 100,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "dripEdgePerLF": {
+                "value": 100.5,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "wasteFactorByComplexity": {
+                "value": {
+                  "simple": 0.1,
+                  "moderate": 0.13,
+                  "complex": 0.18
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "pitchMultiplier": {
+                "value": {
+                  "low": 1,
+                  "medium": 1.15,
+                  "steep": 1.25,
+                  "very_steep": 1.4
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "storyMultiplier": {
+                "value": {
+                  "1": 1,
+                  "2": 1.1,
+                  "3": 1.2
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "accessoryWasteFactor": {
+                "value": {
+                  "starterPerLF": 0.1,
+                  "dripEdgePerLF": 0.1,
+                  "ridgeCapPerLF": 0.1
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "pitchInstallationAdder": {
+                "value": {
+                  "seven_to_nine": 0.2,
+                  "ten_to_twelve": 0.31
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "pitchRemovalAdder": {
+                "value": {
+                  "seven_to_nine": 0.26,
+                  "ten_to_twelve": 0.41
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "complexityLaborMultiplier": {
+                "value": {
+                  "simple": 1,
+                  "moderate": 1.2,
+                  "complex": 1.4
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "additionalLayerRemovalFactor": {
+                "value": 0.7,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "feeRules": {
+                "value": {
+                  "travel": "not_applicable",
+                  "disposal": "not_applicable",
+                  "permit": "not_applicable",
+                  "overhead": "not_applicable"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "priceBasisByCategory": {
+                "value": {
+                  "labor": "cost",
+                  "material": "cost",
+                  "removal": "cost",
+                  "prep": "cost",
+                  "addon": "cost",
+                  "equipment": "cost",
+                  "travel": "cost",
+                  "disposal": "cost",
+                  "permit": "cost",
+                  "overhead": "cost",
+                  "surcharge": "cost"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "taxabilityByCategory": {
+                "value": {
+                  "labor": false,
+                  "material": false,
+                  "removal": false,
+                  "prep": false,
+                  "addon": false,
+                  "equipment": false,
+                  "travel": false,
+                  "disposal": false,
+                  "permit": false,
+                  "overhead": false,
+                  "surcharge": false
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "peakMonths": {
+                "value": [],
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "peakSurchargePercent": {
+                "value": 0,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "knownOfferings": {
+                "value": {
+                  "existingRoofType": {
+                    "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                    "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                    "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                    "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+                  },
+                  "replacementRoofType": {
+                    "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                    "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                    "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                    "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+                  }
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              },
+              "tiers": {
+                "value": [
+                  {
+                    "name": "[SYNTHETIC] Premium",
+                    "overrides": {
+                      "deckingPerSheet": 100.5,
+                      "dripEdgePerLF": 100.5
+                    }
+                  }
+                ],
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+                "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+                "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+                "approvedAt": "2026-10-18T23:03:09.094Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+              "serviceId": "da727cd0-ab7e-42b0-b0b1-cdac1ed9db30",
+              "operationId": "f11f2253-08ac-4e0e-be94-ea3d477426c5",
+              "approvedAt": "2026-10-18T23:03:09.094Z",
+              "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "48f6cab462f64c508aaee8d3453ec2f018e103e07efa2048902344c1b9a45d1d",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "dff496b1873cec28df2c85e3e040b6be0c577e689a387c22cea9d75e59fc1571",
+                "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+                "service.origin": "e5e346c7a4d49a84c898c27d75075011481c9e31b28f13d232c6f3537652a2a4",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "c21e8f3ce91cd3d3a6578072a70bf94f515c41b21e2003714ff53ee35354ea24",
+                "service.service": "dbdbcd38209480f05ea24a4663a41ea7088f464dee62eb2c4a883040d97ac149",
+                "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+                "service.source": "1748a8364ecb5e13f134074f10903771c281e9d0baed5551748dfe1ca7894ed4",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "44a73c2a52f3cbe3a38eb15e2fd8b894498ac7f6b2acd894df157bcc5170a6a6",
+                "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "CAD",
+          "quoteTimeZone": "UTC"
+        },
+        "ownerId": "synthetic-agent1-f16-deckingPerSheet-tier-AI_SUGGESTED",
+        "updatedAt": "2026-10-18T23:03:09.098Z"
+      }
+    },
+    {
+      "field": "pipeJackEach",
+      "location": "base",
+      "source": "MANUAL",
+      "book": {
+        "services": [
+          {
+            "id": "591872c3-c91e-4cc1-a44f-64b6f3c503d9",
+            "source": "MANUAL",
+            "origin": {
+              "serviceId": "591872c3-c91e-4cc1-a44f-64b6f3c503d9",
+              "serviceType": "ROOFING_REPLACEMENT",
+              "source": "MANUAL",
+              "ownerId": "synthetic-agent1-f16-pipeJackEach-base-MANUAL",
+              "operationId": "fixture-created",
+              "createdAt": "2026-09-09T12:00:00.000Z"
+            },
+            "knownOfferings": {
+              "existingRoofType": {
+                "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+              },
+              "replacementRoofType": {
+                "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+              }
+            },
+            "active": true,
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] F16 legacy approval",
+            "pricing": {
+              "laborPerSquare": {
+                "asphalt_shingle": 20000
+              },
+              "materialCostPerSquare": {
+                "asphalt_shingle": 10000
+              },
+              "tearOffPerSquare": {
+                "asphalt_shingle": 6000
+              },
+              "underlaymentPerSquare": {
+                "asphalt_shingle": 100
+              },
+              "underlaymentPriceBasis": {
+                "asphalt_shingle": "installed_area_sell_price"
+              },
+              "disposalPerSquare": 2000,
+              "accessoryPricingMode": "per_square_allin",
+              "minimumJob": 0,
+              "pipeJackEach": 100.5,
+              "dripEdgePerLF": 100.5,
+              "wasteFactorByComplexity": {
+                "simple": 0.1,
+                "moderate": 0.13,
+                "complex": 0.18
+              },
+              "pitchMultiplier": {
+                "low": 1,
+                "medium": 1.15,
+                "steep": 1.25,
+                "very_steep": 1.4
+              },
+              "storyMultiplier": {
+                "1": 1,
+                "2": 1.1,
+                "3": 1.2
+              },
+              "accessoryWasteFactor": {
+                "starterPerLF": 0.1,
+                "dripEdgePerLF": 0.1,
+                "ridgeCapPerLF": 0.1
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "priceMetadata": {
+              "laborPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.157Z"
+              },
+              "materialCostPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.157Z"
+              },
+              "tearOffPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.157Z"
+              },
+              "underlaymentPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.157Z"
+              },
+              "disposalPerSquare": {
+                "changedAt": "2026-10-18T23:03:09.157Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-18T23:03:09.157Z"
+              },
+              "pipeJackEach": {
+                "changedAt": "2026-10-18T23:03:09.157Z"
+              },
+              "dripEdgePerLF": {
+                "changedAt": "2026-10-18T23:03:09.157Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-agent1-f16-pipeJackEach-base-MANUAL",
+              "serviceId": "591872c3-c91e-4cc1-a44f-64b6f3c503d9",
+              "operationId": "bb9cd13a-1bfb-42ef-973e-7f3004d484ca",
+              "approvedAt": "2026-10-18T23:03:09.180Z",
+              "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "dcc09cc1a7212455e0929446e134ed39bdb298a524e28be152295789023d1dbb",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "a4aea24db718f4c9ed3d740ba5731708f610414b28583318501b921f5a8ba7ed",
+                "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+                "service.origin": "d5eec52ab5ea92e839ec4805554ab773eec4719e257010ea718443dd8150f038",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "fd887bd55440146cffcfef12419297017cf3663ed0a406ad6457152758351ee9",
+                "service.service": "dbdbcd38209480f05ea24a4663a41ea7088f464dee62eb2c4a883040d97ac149",
+                "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "CAD",
+          "quoteTimeZone": "UTC"
+        },
+        "ownerId": "synthetic-agent1-f16-pipeJackEach-base-MANUAL",
+        "updatedAt": "2026-10-18T23:03:09.181Z"
+      }
+    },
+    {
+      "field": "pipeJackEach",
+      "location": "base",
+      "source": "AI_SUGGESTED",
+      "book": {
+        "services": [
+          {
+            "id": "522975d4-e6b9-40d2-8446-172efc0f592b",
+            "source": "AI_SUGGESTED",
+            "origin": {
+              "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+              "serviceType": "ROOFING_REPLACEMENT",
+              "source": "AI_SUGGESTED",
+              "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+              "operationId": "fixture-created",
+              "createdAt": "2026-09-09T12:00:00.000Z"
+            },
+            "knownOfferings": {
+              "existingRoofType": {
+                "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+              },
+              "replacementRoofType": {
+                "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+              }
+            },
+            "active": true,
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] F16 legacy approval",
+            "pricing": {
+              "laborPerSquare": {
+                "asphalt_shingle": 20000
+              },
+              "materialCostPerSquare": {
+                "asphalt_shingle": 10000
+              },
+              "tearOffPerSquare": {
+                "asphalt_shingle": 6000
+              },
+              "underlaymentPerSquare": {
+                "asphalt_shingle": 100
+              },
+              "underlaymentPriceBasis": {
+                "asphalt_shingle": "installed_area_sell_price"
+              },
+              "disposalPerSquare": 2000,
+              "accessoryPricingMode": "per_square_allin",
+              "minimumJob": 0,
+              "pipeJackEach": 100.5,
+              "dripEdgePerLF": 100.5,
+              "wasteFactorByComplexity": {
+                "simple": 0.1,
+                "moderate": 0.13,
+                "complex": 0.18
+              },
+              "pitchMultiplier": {
+                "low": 1,
+                "medium": 1.15,
+                "steep": 1.25,
+                "very_steep": 1.4
+              },
+              "storyMultiplier": {
+                "1": 1,
+                "2": 1.1,
+                "3": 1.2
+              },
+              "accessoryWasteFactor": {
+                "starterPerLF": 0.1,
+                "dripEdgePerLF": 0.1,
+                "ridgeCapPerLF": 0.1
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "priceMetadata": {
+              "laborPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.205Z",
+                "aiPlaceholder": true
+              },
+              "materialCostPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.205Z",
+                "aiPlaceholder": true
+              },
+              "tearOffPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.205Z",
+                "aiPlaceholder": true
+              },
+              "underlaymentPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.205Z",
+                "aiPlaceholder": true
+              },
+              "disposalPerSquare": {
+                "changedAt": "2026-10-18T23:03:09.205Z",
+                "aiPlaceholder": true
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-18T23:03:09.205Z",
+                "aiPlaceholder": true
+              },
+              "pipeJackEach": {
+                "changedAt": "2026-10-18T23:03:09.205Z",
+                "aiPlaceholder": true
+              },
+              "dripEdgePerLF": {
+                "changedAt": "2026-10-18T23:03:09.205Z",
+                "aiPlaceholder": true
+              }
+            },
+            "confirmedFields": {
+              "laborPerSquare": true,
+              "materialCostPerSquare": true,
+              "tearOffPerSquare": true,
+              "underlaymentPerSquare": true,
+              "underlaymentPriceBasis": true,
+              "disposalPerSquare": true,
+              "accessoryPricingMode": true,
+              "minimumJob": true,
+              "pipeJackEach": true,
+              "dripEdgePerLF": true,
+              "wasteFactorByComplexity": true,
+              "pitchMultiplier": true,
+              "storyMultiplier": true,
+              "accessoryWasteFactor": true,
+              "pitchInstallationAdder": true,
+              "pitchRemovalAdder": true,
+              "complexityLaborMultiplier": true,
+              "additionalLayerRemovalFactor": true,
+              "feeRules": true,
+              "priceBasisByCategory": true,
+              "taxabilityByCategory": true,
+              "peakMonths": true,
+              "peakSurchargePercent": true,
+              "knownOfferings": true
+            },
+            "approvedValues": {
+              "laborPerSquare": {
+                "value": {
+                  "asphalt_shingle": 20000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "materialCostPerSquare": {
+                "value": {
+                  "asphalt_shingle": 10000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "tearOffPerSquare": {
+                "value": {
+                  "asphalt_shingle": 6000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "underlaymentPerSquare": {
+                "value": {
+                  "asphalt_shingle": 100
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "underlaymentPriceBasis": {
+                "value": {
+                  "asphalt_shingle": "installed_area_sell_price"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "disposalPerSquare": {
+                "value": 2000,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "accessoryPricingMode": {
+                "value": "per_square_allin",
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "minimumJob": {
+                "value": 0,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "pipeJackEach": {
+                "value": 100.5,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "dripEdgePerLF": {
+                "value": 100.5,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "wasteFactorByComplexity": {
+                "value": {
+                  "simple": 0.1,
+                  "moderate": 0.13,
+                  "complex": 0.18
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "pitchMultiplier": {
+                "value": {
+                  "low": 1,
+                  "medium": 1.15,
+                  "steep": 1.25,
+                  "very_steep": 1.4
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "storyMultiplier": {
+                "value": {
+                  "1": 1,
+                  "2": 1.1,
+                  "3": 1.2
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "accessoryWasteFactor": {
+                "value": {
+                  "starterPerLF": 0.1,
+                  "dripEdgePerLF": 0.1,
+                  "ridgeCapPerLF": 0.1
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "pitchInstallationAdder": {
+                "value": {
+                  "seven_to_nine": 0.2,
+                  "ten_to_twelve": 0.31
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "pitchRemovalAdder": {
+                "value": {
+                  "seven_to_nine": 0.26,
+                  "ten_to_twelve": 0.41
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "complexityLaborMultiplier": {
+                "value": {
+                  "simple": 1,
+                  "moderate": 1.2,
+                  "complex": 1.4
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "additionalLayerRemovalFactor": {
+                "value": 0.7,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "feeRules": {
+                "value": {
+                  "travel": "not_applicable",
+                  "disposal": "not_applicable",
+                  "permit": "not_applicable",
+                  "overhead": "not_applicable"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "priceBasisByCategory": {
+                "value": {
+                  "labor": "cost",
+                  "material": "cost",
+                  "removal": "cost",
+                  "prep": "cost",
+                  "addon": "cost",
+                  "equipment": "cost",
+                  "travel": "cost",
+                  "disposal": "cost",
+                  "permit": "cost",
+                  "overhead": "cost",
+                  "surcharge": "cost"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "taxabilityByCategory": {
+                "value": {
+                  "labor": false,
+                  "material": false,
+                  "removal": false,
+                  "prep": false,
+                  "addon": false,
+                  "equipment": false,
+                  "travel": false,
+                  "disposal": false,
+                  "permit": false,
+                  "overhead": false,
+                  "surcharge": false
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "peakMonths": {
+                "value": [],
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "peakSurchargePercent": {
+                "value": 0,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              },
+              "knownOfferings": {
+                "value": {
+                  "existingRoofType": {
+                    "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                    "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                    "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                    "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+                  },
+                  "replacementRoofType": {
+                    "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                    "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                    "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                    "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+                  }
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+                "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+                "approvedAt": "2026-10-18T23:03:09.230Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+              "serviceId": "522975d4-e6b9-40d2-8446-172efc0f592b",
+              "operationId": "f0153955-4592-4363-9640-a26c072a0c6a",
+              "approvedAt": "2026-10-18T23:03:09.230Z",
+              "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "b33b5c0b8285087af71e6711bd45243cc5bbb37f6900f801c63bc9891e56ad7c",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "2369daedd2f235fe56f4be6623e97bcf9c1e5d2feb421f1781be8871c6cc7930",
+                "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+                "service.origin": "aefc65ddcdc07dea2c28f824c26a9e379dd894a2aa8b4f86ddb443b8eda4a7eb",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "fd887bd55440146cffcfef12419297017cf3663ed0a406ad6457152758351ee9",
+                "service.service": "dbdbcd38209480f05ea24a4663a41ea7088f464dee62eb2c4a883040d97ac149",
+                "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+                "service.source": "1748a8364ecb5e13f134074f10903771c281e9d0baed5551748dfe1ca7894ed4",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "CAD",
+          "quoteTimeZone": "UTC"
+        },
+        "ownerId": "synthetic-agent1-f16-pipeJackEach-base-AI_SUGGESTED",
+        "updatedAt": "2026-10-18T23:03:09.232Z"
+      }
+    },
+    {
+      "field": "pipeJackEach",
+      "location": "tier",
+      "source": "MANUAL",
+      "book": {
+        "services": [
+          {
+            "id": "693adf60-c625-4499-8b45-fa0c709372d4",
+            "source": "MANUAL",
+            "origin": {
+              "serviceId": "693adf60-c625-4499-8b45-fa0c709372d4",
+              "serviceType": "ROOFING_REPLACEMENT",
+              "source": "MANUAL",
+              "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-MANUAL",
+              "operationId": "fixture-created",
+              "createdAt": "2026-09-09T12:00:00.000Z"
+            },
+            "knownOfferings": {
+              "existingRoofType": {
+                "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+              },
+              "replacementRoofType": {
+                "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+              }
+            },
+            "active": true,
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] F16 legacy approval",
+            "pricing": {
+              "laborPerSquare": {
+                "asphalt_shingle": 20000
+              },
+              "materialCostPerSquare": {
+                "asphalt_shingle": 10000
+              },
+              "tearOffPerSquare": {
+                "asphalt_shingle": 6000
+              },
+              "underlaymentPerSquare": {
+                "asphalt_shingle": 100
+              },
+              "underlaymentPriceBasis": {
+                "asphalt_shingle": "installed_area_sell_price"
+              },
+              "disposalPerSquare": 2000,
+              "accessoryPricingMode": "per_square_allin",
+              "minimumJob": 0,
+              "pipeJackEach": 100,
+              "dripEdgePerLF": 100.5,
+              "wasteFactorByComplexity": {
+                "simple": 0.1,
+                "moderate": 0.13,
+                "complex": 0.18
+              },
+              "pitchMultiplier": {
+                "low": 1,
+                "medium": 1.15,
+                "steep": 1.25,
+                "very_steep": 1.4
+              },
+              "storyMultiplier": {
+                "1": 1,
+                "2": 1.1,
+                "3": 1.2
+              },
+              "accessoryWasteFactor": {
+                "starterPerLF": 0.1,
+                "dripEdgePerLF": 0.1,
+                "ridgeCapPerLF": 0.1
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "tiers": [
+              {
+                "name": "[SYNTHETIC] Premium",
+                "overrides": {
+                  "pipeJackEach": 100.5,
+                  "dripEdgePerLF": 100.5
+                },
+                "priceMetadata": {
+                  "pipeJackEach": {
+                    "changedAt": "2026-10-18T23:03:09.272Z"
+                  },
+                  "dripEdgePerLF": {
+                    "changedAt": "2026-10-18T23:03:09.272Z"
+                  }
+                }
+              }
+            ],
+            "priceMetadata": {
+              "laborPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.272Z"
+              },
+              "materialCostPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.272Z"
+              },
+              "tearOffPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.272Z"
+              },
+              "underlaymentPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.272Z"
+              },
+              "disposalPerSquare": {
+                "changedAt": "2026-10-18T23:03:09.272Z"
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-18T23:03:09.272Z"
+              },
+              "pipeJackEach": {
+                "changedAt": "2026-10-18T23:03:09.272Z"
+              },
+              "dripEdgePerLF": {
+                "changedAt": "2026-10-18T23:03:09.272Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-MANUAL",
+              "serviceId": "693adf60-c625-4499-8b45-fa0c709372d4",
+              "operationId": "ed7e2293-5b26-446c-9f82-00297cf824bd",
+              "approvedAt": "2026-10-18T23:03:09.293Z",
+              "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "d0a856e5bc77a82c155366e0b04ea75ee12f2d015ff3ecbd6a4c4ede49c437ef",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "4c3aec4ba873e03a267d01500a9320bcd1965bf324a106e0f6f3462ddbbd06f4",
+                "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+                "service.origin": "4a7f9fe6670317277bfb5afecf83388923fac531692e0b8f9f3b45f913a635fb",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "e205557b6c19f8743e24988eed48389793d224e7566b3433a345ebba387b748c",
+                "service.service": "dbdbcd38209480f05ea24a4663a41ea7088f464dee62eb2c4a883040d97ac149",
+                "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+                "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "543d900f9cd4280faaa60c5fec96329d9bff1919d893e3203183c3a28d9ac9b5",
+                "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "CAD",
+          "quoteTimeZone": "UTC"
+        },
+        "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-MANUAL",
+        "updatedAt": "2026-10-18T23:03:09.294Z"
+      }
+    },
+    {
+      "field": "pipeJackEach",
+      "location": "tier",
+      "source": "AI_SUGGESTED",
+      "book": {
+        "services": [
+          {
+            "id": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+            "source": "AI_SUGGESTED",
+            "origin": {
+              "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+              "serviceType": "ROOFING_REPLACEMENT",
+              "source": "AI_SUGGESTED",
+              "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+              "operationId": "fixture-created",
+              "createdAt": "2026-09-09T12:00:00.000Z"
+            },
+            "knownOfferings": {
+              "existingRoofType": {
+                "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+              },
+              "replacementRoofType": {
+                "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+              }
+            },
+            "active": true,
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] F16 legacy approval",
+            "pricing": {
+              "laborPerSquare": {
+                "asphalt_shingle": 20000
+              },
+              "materialCostPerSquare": {
+                "asphalt_shingle": 10000
+              },
+              "tearOffPerSquare": {
+                "asphalt_shingle": 6000
+              },
+              "underlaymentPerSquare": {
+                "asphalt_shingle": 100
+              },
+              "underlaymentPriceBasis": {
+                "asphalt_shingle": "installed_area_sell_price"
+              },
+              "disposalPerSquare": 2000,
+              "accessoryPricingMode": "per_square_allin",
+              "minimumJob": 0,
+              "pipeJackEach": 100,
+              "dripEdgePerLF": 100.5,
+              "wasteFactorByComplexity": {
+                "simple": 0.1,
+                "moderate": 0.13,
+                "complex": 0.18
+              },
+              "pitchMultiplier": {
+                "low": 1,
+                "medium": 1.15,
+                "steep": 1.25,
+                "very_steep": 1.4
+              },
+              "storyMultiplier": {
+                "1": 1,
+                "2": 1.1,
+                "3": 1.2
+              },
+              "accessoryWasteFactor": {
+                "starterPerLF": 0.1,
+                "dripEdgePerLF": 0.1,
+                "ridgeCapPerLF": 0.1
+              }
+            },
+            "feeRules": {
+              "travel": "not_applicable",
+              "disposal": "not_applicable",
+              "permit": "not_applicable",
+              "overhead": "not_applicable"
+            },
+            "priceBasisByCategory": {
+              "labor": "cost",
+              "material": "cost",
+              "removal": "cost",
+              "prep": "cost",
+              "addon": "cost",
+              "equipment": "cost",
+              "travel": "cost",
+              "disposal": "cost",
+              "permit": "cost",
+              "overhead": "cost",
+              "surcharge": "cost"
+            },
+            "taxabilityByCategory": {
+              "labor": false,
+              "material": false,
+              "removal": false,
+              "prep": false,
+              "addon": false,
+              "equipment": false,
+              "travel": false,
+              "disposal": false,
+              "permit": false,
+              "overhead": false,
+              "surcharge": false
+            },
+            "peakMonths": [],
+            "peakSurchargePercent": 0,
+            "tiers": [
+              {
+                "name": "[SYNTHETIC] Premium",
+                "overrides": {
+                  "pipeJackEach": 100.5,
+                  "dripEdgePerLF": 100.5
+                },
+                "priceMetadata": {
+                  "pipeJackEach": {
+                    "changedAt": "2026-10-18T23:03:09.317Z",
+                    "aiPlaceholder": true
+                  },
+                  "dripEdgePerLF": {
+                    "changedAt": "2026-10-18T23:03:09.317Z",
+                    "aiPlaceholder": true
+                  }
+                }
+              }
+            ],
+            "priceMetadata": {
+              "laborPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.317Z",
+                "aiPlaceholder": true
+              },
+              "materialCostPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.317Z",
+                "aiPlaceholder": true
+              },
+              "tearOffPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.317Z",
+                "aiPlaceholder": true
+              },
+              "underlaymentPerSquare.asphalt_shingle": {
+                "changedAt": "2026-10-18T23:03:09.317Z",
+                "aiPlaceholder": true
+              },
+              "disposalPerSquare": {
+                "changedAt": "2026-10-18T23:03:09.317Z",
+                "aiPlaceholder": true
+              },
+              "minimumJob": {
+                "changedAt": "2026-10-18T23:03:09.317Z",
+                "aiPlaceholder": true
+              },
+              "pipeJackEach": {
+                "changedAt": "2026-10-18T23:03:09.317Z",
+                "aiPlaceholder": true
+              },
+              "dripEdgePerLF": {
+                "changedAt": "2026-10-18T23:03:09.317Z",
+                "aiPlaceholder": true
+              }
+            },
+            "confirmedFields": {
+              "laborPerSquare": true,
+              "materialCostPerSquare": true,
+              "tearOffPerSquare": true,
+              "underlaymentPerSquare": true,
+              "underlaymentPriceBasis": true,
+              "disposalPerSquare": true,
+              "accessoryPricingMode": true,
+              "minimumJob": true,
+              "pipeJackEach": true,
+              "dripEdgePerLF": true,
+              "wasteFactorByComplexity": true,
+              "pitchMultiplier": true,
+              "storyMultiplier": true,
+              "accessoryWasteFactor": true,
+              "pitchInstallationAdder": true,
+              "pitchRemovalAdder": true,
+              "complexityLaborMultiplier": true,
+              "additionalLayerRemovalFactor": true,
+              "feeRules": true,
+              "priceBasisByCategory": true,
+              "taxabilityByCategory": true,
+              "peakMonths": true,
+              "peakSurchargePercent": true,
+              "knownOfferings": true,
+              "tiers": true
+            },
+            "approvedValues": {
+              "laborPerSquare": {
+                "value": {
+                  "asphalt_shingle": 20000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "materialCostPerSquare": {
+                "value": {
+                  "asphalt_shingle": 10000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "tearOffPerSquare": {
+                "value": {
+                  "asphalt_shingle": 6000
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "underlaymentPerSquare": {
+                "value": {
+                  "asphalt_shingle": 100
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "underlaymentPriceBasis": {
+                "value": {
+                  "asphalt_shingle": "installed_area_sell_price"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "disposalPerSquare": {
+                "value": 2000,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "accessoryPricingMode": {
+                "value": "per_square_allin",
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "minimumJob": {
+                "value": 0,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "pipeJackEach": {
+                "value": 100,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "dripEdgePerLF": {
+                "value": 100.5,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "wasteFactorByComplexity": {
+                "value": {
+                  "simple": 0.1,
+                  "moderate": 0.13,
+                  "complex": 0.18
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "pitchMultiplier": {
+                "value": {
+                  "low": 1,
+                  "medium": 1.15,
+                  "steep": 1.25,
+                  "very_steep": 1.4
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "storyMultiplier": {
+                "value": {
+                  "1": 1,
+                  "2": 1.1,
+                  "3": 1.2
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "accessoryWasteFactor": {
+                "value": {
+                  "starterPerLF": 0.1,
+                  "dripEdgePerLF": 0.1,
+                  "ridgeCapPerLF": 0.1
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "pitchInstallationAdder": {
+                "value": {
+                  "seven_to_nine": 0.2,
+                  "ten_to_twelve": 0.31
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "pitchRemovalAdder": {
+                "value": {
+                  "seven_to_nine": 0.26,
+                  "ten_to_twelve": 0.41
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "complexityLaborMultiplier": {
+                "value": {
+                  "simple": 1,
+                  "moderate": 1.2,
+                  "complex": 1.4
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "additionalLayerRemovalFactor": {
+                "value": 0.7,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "feeRules": {
+                "value": {
+                  "travel": "not_applicable",
+                  "disposal": "not_applicable",
+                  "permit": "not_applicable",
+                  "overhead": "not_applicable"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "priceBasisByCategory": {
+                "value": {
+                  "labor": "cost",
+                  "material": "cost",
+                  "removal": "cost",
+                  "prep": "cost",
+                  "addon": "cost",
+                  "equipment": "cost",
+                  "travel": "cost",
+                  "disposal": "cost",
+                  "permit": "cost",
+                  "overhead": "cost",
+                  "surcharge": "cost"
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "taxabilityByCategory": {
+                "value": {
+                  "labor": false,
+                  "material": false,
+                  "removal": false,
+                  "prep": false,
+                  "addon": false,
+                  "equipment": false,
+                  "travel": false,
+                  "disposal": false,
+                  "permit": false,
+                  "overhead": false,
+                  "surcharge": false
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "peakMonths": {
+                "value": [],
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "peakSurchargePercent": {
+                "value": 0,
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "knownOfferings": {
+                "value": {
+                  "existingRoofType": {
+                    "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+                    "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+                    "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+                    "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+                  },
+                  "replacementRoofType": {
+                    "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+                    "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+                    "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+                    "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+                  }
+                },
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              },
+              "tiers": {
+                "value": [
+                  {
+                    "name": "[SYNTHETIC] Premium",
+                    "overrides": {
+                      "pipeJackEach": 100.5,
+                      "dripEdgePerLF": 100.5
+                    }
+                  }
+                ],
+                "serviceType": "ROOFING_REPLACEMENT",
+                "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+                "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+                "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+                "approvedAt": "2026-10-18T23:03:09.342Z"
+              }
+            },
+            "quoteDoneApproval": {
+              "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+              "serviceId": "0483da96-1ed6-4bdb-b358-592977bdf7be",
+              "operationId": "473631ae-8998-482d-8081-cf7f21d065c1",
+              "approvedAt": "2026-10-18T23:03:09.342Z",
+              "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+              "moneyUnitVersion": "roof-minimum-cents-v1",
+              "contentDigest": "8da2a84ff81e20e2de2e195b9d778cd7e5354683c16e517e04935dfeb7196f37",
+              "sectionDigests": {
+                "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+                "service.id": "b3eec9d936020665409ffe377a7c1c2974280c212e55bf57de3ff046ed243965",
+                "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+                "service.origin": "794d4de0aca2586586ec130ff6e3f1833d71c77b44140d8561a22428950cf8d0",
+                "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+                "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+                "service.pricing": "e205557b6c19f8743e24988eed48389793d224e7566b3433a345ebba387b748c",
+                "service.service": "dbdbcd38209480f05ea24a4663a41ea7088f464dee62eb2c4a883040d97ac149",
+                "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+                "service.source": "1748a8364ecb5e13f134074f10903771c281e9d0baed5551748dfe1ca7894ed4",
+                "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+                "service.tiers": "543d900f9cd4280faaa60c5fec96329d9bff1919d893e3203183c3a28d9ac9b5",
+                "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+                "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+              },
+              "operation": "owner_confirmed_quotedone_registration"
+            }
+          }
+        ],
+        "defaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 0,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0,
+          "currency": "CAD",
+          "quoteTimeZone": "UTC"
+        },
+        "ownerId": "synthetic-agent1-f16-pipeJackEach-tier-AI_SUGGESTED",
+        "updatedAt": "2026-10-18T23:03:09.345Z"
+      }
+    }
+  ]
+}
