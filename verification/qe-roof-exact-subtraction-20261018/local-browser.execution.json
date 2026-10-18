@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "test/quoteStartingValues20261017.browser.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/qe-roof-exact-subtraction",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T08:07:36.460Z",
+  "endedAt": "2026-10-18T08:07:37.013Z",
+  "code": 1,
+  "signal": null
+}

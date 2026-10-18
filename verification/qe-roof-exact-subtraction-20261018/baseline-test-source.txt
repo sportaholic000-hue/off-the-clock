@@ -1,0 +1,19 @@
+import './pricebookTestEnv.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
+import {input} from '../verification/qe-roof-exact-subtraction-20261018/fixture.mjs';
+const cases=JSON.parse(readFileSync(new URL('../verification/qe-roof-exact-subtraction-20261018/expected-cases.json',import.meta.url)));
+for(const row of cases)test('roof exact subtraction: '+row.id,()=>{
+ const q=generateQuoteVNext(input(row));
+ assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));
+ assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,row.expectedCents);
+ assert.deepEqual(q.lineItems.map(l=>({name:l.name,cents:l.amountCents})),row.lines.map(l=>({name:l.name,cents:l.cents})));
+ for(let i=0;i<row.lines.length;i++)if(row.lines[i].delta){
+  const line=q.lineItems[i],expected=row.lines[i];
+  const factor=line.calculation.multipliers.find(m=>/story addition|complexity addition/.test(m.name));
+  assert.deepEqual(factor.exactValue,expected.delta);
+  assert.deepEqual(line.calculation.exactUnroundedCents,expected.unrounded);
+ }
+});

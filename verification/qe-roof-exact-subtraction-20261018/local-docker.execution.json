@@ -1,0 +1,16 @@
+{
+  "command": [
+    "docker",
+    "version"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/qe-roof-exact-subtraction",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T08:07:37.072Z",
+  "endedAt": "2026-10-18T08:07:37.074Z",
+  "code": -2,
+  "signal": null,
+  "error": {
+    "code": "ENOENT",
+    "message": "spawn docker ENOENT"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "verification/qe-roof-exact-subtraction-20261018/capture-v9.mjs"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/qe-roof-exact-subtraction",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T08:04:29.268Z",
+  "endedAt": "2026-10-18T08:04:31.787Z",
+  "code": 0,
+  "signal": null
+}

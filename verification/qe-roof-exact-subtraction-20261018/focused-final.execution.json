@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "test/qeRoofExactSubtraction20261018.spec.mjs",
+    "test/qeRoofZeroAdjustments20261018.spec.mjs",
+    "test/qeAccuracyIntegration20261018.spec.mjs",
+    "test/qeRoofUnderlaymentAccuracy20261018.spec.mjs",
+    "test/quoteRoofing20261016.spec.mjs",
+    "test/releaseProductionEngineGuard.spec.mjs",
+    "test/backupRestoreRehearsal.spec.mjs",
+    "test/quoteStartingValues20261017.spec.mjs",
+    "test/quoteReviewFixes.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/qe-roof-exact-subtraction",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T08:06:47.249Z",
+  "endedAt": "2026-10-18T08:07:19.225Z",
+  "code": 0,
+  "signal": null
+}

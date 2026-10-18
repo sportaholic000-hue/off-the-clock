@@ -103,20 +103,34 @@ import {readFileSync} from 'node:fs';
 import {randomUUID} from 'node:crypto';
 import {ENGINE_VERSION} from '../server/quote-engine-vnext/index.js';
 import {EXPECTED_QUOTE_ENGINE_VERSION} from '../server/src/runtimeConfig.js';
-import {OLD_VERSION,NEW_VERSION} from '../verification/qe-roof-zero-adjustments-20261018/fixture.mjs';
+import {OLD_VERSION} from '../verification/qe-roof-zero-adjustments-20261018/fixture.mjs';
 import {webQuote,phone,quoteEmailFixture,fixture as applicationFixture,bridge,date,db} from './quoteDeliveryBatch20261015Fixture.mjs';
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 
+const NEW_VERSION='quote-engine-vnext-accuracy-20261018-v10';
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|pitchInstallationAdder|pitchRemovalAdder|additionalLayerRemovalFactor|rateCents|priceMetadata|installedLaborPercent)"/);
 const storedOutcome=row=>JSON.parse(row.internalOutcomeJson).internalResult;
 
-test('roof zero v9 engine/runtime agree and genuine positive v8 line evidence stays exact',()=>{
+test('roof zero current engine/runtime agree and genuine positive v8 prices stay exact',()=>{
   assert.equal(ENGINE_VERSION,NEW_VERSION);assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,NEW_VERSION);
   const baseline=JSON.parse(readFileSync(new URL('../verification/qe-roof-zero-adjustments-20261018/positive-v8-lines.json',import.meta.url)));
   assert.equal(baseline.base,'1857b7779b83b70f7753b41b72c3677270cd4ffc');assert.equal(baseline.engineVersion,OLD_VERSION);
-  for(const row of baseline.controls)assert.deepEqual(ready(roof(row.customer),row.expected).lineItems,row.lineItems);
+  for(const row of baseline.controls){
+    // Preserve the frozen v8 evidence. v10 corrects only its binary story-delta
+    // representation: the sole affected control uses two stories (1.10).
+    const expected=structuredClone(row.lineItems);
+    for(const line of expected)for(const m of line.calculation.multipliers)if(m.name==='story addition'){
+      assert.equal(row.customer.stories,2);assert.equal(m.value,0.10000000000000009);
+      assert.deepEqual(m.exactValue,{numerator:'10000000000000009',denominator:'100000000000000000'});
+      m.value=.1;m.exactValue={numerator:'1',denominator:'10'};
+      const cents={'Story labor adjustment':20000,'Story tear-off adjustment':6000,'Additional-layer story adjustment':8400}[line.name];
+      assert.equal(line.amountCents,cents);
+      line.calculation.unroundedCents=cents;line.calculation.exactUnroundedCents={numerator:String(cents),denominator:'1'};
+    }
+    assert.deepEqual(ready(roof(row.customer),row.expected).lineItems,expected);
+  }
 });
 
 for(const [label,customer,change,expected] of [
@@ -173,7 +187,7 @@ test('roof zero saved new proposals still need explicit setting confirmation and
   assert.equal(total(outcome.internalResult),423800);
 });
 
-test('roof zero genuine v8 approval remains stale through save; explicit v9 approval and zero correction preserve receipt replay',async t=>{
+test('roof zero genuine v8 approval remains stale through save; explicit current approval and zero correction preserve receipt replay',async t=>{
   const historical=JSON.parse(readFileSync(new URL('../verification/qe-roof-zero-adjustments-20261018/historical-v8.json',import.meta.url)));
   assert.equal(historical.base,'1857b7779b83b70f7753b41b72c3677270cd4ffc');
   assert.equal(historical.response.midEstimate,4858);assert.equal(storedOutcome(historical.submission).engineVersion,OLD_VERSION);

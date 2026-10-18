@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "test/qeRoofExactSubtraction20261018.spec.mjs"
+  ],
+  "cwd": "/workspace/scratch/5228524b6f21/qe-roof-exact-subtraction",
+  "node": "v22.23.3",
+  "startedAt": "2026-10-18T08:05:03.323Z",
+  "endedAt": "2026-10-18T08:05:03.608Z",
+  "code": 0,
+  "signal": null
+}

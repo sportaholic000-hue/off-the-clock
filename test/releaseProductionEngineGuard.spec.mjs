@@ -9,7 +9,7 @@ import {createServer} from 'node:net';
 import {fileURLToPath} from 'node:url';
 import {productionEnv} from './helpers/railwayEnv.mjs';
 
-// Expected before execution: current v9 listens; stale/empty versions exit
+// Expected before execution: current v10 listens; stale/empty versions exit
 // nonzero before listening. No money or provider operations in these tests.
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const bridgeUrl=new URL('../server/src/quoteDoneBridge.js',import.meta.url).href;
@@ -42,15 +42,15 @@ async function launch(t,version) {
   }
   return {child,output,listening:output.includes('Off The Clock AI server listening')};
 }
-test('release guard: production starts with the current compiled v9 engine',async t=>{
+test('release guard: production starts with the current compiled v10 engine',async t=>{
   const result=await launch(t);assert.equal(result.listening,true,result.output);
 });
-for(const version of ['quote-engine-vnext-launch-fixes-20261005-v6','quote-engine-vnext-date-context-20261006-v7','quote-engine-vnext-accuracy-20261018-v8','']) {
+for(const version of ['quote-engine-vnext-launch-fixes-20261005-v6','quote-engine-vnext-date-context-20261006-v7','quote-engine-vnext-accuracy-20261018-v8','quote-engine-vnext-accuracy-20261018-v9','']) {
   test('release guard: production refuses compiled engine '+JSON.stringify(version),async t=>{
     const result=await launch(t,version);
     assert.equal(result.listening,false,result.output);
     assert.notEqual(result.child.exitCode,0,result.output);
     assert.match(result.output,/QUOTE_ENGINE_VERSION_MISMATCH/);
-    assert.match(result.output,/quote-engine-vnext-accuracy-20261018-v9/);
+    assert.match(result.output,/quote-engine-vnext-accuracy-20261018-v10/);
   });
 }

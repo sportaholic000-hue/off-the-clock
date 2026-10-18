@@ -1,0 +1,2 @@
+21f0ccf9ba3cd6859697483745bd4c8152274169	refs/heads/codex/qe-roof-zero-adjustments-20261018
+ed12dca1253a8790c885b071ab6037e05632bea0	refs/heads/main
