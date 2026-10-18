@@ -175,7 +175,9 @@ test('real voice tool output uses the same split-preparation scope without priva
   assert.match(observed.result.quoteNarration,/Included ground preparation: grading\./);
   assert.match(observed.result.quoteNarration,/Excluded ground preparation: old-lawn removal and disposal, imported topsoil\./);
   assert.equal(observed.match.questionContract.fields.find(field=>field.field==='groundPrepNeeded')?.label,REQUESTED);
-  assert.doesNotMatch(JSON.stringify(observed.result),/Existing-ground preparation included|sodGradingPerSqft|90/);
+  const {quoteHandle,...customerPresentation}=observed.result;
+  assert.equal(typeof quoteHandle,'string','the opaque receipt handle is not presentation or private rate evidence');
+  assert.doesNotMatch(JSON.stringify(customerPresentation),/Existing-ground preparation included|sodGradingPerSqft|90/);
 
   const projected=projectVoiceQuote(webQuote(fixture).result,'synthetic-sod-disclosure');
   assert.match(projected.quoteNarration,/Included ground preparation: grading\./);
