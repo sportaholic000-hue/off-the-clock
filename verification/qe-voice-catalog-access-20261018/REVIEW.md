@@ -71,14 +71,17 @@ count fields. That unintended change is restored to the existing gate-only
 exception. A new saved-book regression proves the maximum supported 160-character
 Unicode plant name remains complete and quotes at 15,000 cents.
 
-Two existing suite-policy tests reject any selected filename containing `voice`:
-`test/auditFixes20261003.spec.mjs:262` and
-`test/quoteEngineVNextRepairs.spec.js:1177`. The owner's required new filename is
-selected transitively because it tests saved books and real quotes, so both
-assertions fail. Neither shared guard, test-selection code nor the requested
-filename was changed to conceal this conflict. Full verification remains blocked
-until the owner authorizes resolution of that scope conflict. Exact observed
-counts and final hosted status are supplied in chat, not assumed here.
+Two existing suite-policy tests reject any selected filename containing `voice`.
+The original requested `qeVoiceCatalogAccess20261018.spec.mjs` name was selected
+transitively and failed those guards. An initially authorized filename exception
+was superseded by the owner's explicit direction to use
+`test/voiceCatalogAccess20261018.spec.mjs`, preserve every regression, and leave
+selectors and gate assertions unchanged. The exception is reverted; both gate
+assertions are byte-identical to the base. The new filename uses the existing
+selector policy: included in the full suite, excluded from the strict quote suite.
+The rename preserves all 20 regressions byte-for-byte. Archived evidence keeps
+its original filenames. Hosted full-suite execution is required; exact results
+and commit are reported in chat, not assumed here.
 
 The initial local strict run was interrupted after identifying the label regression;
 it is diagnostic evidence only, not a completed gate. Hosted strict verification

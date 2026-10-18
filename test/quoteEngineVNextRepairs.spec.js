@@ -1174,12 +1174,7 @@ test('repair 28: ordinary tests include every VNext suite and keep the dedicated
     assert.equal(everything.includes(file), true, file);
     assert.equal(quote.includes(file), true, file);
   }
-  // Owner-approved exception: retain the saved-book/catalog regression in
-  // both suites without admitting any other voice-named file to this gate.
-  const catalogRegression = 'test/qeVoiceCatalogAccess20261018.spec.mjs';
-  assert.equal(everything.includes(catalogRegression), true, catalogRegression);
-  assert.equal(quote.includes(catalogRegression), true, catalogRegression);
-  assert.equal(quote.some(file => /voice/i.test(file) && file !== catalogRegression), false);
+  assert.equal(quote.some(file => /voice/i.test(file)), false);
   assert.equal(pkg.scripts['gate:quote-vnext'], 'node server/scripts/quote-vnext-gate.js');
 });
 
