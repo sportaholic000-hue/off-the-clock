@@ -1,0 +1,96 @@
+✖ roof underlayment new full: footprint uses rounded surface (24.716184ms)
+✖ roof underlayment new partial: footprint uses rounded surface (6.661873ms)
+✖ roof underlayment adopted full: footprint uses rounded surface (5.344424ms)
+✖ roof underlayment adopted partial: footprint uses rounded surface (5.331415ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 158.290255
+
+✖ failing tests:
+
+test at test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:8:3
+✖ roof underlayment new full: footprint uses rounded surface (24.716184ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  4 !== 5
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:14:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 4,
+    expected: 5,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:8:3
+✖ roof underlayment new partial: footprint uses rounded surface (6.661873ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 3
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:14:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:8:3
+✖ roof underlayment adopted full: footprint uses rounded surface (5.344424ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  4 !== 5
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:14:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 4,
+    expected: 5,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:8:3
+✖ roof underlayment adopted partial: footprint uses rounded surface (5.331415ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 3
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:14:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

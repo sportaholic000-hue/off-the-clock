@@ -122,7 +122,15 @@ export function scopeLines(type,c,p={},rules={}){
  const quantityFor=key=>{
   key=scopeBaseKey(key);
   if(key.startsWith('floor_underlayment')||key==='floor_overlay')return c.sqft;
-  if(key.startsWith('roof_underlayment'))return c.serviceScope==='partial'?(c.partialAreaSqft??exactDivide(exactMultiply(c.roofSizeInput,c.partialPercent),100)):c.roofSizeInput;
+  if(key.startsWith('roof_underlayment')){
+   // Match the approved roof replacement conversion without importing its
+   // contracts (which depend on this module). Round surface before scope/waste.
+   const adopted=['new','adopted'].includes(rules.startingValueAdoptions?.roofing_replacement_20261016?.mode);
+   const surface=adopted&&c.roofSizeMethod==='footprint'
+    ? Math.round(c.roofSizeInput*Math.sqrt(1+(c.pitchRisePer12/12)**2)*100)/100
+    : c.roofSizeInput;
+   return c.serviceScope==='partial'?(c.partialAreaSqft??exactDivide(exactMultiply(surface,c.partialPercent),100)):surface;
+  }
   if(key==='stairs')return c.stairSteps;if(key==='siding_removal')return c.sidingRemovalAreaSqft;if(key==='siding_trim')return c.trimLengthLF;if(key==='demolition')return c.demolitionAreaSqft;
   if(key==='exposed_aggregate')return c.dimensionMethod==='exact'?exactMultiply(c.length,c.width):c.dimensionMethod==='measured_outline'?measuredOutlineVNext(c.outlinePoints).exactAreaSqft:c.areaSqft;
   const d=p.offeringDetails||{},area=c._surfaceGeometry?.paint??c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'],laborArea=c._surfaceGeometry?.labor??c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'],ceilingArea=c._surfaceGeometry?.ceiling??c.ceilingAreaSqft;

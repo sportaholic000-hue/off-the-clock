@@ -1,0 +1,155 @@
+(node:3) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:10) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: roof underlayment new full: footprint uses rounded surface
+ok 1 - roof underlayment new full: footprint uses rounded surface
+  ---
+  duration_ms: 23.022027
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: footprint uses rounded surface
+ok 2 - roof underlayment new partial: footprint uses rounded surface
+  ---
+  duration_ms: 7.411011
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: footprint uses rounded surface
+ok 3 - roof underlayment adopted full: footprint uses rounded surface
+  ---
+  duration_ms: 5.245466
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: footprint uses rounded surface
+ok 4 - roof underlayment adopted partial: footprint uses rounded surface
+  ---
+  duration_ms: 4.619865
+  type: 'test'
+  ...
+# Subtest: roof underlayment new full: measured surface equivalence
+ok 5 - roof underlayment new full: measured surface equivalence
+  ---
+  duration_ms: 11.098003
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: measured surface equivalence
+ok 6 - roof underlayment new partial: measured surface equivalence
+  ---
+  duration_ms: 7.552293
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: measured surface equivalence
+ok 7 - roof underlayment adopted full: measured surface equivalence
+  ---
+  duration_ms: 7.912454
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: measured surface equivalence
+ok 8 - roof underlayment adopted partial: measured surface equivalence
+  ---
+  duration_ms: 6.162073
+  type: 'test'
+  ...
+# Subtest: roof underlayment new: explicit partial surface takes precedence
+ok 9 - roof underlayment new: explicit partial surface takes precedence
+  ---
+  duration_ms: 5.783744
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted: explicit partial surface takes precedence
+ok 10 - roof underlayment adopted: explicit partial surface takes precedence
+  ---
+  duration_ms: 4.929621
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.105
+ok 11 - roof underlayment surface rounding before package boundary 707.105
+  ---
+  duration_ms: 3.667092
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.111
+ok 12 - roof underlayment surface rounding before package boundary 707.111
+  ---
+  duration_ms: 3.087181
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy full remains unchanged
+ok 13 - roof underlayment legacy full remains unchanged
+  ---
+  duration_ms: 3.85864
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy partial remains unchanged
+ok 14 - roof underlayment legacy partial remains unchanged
+  ---
+  duration_ms: 3.503436
+  type: 'test'
+  ...
+# Subtest: roof underlayment package cost receives existing markup and materials tax once
+ok 15 - roof underlayment package cost receives existing markup and materials tax once
+  ---
+  duration_ms: 3.55915
+  type: 'test'
+  ...
+# Subtest: roof underlayment installed-area full remains surface-based without package waste
+ok 16 - roof underlayment installed-area full remains surface-based without package waste
+  ---
+  duration_ms: 4.002817
+  type: 'test'
+  ...
+# Subtest: roof underlayment installed-area partial remains surface-based without package waste
+ok 17 - roof underlayment installed-area partial remains surface-based without package waste
+  ---
+  duration_ms: 3.342204
+  type: 'test'
+  ...
+# Subtest: roof underlayment retains included-zero semantics and unrelated measured scope controls
+ok 18 - roof underlayment retains included-zero semantics and unrelated measured scope controls
+  ---
+  duration_ms: 80.991481
+  type: 'test'
+  ...
+# Subtest: roof underlayment corrected full saved widget-route and voice-tool parity
+ok 19 - roof underlayment corrected full saved widget-route and voice-tool parity
+  ---
+  duration_ms: 1158.762417
+  type: 'test'
+  ...
+# Subtest: roof underlayment corrected partial saved widget-route and voice-tool parity
+ok 20 - roof underlayment corrected partial saved widget-route and voice-tool parity
+  ---
+  duration_ms: 730.660342
+  type: 'test'
+  ...
+# Subtest: roof underlayment v7 approval reviews new requests; explicit v8 reapproval preserves historical retries
+not ok 21 - roof underlayment v7 approval reviews new requests; explicit v8 reapproval preserves historical retries
+  ---
+  duration_ms: 175.984158
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:116:1'
+  failureType: 'testCodeFailure'
+  error: 'Booking is temporarily unavailable.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    problem (file:///workspace/scratch/173e13db0d67/off-the-clock/server/src/quoteDoneBridge.js:47:67)
+    Function.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/server/src/quoteDoneRoutes.js:173:32)
+    Function.sqliteTransaction (/workspace/scratch/173e13db0d67/off-the-clock/node_modules/better-sqlite3/lib/methods/transaction.js:65:24)
+    submitQuote (file:///workspace/scratch/173e13db0d67/off-the-clock/server/src/quoteDoneRoutes.js:214:6)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:138:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 20
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2480.043806

@@ -1,0 +1,374 @@
+(node:3) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:10) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: roof underlayment new full: footprint uses rounded surface
+ok 1 - roof underlayment new full: footprint uses rounded surface
+  ---
+  duration_ms: 22.718802
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: footprint uses rounded surface
+ok 2 - roof underlayment new partial: footprint uses rounded surface
+  ---
+  duration_ms: 9.77875
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: footprint uses rounded surface
+ok 3 - roof underlayment adopted full: footprint uses rounded surface
+  ---
+  duration_ms: 5.128819
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: footprint uses rounded surface
+ok 4 - roof underlayment adopted partial: footprint uses rounded surface
+  ---
+  duration_ms: 4.399444
+  type: 'test'
+  ...
+# Subtest: roof underlayment new full: measured surface equivalence
+not ok 5 - roof underlayment new full: measured surface equivalence
+  ---
+  duration_ms: 9.965821
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:31:108'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'mid')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    cents (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:18:56)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:38:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment new partial: measured surface equivalence
+not ok 6 - roof underlayment new partial: measured surface equivalence
+  ---
+  duration_ms: 7.033143
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:31:108'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'mid')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    cents (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:18:56)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:38:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment adopted full: measured surface equivalence
+not ok 7 - roof underlayment adopted full: measured surface equivalence
+  ---
+  duration_ms: 7.463641
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:31:108'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'mid')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    cents (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:18:56)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:38:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment adopted partial: measured surface equivalence
+not ok 8 - roof underlayment adopted partial: measured surface equivalence
+  ---
+  duration_ms: 6.210906
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:31:108'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'mid')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    cents (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:18:56)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:38:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment new: explicit partial surface takes precedence
+not ok 9 - roof underlayment new: explicit partial surface takes precedence
+  ---
+  duration_ms: 2.806479
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:42:37'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-accuracy-20261018-v8","serviceId":"c5cf2186-91cf-40f8-8f01-476b07d60213","quoteId":"fb8b835a-a4c3-4506-b70f-1868cfada094","serviceType":"ROOFING_REPLACEMENT","submittedCustomerInputs":{"roofSizeMethod":"footprint","roofSizeInput":1500,"pitchRisePer12":12,"existingRoofType":"asphalt_shingle","replacementRoofType":"asphalt_shingle","pitchMethod":"whole_roof","pitchBand":"ten_to_twelve","stories":1,"existingLayers":1,"roofComplexity":"simple","serviceScope":"partial","roofUnderlaymentScopeConfirmed":true,"partialPercent":50,"partialAreaSqft":800,"confirmedFacts":{"existingRoofType":{"status":"identified","field":"existingRoofType","value":"asphalt_shingle","offeringId":"5238c07d-d288-4ed7-8991-eb5bd8ffed4b"},"replacementRoofType":{"status":"identified","field":"replacementRoofType","value":"asphalt_shingle","offeringId":"a4c9ae75-5efb-40f5-8b7f-0e07222f2445"}}},"normalizedScope":null,"validatedMeasurements":[],"unconfirmedOwnerFields":[],"reviewReason":"Project details were invalid or internally inconsistent.","missingCustomerFields":[],"invalidCustomerFields":["partialAreaSqft"],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Project details were invalid or internally inconsistent.","missingCustomerFields":[],"invalidCustomerFields":["partialAreaSqft"],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"validationMessages":["Measured partial area and affected percentage do not agree."],"normalizedScope":null,"validatedMeasurements":[],"inspectionFirst":false}],"validationMessages":["Measured partial area and affected percentage do not agree."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:17:59)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:45:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment adopted: explicit partial surface takes precedence
+not ok 10 - roof underlayment adopted: explicit partial surface takes precedence
+  ---
+  duration_ms: 1.615929
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:42:37'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-accuracy-20261018-v8","serviceId":"86b0a684-8b34-431e-9234-cc9c59c16954","quoteId":"0f283859-7162-42e7-93e6-51de33710515","serviceType":"ROOFING_REPLACEMENT","submittedCustomerInputs":{"roofSizeMethod":"footprint","roofSizeInput":1500,"pitchRisePer12":12,"existingRoofType":"asphalt_shingle","replacementRoofType":"asphalt_shingle","pitchMethod":"whole_roof","pitchBand":"ten_to_twelve","stories":1,"existingLayers":1,"roofComplexity":"simple","serviceScope":"partial","roofUnderlaymentScopeConfirmed":true,"partialPercent":50,"partialAreaSqft":800,"confirmedFacts":{"existingRoofType":{"status":"identified","field":"existingRoofType","value":"asphalt_shingle","offeringId":"5238c07d-d288-4ed7-8991-eb5bd8ffed4b"},"replacementRoofType":{"status":"identified","field":"replacementRoofType","value":"asphalt_shingle","offeringId":"a4c9ae75-5efb-40f5-8b7f-0e07222f2445"}}},"normalizedScope":null,"validatedMeasurements":[],"unconfirmedOwnerFields":[],"reviewReason":"Project details were invalid or internally inconsistent.","missingCustomerFields":[],"invalidCustomerFields":["partialAreaSqft"],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Project details were invalid or internally inconsistent.","missingCustomerFields":[],"invalidCustomerFields":["partialAreaSqft"],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"validationMessages":["Measured partial area and affected percentage do not agree."],"normalizedScope":null,"validatedMeasurements":[],"inspectionFirst":false}],"validationMessages":["Measured partial area and affected percentage do not agree."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:17:59)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:45:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.105
+ok 11 - roof underlayment surface rounding before package boundary 707.105
+  ---
+  duration_ms: 3.434303
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.111
+ok 12 - roof underlayment surface rounding before package boundary 707.111
+  ---
+  duration_ms: 3.51887
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy full remains unchanged
+ok 13 - roof underlayment legacy full remains unchanged
+  ---
+  duration_ms: 3.582825
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy partial remains unchanged
+ok 14 - roof underlayment legacy partial remains unchanged
+  ---
+  duration_ms: 3.235654
+  type: 'test'
+  ...
+# Subtest: roof underlayment package cost receives existing markup and materials tax once
+not ok 15 - roof underlayment package cost receives existing markup and materials tax once
+  ---
+  duration_ms: 3.437277
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:66:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'mid')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:71:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment installed-area full remains surface-based without package waste
+not ok 16 - roof underlayment installed-area full remains surface-based without package waste
+  ---
+  duration_ms: 1.545614
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:76:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-accuracy-20261018-v8","serviceId":"16f8df74-eebd-43bd-9a87-c246d325d6a4","quoteId":"4faf6436-9654-495f-aebd-75382f70369a","serviceType":"ROOFING_REPLACEMENT","submittedCustomerInputs":{"roofSizeMethod":"footprint","roofSizeInput":1500,"pitchRisePer12":12,"existingRoofType":"asphalt_shingle","replacementRoofType":"asphalt_shingle","pitchMethod":"whole_roof","pitchBand":"ten_to_twelve","stories":1,"existingLayers":1,"roofComplexity":"simple","serviceScope":"full","roofUnderlaymentScopeConfirmed":true,"confirmedFacts":{"existingRoofType":{"status":"identified","field":"existingRoofType","value":"asphalt_shingle","offeringId":"5238c07d-d288-4ed7-8991-eb5bd8ffed4b"},"replacementRoofType":{"status":"identified","field":"replacementRoofType","value":"asphalt_shingle","offeringId":"a4c9ae75-5efb-40f5-8b7f-0e07222f2445"}}},"normalizedScope":null,"validatedMeasurements":[],"unconfirmedOwnerFields":[],"reviewReason":"Project details were invalid or internally inconsistent.","missingCustomerFields":[],"invalidCustomerFields":["roofUnderlaymentScopeConfirmed"],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Project details were invalid or internally inconsistent.","missingCustomerFields":[],"invalidCustomerFields":["roofUnderlaymentScopeConfirmed"],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"validationMessages":["This detail was supplied for work not selected in this request."],"normalizedScope":null,"validatedMeasurements":[],"inspectionFirst":false}],"validationMessages":["This detail was supplied for work not selected in this request."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:17:59)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:82:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment installed-area partial remains surface-based without package waste
+not ok 17 - roof underlayment installed-area partial remains surface-based without package waste
+  ---
+  duration_ms: 1.806916
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:76:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-accuracy-20261018-v8","serviceId":"114180a1-a829-4cff-b362-d1317614a259","quoteId":"3eaa0cf0-943c-48a4-81e5-4d2e54c16ed2","serviceType":"ROOFING_REPLACEMENT","submittedCustomerInputs":{"roofSizeMethod":"footprint","roofSizeInput":1500,"pitchRisePer12":12,"existingRoofType":"asphalt_shingle","replacementRoofType":"asphalt_shingle","pitchMethod":"whole_roof","pitchBand":"ten_to_twelve","stories":1,"existingLayers":1,"roofComplexity":"simple","serviceScope":"partial","roofUnderlaymentScopeConfirmed":true,"partialPercent":50,"confirmedFacts":{"existingRoofType":{"status":"identified","field":"existingRoofType","value":"asphalt_shingle","offeringId":"5238c07d-d288-4ed7-8991-eb5bd8ffed4b"},"replacementRoofType":{"status":"identified","field":"replacementRoofType","value":"asphalt_shingle","offeringId":"a4c9ae75-5efb-40f5-8b7f-0e07222f2445"}}},"normalizedScope":null,"validatedMeasurements":[],"unconfirmedOwnerFields":[],"reviewReason":"Project details were invalid or internally inconsistent.","missingCustomerFields":[],"invalidCustomerFields":["roofUnderlaymentScopeConfirmed"],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Project details were invalid or internally inconsistent.","missingCustomerFields":[],"invalidCustomerFields":["roofUnderlaymentScopeConfirmed"],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[],"ownerDecisionRequired":[],"validationMessages":["This detail was supplied for work not selected in this request."],"normalizedScope":null,"validatedMeasurements":[],"inspectionFirst":false}],"validationMessages":["This detail was supplied for work not selected in this request."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:17:59)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:82:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment retains included-zero semantics and unrelated measured scope controls
+not ok 18 - roof underlayment retains included-zero semantics and unrelated measured scope controls
+  ---
+  duration_ms: 12.33329
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:86:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'mid')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    cents (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:18:56)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:92:54)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment corrected full saved widget-route and voice-tool parity
+not ok 19 - roof underlayment corrected full saved widget-route and voice-tool parity
+  ---
+  duration_ms: 1076.735659
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:95:68'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /This price is based on the measurements you gave us\. The business will confirm them on site\./. Input:
+    
+    '$6,161.48 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option. Priced scope: [SYNTHETIC] ROOFING_REPLACEMENT; Roof area method: Footprint; Measured roof surface area or footprint including overhangs: 1500 square feet; Roof rise per 12 inches of run: 12 inches; Existing roofing material: Asphalt shingle; Replacement roofing material: Asphalt shingle; How the roof pitch is supplied: Whole roof; Rise per 12 for the whole roof: 10/12-12/12 — very steep roof; Building stories: 1; Measured existing roof layers: 1 layers; Roof shape: Simple — a gable roof; Replacement scope: Full; Confirm asphalt shingle roof underlayment matches this job: Yes. Scope details: asphalt shingle roof underlayment: [SYNTHETIC] Roof underlayment rolls.. This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner. This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. asphalt shingle roof underlayment: [SYNTHETIC] Roof underlayment rolls. No tax added. Prices are in Canadian dollars (CAD).'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '$6,161.48 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option. Priced scope: [SYNTHETIC] ROOFING_REPLACEMENT; Roof area method: Footprint; Measured roof surface area or footprint including overhangs: 1500 square feet; Roof rise per 12 inches of run: 12 inches; Existing roofing material: Asphalt shingle; Replacement roofing material: Asphalt shingle; How the roof pitch is supplied: Whole roof; Rise per 12 for the whole roof: 10/12-12/12 — very steep roof; Building stories: 1; Measured existing roof layers: 1 layers; Roof shape: Simple — a gable roof; Replacement scope: Full; Confirm asphalt shingle roof underlayment matches this job: Yes. Scope details: asphalt shingle roof underlayment: [SYNTHETIC] Roof underlayment rolls.. This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner. This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. asphalt shingle roof underlayment: [SYNTHETIC] Roof underlayment rolls. No tax added. Prices are in Canadian dollars (CAD).'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:102:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment corrected partial saved widget-route and voice-tool parity
+not ok 20 - roof underlayment corrected partial saved widget-route and voice-tool parity
+  ---
+  duration_ms: 529.094661
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:95:68'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /This price is based on the measurements you gave us\. The business will confirm them on site\./. Input:
+    
+    '$3,155.75 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option. Priced scope: [SYNTHETIC] ROOFING_REPLACEMENT; Roof area method: Footprint; Measured roof surface area or footprint including overhangs: 1500 square feet; Roof rise per 12 inches of run: 12 inches; Existing roofing material: Asphalt shingle; Replacement roofing material: Asphalt shingle; How the roof pitch is supplied: Whole roof; Rise per 12 for the whole roof: 10/12-12/12 — very steep roof; Building stories: 1; Measured existing roof layers: 1 layers; Roof shape: Simple — a gable roof; Replacement scope: Partial; Confirm asphalt shingle roof underlayment matches this job: Yes; Confirmed affected portion: 50 percent. Scope details: asphalt shingle roof underlayment: [SYNTHETIC] Roof underlayment rolls.. This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner. This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. asphalt shingle roof underlayment: [SYNTHETIC] Roof underlayment rolls. No tax added. Prices are in Canadian dollars (CAD).'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '$3,155.75 CAD. No tax added. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option. Priced scope: [SYNTHETIC] ROOFING_REPLACEMENT; Roof area method: Footprint; Measured roof surface area or footprint including overhangs: 1500 square feet; Roof rise per 12 inches of run: 12 inches; Existing roofing material: Asphalt shingle; Replacement roofing material: Asphalt shingle; How the roof pitch is supplied: Whole roof; Rise per 12 for the whole roof: 10/12-12/12 — very steep roof; Building stories: 1; Measured existing roof layers: 1 layers; Roof shape: Simple — a gable roof; Replacement scope: Partial; Confirm asphalt shingle roof underlayment matches this job: Yes; Confirmed affected portion: 50 percent. Scope details: asphalt shingle roof underlayment: [SYNTHETIC] Roof underlayment rolls.. This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner. This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. asphalt shingle roof underlayment: [SYNTHETIC] Roof underlayment rolls. No tax added. Prices are in Canadian dollars (CAD).'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:102:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: roof underlayment v7 approval reviews new requests; explicit v8 reapproval preserves historical retries
+not ok 21 - roof underlayment v7 approval reviews new requests; explicit v8 reapproval preserves historical retries
+  ---
+  duration_ms: 2.127558
+  type: 'test'
+  location: '/workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:107:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'mid')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    cents (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:18:56)
+    TestContext.<anonymous> (file:///workspace/scratch/173e13db0d67/off-the-clock/test/qeRoofUnderlaymentAccuracy20261018.spec.mjs:115:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 8
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1957.745722
