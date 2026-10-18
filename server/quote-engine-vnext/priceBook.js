@@ -1,3 +1,4 @@
+import {surfaceExtraDefinitions} from './surfacePricing.js';
 import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,hasSurfacePrice,repairScenarioCube,repairScenarioInputs} from './flatRoofRepairPricing.js';
 import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
@@ -49,7 +50,7 @@ import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 import { ownerFieldCopy } from '../priceBookCopy.js';
 import {synchronizeStartingValuesVNext} from './priceGroundwork.js';
-import {FLOORING_FIELD_COPY,FLOORING_ADDONS,pricePresent} from './flooringPricing.js';
+import {FLOORING_FIELD_COPY,FLOORING_ADDONS,flooringAddonConfigured,pricePresent} from './flooringPricing.js';
 import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNotices,present,offeredPlacement} from './concreteLandscapePricing.js';
 
 const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
@@ -210,7 +211,13 @@ function repairScenarios(serviceType, cube, fallbacks, makeScenario, largeLimit)
 // Optional work is checked only when its complete pricing is configured.
 // Missing optional work stays visible as lead-only coverage. Every actual
 // request still goes through validateOwnerPricing and the unchanged calculator.
-function optionalPricingRequests(service, base) {
+function optionalPricingRequests(service,base){
+  const type=service.serviceType,p=pricingOf(service);
+  const extras=type.startsWith('FLOORING_')?FLOORING_ADDONS.filter(a=>flooringAddonConfigured(p[a.rate])&&(type==='FLOORING_INSTALL'||a.rate!=='floorLevelingPerSqft')).map(a=>({key:'floor_extra_'+a.rate,label:a.label,changes:{[a.input]:1,...(a.rate==='floorLevelingPerSqft'?{floorLevelingNeeded:true}:a.rate==='furnitureMovingPrice'?{furnitureMovingNeeded:true}:{})}})):[];
+  for(const [key,def] of Object.entries(surfaceExtraDefinitions(type,p)))if(p.surfaceExtraRates?.[key]!==undefined)extras.push({key:'surface_extra_'+key,label:def.label,changes:{surfaceOptionalItems:[key],[def.field]:1}});
+  return [...baseOptionalPricingRequests(service,base),...extras];
+}
+function baseOptionalPricingRequests(service, base) {
   const type=service.serviceType,p=pricingOf(service);
   if(configuredOffering(type,p)){
     const d=p.offeringDetails||{},fields=offeringContract(type,p,service).fields;
@@ -269,8 +276,11 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   if (serviceType === 'ROOFING_REPLACEMENT') {
     const replacements = selection ? [selection.replacementRoofType] : keysOf(p.laborPerSquare, 'asphalt_shingle');
     const existingTypes = selection ? [selection.existingRoofType] : keysOf(p.tearOffPerSquare, 'asphalt_shingle');
-    const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    const roofComplexity = greatestConfiguredKey(p.wasteFactorByComplexity, ['simple', 'moderate', 'complex'], 'moderate');
+    const adopted=usesNewRoofReplacementRulesVNext(service);
+    const usableStories=adopted?Object.fromEntries(Object.entries(p.storyMultiplier||{}).filter(([,v])=>v>=1)):p.storyMultiplier;
+    const usableShapes=adopted?Object.fromEntries(Object.entries(p.wasteFactorByComplexity||{}).filter(([key])=>p.complexityLaborMultiplier?.[key]>=1)):p.wasteFactorByComplexity;
+    const stories = greatestConfiguredKey(Object.keys(usableStories||{}).length?usableStories:p.storyMultiplier, [1, 2, 3], 2);
+    const roofComplexity = greatestConfiguredKey(Object.keys(usableShapes||{}).length?usableShapes:p.wasteFactorByComplexity, ['simple', 'moderate', 'complex'], 'moderate');
     const common=(replacement,existing)=>({
       roofSizeMethod:'roof_measured',roofSizeInput:1_000_000,
       existingRoofType:existing,replacementRoofType:replacement,
@@ -341,7 +351,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
       sqft: roomBand.sqft, sqftMethod: 'exact', newFlooringType: flooringType,
       existingFloorType, removalNeeded, ...(removalNeeded?{removalAreaSqft:roomBand.sqft}:{}),
       roomCount: roomBand.roomCount, layoutPattern, stairSteps: 0,
-      ...Object.fromEntries(FLOORING_ADDONS.filter(a=>pricePresent(p[a.rate])).map(a=>a.rate==='floorLevelingPerSqft'?['floorLevelingNeeded',false]:a.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?['furnitureMovingNeeded',false]:[a.input,0])),
+      ...Object.fromEntries(FLOORING_ADDONS.filter(a=>flooringAddonConfigured(p[a.rate])).map(a=>a.rate==='floorLevelingPerSqft'?['floorLevelingNeeded',false]:a.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?['furnitureMovingNeeded',false]:[a.input,0])),
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon' ? { underlaymentSelected: false } : {}),
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' ? { subfloorCondition: 'does_not_require_underlayment' } : {}),
       ...(replacement ? { subfloorIssues: false } : {})
@@ -580,6 +590,7 @@ function laborAdjustmentCoverage(service) {
   const type=service.serviceType,base=pricingOf(service),rows=[];
   const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'?[{stories:1},{stories:2},{stories:3}]:[];
   const variants=service.tiers?.length?service.tiers.map(t=>({name:t.name,pricing:mergePricingForValidationVNext(base,t.overrides||{})})):[{name:null,pricing:base}];
+  if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(service))for(const {name,pricing:p} of variants)for(const [root,field] of [['storyMultiplier','stories'],['complexityLaborMultiplier','roofComplexity']])for(const [key,value] of Object.entries(p[root]||{}))if(value<1)rows.push({tierName:name,selection:{[field]:field==='stories'?Number(key):key},missingOwnerFields:[],ownerDecisionRequired:[{path:root+'.'+key,kind:'roof_factor_below_one_policy'}],message:'This roof selection needs an owner policy decision for a below-one additive adjustment.'});
   for(const {name,pricing:p} of variants)for(const selection of selections){
     const missing=Object.entries(installedPriceDefinitions(type,p)).filter(([path])=>{const factorPath=installedLaborFactorPath(type,selection,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;});
     if(missing.length)rows.push({tierName:name,selection,missingOwnerFields:missing.map(([path])=>'installedLaborPercent.'+path),components:missing.map(([,label])=>label),message:'Requests for this condition that include these installed prices need review until you enter their labor portions.'});

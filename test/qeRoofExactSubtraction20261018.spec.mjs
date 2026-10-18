@@ -21,11 +21,13 @@ for(const row of cases)test('roof exact subtraction: '+row.id,()=>{
 import {randomUUID} from 'node:crypto';
 import {ENGINE_VERSION} from '../server/quote-engine-vnext/index.js';
 import {EXPECTED_QUOTE_ENGINE_VERSION} from '../server/src/runtimeConfig.js';
-import {OLD,CURRENT} from '../verification/qe-roof-exact-subtraction-20261018/fixture.mjs';
+import {OLD,CURRENT as REPAIR_VERSION} from '../verification/qe-roof-exact-subtraction-20261018/fixture.mjs';
 import {bridge,date,db,fixture,quoteEmailFixture} from './quoteDeliveryBatch20261015Fixture.mjs';
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
+const CURRENT='quote-engine-vnext-accuracy-20261018-v11';
+assert.equal(REPAIR_VERSION,'quote-engine-vnext-accuracy-20261018-v10');
 const historical=JSON.parse(readFileSync(new URL('../verification/qe-roof-exact-subtraction-20261018/historical-v9.json',import.meta.url)));
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|priceMetadata|storyMultiplier|complexityLaborMultiplier|exactValue)"/);
 

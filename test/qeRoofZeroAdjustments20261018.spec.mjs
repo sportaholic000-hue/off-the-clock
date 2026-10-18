@@ -109,7 +109,7 @@ import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 
-const NEW_VERSION='quote-engine-vnext-accuracy-20261018-v10';
+const NEW_VERSION='quote-engine-vnext-accuracy-20261018-v11';
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|pitchInstallationAdder|pitchRemovalAdder|additionalLayerRemovalFactor|rateCents|priceMetadata|installedLaborPercent)"/);
 const storedOutcome=row=>JSON.parse(row.internalOutcomeJson).internalResult;
 

@@ -58,7 +58,7 @@ for(const [name,group,count] of [['painting','painting_coats_20261017',1],['floo
     // The historical v7 approval first stays stale through ordinary read/save
     // and rejects browser adoption; explicit API reapproval changes no prices.
     const book=structuredClone(historical.cases[name].book),owner=book.ownerId;savePricebook(owner,book);
-    assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v10');
+    assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v11');
     assert.equal(book.services[0].quoteDoneApproval.engineVersion,'quote-engine-vnext-date-context-20261006-v7');
     let saved=loadPricebook(owner);
     assert.equal(bridge.applicationStatus(saved.services[0],saved,date).approvalCurrent,false);

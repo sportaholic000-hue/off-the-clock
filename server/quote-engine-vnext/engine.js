@@ -1,3 +1,4 @@
+import {FLOORING_ADDONS} from './flooringPricing.js';
 import {REPAIR_SERVICES} from './flatRoofRepairPricing.js';
 import {resolvedRangeSettings,validRangePercent} from '../quoteRangeSettings.js';
 import {splitCustomPriceLines} from './customPriceSplit.js';
@@ -53,7 +54,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261018-v10';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261018-v11';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -62,6 +63,7 @@ const QUOTE_REQUEST_FIELDS = new Set([
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
 const FEWER_OPTIONS_NOTICE = 'Fewer options are available because one or more configured options need owner review.';
 const CUSTOMER_SKIPPED_ADDONS = new Set([
+  ...FLOORING_ADDONS.map(addon=>addon.label),
   'Ponding water surcharge',
   'Clipping bagging and disposal',
   'Lawn edging','Door sides','Door frames','Windows','Cabinet doors or drawer faces','Doors','Shutters','Garage doors','Exterior trim','Soffit','Fascia','Power washing'
@@ -560,7 +562,7 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   // the owner's surcharge category settings.
   const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
   const removalLabor=line=>/^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(line.calculation?.ratePath||'')||/^scopeRates\.(?:siding_removal|demolition|stairs)(?:__[a-z0-9_]+)?_removal$/.test(line.calculation?.ratePath||'');
-  const otherLabor=lines.reduce((sum,line)=>!line.customPriceSplit&&!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
+  const otherLabor=lines.reduce((sum,line)=>!line.customPriceSplit&&!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^(?:offeringRates\.prepLaborPerSqft(?:_|$)|paintingRates\.trimPrepLaborPerLF_(?:good|fair|poor)$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
   const exactLabor=exactAdd(installedLabor,otherLabor);
   const laborSubtotalCents=exactToNumber(exactLabor);
   const allocated = allocateSeasonalSurcharge(otherLabor, installedLabor, active ? seasonal.percent : 0);
@@ -1132,7 +1134,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     try{pricing=resolvedFencePricing(pricing,customerInputs);validation=null;}
     catch(error){throw new QuoteReviewError(error.message,{invalidCustomerFields:[error.fenceField||'fenceHeight'],inspectionFirst:true});}
   }
-  const customerValidation = validation ? validation.customer(customerInputs) : validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing);
+  const customerValidation = validation ? validation.customer(customerInputs) : validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing, tierName);
   if (!customerValidation.ok) {
     const normalizedScope = customerValidation.normalized ? structuredClone(customerValidation.normalized) : null;
     const validatedMeasurements = normalizedScope
@@ -1500,7 +1502,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         error = new QuoteReviewError('Tier pricing contains values that cannot be validated safely.', { invalidOwnerFields: [tierPath] });
       }
       if (!error.normalizedScope) {
-        const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing);
+        const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing, tier.name);
         if (customerValidation.ok) {
           error.normalizedScope = structuredClone(customerValidation.normalized);
           error.validatedMeasurements = validatedMeasurementsFor(serviceType, customerValidation.normalized);
@@ -1809,8 +1811,8 @@ function rootCalculationRecordMatches(result) {
     let pricing=tier?mergePricingVNext(configuration.pricing,tier.overrides):configuration.pricing;
     if(fenceType(result.serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,inputs);}catch{return false;}
     const derivedMeasurements=REPAIR_SERVICES.includes(result.serviceType)&&result.submittedCustomerInputs.repairAreaMethod==='dimensions'||result.serviceType.startsWith('FLOORING_')||fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined;
-    const normalized=derivedMeasurements?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
-    if (!plainDataEqual(inputs,normalized)||!validateCustomerInputs(result.serviceType,inputs,pricing,configuration).ok ||
+    const normalized=derivedMeasurements?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration,option.tierName).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
+    if (!plainDataEqual(inputs,normalized)||!validateCustomerInputs(result.serviceType,inputs,pricing,configuration,option.tierName).ok ||
         !validateOwnerPricing(result.serviceType,inputs,pricing,configuration,option.tierName).ok) return false;
     const free = freeOfferingVNext(configuration, option.tierName, pricing);
     if (option.calculationRecord.freeOffering !== free || (option.calculationRecord.range.highCents === 0) !== free) return false;

@@ -1,7 +1,7 @@
 import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES} from './flatRoofRepairPricing.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
-import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,pricePresent,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
+import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
@@ -602,7 +602,7 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   if(!p.scopeDetails?.['roof_underlayment_'+c.replacementRoofType]||p.underlaymentPriceBasis?.[c.replacementRoofType]!=='cost')add(out,makeLine({name:'Underlayment',category:'material',quantity:squares,unit:'measured installed roofing squares',rateCents:valueAtPath(p,underPath),ratePath:underPath,priceBasis:installedAreaSellPriceBasis(valueAtPath(p,`underlaymentPriceBasis.${c.replacementRoofType}`),`underlaymentPriceBasis.${c.replacementRoofType}`)}));
   if(p.accessoryPricingMode==='itemized')for(const [name,inputField,priceField] of [['Starter strip','starterLengthLF','starterPerLF'],['Drip edge','dripEdgeLengthLF','dripEdgePerLF'],['Hip-and-ridge cap','ridgeCapLengthLF','ridgeCapPerLF']])if(c[inputField]>0)add(out,makeLine({name,category:'material',quantity:c[inputField],unit:'measured linear feet',rateCents:p[priceField],ratePath:priceField}));
   const dependent=roofFlashingVentDefinitionVNext(c.replacementRoofType);
-  if(dependentLineEnabledVNext(ctx.ownerPricing,dependent)){
+  if(dependentLineEnabledVNext(ctx.ownerPricing,dependent,p,ctx.tierName)){
     const optional=[
       ['Ice and water barrier',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierSqft':'iceWaterBarrierLengthLF',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierPerSqft':'iceWaterBarrierPerLF',p.iceWaterBarrierUnit==='square_feet'?'square feet':'linear feet'],
       ['Valley preparation','valleyLengthLF','valleyPerLF','linear feet'],['Step flashing','stepFlashingLengthLF','stepFlashingPerLF','linear feet'],['Pipe jacks','pipeJackCount','pipeJackEach','each'],['Ridge vent','ridgeVentLengthLF','ridgeVentPerLF','linear feet']
@@ -869,7 +869,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
       if(quantity==='unknown'){ctx.skipAddon(addon.label);out.disclosures.push(LEVELING_UNKNOWN_NOTE);continue;}
     }
     if(!(typeof quantity==='number'&&quantity>0))continue;
-    if(!pricePresent(p[addon.rate])){ctx.skipAddon(addon.label);continue;}
+    if(!flooringAddonConfigured(p[addon.rate])){ctx.skipAddon(addon.label);continue;}
     add(out,makeLine({name:addon.label,category:addon.category,quantity,unit:addon.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?'job':addon.unit,rateCents:p[addon.rate],ratePath:addon.rate,...(addon.installed?{priceBasis:'sell_price'}:{})}));
   }
   if (c.removalNeeded) add(out, makeLine({ name: 'Existing flooring removal', category: 'removal', quantity: c.removalAreaSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `removalPerSqft.${c.existingFloorType}`), ratePath: `removalPerSqft.${c.existingFloorType}` }));
@@ -1396,7 +1396,8 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   pricing = pricingSnapshot.value;
   if(fenceType(serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,customerInputs);}catch(error){throw new QuoteReviewError(error.message,{invalidCustomerFields:[error.fenceField||'fenceHeight']});}
   const serviceRules = serviceRulesFromContext(ctx);
-  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, serviceRules);
+  const tier = ownDataValue(ctx, 'tierName');
+  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, serviceRules, tier.ok && tier.present ? tier.value : null);
   if (!customerValidation.ok) {
     throw new QuoteReviewError(customerValidation.reviewReason, {
       ...customerValidation,
@@ -1404,7 +1405,6 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     });
   }
   customerInputs = customerValidation.normalized;
-  const tier = ownDataValue(ctx, 'tierName');
   const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, serviceRules, tier.ok && tier.present ? tier.value : null);
   if (!ownerValidation.ok) {
     throw new QuoteReviewError('Pricing not fully configured for the measured scope.', ownerValidation);

@@ -134,7 +134,7 @@ export function fenceCatalogVariants(p,legacyTiers=[]){
 }
 const ceilSpans=(length,spacing)=>{const r=exactDecimal(exactDivide(length,spacing));return Number((r.numerator+r.denominator-1n)/r.denominator);};
 
-export function fenceLayout(c,p){
+function measuredFenceRuns(c,p){
   if(!Array.isArray(c.fenceRuns)||!c.fenceRuns.length||c.fenceRuns.length>1000)throw new RangeError('Supply the measured sections for every fence run.');
   if(c.lfMethod!==undefined&&c.lfMethod!=='exact')throw new RangeError('The section layout requires measured section lengths.');
   if(c.fenceRunCount!==undefined&&c.fenceRunCount!==c.fenceRuns.length)throw new RangeError('The fence run count does not match the measured runs.');
@@ -162,10 +162,28 @@ export function fenceLayout(c,p){
   }
   return {linearFeet,cornerCount:corners,gates,fenceRunCount:c.fenceRuns.length,openRuns};
 }
+// Public layout eligibility also requires a non-degenerate closed polygon.
+export function fenceLayout(c,p){
+  const measured=measuredFenceRuns(c,p);
+  for(const run of c.fenceRuns)if(run.closed){
+    const sides=[];let side=exactDecimal(0);
+    for(const section of run.sections){
+      side=exactAdd(side,section.lengthLF);
+      if(section.gateAfter)side=exactAdd(side,p.offeringDetails.gates[section.gateAfter].widthLF);
+      else {sides.push(side);side=exactDecimal(0);}
+    }
+    if(sides.length<3)throw new RangeError('A closed fence run needs at least three straight sides joined at corners.');
+    sides[0]=exactAdd(sides[0],side);
+    const perimeter=exactAdd(...sides);
+    if(sides.some(value=>exactCompare(exactAdd(value,value),perimeter)>=0))throw new RangeError('A closed fence side must be shorter than all the other sides combined, including the configured gate openings.');
+  }
+  return measured;
+}
 export function fencePostQuantities(c,p){
   if(fenceHasRows(p))p=resolvedFencePricing(p,c);
   if(!positive(p.postSpacingLF))throw new RangeError('Enter a positive post spacing for the selected fence height.');
-  const measured=c.fenceRuns!==undefined?fenceLayout(c,p):null;
+  // Post takeoff counts positions; customer validation separately checks physical closure.
+  const measured=c.fenceRuns!==undefined?measuredFenceRuns(c,p):null;
   const inputs=measured?{...c,...measured}:c;
   const runs=inputs.fenceRunCount??1;
   if(!count(runs)||!Number.isSafeInteger(inputs.cornerCount)||inputs.cornerCount<0||!positive(inputs.linearFeet))throw new RangeError('Supply a positive length, whole run count and whole corner count.');

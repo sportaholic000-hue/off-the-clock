@@ -1,0 +1,21 @@
+# Independent expectations, before implementation/test execution
+
+Synthetic inputs only. No market prices or production data. Exact arithmetic below is handwritten independently of engine output. Base: 0b59a401e1d8f2c2c43188c7355abb9939504b9b; preserved repair: 1fa0182458fbe8b6950e42362f2711a9293e2978. New arithmetic version: v11, after v10.
+
+- F1: 1 square × 12501.25 cents × (1.4 − 1) = 5000.5 cents, rounds to 5001. Separate-line 9-cent control and all four accepted-zero paths retain their existing independent expectations.
+- F2: Below-one story/shape values remain valid stored factors, but the adopted additive adjustment calculator has no approved signed-line policy. Selected below-one cases must report that policy decision without an amount. A separate story/shape selection using factors at least 1 must remain quotable. Readiness must distinguish these selections.
+- F3: 10000 wall labor + 2000 trim labor + 2000 explicit trim prep labor = 14000 labor; 10% seasonal surcharge = 1400 cents. Prep material, mixed prep and disposal do not enter that basis.
+- F4/F5: Each included-zero flooring extra bills zero, stays in scope, and is not excluded. A missing optional rate is safely excluded by its exact permitted label. Unclassified zeros remain review. A valid complete option survives another option's exclusion.
+- F10: Closed runs with one or two straight sections are impossible. Any closed run must have at least three direction changes, and no side may equal or exceed the sum of the others (including known gate openings). Open one/two-section runs remain valid; gate widths come only from configured offerings.
+- F11: A synthetic 39100-cent roof plus 100 square feet ×100 = 49100; plus 100 linear feet ×300 = 69100. The other measurement unit must request correction, with no conversion or subtotal.
+- F12/F13: Asphalt confirmation must not depend on metal's receipt. Base 30000/ premium 40000 material prices with the same 28100 other work yield 58100/68100. Re-entering only base at 10000 and adding 20 LF ×1000 leaves 58100 base; premium must require its own effective-basis confirmation, never silently quote 88100. Explicit review of that premium price may authorize it unchanged; no inferred repricing.
+- F15/F23: A 10000-cent complete installed extra with 30% labor and 40% materials contributes 3000 seasonal labor and 4000 materials tax basis. At 10% each: surcharge 300, tax 400; no second markup on the installed extra or its surcharge. Missing labor share contributes zero seasonal surcharge and does not block. Materials-only tax requires an explicit materials share. Portions outside 0–100 or totaling over 100 remain invalid.
+- F17: Furniture false with positive rooms, or true with per-room zero, requires correction. False/zero is consistent; true/positive rooms charges rate × rooms; flat true charges once.
+- F20: 10×10 carpet room =100 square feet. It cannot coexist with area_only or contradictory submitted sqft=1000. Consistent room/100-sqft evidence and a standalone area-only request remain usable; submitted scope is retained on review.
+- F22: Internal thickness-band spacing is described as the configured spacing limit; no change to spacing, quantities, or source attribution claims.
+- F24: Complexity is a multiplier whose excess over 1 adds to installation labor; additional-layer factor multiplies the first-layer removal basis for each extra layer. Neither is a decimal addition.
+- Version/history: both runtime literals are v11; v10 approvals stay stale on read/save until explicit owner reapproval. Authentic frozen v8/v9 receipts and original monetary assertions remain immutable; replay returns the original receipt.
+
+Exact fixture-specific expectations will be recorded in tests before their first execution. Existing frozen regression expectations are reused intact.
+
+Fixture clarification before rerun: trim prep material uses its separate unchanged prepMaterialWasteFactor=0.10, even when paintWasteFactor=0. Thus paint fixture materials are 1000 wall +100 trim +110 prep =1210 cents. V10 total is 14000+1210+1200=16410; V11 is 14000+1210+1400=16610. The required seasonal charge remains 1400. The earlier 16600 full-total assertion omitted the existing prep waste; no engine amount was changed to satisfy it.

@@ -26,6 +26,8 @@ export const FLOORING_FIELD_COPY={
 export const CARPET_QUANTITY_NOTE='The carpet quantity is confirmed on site from the seaming diagram.';
 export const LEVELING_UNKNOWN_NOTE='Floor leveling is additional work; the business will confirm its area and price on site.';
 export const CLEANUP_BAG_WARNING="Customers who don't know their bag count will go to review. Add a per-load price and area per load to estimate it from the yard size.";
+export const flooringAddonOffered=(p,rules,path)=>pricePresent(p[path])||p[path]===0&&typeof rules?.zeroPricePolicy?.includedPrices?.[path]==='string';
+export const flooringAddonConfigured=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0;
 export const pricePresent=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
 const own=(o,k)=>Object.hasOwn(o||{},k);
 const present=v=>v!==undefined&&v!==null&&v!=='';
@@ -72,7 +74,10 @@ export function carpetRoomMeasurements(rooms,connections){
 
 export function normalizeFlooringInputs(c){
   if(c.newFlooringType!=='carpet'||c.carpetRooms===undefined)return c;
+  if(c.carpetMeasurementMethod!==undefined&&c.carpetMeasurementMethod!=='rooms')inputError('Choose room measurements or total area only; remove the conflicting measurements.','carpetMeasurementMethod');
   const measured=carpetRoomMeasurements(c.carpetRooms,c.carpetConnectedAreas);
+  if(c.sqft!==undefined&&(typeof c.sqft!=='number'||!Number.isFinite(c.sqft)||exactCompare(c.sqft,measured.exactArea)!==0))inputError('The total flooring area must agree with the supplied carpet room measurements.','sqft');
+  if(c.sqftMethod!==undefined&&c.sqftMethod!=='exact')inputError('Room dimensions conflict with the selected total-area measurement method.','sqftMethod');
   return {...c,carpetMeasurementMethod:'rooms',sqft:measured.areaSqft,sqftMethod:'exact',roomCount:measured.roomCount,layoutPattern:c.layoutPattern||'straight'};
 }
 

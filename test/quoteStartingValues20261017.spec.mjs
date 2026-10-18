@@ -92,7 +92,7 @@ test('new proposals include source and assumption; only used unconfirmed factors
 test('seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once',()=>{
   // Expected before execution: v7 stays stale through read/save; adoption is
   // rejected without writing. Explicit v9 approval preserves every saved price.
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v10');
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v11');
   assert.equal(historical.sourceCommit,'308ddcf9168d03bc0798bfba850d732f5500cbea');
   assert.equal(Object.keys(historical.cases).length,7);
   for(const [name,item] of Object.entries(historical.cases)){

@@ -1,3 +1,4 @@
+import {mergePricingForValidationVNext} from './pricingMerge.js';
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 const own=(value,key)=>Object.hasOwn(value||{},key);
 const finite=value=>typeof value==='number'&&Number.isFinite(value);
@@ -163,9 +164,10 @@ export function synchronizeDependentLinesVNext(service,definitions=[],options={}
   const reentered=new Set(options.reenteredIds||[]),confirm=new Set(options.confirmIds||[]);
   const now=typeof options.now==='string'?options.now:new Date().toISOString();
   for(const definition of definitions){
-    const key=dependentSignature(definition),baseValue=getPath(next.pricing,definition.basePricePath);
+    const effective=definition.tierName===undefined?next.pricing:mergePricingForValidationVNext(next.pricing,next.tiers?.find(t=>t.name===definition.tierName)?.overrides||{});
+    const key=dependentSignature(definition),baseValue=getPath(effective,definition.basePricePath);
     let row=state[definition.id];
-    if(!row||row.definitionSignature!==key)row={definitionSignature:key,basePricePath:definition.basePricePath,basePriceNewWording:definition.basePriceNewWording,baseValue:clone(baseValue),reentered:false,confirmed:false,introducedAt:now};
+    if(!row||row.definitionSignature!==key)row={definitionSignature:key,basePricePath:definition.basePricePath,basePriceNewWording:definition.basePriceNewWording,...(definition.tierName!==undefined?{tierName:definition.tierName}:{}),baseValue:clone(baseValue),reentered:false,confirmed:false,introducedAt:now};
     else if(!Object.is(baseValue,row.baseValue))row={...row,baseValue:clone(baseValue),reentered:true,confirmed:false,reenteredAt:now};
     if(reentered.has(definition.id))row={...row,baseValue:clone(baseValue),reentered:true,confirmed:false,reenteredAt:now};
     if(confirm.has(definition.id)){
@@ -180,10 +182,20 @@ export function synchronizeDependentLinesVNext(service,definitions=[],options={}
   return next;
 }
 
-export function dependentLineEnabledVNext(service,definition){
+export function dependentLineEnabledVNext(service,definition,effectivePricing=service?.pricing,tierName=null){
+  const tier=service?.tiers?.find(t=>t.name===tierName);
+  if(tier&&hasPath(tier.overrides,definition.basePricePath))definition=tierDependentDefinitionVNext(definition,tierName);
   const row=service?.dependentLineState?.[definition.id];
-  return record(row)&&row.confirmed===true&&row.reentered===true&&row.definitionSignature===dependentSignature(definition)&&Object.is(getPath(service.pricing,definition.basePricePath),row.baseValue);
+  return record(row)&&row.confirmed===true&&row.reentered===true&&row.definitionSignature===dependentSignature(definition)&&Object.is(getPath(effectivePricing,definition.basePricePath),row.baseValue);
 }
+export function tierDependentDefinitionVNext(definition,tierName){
+  return {...definition,id:definition.id+'@tier:'+encodeURIComponent(tierName),tierName};
+}
+export function roofDependentDefinitionsVNext(service){
+  const base=Object.keys(service?.pricing?.materialCostPerSquare||{}).map(roofFlashingVentDefinitionVNext);
+  return [...base,...(service?.tiers||[]).flatMap(tier=>Object.keys(tier.overrides?.materialCostPerSquare||{}).map(material=>tierDependentDefinitionVNext(roofFlashingVentDefinitionVNext(material),tier.name)))];
+}
+
 
 export function activeDependentLinesVNext(lines,service,definitions=[]){
   const definitionsById=new Map(definitions.map(definition=>[definition.id,definition]));

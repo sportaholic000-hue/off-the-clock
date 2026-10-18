@@ -1,3 +1,4 @@
+import {requestedSurfaceExtras,surfaceExtraDefinitions} from './surfacePricing.js';
 import {FLAT_ROOF_ITEMS,FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_SERVICES,flatRepairContract,flatRepairPricingDiagnostics,repairUnitRequirements,repairUnitConfig,hasSurfacePrice,normalizeRepairArea} from './flatRoofRepairPricing.js';
 import {RANGE_FIELDS,rangeSettingIssues} from '../quoteRangeSettings.js';
 import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
@@ -15,7 +16,7 @@ import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exac
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
-import {FLOORING_ADDONS,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
+import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 
 // Readiness validates many selections against one immutable tier. Only private,
@@ -51,7 +52,7 @@ export function createActivationValidationVNext(serviceType, pricing, serviceRul
   }
   return Object.freeze({
     pricing, serviceRules,
-    customer: inputs => validateCustomerInputs(serviceType, inputs, pricing, serviceRules),
+    customer: inputs => validateCustomerInputs(serviceType, inputs, pricing, serviceRules, tierName),
     owner: inputs => validateOwnerPricing(serviceType, inputs, pricing, serviceRules, tierName)
   });
 }
@@ -347,10 +348,10 @@ function flooringContract(replacement) {
         subfloorRepairAreaSqft: numberField('Measured subfloor repair area', 'square feet', 0.1, 1_000_000)
       } : {})
     },
-    required(c, p) {
+    required(c, p, rules={}) {
       const roomMethod=c.newFlooringType==='carpet'&&(c.carpetMeasurementMethod==='rooms'||c.carpetRooms!==undefined);
       const out = ['newFlooringType','existingFloorType','removalNeeded','stairSteps',...(roomMethod?['carpetRooms',...(c.carpetRooms?.length>1?['carpetConnectedAreas']:[])]:['sqft','sqftMethod','roomCount',...(c.newFlooringType==='carpet'?[]:['layoutPattern'])])];
-      for(const a of FLOORING_ADDONS)if(pricePresent(p[a.rate])){
+      for(const a of FLOORING_ADDONS)if(flooringAddonOffered(p,rules,a.rate)){
         if(a.rate==='floorLevelingPerSqft'){if(!replacement){out.push('floorLevelingNeeded');if(c.floorLevelingNeeded)out.push(a.input);}}
         else if(a.rate==='furnitureMovingPrice')out.push(p.furnitureMovingPriceUnit==='flat'?'furnitureMovingNeeded':a.input);
         else out.push(a.input);
@@ -378,6 +379,8 @@ function flooringContract(replacement) {
       if(c.carpetMeasurementMethod==='rooms'&&c.newFlooringType!=='carpet')errors.push({field:'carpetMeasurementMethod',message:'Room/roll measurements apply only to carpet.'});
       if(c.carpetRooms!==undefined&&c.newFlooringType!=='carpet')errors.push({field:'carpetRooms',message:'Carpet room measurements apply only to carpet.'});
       if(c.carpetConnectedAreas!==undefined&&c.carpetRooms===undefined)errors.push({field:'carpetConnectedAreas',message:'Give the carpet room measurements before identifying connected areas.'});
+      if(c.furnitureMovingNeeded===false&&c.furnitureMovingRoomCount>0)errors.push({field:'furnitureMovingRoomCount',message:'Furniture room count conflicts with no furniture moving being selected.'});
+      if(c.furnitureMovingNeeded===true&&p.furnitureMovingPriceUnit==='per_room'&&!(c.furnitureMovingRoomCount>0))errors.push({field:'furnitureMovingRoomCount',message:'Give a positive room count when furniture moving is needed.'});
       if(c.floorLevelingNeeded===false&&c.floorLevelingSqft!==undefined&&c.floorLevelingSqft!==0)errors.push({field:'floorLevelingSqft',message:'Leveling area applies only when floor leveling is selected.'});
       if(c.floorLevelingNeeded===true&&typeof c.floorLevelingSqft==='number'&&c.floorLevelingSqft<=0)errors.push({field:'floorLevelingSqft',message:'Give a positive leveling area or choose Not sure.'});
       if(c.floorLevelingNeeded&&replacement)errors.push({field:'floorLevelingNeeded',message:'Use the existing affected-area subfloor repair scope for flooring replacement.'});
@@ -763,8 +766,8 @@ export const CLASS2_DEFINITIONS = {
   CUSTOM: {}
 };
 
-const roofStarting=(defaultValue,label,source,assumption,min=0,max=5)=>({
-  defaultValue,label,unit:'decimal addition',min,max,startingValue:structuredClone(defaultValue),
+const roofStarting=(defaultValue,label,source,assumption,min=0,max=5,unit='decimal addition')=>({
+  defaultValue,label,unit,min,max,startingValue:structuredClone(defaultValue),
   startingValueLabel:label,startingValueSource:source,startingValueAssumption:assumption,
   startingValueGroup:ROOF_RULE_GROUP
 });
@@ -782,12 +785,12 @@ Object.assign(CLASS2_DEFINITIONS.ROOFING_REPLACEMENT,{
   complexityLaborMultiplier:roofStarting(
     {simple:1,moderate:1.20,complex:1.40},'Roof-shape labor adjustment',
     'SquareDash places a hip roof about 1.23 times a simple gable at published midpoints; RoofVista lists multiple valleys at +15-25% and dormers or turrets at +30-45%, separately from pitch.',
-    "Assumes your crew's labor productivity changes in line with these published roof-shape ranges.",0.1,5
+    "Assumes your crew's labor productivity changes in line with these published roof-shape ranges.",0.1,5,'multiplier'
   ),
   additionalLayerRemovalFactor:roofStarting(
     0.70,'Additional tear-off layer factor',
     "SupplementSnap's approximately $45 additional-layer removal is about 70-73% of first-layer removal in separate Symbility and GAF Xactimate samples.",
-    'The figures come from different price lists and dates; replace this approximation with your own additional-layer removal factor.'
+    'The figures come from different price lists and dates; replace this approximation with your own additional-layer removal factor.',0,5,'multiplier of first-layer removal per additional layer'
   )
 });
 
@@ -991,7 +994,7 @@ function validateFieldValue(definition, value) {
   return 'uses an unsupported contract type';
 }
 
-export function validateCustomerInputs(serviceType, customerInputs = {}, pricing = {}, serviceRules = {}) {
+export function validateCustomerInputs(serviceType, customerInputs = {}, pricing = {}, serviceRules = {}, tierName = null) {
   let contract = MEASUREMENT_CONTRACTS[serviceType];
   if (!contract) return { ok: false, missingCustomerFields: [], invalidCustomerFields: ['serviceType'], reviewReason: 'Unsupported service type.' };
   const customerSnapshot = snapshotPlainData(customerInputs, 'customerInputs');
@@ -1048,7 +1051,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   const rules = validationSnapshotVNext(serviceRules, 'serviceRules');
   if (!rules.ok || rules.nonPlainPaths.length) return { ok: false, missingCustomerFields: [], invalidCustomerFields: [], invalidOwnerFields: ['serviceRules'], reviewReason: 'Service rules must be plain data.' };
   serviceRules = rules.value;
-  contract=customerContractForVNext(serviceType,pricing,serviceRules);
+  contract=customerContractForVNext(serviceType,pricing,serviceRules,tierName);
   const allowed = new Set(Object.keys(contract.fields));
   const unexpected = Object.keys(customerInputs).filter(key => !allowed.has(key));
   const required = [...new Set(contract.required?.(customerInputs, pricing) || [])];
@@ -1263,7 +1266,7 @@ const ALLOWED_PRICING_FIELDS = {
   CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
 };
 
-export function customerContractForVNext(type,p={},rules={}) {
+export function customerContractForVNext(type,p={},rules={},tierName=null) {
  let base=surfaceCustomerContract(type,p,configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type]);
  if(type.startsWith('CONCRETE_'))base={...base,fields:{...base.fields,placementMethod:{...base.fields.placementMethod,values:offeredPlacement(p),...(!offeredPlacement(p).length||p.defaultPlacementMethod||offeredPlacement(p).length===1?{evidenceOnly:true}:{})}}};
  if(type==='LANDSCAPING_SOD')base={...base,fields:{...base.fields,usableTopsoilDepthInches:{...base.fields.usableTopsoilDepthInches,...(!present(p.topsoilPerCubicYard)?{evidenceOnly:true}:{})}}};
@@ -1272,7 +1275,7 @@ export function customerContractForVNext(type,p={},rules={}) {
  if(type.startsWith('FLOORING_')){
    const fields=pricePresent(p.carpetRollWidthFt)?{newFlooringType:base.fields.newFlooringType,carpetMeasurementMethod:base.fields.carpetMeasurementMethod,carpetRooms:base.fields.carpetRooms,carpetConnectedAreas:base.fields.carpetConnectedAreas,...base.fields}:{...base.fields};
    for(const [key,field] of Object.entries(fields)){
-     let shown=!field.optionalPricingField||pricePresent(p[field.optionalPricingField]);
+     let shown=!field.optionalPricingField||flooringAddonOffered(p,rules,field.optionalPricingField);
      if(key==='furnitureMovingRoomCount')shown=shown&&p.furnitureMovingPriceUnit==='per_room';
      if(key==='furnitureMovingNeeded')shown=shown&&p.furnitureMovingPriceUnit==='flat';
      if(key.startsWith('carpet'))shown=pricePresent(p.carpetRollWidthFt);
@@ -1282,8 +1285,11 @@ export function customerContractForVNext(type,p={},rules={}) {
    base={...base,fields};
  }
  if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(rules)){
-  const materialKeys=Object.keys(rules?.pricing?.materialCostPerSquare||p.materialCostPerSquare||{});
-  const dependentActive=materialKeys.length>0&&materialKeys.every(key=>dependentLineEnabledVNext({...rules,pricing:rules?.pricing||p},roofFlashingVentDefinitionVNext(key)));
+  const materialKeys=Object.keys(p.materialCostPerSquare||{});
+  const dependentMaterials=materialKeys.filter(key=>dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tierName)||tierName===null&&(rules.tiers||[]).some(tier=>Object.is(valueAtPath(mergePricingForValidationVNext(rules.pricing||{},tier.overrides||{}),'materialCostPerSquare.'+key),p.materialCostPerSquare[key])&&dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tier.name)));
+  const dependentActive=dependentMaterials.length>0;
+  const accessoryVisibleWhen=dependentMaterials.map(key=>[['replacementRoofType','eq',key]]);
+
   const pitchAreaError=c=>{
    if(c.pitchMethod!=='area_by_pitch'||c.roofSizeMethod!=='roof_measured'||!Number.isFinite(c.roofSizeInput))return null;
    const sum=['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].reduce((n,name)=>exactAdd(n,c[name]||0),0);
@@ -1304,13 +1310,15 @@ export function customerContractForVNext(type,p={},rules={}) {
    pitchArea10To12Sqft:numberField('Roof surface area at 10/12-12/12 — very steep','square feet',0,1_000_000),
    pitchAreaOver12Sqft:numberField('Roof surface area over 12/12 — special steep work','square feet',0,1_000_000),
    roofComplexity:enumField('Roof shape',['simple','moderate','complex'],{optionLabels:{simple:'Simple — a gable roof',moderate:'Moderate — a hip roof or several valleys',complex:'Complex — dormers or turrets'}}),
-   ...(dependentActive?{iceWaterBarrierSqft:numberField('Ice and water barrier at eaves and valleys','square feet',0,1_000_000),
-   iceWaterBarrierLengthLF:numberField('Ice and water barrier at eaves and valleys','linear feet',0,1_000_000),
+   iceWaterBarrierSqft:{...numberField('Ice and water barrier at eaves and valleys','square feet',0,1_000_000),visibleWhen:accessoryVisibleWhen,...(!dependentActive||p.iceWaterBarrierUnit!=='square_feet'?{evidenceOnly:true}:{})},
+   iceWaterBarrierLengthLF:{...numberField('Ice and water barrier at eaves and valleys','linear feet',0,1_000_000),visibleWhen:accessoryVisibleWhen,...(!dependentActive||p.iceWaterBarrierUnit!=='linear_feet'?{evidenceOnly:true}:{})},
+   ...(dependentActive?{
    valleyLengthLF:numberField('Valley length','linear feet',0,1_000_000),
    stepFlashingLengthLF:numberField('Step flashing length','linear feet',0,1_000_000),
    pipeJackCount:numberField('Pipe jacks','each',0,100_000,{integer:true}),
    ridgeVentLengthLF:numberField('Ridge vent length','linear feet',0,1_000_000)}:{})
   };
+  for(const key of ['valleyLengthLF','stepFlashingLengthLF','pipeJackCount','ridgeVentLengthLF'])if(fields[key])fields[key]={...fields[key],visibleWhen:accessoryVisibleWhen};
   delete fields.pitch;
   base={...legacy,fields,
    required(c){
@@ -1320,6 +1328,10 @@ export function customerContractForVNext(type,p={},rules={}) {
     if(c.pitchMethod==='area_by_pitch'&&['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].every(name=>c[name]===undefined))out.push('pitchAreaUpTo6Sqft');
     if(c.serviceScope==='partial'&&c.partialPercent===undefined&&c.partialAreaSqft===undefined)out.push('partialAreaSqft');
     if(p.accessoryPricingMode==='itemized')out.push('starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF');
+    if(dependentMaterials.includes(c.replacementRoofType)){
+      if(p.iceWaterBarrierUnit==='square_feet'&&c.iceWaterBarrierLengthLF!==undefined)out.push('iceWaterBarrierSqft');
+      if(p.iceWaterBarrierUnit==='linear_feet'&&c.iceWaterBarrierSqft!==undefined)out.push('iceWaterBarrierLengthLF');
+    }
     return out;
    },inspection(c){return pitchAreaError(c)?.message||null;},crossValidate(c){
     const errors=[];
@@ -1340,6 +1352,10 @@ export function customerContractForVNext(type,p={},rules={}) {
         if(exactCompare(area,totalArea)>=0)errors.push({field:name,message:'Partial area must be strictly smaller than the total roof area.'});
       }
     }
+    for(const name of ['iceWaterBarrierSqft','iceWaterBarrierLengthLF','valleyLengthLF','stepFlashingLengthLF','pipeJackCount','ridgeVentLengthLF'])if(c[name]!==undefined&&!dependentMaterials.includes(c.replacementRoofType))errors.push({field:name,message:'This roof material and price option need confirmed accessory-basis pricing before these measurements can be quoted.'});
+    const wrongIceUnit=p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierLengthLF':p.iceWaterBarrierUnit==='linear_feet'?'iceWaterBarrierSqft':null;
+    if(wrongIceUnit&&c[wrongIceUnit]!==undefined)errors.push({field:wrongIceUnit,message:'Supply ice and water barrier in '+(p.iceWaterBarrierUnit==='square_feet'?'square feet':'linear feet')+', the unit configured by the business.'});
+    if(!wrongIceUnit&&(c.iceWaterBarrierSqft!==undefined||c.iceWaterBarrierLengthLF!==undefined))errors.push({field:'iceWaterBarrierSqft',message:'The business must configure the ice and water barrier measurement unit before quoting this scope.'});
     if(c.iceWaterBarrierSqft!==undefined&&c.iceWaterBarrierLengthLF!==undefined)errors.push({field:'iceWaterBarrierSqft',message:'Supply ice and water barrier in only the unit selected by the owner.'});
     return errors;
    }};
@@ -1352,7 +1368,7 @@ export function customerContractForVNext(type,p={},rules={}) {
   const effective={...(rules.pricing||{}),...(tier.overrides||{})},definitions=scopeDefinitions(type,effective);
   for(const key of Object.keys(tier.overrides?.scopeDetails||{}))if(definitions[key])optionConfirmations[definitions[key].confirmation]={...booleanField('Confirmed '+definitions[key].label.toLowerCase()),evidenceOnly:true};
  }
- return {...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)};
+ return {...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)};
 }
 
 export function allowedPricingFields(serviceType) {
@@ -1456,6 +1472,11 @@ export function valueAtPath(source, path) {
 
 export function ownerRequirements(type,c={},p={},rules={}) {
  const extra=[];
+ if(type.startsWith('FLOORING_'))for(const addon of FLOORING_ADDONS){
+  const selected=addon.rate==='floorLevelingPerSqft'?type==='FLOORING_INSTALL'&&c.floorLevelingNeeded===true&&typeof c[addon.input]==='number'&&c[addon.input]>0:addon.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?c.furnitureMovingNeeded===true:c[addon.input]>0;
+  if(selected&&flooringAddonConfigured(p[addon.rate])){extra.push(requirement(addon.rate,addon.label));if(addon.rate==='furnitureMovingPrice')extra.push({path:'furnitureMovingPriceUnit',label:'Furniture moving price unit',kind:'enum',values:['per_room','flat']});}
+ }
+ for(const item of requestedSurfaceExtras(type,c,p))if(item.rateCents!==undefined)extra.push(requirement(item.ratePath,item.label));
  if(type==='SIDING_REPLACEMENT'&&c.areaInputMethod==='building_dimensions')extra.push({path:'sidingSettings.areaConventionByType.'+c.sidingType,label:'Area convention for this siding rate',kind:'enum',values:['openings_left_in','openings_subtracted']});
  if(paintingType(type)&&p.offeringMode!=='installed'){
   const settings=p.paintingSettings||{};
@@ -1808,7 +1829,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
     if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
     else for(const [key,value] of Object.entries(p[field])){
-      if(!(serviceType==='CUSTOM'&&field==='installedMaterialsPercent'&&key==='price'||/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
+      if(!(serviceType==='CUSTOM'&&field==='installedMaterialsPercent'&&key==='price'||serviceType.startsWith('FLOORING_')&&FLOORING_ADDONS.some(a=>a.installed&&a.rate===key&&(serviceType==='FLOORING_INSTALL'||a.rate!=='floorLevelingPerSqft'))||key.startsWith('surfaceExtraRates.')&&Object.hasOwn(surfaceExtraDefinitions(serviceType,p),key.slice('surfaceExtraRates.'.length))||/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
       else if(field==='installedMaterialsPercent'&&typeof p.installedLaborPercent?.[key]==='number'&&Number.isFinite(p.installedLaborPercent[key])&&p.installedLaborPercent[key]>=0&&p.installedLaborPercent[key]<=100&&exactCompare(exactAdd(value,p.installedLaborPercent[key]),100)>0)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Materials and labor portions cannot total more than 100%.');
     }
   }
@@ -2068,6 +2089,9 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     if (customerInputs.gateCount > 0) requireDecision(`gatePrice.${customerInputs.fenceType}`, 'gate_width_pricing_contract', 'Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths.');
   }
   if (serviceType === 'ROOFING_REPLACEMENT') {
+    const dependent=roofFlashingVentDefinitionVNext(customerInputs.replacementRoofType||'unknown');
+    if(usesNewRoofReplacementRulesVNext(serviceRules)&&serviceRules.dependentLineState?.[dependent.id]?.confirmed===true&&!dependentLineEnabledVNext(serviceRules,dependent,pricing,tierName))requireDecision('dependentLineState.'+dependent.id,'effective_roof_accessory_basis','Re-enter and explicitly confirm the accessory-excluding material price for this effective price option before quoting.');
+    if(usesNewRoofReplacementRulesVNext(serviceRules))for(const path of [`storyMultiplier.${customerInputs.stories}`,`complexityLaborMultiplier.${customerInputs.roofComplexity}`])if(valueAtPath(pricing,path)<1)requireDecision(path,'roof_factor_below_one_policy','This selected roof factor is below 1. An owner pricing-policy decision is required before a negative additive adjustment can be quoted.');
     const basisPath = `underlaymentPriceBasis.${customerInputs.replacementRoofType}`;
     if (valueAtPath(pricing, basisPath) === 'cost' && !pricing.scopeDetails?.['roof_underlayment_'+customerInputs.replacementRoofType]) requireDecision(basisPath, 'purchasable_underlayment_contract', 'Cost-based roof underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
   }
