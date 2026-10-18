@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {randomUUID} from 'node:crypto';
 import {fixture,flooring} from '../verification/engine-independent/fixtures.mjs';
-import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
+import {generateQuoteVNext,sanitizeForCustomerVNext,ENGINE_VERSION} from '../server/quote-engine-vnext/engine.js';
 import {CLASS2_DEFINITIONS} from '../server/quote-engine-vnext/contracts.js';
 import {synchronizeStartingValuesVNext} from '../server/quote-engine-vnext/priceGroundwork.js';
 import * as bridge from '../server/src/quoteDoneBridge.js';
@@ -89,18 +89,31 @@ test('new proposals include source and assumption; only used unconfirmed factors
   assert.match(JSON.stringify(generateQuoteVNext(f)),/startingValueState.herringboneLaborMultiplierByType.vinyl_plank/);
 });
 
-test('seven pre-change manual and AI books keep their pricing and approvals through read/save and adopt once',()=>{
+test('seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once',()=>{
+  // Expected before execution: v7 stays stale through read/save; adoption is
+  // rejected without writing. Explicit v8 approval preserves every saved price.
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v8');
   assert.equal(historical.sourceCommit,'308ddcf9168d03bc0798bfba850d732f5500cbea');
   assert.equal(Object.keys(historical.cases).length,7);
   for(const [name,item] of Object.entries(historical.cases)){
     const original=structuredClone(item.book),owner=original.ownerId,group=name.startsWith('painting')?paintGroup:floorGroup;
     savePricebook(owner,original);let book=loadPricebook(owner);
-    assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,true,name+' baseline approval');
+    assert.equal(original.services[0].quoteDoneApproval.engineVersion,'quote-engine-vnext-date-context-20261006-v7');
+    assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,false,name+' stale baseline approval');
     const draft=bridge.readApplicationBook(owner);
+    assert.deepEqual(loadPricebook(owner),book,name+' read does not renew approval');
     assert.ok(Object.values(draft.services[0].startingValueState||{}).every(row=>row.pendingAdoption===true));
     bridge.saveApplicationBook(owner,draft);book=loadPricebook(owner);
     assert.deepEqual(book.services[0].pricing,original.services[0].pricing,name+' read/save pricing');
-    assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,true,name+' read/save approval');
+    assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,false,name+' read/save stays stale');
+    assert.deepEqual(book.services[0].quoteDoneApproval,original.services[0].quoteDoneApproval,name+' read/save preserves historical receipt');
+    assert.throws(()=>bridge.approveApplicationService(owner,book.services[0].id,{revision:bridge.bookRevision(book),adoptStartingValueGroup:group}),error=>error.statusCode===409&&/current saved approval/.test(error.message));
+    assert.deepEqual(loadPricebook(owner),book,name+' rejected adoption does not write');
+    bridge.approveApplicationService(owner,book.services[0].id,{revision:bridge.bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true,fields:bridge.applicationStatus(book.services[0],book).confirmationFields});
+    book=loadPricebook(owner);
+    assert.deepEqual(book.services[0].pricing,original.services[0].pricing,name+' explicit reapproval preserves prices');
+    assert.equal(book.services[0].quoteDoneApproval.engineVersion,ENGINE_VERSION);
+    assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,true,name+' explicit reapproval');
     bridge.approveApplicationService(owner,book.services[0].id,{revision:bridge.bookRevision(book),adoptStartingValueGroup:group});
     book=loadPricebook(owner);const service=book.services[0];
     assert.equal(service.startingValueAdoptions[group].mode,'adopted');

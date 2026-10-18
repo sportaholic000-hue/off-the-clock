@@ -1,0 +1,510 @@
+(node:3) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:10) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: unchanged pinned quote and book: mowing-control
+ok 1 - unchanged pinned quote and book: mowing-control
+  ---
+  duration_ms: 20.793216
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-unpriced-bagging
+ok 2 - unchanged pinned quote and book: mowing-unpriced-bagging
+  ---
+  duration_ms: 4.135016
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-unpriced-edging
+ok 3 - unchanged pinned quote and book: mowing-unpriced-edging
+  ---
+  duration_ms: 3.890247
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: mowing-priced-extras-control
+ok 4 - unchanged pinned quote and book: mowing-priced-extras-control
+  ---
+  duration_ms: 6.290515
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-control
+ok 5 - unchanged pinned quote and book: flat-repair-control
+  ---
+  duration_ms: 7.229807
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-unpriced-ponding
+ok 6 - unchanged pinned quote and book: flat-repair-unpriced-ponding
+  ---
+  duration_ms: 7.288116
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-repair-priced-ponding-control
+ok 7 - unchanged pinned quote and book: flat-repair-priced-ponding-control
+  ---
+  duration_ms: 3.641925
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-200-control
+ok 8 - unchanged pinned quote and book: floor-tile-200-control
+  ---
+  duration_ms: 5.586877
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-150-boundary
+ok 9 - unchanged pinned quote and book: floor-tile-150-boundary
+  ---
+  duration_ms: 4.200634
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-tile-300-boundary
+ok 10 - unchanged pinned quote and book: floor-tile-300-boundary
+  ---
+  duration_ms: 3.855336
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-tile
+ok 11 - unchanged pinned quote and book: floor-type-tile
+  ---
+  duration_ms: 3.693302
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-vinyl_plank
+ok 12 - unchanged pinned quote and book: floor-type-vinyl_plank
+  ---
+  duration_ms: 3.529836
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-hardwood
+ok 13 - unchanged pinned quote and book: floor-type-hardwood
+  ---
+  duration_ms: 3.606341
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-laminate
+ok 14 - unchanged pinned quote and book: floor-type-laminate
+  ---
+  duration_ms: 2.2889
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-type-carpet
+ok 15 - unchanged pinned quote and book: floor-type-carpet
+  ---
+  duration_ms: 2.437984
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: floor-stairs
+ok 16 - unchanged pinned quote and book: floor-stairs
+  ---
+  duration_ms: 2.480399
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-flat
+ok 17 - unchanged pinned quote and book: custom-flat
+  ---
+  duration_ms: 3.055553
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_hour
+ok 18 - unchanged pinned quote and book: custom-fixed-per_hour
+  ---
+  duration_ms: 1.793406
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_unit
+ok 19 - unchanged pinned quote and book: custom-fixed-per_unit
+  ---
+  duration_ms: 1.772474
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_sqft
+ok 20 - unchanged pinned quote and book: custom-fixed-per_sqft
+  ---
+  duration_ms: 1.428056
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_LF
+ok 21 - unchanged pinned quote and book: custom-fixed-per_LF
+  ---
+  duration_ms: 1.521317
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-per_square
+ok 22 - unchanged pinned quote and book: custom-fixed-per_square
+  ---
+  duration_ms: 1.521157
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-fixed-fractional-rate
+ok 23 - unchanged pinned quote and book: custom-fixed-fractional-rate
+  ---
+  duration_ms: 1.586655
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-range-flat
+ok 24 - unchanged pinned quote and book: custom-range-flat
+  ---
+  duration_ms: 2.772147
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: custom-classification-attempt
+ok 25 - unchanged pinned quote and book: custom-classification-attempt
+  ---
+  duration_ms: 1.463941
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-base-control
+ok 26 - unchanged pinned quote and book: siding-base-control
+  ---
+  duration_ms: 4.428006
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-trim
+ok 27 - unchanged pinned quote and book: siding-trim
+  ---
+  duration_ms: 1.332914
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: siding-removal
+ok 28 - unchanged pinned quote and book: siding-removal
+  ---
+  duration_ms: 1.338462
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-base-control
+ok 29 - unchanged pinned quote and book: concrete-base-control
+  ---
+  duration_ms: 4.488908
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-demolition
+ok 30 - unchanged pinned quote and book: concrete-demolition
+  ---
+  duration_ms: 1.198221
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: concrete-exposed-aggregate
+ok 31 - unchanged pinned quote and book: concrete-exposed-aggregate
+  ---
+  duration_ms: 1.148206
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-roof-residential-control
+ok 32 - unchanged pinned quote and book: flat-roof-residential-control
+  ---
+  duration_ms: 3.574624
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: flat-roof-commercial
+ok 33 - unchanged pinned quote and book: flat-roof-commercial
+  ---
+  duration_ms: 3.243295
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_INSTALL-installed-control
+ok 34 - unchanged pinned quote and book: FENCING_INSTALL-installed-control
+  ---
+  duration_ms: 6.367942
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_INSTALL-itemized-control
+ok 35 - unchanged pinned quote and book: FENCING_INSTALL-itemized-control
+  ---
+  duration_ms: 4.763039
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_REPLACEMENT-installed-control
+ok 36 - unchanged pinned quote and book: FENCING_REPLACEMENT-installed-control
+  ---
+  duration_ms: 3.716056
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: FENCING_REPLACEMENT-itemized-control
+ok 37 - unchanged pinned quote and book: FENCING_REPLACEMENT-itemized-control
+  ---
+  duration_ms: 4.118331
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: INTERIOR_PAINTING-installed-control
+ok 38 - unchanged pinned quote and book: INTERIOR_PAINTING-installed-control
+  ---
+  duration_ms: 5.181759
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: INTERIOR_PAINTING-itemized-control
+ok 39 - unchanged pinned quote and book: INTERIOR_PAINTING-itemized-control
+  ---
+  duration_ms: 6.613542
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: EXTERIOR_PAINTING-installed-control
+ok 40 - unchanged pinned quote and book: EXTERIOR_PAINTING-installed-control
+  ---
+  duration_ms: 3.713753
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: EXTERIOR_PAINTING-itemized-control
+ok 41 - unchanged pinned quote and book: EXTERIOR_PAINTING-itemized-control
+  ---
+  duration_ms: 3.875715
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: painting-itemized-cost-basis
+ok 42 - unchanged pinned quote and book: painting-itemized-cost-basis
+  ---
+  duration_ms: 2.578737
+  type: 'test'
+  ...
+# Subtest: unchanged pinned quote and book: requested-976-control
+ok 43 - unchanged pinned quote and book: requested-976-control
+  ---
+  duration_ms: 1.54976
+  type: 'test'
+  ...
+# Subtest: range endpoints, independent service overrides, private settings and unchanged display
+ok 44 - range endpoints, independent service overrides, private settings and unchanged display
+  ---
+  duration_ms: 8.184703
+  type: 'test'
+  ...
+# Subtest: legacy single-buffer evidence retains its 25% bound
+ok 45 - legacy single-buffer evidence retains its 25% bound
+  ---
+  duration_ms: 1.459694
+  type: 'test'
+  ...
+# Subtest: blank range sides fall back; wide high bands, minimum and zero side validation
+ok 46 - blank range sides fall back; wide high bands, minimum and zero side validation
+  ---
+  duration_ms: 9.215252
+  type: 'test'
+  ...
+# Subtest: custom materials share gives exact tax, labor surcharge and total
+ok 47 - custom materials share gives exact tax, labor surcharge and total
+  ---
+  duration_ms: 8.47564
+  type: 'test'
+  ...
+# Subtest: custom split follows labor/material markup flags, sell basis, and intrinsic scenarios
+ok 48 - custom split follows labor/material markup flags, sell basis, and intrinsic scenarios
+  ---
+  duration_ms: 12.397425
+  type: 'test'
+  ...
+# Subtest: custom shares reject invalid values and conserve billed cents at tiny boundaries
+ok 49 - custom shares reject invalid values and conserve billed cents at tiny boundaries
+  ---
+  duration_ms: 18.532637
+  type: 'test'
+  ...
+# Subtest: accuracy independent three-job oracle and metric-specific coverage
+ok 50 - accuracy independent three-job oracle and metric-specific coverage
+  ---
+  duration_ms: 1.909661
+  type: 'test'
+  ...
+# Subtest: metrics exclude missing middles, zero denominators, unknown tiers, currencies and sell-price budgets separately
+ok 51 - metrics exclude missing middles, zero denominators, unknown tiers, currencies and sell-price budgets separately
+  ---
+  duration_ms: 7.168455
+  type: 'test'
+  ...
+# Subtest: owner cost storage is separate, tenant-bound, revisioned, durable and absent from staff views
+ok 52 - owner cost storage is separate, tenant-bound, revisioned, durable and absent from staff views
+  ---
+  duration_ms: 44.565459
+  type: 'test'
+  ...
+# Subtest: new settings and custom share survive the real saved-book, approval and interview paths
+ok 53 - new settings and custom share survive the real saved-book, approval and interview paths
+  ---
+  duration_ms: 678.999886
+  type: 'test'
+  ...
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: v8 comparison metadata advances only explicit paths on a clone, including results without options
+ok 54 - v8 comparison metadata advances only explicit paths on a clone, including results without options
+  ---
+  duration_ms: 3.297948
+  type: 'test'
+  ...
+# Subtest: roof underlayment new full: footprint uses rounded surface
+ok 55 - roof underlayment new full: footprint uses rounded surface
+  ---
+  duration_ms: 25.076023
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: footprint uses rounded surface
+ok 56 - roof underlayment new partial: footprint uses rounded surface
+  ---
+  duration_ms: 12.591066
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: footprint uses rounded surface
+ok 57 - roof underlayment adopted full: footprint uses rounded surface
+  ---
+  duration_ms: 6.4466
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: footprint uses rounded surface
+ok 58 - roof underlayment adopted partial: footprint uses rounded surface
+  ---
+  duration_ms: 6.935034
+  type: 'test'
+  ...
+# Subtest: roof underlayment new full: measured surface equivalence
+ok 59 - roof underlayment new full: measured surface equivalence
+  ---
+  duration_ms: 12.636094
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: measured surface equivalence
+ok 60 - roof underlayment new partial: measured surface equivalence
+  ---
+  duration_ms: 7.543479
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: measured surface equivalence
+ok 61 - roof underlayment adopted full: measured surface equivalence
+  ---
+  duration_ms: 8.248118
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: measured surface equivalence
+ok 62 - roof underlayment adopted partial: measured surface equivalence
+  ---
+  duration_ms: 7.607265
+  type: 'test'
+  ...
+# Subtest: roof underlayment new: explicit partial surface takes precedence
+ok 63 - roof underlayment new: explicit partial surface takes precedence
+  ---
+  duration_ms: 5.840468
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted: explicit partial surface takes precedence
+ok 64 - roof underlayment adopted: explicit partial surface takes precedence
+  ---
+  duration_ms: 4.995329
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.105
+ok 65 - roof underlayment surface rounding before package boundary 707.105
+  ---
+  duration_ms: 3.436736
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.111
+ok 66 - roof underlayment surface rounding before package boundary 707.111
+  ---
+  duration_ms: 3.078657
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy full remains unchanged
+ok 67 - roof underlayment legacy full remains unchanged
+  ---
+  duration_ms: 3.64573
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy partial remains unchanged
+ok 68 - roof underlayment legacy partial remains unchanged
+  ---
+  duration_ms: 3.642245
+  type: 'test'
+  ...
+# Subtest: roof underlayment package cost receives existing markup and materials tax once
+ok 69 - roof underlayment package cost receives existing markup and materials tax once
+  ---
+  duration_ms: 4.127425
+  type: 'test'
+  ...
+# Subtest: roof underlayment installed-area full remains surface-based without package waste
+ok 70 - roof underlayment installed-area full remains surface-based without package waste
+  ---
+  duration_ms: 3.99119
+  type: 'test'
+  ...
+# Subtest: roof underlayment installed-area partial remains surface-based without package waste
+ok 71 - roof underlayment installed-area partial remains surface-based without package waste
+  ---
+  duration_ms: 3.383596
+  type: 'test'
+  ...
+# Subtest: roof underlayment retains included-zero semantics and unrelated measured scope controls
+ok 72 - roof underlayment retains included-zero semantics and unrelated measured scope controls
+  ---
+  duration_ms: 84.382595
+  type: 'test'
+  ...
+# Subtest: roof underlayment corrected full saved widget-route and voice-tool parity
+ok 73 - roof underlayment corrected full saved widget-route and voice-tool parity
+  ---
+  duration_ms: 1320.775418
+  type: 'test'
+  ...
+# Subtest: roof underlayment corrected partial saved widget-route and voice-tool parity
+ok 74 - roof underlayment corrected partial saved widget-route and voice-tool parity
+  ---
+  duration_ms: 657.270943
+  type: 'test'
+  ...
+# Subtest: roof underlayment v7 approval reviews new requests; explicit v8 reapproval preserves historical retries
+ok 75 - roof underlayment v7 approval reviews new requests; explicit v8 reapproval preserves historical retries
+  ---
+  duration_ms: 473.537073
+  type: 'test'
+  ...
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: adopted wall, ceiling and trim ratios keep exact two-coat conversion and no primer defaults
+ok 76 - adopted wall, ceiling and trim ratios keep exact two-coat conversion and no primer defaults
+  ---
+  duration_ms: 57.667323
+  type: 'test'
+  ...
+# Subtest: flooring adoption adds per-material waste, retains diagonal labor and separately prices herringbone
+ok 77 - flooring adoption adds per-material waste, retains diagonal labor and separately prices herringbone
+  ---
+  duration_ms: 23.389688
+  type: 'test'
+  ...
+# Subtest: new and adopted tile herringbone review until the owner supplies its own labor adjustment
+ok 78 - new and adopted tile herringbone review until the owner supplies its own labor adjustment
+  ---
+  duration_ms: 13.596337
+  type: 'test'
+  ...
+# Subtest: new proposals include source and assumption; only used unconfirmed factors require review
+ok 79 - new proposals include source and assumption; only used unconfirmed factors require review
+  ---
+  duration_ms: 10.709177
+  type: 'test'
+  ...
+# Subtest: seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once
+ok 80 - seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once
+  ---
+  duration_ms: 2269.646679
+  type: 'test'
+  ...
+# Subtest: root and mirrored owner maps survive adoption; an explicit tier value is not a base proposal
+ok 81 - root and mirrored owner maps survive adoption; an explicit tier value is not a base proposal
+  ---
+  duration_ms: 213.886165
+  type: 'test'
+  ...
+# Subtest: application-created services stay unconfirmed after ordinary approval; explicit confirmation quotes with the on-site line
+ok 82 - application-created services stay unconfirmed after ordinary approval; explicit confirmation quotes with the on-site line
+  ---
+  duration_ms: 662.883896
+  type: 'test'
+  ...
+1..82
+# tests 82
+# suites 0
+# pass 82
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3482.696128

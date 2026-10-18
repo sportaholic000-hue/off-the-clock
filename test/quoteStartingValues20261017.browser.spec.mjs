@@ -7,6 +7,7 @@ import {build} from 'esbuild';
 import {readFileSync} from 'node:fs';
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import {savePricebook,loadPricebook} from '../server/priceBookService.js';
+import {ENGINE_VERSION} from '../server/quote-engine-vnext/engine.js';
 
 let browser,ownerBundle;
 const date={timeZone:'UTC',quoteInstant:'2026-10-16T15:00:00.000Z'};
@@ -54,7 +55,19 @@ for(const [name,group,count] of [['painting','painting_coats_20261017',1],['floo
     // Expected BEFORE execution: source/assumption groups 1 painting, 3 flooring;
     // pending values remain outside pricing, no individual confirmation button;
     // one adoption confirms all system leaves and retains a current approval.
+    // The historical v7 approval first stays stale through ordinary read/save
+    // and rejects browser adoption; explicit API reapproval changes no prices.
     const book=structuredClone(historical.cases[name].book),owner=book.ownerId;savePricebook(owner,book);
+    assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v8');
+    assert.equal(book.services[0].quoteDoneApproval.engineVersion,'quote-engine-vnext-date-context-20261006-v7');
+    let saved=loadPricebook(owner);
+    assert.equal(bridge.applicationStatus(saved.services[0],saved,date).approvalCurrent,false);
+    const draft=bridge.readApplicationBook(owner);
+    assert.deepEqual(loadPricebook(owner),saved);
+    bridge.saveApplicationBook(owner,draft,date);saved=loadPricebook(owner);
+    assert.deepEqual(saved.services[0].pricing,book.services[0].pricing);
+    assert.deepEqual(saved.services[0].quoteDoneApproval,book.services[0].quoteDoneApproval);
+    assert.equal(bridge.applicationStatus(saved.services[0],saved,date).approvalCurrent,false);
     const opened=await openOwner(owner,book.services[0].serviceType);
     try{
       await opened.page.getByRole('button',{name:/Quantity assumptions/}).click();
@@ -63,6 +76,15 @@ for(const [name,group,count] of [['painting','painting_coats_20261017',1],['floo
       assert.equal(await opened.page.getByText('Assumption:',{exact:true}).count(),count);
       assert.equal(await opened.page.locator('.starting-value-note').getByRole('button',{name:/^Confirm /}).count(),0);
       assert.deepEqual(loadPricebook(owner).services[0].pricing,book.services[0].pricing);
+      const [rejected]=await Promise.all([opened.page.waitForResponse(r=>/\/approve$/.test(r.url())&&r.request().method()==='POST'),opened.page.getByRole('button',{name:'Adopt new '+name+' rules and starting values',exact:true}).click()]);
+      assert.equal(rejected.status(),409);assert.match(await rejected.text(),/current saved approval/);
+      assert.deepEqual(loadPricebook(owner),saved);
+      bridge.approveApplicationService(owner,saved.services[0].id,{revision:bridge.bookRevision(saved),confirmConfiguration:true,confirmLegacySettings:true,fields:bridge.applicationStatus(saved.services[0],saved,date).confirmationFields},date);
+      saved=loadPricebook(owner);
+      assert.deepEqual(saved.services[0].pricing,book.services[0].pricing);
+      assert.equal(saved.services[0].quoteDoneApproval.engineVersion,ENGINE_VERSION);
+      assert.equal(bridge.applicationStatus(saved.services[0],saved,date).approvalCurrent,true);
+      await opened.page.reload();await opened.page.getByRole('button',{name:/Quantity assumptions/}).click();
       const [response]=await Promise.all([opened.page.waitForResponse(r=>/\/approve$/.test(r.url())&&r.request().method()==='POST'),opened.page.getByRole('button',{name:'Adopt new '+name+' rules and starting values',exact:true}).click()]);
       assert.equal(response.ok(),true,await response.text());
       const stored=loadPricebook(owner);

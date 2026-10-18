@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {ENGINE_VERSION} from '../server/quote-engine-vnext/engine.js';
 
 // Nonbehavioral expectation reconciliation against exact base 56e19419.
 // The original everytrade fixture is retained. Never alter prices, quantities,
@@ -6,7 +7,18 @@ import assert from 'node:assert/strict';
 // representation already approved on the painting/flooring branches differs.
 export function integratedBaselineExpectation(row) {
   const result=structuredClone(row.result),type=row.input.serviceType;
+  // The frozen v7 evidence stays intact. Only these known live-result metadata
+  // paths advance; every price, scope and other assertion still compares fully.
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v8');
+  const advanceVersion=record=>{
+    assert.equal(record.engineVersion,'quote-engine-vnext-date-context-20261006-v7');
+    record.engineVersion=ENGINE_VERSION;
+  };
+  advanceVersion(result);
+  if(result.calculationRecord)advanceVersion(result.calculationRecord);
   if(!result.options)return result;
+  for(const option of result.options)advanceVersion(option.calculationRecord);
+  for(const record of result.calculationRecord.options)advanceVersion(record);
   const records=[...result.options.map(o=>o.calculationRecord),...result.calculationRecord.options];
   if(type.startsWith('FLOORING_'))for(const record of records){
     assert.equal(row.input.customerInputs.layoutPattern,'straight');

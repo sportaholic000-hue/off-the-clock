@@ -12,6 +12,25 @@ import {webQuote,phone,quoteEmailFixture,fixture as applicationFixture,bridge,da
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
+import {integratedBaselineExpectation} from './finalIntegrationMetadata20261017Fixture.mjs';
+
+test('v8 comparison metadata advances only explicit paths on a clone, including results without options',()=>{
+  // Expected before execution: only the four named engineVersion paths move
+  // v7 -> v8. Historical inputs, amounts and unrelated version text stay exact.
+  const old='quote-engine-vnext-date-context-20261006-v7',current='quote-engine-vnext-accuracy-20261018-v8';
+  const record={engineVersion:old,amountCents:97600,unrelated:{engineVersion:old}};
+  for(const options of [false,true]){
+    const result={engineVersion:old,amountCents:97600,unrelated:{engineVersion:old}};
+    if(options){result.options=[{calculationRecord:structuredClone(record)}];result.calculationRecord={...structuredClone(record),options:[structuredClone(record)]};}
+    const row={input:{serviceType:'CUSTOM'},result},original=structuredClone(row),expected=structuredClone(result);
+    expected.engineVersion=current;
+    if(options){expected.calculationRecord.engineVersion=current;expected.options[0].calculationRecord.engineVersion=current;expected.calculationRecord.options[0].engineVersion=current;}
+    assert.deepEqual(integratedBaselineExpectation(row),expected);
+    assert.deepEqual(row,original);
+    const records=[row.result,...(options?[row.result.calculationRecord,row.result.options[0].calculationRecord,row.result.calculationRecord.options[0]]:[])];
+    for(const target of records){target.engineVersion='unexpected-version';assert.throws(()=>integratedBaselineExpectation(row),{code:'ERR_ASSERTION'});target.engineVersion=old;}
+  }
+});
 
 const underlayment=result=>result.lineItems.find(line=>line.calculation.ratePath==='scopeRates.'+scopeKey);
 const ready=f=>{const result=generateQuoteVNext(f);assert.equal(result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result));return result;};
