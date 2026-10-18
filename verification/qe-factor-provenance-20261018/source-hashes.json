@@ -1,0 +1,22 @@
+{
+  "server/quote-engine-vnext/contracts.js": "84ad516cc59043cc25f0aa345f4c7b0620844a62943836dd6cf9373bc75cb1e8",
+  "server/quote-engine-vnext/priceGroundwork.js": "25159ea048657a110ae7d0b81b62b61dd272a1226d6d1ddcdb547a084f2f00c9",
+  "server/quote-engine-vnext/templates.js": "9bfc4d287914539f0ef58014b37f2b2f1120214622b3e23da8df4bce97001708",
+  "server/quote-engine-vnext/tradeAdjustments.js": "630c47936221e269f34c740eb4a25e7b5a9a1a15c5c2a276b7ad562603c02f9b",
+  "server/quote-engine-vnext/flooringPricing.js": "11084af4426cdefe65091f46b9537de0c8e7315939f63c5d2bd770716b81a29b",
+  "server/quote-engine-vnext/surfacePricing.js": "34e6aa4cc1f1674c604b9a8c925b9a18c45729d9b924795ac195b54fa7342ef7",
+  "server/quote-engine-vnext/concreteLandscapePricing.js": "c488e0a3d2b33066ddf4b46c9aac42774198afea156c1960bc7c0c5aba031fc9",
+  "server/quote-engine-vnext/scopePricing.js": "88ba5c21769ea501e5f74d713bfaa2ea3a9bed62e8b8abf2d352de782428cc4c",
+  "server/quote-engine-vnext/fencePricing.js": "e45f4d5c4c8e1cdf005b7b2df21e4e397a1815225e54cecdad3c9e3461a5649e",
+  "server/quote-engine-vnext/landscapePricing.js": "20b6b140aa7b2b0da553bea17252ded2980860fa3d656d2d9dcf7f10b92a74d1",
+  "server/quote-engine-vnext/flatRoofRepairPricing.js": "0a273967528e80bc4e252880a6376e32e1af3c77ef9b4eebd19a3ed09fedb39c",
+  "server/quote-engine-vnext/configuredOfferings.js": "6a9748ee5b2e73c172988afca51f6a46925f644784913a110ec45ac121712382",
+  "server/quote-engine-vnext/engine.js": "36b172167b4e80f3f040b50f32748521c3025dc37eb19868f5daf297b0842e09",
+  "server/quote-engine-vnext/priceBook.js": "09026425cf7ab270c585de1accb39530810cf737b109e126e44132d64920dadc",
+  "server/priceBookService.js": "67bf6bb28ea9f70847d23a928096459d840af961136ea7ac1cf12070ae13a76e",
+  "server/scopeConfiguration.js": "387a47fa28dec134dc337a760cf1bee9e348765f0e92acf93a94d1697d5b1305",
+  "server/src/quoteDoneBridge.js": "0dce05f218be18893b6cbc6e56060742dc6e8efd7be8ec7c6dd6b7c8484dde8d",
+  "specs/quote_engine_v2.md": "43ec924f16d22e6ab1ee9a856336a71b9b91d473598d622d2f0a932b1d9b22c4",
+  "specs/QUOTE_TRADE_DECISIONS_20261003.md": "bb012e54c34d4cb6715dd52a5b08a06c36f378d330113ae3cd1cebec15abf91b",
+  "specs/QUOTE_AUDIT_DECISIONS_20261004.md": "cbc66f8a47b20a97815b45c81517cf9bf15a0660087cc1b05fd59588037ebf92"
+}

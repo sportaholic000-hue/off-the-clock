@@ -1,0 +1,179 @@
+{
+  "base": "1857b7779b83b70f7753b41b72c3677270cd4ffc",
+  "expectedSha256": "ced3c9adf1610bd28c05088dac29f7d036aa99b7a0fac53a072fcdf086fc86b1",
+  "startedFromExpectationsPreparedAt": "2026-10-18T06:02:42.654Z",
+  "completedAt": "2026-10-18T06:02:42.767Z",
+  "engineVersion": "quote-engine-vnext-accuracy-20261018-v8",
+  "node": "v22.23.3",
+  "summary": {
+    "cases": 1,
+    "engineCalls": 2,
+    "passed": 1,
+    "failed": 0
+  },
+  "rows": [
+    {
+      "id": "paint-package-coverage",
+      "service": "INTERIOR_PAINTING",
+      "classification": "hypothetical supplier coverage; no default coverage",
+      "calculation": "400sf one coat; ceil(400/300)=2 packages at5000 vs ceil(400/400)=1; labor40000. Generic10% measured waste is not added to this explicit package path.",
+      "expected": {
+        "baselineCents": 45000,
+        "activeCents": 50000,
+        "deltaCents": 5000
+      },
+      "actualDeltaCents": 5000,
+      "pass": true,
+      "baseline": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "totalCents": 45000,
+        "display": {
+          "lowEstimate": 450,
+          "midEstimate": 450,
+          "highEstimate": 450
+        },
+        "lines": [
+          {
+            "name": "Wall labor",
+            "category": "labor",
+            "amountCents": 40000,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 400,
+              "exactQuantity": {
+                "numerator": "400",
+                "denominator": "1"
+              },
+              "unit": "measured surface-unit coats",
+              "rateCents": 100,
+              "ratePath": "laborPerWallSqftPerCoat",
+              "multipliers": [
+                {
+                  "name": "wall height labor",
+                  "value": 1,
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 40000,
+              "exactUnroundedCents": {
+                "numerator": "40000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 40000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            }
+          },
+          {
+            "name": "Purchased materials: synthetic_finish",
+            "category": "material",
+            "amountCents": 5000,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 1,
+              "exactQuantity": {
+                "numerator": "1",
+                "denominator": "1"
+              },
+              "unit": "purchased packages",
+              "rateCents": 5000,
+              "ratePath": "scopeRates.paint_wall",
+              "contributingRatePaths": [
+                "scopeRates.paint_wall"
+              ],
+              "priceBasis": "cost",
+              "multipliers": [],
+              "unroundedCents": 5000,
+              "exactUnroundedCents": {
+                "numerator": "5000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 5000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            }
+          }
+        ]
+      },
+      "active": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "totalCents": 50000,
+        "display": {
+          "lowEstimate": 500,
+          "midEstimate": 500,
+          "highEstimate": 500
+        },
+        "lines": [
+          {
+            "name": "Wall labor",
+            "category": "labor",
+            "amountCents": 40000,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 400,
+              "exactQuantity": {
+                "numerator": "400",
+                "denominator": "1"
+              },
+              "unit": "measured surface-unit coats",
+              "rateCents": 100,
+              "ratePath": "laborPerWallSqftPerCoat",
+              "multipliers": [
+                {
+                  "name": "wall height labor",
+                  "value": 1,
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 40000,
+              "exactUnroundedCents": {
+                "numerator": "40000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 40000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            }
+          },
+          {
+            "name": "Purchased materials: synthetic_finish",
+            "category": "material",
+            "amountCents": 10000,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 2,
+              "exactQuantity": {
+                "numerator": "2",
+                "denominator": "1"
+              },
+              "unit": "purchased packages",
+              "rateCents": 5000,
+              "ratePath": "scopeRates.paint_wall",
+              "contributingRatePaths": [
+                "scopeRates.paint_wall"
+              ],
+              "priceBasis": "cost",
+              "multipliers": [],
+              "unroundedCents": 10000,
+              "exactUnroundedCents": {
+                "numerator": "10000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 10000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

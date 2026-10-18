@@ -1,0 +1,280 @@
+TAP version 13
+# (node:20) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: flooring room-size floor: 149 sq ft / 1 rooms = 137080 cents
+ok 1 - flooring room-size floor: 149 sq ft / 1 rooms = 137080 cents
+  ---
+  duration_ms: 22.621176
+  type: 'test'
+  ...
+# Subtest: flooring room-size floor: 150 sq ft / 1 rooms = 138000 cents
+ok 2 - flooring room-size floor: 150 sq ft / 1 rooms = 138000 cents
+  ---
+  duration_ms: 4.959659
+  type: 'test'
+  ...
+# Subtest: flooring room-size floor: 150.01 sq ft / 1 rooms = 138006 cents
+ok 3 - flooring room-size floor: 150.01 sq ft / 1 rooms = 138006 cents
+  ---
+  duration_ms: 10.943867
+  type: 'test'
+  ...
+# Subtest: flooring room-size floor: 151 sq ft / 1 rooms = 138560 cents
+ok 4 - flooring room-size floor: 151 sq ft / 1 rooms = 138560 cents
+  ---
+  duration_ms: 4.21478
+  type: 'test'
+  ...
+# Subtest: flooring room-size floor: 300 sq ft / 1 rooms = 267000 cents
+ok 5 - flooring room-size floor: 300 sq ft / 1 rooms = 267000 cents
+  ---
+  duration_ms: 5.124587
+  type: 'test'
+  ...
+# Subtest: flooring room-size floor: 300.01 sq ft / 1 rooms = 267006 cents
+ok 6 - flooring room-size floor: 300.01 sq ft / 1 rooms = 267006 cents
+  ---
+  duration_ms: 3.961821
+  type: 'test'
+  ...
+# Subtest: flooring room-size floor: 450.03 sq ft / 3 rooms = 414017 cents
+ok 7 - flooring room-size floor: 450.03 sq ft / 3 rooms = 414017 cents
+  ---
+  duration_ms: 2.726395
+  type: 'test'
+  ...
+# Subtest: flooring diagonal LVP: 8% + owner 4% = 336 sq ft and 168,000 material cents
+ok 8 - flooring diagonal LVP: 8% + owner 4% = 336 sq ft and 168,000 material cents
+  ---
+  duration_ms: 2.828829
+  type: 'test'
+  ...
+# Subtest: flooring herringbone LVP: owner 1.75 produces 367,500 labor cents
+ok 9 - flooring herringbone LVP: owner 1.75 produces 367,500 labor cents
+  ---
+  duration_ms: 3.706066
+  type: 'test'
+  ...
+# Subtest: flooring blank herringbone values inherit the owner diagonal values
+ok 10 - flooring blank herringbone values inherit the owner diagonal values
+  ---
+  duration_ms: 2.645374
+  type: 'test'
+  ...
+# Subtest: flooring priced add-on: Baseboard or quarter-round removal and reinstall = 30000 cents (250)
+ok 11 - flooring priced add-on: Baseboard or quarter-round removal and reinstall = 30000 cents (250)
+  ---
+  duration_ms: 2.767497
+  type: 'test'
+  ...
+# Subtest: flooring priced add-on: Transitions = 10500 cents (3500)
+ok 12 - flooring priced add-on: Transitions = 10500 cents (3500)
+  ---
+  duration_ms: 2.750782
+  type: 'test'
+  ...
+# Subtest: flooring priced add-on: Furniture moving = 15000 cents (7500)
+ok 13 - flooring priced add-on: Furniture moving = 15000 cents (7500)
+  ---
+  duration_ms: 3.400127
+  type: 'test'
+  ...
+# Subtest: flooring priced add-on: Furniture moving = 20000 cents (20000)
+ok 14 - flooring priced add-on: Furniture moving = 20000 cents (20000)
+  ---
+  duration_ms: 2.75016
+  type: 'test'
+  ...
+# Subtest: flooring priced add-on: Toilet pull and reset = 12500 cents (12500)
+ok 15 - flooring priced add-on: Toilet pull and reset = 12500 cents (12500)
+  ---
+  duration_ms: 2.249098
+  type: 'test'
+  ...
+# Subtest: flooring priced add-on: Floor leveling = 32000 cents (400)
+ok 16 - flooring priced add-on: Floor leveling = 32000 cents (400)
+  ---
+  duration_ms: 4.386208
+  type: 'test'
+  ...
+# Subtest: flooring unknown leveling area preserves the 178,000-cent main quote and discloses additional work
+ok 17 - flooring unknown leveling area preserves the 178,000-cent main quote and discloses additional work
+  ---
+  duration_ms: 2.725534
+  type: 'test'
+  ...
+# Subtest: carpet 13 x 14, 12-ft roll, 0-ft repeat: 324 bought sq ft
+ok 18 - carpet 13 x 14, 12-ft roll, 0-ft repeat: 324 bought sq ft
+  ---
+  duration_ms: 4.836874
+  type: 'test'
+  ...
+# Subtest: carpet 13 x 14, 15-ft roll, 0-ft repeat: 202.5 bought sq ft
+ok 19 - carpet 13 x 14, 15-ft roll, 0-ft repeat: 202.5 bought sq ft
+  ---
+  duration_ms: 3.584954
+  type: 'test'
+  ...
+# Subtest: carpet 13 x 14, 12-ft roll, 1.5-ft repeat: 360 bought sq ft
+ok 20 - carpet 13 x 14, 12-ft roll, 1.5-ft repeat: 360 bought sq ft
+  ---
+  duration_ms: 3.207758
+  type: 'test'
+  ...
+# Subtest: carpet connected areas [[1,2]] buy 426 sq ft
+ok 21 - carpet connected areas [[1,2]] buy 426 sq ft
+  ---
+  duration_ms: 3.481279
+  type: 'test'
+  ...
+# Subtest: carpet connected areas "unknown" buy 426 sq ft
+ok 22 - carpet connected areas "unknown" buy 426 sq ft
+  ---
+  duration_ms: 3.16261
+  type: 'test'
+  ...
+# Subtest: carpet connected areas [[1],[2]] buy 348 sq ft
+ok 23 - carpet connected areas [[1],[2]] buy 348 sq ft
+  ---
+  duration_ms: 2.896741
+  type: 'test'
+  ...
+# Subtest: flooring 60 legacy quotes retain the exact integration cents when no new inputs are used
+ok 24 - flooring 60 legacy quotes retain the exact integration cents when no new inputs are used
+  ---
+  duration_ms: 169.690369
+  type: 'test'
+  ...
+# (node:28) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: roof adoption keeps legacy mode unchanged and adopted mixed pitch uses additive per-band charges
+ok 25 - roof adoption keeps legacy mode unchanged and adopted mixed pitch uses additive per-band charges
+  ---
+  duration_ms: 30.053272
+  type: 'test'
+  ...
+# Subtest: adopted upper pitch, story and complexity additions do not multiply
+ok 26 - adopted upper pitch, story and complexity additions do not multiply
+  ---
+  duration_ms: 5.935832
+  type: 'test'
+  ...
+# Subtest: adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit
+ok 27 - adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit
+  ---
+  duration_ms: 25.506398
+  type: 'test'
+  ...
+# Subtest: roof dependent accessory lines, distinct labels and decking allocation are exact
+ok 28 - roof dependent accessory lines, distinct labels and decking allocation are exact
+  ---
+  duration_ms: 16.874869
+  type: 'test'
+  ...
+# Subtest: caller approximate roofing inputs quote and voice retains the exact on-site line
+ok 29 - caller approximate roofing inputs quote and voice retains the exact on-site line
+  ---
+  duration_ms: 16.560632
+  type: 'test'
+  ...
+# Subtest: every legacy roof pitch, story, layer and complexity combination stays on the prior formula until adoption
+ok 30 - every legacy roof pitch, story, layer and complexity combination stays on the prior formula until adoption
+  ---
+  duration_ms: 190.58273
+  type: 'test'
+  ...
+# Subtest: group adoption confirms current system values together, preserves owner values and later definition changes unconfirm
+ok 31 - group adoption confirms current system values together, preserves owner values and later definition changes unconfirm
+  ---
+  duration_ms: 2.005835
+  type: 'test'
+  ...
+# Subtest: application adoption keeps a historically approved roof live, then atomically binds the new rules
+ok 32 - application adoption keeps a historically approved roof live, then atomically binds the new rules
+  ---
+  duration_ms: 250.601321
+  type: 'test'
+  ...
+# Subtest: new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band
+ok 33 - new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band
+  ---
+  duration_ms: 750.546373
+  type: 'test'
+  ...
+# Subtest: new roofing decking exactly preserves the established optional-line and customer-note behavior
+ok 34 - new roofing decking exactly preserves the established optional-line and customer-note behavior
+  ---
+  duration_ms: 6.65376
+  type: 'test'
+  ...
+# Subtest: new roofing partial pitch areas describe only the replaced area and reject whole-roof totals
+ok 35 - new roofing partial pitch areas describe only the replaced area and reject whole-roof totals
+  ---
+  duration_ms: 4.100393
+  type: 'test'
+  ...
+# Subtest: partial pitch-area contradictions ask for correction at the widget application boundary
+ok 36 - partial pitch-area contradictions ask for correction at the widget application boundary
+  ---
+  duration_ms: 292.284534
+  type: 'test'
+  ...
+# Subtest: partial pitch-area contradictions ask for correction through the receptionist
+ok 37 - partial pitch-area contradictions ask for correction through the receptionist
+  ---
+  duration_ms: 291.312834
+  type: 'test'
+  ...
+# (node:36) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: adopted wall, ceiling and trim ratios keep exact two-coat conversion and no primer defaults
+ok 38 - adopted wall, ceiling and trim ratios keep exact two-coat conversion and no primer defaults
+  ---
+  duration_ms: 55.340154
+  type: 'test'
+  ...
+# Subtest: flooring adoption adds per-material waste, retains diagonal labor and separately prices herringbone
+ok 39 - flooring adoption adds per-material waste, retains diagonal labor and separately prices herringbone
+  ---
+  duration_ms: 17.407448
+  type: 'test'
+  ...
+# Subtest: new and adopted tile herringbone review until the owner supplies its own labor adjustment
+ok 40 - new and adopted tile herringbone review until the owner supplies its own labor adjustment
+  ---
+  duration_ms: 12.277449
+  type: 'test'
+  ...
+# Subtest: new proposals include source and assumption; only used unconfirmed factors require review
+ok 41 - new proposals include source and assumption; only used unconfirmed factors require review
+  ---
+  duration_ms: 10.670655
+  type: 'test'
+  ...
+# Subtest: seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once
+ok 42 - seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once
+  ---
+  duration_ms: 2405.273235
+  type: 'test'
+  ...
+# Subtest: root and mirrored owner maps survive adoption; an explicit tier value is not a base proposal
+ok 43 - root and mirrored owner maps survive adoption; an explicit tier value is not a base proposal
+  ---
+  duration_ms: 265.6836
+  type: 'test'
+  ...
+# Subtest: application-created services stay unconfirmed after ordinary approval; explicit confirmation quotes with the on-site line
+ok 44 - application-created services stay unconfirmed after ordinary approval; explicit confirmation quotes with the on-site line
+  ---
+  duration_ms: 705.312332
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6198.010658
