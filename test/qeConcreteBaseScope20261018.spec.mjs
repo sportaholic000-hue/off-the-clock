@@ -15,6 +15,7 @@ import {projectSavedQuoteContext} from '../server/src/voice/voiceQuotePresentati
 // Frozen before evidence was captured from the exact unmodified requested base.
 const before=JSON.parse(readFileSync(new URL('../verification/qe-concrete-base-scope-20261018/before-monetary.json',import.meta.url)));
 const responses=JSON.parse(readFileSync(new URL('../verification/qe-concrete-base-scope-20261018/before-responses.json',import.meta.url)));
+const HISTORICAL_ENGINE_VERSION='quote-engine-vnext-accuracy-20261018-v8';
 const gravel='base gravel material',labor='base excavation and grading labor';
 const labels={gravel:[gravel],grading:[labor],both:[gravel,labor],zero_gravel:[gravel],zero_grading:[labor],zero_both:[gravel,labor],financial:[gravel,labor],fees:[gravel,labor],minimum:[gravel,labor]};
 const optionKinds={'Gravel only':'gravel','Both components':'both','Labor only':'grading'};
@@ -116,9 +117,10 @@ for(const type of types)test(`concrete base approved versus invalid zero through
 });
 
 for(const old of responses.responses)test(`concrete base genuine pre-change receipt replay ${old.type}`,()=>{
-  // Original 803000c response and v8 receipt retain old words byte-for-byte.
-  // Current requests use corrected disclosure at the same 803000c, with no
-  // engine-version or approval change and no reapproval requirement.
+  // The genuine 803000c response, v8 approval, receipt and quote rows remain
+  // byte-for-byte historical evidence. V9 makes that approval stale: ordinary
+  // read/save cannot renew it, and only explicit owner reapproval can authorize
+  // a fresh response with the corrected disclosure at the same 803000c.
   assert.equal(responses.base,BASE);const h=old.historical;assert.equal(h.response.midEstimate,8030);
   migrate();
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic Concrete','QuoteDone','active','UTC','owner',?)").run(h.owner,h.owner+'@example.invalid',date.quoteInstant);
@@ -128,19 +130,35 @@ for(const old of responses.responses)test(`concrete base genuine pre-change rece
     const keys=Object.keys(row);db.prepare(`INSERT INTO ${table} (${keys.join(',')}) VALUES (${keys.map(()=>'?').join(',')})`).run(...keys.map(k=>row[k]));
   }
   savePricebook(h.owner,h.book);
-  const book=loadPricebook(h.owner);assert.equal(book.services[0].quoteDoneApproval.engineVersion,ENGINE_VERSION);assert.equal(bridge.applicationStatus(book.services[0],book,date).approvalCurrent,true);
+  const historicalBook=loadPricebook(h.owner),historicalPricing=structuredClone(historicalBook.services[0].pricing),historicalApproval=structuredClone(historicalBook.services[0].quoteDoneApproval);
+  assert.equal(historicalApproval.engineVersion,HISTORICAL_ENGINE_VERSION);
+  assert.equal(bridge.applicationStatus(historicalBook.services[0],historicalBook,date).approvalCurrent,false);
   const replay=()=>{
     const result=submitQuote(h.owner,h.body);assert.equal(result.status,200);assert.deepEqual(result.response,h.response);
     assert.ok(projectSavedQuoteContext(result.response).pricedScope.includes('Base preparation included: Yes'));
-    assert.equal(db.prepare('SELECT internalOutcomeJson FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(h.owner,h.body.requestId).internalOutcomeJson,h.submission.internalOutcomeJson);
-    assert.equal(db.prepare('SELECT resultJson FROM quotes WHERE ownerId=? AND id=?').get(h.owner,h.quote.id).resultJson,h.quote.resultJson);
+    assert.deepEqual(db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(h.owner,h.body.requestId),h.submission);
+    assert.deepEqual(db.prepare('SELECT * FROM quotes WHERE ownerId=? AND id=?').get(h.owner,h.quote.id),h.quote);
   };
-  replay();const body={...h.body,requestId:randomUUID()};delete body.intakeConfirmation;
-  const prepared=bridge.prepareApplicationIntake(h.owner,body,date);assert.equal(prepared.status,'ready',JSON.stringify(prepared));
+  replay();bridge.saveApplicationBook(h.owner,bridge.readApplicationBook(h.owner),date);
+  let book=loadPricebook(h.owner);
+  assert.deepEqual(book.services[0].pricing,historicalPricing);
+  assert.deepEqual(book.services[0].quoteDoneApproval,historicalApproval);
+  assert.equal(bridge.applicationStatus(book.services[0],book,date).approvalCurrent,false);
+  replay();const body={...structuredClone(h.body),requestId:randomUUID()};delete body.intakeConfirmation;
+  assert.equal(bridge.prepareApplicationIntake(h.owner,body,date).status,'needs_details');
+  const refused=submitQuote(h.owner,{...body,reviewRequested:true},{clock:()=>new Date(date.quoteInstant)});
+  assert.equal(refused.response.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(refused.response.midEstimate,undefined);
+  const shown=bridge.readApplicationBook(h.owner),status=bridge.applicationStatus(book.services[0],book,date);
+  bridge.approveApplicationService(h.owner,book.services[0].id,{revision:shown.revision,confirmConfiguration:true,confirmLegacySettings:true,fields:status.confirmationFields},date);
+  book=loadPricebook(h.owner);
+  assert.equal(book.services[0].quoteDoneApproval.engineVersion,ENGINE_VERSION);
+  assert.equal(bridge.applicationStatus(book.services[0],book,date).approvalCurrent,true);
+  assert.deepEqual(book.services[0].pricing,historicalPricing);
+  body.requestId=randomUUID();const prepared=bridge.prepareApplicationIntake(h.owner,body,date);assert.equal(prepared.status,'ready',JSON.stringify(prepared));
   const current=submitQuote(h.owner,{...body,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});
-  assert.equal(current.response.midEstimate,8030);publicScope(current.response,'gravel');requested(current.response);
+  assert.equal(current.status,201);assert.equal(Math.round(current.response.midEstimate*100),803000);
+  publicScope(current.response,'gravel');requested(current.response);
   assert.deepEqual(numericalOutput(current.response),numericalOutput(h.response));
-  assert.deepEqual(loadPricebook(h.owner).services[0].pricing,book.services[0].pricing);
-  assert.deepEqual(loadPricebook(h.owner).services[0].quoteDoneApproval,book.services[0].quoteDoneApproval);
+  assert.deepEqual(loadPricebook(h.owner).services[0].pricing,historicalPricing);
   replay();
 });
