@@ -1,0 +1,46 @@
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/cjs/loader:1430
+#   const err = new Error(message);
+#               ^
+# Error: Cannot find module 'jsonwebtoken'
+# Require stack:
+# - /workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime/package.json
+#     at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+#     at Function.resolve (node:internal/modules/helpers:157:19)
+#     at resolve (file:///workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime-bootstrap.mjs:17:46)
+#     at nextStep (node:internal/modules/customization_hooks:189:26)
+#     at resolveWithHooks (node:internal/modules/customization_hooks:417:10)
+#     at ModuleLoader.resolveSync (node:internal/modules/esm/loader:803:14)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:719:19)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'MODULE_NOT_FOUND',
+#   requireStack: [
+#     '/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime/package.json'
+#   ]
+# }
+# Node.js v22.23.3
+# Subtest: /workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/application.mjs
+not ok 1 - /workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/application.mjs
+  ---
+  duration_ms: 123.42927
+  type: 'test'
+  location: '/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/application.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 131.107933

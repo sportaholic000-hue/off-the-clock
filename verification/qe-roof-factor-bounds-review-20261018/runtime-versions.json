@@ -1,0 +1,10 @@
+{
+  "node": "22.23.3",
+  "better-sqlite3": "11.10.0",
+  "dotenv": "16.6.1",
+  "ipaddr.js": "2.5.0",
+  "jsonwebtoken": "9.0.3",
+  "express": "4.22.3",
+  "nodeVersionPrinted": "v22.23.3",
+  "npmVersionPrinted": "11.9.0"
+}

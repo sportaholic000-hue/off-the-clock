@@ -1,0 +1,82 @@
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"id":"control","status":"QUOTING LIVE","approvalCurrent":true,"direct":"INSTANT_ESTIMATE_READY","application":"INSTANT_ESTIMATE_READY","customer":"INSTANT_ESTIMATE_READY"}
+# {"id":"story-one-half","status":"QUOTING LIVE","approvalCurrent":true,"direct":"ESTIMATE_REQUIRES_REVIEW","application":"ESTIMATE_REQUIRES_REVIEW","customer":"ESTIMATE_REQUIRES_REVIEW"}
+# {"id":"shape-simple-half","status":"QUOTING LIVE","approvalCurrent":true,"direct":"ESTIMATE_REQUIRES_REVIEW","application":"ESTIMATE_REQUIRES_REVIEW","customer":"ESTIMATE_REQUIRES_REVIEW"}
+# {"id":"both-half","status":"QUOTING LIVE","approvalCurrent":true,"direct":"ESTIMATE_REQUIRES_REVIEW","application":"ESTIMATE_REQUIRES_REVIEW","customer":"ESTIMATE_REQUIRES_REVIEW"}
+# {"id":"story-two-half","status":"QUOTING LIVE","approvalCurrent":true,"direct":"ESTIMATE_REQUIRES_REVIEW","application":"ESTIMATE_REQUIRES_REVIEW","customer":"ESTIMATE_REQUIRES_REVIEW"}
+# {"id":"shape-moderate-half","status":"QUOTING LIVE","approvalCurrent":true,"direct":"ESTIMATE_REQUIRES_REVIEW","application":"ESTIMATE_REQUIRES_REVIEW","customer":"ESTIMATE_REQUIRES_REVIEW"}
+# {"id":"all-stories-half","status":"NEEDS PRICING","approvalCurrent":true,"direct":"ESTIMATE_REQUIRES_REVIEW","application":"ESTIMATE_REQUIRES_REVIEW","customer":"ESTIMATE_REQUIRES_REVIEW"}
+# {"id":"all-shapes-half","status":"NEEDS PRICING","approvalCurrent":true,"direct":"ESTIMATE_REQUIRES_REVIEW","application":"ESTIMATE_REQUIRES_REVIEW","customer":"ESTIMATE_REQUIRES_REVIEW"}
+# {"id":"complex-shape-half-simple-request","status":"NEEDS PRICING","approvalCurrent":true,"direct":"INSTANT_ESTIMATE_READY","application":"ESTIMATE_REQUIRES_REVIEW","customer":"ESTIMATE_REQUIRES_REVIEW"}
+# {"id":"receipt-content-and-version","direct":"ESTIMATE_REQUIRES_REVIEW"}
+# Subtest: saved application observation: control
+ok 1 - saved application observation: control
+  ---
+  duration_ms: 448.246953
+  type: 'test'
+  ...
+# Subtest: saved application observation: story-one-half
+ok 2 - saved application observation: story-one-half
+  ---
+  duration_ms: 265.327376
+  type: 'test'
+  ...
+# Subtest: saved application observation: shape-simple-half
+ok 3 - saved application observation: shape-simple-half
+  ---
+  duration_ms: 238.683968
+  type: 'test'
+  ...
+# Subtest: saved application observation: both-half
+ok 4 - saved application observation: both-half
+  ---
+  duration_ms: 220.950301
+  type: 'test'
+  ...
+# Subtest: saved application observation: story-two-half
+ok 5 - saved application observation: story-two-half
+  ---
+  duration_ms: 233.302949
+  type: 'test'
+  ...
+# Subtest: saved application observation: shape-moderate-half
+ok 6 - saved application observation: shape-moderate-half
+  ---
+  duration_ms: 307.990721
+  type: 'test'
+  ...
+# Subtest: saved application observation: all-stories-half
+ok 7 - saved application observation: all-stories-half
+  ---
+  duration_ms: 278.553963
+  type: 'test'
+  ...
+# Subtest: saved application observation: all-shapes-half
+ok 8 - saved application observation: all-shapes-half
+  ---
+  duration_ms: 251.453202
+  type: 'test'
+  ...
+# Subtest: saved application observation: complex-shape-half-simple-request
+ok 9 - saved application observation: complex-shape-half-simple-request
+  ---
+  duration_ms: 212.440088
+  type: 'test'
+  ...
+# Subtest: saved receipt content/version checks and explicit reapproval preserve the mathematical defect
+ok 10 - saved receipt content/version checks and explicit reapproval preserve the mathematical defect
+  ---
+  duration_ms: 283.576934
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2974.958952

@@ -1,0 +1,1 @@
+[{"field":"storyMultiplier","label":"Story-count labor multiplier","unit":"multiplier","min":0.1,"max":5,"ownerInputUnit":"native"},{"field":"complexityLaborMultiplier","label":"Roof-shape labor adjustment","unit":"decimal addition","min":0.1,"max":5,"ownerInputUnit":"native"}]

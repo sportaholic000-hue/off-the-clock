@@ -1,0 +1,41 @@
+[
+  {
+    "name": "storyMultiplier",
+    "defaultValue": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+    },
+    "label": "Story-count labor multiplier",
+    "unit": "multiplier",
+    "min": 0.1,
+    "max": 5,
+    "help": "Owner-editable multiplier control for story-count labor multiplier. The exact value used is recorded in the internal calculation evidence. ",
+    "ownerInputUnit": "native",
+    "field": "storyMultiplier"
+  },
+  {
+    "name": "complexityLaborMultiplier",
+    "defaultValue": {
+      "simple": 1,
+      "moderate": 1.2,
+      "complex": 1.4
+    },
+    "label": "Roof-shape labor adjustment",
+    "unit": "decimal addition",
+    "min": 0.1,
+    "max": 5,
+    "startingValue": {
+      "simple": 1,
+      "moderate": 1.2,
+      "complex": 1.4
+    },
+    "startingValueLabel": "Roof-shape labor adjustment",
+    "startingValueSource": "SquareDash places a hip roof about 1.23 times a simple gable at published midpoints; RoofVista lists multiple valleys at +15-25% and dormers or turrets at +30-45%, separately from pitch.",
+    "startingValueAssumption": "Assumes your crew's labor productivity changes in line with these published roof-shape ranges.",
+    "startingValueGroup": "roofing_replacement_20261016",
+    "help": "Owner-editable decimal addition control for roof-shape labor adjustment. The exact value used is recorded in the internal calculation evidence. ",
+    "ownerInputUnit": "native",
+    "field": "complexityLaborMultiplier"
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "name": "application-first",
+    "command": [
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime/node_modules/node/bin/node",
+      "--import",
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime-bootstrap.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/application.mjs"
+    ],
+    "exit": 1,
+    "seconds": 0.182
+  },
+  {
+    "name": "rounding-reproduction",
+    "command": [
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime/node_modules/node/bin/node",
+      "--import",
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime-bootstrap.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/rounding-reproduce.mjs"
+    ],
+    "exit": 1,
+    "seconds": 0.229
+  }
+]

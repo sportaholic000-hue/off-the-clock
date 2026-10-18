@@ -1,0 +1,12 @@
+{
+  "base": "1857b7779b83b70f7753b41b72c3677270cd4ffc",
+  "reference": "befc00358dfc82a864eaffeb229db7c386045051",
+  "sourcePath": "verification/qe-factor-provenance-20261018/expected-cases-first.json",
+  "sourceSha256": "f8b07fb81162664b43f0b6727491dc2c2b5e82dccc93b4a9880b14e7ce1d961b",
+  "case": "roof-adopted-upper-pitch",
+  "fixtureChange": {
+    "customerInputs.pitchBand": "up_to_six"
+  },
+  "caseCalculation": "10sq: labor200000+tear60000+disposal20000+material110000+underlay1000=391000. Add200000*.31 +10*(6000+2000)*.41=94800.",
+  "notice": "Synthetic data only. Fixtures are not business rates."
+}

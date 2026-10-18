@@ -1,0 +1,2 @@
+command: git diff --exit-code 1857b7779b83b70f7753b41b72c3677270cd4ffc -- . ':!verification/qe-roof-factor-bounds-review-20261018'
+exit: 0

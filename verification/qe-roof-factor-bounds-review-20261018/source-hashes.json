@@ -1,0 +1,25 @@
+{
+  "base": "1857b7779b83b70f7753b41b72c3677270cd4ffc",
+  "sha256": {
+    "AGENTS.md": "3f27251bd607672c527d4f04a645eb21ead515a38ef56aa809c4f58cb5180df0",
+    "specs/BUILD_STATUS.md": "1d714cece9a65e688b7ca045150b92b9e515e8f9a1fe9a691159b45272764269",
+    "specs/quote_engine_v2.md": "43ec924f16d22e6ab1ee9a856336a71b9b91d473598d622d2f0a932b1d9b22c4",
+    "specs/QUOTE_TRADE_DECISIONS_20261003.md": "bb012e54c34d4cb6715dd52a5b08a06c36f378d330113ae3cd1cebec15abf91b",
+    "specs/QUOTE_AUDIT_DECISIONS_20261004.md": "cbc66f8a47b20a97815b45c81517cf9bf15a0660087cc1b05fd59588037ebf92",
+    "server/quote-engine-vnext/contracts.js": "84ad516cc59043cc25f0aa345f4c7b0620844a62943836dd6cf9373bc75cb1e8",
+    "server/quote-engine-vnext/templates.js": "9bfc4d287914539f0ef58014b37f2b2f1120214622b3e23da8df4bce97001708",
+    "server/quote-engine-vnext/engine.js": "36b172167b4e80f3f040b50f32748521c3025dc37eb19868f5daf297b0842e09",
+    "server/quote-engine-vnext/exactMath.js": "6dd34c9b97f2f2c8e126b3729310a2b180f503102c429dd28b72a75b7f6c3e2f",
+    "server/quote-engine-vnext/priceBook.js": "09026425cf7ab270c585de1accb39530810cf737b109e126e44132d64920dadc",
+    "server/quote-engine-vnext/priceGroundwork.js": "25159ea048657a110ae7d0b81b62b61dd272a1226d6d1ddcdb547a084f2f00c9",
+    "server/priceBookMoney.js": "0cbdcd023a3b6eae63f6451a2adc84681c17a089f91f99ad7ab230568593aeb0",
+    "server/priceBookCopy.js": "b487fce0f34f3fbefa158ede35faa154cd5f93350a6443b13e82156055732a7a",
+    "server/priceBookService.js": "67bf6bb28ea9f70847d23a928096459d840af961136ea7ac1cf12070ae13a76e",
+    "server/src/quoteDoneBridge.js": "0dce05f218be18893b6cbc6e56060742dc6e8efd7be8ec7c6dd6b7c8484dde8d",
+    "server/src/quoteDoneRoutes.js": "40272ce3ee55ee7b39b971f6d3df1d228902cb26825e8c3d7aa69f8fc3776c6b",
+    "server/src/voice/voiceToolRuntime.js": "2b65dba615d4069473c0846b292203ba2d954809b0affb018eb7dc0f85f660a4",
+    "server/src/quoteEmailService.js": "93e1795392fcf1a3c6929794ab1711654d2e33470b185491fe0cf9b4fb8e3ac1",
+    "client/src/pricebook.jsx": "135025495b3ca11bfe4b13bddab8a2fa369c8ba637db2ae7d784fd249a8ee9d0",
+    "test/quoteRoofing20261016.spec.mjs": "a6a8c96555d4e330f2b08ab6e0eb27c8d9a3070b6e65388eea6fde74c906f686"
+  }
+}

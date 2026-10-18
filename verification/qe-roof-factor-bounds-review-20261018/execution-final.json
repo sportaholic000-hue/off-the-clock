@@ -1,0 +1,26 @@
+[
+  {
+    "name": "sweep",
+    "command": [
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime/node_modules/node/bin/node",
+      "--import",
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime-bootstrap.mjs",
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/sweep.mjs"
+    ],
+    "exit": 0,
+    "seconds": 0.727
+  },
+  {
+    "name": "application-final",
+    "command": [
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime/node_modules/node/bin/node",
+      "--import",
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/runtime-bootstrap.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/application.mjs"
+    ],
+    "exit": 1,
+    "seconds": 2.538
+  }
+]

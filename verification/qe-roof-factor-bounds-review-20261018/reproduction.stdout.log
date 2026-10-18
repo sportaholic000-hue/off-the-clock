@@ -1,0 +1,79 @@
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"name":"positive-rate low-pitch control: 391000 cents","expectedCents":391000,"factors":[],"ratesOk":true,"rules":[],"resultType":"INSTANT_ESTIMATE_READY","actualCents":391000}
+# {"name":"accepted story factor 0.5 must calculate 261000 cents","expectedCents":261000,"factors":[],"ratesOk":true,"rules":[],"resultType":"ESTIMATE_REQUIRES_REVIEW","actualCents":null,"reviewReason":"A quantity factor is missing or invalid.","invalidOwnerFields":["storyMultiplier.1"]}
+# {"name":"accepted shape factor 0.5 must calculate 291000 cents","expectedCents":291000,"factors":[],"ratesOk":true,"rules":[],"resultType":"ESTIMATE_REQUIRES_REVIEW","actualCents":null,"reviewReason":"A quantity factor is missing or invalid.","invalidOwnerFields":["complexityLaborMultiplier.simple"]}
+# Subtest: positive-rate low-pitch control: 391000 cents
+ok 1 - positive-rate low-pitch control: 391000 cents
+  ---
+  duration_ms: 24.825486
+  type: 'test'
+  ...
+# Subtest: accepted story factor 0.5 must calculate 261000 cents
+not ok 2 - accepted story factor 0.5 must calculate 261000 cents
+  ---
+  duration_ms: 9.325327
+  type: 'test'
+  location: '/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/reproduce.mjs:13:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/reproduce.mjs:21:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: accepted shape factor 0.5 must calculate 291000 cents
+not ok 3 - accepted shape factor 0.5 must calculate 291000 cents
+  ---
+  duration_ms: 4.160464
+  type: 'test'
+  location: '/workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/reproduce.mjs:13:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/0748dfad3c20/off-the-clock/verification/qe-roof-factor-bounds-review-20261018/reproduce.mjs:21:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 146.519347
