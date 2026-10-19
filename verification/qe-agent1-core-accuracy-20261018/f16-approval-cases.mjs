@@ -32,8 +32,9 @@ export function approvalPrecisionCases(field){
   for(const item of cases)for(const operation of ['approval','adoption'])test(`F16 ${field} ${item.location} ${item.source} rejects ${operation} without a durable write`,()=>{
     const before=restore(item),owner=before.book.ownerId,service=before.book.services[0];
     assert.equal(price(service,item.location)[field],100.5);
-    assert.equal(service.quoteDoneApproval.engineVersion,bridge.ENGINE_VERSION);
-    assert.equal(bridge.applicationStatus(service,before.book).approvalCurrent,true,'Authentic pre-fix receipt remains current before the attempted operation');
+    assert.equal(service.quoteDoneApproval.engineVersion,'quote-engine-vnext-accuracy-20261018-v11','Authentic pre-fix receipt retains its captured version');
+    assert.notEqual(service.quoteDoneApproval.engineVersion,bridge.ENGINE_VERSION);
+    assert.equal(bridge.applicationStatus(service,before.book).approvalCurrent,false,'The new engine must leave the authentic pre-fix approval stale');
     assert.throws(()=>bridge.approveApplicationService(owner,service.id,inputFor(before.book,operation)),error=>{
       assert.equal(error.statusCode,400);assert.match(error.message,/A fixed charge or minimum must be an exact whole-cent amount; it cannot be rounded during save\.$/);
       assert.equal(error.path,item.location==='base'?`services[0].pricing.${field}`:`services[0].tiers[0].effectivePricing.${field}`);

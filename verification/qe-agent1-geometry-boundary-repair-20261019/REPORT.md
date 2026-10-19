@@ -27,7 +27,7 @@ Next unused version at inspection: quote-engine-vnext-geometry-20261019-v12. Bot
 
 Before any production edits, capture-v11.mjs executed on the unchanged audit head and saved genuine widget and actual voice-tool receipts for all eight failures. capture-proof.json records the source SHA, empty production diff and original receipt hashes. historical-v11.json.gz is immutable; its uncompressed SHA256 is 3acd933e18c65b3e75249d6f0229955eb4fc2d36fc6c4a505c358c6e37453a30. No outcomes were fabricated or regenerated on v12.
 
-The new historical tests replay each original widget response and voice result using both original and new tool IDs, compare durable rows and wording byte-for-byte, keep v11 receipts stale across ordinary saves, refuse fresh estimates before reapproval, require explicit confirmation, then verify corrected v12 widget and voice amounts without changing prices or historical rows. Older authentic v7/v8/v9/v10 history tests and the 9-cent separate-line / accepted-zero controls remain in the focused regression run. Existing test edits advance current-version assertions only; frozen fixtures and dollar expectations are untouched.
+The new historical tests replay each original widget response and voice result using both original and new tool IDs, compare durable rows and wording byte-for-byte, keep v11 receipts stale across ordinary saves, refuse fresh estimates before reapproval, require explicit confirmation, then verify corrected v12 widget and voice amounts without changing prices or historical rows. Older authentic v7/v8/v9/v10 history tests and the 9-cent separate-line / accepted-zero controls remain in the focused regression run. Existing test edits reconcile current-version assertions and source guards with the shared exact helper; frozen fixtures and dollar expectations are untouched.
 
 ## Verification at publication
 
@@ -44,3 +44,13 @@ The new historical tests replay each original widget response and voice result u
 Only the existing test job timeout changes from 30 to the explicitly authorized 45 minutes, because the previous complete workload exceeded 30 minutes. No suite selection, exclusion, skip, assertion weakening, spec, price, dependency, selector or deployment change is included.
 
 F2's below-one signed-adjustment policy remains explicitly unresolved. This repair does not choose a policy or change F2 behavior. No other repair assignment or integration write is made.
+
+## First hosted run and required compatibility reconciliation
+
+Run [39189734502](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39189734502), exact head cfa6ac4bd5ee0aa71aafba983cb1230730cbf4bb, completed strict with 5794 tests: 5784 passed, 10 failed, 0 cancelled/skipped/TODO (944031.565148 ms). Build, the explicit 12/12 browser group and Docker startup passed. Full suite, failure checker and dependency audit were skipped and are not claimed complete for this head. The retained hosted-39189734502-failure-excerpt.log.gz is explicitly an excerpt; the complete log is available from the linked job/run.
+
+Eight failures were preconditions in the F16 regression helper: genuine captured v11 approvals were being asserted equal to the current engine version. They now explicitly assert the original v11 version, a different current version, and stale approval status. The fractional-price rejection, exact diagnostic and complete durable-state equality assertions remain intact, as do valid whole-cent/fractional-measured-price approval and adoption controls. The frozen f16-legacy-approvals.json is unchanged. This does not fabricate current receipts from historical data.
+
+Two existing source guards required the deleted native Math.sqrt expression. They now require the shared footprint helper called with the original measured inputs, require exactly one such call in templates, and forbid native Math.sqrt in templates. All forbidden-shortcut checks and historical accessory dollar assertions remain unchanged.
+
+These three narrowly necessary test reconciliations change no production code. The follow-up six-file targeted run passed 682/682, 0 failed/cancelled/skipped/TODO (29404.536509 ms); compatibility-final.tap.gz includes all 287 audit comparisons, 203 new comparisons, helper/version checks, 25 widget/voice correctness checks, 8 genuine v11 historical checks, and the affected existing regressions. All exact-head hosted gates must run again on the follow-up published head.
