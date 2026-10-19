@@ -27,12 +27,17 @@ const pageWide=/\b(?:all (?:prices|rates|services|bookings|visits|items)|every (
 // Only an explicit scope label crosses page boundaries. "All prices" alone
 // remains page-local; descriptive mentions of a site-wide search are not labels.
 const websiteWide=/^(?:site|website)[-\s]wide\s*:\s*\S/iu;
+// These complete, explicitly scoped clauses express the reported prepayment,
+// weather and ordering conditions without another pricing keyword. Punctuation
+// may separate the same words; additional descriptive words do not match (for
+// example, "Site-wide: online orders guide"). Copy the original note unchanged.
+const scopedClause=/^(?:site|website)[-\s]wide\s*:\s*(?:customers?[\s\p{P}]+must[\s\p{P}]+prepay|weather[\s\p{P}]+permitting|online[\s\p{P}]+orders)[\s\p{P}]*$/iu;
 const unclearReference=/\b(?:some|selected|certain|specific|applicable)\s+(?:services?|items?|prices?|offers?|bookings?)\b|\b(?:above|below|following|marked|asterisk)\b|[*†‡]/i;
 const SCOPE=new Set(['root','body','main','section','article','div','li','tr','table','aside','header','footer']);
 const SECTION=new Set(['section','article','li','tr','aside']);
 const amounts=text=>[...text.matchAll(moneyPattern)].map(m=>m[0].trimEnd());
 const normalize=text=>text.replace(/[\t\r\f ]+/g,' ').split('\n').map(s=>s.trim()).filter(Boolean).join('\n');
-const qualification=text=>(conditions.test(text)||accessOrPaymentCondition.test(text)||websiteWide.test(text)&&/\brequires?\b/i.test(text))&&(!amounts(text).length||pageWide.test(text)||/\b(?:minimums?|maximums?|surcharges?)\b/i.test(text)||standaloneCharge.test(text.slice(0,text.search(moneyPattern))));
+const qualification=text=>(conditions.test(text)||accessOrPaymentCondition.test(text)||scopedClause.test(text)||websiteWide.test(text)&&/\brequires?\b/i.test(text))&&(!amounts(text).length||pageWide.test(text)||/\b(?:minimums?|maximums?|surcharges?)\b/i.test(text)||standaloneCharge.test(text.slice(0,text.search(moneyPattern))));
 function websiteConditions(notes){
   const values=[...new Set(notes.flatMap(note=>note.text.split('\n')).filter(text=>websiteWide.test(text)))];
   if(!values.length)return {};
@@ -42,8 +47,24 @@ function websiteConditions(notes){
 // Used only to detect a bare duplicate of a visibly qualified excerpt. This
 // comparison never rewrites the saved text or decides customer eligibility.
 export function websitePriceConditionIdentity(entry){
-  const lines=entry.excerpt.split('\n'),notes=lines.filter(line=>qualification(line));
-  return {key:lines.filter(line=>!qualification(line)).join('\n'),qualified:Boolean(notes.length||entry.conditions?.length)};
+  let qualified=Boolean(entry.conditions?.length);const lines=[];
+  for(const line of entry.excerpt.split('\n')){
+    if(qualification(line)){qualified=true;continue;}
+    let key=line;
+    // Compare a recognized inline eligibility/payment suffix only after a
+    // literal price and an explicit separator. The clause must start at the
+    // suffix boundary, so an intervening product description stays in the key.
+    // Product-name hyphens before the price cannot become condition boundaries.
+    for(const separator of line.matchAll(/\s*[—–;|]\s*|\s+-\s+/gu)){
+      const prefix=line.slice(0,separator.index).trimEnd(),suffix=line.slice(separator.index+separator[0].length);
+      if(!amounts(prefix).length||amounts(suffix).length)continue;
+      const clause=accessOrPaymentCondition.exec(suffix);
+      if(clause?.index!==0)continue;
+      key=prefix;qualified=true;break;
+    }
+    lines.push(key);
+  }
+  return {key:lines.join('\n'),qualified};
 }
 const within=(node,ancestor)=>{for(let n=node;n;n=n.parent)if(n===ancestor)return true;return false;};
 function finishConditions(candidates,notes,associate){

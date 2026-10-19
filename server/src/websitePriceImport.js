@@ -77,7 +77,7 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
       // not expose the bare version as a way around the restricted paragraph.
       // Keep qualified variants verbatim; never copy one page's local note to
       // another page or guess which offer the customer is eligible to use.
-      if(!identity.qualified&&qualifiedKeys.has(identity.key)&&!websiteNotes.size){limited=true;conditionsUnverified=true;continue;}
+      if(!identity.qualified&&qualifiedKeys.has(identity.key)){limited=true;conditionsUnverified=true;continue;}
       const conditions=[...new Set([...(entry.conditions||[]),...websiteNotes])];
       const excerpt=[entry.excerpt,...conditions.filter(note=>!entry.excerpt.includes(note))].join('\n');
       if(seen.has(excerpt))continue;

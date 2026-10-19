@@ -1,0 +1,161 @@
+[
+  {
+    "name": "retained-948",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceListedPriceConditions20261018.spec.mjs",
+      "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "test/websitePriceImport.spec.mjs",
+      "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "test/websitePriceDraftRoutes.spec.mjs",
+      "test/claudeListedUnits20261008.spec.mjs",
+      "test/engineAuditListedPrices20261008.spec.mjs",
+      "test/fixedPricesKnowledge20261005.spec.mjs",
+      "test/voiceCore20261007.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/voiceRuntimeRoutes.spec.mjs",
+      "test/voicePromptCompiler.spec.mjs",
+      "test/voiceSecurity.spec.mjs",
+      "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T14:45:58.477343+00:00",
+    "environment": {
+      "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp",
+      "node": "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node"
+    },
+    "sourceHashes": {
+      "server/src/websitePriceExtraction.js": "dd716c86b6c61617f620eaaa787099dfb15feda9f4043e50565c6f778ca4e7a1",
+      "server/src/websitePriceImport.js": "7ceecb5525ee7dd46176a7482bd764597a1225a14af5965d75d7a7edeef27b43",
+      ".github/workflows/ci.yml": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+      "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs": "e992833198ea19d2cd657ac3a59c2cbf06890c7510f6f87844222a5e126b1a6e"
+    },
+    "exitCode": 0,
+    "summary": {
+      "tests": "948",
+      "suites": "0",
+      "pass": "948",
+      "fail": "0",
+      "cancelled": "0",
+      "skipped": "0",
+      "todo": "0",
+      "duration_ms": "29525.245957"
+    }
+  },
+  {
+    "name": "expanded-1030",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceListedPriceConditions20261018.spec.mjs",
+      "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "test/websitePriceImport.spec.mjs",
+      "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "test/websitePriceDraftRoutes.spec.mjs",
+      "test/claudeListedUnits20261008.spec.mjs",
+      "test/engineAuditListedPrices20261008.spec.mjs",
+      "test/fixedPricesKnowledge20261005.spec.mjs",
+      "test/voiceCore20261007.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/voiceRuntimeRoutes.spec.mjs",
+      "test/voicePromptCompiler.spec.mjs",
+      "test/voiceSecurity.spec.mjs",
+      "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs",
+      "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T14:46:28.076119+00:00",
+    "environment": {
+      "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp",
+      "node": "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node"
+    },
+    "sourceHashes": {
+      "server/src/websitePriceExtraction.js": "dd716c86b6c61617f620eaaa787099dfb15feda9f4043e50565c6f778ca4e7a1",
+      "server/src/websitePriceImport.js": "7ceecb5525ee7dd46176a7482bd764597a1225a14af5965d75d7a7edeef27b43",
+      ".github/workflows/ci.yml": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+      "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs": "e992833198ea19d2cd657ac3a59c2cbf06890c7510f6f87844222a5e126b1a6e"
+    },
+    "exitCode": 0,
+    "summary": {
+      "tests": "1030",
+      "suites": "0",
+      "pass": "1030",
+      "fail": "0",
+      "cancelled": "0",
+      "skipped": "0",
+      "todo": "0",
+      "duration_ms": "30972.559744"
+    }
+  },
+  {
+    "name": "handoffs",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs"
+    ],
+    "startedAt": "2026-10-19T14:46:59.107808+00:00",
+    "environment": {
+      "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp",
+      "node": "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node"
+    },
+    "sourceHashes": {
+      "server/src/websitePriceExtraction.js": "dd716c86b6c61617f620eaaa787099dfb15feda9f4043e50565c6f778ca4e7a1",
+      "server/src/websitePriceImport.js": "7ceecb5525ee7dd46176a7482bd764597a1225a14af5965d75d7a7edeef27b43",
+      ".github/workflows/ci.yml": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+      "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs": "e992833198ea19d2cd657ac3a59c2cbf06890c7510f6f87844222a5e126b1a6e"
+    },
+    "exitCode": 1,
+    "summary": {
+      "tests": "5",
+      "suites": "0",
+      "pass": "0",
+      "fail": "5",
+      "cancelled": "0",
+      "skipped": "0",
+      "todo": "0",
+      "duration_ms": "1093.519142"
+    }
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "startedAt": "2026-10-19T14:47:00.251772+00:00",
+    "environment": {
+      "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp",
+      "node": "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node"
+    },
+    "sourceHashes": {
+      "server/src/websitePriceExtraction.js": "dd716c86b6c61617f620eaaa787099dfb15feda9f4043e50565c6f778ca4e7a1",
+      "server/src/websitePriceImport.js": "7ceecb5525ee7dd46176a7482bd764597a1225a14af5965d75d7a7edeef27b43",
+      ".github/workflows/ci.yml": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+      "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs": "e992833198ea19d2cd657ac3a59c2cbf06890c7510f6f87844222a5e126b1a6e"
+    },
+    "exitCode": 0,
+    "summary": {}
+  }
+]

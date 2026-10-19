@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-10-19T14:42:16.984123+00:00",
+  "base": "620431bbf3036ed8141665e26ab68c684415f2e1",
+  "command": [
+    "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs"
+  ],
+  "sourceHashes": {
+    "server/src/websitePriceExtraction.js": "e15ac6a7725d7cce6d5442bd43513e3f23f27504206aa53f8c6fc1ff3e95e0dd",
+    "server/src/websitePriceImport.js": "d78d69f6f8f616e2552d23e8a83fe0c34ceda786a54f1a3abe0d3f3a661f0ba6",
+    "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs": "e992833198ea19d2cd657ac3a59c2cbf06890c7510f6f87844222a5e126b1a6e"
+  },
+  "environment": {
+    "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp"
+  },
+  "exitCode": 1
+}

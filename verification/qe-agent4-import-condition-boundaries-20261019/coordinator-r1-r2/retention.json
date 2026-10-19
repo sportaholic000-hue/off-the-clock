@@ -1,0 +1,15 @@
+{
+  "base": "620431bbf3036ed8141665e26ab68c684415f2e1",
+  "baseFiles": 3280,
+  "unchangedBaseFiles": 3277,
+  "changedBaseFiles": [
+    ".github/workflows/ci.yml",
+    "server/src/websitePriceExtraction.js",
+    "server/src/websitePriceImport.js"
+  ],
+  "unchangedExistingTestFiles": 390,
+  "unchangedExistingEvidenceFiles": 2180,
+  "onlyWorkflowChange": "jobs.test.timeout-minutes: 30 -> 45",
+  "newTestEqualsBaseline": true,
+  "verifiedAt": "2026-10-19T14:47:33.985999+00:00"
+}
