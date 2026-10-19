@@ -47,7 +47,7 @@ test('display browser: changing mulch quantity method requires a fresh quantity 
  await volume.fill('2');
  await method.selectOption({label:'Bed area and depth'});
  assert.equal(await page.getByLabel('Measured bed area',{exact:true}).inputValue(),'');
- assert.equal(JSON.parse(await page.locator('#inputs').textContent()).mulchDepth,3);
+ assert.equal(JSON.parse(await page.locator('#inputs').textContent()).mulchDepth,undefined);
 }));
 
 test('display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520',async()=>pageFor(async(page,show)=>{

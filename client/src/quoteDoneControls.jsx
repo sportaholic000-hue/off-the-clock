@@ -94,6 +94,11 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  const measuredRuns=value.fenceRuns||Array.from({length:Number.isSafeInteger(value.fenceRunCount)&&value.fenceRunCount>0&&value.fenceRunCount<=1000?value.fenceRunCount:1},()=>({sections:[{}]}));
  const layoutChange=(runs,{removedRun=false}={})=>{const next={...value,fenceRuns:runs,fenceRunCount:removedRun||value.fenceRunCount===undefined?runs.length:value.fenceRunCount};for(const k of ['linearFeet','gates','cornerCount','lfMethod'])delete next[k];onChange(clearChangedScopeConfirmations(scopeFields,value,next));};
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
+  if(name==='inputMethod'&&next!==value.inputMethod)for(const key of ['mulchArea','mulchDepth'])delete updated[key];
+  if(name==='dimensionMethod'&&next!==value.dimensionMethod)for(const key of ['length','width','areaSqft','perimeterLF','outlinePoints'])delete updated[key];
+  if(name==='subfloorIssues'&&next!==true)delete updated.subfloorRepairAreaSqft;
+  if(name==='mulchNeeded'&&next!==true){delete updated.mulchYards;delete updated.mulchType;if(own(updated.confirmedFacts,'mulchType')){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts.mulchType;if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}}
+  if(name==='edgingIncluded'&&next!==true)delete updated.edgingLengthLF;
   if(name==='repairAreaMethod'){if(next==='dimensions')delete updated.affectedArea;else{delete updated.repairLengthFt;delete updated.repairWidthFt;}}
   if(name==='newFlooringType'){if(next==='carpet')delete updated.layoutPattern;else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
   if(name==='carpetMeasurementMethod'){
