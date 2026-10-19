@@ -1,0 +1,242 @@
+[
+  {
+    "id": "ROOFING_REPLACEMENT--base",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391100
+    },
+    "note": "200000 labor +110000 field material +60000 removal +1100 underlayment +20000 disposal; material squares 11. Total 391100 (see correction below)."
+  },
+  {
+    "id": "ROOFING_REPAIR--base",
+    "serviceType": "ROOFING_REPAIR",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 24000
+    },
+    "note": "Small repair:2 hours *10000 + 4000 fixed material."
+  },
+  {
+    "id": "SIDING_REPAIR--base",
+    "serviceType": "SIDING_REPAIR",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 25000
+    },
+    "note": "Small repair:2 hours *10000 + 5000 fixed material."
+  },
+  {
+    "id": "FLAT_ROOF_REPLACEMENT--base",
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1470000
+    },
+    "note": "1000*500 labor +1000*1.1*700 membrane +1000*200 removal."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--base",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 36000
+    },
+    "note": "3 hours*10000 +6000 material."
+  },
+  {
+    "id": "INTERIOR_PAINTING--base",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000
+    },
+    "note": "500sqft*600 installed at baseline height/story; no extras."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--base",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000
+    },
+    "note": "500sqft*600 installed at baseline height/story; no extras."
+  },
+  {
+    "id": "FENCING_INSTALL--base",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 400000
+    },
+    "note": "100LF*4000 installed; no gates/removal."
+  },
+  {
+    "id": "FENCING_REPLACEMENT--base",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 400000
+    },
+    "note": "100LF*4000 installed; no gates/removal."
+  },
+  {
+    "id": "FLOORING_INSTALL--base",
+    "serviceType": "FLOORING_INSTALL",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000
+    },
+    "note": "200*300*1.10 labor +200*1.12*500 material. One medium room; no carton increment."
+  },
+  {
+    "id": "FLOORING_REPLACEMENT--base",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000
+    },
+    "note": "200*300*1.10 labor +200*1.12*500 material. One medium room; no carton increment."
+  },
+  {
+    "id": "SIDING_REPLACEMENT--base",
+    "serviceType": "SIDING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1170000
+    },
+    "note": "1000*400 labor +1000*1.1*700 material."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--base",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889
+    },
+    "note": "120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--base",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889
+    },
+    "note": "120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms."
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--base",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 15000
+    },
+    "note": "1000*10 labor +5000 light debris disposal."
+  },
+  {
+    "id": "LANDSCAPING_MULCH--base",
+    "serviceType": "LANDSCAPING_MULCH",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 21875
+    },
+    "note": "2.5yd*3000 labor +2.5yd*1.15*5000 material."
+  },
+  {
+    "id": "LANDSCAPING_SOD--base",
+    "serviceType": "LANDSCAPING_SOD",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 203750
+    },
+    "note": "1000*125 labor +1000*1.05*75 material."
+  },
+  {
+    "id": "LANDSCAPING_PLANTING--base",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10500
+    },
+    "note": "2small+1medium+1large:7000 labor +3500 material."
+  },
+  {
+    "id": "LANDSCAPING_MOWING--base",
+    "serviceType": "LANDSCAPING_MOWING",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10000
+    },
+    "note": "5000*2 weekly maintained labor."
+  },
+  {
+    "id": "CUSTOM--base",
+    "serviceType": "CUSTOM",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 12500
+    },
+    "note": "One fixed labor-classified selling price12500."
+  }
+]

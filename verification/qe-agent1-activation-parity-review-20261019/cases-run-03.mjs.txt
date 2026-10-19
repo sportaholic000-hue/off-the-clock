@@ -1,0 +1,101 @@
+// Handwritten expectations. No calculator is called by this module.
+import {fixture,flooring,flatRoof,flatRepair,mowing,siding,custom} from '../engine-independent/fixtures.mjs';
+import {bareCleanup,bareSod,barePlanting} from '../quote-readiness/fixtures.mjs';
+import {roof} from '../qe-roof-zero-adjustments-20261018/fixture.mjs';
+import {offeringFixture} from '../../test/configuredOfferingsFixtures.mjs';
+import {explanationCases} from '../../test/customerExplanationFixtures.mjs';
+import {confirmedFixtureInputs} from '../../test/quoteEngineVNextFixtures.mjs';
+const clone=structuredClone;
+const bases=[];
+function add(f,cents,formula){bases.push({f,cents,formula});}
+let f=roof({pitchBand:'up_to_six'});add(f,391000,'200000 labor +110000 field material +60000 removal +1100 underlayment +20000 disposal; material squares 11. Total 391100 (see correction below).');
+// Exact sum, written before execution: 200000+110000+60000+1100+20000=391100.
+bases[0].cents=391100;
+for(const type of ['ROOFING_REPAIR','SIDING_REPAIR']){
+ f=clone(explanationCases().find(r=>r.input.serviceType===type).input);f.ownerPricing.pricing.largeRepairMaxSqft=1000;
+ Object.assign(f.customerInputs,{affectedArea:10,stories:1});if(type==='ROOFING_REPAIR')f.customerInputs.pitch='low';
+ add(f,type==='ROOFING_REPAIR'?24000:25000,'Small repair:2 hours *10000 + '+(type==='ROOFING_REPAIR'?'4000':'5000')+' fixed material.');
+}
+f=flatRoof();delete f.ownerPricing.pricing.insulationPerSqft;add(f,1470000,'1000*500 labor +1000*1.1*700 membrane +1000*200 removal.');
+add(flatRepair(),36000,'3 hours*10000 +6000 material.');
+for(const type of ['INTERIOR_PAINTING','EXTERIOR_PAINTING','FENCING_INSTALL','FENCING_REPLACEMENT']){
+ f=offeringFixture(type,'installed');const c=f.customerInputs;
+ if(type==='INTERIOR_PAINTING'){Object.assign(c,{ceilingsIncluded:false,trimIncluded:false});delete c.ceilingAreaSqft;delete c.trimLengthLF;}
+ else if(type==='EXTERIOR_PAINTING')c.stories=1;
+ else {c.gates={};if(type==='FENCING_REPLACEMENT'){c.oldFenceRemoval=false;delete c.removalLengthLF;}}
+ add(f,type.startsWith('FENCING')?400000:300000,type.startsWith('FENCING')?'100LF*4000 installed; no gates/removal.':'500sqft*600 installed at baseline height/story; no extras.');
+}
+for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']){
+ f=flooring();delete f.ownerPricing.pricing.perStepPrice;f.serviceType=f.ownerPricing.serviceType=type;
+ if(type==='FLOORING_REPLACEMENT')f.customerInputs.subfloorIssues=false;
+ add(f,178000,'200*300*1.10 labor +200*1.12*500 material. One medium room; no carton increment.');
+}
+f=siding();delete f.ownerPricing.pricing.removalPerSqft;delete f.ownerPricing.pricing.trimPerLinearFoot;add(f,1170000,'1000*400 labor +1000*1.1*700 material.');
+for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB'])add(fixture(type,{laborPerSqft:600,concreteCostPerCubicYard:18000,formworkPerLF:2500,minimumJob:0},{dimensionMethod:'exact',length:20,width:10,thickness:4,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty:'easy',baseNeeded:false}),318889,'120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms.');
+add(bareCleanup(),15000,'1000*10 labor +5000 light debris disposal.');
+add(fixture('LANDSCAPING_MULCH',{mulchMaterialPerYard:{brown:5000},mulchInstallLaborPerYard:3000,minimumServiceCharge:0},{inputMethod:'sqft',mulchArea:270,mulchDepth:3,mulchType:'brown',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'}),21875,'2.5yd*3000 labor +2.5yd*1.15*5000 material.');
+add(bareSod(),203750,'1000*125 labor +1000*1.05*75 material.');add(barePlanting(),10500,'2small+1medium+1large:7000 labor +3500 material.');add(mowing(),10000,'5000*2 weekly maintained labor.');add(custom(),12500,'One fixed labor-classified selling price12500.');
+export const baseline=bases;
+export function cases(){
+ const out=[];
+ function push(base,name,mutate=()=>{},expected={ready:true,cents:base.cents},note=''){
+  const f=clone(base.f);mutate(f);f.customerInputs=confirmedFixtureInputs(f.customerInputs);
+  f.businessDefaults={...f.businessDefaults,rangeBufferPercent:0,currency:'CAD',quoteTimeZone:'UTC'};
+  // Each case is genuinely new; no fixture origin/adoption/approval may bypass save.
+  for(const k of ['origin','quoteDoneApproval','startingValueAdoptions','startingValueState','dependentLineState'])delete f.ownerPricing[k];
+  f.ownerPricing.service='[SYNTHETIC ACTIVATION AUDIT] '+f.serviceType;
+  if(f.serviceType==='CUSTOM')f.customerInputs.service=f.ownerPricing.service;
+  out.push({id:f.serviceType+'--'+name,serviceType:f.serviceType,variant:name,input:f,expected:{catalog:true,approval:true,...expected},note:note||base.formula});
+ }
+ for(const b of bases){
+  push(b,'base');
+  push(b,'inherited-and-explicit-tiers',f=>{f.ownerPricing.tiers=[{name:'Inherited',overrides:{}},{name:'Explicit same settings',overrides:clone(f.ownerPricing.pricing)}];},{ready:true,cents:b.cents,options:2},'Both effective options use exactly the independently calculated base prices and settings; 2 equal options.');
+  const type=b.f.serviceType;
+  let selected,priced,delta,kind='scope';
+  if(type==='ROOFING_REPLACEMENT'){selected=c=>{c.deckingSheets=2;};priced=p=>{p.deckingPerSheet=5000;};delta=10000;kind='addon';}
+  if(type==='FLAT_ROOF_REPAIR'){selected=c=>{c.pondingWater=true;};priced=p=>{p.pondingWaterSurcharge=7000;};delta=7000;kind='addon';}
+  if(type==='FLAT_ROOF_REPLACEMENT'){
+   selected=c=>{Object.assign(c,{insulationNeeded:true,insulationAreaSqft:200,insulationScopeConfirmed:true});};
+   priced=p=>{p.scopeDetails={insulation:{description:'[SYNTHETIC] Measured insulation',mode:'installed',category:'material',insulationSystem:'[SYNTHETIC] Defined insulation',coverboardSystem:'[SYNTHETIC] Defined coverboard',baseRoofLaborExcludesInstallation:true}};p.scopeRates={insulation_installed:200,coverboard_installed:100};};delta=40000;
+  }
+  if(type==='INTERIOR_PAINTING'){
+   // Explicitly remove the optional ceiling price and its shares in the absent cases.
+   selected=c=>{Object.assign(c,{ceilingsIncluded:true,ceilingAreaSqft:200,ceilingCoats:2,ceilingSurfaceCondition:'fair'});};
+   priced=p=>{p.offeringRates.installedCeilingPerSqft=300;};delta=60000;
+  }
+  if(type==='EXTERIOR_PAINTING'){selected=c=>{c.surfaceOptionalItems=['doors'];c.paintDoors=2;};priced=p=>{p.surfaceExtraRates={doors:1000};};delta=2000;kind='addon';}
+  if(type.startsWith('FENCING_')){selected=c=>{c.gates={walk:2};};priced=p=>{p.offeringRates.gate_walk=25000;};delta=50000;}
+  if(type.startsWith('FLOORING_')){selected=c=>{c.transitionCount=2;};priced=p=>{p.transitionPriceEach=1000;};delta=2000;kind='addon';}
+  if(type==='SIDING_REPLACEMENT'){selected=c=>{Object.assign(c,{trimIncluded:true,trimLengthLF:200,sidingTrimScopeConfirmed:true});};priced=p=>{p.scopeDetails={siding_trim:{description:'[SYNTHETIC] Separate trim',mode:'installed',category:'labor',basePriceExcludesTrim:true}};p.scopeRates={siding_trim_installed:250};};delta=50000;}
+  if(type.startsWith('CONCRETE_')){selected=c=>{c.baseNeeded=true;};priced=p=>{p.basePrepPerSqft=175;};delta=35000;}
+  if(type==='LANDSCAPING_CLEANUP'){selected=c=>{c.haulAway=true;};priced=p=>{p.haulAwayFee=5000;};delta=5000;}
+  if(type==='LANDSCAPING_MULCH'){selected=c=>{c.edgingNeeded=true;c.edgeLF=100;};priced=p=>{p.edgingPerLinearFoot=50;};delta=5000;}
+  if(type==='LANDSCAPING_SOD'){selected=c=>{c.groundPrepNeeded=true;};priced=p=>{p.groundPrepPerSqft=50;};delta=50000;}
+  if(type==='LANDSCAPING_PLANTING'){selected=c=>{Object.assign(c,{mulchNeeded:true,mulchYards:2,mulchType:'brown'});};priced=p=>{p.mulchMaterialPerYard={brown:5000};p.mulchInstallLaborPerYard=3000;};delta=16000;}
+  if(type==='LANDSCAPING_MOWING'){selected=c=>{c.bagClippings=true;};priced=p=>{p.baggingSurchargePercent=10;};delta=1000;kind='addon';}
+  function remove(f){const p=f.ownerPricing.pricing;const key=type==='INTERIOR_PAINTING'?'installedCeilingPerSqft':type.startsWith('FENCING_')?'gate_walk':null;
+   if(key){delete p.offeringRates[key];delete p.installedLaborPercent['offeringRates.'+key];delete p.installedMaterialsPercent['offeringRates.'+key];}}
+  if(selected){
+   push(b,'optional-absent-unselected',remove,undefined,'No optional money or owner constraint is invented. Base amount unchanged.');
+   push(b,'optional-absent-selected',f=>{remove(f);selected(f.customerInputs);},kind==='addon'?{ready:true,cents:b.cents,excluded:true}:{ready:false},kind==='addon'?'ADDON missing: base estimate retained with exclusion.':'SCOPE missing: review, no subtotal; base service stays available.');
+   push(b,'optional-priced-selected',f=>{priced(f.ownerPricing.pricing);selected(f.customerInputs);},{ready:true,cents:b.cents+delta},'Base '+b.cents+' + optional '+delta+' cents. Planting stated yards have no overage; installed prices no second markup.');
+   push(b,'optional-tier-completion',f=>{remove(f);selected(f.customerInputs);const p=clone(f.ownerPricing.pricing);priced(p);f.ownerPricing.tiers=[{name:'Unpriced extra',overrides:{}},{name:'Complete extra',overrides:p}];},{ready:true,cents:kind==='addon'?b.cents:b.cents+delta,options:kind==='addon'?2:1,allCents:kind==='addon'?[b.cents,b.cents+delta]:[b.cents+delta]},'Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option.');
+  }
+  if(['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'].includes(type)){
+   push(b,'absent-large-limit-small',f=>{delete f.ownerPricing.pricing.largeRepairMaxSqft;},undefined,'Large limit is required for large repairs, not a small repair; small/medium remain available.');
+   push(b,'explicit-large-limit-exceeded',f=>{f.customerInputs.affectedArea=1001;},{ready:false},'1001sqft exceeds explicitly configured1000; review without amount; service still available.');
+  }
+  if(type.startsWith('CONCRETE_')){
+   push(b,'explicit-thickness-band-matching',f=>Object.assign(f.ownerPricing.pricing,{slabLaborMinThicknessInches:4,slabLaborMaxThicknessInches:6}));
+   push(b,'explicit-thickness-band-contradictory',f=>{Object.assign(f.ownerPricing.pricing,{slabLaborMinThicknessInches:5,slabLaborMaxThicknessInches:6});},{ready:false},'4in request lies outside explicit5–6in labor band; no subtotal, availability retained for5–6in.');
+   push(b,'thickness-tier-isolation',f=>{f.ownerPricing.tiers=[{name:'Four inch',overrides:{}},{name:'Thick slabs',overrides:{slabLaborMinThicknessInches:5,slabLaborMaxThicknessInches:6}}];},{ready:true,cents:b.cents,options:1});
+  }
+  if(type==='INTERIOR_PAINTING'){
+   for(const [name,details,coats,condition,ready] of [['absent-trim-constraints',{},3,'poor',true],['explicit-trim-matching',{trimFinishCoats:2,trimSurfaceCondition:'fair'},2,'fair',true],['explicit-trim-contradictory',{trimFinishCoats:2,trimSurfaceCondition:'fair'},3,'poor',false]])push(b,name,f=>{Object.assign(f.ownerPricing.pricing.offeringDetails,details);Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:100,trimCoats:coats,trimSurfaceCondition:condition});},{ready,...(ready?{cents:320000}:{})},'Installed trim100*200; absent optional structured constraints are legal. Explicit constraints must match.');
+  }
+  if(type==='EXTERIOR_PAINTING')push(b,'explicit-coat-contradiction',f=>{f.customerInputs.coats=3;},{ready:false},'Installed owner2-coat scope cannot price3coats.');
+  if(type.startsWith('FENCING_'))push(b,'explicit-unoffered-removal-or-type',f=>{f.customerInputs.fenceType='chain_link';delete f.customerInputs.confirmedFacts;},{ready:false},'Unregistered/unoffered type must not be priced as wood.');
+  if(type==='CUSTOM')push(b,'explicit-unit-contradiction',f=>{f.customerInputs.unit='per_hour';f.customerInputs.hours=2;},{ready:false},'Flat owner definition is not hourly pricing; clarify mismatch.');
+ }
+ return out;
+}

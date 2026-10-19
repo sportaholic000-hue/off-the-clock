@@ -1,0 +1,262 @@
+[
+  {
+    "id": "ROOFING_REPLACEMENT--base",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-0 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "ROOFING_REPAIR--base",
+    "serviceType": "ROOFING_REPAIR",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-1 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "SIDING_REPAIR--base",
+    "serviceType": "SIDING_REPAIR",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-2 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "FLAT_ROOF_REPLACEMENT--base",
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-3 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--base",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-4 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "INTERIOR_PAINTING--base",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-5 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "EXTERIOR_PAINTING--base",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-6 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "FENCING_INSTALL--base",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-7 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "FENCING_REPLACEMENT--base",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-8 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "FLOORING_INSTALL--base",
+    "serviceType": "FLOORING_INSTALL",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-9 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "FLOORING_REPLACEMENT--base",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-10 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "SIDING_REPLACEMENT--base",
+    "serviceType": "SIDING_REPLACEMENT",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-11 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--base",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-12 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--base",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-13 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--base",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-14 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "LANDSCAPING_MULCH--base",
+    "serviceType": "LANDSCAPING_MULCH",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-15 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "LANDSCAPING_SOD--base",
+    "serviceType": "LANDSCAPING_SOD",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-16 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "LANDSCAPING_PLANTING--base",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-17 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "LANDSCAPING_MOWING--base",
+    "serviceType": "LANDSCAPING_MOWING",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-18 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  },
+  {
+    "id": "CUSTOM--base",
+    "serviceType": "CUSTOM",
+    "variant": "base",
+    "faults": [
+      "execution: GET /api/pricebook/audit-run-01-19 HTTP403 {\"error\":\"The price book and website widget require Operator or QuoteDone. Your saved data is kept.\",\"code\":\"PLAN_FEATURE_UNAVAILABLE\"}"
+    ],
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  }
+]

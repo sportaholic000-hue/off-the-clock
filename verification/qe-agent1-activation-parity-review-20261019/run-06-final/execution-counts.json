@@ -1,0 +1,17 @@
+{
+  "cases": 161,
+  "ownerApprovalsCurrent": 161,
+  "hiddenBeforeApproval": 161,
+  "durableBooksUnchanged": 161,
+  "providerSends": 0,
+  "actualVoiceMatchCalls": 161,
+  "actualVoiceGetQuoteCalls": 158,
+  "voiceMatches": 154,
+  "widgetSubmissions": 161,
+  "durableWidgetReceipts": 161,
+  "httpStatusCounts": {
+    "200": 2083,
+    "201": 161
+  },
+  "directSelectionDiagnosticReady": 135
+}

@@ -1,0 +1,46 @@
+{
+  "EXTERIOR_PAINTING--itemized-absent-optional-details.json": {
+    "bytes": 776912,
+    "sha256": "d3ccbdb7e7ebfb23287a6e911febafe16721f0a6cdcf4d3f37972e29a8e49f4b"
+  },
+  "EXTERIOR_PAINTING--itemized-unpriced-condition.json": {
+    "bytes": 344840,
+    "sha256": "06d6128202988a0676fc2b5f5ba74012fc39a4dc23b268bc6a20ce02e47ebcf6"
+  },
+  "INTERIOR_PAINTING--itemized-absent-optional-details.json": {
+    "bytes": 830573,
+    "sha256": "cedce7af09cb8b82d5df68915ae4fd6f565e2f07432e3ed16c7778ff6d6615a7"
+  },
+  "INTERIOR_PAINTING--itemized-unpriced-condition.json": {
+    "bytes": 390285,
+    "sha256": "97fbb2c7de42cb53c43577c280b2a1afc4e0f5fcf590cb363d30279bae685066"
+  },
+  "LANDSCAPING_CLEANUP--explicit-bag-disposal.json": {
+    "bytes": 277517,
+    "sha256": "9f9c223bdf0579a4a77be4ecc7ce1bc29142f6cb0949d4ee1a2a4a31ffa1d44f"
+  },
+  "ROOFING_REPLACEMENT--absent-over12-adjustment-known-request.json": {
+    "bytes": 284922,
+    "sha256": "ef164059e43a2bce624ee54c4e06344abee3d214d27c52012241318e72e169d0"
+  },
+  "ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request.json": {
+    "bytes": 222368,
+    "sha256": "6a3129db880fb6b61f4eae0736c460de50b843065cd7ce03b02c1487d7bf182b"
+  },
+  "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request.json": {
+    "bytes": 286484,
+    "sha256": "d2730db5547c720f08690d2a22221a595138d226d28d6ab616ecccba0c052543"
+  },
+  "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request.json": {
+    "bytes": 222556,
+    "sha256": "5bf7039d268ba94520ebaf4964174d777918fbf05a2a81feedd9cd197d4b43f8"
+  },
+  "ROOFING_REPLACEMENT--tier-completes-unknown-pitch-policy.json": {
+    "bytes": 826822,
+    "sha256": "fda0e63cf3e12c819bacf2482d29d1f0f90276ca9a8435ebbbabe6e2397398dd"
+  },
+  "server-log.json": {
+    "bytes": 289,
+    "sha256": "8870a1070bff99a2c2d304e3c229cc9a6a0ee07a1371b5d5e9dd4e611bc00f5c"
+  }
+}
