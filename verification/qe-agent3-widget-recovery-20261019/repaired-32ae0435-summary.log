@@ -1,0 +1,156 @@
+2026-10-19T19:08:46.5520645Z # tests 12
+2026-10-19T19:08:46.5521261Z # pass 12
+2026-10-19T19:08:46.5521555Z # fail 0
+2026-10-19T19:08:46.5521850Z # cancelled 0
+2026-10-19T19:08:46.5522172Z # skipped 0
+2026-10-19T19:08:46.5522460Z # todo 0
+2026-10-19T19:17:07.2115748Z # Subtest: qe-agent3 widget request races and persisted recovery through real public HTTP
+2026-10-19T19:17:07.2121007Z     # Subtest: R01 rapid double preparation and confirmation create one immutable receipt
+2026-10-19T19:17:07.2123351Z     ok 1 - R01 rapid double preparation and confirmation create one immutable receipt
+2026-10-19T19:17:07.2124574Z       ---
+2026-10-19T19:17:07.2124978Z       duration_ms: 573.489467
+2026-10-19T19:17:07.2125595Z       type: 'test'
+2026-10-19T19:17:07.2126055Z       ...
+2026-10-19T19:17:07.7131381Z     # Subtest: R02a saved response lost then retry recovers identical payload and receipt
+2026-10-19T19:17:07.7136430Z     ok 2 - R02a saved response lost then retry recovers identical payload and receipt
+2026-10-19T19:17:07.7142782Z       ---
+2026-10-19T19:17:07.7143358Z       duration_ms: 501.334588
+2026-10-19T19:17:07.7143789Z       type: 'test'
+2026-10-19T19:17:07.7144134Z       ...
+2026-10-19T19:17:08.6872989Z     # Subtest: R02b saved response lost then reload and retry recovers identical payload and receipt
+2026-10-19T19:17:08.6874327Z     ok 3 - R02b saved response lost then reload and retry recovers identical payload and receipt
+2026-10-19T19:17:08.6875100Z       ---
+2026-10-19T19:17:08.6875420Z       duration_ms: 973.95943
+2026-10-19T19:17:08.6875854Z       type: 'test'
+2026-10-19T19:17:08.6876175Z       ...
+2026-10-19T19:17:09.3160055Z     # Subtest: R03 delayed preparation cannot replace a corrected measured area
+2026-10-19T19:17:09.3160737Z     ok 4 - R03 delayed preparation cannot replace a corrected measured area
+2026-10-19T19:17:09.3161129Z       ---
+2026-10-19T19:17:09.3161345Z       duration_ms: 628.274907
+2026-10-19T19:17:09.3161640Z       type: 'test'
+2026-10-19T19:17:09.3161868Z       ...
+2026-10-19T19:17:09.9358027Z     # Subtest: R04 delayed preparation cannot replace a different selected service
+2026-10-19T19:17:09.9359177Z     ok 5 - R04 delayed preparation cannot replace a different selected service
+2026-10-19T19:17:09.9359763Z       ---
+2026-10-19T19:17:09.9360103Z       duration_ms: 619.759995
+2026-10-19T19:17:09.9360559Z       type: 'test'
+2026-10-19T19:17:09.9360911Z       ...
+2026-10-19T19:17:10.6033661Z     # Subtest: R05 superseded response cannot unlock a newer in-flight preparation
+2026-10-19T19:17:10.6034773Z     ok 6 - R05 superseded response cannot unlock a newer in-flight preparation
+2026-10-19T19:17:10.6039772Z       ---
+2026-10-19T19:17:10.6042230Z       duration_ms: 667.334439
+2026-10-19T19:17:10.6046644Z       type: 'test'
+2026-10-19T19:17:10.6047586Z       ...
+2026-10-19T19:17:11.6684169Z     # Subtest: R06 same-key widget instances preserve independent completed and pending recovery on reload
+2026-10-19T19:17:11.6685274Z     ok 7 - R06 same-key widget instances preserve independent completed and pending recovery on reload
+2026-10-19T19:17:11.6686269Z       ---
+2026-10-19T19:17:11.6686624Z       duration_ms: 1064.565355
+2026-10-19T19:17:11.6686999Z       type: 'test'
+2026-10-19T19:17:11.6687735Z       ...
+2026-10-19T19:17:12.3174179Z     # Subtest: R05b obsolete success cannot replace a newer completed preparation
+2026-10-19T19:17:12.3175269Z     ok 8 - R05b obsolete success cannot replace a newer completed preparation
+2026-10-19T19:17:12.3175949Z       ---
+2026-10-19T19:17:12.3176284Z       duration_ms: 648.682295
+2026-10-19T19:17:12.3176694Z       type: 'test'
+2026-10-19T19:17:12.3177018Z       ...
+2026-10-19T19:17:12.9143419Z     # Subtest: R05c obsolete real validation error cannot overwrite a corrected preparation
+2026-10-19T19:17:12.9144489Z     ok 9 - R05c obsolete real validation error cannot overwrite a corrected preparation
+2026-10-19T19:17:12.9145219Z       ---
+2026-10-19T19:17:12.9145629Z       duration_ms: 596.534743
+2026-10-19T19:17:12.9146162Z       type: 'test'
+2026-10-19T19:17:12.9146540Z       ...
+2026-10-19T19:17:13.4490730Z     # Subtest: R07 public-key replacement rejects a delayed saved result without losing original recovery
+2026-10-19T19:17:13.4492466Z     ok 10 - R07 public-key replacement rejects a delayed saved result without losing original recovery
+2026-10-19T19:17:13.4493917Z       ---
+2026-10-19T19:17:13.4494577Z       duration_ms: 534.636471
+2026-10-19T19:17:13.4495214Z       type: 'test'
+2026-10-19T19:17:13.4495696Z       ...
+2026-10-19T19:17:14.8285977Z     # Subtest: R08 owner revision rejects stale confirmation and historical retries stay immutable
+2026-10-19T19:17:14.8289292Z     ok 11 - R08 owner revision rejects stale confirmation and historical retries stay immutable
+2026-10-19T19:17:14.8290259Z       ---
+2026-10-19T19:17:14.8290779Z       duration_ms: 1379.221993
+2026-10-19T19:17:14.8291334Z       type: 'test'
+2026-10-19T19:17:14.8291808Z       ...
+2026-10-19T19:17:14.8814100Z     1..11
+2026-10-19T19:17:14.8815264Z ok 3313 - qe-agent3 widget request races and persisted recovery through real public HTTP
+2026-10-19T19:26:03.1270609Z # tests 6082
+2026-10-19T19:26:03.1271278Z # pass 6082
+2026-10-19T19:26:03.1271518Z # fail 0
+2026-10-19T19:26:03.1271778Z # cancelled 0
+2026-10-19T19:26:03.1272030Z # skipped 0
+2026-10-19T19:26:03.1272264Z # todo 0
+2026-10-19T19:34:47.8223370Z # Subtest: qe-agent3 widget request races and persisted recovery through real public HTTP
+2026-10-19T19:34:47.8224553Z     # Subtest: R01 rapid double preparation and confirmation create one immutable receipt
+2026-10-19T19:34:47.8231510Z     ok 1 - R01 rapid double preparation and confirmation create one immutable receipt
+2026-10-19T19:34:47.8233554Z       ---
+2026-10-19T19:34:47.8233808Z       duration_ms: 599.737349
+2026-10-19T19:34:47.8234075Z       type: 'test'
+2026-10-19T19:34:47.8234295Z       ...
+2026-10-19T19:34:48.3229117Z     # Subtest: R02a saved response lost then retry recovers identical payload and receipt
+2026-10-19T19:34:48.3230565Z     ok 2 - R02a saved response lost then retry recovers identical payload and receipt
+2026-10-19T19:34:48.3231550Z       ---
+2026-10-19T19:34:48.3231947Z       duration_ms: 500.000898
+2026-10-19T19:34:48.3232406Z       type: 'test'
+2026-10-19T19:34:48.3232959Z       ...
+2026-10-19T19:34:49.3981918Z     # Subtest: R02b saved response lost then reload and retry recovers identical payload and receipt
+2026-10-19T19:34:49.3983627Z     ok 3 - R02b saved response lost then reload and retry recovers identical payload and receipt
+2026-10-19T19:34:49.3984576Z       ---
+2026-10-19T19:34:49.3984966Z       duration_ms: 1075.414807
+2026-10-19T19:34:49.3985382Z       type: 'test'
+2026-10-19T19:34:49.3985733Z       ...
+2026-10-19T19:34:50.0389025Z     # Subtest: R03 delayed preparation cannot replace a corrected measured area
+2026-10-19T19:34:50.0398629Z     ok 4 - R03 delayed preparation cannot replace a corrected measured area
+2026-10-19T19:34:50.0399548Z       ---
+2026-10-19T19:34:50.0400052Z       duration_ms: 639.949257
+2026-10-19T19:34:50.0400655Z       type: 'test'
+2026-10-19T19:34:50.0401255Z       ...
+2026-10-19T19:34:50.6897521Z     # Subtest: R04 delayed preparation cannot replace a different selected service
+2026-10-19T19:34:50.6898710Z     ok 5 - R04 delayed preparation cannot replace a different selected service
+2026-10-19T19:34:50.6899485Z       ---
+2026-10-19T19:34:50.6899876Z       duration_ms: 650.952986
+2026-10-19T19:34:50.6900391Z       type: 'test'
+2026-10-19T19:34:50.6900646Z       ...
+2026-10-19T19:34:51.3567952Z     # Subtest: R05 superseded response cannot unlock a newer in-flight preparation
+2026-10-19T19:34:51.3569131Z     ok 6 - R05 superseded response cannot unlock a newer in-flight preparation
+2026-10-19T19:34:51.3570113Z       ---
+2026-10-19T19:34:51.3570483Z       duration_ms: 666.668741
+2026-10-19T19:34:51.3570922Z       type: 'test'
+2026-10-19T19:34:51.3571273Z       ...
+2026-10-19T19:34:52.4083748Z     # Subtest: R06 same-key widget instances preserve independent completed and pending recovery on reload
+2026-10-19T19:34:52.4084631Z     ok 7 - R06 same-key widget instances preserve independent completed and pending recovery on reload
+2026-10-19T19:34:52.4085131Z       ---
+2026-10-19T19:34:52.4085360Z       duration_ms: 1051.586343
+2026-10-19T19:34:52.4085653Z       type: 'test'
+2026-10-19T19:34:52.4085888Z       ...
+2026-10-19T19:34:53.0268764Z     # Subtest: R05b obsolete success cannot replace a newer completed preparation
+2026-10-19T19:34:53.0269960Z     ok 8 - R05b obsolete success cannot replace a newer completed preparation
+2026-10-19T19:34:53.0270552Z       ---
+2026-10-19T19:34:53.0270769Z       duration_ms: 617.148151
+2026-10-19T19:34:53.0271042Z       type: 'test'
+2026-10-19T19:34:53.0271254Z       ...
+2026-10-19T19:34:53.6230273Z     # Subtest: R05c obsolete real validation error cannot overwrite a corrected preparation
+2026-10-19T19:34:53.6240092Z     ok 9 - R05c obsolete real validation error cannot overwrite a corrected preparation
+2026-10-19T19:34:53.6241067Z       ---
+2026-10-19T19:34:53.6241431Z       duration_ms: 596.730843
+2026-10-19T19:34:53.6241874Z       type: 'test'
+2026-10-19T19:34:53.6242221Z       ...
+2026-10-19T19:34:54.1557845Z     # Subtest: R07 public-key replacement rejects a delayed saved result without losing original recovery
+2026-10-19T19:34:54.1568586Z     ok 10 - R07 public-key replacement rejects a delayed saved result without losing original recovery
+2026-10-19T19:34:54.1569864Z       ---
+2026-10-19T19:34:54.1570232Z       duration_ms: 532.677488
+2026-10-19T19:34:54.1570636Z       type: 'test'
+2026-10-19T19:34:54.1570962Z       ...
+2026-10-19T19:34:55.5355138Z     # Subtest: R08 owner revision rejects stale confirmation and historical retries stay immutable
+2026-10-19T19:34:55.5368426Z     ok 11 - R08 owner revision rejects stale confirmation and historical retries stay immutable
+2026-10-19T19:34:55.5369249Z       ---
+2026-10-19T19:34:55.5369597Z       duration_ms: 1379.09917
+2026-10-19T19:34:55.5370018Z       type: 'test'
+2026-10-19T19:34:55.5370358Z       ...
+2026-10-19T19:34:55.5914242Z     1..11
+2026-10-19T19:34:55.5915191Z ok 3890 - qe-agent3 widget request races and persisted recovery through real public HTTP
+2026-10-19T19:45:15.7036779Z # tests 7713
+2026-10-19T19:45:15.7038302Z # pass 7713
+2026-10-19T19:45:15.7038655Z # fail 0
+2026-10-19T19:45:15.7039009Z # cancelled 0
+2026-10-19T19:45:15.7039369Z # skipped 0
+2026-10-19T19:45:15.7039728Z # todo 0

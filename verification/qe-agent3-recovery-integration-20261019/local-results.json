@@ -1,0 +1,81 @@
+[
+  {
+    "name": "importer-1208",
+    "command": [
+      "/workspace/scratch/3013d6890f9b/a3-tools/node_modules/node-linux-x64/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceListedPriceConditions20261018.spec.mjs",
+      "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "test/websitePriceImport.spec.mjs",
+      "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "test/websitePriceDraftRoutes.spec.mjs",
+      "test/claudeListedUnits20261008.spec.mjs",
+      "test/engineAuditListedPrices20261008.spec.mjs",
+      "test/fixedPricesKnowledge20261005.spec.mjs",
+      "test/voiceCore20261007.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/voiceRuntimeRoutes.spec.mjs",
+      "test/voicePromptCompiler.spec.mjs",
+      "test/voiceSecurity.spec.mjs",
+      "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs",
+      "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs",
+      "test/voiceAgent4ImportNineVariants20261019.spec.mjs",
+      "test/voiceAgent4ConditionExtensions20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T20:49:22.432368+00:00",
+    "exitCode": 0,
+    "TMPDIR": "/workspace/scratch/3013d6890f9b/tmp",
+    "summary": {
+      "tests": 1208,
+      "pass": 1208,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "individualNamesMatched": 1208
+  },
+  {
+    "name": "focused-59",
+    "command": [
+      "/workspace/scratch/3013d6890f9b/a3-tools/node_modules/node-linux-x64/bin/node",
+      "--test",
+      "test/quoteApplicationBoundary.spec.mjs",
+      "test/quoteOriginStorage.spec.mjs",
+      "test/quoteApprovalHistory20261005.spec.mjs",
+      "test/quoteReleaseStorage.spec.mjs",
+      "test/qeAgent3WidgetDependencies20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T20:50:07.182368+00:00",
+    "exitCode": 0,
+    "TMPDIR": "/workspace/scratch/3013d6890f9b/tmp",
+    "summary": {
+      "tests": 59,
+      "pass": 59,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "name": "chromium-probe",
+    "command": [
+      "/workspace/scratch/3013d6890f9b/a3-tools/node_modules/node-linux-x64/bin/node",
+      "--input-type=module",
+      "-e",
+      "import {chromium} from \"/workspace/scratch/3013d6890f9b/a3-tools/node_modules/playwright/index.mjs\";const b=await chromium.launch({headless:true,executablePath:\"/workspace/scratch/3013d6890f9b/tmp/a3-chromium\",args:['--no-sandbox','--disable-dev-shm-usage']});await b.close();"
+    ],
+    "startedAt": "2026-10-19T20:50:08.489318+00:00",
+    "exitCode": 1,
+    "TMPDIR": "/workspace/scratch/3013d6890f9b/tmp"
+  }
+]

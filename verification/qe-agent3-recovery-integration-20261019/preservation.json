@@ -1,0 +1,20 @@
+{
+  "orderedParents": [
+    "03ebb1a9acd0c36381ef166c7c9e78ca2e551ca3",
+    "7c7542a930c6e3d36847dfe3c3143ac45960a465"
+  ],
+  "commonAncestor": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "inheritedFilesVerified": 4210,
+  "overlap": [],
+  "allInheritedBlobsAndModesMatch": true,
+  "newIntegrationChangesOnly": true,
+  "engineVersion": "v12",
+  "testTimeoutMinutes": 45,
+  "protectedSha256": {
+    "scripts/testSelection.mjs": "b7395c0de38536403eb51b0cfb4e1c04b7b5a4304e3ccbee22d05e41b8a46197",
+    "server/quote-engine-vnext/engine.js": "b9d59a4f7566060078c896335672fc47cbd6a78a8d49528e1ee420a2974cb93f",
+    "server/src/runtimeConfig.js": "60a7660e44c4af6c211ee2b50084c8d2bc5b1ea58ee5dfd5e96ebd9a41f6fa34",
+    ".github/workflows/ci.yml": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+    "client/src/widget-entry.jsx": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab"
+  }
+}

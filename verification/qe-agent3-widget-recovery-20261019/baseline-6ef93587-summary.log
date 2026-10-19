@@ -1,0 +1,102 @@
+2026-10-19T18:48:51.4684962Z # tests 12
+2026-10-19T18:48:51.4685303Z # pass 12
+2026-10-19T18:48:51.4685461Z # fail 0
+2026-10-19T18:48:51.4685796Z # skipped 0
+2026-10-19T18:54:27.5295797Z # Subtest: qe-agent3 widget request races and persisted recovery through real public HTTP
+2026-10-19T18:54:27.5297141Z     # Subtest: R01 rapid double preparation and confirmation create one immutable receipt
+2026-10-19T18:54:27.5297699Z     ok 1 - R01 rapid double preparation and confirmation create one immutable receipt
+2026-10-19T18:54:27.9148632Z     # Subtest: R02a saved response lost then retry recovers identical payload and receipt
+2026-10-19T18:54:27.9149322Z     ok 2 - R02a saved response lost then retry recovers identical payload and receipt
+2026-10-19T18:54:28.8031349Z     # Subtest: R02b saved response lost then reload and retry recovers identical payload and receipt
+2026-10-19T18:54:28.8032281Z     ok 3 - R02b saved response lost then reload and retry recovers identical payload and receipt
+2026-10-19T18:54:29.1031719Z     # Subtest: R03 delayed preparation cannot replace a corrected measured area
+2026-10-19T18:54:29.1033929Z     not ok 4 - R03 delayed preparation cannot replace a corrected measured area
+2026-10-19T18:54:29.4207355Z     # Subtest: R04 delayed preparation cannot replace a different selected service
+2026-10-19T18:54:29.4208266Z     not ok 5 - R04 delayed preparation cannot replace a different selected service
+2026-10-19T18:54:29.6529361Z     # Subtest: R05 superseded response cannot unlock a newer in-flight preparation
+2026-10-19T18:54:29.6530199Z     not ok 6 - R05 superseded response cannot unlock a newer in-flight preparation
+2026-10-19T18:54:30.4265624Z     # Subtest: R06 same-key widget instances preserve independent completed and pending recovery on reload
+2026-10-19T18:54:30.4266920Z     not ok 7 - R06 same-key widget instances preserve independent completed and pending recovery on reload
+2026-10-19T18:54:30.6661111Z     # Subtest: R05b obsolete success cannot replace a newer completed preparation
+2026-10-19T18:54:30.6661742Z     not ok 8 - R05b obsolete success cannot replace a newer completed preparation
+2026-10-19T18:54:30.8853548Z     # Subtest: R05c obsolete real validation error cannot overwrite a corrected preparation
+2026-10-19T18:54:30.8854849Z     not ok 9 - R05c obsolete real validation error cannot overwrite a corrected preparation
+2026-10-19T18:54:31.3393057Z     # Subtest: R07 public-key replacement rejects a delayed saved result without losing original recovery
+2026-10-19T18:54:31.3393903Z     not ok 10 - R07 public-key replacement rejects a delayed saved result without losing original recovery
+2026-10-19T18:54:32.2991493Z     # Subtest: R08 owner revision rejects stale confirmation and historical retries stay immutable
+2026-10-19T18:54:32.2993863Z     not ok 11 - R08 owner revision rejects stale confirmation and historical retries stay immutable
+2026-10-19T18:54:32.3976243Z not ok 3313 - qe-agent3 widget request races and persisted recovery through real public HTTP
+2026-10-19T18:57:32.7712950Z # Subtest: R01 AI_SUGGESTED deletion of baggingSurchargePercent recovers only after explicit approval
+2026-10-19T18:57:32.7713788Z ok 4982 - R01 AI_SUGGESTED deletion of baggingSurchargePercent recovers only after explicit approval
+2026-10-19T18:57:32.7715926Z # Subtest: R01 AI_SUGGESTED deletion of tiers recovers only after explicit approval
+2026-10-19T18:57:32.7720362Z ok 4983 - R01 AI_SUGGESTED deletion of tiers recovers only after explicit approval
+2026-10-19T18:57:32.7723051Z # Subtest: R01 AI_INTERVIEW deletion of baggingSurchargePercent recovers only after explicit approval
+2026-10-19T18:57:32.7723800Z ok 4984 - R01 AI_INTERVIEW deletion of baggingSurchargePercent recovers only after explicit approval
+2026-10-19T18:57:32.7725390Z # Subtest: R01 AI_INTERVIEW deletion of tiers recovers only after explicit approval
+2026-10-19T18:57:32.7726142Z ok 4985 - R01 AI_INTERVIEW deletion of tiers recovers only after explicit approval
+2026-10-19T18:57:32.7728795Z # Subtest: R01 partial approval preserves current receipts, never approves other edits or another owner
+2026-10-19T18:57:32.7729826Z ok 4986 - R01 partial approval preserves current receipts, never approves other edits or another owner
+2026-10-19T18:57:32.7732122Z # Subtest: R02 offering inclusion quotes hand-calculated 388000 cents
+2026-10-19T18:57:32.7732870Z ok 4987 - R02 offering inclusion quotes hand-calculated 388000 cents
+2026-10-19T18:57:32.7735318Z # Subtest: R02 stair inclusion uses whole-cent item prices: 225505 cents
+2026-10-19T18:57:32.7736103Z ok 4988 - R02 stair inclusion uses whole-cent item prices: 225505 cents
+2026-10-19T18:57:32.7738113Z # Subtest: R02 inclusion still blocks unknown
+2026-10-19T18:57:32.7738620Z ok 4989 - R02 inclusion still blocks unknown
+2026-10-19T18:57:32.7747684Z # Subtest: R02 inclusion still blocks inactive
+2026-10-19T18:57:32.7774454Z ok 4990 - R02 inclusion still blocks inactive
+2026-10-19T18:57:32.7786121Z # Subtest: R02 inclusion still blocks zero
+2026-10-19T18:57:32.7786437Z ok 4991 - R02 inclusion still blocks zero
+2026-10-19T18:57:32.7787828Z # Subtest: R02 inclusion still blocks wrong-category
+2026-10-19T18:57:32.7788202Z ok 4992 - R02 inclusion still blocks wrong-category
+2026-10-19T18:57:32.7789393Z # Subtest: R03 tax none clears hidden percentage, persists and quotes 10000 cents
+2026-10-19T18:57:32.7789947Z ok 4993 - R03 tax none clears hidden percentage, persists and quotes 10000 cents
+2026-10-19T18:57:32.7791530Z # Subtest: R04/R08 CONCRETE_PATIO_SLAB.laborPerSqft accepts measured fractional-cent precision at each boundary
+2026-10-19T18:57:32.7792289Z ok 4994 - R04/R08 CONCRETE_PATIO_SLAB.laborPerSqft accepts measured fractional-cent precision at each boundary
+2026-10-19T18:57:32.7793842Z # Subtest: R04/R08 INTERIOR_PAINTING.laborPerWallSqftPerCoat accepts measured fractional-cent precision at each boundary
+2026-10-19T18:57:32.7794856Z ok 4995 - R04/R08 INTERIOR_PAINTING.laborPerWallSqftPerCoat accepts measured fractional-cent precision at each boundary
+2026-10-19T18:57:32.7796404Z # Subtest: R04/R08 SIDING_REPLACEMENT.laborPerSqft accepts measured fractional-cent precision at each boundary
+2026-10-19T18:57:32.7797182Z ok 4996 - R04/R08 SIDING_REPLACEMENT.laborPerSqft accepts measured fractional-cent precision at each boundary
+2026-10-19T18:57:32.7812623Z # Subtest: R04/R08 FLOORING_INSTALL.materialPerSqft accepts measured fractional-cent precision at each boundary
+2026-10-19T18:57:32.7813427Z ok 4997 - R04/R08 FLOORING_INSTALL.materialPerSqft accepts measured fractional-cent precision at each boundary
+2026-10-19T18:57:32.7814972Z # Subtest: R04 failed exact-money save leaves prior persisted book unchanged
+2026-10-19T18:57:32.7815497Z ok 4998 - R04 failed exact-money save leaves prior persisted book unchanged
+2026-10-19T18:57:32.7816994Z # Subtest: R04 supported fractional LANDSCAPING_MOWING.mowingBaseRatePerSqft remains exact
+2026-10-19T18:57:32.7817632Z ok 4999 - R04 supported fractional LANDSCAPING_MOWING.mowingBaseRatePerSqft remains exact
+2026-10-19T18:57:32.7818866Z # Subtest: R04 supported fractional CUSTOM.price remains exact
+2026-10-19T18:57:32.7819300Z ok 5000 - R04 supported fractional CUSTOM.price remains exact
+2026-10-19T18:57:32.7820465Z # Subtest: R04 supported fractional CUSTOM.low remains exact
+2026-10-19T18:57:32.7820885Z ok 5001 - R04 supported fractional CUSTOM.low remains exact
+2026-10-19T18:57:32.7822029Z # Subtest: R04 supported fractional CUSTOM.high remains exact
+2026-10-19T18:57:32.7822614Z ok 5002 - R04 supported fractional CUSTOM.high remains exact
+2026-10-19T18:57:32.7823863Z # Subtest: R05 FLOORING_INSTALL closed domains reject unknown keys but allow offered subset
+2026-10-19T18:57:32.7824615Z ok 5003 - R05 FLOORING_INSTALL closed domains reject unknown keys but allow offered subset
+2026-10-19T18:57:32.7826123Z # Subtest: R05 FLOORING_REPLACEMENT closed domains reject unknown keys but allow offered subset
+2026-10-19T18:57:32.7826752Z ok 5004 - R05 FLOORING_REPLACEMENT closed domains reject unknown keys but allow offered subset
+2026-10-19T18:57:32.7828124Z # Subtest: R05 SIDING_REPLACEMENT closed domains reject unknown keys but allow offered subset
+2026-10-19T18:57:32.7828786Z ok 5005 - R05 SIDING_REPLACEMENT closed domains reject unknown keys but allow offered subset
+2026-10-19T18:57:32.7830188Z # Subtest: R05 planting metadata, starter and interview accept small/medium/large and reject mixed
+2026-10-19T18:57:32.7830892Z ok 5006 - R05 planting metadata, starter and interview accept small/medium/large and reject mixed
+2026-10-19T18:57:32.7832212Z # Subtest: R05 repair cubes retain open middle keys, closed siding types and size leaves
+2026-10-19T18:57:32.7832890Z ok 5007 - R05 repair cubes retain open middle keys, closed siding types and size leaves
+2026-10-19T18:57:32.7834120Z # Subtest: R06 cleanup accepts zero disposal through readback and server
+2026-10-19T18:57:32.7834722Z ok 5008 - R06 cleanup accepts zero disposal through readback and server
+2026-10-19T18:57:32.7835950Z # Subtest: R08 mixed cleanup leaves reject fractional fixed disposal in AI and readback
+2026-10-19T18:57:32.7836617Z ok 5009 - R08 mixed cleanup leaves reject fractional fixed disposal in AI and readback
+2026-10-19T18:57:32.7837985Z # Subtest: R07 custom interview re-resolves from saved unit and rejects flat/unknown fractional amounts
+2026-10-19T18:57:32.7838675Z ok 5010 - R07 custom interview re-resolves from saved unit and rejects flat/unknown fractional amounts
+2026-10-19T18:57:32.7840022Z # Subtest: R09 occupied override cannot overwrite either value; valid rename is lossless
+2026-10-19T18:57:32.7840621Z ok 5011 - R09 occupied override cannot overwrite either value; valid rename is lossless
+2026-10-19T18:57:32.7841934Z # Subtest: R09 delete first tier then add uses an unused name without modifying prices
+2026-10-19T18:57:32.7842586Z ok 5012 - R09 delete first tier then add uses an unused name without modifying prices
+2026-10-19T18:57:32.7843835Z # Subtest: R09 generated names use the engine case-insensitive name comparison
+2026-10-19T18:57:32.7844480Z ok 5013 - R09 generated names use the engine case-insensitive name comparison
+2026-10-19T18:57:32.7845800Z # Subtest: R02 fractional configured offering coverage preserves 388055 cents
+2026-10-19T18:57:32.7846330Z ok 5014 - R02 fractional configured offering coverage preserves 388055 cents
+2026-10-19T18:57:32.7847682Z # Subtest: R02 configured gate inclusion keeps camel-case contract keys and sell-price classification
+2026-10-19T18:57:32.7848363Z ok 5015 - R02 configured gate inclusion keeps camel-case contract keys and sell-price classification
+2026-10-19T18:57:32.7849699Z # Subtest: R05/R06 starter prompt uses current planting keys and typed cleanup leaves
+2026-10-19T18:57:32.7850281Z ok 5016 - R05/R06 starter prompt uses current planting keys and typed cleanup leaves
+2026-10-19T19:00:18.8695493Z # tests 6082
+2026-10-19T19:00:18.8695868Z # pass 6073
+2026-10-19T19:00:18.8696038Z # fail 9
+2026-10-19T19:00:18.8696386Z # skipped 0

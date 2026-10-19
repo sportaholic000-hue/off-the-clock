@@ -1,0 +1,369 @@
+TAP version 13
+# Subtest: qe-agent3 PI-01 rendered mulch methods clear prior unit quantity and depth in both directions
+    # Subtest: sqft to yards
+    ok 1 - sqft to yards
+      ---
+      duration_ms: 145.993085
+      type: 'test'
+      ...
+    # Subtest: yards to sqft
+    ok 2 - yards to sqft
+      ---
+      duration_ms: 59.107279
+      type: 'test'
+      ...
+    1..2
+ok 1 - qe-agent3 PI-01 rendered mulch methods clear prior unit quantity and depth in both directions
+  ---
+  duration_ms: 507.014621
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-02 rendered concrete methods clear every prior geometry representation forward and reverse
+    # Subtest: exact to measured_area_perimeter
+    ok 1 - exact to measured_area_perimeter
+      ---
+      duration_ms: 23.664009
+      type: 'test'
+      ...
+    # Subtest: measured_area_perimeter to measured_outline
+    ok 2 - measured_area_perimeter to measured_outline
+      ---
+      duration_ms: 24.441291
+      type: 'test'
+      ...
+    # Subtest: measured_outline to exact
+    ok 3 - measured_outline to exact
+      ---
+      duration_ms: 31.551404
+      type: 'test'
+      ...
+    1..3
+ok 2 - qe-agent3 PI-02 rendered concrete methods clear every prior geometry representation forward and reverse
+  ---
+  duration_ms: 81.103758
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-03 rendered subfloor off and unknown clear repair area and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 26.14527
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 28.968328
+      type: 'test'
+      ...
+    1..2
+ok 3 - qe-agent3 PI-03 rendered subfloor off and unknown clear repair area and reverse requires re-entry
+  ---
+  duration_ms: 55.909127
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-04 rendered planting mulch off and unknown clear product receipt only and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 18.83197
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 26.008422
+      type: 'test'
+      ...
+    1..2
+ok 4 - qe-agent3 PI-04 rendered planting mulch off and unknown clear product receipt only and reverse requires re-entry
+  ---
+  duration_ms: 45.415164
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-05 rendered mowing edging off and unknown clear length, preserve explicit zero elsewhere, and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 30.027512
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 22.866387
+      type: 'test'
+      ...
+    1..2
+ok 5 - qe-agent3 PI-05 rendered mowing edging off and unknown clear length, preserve explicit zero elsewhere, and reverse requires re-entry
+  ---
+  duration_ms: 53.336615
+  type: 'test'
+  ...
+# Subtest: every estimate requires a syntactically usable email or telephone
+ok 6 - every estimate requires a syntactically usable email or telephone
+  ---
+  duration_ms: 1.609805
+  type: 'test'
+  ...
+# Subtest: wire decimals: reject replacement before save, without imposing binary exactness or price caps
+ok 7 - wire decimals: reject replacement before save, without imposing binary exactness or price caps
+  ---
+  duration_ms: 2.830213
+  type: 'test'
+  ...
+# Subtest: JSON strings, escaped keys, objects and arrays are tokenized without interpreting numbers inside text
+ok 8 - JSON strings, escaped keys, objects and arrays are tokenized without interpreting numbers inside text
+  ---
+  duration_ms: 1.272194
+  type: 'test'
+  ...
+# Subtest: the whole-request gate never classifies untriaged prose as harmless
+ok 9 - the whole-request gate never classifies untriaged prose as harmless
+  ---
+  duration_ms: 1.29534
+  type: 'test'
+  ...
+# Subtest: an optional malformed callback channel identifies the editable field
+ok 10 - an optional malformed callback channel identifies the editable field
+  ---
+  duration_ms: 0.575503
+  type: 'test'
+  ...
+# Subtest: definitive rejection can be corrected; unknown acceptance keeps the immutable request
+ok 11 - definitive rejection can be corrected; unknown acceptance keeps the immutable request
+  ---
+  duration_ms: 12.08171
+  type: 'test'
+  ...
+# Subtest: accepted metadata names do not admit unsupported nested scope or alternate callback prose
+ok 12 - accepted metadata names do not admit unsupported nested scope or alternate callback prose
+  ---
+  duration_ms: 1.131296
+  type: 'test'
+  ...
+# Subtest: the pricing envelope excludes name and location while tolerating unambiguously empty legacy containers
+ok 13 - the pricing envelope excludes name and location while tolerating unambiguously empty legacy containers
+  ---
+  duration_ms: 0.875857
+  type: 'test'
+  ...
+# Subtest: server confirmation binds the complete request, tenant and approved book revision
+ok 14 - server confirmation binds the complete request, tenant and approved book revision
+  ---
+  duration_ms: 1.682673
+  type: 'test'
+  ...
+# Subtest: QP-04 a persisted $2701 v4 receipt replays unchanged after the v5 approval boundary
+ok 15 - QP-04 a persisted $2701 v4 receipt replays unchanged after the v5 approval boundary
+  ---
+  duration_ms: 737.015209
+  type: 'test'
+  ...
+# Subtest: stored widget origin allowlists fail closed when corrupt or ambiguous
+ok 16 - stored widget origin allowlists fail closed when corrupt or ambiguous
+  ---
+  duration_ms: 2.174252
+  type: 'test'
+  ...
+# Subtest: loopback HTTP origins are accepted only outside production
+ok 17 - loopback HTTP origins are accepted only outside production
+  ---
+  duration_ms: 0.385761
+  type: 'test'
+  ...
+# Subtest: release storage: omitted new ID receives a UUID
+ok 18 - release storage: omitted new ID receives a UUID
+  ---
+  duration_ms: 21.971122
+  type: 'test'
+  ...
+# Subtest: release storage: undefined new ID receives a UUID
+ok 19 - release storage: undefined new ID receives a UUID
+  ---
+  duration_ms: 8.83537
+  type: 'test'
+  ...
+# Subtest: release storage: null new ID receives a UUID
+ok 20 - release storage: null new ID receives a UUID
+  ---
+  duration_ms: 7.932482
+  type: 'test'
+  ...
+# Subtest: release storage: empty new ID receives a UUID
+ok 21 - release storage: empty new ID receives a UUID
+  ---
+  duration_ms: 6.94135
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused "not-a-uuid"
+ok 22 - release storage: invalid supplied ID is refused "not-a-uuid"
+  ---
+  duration_ms: 11.159619
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused 17
+ok 23 - release storage: invalid supplied ID is refused 17
+  ---
+  duration_ms: 6.45935
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused 0
+ok 24 - release storage: invalid supplied ID is refused 0
+  ---
+  duration_ms: 6.664463
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused false
+ok 25 - release storage: invalid supplied ID is refused false
+  ---
+  duration_ms: 7.786666
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused {}
+ok 26 - release storage: invalid supplied ID is refused {}
+  ---
+  duration_ms: 6.933862
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused []
+ok 27 - release storage: invalid supplied ID is refused []
+  ---
+  duration_ms: 6.270555
+  type: 'test'
+  ...
+# Subtest: release storage: invalid supplied ID is refused "00000000-0000-0000-0000-000000000000"
+ok 28 - release storage: invalid supplied ID is refused "00000000-0000-0000-0000-000000000000"
+  ---
+  duration_ms: 6.55015
+  type: 'test'
+  ...
+# Subtest: release storage: duplicate UUID casing is refused atomically
+ok 29 - release storage: duplicate UUID casing is refused atomically
+  ---
+  duration_ms: 10.780281
+  type: 'test'
+  ...
+# Subtest: release storage: null service pauses corrupted saved data and rejects new writes
+ok 30 - release storage: null service pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 8.189203
+  type: 'test'
+  ...
+# Subtest: release storage: array service pauses corrupted saved data and rejects new writes
+ok 31 - release storage: array service pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 9.078459
+  type: 'test'
+  ...
+# Subtest: release storage: string service pauses corrupted saved data and rejects new writes
+ok 32 - release storage: string service pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 5.112865
+  type: 'test'
+  ...
+# Subtest: release storage: null pricing pauses corrupted saved data and rejects new writes
+ok 33 - release storage: null pricing pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 4.778911
+  type: 'test'
+  ...
+# Subtest: release storage: array pricing pauses corrupted saved data and rejects new writes
+ok 34 - release storage: array pricing pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 9.260675
+  type: 'test'
+  ...
+# Subtest: release storage: object tiers pauses corrupted saved data and rejects new writes
+ok 35 - release storage: object tiers pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 5.856491
+  type: 'test'
+  ...
+# Subtest: release storage: null tiers pauses corrupted saved data and rejects new writes
+ok 36 - release storage: null tiers pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 6.718534
+  type: 'test'
+  ...
+# Subtest: release storage: null tier pauses corrupted saved data and rejects new writes
+ok 37 - release storage: null tier pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 4.845959
+  type: 'test'
+  ...
+# Subtest: release storage: array tier pauses corrupted saved data and rejects new writes
+ok 38 - release storage: array tier pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 4.730769
+  type: 'test'
+  ...
+# Subtest: release storage: null overrides pauses corrupted saved data and rejects new writes
+ok 39 - release storage: null overrides pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 5.657351
+  type: 'test'
+  ...
+# Subtest: release storage: array overrides pauses corrupted saved data and rejects new writes
+ok 40 - release storage: array overrides pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 6.711424
+  type: 'test'
+  ...
+# Subtest: release storage: missing defaults pauses corrupted saved data and rejects new writes
+ok 41 - release storage: missing defaults pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 4.767544
+  type: 'test'
+  ...
+# Subtest: release storage: null defaults pauses corrupted saved data and rejects new writes
+ok 42 - release storage: null defaults pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 5.757194
+  type: 'test'
+  ...
+# Subtest: release storage: array defaults pauses corrupted saved data and rejects new writes
+ok 43 - release storage: array defaults pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 8.098332
+  type: 'test'
+  ...
+# Subtest: release storage: object services pauses corrupted saved data and rejects new writes
+ok 44 - release storage: object services pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 9.319187
+  type: 'test'
+  ...
+# Subtest: release storage: missing services pauses corrupted saved data and rejects new writes
+ok 45 - release storage: missing services pauses corrupted saved data and rejects new writes
+  ---
+  duration_ms: 5.337657
+  type: 'test'
+  ...
+# Subtest: release storage: valid incomplete draft remains readable and cannot quote
+ok 46 - release storage: valid incomplete draft remains readable and cannot quote
+  ---
+  duration_ms: 100.052562
+  type: 'test'
+  ...
+# Subtest: release storage: omitted optional pricing and tiers remain readable
+ok 47 - release storage: omitted optional pricing and tiers remain readable
+  ---
+  duration_ms: 9.462834
+  type: 'test'
+  ...
+# Subtest: release storage: valid uppercase identity, approval, other owner and $100 quote survive a save
+ok 48 - release storage: valid uppercase identity, approval, other owner and $100 quote survive a save
+  ---
+  duration_ms: 238.932583
+  type: 'test'
+  ...
+1..48
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1266.576925

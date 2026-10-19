@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: every estimate requires a syntactically usable email or telephone
+ok 1 - every estimate requires a syntactically usable email or telephone
+  ---
+  duration_ms: 1.554078
+  type: 'test'
+  ...
+# Subtest: wire decimals: reject replacement before save, without imposing binary exactness or price caps
+ok 2 - wire decimals: reject replacement before save, without imposing binary exactness or price caps
+  ---
+  duration_ms: 2.378411
+  type: 'test'
+  ...
+# Subtest: JSON strings, escaped keys, objects and arrays are tokenized without interpreting numbers inside text
+ok 3 - JSON strings, escaped keys, objects and arrays are tokenized without interpreting numbers inside text
+  ---
+  duration_ms: 1.292199
+  type: 'test'
+  ...
+# Subtest: the whole-request gate never classifies untriaged prose as harmless
+ok 4 - the whole-request gate never classifies untriaged prose as harmless
+  ---
+  duration_ms: 1.10433
+  type: 'test'
+  ...
+# Subtest: an optional malformed callback channel identifies the editable field
+ok 5 - an optional malformed callback channel identifies the editable field
+  ---
+  duration_ms: 0.60596
+  type: 'test'
+  ...
+# Subtest: definitive rejection can be corrected; unknown acceptance keeps the immutable request
+ok 6 - definitive rejection can be corrected; unknown acceptance keeps the immutable request
+  ---
+  duration_ms: 11.016208
+  type: 'test'
+  ...
+# Subtest: accepted metadata names do not admit unsupported nested scope or alternate callback prose
+ok 7 - accepted metadata names do not admit unsupported nested scope or alternate callback prose
+  ---
+  duration_ms: 1.708006
+  type: 'test'
+  ...
+# Subtest: the pricing envelope excludes name and location while tolerating unambiguously empty legacy containers
+ok 8 - the pricing envelope excludes name and location while tolerating unambiguously empty legacy containers
+  ---
+  duration_ms: 0.601794
+  type: 'test'
+  ...
+# Subtest: server confirmation binds the complete request, tenant and approved book revision
+ok 9 - server confirmation binds the complete request, tenant and approved book revision
+  ---
+  duration_ms: 2.131876
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 126.560786
