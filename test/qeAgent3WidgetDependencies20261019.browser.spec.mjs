@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import {createRequire} from 'node:module';
+import {build} from 'esbuild';
 import {application} from './fixtures/bookingCalendarApplication20261006.mjs';
 import {convertApplicationBook} from '../server/src/quoteDoneBridge.js';
 import {auditFixtures} from '../verification/qe-agent3-widget-dependencies-20261019/audit-fixtures.mjs';
@@ -73,7 +74,18 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),pageErrors=[];
   page.on('pageerror',error=>pageErrors.push(error.message));
   t.after(()=>page.close());
-  await page.goto(`${app.base}/quote/${access.publicKey}`,{waitUntil:'networkidle'});
+  const built=await build({bundle:true,write:false,format:'iife',platform:'browser',
+    define:{'process.env.NODE_ENV':JSON.stringify('production'),'import.meta.env':JSON.stringify({})},
+    stdin:{loader:'jsx',resolveDir:process.cwd(),contents:`
+      import React from 'react';
+      import {createRoot} from 'react-dom/client';
+      import {CustomerQuote} from './client/src/quotedone.jsx';
+      const publicKey=new URLSearchParams(location.search).get('publicKey');
+      createRoot(document.getElementById('root')).render(<CustomerQuote publicKey={publicKey} persistResult/>);
+    `}});
+  const browserScript=built.outputFiles[0].text,harnessUrl=`${app.base}/qe-agent3-public-widget`;
+  await page.route(harnessUrl+'*',route=>route.fulfill({contentType:'text/html',body:'<div id="root"></div><script>'+browserScript.replaceAll('</script','<\\/script')+'</script>'}));
+  await page.goto(`${harnessUrl}?publicKey=${encodeURIComponent(access.publicKey)}`,{waitUntil:'networkidle'});
   const cacheKey='quotedone-pending-'+access.publicKey;
   let retryChecked=false,completed=0;
 

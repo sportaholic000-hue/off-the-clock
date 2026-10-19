@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
+import {build} from 'esbuild';
 import {application} from '../../test/fixtures/bookingCalendarApplication20261006.mjs';
 import {convertApplicationBook} from '../../server/src/quoteDoneBridge.js';
 import {SERVICE_TYPES} from '../../server/quote-engine-vnext/contracts.js';
@@ -80,6 +81,21 @@ try{
   assert.deepEqual(catalog.services.map(service=>service.serviceType).sort(),[...SERVICE_TYPES].sort());
   const byType=new Map(catalog.services.map(service=>[service.serviceType,service]));
 
+  // Keep the preserved case logic but mount the production CustomerQuote
+  // directly at the synthetic server origin. This still uses the real public
+  // HTTP handlers while avoiding unrelated owner-app routing and built-asset
+  // state in the representative browser harness.
+  const built=await build({absWorkingDir:root,bundle:true,write:false,format:'iife',platform:'browser',
+    define:{'process.env.NODE_ENV':JSON.stringify('production'),'import.meta.env':JSON.stringify({})},
+    stdin:{loader:'jsx',resolveDir:root,contents:`
+      import React from 'react';
+      import {createRoot} from 'react-dom/client';
+      import {CustomerQuote} from './client/src/quotedone.jsx';
+      const publicKey=new URLSearchParams(location.search).get('publicKey');
+      createRoot(document.getElementById('root')).render(<CustomerQuote publicKey={publicKey} persistResult/>);
+    `}});
+  const browserScript=built.outputFiles[0].text;
+
   const require=createRequire(import.meta.url);
   const playwrightModule=process.env.PUBLIC_INTAKE_PLAYWRIGHT_MODULE||'playwright';
   const playwright=require(playwrightModule),browserName=process.env.PUBLIC_INTAKE_BROWSER||'chromium';
@@ -89,7 +105,9 @@ try{
   browser=await browserType.launch({headless:true,executablePath:browserExecutable,...(browserName==='chromium'?{args:['--no-sandbox','--disable-dev-shm-usage']}:{})});
   const context=await browser.newContext({viewport:{width:1440,height:1000}});
   page=await context.newPage();
-  await page.goto(`${app.base}/quote/${publicKey}`,{waitUntil:'networkidle'});
+  const harnessUrl=`${app.base}/qe-agent3-representative-widget`;
+  await page.route(harnessUrl+'*',route=>route.fulfill({contentType:'text/html',body:'<div id="root"></div><script>'+browserScript.replaceAll('</script','<\\/script')+'</script>'}));
+  await page.goto(`${harnessUrl}?publicKey=${encodeURIComponent(publicKey)}`,{waitUntil:'networkidle'});
   const cacheKey='quotedone-pending-'+publicKey;
 
   function restoredSubmission(type,inputs,extra={}){
@@ -179,11 +197,11 @@ try{
     cases.push(row);return row;
   }
 
-  await hiddenDependentCase({id:'B04',type:'LANDSCAPING_MULCH',selectLabel:'Mulch quantity method',selectValue:'yards',fill:[['Mulch volume','2.75']],staleKeys:['mulchDepth'],title:'mulch area-to-volume retains hidden depth'});
-  await hiddenDependentCase({id:'B05',type:'CONCRETE_DRIVEWAY',selectLabel:'Slab measurement method',selectValue:'measured_area_perimeter',fill:[['Measured slab area','500'],['Measured slab perimeter','120']],staleKeys:['length','width'],title:'concrete method switch retains hidden dimensions'});
-  await hiddenDependentCase({id:'B06',type:'FLOORING_REPLACEMENT',selectLabel:'Subfloor issues reported',selectValue:'false',staleKeys:['subfloorRepairAreaSqft'],title:'subfloor no retains hidden repair area'});
-  await hiddenDependentCase({id:'B07',type:'LANDSCAPING_PLANTING',selectLabel:'Mulch included',selectValue:'false',staleKeys:['mulchYards','mulchType'],title:'planting mulch removal retains hidden scope'});
-  await hiddenDependentCase({id:'B08',type:'LANDSCAPING_MOWING',selectLabel:'Lawn edging selected',selectValue:'false',staleKeys:['edgingLengthLF'],title:'mowing edging removal retains hidden length'});
+  await hiddenDependentCase({id:'B04',type:'LANDSCAPING_MULCH',selectLabel:'Mulch quantity method',selectValue:'yards',fill:[['Mulch volume','2.75']],staleKeys:['mulchDepth'],title:'mulch area-to-volume clears hidden depth'});
+  await hiddenDependentCase({id:'B05',type:'CONCRETE_DRIVEWAY',selectLabel:'Slab measurement method',selectValue:'measured_area_perimeter',fill:[['Measured slab area','500'],['Measured slab perimeter','120']],staleKeys:['length','width'],title:'concrete method switch clears hidden dimensions'});
+  await hiddenDependentCase({id:'B06',type:'FLOORING_REPLACEMENT',selectLabel:'Subfloor issues reported',selectValue:'false',staleKeys:['subfloorRepairAreaSqft'],title:'subfloor no clears hidden repair area'});
+  await hiddenDependentCase({id:'B07',type:'LANDSCAPING_PLANTING',selectLabel:'Mulch included',selectValue:'false',staleKeys:['mulchYards','mulchType'],title:'planting mulch removal clears hidden scope'});
+  await hiddenDependentCase({id:'B08',type:'LANDSCAPING_MOWING',selectLabel:'Lawn edging selected',selectValue:'false',staleKeys:['edgingLengthLF'],title:'mowing edging removal clears hidden length'});
 
   // Exact numeric input distinguishes omitted text from an explicit zero.
   await restore('LANDSCAPING_MOWING');

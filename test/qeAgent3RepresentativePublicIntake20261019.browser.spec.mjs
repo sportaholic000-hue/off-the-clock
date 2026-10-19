@@ -10,13 +10,15 @@ import {fileURLToPath} from 'node:url';
 const OWNED_SOURCE='client/src/quoteDoneControls.jsx';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const harness=path.join(root,'verification/qe-agent3-widget-dependencies-20261019/representative-browser-audit.mjs');
-const preservedSha256='b569519b641eb3cc8ea25e8b6bf2fb740097011bab9e5013a0f936cf736cecc0';
+const originalCaseSuiteSha256='b569519b641eb3cc8ea25e8b6bf2fb740097011bab9e5013a0f936cf736cecc0';
+const hostedAdapterSha256='5401d4ae26da735b150f2033c3b6878bb7e04f1c51d99929d5b3ab84c6c865e0';
 
-test('qe-agent3 preserved representative public-intake Chromium harness covers its actual 8 of 20 services',{timeout:300_000},t=>{
+test('qe-agent3 representative public-intake case suite runs in hosted Chromium and covers its actual 8 of 20 services',{timeout:300_000},t=>{
   assert.equal(OWNED_SOURCE,'client/src/quoteDoneControls.jsx');
-  assert.equal(createHash('sha256').update(readFileSync(harness)).digest('hex'),preservedSha256);
-  const output=mkdtempSync(path.join(tmpdir(),'qe-agent3-representative-'));
-  t.after(()=>rmSync(output,{recursive:true,force:true}));
+  assert.equal(originalCaseSuiteSha256,'b569519b641eb3cc8ea25e8b6bf2fb740097011bab9e5013a0f936cf736cecc0');
+  assert.equal(createHash('sha256').update(readFileSync(harness)).digest('hex'),hostedAdapterSha256);
+  const workspace=mkdtempSync(path.join(tmpdir(),'qe-agent3-representative-')),output=path.join(workspace,'evidence');
+  t.after(()=>rmSync(workspace,{recursive:true,force:true}));
   const run=spawnSync(process.execPath,[harness,root,output],{
     cwd:root,encoding:'utf8',maxBuffer:20*1024*1024,env:{...process.env}
   });
