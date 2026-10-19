@@ -1,0 +1,30 @@
+{
+  "orderedParents": [
+    "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+    "0e3f1da02cffbc16e97355eb182c238ff91dfba0"
+  ],
+  "mergeBase": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+  "conflicts": [],
+  "inheritedPaths": 4058,
+  "matchedPaths": 4058,
+  "changedExistingCombinedPaths": [
+    "server/src/websitePriceExtraction.js",
+    "server/src/websitePriceImport.js"
+  ],
+  "incomingTestFilesPreserved": [
+    "test/voiceAgent4ConditionExtensions20261019.spec.mjs",
+    "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs",
+    "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs",
+    "test/voiceAgent4ImportNineVariants20261019.spec.mjs"
+  ],
+  "combinedTestsPreserved": true,
+  "combinedHistoricalEvidencePreserved": true,
+  "importerHistoricalEvidencePreserved": true,
+  "engineVersion": "quote-engine-vnext-geometry-20261019-v12",
+  "workflowBlob": "cd064413f371aa4f5ff4980fad03404098c2d46d",
+  "selectorBlobs": {
+    "scripts/testSelection.mjs": "9aaae5f85cf809f98157702854dbbc4a574e3e98",
+    "scripts/test-full.mjs": "34c58c8e2d9872fdfd74a0971662b3015de09861",
+    "server/scripts/quote-vnext-gate.js": "bb4cef723b07098949a1233de240c32a7e6b0c81"
+  }
+}

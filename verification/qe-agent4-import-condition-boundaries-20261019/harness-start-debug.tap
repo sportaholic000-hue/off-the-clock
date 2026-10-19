@@ -1,0 +1,24 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 boundaries actual draft save provider dispatcher: landing global
+not ok 1 - Agent4 boundaries actual draft save provider dispatcher: landing global
+  ---
+  duration_ms: 109.08258
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs:202:51'
+  failureType: 'testCodeFailure'
+  error: 'no such column: summary'
+  code: 'SQLITE_ERROR'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 850.937077

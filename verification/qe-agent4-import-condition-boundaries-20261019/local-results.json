@@ -1,0 +1,68 @@
+{
+  "baseline-new": {
+    "sha256": "b96fe23666a5f6a09cb4b09ea53e9f4154bd285bac98b9cb893af0c7f55ed377",
+    "tests": "74",
+    "suites": "0",
+    "pass": "34",
+    "fail": "40",
+    "cancelled": "0",
+    "skipped": "0",
+    "todo": "0",
+    "duration_ms": "2053.769592"
+  },
+  "baseline-handoffs": {
+    "sha256": "7945a2a7fadd25839b974790b30cef7c003d73ff5c3c97b6c7d8abbd838c2737",
+    "tests": "5",
+    "suites": "0",
+    "pass": "0",
+    "fail": "5",
+    "cancelled": "0",
+    "skipped": "0",
+    "todo": "0",
+    "duration_ms": "1019.297543"
+  },
+  "after-new": {
+    "sha256": "78b329656698afb27b006fa4fe29cdebe0479d6e4afded2246afdc647dc9c87b",
+    "tests": "74",
+    "suites": "0",
+    "pass": "74",
+    "fail": "0",
+    "cancelled": "0",
+    "skipped": "0",
+    "todo": "0",
+    "duration_ms": "2518.425342"
+  },
+  "retained-874": {
+    "sha256": "d51cfaff18a183c26d41a2af9d4259ffa89ae464b48e65bd537f5fa66a249eee",
+    "tests": "874",
+    "suites": "0",
+    "pass": "874",
+    "fail": "0",
+    "cancelled": "0",
+    "skipped": "0",
+    "todo": "0",
+    "duration_ms": "24988.486694"
+  },
+  "expanded-948": {
+    "sha256": "f2c140e38c4b48da68188f95b4acc2a254603c59fba0d45a15546fd1a3657a0c",
+    "tests": "948",
+    "suites": "0",
+    "pass": "948",
+    "fail": "0",
+    "cancelled": "0",
+    "skipped": "0",
+    "todo": "0",
+    "duration_ms": "27540.837899"
+  },
+  "after-handoffs": {
+    "sha256": "88da00a6b43b20062d8664837b5ca85893635a87ac7309e6570ec07edf08b74a",
+    "tests": "5",
+    "suites": "0",
+    "pass": "0",
+    "fail": "5",
+    "cancelled": "0",
+    "skipped": "0",
+    "todo": "0",
+    "duration_ms": "1167.291005"
+  }
+}

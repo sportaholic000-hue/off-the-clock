@@ -1,0 +1,1738 @@
+(node:193) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:200) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F16 deckingPerSheet base MANUAL rejects approval without a durable write
+ok 1 - F16 deckingPerSheet base MANUAL rejects approval without a durable write
+  ---
+  duration_ms: 135.740819
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet base MANUAL rejects adoption without a durable write
+ok 2 - F16 deckingPerSheet base MANUAL rejects adoption without a durable write
+  ---
+  duration_ms: 28.610325
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet base AI_SUGGESTED rejects approval without a durable write
+ok 3 - F16 deckingPerSheet base AI_SUGGESTED rejects approval without a durable write
+  ---
+  duration_ms: 71.165018
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet base AI_SUGGESTED rejects adoption without a durable write
+ok 4 - F16 deckingPerSheet base AI_SUGGESTED rejects adoption without a durable write
+  ---
+  duration_ms: 37.263417
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet tier MANUAL rejects approval without a durable write
+ok 5 - F16 deckingPerSheet tier MANUAL rejects approval without a durable write
+  ---
+  duration_ms: 42.149293
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet tier MANUAL rejects adoption without a durable write
+ok 6 - F16 deckingPerSheet tier MANUAL rejects adoption without a durable write
+  ---
+  duration_ms: 27.30344
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet tier AI_SUGGESTED rejects approval without a durable write
+ok 7 - F16 deckingPerSheet tier AI_SUGGESTED rejects approval without a durable write
+  ---
+  duration_ms: 73.94278
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet tier AI_SUGGESTED rejects adoption without a durable write
+ok 8 - F16 deckingPerSheet tier AI_SUGGESTED rejects adoption without a durable write
+  ---
+  duration_ms: 46.028837
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet base unapproved legacy prices cannot gain a receipt
+ok 9 - F16 deckingPerSheet base unapproved legacy prices cannot gain a receipt
+  ---
+  duration_ms: 21.760503
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet tier unapproved legacy prices cannot gain a receipt
+ok 10 - F16 deckingPerSheet tier unapproved legacy prices cannot gain a receipt
+  ---
+  duration_ms: 22.895092
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet base MANUAL accepts whole cents, measured fractions and legitimate adoption
+ok 11 - F16 deckingPerSheet base MANUAL accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 196.024243
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet base AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+ok 12 - F16 deckingPerSheet base AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 336.79492
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet tier MANUAL accepts whole cents, measured fractions and legitimate adoption
+ok 13 - F16 deckingPerSheet tier MANUAL accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 139.324806
+  type: 'test'
+  ...
+# Subtest: F16 deckingPerSheet tier AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+ok 14 - F16 deckingPerSheet tier AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 337.516309
+  type: 'test'
+  ...
+# Subtest: F16 preserves exact roofing-minimum diagnostic for root approval
+ok 15 - F16 preserves exact roofing-minimum diagnostic for root approval
+  ---
+  duration_ms: 22.309821
+  type: 'test'
+  ...
+# Subtest: F16 preserves exact roofing-minimum diagnostic for root adoption
+ok 16 - F16 preserves exact roofing-minimum diagnostic for root adoption
+  ---
+  duration_ms: 4.88879
+  type: 'test'
+  ...
+# Subtest: F16 preserves exact roofing-minimum diagnostic for base approval
+ok 17 - F16 preserves exact roofing-minimum diagnostic for base approval
+  ---
+  duration_ms: 23.404621
+  type: 'test'
+  ...
+# Subtest: F16 preserves exact roofing-minimum diagnostic for base adoption
+ok 18 - F16 preserves exact roofing-minimum diagnostic for base adoption
+  ---
+  duration_ms: 5.51027
+  type: 'test'
+  ...
+# Subtest: F16 preserves exact roofing-minimum diagnostic for tier approval
+ok 19 - F16 preserves exact roofing-minimum diagnostic for tier approval
+  ---
+  duration_ms: 27.871941
+  type: 'test'
+  ...
+# Subtest: F16 preserves exact roofing-minimum diagnostic for tier adoption
+ok 20 - F16 preserves exact roofing-minimum diagnostic for tier adoption
+  ---
+  duration_ms: 6.318136
+  type: 'test'
+  ...
+# (node:208) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: PI00 direct installed walls has independent total and no inferred settings
+ok 21 - PI00 direct installed walls has independent total and no inferred settings
+  ---
+  duration_ms: 30.039591
+  type: 'test'
+  ...
+# Subtest: PI00 direct installed walls-ceilings has independent total and no inferred settings
+ok 22 - PI00 direct installed walls-ceilings has independent total and no inferred settings
+  ---
+  duration_ms: 6.26046
+  type: 'test'
+  ...
+# Subtest: PI00 direct installed walls-trim has independent total and no inferred settings
+ok 23 - PI00 direct installed walls-trim has independent total and no inferred settings
+  ---
+  duration_ms: 6.146202
+  type: 'test'
+  ...
+# Subtest: PI00 direct installed full has independent total and no inferred settings
+ok 24 - PI00 direct installed full has independent total and no inferred settings
+  ---
+  duration_ms: 7.645952
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 1/good
+ok 25 - PI00 absent owner trim settings accept validated customer facts 1/good
+  ---
+  duration_ms: 7.474748
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 1/fair
+ok 26 - PI00 absent owner trim settings accept validated customer facts 1/fair
+  ---
+  duration_ms: 5.403712
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 1/poor
+ok 27 - PI00 absent owner trim settings accept validated customer facts 1/poor
+  ---
+  duration_ms: 5.64581
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 2/good
+ok 28 - PI00 absent owner trim settings accept validated customer facts 2/good
+  ---
+  duration_ms: 4.750024
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 2/fair
+ok 29 - PI00 absent owner trim settings accept validated customer facts 2/fair
+  ---
+  duration_ms: 4.893717
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 2/poor
+ok 30 - PI00 absent owner trim settings accept validated customer facts 2/poor
+  ---
+  duration_ms: 4.526273
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 3/good
+ok 31 - PI00 absent owner trim settings accept validated customer facts 3/good
+  ---
+  duration_ms: 4.054764
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 3/fair
+ok 32 - PI00 absent owner trim settings accept validated customer facts 3/fair
+  ---
+  duration_ms: 4.242892
+  type: 'test'
+  ...
+# Subtest: PI00 absent owner trim settings accept validated customer facts 3/poor
+ok 33 - PI00 absent owner trim settings accept validated customer facts 3/poor
+  ---
+  duration_ms: 4.449248
+  type: 'test'
+  ...
+# Subtest: PI00 explicit trim constraints remain independent {"trimFinishCoats":2}
+ok 34 - PI00 explicit trim constraints remain independent {"trimFinishCoats":2}
+  ---
+  duration_ms: 5.791756
+  type: 'test'
+  ...
+# Subtest: PI00 explicit trim constraints remain independent {"trimSurfaceCondition":"fair"}
+ok 35 - PI00 explicit trim constraints remain independent {"trimSurfaceCondition":"fair"}
+  ---
+  duration_ms: 5.027235
+  type: 'test'
+  ...
+# Subtest: PI00 explicit trim constraints remain independent {"trimFinishCoats":2,"trimSurfaceCondition":"fair"}
+ok 36 - PI00 explicit trim constraints remain independent {"trimFinishCoats":2,"trimSurfaceCondition":"fair"}
+  ---
+  duration_ms: 7.36768
+  type: 'test'
+  ...
+# Subtest: PI00 invalid trim input still rejects trimCoats/0
+ok 37 - PI00 invalid trim input still rejects trimCoats/0
+  ---
+  duration_ms: 2.08633
+  type: 'test'
+  ...
+# Subtest: PI00 invalid trim input still rejects trimCoats/4
+ok 38 - PI00 invalid trim input still rejects trimCoats/4
+  ---
+  duration_ms: 1.559319
+  type: 'test'
+  ...
+# Subtest: PI00 invalid trim input still rejects trimCoats/1.5
+ok 39 - PI00 invalid trim input still rejects trimCoats/1.5
+  ---
+  duration_ms: 2.339965
+  type: 'test'
+  ...
+# Subtest: PI00 invalid trim input still rejects trimCoats/2
+ok 40 - PI00 invalid trim input still rejects trimCoats/2
+  ---
+  duration_ms: 1.462356
+  type: 'test'
+  ...
+# Subtest: PI00 invalid trim input still rejects trimSurfaceCondition/unknown
+ok 41 - PI00 invalid trim input still rejects trimSurfaceCondition/unknown
+  ---
+  duration_ms: 1.549144
+  type: 'test'
+  ...
+# Subtest: PI00 invalid trim input still rejects trimSurfaceCondition/null
+ok 42 - PI00 invalid trim input still rejects trimSurfaceCondition/null
+  ---
+  duration_ms: 1.604486
+  type: 'test'
+  ...
+# Subtest: PI00 modern required trim answer remains required trimCoats
+ok 43 - PI00 modern required trim answer remains required trimCoats
+  ---
+  duration_ms: 1.486772
+  type: 'test'
+  ...
+# Subtest: PI00 modern required trim answer remains required trimSurfaceCondition
+ok 44 - PI00 modern required trim answer remains required trimSurfaceCondition
+  ---
+  duration_ms: 1.411831
+  type: 'test'
+  ...
+# Subtest: PI00 invalid owner trim constraint still rejects trimFinishCoats/0
+ok 45 - PI00 invalid owner trim constraint still rejects trimFinishCoats/0
+  ---
+  duration_ms: 1.685536
+  type: 'test'
+  ...
+# Subtest: PI00 invalid owner trim constraint still rejects trimFinishCoats/1.5
+ok 46 - PI00 invalid owner trim constraint still rejects trimFinishCoats/1.5
+  ---
+  duration_ms: 1.448976
+  type: 'test'
+  ...
+# Subtest: PI00 invalid owner trim constraint still rejects trimSurfaceCondition/unknown
+ok 47 - PI00 invalid owner trim constraint still rejects trimSurfaceCondition/unknown
+  ---
+  duration_ms: 1.483376
+  type: 'test'
+  ...
+# Subtest: PI00 invalid owner trim constraint still rejects trimSurfaceCondition/null
+ok 48 - PI00 invalid owner trim constraint still rejects trimSurfaceCondition/null
+  ---
+  duration_ms: 1.461394
+  type: 'test'
+  ...
+# Subtest: PI00 missing optional installedCeilingPerSqft blocks selected scope only
+ok 49 - PI00 missing optional installedCeilingPerSqft blocks selected scope only
+  ---
+  duration_ms: 4.827629
+  type: 'test'
+  ...
+# Subtest: PI00 missing optional installedTrimPerLF blocks selected scope only
+ok 50 - PI00 missing optional installedTrimPerLF blocks selected scope only
+  ---
+  duration_ms: 4.947145
+  type: 'test'
+  ...
+# Subtest: PI00 missing required wall price cannot quote
+ok 51 - PI00 missing required wall price cannot quote
+  ---
+  duration_ms: 1.723362
+  type: 'test'
+  ...
+# Subtest: PI00 complete option survives contradictory trim tier
+ok 52 - PI00 complete option survives contradictory trim tier
+  ---
+  duration_ms: 4.294679
+  type: 'test'
+  ...
+# Subtest: PI00 original genuinely approved blocked book activates without rewriting approval or settings
+ok 53 - PI00 original genuinely approved blocked book activates without rewriting approval or settings
+  ---
+  duration_ms: 141.385492
+  type: 'test'
+  ...
+# Subtest: PI00 actual HTTP save, starting-value confirmation, approval and public catalog full offering
+ok 54 - PI00 actual HTTP save, starting-value confirmation, approval and public catalog full offering
+  ---
+  duration_ms: 1757.209757
+  type: 'test'
+  ...
+# (node:224) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"case":"walls","widgetCents":300000,"voiceCents":300000,"originalScopeRetained":true,"bookAndApprovalUnchanged":true,"providerCalls":0}
+# {"case":"walls-ceilings","widgetCents":360000,"voiceCents":360000,"originalScopeRetained":true,"bookAndApprovalUnchanged":true,"providerCalls":0}
+# {"case":"walls-trim","widgetCents":320000,"voiceCents":320000,"originalScopeRetained":true,"bookAndApprovalUnchanged":true,"providerCalls":0}
+# {"case":"full-original","widgetCents":380000,"voiceCents":380000,"originalScopeRetained":true,"bookAndApprovalUnchanged":true,"providerCalls":0}
+# {"case":"explicit-matching-trim","widgetCents":380000,"voiceCents":380000,"originalScopeRetained":true,"bookAndApprovalUnchanged":true,"providerCalls":0}
+# Subtest: PI00 newly saved widget and actual voice walls
+ok 55 - PI00 newly saved widget and actual voice walls
+  ---
+  duration_ms: 735.751262
+  type: 'test'
+  ...
+# Subtest: PI00 newly saved widget and actual voice walls-ceilings
+ok 56 - PI00 newly saved widget and actual voice walls-ceilings
+  ---
+  duration_ms: 472.232537
+  type: 'test'
+  ...
+# Subtest: PI00 newly saved widget and actual voice walls-trim
+ok 57 - PI00 newly saved widget and actual voice walls-trim
+  ---
+  duration_ms: 562.573229
+  type: 'test'
+  ...
+# Subtest: PI00 newly saved widget and actual voice full-original
+ok 58 - PI00 newly saved widget and actual voice full-original
+  ---
+  duration_ms: 432.232016
+  type: 'test'
+  ...
+# Subtest: PI00 newly saved widget and actual voice explicit-matching-trim
+ok 59 - PI00 newly saved widget and actual voice explicit-matching-trim
+  ---
+  duration_ms: 374.396724
+  type: 'test'
+  ...
+# Subtest: PI00 saved widget and actual voice reject trim-coats-contradiction
+ok 60 - PI00 saved widget and actual voice reject trim-coats-contradiction
+  ---
+  duration_ms: 371.221499
+  type: 'test'
+  ...
+# Subtest: PI00 saved widget and actual voice reject trim-condition-contradiction
+ok 61 - PI00 saved widget and actual voice reject trim-condition-contradiction
+  ---
+  duration_ms: 324.137387
+  type: 'test'
+  ...
+# Subtest: PI00 saved widget and actual voice reject missing-trim-price
+ok 62 - PI00 saved widget and actual voice reject missing-trim-price
+  ---
+  duration_ms: 332.34477
+  type: 'test'
+  ...
+# Subtest: PI00 saved widget and actual voice reject missing-ceiling-price
+ok 63 - PI00 saved widget and actual voice reject missing-ceiling-price
+  ---
+  duration_ms: 353.952765
+  type: 'test'
+  ...
+# (node:232) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: PI00 genuine v12 immutable saved widget/voice legacy-full-interior
+ok 64 - PI00 genuine v12 immutable saved widget/voice legacy-full-interior
+  ---
+  duration_ms: 393.740024
+  type: 'test'
+  ...
+# Subtest: PI00 genuine v12 immutable saved widget/voice legacy-wall-only
+ok 65 - PI00 genuine v12 immutable saved widget/voice legacy-wall-only
+  ---
+  duration_ms: 258.868395
+  type: 'test'
+  ...
+# (node:240) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 actual HTTP and voice matrix completes all independent cases
+ok 66 - AP01/AP02 actual HTTP and voice matrix completes all independent cases
+  ---
+  duration_ms: 22.484913
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--low
+ok 67 - AP01/AP02 saved widget + actual voice: missing-unknown--low
+  ---
+  duration_ms: 0.649561
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--over12
+ok 68 - AP01/AP02 saved widget + actual voice: missing-unknown--over12
+  ---
+  duration_ms: 0.084235
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--mixed-zero
+ok 69 - AP01/AP02 saved widget + actual voice: missing-unknown--mixed-zero
+  ---
+  duration_ms: 0.122362
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--mixed-positive
+ok 70 - AP01/AP02 saved widget + actual voice: missing-unknown--mixed-positive
+  ---
+  duration_ms: 0.134269
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--unknown
+ok 71 - AP01/AP02 saved widget + actual voice: missing-unknown--unknown
+  ---
+  duration_ms: 0.153197
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--low
+ok 72 - AP01/AP02 saved widget + actual voice: missing-install--low
+  ---
+  duration_ms: 0.124975
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--over12
+ok 73 - AP01/AP02 saved widget + actual voice: missing-install--over12
+  ---
+  duration_ms: 0.205794
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--mixed-zero
+ok 74 - AP01/AP02 saved widget + actual voice: missing-install--mixed-zero
+  ---
+  duration_ms: 1.654469
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--mixed-positive
+ok 75 - AP01/AP02 saved widget + actual voice: missing-install--mixed-positive
+  ---
+  duration_ms: 0.300565
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--unknown
+ok 76 - AP01/AP02 saved widget + actual voice: missing-install--unknown
+  ---
+  duration_ms: 0.254617
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--low
+ok 77 - AP01/AP02 saved widget + actual voice: missing-removal--low
+  ---
+  duration_ms: 0.185475
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--over12
+ok 78 - AP01/AP02 saved widget + actual voice: missing-removal--over12
+  ---
+  duration_ms: 0.046509
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--mixed-zero
+ok 79 - AP01/AP02 saved widget + actual voice: missing-removal--mixed-zero
+  ---
+  duration_ms: 0.035893
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--mixed-positive
+ok 80 - AP01/AP02 saved widget + actual voice: missing-removal--mixed-positive
+  ---
+  duration_ms: 0.033109
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--unknown
+ok 81 - AP01/AP02 saved widget + actual voice: missing-removal--unknown
+  ---
+  duration_ms: 0.031817
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--low
+ok 82 - AP01/AP02 saved widget + actual voice: missing-both--low
+  ---
+  duration_ms: 0.032449
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--over12
+ok 83 - AP01/AP02 saved widget + actual voice: missing-both--over12
+  ---
+  duration_ms: 0.030676
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--mixed-zero
+ok 84 - AP01/AP02 saved widget + actual voice: missing-both--mixed-zero
+  ---
+  duration_ms: 0.030215
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--mixed-positive
+ok 85 - AP01/AP02 saved widget + actual voice: missing-both--mixed-positive
+  ---
+  duration_ms: 0.031677
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--unknown
+ok 86 - AP01/AP02 saved widget + actual voice: missing-both--unknown
+  ---
+  duration_ms: 0.029824
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--low
+ok 87 - AP01/AP02 saved widget + actual voice: complete-positive--low
+  ---
+  duration_ms: 0.032769
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--over12
+ok 88 - AP01/AP02 saved widget + actual voice: complete-positive--over12
+  ---
+  duration_ms: 0.029784
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--mixed-zero
+ok 89 - AP01/AP02 saved widget + actual voice: complete-positive--mixed-zero
+  ---
+  duration_ms: 0.029944
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--mixed-positive
+ok 90 - AP01/AP02 saved widget + actual voice: complete-positive--mixed-positive
+  ---
+  duration_ms: 0.037475
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--unknown
+ok 91 - AP01/AP02 saved widget + actual voice: complete-positive--unknown
+  ---
+  duration_ms: 0.073989
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--low
+ok 92 - AP01/AP02 saved widget + actual voice: explicit-zero--low
+  ---
+  duration_ms: 0.035472
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--over12
+ok 93 - AP01/AP02 saved widget + actual voice: explicit-zero--over12
+  ---
+  duration_ms: 0.031056
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--mixed-zero
+ok 94 - AP01/AP02 saved widget + actual voice: explicit-zero--mixed-zero
+  ---
+  duration_ms: 0.030085
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--mixed-positive
+ok 95 - AP01/AP02 saved widget + actual voice: explicit-zero--mixed-positive
+  ---
+  duration_ms: 0.033249
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--unknown
+ok 96 - AP01/AP02 saved widget + actual voice: explicit-zero--unknown
+  ---
+  duration_ms: 0.029884
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--low
+ok 97 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--low
+  ---
+  duration_ms: 0.030565
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--over12
+ok 98 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--over12
+  ---
+  duration_ms: 0.029233
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-zero
+ok 99 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-zero
+  ---
+  duration_ms: 0.029394
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-positive
+ok 100 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-positive
+  ---
+  duration_ms: 0.091806
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--unknown
+ok 101 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--unknown
+  ---
+  duration_ms: 0.050595
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--low
+ok 102 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--low
+  ---
+  duration_ms: 0.035302
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--over12
+ok 103 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--over12
+  ---
+  duration_ms: 0.030706
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-zero
+ok 104 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-zero
+  ---
+  duration_ms: 0.030726
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-positive
+ok 105 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-positive
+  ---
+  duration_ms: 0.029694
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--unknown
+ok 106 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--unknown
+  ---
+  duration_ms: 0.031727
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-up_to_six
+ok 107 - AP01/AP02 saved widget + actual voice: unknown-band-up_to_six
+  ---
+  duration_ms: 0.04083
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-seven_to_nine
+ok 108 - AP01/AP02 saved widget + actual voice: unknown-band-seven_to_nine
+  ---
+  duration_ms: 0.16888
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-ten_to_twelve
+ok 109 - AP01/AP02 saved widget + actual voice: unknown-band-ten_to_twelve
+  ---
+  duration_ms: 0.05372
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--low
+ok 110 - AP01/AP02 saved widget + actual voice: tier-completion--low
+  ---
+  duration_ms: 0.035112
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--over12
+ok 111 - AP01/AP02 saved widget + actual voice: tier-completion--over12
+  ---
+  duration_ms: 0.031657
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--unknown
+ok 112 - AP01/AP02 saved widget + actual voice: tier-completion--unknown
+  ---
+  duration_ms: 0.030635
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-explicit-zero--low
+ok 113 - AP01/AP02 saved widget + actual voice: tier-explicit-zero--low
+  ---
+  duration_ms: 0.030375
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-explicit-zero--over12
+ok 114 - AP01/AP02 saved widget + actual voice: tier-explicit-zero--over12
+  ---
+  duration_ms: 0.030785
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--complete
+ok 115 - AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--complete
+  ---
+  duration_ms: 0.028502
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--incomplete
+ok 116 - AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--incomplete
+  ---
+  duration_ms: 0.028652
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--complete
+ok 117 - AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--complete
+  ---
+  duration_ms: 0.032078
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--incomplete
+ok 118 - AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--incomplete
+  ---
+  duration_ms: 0.028452
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--complete
+ok 119 - AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--complete
+  ---
+  duration_ms: 0.029013
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--incomplete
+ok 120 - AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--incomplete
+  ---
+  duration_ms: 0.041121
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--complete
+ok 121 - AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--complete
+  ---
+  duration_ms: 0.029664
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--incomplete
+ok 122 - AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--incomplete
+  ---
+  duration_ms: 0.028533
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--complete
+ok 123 - AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--complete
+  ---
+  duration_ms: 0.029614
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--incomplete
+ok 124 - AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--incomplete
+  ---
+  duration_ms: 0.030345
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--complete
+ok 125 - AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--complete
+  ---
+  duration_ms: 0.029143
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--incomplete
+ok 126 - AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--incomplete
+  ---
+  duration_ms: 0.029313
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: historical-missing-measurement
+ok 127 - AP01/AP02 saved widget + actual voice: historical-missing-measurement
+  ---
+  duration_ms: 0.029684
+  type: 'test'
+  ...
+# (node:274) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-known-request
+ok 128 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-known-request
+  ---
+  duration_ms: 349.166718
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request
+ok 129 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request
+  ---
+  duration_ms: 203.042584
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request
+ok 130 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request
+  ---
+  duration_ms: 192.818756
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request
+ok 131 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request
+  ---
+  duration_ms: 164.751401
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--base
+ok 132 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--base
+  ---
+  duration_ms: 195.281441
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: historical-missing-measurement
+ok 133 - AP01/AP02 authentic v12 immutable priced/review receipts: historical-missing-measurement
+  ---
+  duration_ms: 164.104894
+  type: 'test'
+  ...
+# (node:282) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog unknown quick=false
+ok 134 - AP01/AP02 complete lower-pitch product remains live: 1 catalog unknown quick=false
+  ---
+  duration_ms: 56.709423
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog unknown quick=true
+ok 135 - AP01/AP02 complete lower-pitch product remains live: 1 catalog unknown quick=true
+  ---
+  duration_ms: 26.481019
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog install quick=false
+ok 136 - AP01/AP02 complete lower-pitch product remains live: 1 catalog install quick=false
+  ---
+  duration_ms: 24.309875
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog install quick=true
+ok 137 - AP01/AP02 complete lower-pitch product remains live: 1 catalog install quick=true
+  ---
+  duration_ms: 22.293219
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog removal quick=false
+ok 138 - AP01/AP02 complete lower-pitch product remains live: 1 catalog removal quick=false
+  ---
+  duration_ms: 23.804867
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog removal quick=true
+ok 139 - AP01/AP02 complete lower-pitch product remains live: 1 catalog removal quick=true
+  ---
+  duration_ms: 17.651655
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog both quick=false
+ok 140 - AP01/AP02 complete lower-pitch product remains live: 1 catalog both quick=false
+  ---
+  duration_ms: 17.340095
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog both quick=true
+ok 141 - AP01/AP02 complete lower-pitch product remains live: 1 catalog both quick=true
+  ---
+  duration_ms: 20.775251
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog unknownIncomplete quick=false
+ok 142 - AP01/AP02 complete lower-pitch product remains live: 1 catalog unknownIncomplete quick=false
+  ---
+  duration_ms: 16.449186
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog unknownIncomplete quick=true
+ok 143 - AP01/AP02 complete lower-pitch product remains live: 1 catalog unknownIncomplete quick=true
+  ---
+  duration_ms: 15.274196
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog unknown quick=false
+ok 144 - AP01/AP02 complete lower-pitch product remains live: 2 catalog unknown quick=false
+  ---
+  duration_ms: 30.971078
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog unknown quick=true
+ok 145 - AP01/AP02 complete lower-pitch product remains live: 2 catalog unknown quick=true
+  ---
+  duration_ms: 15.463657
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog install quick=false
+ok 146 - AP01/AP02 complete lower-pitch product remains live: 2 catalog install quick=false
+  ---
+  duration_ms: 31.199656
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog install quick=true
+ok 147 - AP01/AP02 complete lower-pitch product remains live: 2 catalog install quick=true
+  ---
+  duration_ms: 20.67965
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog removal quick=false
+ok 148 - AP01/AP02 complete lower-pitch product remains live: 2 catalog removal quick=false
+  ---
+  duration_ms: 32.459171
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog removal quick=true
+ok 149 - AP01/AP02 complete lower-pitch product remains live: 2 catalog removal quick=true
+  ---
+  duration_ms: 15.808828
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog both quick=false
+ok 150 - AP01/AP02 complete lower-pitch product remains live: 2 catalog both quick=false
+  ---
+  duration_ms: 29.687558
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog both quick=true
+ok 151 - AP01/AP02 complete lower-pitch product remains live: 2 catalog both quick=true
+  ---
+  duration_ms: 18.196475
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog unknownIncomplete quick=false
+ok 152 - AP01/AP02 complete lower-pitch product remains live: 2 catalog unknownIncomplete quick=false
+  ---
+  duration_ms: 24.042753
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog unknownIncomplete quick=true
+ok 153 - AP01/AP02 complete lower-pitch product remains live: 2 catalog unknownIncomplete quick=true
+  ---
+  duration_ms: 14.849328
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog unknown quick=false
+ok 154 - AP01/AP02 complete lower-pitch product remains live: 11 catalog unknown quick=false
+  ---
+  duration_ms: 128.009567
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog unknown quick=true
+ok 155 - AP01/AP02 complete lower-pitch product remains live: 11 catalog unknown quick=true
+  ---
+  duration_ms: 25.899401
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog install quick=false
+ok 156 - AP01/AP02 complete lower-pitch product remains live: 11 catalog install quick=false
+  ---
+  duration_ms: 133.606496
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog install quick=true
+ok 157 - AP01/AP02 complete lower-pitch product remains live: 11 catalog install quick=true
+  ---
+  duration_ms: 23.248947
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog removal quick=false
+ok 158 - AP01/AP02 complete lower-pitch product remains live: 11 catalog removal quick=false
+  ---
+  duration_ms: 122.573668
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog removal quick=true
+ok 159 - AP01/AP02 complete lower-pitch product remains live: 11 catalog removal quick=true
+  ---
+  duration_ms: 23.074449
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog both quick=false
+ok 160 - AP01/AP02 complete lower-pitch product remains live: 11 catalog both quick=false
+  ---
+  duration_ms: 133.168857
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog both quick=true
+ok 161 - AP01/AP02 complete lower-pitch product remains live: 11 catalog both quick=true
+  ---
+  duration_ms: 24.63531
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog unknownIncomplete quick=false
+ok 162 - AP01/AP02 complete lower-pitch product remains live: 11 catalog unknownIncomplete quick=false
+  ---
+  duration_ms: 96.433008
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog unknownIncomplete quick=true
+ok 163 - AP01/AP02 complete lower-pitch product remains live: 11 catalog unknownIncomplete quick=true
+  ---
+  duration_ms: 19.187693
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 null over12
+ok 164 - AP01/AP02 retains global/boundary safeguards: 1 null over12
+  ---
+  duration_ms: 3.098348
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 negative over12
+ok 165 - AP01/AP02 retains global/boundary safeguards: 1 negative over12
+  ---
+  duration_ms: 2.56617
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 malformed unknown band
+ok 166 - AP01/AP02 retains global/boundary safeguards: 1 malformed unknown band
+  ---
+  duration_ms: 2.459472
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 malformed sibling price
+ok 167 - AP01/AP02 retains global/boundary safeguards: 1 malformed sibling price
+  ---
+  duration_ms: 2.643314
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 invalid shared fee
+ok 168 - AP01/AP02 retains global/boundary safeguards: 1 invalid shared fee
+  ---
+  duration_ms: 6.357865
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 unsafe maximum-area arithmetic
+ok 169 - AP01/AP02 retains global/boundary safeguards: 1 unsafe maximum-area arithmetic
+  ---
+  duration_ms: 10.191402
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 null over12
+ok 170 - AP01/AP02 retains global/boundary safeguards: 11 null over12
+  ---
+  duration_ms: 2.742171
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 negative over12
+ok 171 - AP01/AP02 retains global/boundary safeguards: 11 negative over12
+  ---
+  duration_ms: 3.063516
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 malformed unknown band
+ok 172 - AP01/AP02 retains global/boundary safeguards: 11 malformed unknown band
+  ---
+  duration_ms: 2.825283
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 malformed sibling price
+ok 173 - AP01/AP02 retains global/boundary safeguards: 11 malformed sibling price
+  ---
+  duration_ms: 3.264343
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 invalid shared fee
+ok 174 - AP01/AP02 retains global/boundary safeguards: 11 invalid shared fee
+  ---
+  duration_ms: 36.238953
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 unsafe maximum-area arithmetic
+ok 175 - AP01/AP02 retains global/boundary safeguards: 11 unsafe maximum-area arithmetic
+  ---
+  duration_ms: 70.649037
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains all standard pitch and large boundary probes, plus complete optional pitches
+ok 176 - AP01/AP02 retains all standard pitch and large boundary probes, plus complete optional pitches
+  ---
+  duration_ms: 0.829549
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 still probes complete optional steep arithmetic at its maximum: 1
+ok 177 - AP01/AP02 still probes complete optional steep arithmetic at its maximum: 1
+  ---
+  duration_ms: 55.484692
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 still probes complete optional steep arithmetic at its maximum: 11
+ok 178 - AP01/AP02 still probes complete optional steep arithmetic at its maximum: 11
+  ---
+  duration_ms: 317.628726
+  type: 'test'
+  ...
+# (node:290) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F16 pipeJackEach base MANUAL rejects approval without a durable write
+ok 179 - F16 pipeJackEach base MANUAL rejects approval without a durable write
+  ---
+  duration_ms: 123.549126
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base MANUAL rejects adoption without a durable write
+ok 180 - F16 pipeJackEach base MANUAL rejects adoption without a durable write
+  ---
+  duration_ms: 27.667606
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED rejects approval without a durable write
+ok 181 - F16 pipeJackEach base AI_SUGGESTED rejects approval without a durable write
+  ---
+  duration_ms: 64.284602
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED rejects adoption without a durable write
+ok 182 - F16 pipeJackEach base AI_SUGGESTED rejects adoption without a durable write
+  ---
+  duration_ms: 30.791556
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL rejects approval without a durable write
+ok 183 - F16 pipeJackEach tier MANUAL rejects approval without a durable write
+  ---
+  duration_ms: 37.182049
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL rejects adoption without a durable write
+ok 184 - F16 pipeJackEach tier MANUAL rejects adoption without a durable write
+  ---
+  duration_ms: 18.806729
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED rejects approval without a durable write
+ok 185 - F16 pipeJackEach tier AI_SUGGESTED rejects approval without a durable write
+  ---
+  duration_ms: 62.036823
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED rejects adoption without a durable write
+ok 186 - F16 pipeJackEach tier AI_SUGGESTED rejects adoption without a durable write
+  ---
+  duration_ms: 37.739194
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base unapproved legacy prices cannot gain a receipt
+ok 187 - F16 pipeJackEach base unapproved legacy prices cannot gain a receipt
+  ---
+  duration_ms: 32.821301
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier unapproved legacy prices cannot gain a receipt
+ok 188 - F16 pipeJackEach tier unapproved legacy prices cannot gain a receipt
+  ---
+  duration_ms: 28.188952
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base MANUAL accepts whole cents, measured fractions and legitimate adoption
+ok 189 - F16 pipeJackEach base MANUAL accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 202.680999
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+ok 190 - F16 pipeJackEach base AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 302.337974
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL accepts whole cents, measured fractions and legitimate adoption
+ok 191 - F16 pipeJackEach tier MANUAL accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 139.365632
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+ok 192 - F16 pipeJackEach tier AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 371.497434
+  type: 'test'
+  ...
+# (node:298) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent 2 F9 independent key inventory covers all painting and surface definitions
+ok 193 - Agent 2 F9 independent key inventory covers all painting and surface definitions
+  ---
+  duration_ms: 1.616904
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+ok 194 - Agent 2 F9 INTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 22.865069
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+ok 195 - Agent 2 F9 INTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 255.727561
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+ok 196 - Agent 2 F9 INTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 9.419088
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+ok 197 - Agent 2 F9 INTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 311.819484
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+ok 198 - Agent 2 F9 INTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 54.628484
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+ok 199 - Agent 2 F9 EXTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 4.368309
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+ok 200 - Agent 2 F9 EXTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 280.187007
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+ok 201 - Agent 2 F9 EXTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 8.273712
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+ok 202 - Agent 2 F9 EXTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 272.631904
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+ok 203 - Agent 2 F9 EXTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 75.914655
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet classifies every base/tier leaf using the configured basis
+ok 204 - Agent 2 F9 SIDING_REPLACEMENT linear_feet classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.42496
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet real save/reload retains notes and independently dates every changed leaf
+ok 205 - Agent 2 F9 SIDING_REPLACEMENT linear_feet real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 25.136733
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet unchanged legacy prices gain neither dates nor invented provenance
+ok 206 - Agent 2 F9 SIDING_REPLACEMENT linear_feet unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 13.18553
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet freshness checks all leaves and respects selling-price exclusions
+ok 207 - Agent 2 F9 SIDING_REPLACEMENT linear_feet freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 7.289855
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet AI adoption and source-note edits preserve every unchanged date
+ok 208 - Agent 2 F9 SIDING_REPLACEMENT linear_feet AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 3.124747
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet classifies every base/tier leaf using the configured basis
+ok 209 - Agent 2 F9 SIDING_REPLACEMENT square_feet classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.354135
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet real save/reload retains notes and independently dates every changed leaf
+ok 210 - Agent 2 F9 SIDING_REPLACEMENT square_feet real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 21.869293
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet unchanged legacy prices gain neither dates nor invented provenance
+ok 211 - Agent 2 F9 SIDING_REPLACEMENT square_feet unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 8.097111
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet freshness checks all leaves and respects selling-price exclusions
+ok 212 - Agent 2 F9 SIDING_REPLACEMENT square_feet freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 4.657066
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet AI adoption and source-note edits preserve every unchanged date
+ok 213 - Agent 2 F9 SIDING_REPLACEMENT square_feet AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 2.933534
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT classifies every base/tier leaf using the configured basis
+ok 214 - Agent 2 F21 ROOFING_REPLACEMENT classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 2.912053
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT real save/reload retains notes and independently dates every changed leaf
+ok 215 - Agent 2 F21 ROOFING_REPLACEMENT real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 67.329061
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT unchanged legacy prices gain neither dates nor invented provenance
+ok 216 - Agent 2 F21 ROOFING_REPLACEMENT unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 7.33389
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT freshness checks all leaves and respects selling-price exclusions
+ok 217 - Agent 2 F21 ROOFING_REPLACEMENT freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 124.973963
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT AI adoption and source-note edits preserve every unchanged date
+ok 218 - Agent 2 F21 ROOFING_REPLACEMENT AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 10.296277
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB classifies every base/tier leaf using the configured basis
+ok 219 - Agent 2 F21 CONCRETE_PATIO_SLAB classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 2.361617
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB real save/reload retains notes and independently dates every changed leaf
+ok 220 - Agent 2 F21 CONCRETE_PATIO_SLAB real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 132.938716
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB unchanged legacy prices gain neither dates nor invented provenance
+ok 221 - Agent 2 F21 CONCRETE_PATIO_SLAB unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 8.56983
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB freshness checks all leaves and respects selling-price exclusions
+ok 222 - Agent 2 F21 CONCRETE_PATIO_SLAB freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 96.79118
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB AI adoption and source-note edits preserve every unchanged date
+ok 223 - Agent 2 F21 CONCRETE_PATIO_SLAB AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 29.83583
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY classifies every base/tier leaf using the configured basis
+ok 224 - Agent 2 F21 CONCRETE_DRIVEWAY classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.561592
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY real save/reload retains notes and independently dates every changed leaf
+ok 225 - Agent 2 F21 CONCRETE_DRIVEWAY real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 86.635931
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY unchanged legacy prices gain neither dates nor invented provenance
+ok 226 - Agent 2 F21 CONCRETE_DRIVEWAY unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 9.168472
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY freshness checks all leaves and respects selling-price exclusions
+ok 227 - Agent 2 F21 CONCRETE_DRIVEWAY freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 88.606929
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY AI adoption and source-note edits preserve every unchanged date
+ok 228 - Agent 2 F21 CONCRETE_DRIVEWAY AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 121.646405
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD classifies every base/tier leaf using the configured basis
+ok 229 - Agent 2 F21 LANDSCAPING_SOD classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 1.346424
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD real save/reload retains notes and independently dates every changed leaf
+ok 230 - Agent 2 F21 LANDSCAPING_SOD real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 32.749926
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD unchanged legacy prices gain neither dates nor invented provenance
+ok 231 - Agent 2 F21 LANDSCAPING_SOD unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.872896
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD freshness checks all leaves and respects selling-price exclusions
+ok 232 - Agent 2 F21 LANDSCAPING_SOD freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 13.009614
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD AI adoption and source-note edits preserve every unchanged date
+ok 233 - Agent 2 F21 LANDSCAPING_SOD AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 1.31695
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 absent/unknown/nested dynamic leaves and non-money settings stay excluded
+ok 234 - Agent 2 F9 absent/unknown/nested dynamic leaves and non-money settings stay excluded
+  ---
+  duration_ms: 0.738604
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 reordered named tiers, removed prices and metadata views remain independent
+ok 235 - Agent 2 F9 reordered named tiers, removed prices and metadata views remain independent
+  ---
+  duration_ms: 1.636663
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 all placement methods use addon basis and quantity/minimum controls stay excluded
+ok 236 - Agent 2 F21 all placement methods use addon basis and quantity/minimum controls stay excluded
+  ---
+  duration_ms: 1.08049
+  type: 'test'
+  ...
+# (node:306) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent 2 F16 pipeJackEach is fixed whole-cent money in server and editor metadata
+ok 237 - Agent 2 F16 pipeJackEach is fixed whole-cent money in server and editor metadata
+  ---
+  duration_ms: 42.815793
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at root
+ok 238 - Agent 2 F16 rejects $1.005 without mutation at root
+  ---
+  duration_ms: 3.925963
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at pricing
+ok 239 - Agent 2 F16 rejects $1.005 without mutation at pricing
+  ---
+  duration_ms: 0.870178
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at tier
+ok 240 - Agent 2 F16 rejects $1.005 without mutation at tier
+  ---
+  duration_ms: 1.093319
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $0 stores 0 cents
+ok 241 - Agent 2 F16 whole-cent control $0 stores 0 cents
+  ---
+  duration_ms: 20.655738
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $1 stores 100 cents
+ok 242 - Agent 2 F16 whole-cent control $1 stores 100 cents
+  ---
+  duration_ms: 16.244015
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $1.01 stores 101 cents
+ok 243 - Agent 2 F16 whole-cent control $1.01 stores 101 cents
+  ---
+  duration_ms: 17.164037
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $12.34 stores 1234 cents
+ok 244 - Agent 2 F16 whole-cent control $12.34 stores 1234 cents
+  ---
+  duration_ms: 18.087104
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 actual application saves reject fractional each-prices and preserve the durable book
+ok 245 - Agent 2 F16 actual application saves reject fractional each-prices and preserve the durable book
+  ---
+  duration_ms: 69.129728
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 legacy fractional each-prices remain visible but fail owner validation and quoting
+ok 246 - Agent 2 F16 legacy fractional each-prices remain visible but fail owner validation and quoting
+  ---
+  duration_ms: 9.213714
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 measured roofing rates retain fractional cents and round only the extended charge
+ok 247 - Agent 2 F16 measured roofing rates retain fractional cents and round only the extended charge
+  ---
+  duration_ms: 101.844447
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 roofing classifications match actual quote lines, linear_feet
+ok 248 - Agent 2 F21 roofing classifications match actual quote lines, linear_feet
+  ---
+  duration_ms: 39.121501
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 roofing classifications match actual quote lines, square_feet
+ok 249 - Agent 2 F21 roofing classifications match actual quote lines, square_feet
+  ---
+  duration_ms: 28.722212
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_PATIO_SLAB
+ok 250 - Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 38.597766
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_DRIVEWAY
+ok 251 - Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 19.857544
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines
+ok 252 - Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines
+  ---
+  duration_ms: 5.97707
+  type: 'test'
+  ...
+# (node:314) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent3 F6: the actual saved-approval table omits starting-value adoption receipts
+not ok 253 - Agent3 F6: the actual saved-approval table omits starting-value adoption receipts
+  ---
+  duration_ms: 446.462513
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/qeAgent3ScopePresentation20261018.spec.mjs:152:1'
+  failureType: 'hookFailed'
+  error: |-
+    browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/qeAgent3ScopePresentation20261018.spec.mjs:56:26)
+  ...
+# Subtest: Agent3 F14: rendered roof copy follows base, inherited and independent tier receipts
+not ok 254 - Agent3 F14: rendered roof copy follows base, inherited and independent tier receipts
+  ---
+  duration_ms: 0.909197
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/qeAgent3ScopePresentation20261018.spec.mjs:178:1'
+  failureType: 'hookFailed'
+  error: |-
+    browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/qeAgent3ScopePresentation20261018.spec.mjs:56:26)
+  ...
+# Subtest: Agent3 F18: option exclusions stay per option through saved retry, widget, and voice
+not ok 255 - Agent3 F18: option exclusions stay per option through saved retry, widget, and voice
+  ---
+  duration_ms: 0.070004
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/qeAgent3ScopePresentation20261018.spec.mjs:276:1'
+  failureType: 'hookFailed'
+  error: |-
+    browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/qeAgent3ScopePresentation20261018.spec.mjs:56:26)
+  ...
+# Subtest: Agent3 F19: owner preview renders recurring and first-visit ranges for every option
+not ok 256 - Agent3 F19: owner preview renders recurring and first-visit ranges for every option
+  ---
+  duration_ms: 0.044486
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/qeAgent3ScopePresentation20261018.spec.mjs:345:1'
+  failureType: 'hookFailed'
+  error: |-
+    browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/qeAgent3ScopePresentation20261018.spec.mjs:56:26)
+  ...
+# (node:338) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: qe-agent3 PI-01 rendered mulch methods clear prior unit quantity and depth in both directions
+    # Subtest: sqft to yards
+    ok 1 - sqft to yards
+      ---
+      duration_ms: 98.204471
+      type: 'test'
+      ...
+    # Subtest: yards to sqft
+    ok 2 - yards to sqft
+      ---
+      duration_ms: 45.558794
+      type: 'test'
+      ...
+    1..2
+ok 257 - qe-agent3 PI-01 rendered mulch methods clear prior unit quantity and depth in both directions
+  ---
+  duration_ms: 284.214196
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-02 rendered concrete methods clear every prior geometry representation forward and reverse
+    # Subtest: exact to measured_area_perimeter
+    ok 1 - exact to measured_area_perimeter
+      ---
+      duration_ms: 22.959287
+      type: 'test'
+      ...
+    # Subtest: measured_area_perimeter to measured_outline
+    ok 2 - measured_area_perimeter to measured_outline
+      ---
+      duration_ms: 22.797639
+      type: 'test'
+      ...
+    # Subtest: measured_outline to exact
+    ok 3 - measured_outline to exact
+      ---
+      duration_ms: 23.531164
+      type: 'test'
+      ...
+    1..3
+ok 258 - qe-agent3 PI-02 rendered concrete methods clear every prior geometry representation forward and reverse
+  ---
+  duration_ms: 70.11038
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-03 rendered subfloor off and unknown clear repair area and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 24.940933
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 21.114637
+      type: 'test'
+      ...
+    1..2
+ok 259 - qe-agent3 PI-03 rendered subfloor off and unknown clear repair area and reverse requires re-entry
+  ---
+  duration_ms: 46.91292
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-04 rendered planting mulch off and unknown clear product receipt only and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 20.420408
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 26.386934
+      type: 'test'
+      ...
+    1..2
+ok 260 - qe-agent3 PI-04 rendered planting mulch off and unknown clear product receipt only and reverse requires re-entry
+  ---
+  duration_ms: 47.289146
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-05 rendered mowing edging off and unknown clear length, preserve explicit zero elsewhere, and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 16.983067
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 15.703213
+      type: 'test'
+      ...
+    1..2
+ok 261 - qe-agent3 PI-05 rendered mowing edging off and unknown clear length, preserve explicit zero elsewhere, and reverse requires re-entry
+  ---
+  duration_ms: 33.133303
+  type: 'test'
+  ...
+1..261
+# tests 272
+# suites 0
+# pass 268
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71098.165525

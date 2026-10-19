@@ -1,0 +1,402 @@
+[
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 1 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: customers must prepay before work starts</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices"
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        },
+        "dispatched": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        }
+      }
+    ]
+  },
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 2 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: customers must prepay by Friday</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices"
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        },
+        "dispatched": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        }
+      }
+    ]
+  },
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 3 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: weather permitting on the day</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices"
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        },
+        "dispatched": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        }
+      }
+    ]
+  },
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 4 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: online orders must be prepaid in full</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices"
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        },
+        "dispatched": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        }
+      }
+    ]
+  },
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 5 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: payment must be made in advance of delivery</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices"
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        },
+        "dispatched": {
+          "status": "calculated",
+          "listedItem": "Widget $10 each",
+          "quantity": "3",
+          "extendedAmount": "30.00",
+          "currency": "$",
+          "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+        }
+      }
+    ]
+  }
+]

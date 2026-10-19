@@ -1,0 +1,40 @@
+{
+  "importer": {
+    "required": 1208,
+    "matched": 1208,
+    "missing": []
+  },
+  "quoteWidget": {
+    "passed": 268,
+    "failed": 4,
+    "failedNames": [
+      "Agent3 F6: the actual saved-approval table omits starting-value adoption receipts",
+      "Agent3 F14: rendered roof copy follows base, inherited and independent tier receipts",
+      "Agent3 F18: option exclusions stay per option through saved retry, widget, and voice",
+      "Agent3 F19: owner preview renders recurring and first-visit ranges for every option"
+    ],
+    "cause": "Local Playwright Chromium executable is absent; all four fail in their before hook. No assertion changed or skipped. Exact-final hosted rendered coverage remains required."
+  },
+  "widgetBrowserSelection": {
+    "files": [
+      "test/qeAgent3WidgetDependencies20261019.browser.spec.mjs",
+      "test/qeAgent3RepresentativePublicIntake20261019.browser.spec.mjs"
+    ],
+    "strict": true,
+    "full": true,
+    "localExecution": "not claimed; known browser prerequisite is absent"
+  },
+  "build": {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "startedAt": "2026-10-19T19:38:16.060428+00:00",
+    "environment": {
+      "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp"
+    },
+    "exitCode": 0
+  }
+}

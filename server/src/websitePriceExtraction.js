@@ -21,15 +21,80 @@ const conditions=/%|\b(?:prices?|pricing|costs?|rates?|minimums?|min|max|maximum
 // Punctuation can separate these same clause words: "Payment (by cash)" and
 // "Available: to account holders". Match separators only; never erase an
 // intervening word ("Payment terminal"), or rewrite the literal saved note.
-const accessOrPaymentCondition=/\b(?:available[\s\p{P}]+(?:exclusively[\s\p{P}]+)?(?:to|for)\b|payments?[\s\p{P}]+(?:by|in)\b|eligible[\s\p{P}]+(?:customers?|accounts?|members?)\b)/iu;
+const accessOrPaymentCondition=/\b(?:(?:only[\s\p{P}]+)?available[\s\p{P}]+(?:exclusively[\s\p{P}]+)?(?:to|for)\b|payments?[\s\p{P}]+(?:by|in)\b|eligible[\s\p{P}]+(?:customers?|accounts?|members?)\b)/iu;
+// A whole sentence about where a payment method is documented does not state
+// that it applies to prices. Anchor the complete descriptive relation so an
+// additional obligation/condition cannot be swallowed as a documentation note.
+const paymentDocumentation=/^(?:(?:site|website)[-\s]wide\s*:\s*)?payments?\s+(?:by|in)\s+[\p{L}\p{N} ()-]{1,80}\s+(?:is|are)\s+(?:discussed|described|explained)\s+in\s+(?:our|the)\s+(?:guide|brochure|documentation)[\s.!?]*$/iu;
+const accessClause=text=>paymentDocumentation.test(text)?null:accessOrPaymentCondition.exec(text);
 const standaloneCharge=/^(?:an?\s+)?(?:all prices\b|prices\b|rates\b|minimum\b|min\b|maximum\b|max\b|booking\b|tax\b|taxes\b|HST\b|GST\b|VAT\b|surcharge\b|surcharges\b|fees?\b|discount\b|deposit\b|extra\b|additional\b)|\b(?:minimum|maximum|surcharges?|fees?|tax(?:es)?|deposits?|discounts?)\b|\b(?:a|an|we)\s+charge\b/i;
 const pageWide=/\b(?:all (?:prices|rates|services|bookings|visits|items)|every (?:visit|booking|service|order)|site[- ]wide)\b/i;
+// Only an explicit scope label crosses page boundaries. "All prices" alone
+// remains page-local; descriptive mentions of a site-wide search are not labels.
+const websiteWide=/^(?:site|website)[-\s]wide\s*:\s*\S/iu;
+// Recognize explicitly scoped obligation/weather clauses with timing or
+// applicability continuations. A continuation starts with a relation word,
+// rather than a closed list of objects such as "delivery" or "Friday". Once
+// recognized, the complete visible note (including all trailing qualifications)
+// goes through the existing association/length checks; no prefix is extracted.
+// Descriptive tails ("online orders guide", "Weather Permitting is our
+// newsletter") are not continuations. Bare "online orders" remains supported,
+// but a continuation there requires the explicit "must be prepaid" predicate.
+// This is bounded clause recognition, not general language interpretation.
+const scopedContinuation=String.raw`(?: (?:before|after|by|in|on|for|of|until|during) [^\r\n]+)?`;
+const scopedClauses=[
+  'customers? must prepay'+scopedContinuation,
+  'weather permitting'+scopedContinuation,
+  'online orders(?: must be prepaid'+scopedContinuation+')?',
+  'payments? must be (?:made )?in advance'+scopedContinuation
+].map(clause=>clause.replaceAll(' ',String.raw`[\s\p{P}]+`)).join('|');
+const scopedClause=new RegExp(String.raw`^(?:site|website)[-\s]wide\s*:\s*(?:${scopedClauses})[\s\p{P}]*$`,'iu');
 const unclearReference=/\b(?:some|selected|certain|specific|applicable)\s+(?:services?|items?|prices?|offers?|bookings?)\b|\b(?:above|below|following|marked|asterisk)\b|[*†‡]/i;
 const SCOPE=new Set(['root','body','main','section','article','div','li','tr','table','aside','header','footer']);
 const SECTION=new Set(['section','article','li','tr','aside']);
 const amounts=text=>[...text.matchAll(moneyPattern)].map(m=>m[0].trimEnd());
 const normalize=text=>text.replace(/[\t\r\f ]+/g,' ').split('\n').map(s=>s.trim()).filter(Boolean).join('\n');
-const qualification=text=>(conditions.test(text)||accessOrPaymentCondition.test(text))&&(!amounts(text).length||pageWide.test(text)||/\b(?:minimums?|maximums?|surcharges?)\b/i.test(text)||standaloneCharge.test(text.slice(0,text.search(moneyPattern))));
+const qualification=text=>(conditions.test(text)||accessClause(text)||scopedClause.test(text)||websiteWide.test(text)&&/\brequires?\b/i.test(text))&&(!amounts(text).length||pageWide.test(text)||/\b(?:minimums?|maximums?|surcharges?)\b/i.test(text)||standaloneCharge.test(text.slice(0,text.search(moneyPattern))));
+function websiteConditions(notes){
+  const values=[...new Set(notes.flatMap(note=>note.text.split('\n')).filter(text=>websiteWide.test(text)))];
+  if(!values.length)return {};
+  return {websiteConditions:values.filter(text=>text.length<=500&&!unclearReference.test(text)),
+    websiteConditionsUnverified:values.some(text=>text.length>500||unclearReference.test(text))};
+}
+// Used only to detect a bare duplicate of a visibly qualified excerpt. This
+// comparison never rewrites the saved text or decides customer eligibility.
+export function websitePriceConditionIdentity(entry){
+  let qualified=Boolean(entry.conditions?.length);const lines=[];
+  for(const line of entry.excerpt.split('\n')){
+    if(qualification(line)){qualified=true;continue;}
+    let key=line;
+    // Compare a recognized inline eligibility/payment suffix only after a
+    // literal price and an explicit separator. The clause must start at the
+    // suffix boundary, so an intervening product description stays in the key.
+    // Product-name hyphens before the price cannot become condition boundaries.
+    for(const separator of line.matchAll(/\s*[—–;|:,(]\s*|\s+-\s+/gu)){
+      const prefix=line.slice(0,separator.index).trimEnd();let suffix=line.slice(separator.index+separator[0].length);
+      if(!amounts(prefix).length||amounts(suffix).length)continue;
+      if(separator[0].includes('(')){
+        // A parenthesized clause must occupy the trailing suffix. Do not erase
+        // a product description after its closing parenthesis. Nested clause
+        // punctuation, e.g. "Available (exclusively) to members", is allowed.
+        let depth=1,close=-1;
+        for(let i=0;i<suffix.length;i++){
+          if(suffix[i]==='(')depth++;
+          else if(suffix[i]===')'&&--depth===0){close=i;break;}
+        }
+        if(close<0||!/^[\s.,;:!?]*$/u.test(suffix.slice(close+1)))continue;
+        suffix=suffix.slice(0,close);
+      }
+      const clause=accessClause(suffix);
+      if(clause?.index!==0)continue;
+      key=prefix;qualified=true;break;
+    }
+    lines.push(key);
+  }
+  return {key:lines.join('\n'),qualified};
+}
 const within=(node,ancestor)=>{for(let n=node;n;n=n.parent)if(n===ancestor)return true;return false;};
 function finishConditions(candidates,notes,associate){
   const attached=new Map(candidates.map(entry=>[entry,[]])),withheld=new Set(),savedNotes=new Set();
@@ -92,7 +157,7 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
       if(affected.length===1)return affected;
       return null;
     });
-    return {...result,limited:limited||result.conditionsUnverified,links:[]};
+    return {...result,...websiteConditions(notes),limited:limited||result.conditionsUnverified,links:[]};
   }
   const root={name:'root',parts:[],parent:null,hidden:false};const stack=[root],nodes=[],links=[];
   const parser=new Parser({
@@ -186,6 +251,7 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
   }
   collectNotes(root);
   const result=finishConditions(candidates,notes,note=>{
+    if(websiteWide.test(note.text))return candidates;
     for(let scope=SCOPE.has(note.node.name)?note.node:note.node.parent||root;scope;scope=scope.parent){
       if(!SCOPE.has(scope.name))continue;
       let affected=candidates.filter(entry=>within(entry.node,scope));
@@ -203,5 +269,5 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
     }
     return candidates.length?null:[];
   });
-  return {...result,limited:limited||result.conditionsUnverified,links,linksLimited};
+  return {...result,...websiteConditions(notes),limited:limited||result.conditionsUnverified,links,linksLimited};
 }

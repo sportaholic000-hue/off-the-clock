@@ -1,0 +1,3 @@
+(node:15) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"before":{"strict":292,"full":362},"after":{"strict":292,"full":366},"addedFullOnly":["test/voiceAgent4ConditionExtensions20261019.spec.mjs","test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs","test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs","test/voiceAgent4ImportNineVariants20261019.spec.mjs"]}

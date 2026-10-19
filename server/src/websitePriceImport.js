@@ -1,14 +1,14 @@
 import {lookup as dnsLookup} from 'node:dns/promises';
 import {performance} from 'node:perf_hooks';
 import {boundedWebsiteLimits,websiteUrl,resolveWebsiteDestination,readWebsiteResponse,WebsiteImportError} from './websitePriceTransport.js';
-import {extractWebsitePrices} from './websitePriceExtraction.js';
+import {extractWebsitePrices,websitePriceConditionIdentity} from './websitePriceExtraction.js';
 
 export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:overrides={}}={}){
   const limits=boundedWebsiteLimits(overrides);
   return async function importPrices(input){
     const start=websiteUrl(input),deadline=performance.now()+limits.totalMs;
-    const budget={bytesLeft:limits.totalBytes},queue=[start.href],queued=new Set(queue),requested=new Set(),pages=[],entries=[],seen=new Set(),cssCache=new Map();
-    let requests=0,fetchedPages=0,limited=false,visibilityUnverified=false,conditionsUnverified=false,chars=0;
+    const budget={bytesLeft:limits.totalBytes},queue=[start.href],queued=new Set(queue),requested=new Set(),pages=[],candidates=[],websiteNotes=new Set(),entries=[],seen=new Set(),cssCache=new Map();
+    let requests=0,fetchedPages=0,limited=false,visibilityUnverified=false,conditionsUnverified=false,websiteConditionsUnverified=false,chars=0;
     const remaining=()=>{const ms=deadline-performance.now();if(ms<=0)throw new WebsiteImportError('WEBSITE_TIMEOUT','The website import reached its time limit.');return Math.max(1,Math.floor(ms));};
     async function fetchPage(input,stylesheet=false){
       let url=websiteUrl(input,start.hostname);
@@ -54,13 +54,11 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
       if(extracted.linksLimited||extracted.limited)limited=true;
       if(extracted.visibilityUnverified)visibilityUnverified=true;
       if(extracted.conditionsUnverified)conditionsUnverified=true;
-      for(const entry of extracted.entries){
-        const conditions=(entry.conditions||[]).filter(note=>!entry.excerpt.includes(note));
-        const excerpt=[entry.excerpt,...conditions].join('\n');
-        if(seen.has(excerpt))continue;
-        if(entries.length>=limits.priceEntries||chars+excerpt.length+(entries.length?2:0)>limits.pricesChars){limited=true;continue;}
-        chars+=excerpt.length+(entries.length?2:0);seen.add(excerpt);entries.push({...entry,excerpt,sourceUrl:page.url});
-      }
+      for(const note of extracted.websiteConditions||[])websiteNotes.add(note);
+      if(extracted.websiteConditionsUnverified)websiteConditionsUnverified=true;
+      // Finish condition discovery before deduplication or output budgets: a
+      // later fetched page can qualify an earlier price, even past an entry cap.
+      for(const entry of extracted.entries)candidates.push({...entry,sourceUrl:page.url});
       const links=extracted.links.map(link=>{try{return {url:websiteUrl(new URL(link.href,page.url).href,start.hostname),label:link.label};}catch{return null;}}).filter(Boolean)
         .sort((a,b)=>Number(/pric|rate|menu|service|fee|cost/i.test(b.url.pathname+' '+b.label))-Number(/pric|rate|menu|service|fee|cost/i.test(a.url.pathname+' '+a.label)));
       for(const {url}of links){
@@ -70,6 +68,23 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
       }
     }
     if(queue.some(url=>!requested.has(url)))limited=true;
+    if(websiteConditionsUnverified){limited=true;conditionsUnverified=true;}
+    const qualifiedKeys=new Set(candidates.filter(entry=>websitePriceConditionIdentity(entry).qualified).map(entry=>websitePriceConditionIdentity(entry).key));
+    for(const entry of candidates){
+      if(websiteConditionsUnverified)continue;
+      const identity=websitePriceConditionIdentity(entry);
+      // Same literal item/amount, but incompatible source qualifications: do
+      // not expose the bare version as a way around the restricted paragraph.
+      // Keep qualified variants verbatim; never copy one page's local note to
+      // another page or guess which offer the customer is eligible to use.
+      if(!identity.qualified&&qualifiedKeys.has(identity.key)){limited=true;conditionsUnverified=true;continue;}
+      const conditions=[...new Set([...(entry.conditions||[]),...websiteNotes])];
+      const excerpt=[entry.excerpt,...conditions.filter(note=>!entry.excerpt.includes(note))].join('\n');
+      if(seen.has(excerpt))continue;
+      if(entries.length>=limits.priceEntries||chars+excerpt.length+(entries.length?2:0)>limits.pricesChars){limited=true;continue;}
+      chars+=excerpt.length+(entries.length?2:0);seen.add(excerpt);
+      entries.push({...entry,excerpt,...(conditions.length?{conditions}:{} )});
+    }
     return {prices:entries.map(e=>e.excerpt).join('\n\n'),websiteUrl:start.href,draft:true,websiteImport:{
       entries,pages,limited,visibilityUnverified,conditionsUnverified,
       message:(entries.length?'Website prices are a draft. Review the item names, amounts and conditions before saving.':'No literal prices were found in the pages read. Your saved prices have not changed.')+

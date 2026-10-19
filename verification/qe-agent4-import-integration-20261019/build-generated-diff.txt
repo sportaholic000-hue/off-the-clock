@@ -1,0 +1,2 @@
+D	client/dist/assets/index-Cwi6Aiz2.css
+D	client/dist/assets/index-DdcfYsVT.js

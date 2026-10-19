@@ -1,0 +1,13 @@
+{
+  "base": "d71f8e506293714e2630ceb07ae4f947c1e1bb97",
+  "baseFiles": 3304,
+  "unchangedBaseFiles": 3303,
+  "changedBaseFiles": [
+    "server/src/websitePriceExtraction.js"
+  ],
+  "unchangedTestFiles": 391,
+  "unchangedEvidenceFiles": 2203,
+  "workflowUnchanged": true,
+  "newTestEqualsBaseline": true,
+  "utc": "2026-10-19T17:09:29.313473+00:00"
+}

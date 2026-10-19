@@ -1,0 +1,17 @@
+{
+  "base": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+  "trackedBaseFiles": 3234,
+  "unchangedBaseFiles": 3232,
+  "changedBaseFiles": [
+    "server/src/websitePriceExtraction.js",
+    "server/src/websitePriceImport.js"
+  ],
+  "unchangedExistingTestFiles": 389,
+  "unchangedExistingEvidenceFiles": 2135,
+  "punctuationBranch": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+  "parserBranch": "9af52ddc13c78beec84e7f090506da8c9b5fd691",
+  "sourceHashes": {
+    "server/src/websitePriceExtraction.js": "e15ac6a7725d7cce6d5442bd43513e3f23f27504206aa53f8c6fc1ff3e95e0dd",
+    "server/src/websitePriceImport.js": "d78d69f6f8f616e2552d23e8a83fe0c34ceda786a54f1a3abe0d3f3a661f0ba6"
+  }
+}

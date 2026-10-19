@@ -1,0 +1,22 @@
+{
+  "base": "d71f8e506293714e2630ceb07ae4f947c1e1bb97",
+  "command": [
+    "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/voiceAgent4ImportNineVariants20261019.spec.mjs"
+  ],
+  "utc": "2026-10-19T17:03:36.612043+00:00",
+  "environment": {
+    "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp"
+  },
+  "sourceHashes": {
+    "server/src/websitePriceExtraction.js": "dd716c86b6c61617f620eaaa787099dfb15feda9f4043e50565c6f778ca4e7a1",
+    "server/src/websitePriceImport.js": "7ceecb5525ee7dd46176a7482bd764597a1225a14af5965d75d7a7edeef27b43",
+    "test/voiceAgent4ImportNineVariants20261019.spec.mjs": "88ec6cf22ee84045b4a43cb1d380e0fffacfad5c19e0ff23b2fd81c32899cccc"
+  }
+}

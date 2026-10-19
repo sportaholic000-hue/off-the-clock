@@ -1,0 +1,133 @@
+(node:360) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:367) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H1 unread global condition beyond pages budget
+not ok 1 - H1 unread global condition beyond pages budget
+  ---
+  duration_ms: 96.023992
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:7:48'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    review (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-fixture.mjs:33:32)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:14:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# {"finding":"H1","kind":"pages","input":{"first":"<html><body><p>Widget $10 each</p><a href=\\"/terms\\">Next</a></body></html>","terms":"Site-wide: all prices require membership","limits":{"pages":1}},"draft":{"prices":"Widget $10 each","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":true,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."}},"providerFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each","neverSay":[]}},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: H1 unread global condition beyond requests budget
+not ok 2 - H1 unread global condition beyond requests budget
+  ---
+  duration_ms: 36.570762
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:7:48'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    review (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-fixture.mjs:33:32)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:14:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"finding":"H1","kind":"requests","input":{"first":"<html><body><p>Widget $10 each</p><a href=\\"/terms\\">Next</a></body></html>","terms":"Site-wide: all prices require membership","limits":{"requests":1}},"draft":{"prices":"Widget $10 each","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":true,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."}},"providerFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each","neverSay":[]}},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: H1 unread global condition beyond bytes budget
+not ok 3 - H1 unread global condition beyond bytes budget
+  ---
+  duration_ms: 36.814038
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:7:48'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    review (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-fixture.mjs:33:32)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:14:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"finding":"H1","kind":"bytes","input":{"first":"<html><body><p>Widget $10 each</p><a href=\\"/terms\\">Next</a></body></html>","terms":"Site-wide: all prices require membership","limits":{"totalBytes":74}},"draft":{"prices":"Widget $10 each","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":true,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."}},"providerFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each","neverSay":[]}},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: H2 running provider snapshot after owner amount update
+not ok 4 - H2 running provider snapshot after owner amount update
+  ---
+  duration_ms: 126.827127
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:16:44'
+  failureType: 'testCodeFailure'
+  error: 'Existing provider session still has the prior saved price/condition snapshot'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:28:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"finding":"H2","change":"amount","discovered":"Widget $10 each","updated":"Widget $12 each","deliveredPrices":["Widget $10 each"],"providerMessages":[{"turns":[{"role":"user","parts":[{"text":"[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]"}]}],"turnComplete":true}],"stale":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"fresh":{"status":"calculated","listedItem":"Widget $12 each","quantity":"3","extendedAmount":"36.00","currency":"$","voiceSummary":"Widget $12 each. At that listed price, 3 comes to $36.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"currentFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $12 each","neverSay":[]}}}
+# Subtest: H2 running provider snapshot after owner condition update
+not ok 5 - H2 running provider snapshot after owner condition update
+  ---
+  duration_ms: 101.519216
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:16:44'
+  failureType: 'testCodeFailure'
+  error: 'Existing provider session still has the prior saved price/condition snapshot'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs:28:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"finding":"H2","change":"condition","discovered":"Widget $10 each","updated":"Widget $10 each\\nAvailable to members","deliveredPrices":["Widget $10 each"],"providerMessages":[{"turns":[{"role":"user","parts":[{"text":"[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]"}]}],"turnComplete":true}],"stale":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"fresh":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"currentFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each\\nAvailable to members","neverSay":[]}}}
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1102.637661

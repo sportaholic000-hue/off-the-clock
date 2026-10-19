@@ -1,0 +1,48 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+# source {"sha":"db1dcb4cb4dedebb59811c390c8fe2ac9a608846","source":"server/src/websitePriceExtraction.js","sha256":"ebed0723232bdd09c17744155f5bc481770f0c62540513e09637373563456870"}
+TAP version 13
+# Subtest: synthetic condition extension 1: Site-wide: customers must prepay before work starts
+ok 1 - synthetic condition extension 1: Site-wide: customers must prepay before work starts
+  ---
+  duration_ms: 42.1417
+  type: 'test'
+  ...
+# {"sha":"db1dcb4cb4dedebb59811c390c8fe2ac9a608846","note":"Site-wide: customers must prepay before work starts","pages":{"/":"<html><body><p>Site-wide: customers must prepay before work starts</p><a href=\\"/prices\\">Prices</a></body></html>","/prices":"<html><body><p>Widget $10 each</p></body></html>"},"seen":["/","/prices"],"imported":{"prices":"Widget $10 each\\nSite-wide: customers must prepay before work starts","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each\\nSite-wide: customers must prepay before work starts","amounts":["$10"],"sourceUrl":"https://synthetic.example/prices","conditions":["Site-wide: customers must prepay before work starts"]}],"pages":["https://synthetic.example/","https://synthetic.example/prices"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."}},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: synthetic condition extension 2: Site-wide: customers must prepay by Friday
+ok 2 - synthetic condition extension 2: Site-wide: customers must prepay by Friday
+  ---
+  duration_ms: 12.688802
+  type: 'test'
+  ...
+# {"sha":"db1dcb4cb4dedebb59811c390c8fe2ac9a608846","note":"Site-wide: customers must prepay by Friday","pages":{"/":"<html><body><p>Site-wide: customers must prepay by Friday</p><a href=\\"/prices\\">Prices</a></body></html>","/prices":"<html><body><p>Widget $10 each</p></body></html>"},"seen":["/","/prices"],"imported":{"prices":"Widget $10 each\\nSite-wide: customers must prepay by Friday","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each\\nSite-wide: customers must prepay by Friday","amounts":["$10"],"sourceUrl":"https://synthetic.example/prices","conditions":["Site-wide: customers must prepay by Friday"]}],"pages":["https://synthetic.example/","https://synthetic.example/prices"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."}},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: synthetic condition extension 3: Site-wide: weather permitting on the day
+ok 3 - synthetic condition extension 3: Site-wide: weather permitting on the day
+  ---
+  duration_ms: 8.476333
+  type: 'test'
+  ...
+# {"sha":"db1dcb4cb4dedebb59811c390c8fe2ac9a608846","note":"Site-wide: weather permitting on the day","pages":{"/":"<html><body><p>Site-wide: weather permitting on the day</p><a href=\\"/prices\\">Prices</a></body></html>","/prices":"<html><body><p>Widget $10 each</p></body></html>"},"seen":["/","/prices"],"imported":{"prices":"Widget $10 each\\nSite-wide: weather permitting on the day","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each\\nSite-wide: weather permitting on the day","amounts":["$10"],"sourceUrl":"https://synthetic.example/prices","conditions":["Site-wide: weather permitting on the day"]}],"pages":["https://synthetic.example/","https://synthetic.example/prices"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."}},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: synthetic condition extension 4: Site-wide: online orders must be prepaid in full
+ok 4 - synthetic condition extension 4: Site-wide: online orders must be prepaid in full
+  ---
+  duration_ms: 4.92624
+  type: 'test'
+  ...
+# {"sha":"db1dcb4cb4dedebb59811c390c8fe2ac9a608846","note":"Site-wide: online orders must be prepaid in full","pages":{"/":"<html><body><p>Site-wide: online orders must be prepaid in full</p><a href=\\"/prices\\">Prices</a></body></html>","/prices":"<html><body><p>Widget $10 each</p></body></html>"},"seen":["/","/prices"],"imported":{"prices":"Widget $10 each\\nSite-wide: online orders must be prepaid in full","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each\\nSite-wide: online orders must be prepaid in full","amounts":["$10"],"sourceUrl":"https://synthetic.example/prices","conditions":["Site-wide: online orders must be prepaid in full"]}],"pages":["https://synthetic.example/","https://synthetic.example/prices"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."}},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: synthetic condition extension 5: Site-wide: payment must be made in advance of delivery
+ok 5 - synthetic condition extension 5: Site-wide: payment must be made in advance of delivery
+  ---
+  duration_ms: 6.148689
+  type: 'test'
+  ...
+# {"sha":"db1dcb4cb4dedebb59811c390c8fe2ac9a608846","note":"Site-wide: payment must be made in advance of delivery","pages":{"/":"<html><body><p>Site-wide: payment must be made in advance of delivery</p><a href=\\"/prices\\">Prices</a></body></html>","/prices":"<html><body><p>Widget $10 each</p></body></html>"},"seen":["/","/prices"],"imported":{"prices":"Widget $10 each\\nSite-wide: payment must be made in advance of delivery","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each\\nSite-wide: payment must be made in advance of delivery","amounts":["$10"],"sourceUrl":"https://synthetic.example/prices","conditions":["Site-wide: payment must be made in advance of delivery"]}],"pages":["https://synthetic.example/","https://synthetic.example/prices"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."}},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 79.424646

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/verification/qe-agent4-import-integration-20261019/prepare-names.py", line 29, in <module>
+    rows=names(body);assert len(rows)==expected
+                            ^^^^^^^^^^^^^^^^^^^
+AssertionError
