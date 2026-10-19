@@ -1,0 +1,400 @@
+[
+  {
+    "stage": "strict",
+    "node": "v22.23.3",
+    "chromium": "141.0.7390.37",
+    "sources": {
+      "client/src/quotedone.jsx": "87970be1c9ca7aae8151aeaa50c390490c831b164c18391d9df4955030f79d72",
+      "client/src/quoteSubmission.js": "24b6c3ab6254056d6adc06053b2a4d7cf3b012e08d448893c30b8da800bbd388",
+      "test/qeAgent3WidgetRecovery20261019.browser.spec.mjs": "e416cb401548b0ab2ecbd440cfea8f8793771739886acdea35dce38e71bb8c3c"
+    },
+    "cases": [
+      {
+        "name": "R01 rapid double preparation and confirmation create one immutable receipt",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 0,
+          "quotes": 0,
+          "leads": 0,
+          "quoteRequests": 0
+        },
+        "after": {
+          "quoteSubmissions": 1,
+          "quotes": 1,
+          "leads": 1,
+          "quoteRequests": 1
+        },
+        "posts": 3
+      },
+      {
+        "name": "R02a saved response lost then retry recovers identical payload and receipt",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 1,
+          "quotes": 1,
+          "leads": 1,
+          "quoteRequests": 1
+        },
+        "after": {
+          "quoteSubmissions": 2,
+          "quotes": 2,
+          "leads": 2,
+          "quoteRequests": 2
+        },
+        "posts": 3
+      },
+      {
+        "name": "R02b saved response lost then reload and retry recovers identical payload and receipt",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 2,
+          "quotes": 2,
+          "leads": 2,
+          "quoteRequests": 2
+        },
+        "after": {
+          "quoteSubmissions": 3,
+          "quotes": 3,
+          "leads": 3,
+          "quoteRequests": 3
+        },
+        "posts": 3
+      },
+      {
+        "name": "R03 delayed preparation cannot replace a corrected measured area",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 3,
+          "quotes": 3,
+          "leads": 3,
+          "quoteRequests": 3
+        },
+        "after": {
+          "quoteSubmissions": 4,
+          "quotes": 4,
+          "leads": 4,
+          "quoteRequests": 4
+        },
+        "posts": 3
+      },
+      {
+        "name": "R04 delayed preparation cannot replace a different selected service",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 4,
+          "quotes": 4,
+          "leads": 4,
+          "quoteRequests": 4
+        },
+        "after": {
+          "quoteSubmissions": 5,
+          "quotes": 5,
+          "leads": 5,
+          "quoteRequests": 5
+        },
+        "posts": 3
+      },
+      {
+        "name": "R05 superseded response cannot unlock a newer in-flight preparation",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 5,
+          "quotes": 5,
+          "leads": 5,
+          "quoteRequests": 5
+        },
+        "after": {
+          "quoteSubmissions": 6,
+          "quotes": 6,
+          "leads": 6,
+          "quoteRequests": 6
+        },
+        "posts": 3
+      },
+      {
+        "name": "R06 same-key widget instances preserve independent completed and pending recovery on reload",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 6,
+          "quotes": 6,
+          "leads": 6,
+          "quoteRequests": 6
+        },
+        "after": {
+          "quoteSubmissions": 8,
+          "quotes": 8,
+          "leads": 8,
+          "quoteRequests": 8
+        },
+        "posts": 5
+      },
+      {
+        "name": "R05b obsolete success cannot replace a newer completed preparation",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 8,
+          "quotes": 8,
+          "leads": 8,
+          "quoteRequests": 8
+        },
+        "after": {
+          "quoteSubmissions": 9,
+          "quotes": 9,
+          "leads": 9,
+          "quoteRequests": 9
+        },
+        "posts": 3
+      },
+      {
+        "name": "R05c obsolete real validation error cannot overwrite a corrected preparation",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 9,
+          "quotes": 9,
+          "leads": 9,
+          "quoteRequests": 9
+        },
+        "after": {
+          "quoteSubmissions": 10,
+          "quotes": 10,
+          "leads": 10,
+          "quoteRequests": 10
+        },
+        "posts": 3
+      },
+      {
+        "name": "R07 public-key replacement rejects a delayed saved result without losing original recovery",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 10,
+          "quotes": 10,
+          "leads": 10,
+          "quoteRequests": 10
+        },
+        "after": {
+          "quoteSubmissions": 11,
+          "quotes": 11,
+          "leads": 11,
+          "quoteRequests": 11
+        },
+        "posts": 3
+      },
+      {
+        "name": "R08 owner revision rejects stale confirmation and historical retries stay immutable",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 11,
+          "quotes": 11,
+          "leads": 11,
+          "quoteRequests": 11
+        },
+        "after": {
+          "quoteSubmissions": 13,
+          "quotes": 13,
+          "leads": 13,
+          "quoteRequests": 13
+        },
+        "posts": 10
+      }
+    ]
+  },
+  {
+    "stage": "full",
+    "node": "v22.23.3",
+    "chromium": "141.0.7390.37",
+    "sources": {
+      "client/src/quotedone.jsx": "87970be1c9ca7aae8151aeaa50c390490c831b164c18391d9df4955030f79d72",
+      "client/src/quoteSubmission.js": "24b6c3ab6254056d6adc06053b2a4d7cf3b012e08d448893c30b8da800bbd388",
+      "test/qeAgent3WidgetRecovery20261019.browser.spec.mjs": "e416cb401548b0ab2ecbd440cfea8f8793771739886acdea35dce38e71bb8c3c"
+    },
+    "cases": [
+      {
+        "name": "R01 rapid double preparation and confirmation create one immutable receipt",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 0,
+          "quotes": 0,
+          "leads": 0,
+          "quoteRequests": 0
+        },
+        "after": {
+          "quoteSubmissions": 1,
+          "quotes": 1,
+          "leads": 1,
+          "quoteRequests": 1
+        },
+        "posts": 3
+      },
+      {
+        "name": "R02a saved response lost then retry recovers identical payload and receipt",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 1,
+          "quotes": 1,
+          "leads": 1,
+          "quoteRequests": 1
+        },
+        "after": {
+          "quoteSubmissions": 2,
+          "quotes": 2,
+          "leads": 2,
+          "quoteRequests": 2
+        },
+        "posts": 3
+      },
+      {
+        "name": "R02b saved response lost then reload and retry recovers identical payload and receipt",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 2,
+          "quotes": 2,
+          "leads": 2,
+          "quoteRequests": 2
+        },
+        "after": {
+          "quoteSubmissions": 3,
+          "quotes": 3,
+          "leads": 3,
+          "quoteRequests": 3
+        },
+        "posts": 3
+      },
+      {
+        "name": "R03 delayed preparation cannot replace a corrected measured area",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 3,
+          "quotes": 3,
+          "leads": 3,
+          "quoteRequests": 3
+        },
+        "after": {
+          "quoteSubmissions": 4,
+          "quotes": 4,
+          "leads": 4,
+          "quoteRequests": 4
+        },
+        "posts": 3
+      },
+      {
+        "name": "R04 delayed preparation cannot replace a different selected service",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 4,
+          "quotes": 4,
+          "leads": 4,
+          "quoteRequests": 4
+        },
+        "after": {
+          "quoteSubmissions": 5,
+          "quotes": 5,
+          "leads": 5,
+          "quoteRequests": 5
+        },
+        "posts": 3
+      },
+      {
+        "name": "R05 superseded response cannot unlock a newer in-flight preparation",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 5,
+          "quotes": 5,
+          "leads": 5,
+          "quoteRequests": 5
+        },
+        "after": {
+          "quoteSubmissions": 6,
+          "quotes": 6,
+          "leads": 6,
+          "quoteRequests": 6
+        },
+        "posts": 3
+      },
+      {
+        "name": "R06 same-key widget instances preserve independent completed and pending recovery on reload",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 6,
+          "quotes": 6,
+          "leads": 6,
+          "quoteRequests": 6
+        },
+        "after": {
+          "quoteSubmissions": 8,
+          "quotes": 8,
+          "leads": 8,
+          "quoteRequests": 8
+        },
+        "posts": 5
+      },
+      {
+        "name": "R05b obsolete success cannot replace a newer completed preparation",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 8,
+          "quotes": 8,
+          "leads": 8,
+          "quoteRequests": 8
+        },
+        "after": {
+          "quoteSubmissions": 9,
+          "quotes": 9,
+          "leads": 9,
+          "quoteRequests": 9
+        },
+        "posts": 3
+      },
+      {
+        "name": "R05c obsolete real validation error cannot overwrite a corrected preparation",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 9,
+          "quotes": 9,
+          "leads": 9,
+          "quoteRequests": 9
+        },
+        "after": {
+          "quoteSubmissions": 10,
+          "quotes": 10,
+          "leads": 10,
+          "quoteRequests": 10
+        },
+        "posts": 3
+      },
+      {
+        "name": "R07 public-key replacement rejects a delayed saved result without losing original recovery",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 10,
+          "quotes": 10,
+          "leads": 10,
+          "quoteRequests": 10
+        },
+        "after": {
+          "quoteSubmissions": 11,
+          "quotes": 11,
+          "leads": 11,
+          "quoteRequests": 11
+        },
+        "posts": 3
+      },
+      {
+        "name": "R08 owner revision rejects stale confirmation and historical retries stay immutable",
+        "passed": true,
+        "before": {
+          "quoteSubmissions": 11,
+          "quotes": 11,
+          "leads": 11,
+          "quoteRequests": 11
+        },
+        "after": {
+          "quoteSubmissions": 13,
+          "quotes": 13,
+          "leads": 13,
+          "quoteRequests": 13
+        },
+        "posts": 10
+      }
+    ]
+  }
+]

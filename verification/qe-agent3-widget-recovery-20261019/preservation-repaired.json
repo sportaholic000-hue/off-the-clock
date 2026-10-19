@@ -1,0 +1,41 @@
+{
+  "base": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "qualifiedSourceCommit": "32ae0435e87320885d81341a60a1e545e7ad0415",
+  "method": "Every protected base tree entry compared byte-for-byte by Git mode/type/blob hash and path against the qualified commit. All base entries outside the two assigned source files also verified unchanged.",
+  "groups": {
+    "workflows": {
+      "files": 14,
+      "unchanged": true
+    },
+    "dependency_manifests": {
+      "files": 3,
+      "unchanged": true
+    },
+    "other_client_source": {
+      "files": 67,
+      "unchanged": true
+    },
+    "server": {
+      "files": 246,
+      "unchanged": true
+    },
+    "specifications": {
+      "files": 20,
+      "unchanged": true
+    },
+    "existing_tests": {
+      "files": 428,
+      "paths": [
+        "test/",
+        "client/test/"
+      ],
+      "unchanged": true
+    }
+  },
+  "changedExistingFiles": [
+    "client/src/quoteSubmission.js",
+    "client/src/quotedone.jsx"
+  ],
+  "unexpectedChangedFiles": [],
+  "v12": "907431c53c7657ed78d7ebf737a07a65328364d3"
+}

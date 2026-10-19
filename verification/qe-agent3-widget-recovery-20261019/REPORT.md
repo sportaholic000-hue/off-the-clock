@@ -91,8 +91,9 @@ receive separate slots. Reload recovery assumes the same instance mount order.
 Embedders needing stable identity across arbitrary reordering can supply distinct
 existing `cachePrefix` values. This task does not introduce a new identity API.
 
-No server defect is established. Real-handler rejection/replay results remain
-part of the regression gate; any server failure will be handed off without edits.
+No server defect was established. Both hosted gates confirmed stale-proof
+rejection, exact historical replay and rejection of changed payloads reusing an
+identifier. No server handoff or server edit is needed for the exercised cases.
 
 ## Verification and preservation
 
@@ -118,9 +119,58 @@ was altered to obtain a pass. The new spec is selected by both normal gates.
 configuration files, other client source, and dependency manifests. Generated
 tracked build HTML is restored after local builds.
 
-## Remaining gates
+## Repaired source qualification
 
-The client repair builds locally and the 59 focused existing checks pass.
-Hosted repaired Chromium qualification, exact-final hosted CI and final remote
-tree/preservation verification remain open. Local Chromium failures are not
-counted as browser passes.
+Source checkpoint: `32ae0435e87320885d81341a60a1e545e7ad0415`.
+[Hosted run 39308396349](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39308396349)
+completed successfully. Node v22.23.3 / Chromium 141.0.7390.37 executed every new
+case in both the strict and full gates, with matching source SHA-256 hashes.
+
+| Gate | Result |
+|---|---|
+| Cold install, real Chromium launch, owner/widget builds | Pass |
+| Existing owner alerts/dashboard browser checks | 12/12 pass |
+| Strict quote gate | 6,082/6,082 pass |
+| Full suite | 7,713/7,713 pass |
+| New A3 cases within each gate | 11/11 pass (plus suite parent) |
+| Failure checker, production dependency audit, Docker voice smoke | Pass |
+
+Both test gates report zero failures, cancellations, skips and TODOs. Conditional
+release-tag jobs are intentionally skipped on this unique branch; no tag, main
+merge or deployment was requested or performed.
+
+| Case | Verified behavior in both gates |
+|---|---|
+| R01 | Same-turn double prepare/confirm sends one request per stage; one receipt; exact replay adds none. |
+| R02a/R02b | A real committed 201 is lost; in-place and reload retries send identical bytes and recover the original receipt. |
+| R03/R04 | Old responses cannot replace corrected area or service; new displayed scopes/ranges are 10,000 sq ft / $243–$297 and cleanup 1,000 sq ft / $360–$440. |
+| R05/R05b/R05c | A replacement preparation starts while the old one is held; obsolete success, real 422 and finally handlers cannot replace or unlock the current preparation. |
+| R06 | Same-key forms retain separate completed/pending recovery across reload; exactly two receipt identities; resetting A leaves B intact. |
+| R07 | A late saved response cannot enter a replacement public-key session; switching back recovers the original receipt without another save. |
+| R08 | Owner rate change invalidates the old proof (409, no receipt). New proof yields $215 / $193–$237; original $160 response and persisted history replay unchanged. Area/contact/service changes reusing the old ID reject with 409. |
+
+Each gate finishes with 13 rows in each of quoteSubmissions, quotes, leads and
+quoteRequests, exactly accounting for accepted new requests. Preparations,
+rejections and retries create no extra rows. Amount, scope, immutable request,
+receipt and historical-response assertions all pass.
+
+Artifacts:
+
+- `repaired-32ae0435-strict.json.gz` and `repaired-32ae0435-full.json.gz`: complete
+  source-bound browser requests/responses, displayed text, recovery storage,
+  before/after row counts and historical receipt snapshots. Decode with standard
+  gzip/JSON tools; data is synthetic and belongs to temporary test databases.
+- `repaired-32ae0435-cases.json`: readable case outcomes and receipt counts.
+- `repaired-32ae0435-summary.log`: new-case TAP excerpts and overall gate counts.
+- `hosted-32ae0435.json`: exact run/head/job/step outcomes.
+- `preservation-repaired.json`: all protected baseline files unchanged, including
+  428 existing test/client-test entries and v12's original Git blob.
+
+## Exact-final handoff gate
+
+The final evidence commit changes only this uniquely named evidence folder from
+the qualified source checkpoint. Its own exact-commit CI must complete before
+handoff; the earlier source run is not substituted for that check. The final
+handoff identifies the final SHA and its completed run. The current authoritative
+status is available in [this branch's CI runs](https://github.com/sportaholic000-hue/off-the-clock/actions?query=branch%3Acodex%2Fqe-agent3-widget-recovery-20261019).
+No commit is added after verifying that final run.

@@ -1,40 +1,28 @@
 # A3 task list
 
-- [x] Create unique branch at the requested base; inspect instructions/specs/tests.
-- [x] Write independent expected amounts before execution.
-- [x] Execute and preserve baseline Chromium reproductions.
-- [x] Implement only reproduced customer lifecycle repairs in assigned files (verification pending).
-- [ ] Verify new cases plus preserved relevant regression coverage.
-- [ ] Record any exact server reproduction and handoff (no server edits).
-- [ ] Publish unique branch; verify hosted CI at exact final commit.
+- [x] Create the unique branch at the exact requested base; inspect instructions, specifications and existing coverage.
+- [x] Record independent expected amounts before executing the new cases.
+- [x] Preserve test-only baseline Chromium reproductions before client repair.
+- [x] Repair reproduced lifecycle defects only in the two assigned customer files.
+- [x] Pass local builds and 59 focused existing checks.
+- [x] Pass hosted strict (6,082/6,082) and full (7,713/7,713) gates on the repaired source; all 11 new Chromium cases pass in both.
+- [x] Archive repaired source-bound browser requests/responses and persisted-receipt evidence.
+- [x] Verify all pre-existing files outside the two assigned files remain unchanged.
+- [x] Complete server-defect assessment: no defect established; no server edit or handoff required.
+- [x] Publish and read back the unique source branch.
 
-No subagents. No main merge or deployment. Specifications, v12, approvals,
-pricing formulas, existing tests and workflows remain unchanged.
+Qualified source: `32ae0435e87320885d81341a60a1e545e7ad0415`.
+[Source CI run 39308396349](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39308396349)
+passed all applicable jobs. Detailed results and raw evidence are indexed in
+REPORT.md. Earlier harness failures and the corrected display expectation remain
+explicitly distinguished from product defects.
 
-Current checkpoint: test-only source `6ef935871244643bfb4afac673f587ed5570bfac`
-is published and its baseline reproduction completed. Client repair is ready
-for hosted qualification; local builds and 59 focused existing checks pass.
-Local Chromium startup exits SIGTRAP, so the real browser cases are established
-by hosted Chromium. Initial harness
-checkpoint `120c2207` is retained; the newer test-only checkpoint corrects enum
-control interaction, measurement-method ordering, and option calculation-record
-lookup before product repair. The separate local HTTP fixture probe passes for
-both services and confirms their stored cents and customer scope.
+**Final handoff gate:** the final evidence commit requires its own completed
+hosted CI and exact remote-head readback. [Live branch CI status](https://github.com/sportaholic000-hue/off-the-clock/actions?query=branch%3Acodex%2Fqe-agent3-widget-recovery-20261019)
+and the final handoff identify that run/SHA. This gate is checked after publication;
+the earlier source run does not satisfy it, and no later commit is added after
+verification. The active task plan tracks this post-publication check.
 
-Hosted `b2d86e4c` ran Chromium 141.0.7390.37 but all 11 cases stopped at a
-harness-origin error: Playwright APIRequestContext catalogue GETs lacked native
-Fetch Metadata and correctly received HTTP 403. This is **not** a reproduced
-product defect. `6ef93587` forwards catalogue GETs natively in Chromium while
-retaining real-handler POST response barriers. Raw source-bound results and the
-test log excerpt are retained in this evidence folder. No customer source has
-been changed in response to these harness failures.
-
-Corrected baseline `6ef93587`, hosted run `39305527431`, now completed. Chromium
-141.0.7390.37 reproduces stale preparation takeover after area/service changes,
-same-key instance recovery overwrite, and old save completion after key change.
-R01 double-submit and R02 retry/reload controls pass. R05 variants stop at the
-old busy lock before they can issue a replacement request. R08 correctly rejects
-stale confirmation and computes 21,500 cents, then fails the harness's mistaken
-fractional-dollar display expectation; the existing outward whole-dollar rule
-is now explicitly recorded in EXPECTED.md. Client-only repair is implemented;
-local and hosted regression qualification remain open.
+No subagents, server edits, existing-test changes, main merge or deployment.
+Specifications, v12, approval rules, pricing formulas and workflows are preserved.
+Local Chromium startup exits SIGTRAP; only hosted Chromium supplies browser passes.
