@@ -240,7 +240,8 @@ try{
 
   write('coverage-matrix.json',matrix);
   write('boundary-transitions.json',boundaryTransitions);
-  write('wire.json',wire);
+  write('public-wire.json',wire.filter(row=>row.path.startsWith('/api/public/')));
+  write('authenticated-setup-summary.json',wire.filter(row=>!row.path.startsWith('/api/public/')).map(({method,path,status})=>({method,path,status})));
   write('findings.json',findings);
   write('database-counts.json',counts(app.db,owner));
   write('source-binding.json',{
@@ -253,7 +254,7 @@ try{
   console.log(JSON.stringify({status:'passed',httpServices:matrix.length,correctionCases:matrix.length,boundaryTransitions:boundaryTransitions.length}));
 }catch(error){
   findings.push({severity:'harness-or-assertion',message:error.message,stack:error.stack});
-  write('wire.json',wire);write('coverage-matrix.partial.json',matrix);write('findings.json',findings);write('result.json',{status:'failed',error:error.stack,httpServices:matrix.length});
+  write('public-wire.json',wire.filter(row=>row.path.startsWith('/api/public/')));write('authenticated-setup-summary.json',wire.filter(row=>!row.path.startsWith('/api/public/')).map(({method,path,status})=>({method,path,status})));write('coverage-matrix.partial.json',matrix);write('findings.json',findings);write('result.json',{status:'failed',error:error.stack,httpServices:matrix.length});
   console.error(error.stack);process.exitCode=1;
 }finally{
   for(const fn of cleanup)try{await fn();}catch(error){console.error('cleanup:',error.stack);process.exitCode=1;}
