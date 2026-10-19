@@ -50,7 +50,12 @@ export async function serviceApplication(root,out,type,fixture,defaults){
   const embed=express();embed.get('/',(_req,res)=>res.type('html').send('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Synthetic widget host</title></head><body><h1>[SYNTHETIC] Widget entry review</h1><script src="'+assetOrigin+'/widget.js" data-key="'+publicKey+'" async></script></body></html>'));
   const embedServer=embed.listen(0,'127.0.0.1');await once(embedServer,'listening');cleanup.unshift(()=>new Promise(r=>embedServer.close(r)));
   const embedOrigin='http://127.0.0.1:'+embedServer.address().port;
+  // The reused booking fixture seeds a short synthetic key, not a key issued
+  // by the application. Start this isolated widget fixture without that seed
+  // so the real owner HTTP handler creates the production-format public key.
+  app.db.prepare('DELETE FROM quoteAccessKeys WHERE ownerId=?').run(owner);
   const access=await api('POST','/api/quotedone/access',{allowedOrigins:[embedOrigin,app.base]});publicKey=access.publicKey;
+  assert.match(publicKey,/^[A-Za-z0-9_-]{16,128}$/,'Real access handler must issue a loader-compatible key');
   const publicPath='/api/public/quote/'+publicKey;
   const c=await app.request(publicPath,{publicRequest:true});assert.equal(c.status,200);write('catalog.json',c.body);
   const catalog=c.body.services.find(s=>s.serviceType===type);assert.ok(catalog,`${type} missing from approved public catalog`);

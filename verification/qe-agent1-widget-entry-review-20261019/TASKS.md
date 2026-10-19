@@ -20,3 +20,11 @@
 Current limit: local Chromium exits with SIGTRAP. Hosted real Chromium supplies
 the required rendered execution. No A3 retry/race injection, production edits,
 existing assertion changes, approval/version changes or integration writes.
+
+Initial hosted run 39310251440 (7aac065): all 120 new checks failed before
+widget entry because the reused booking fixture seeded the 11-character
+`synthetic-a` public key. The actual loader correctly rejects that test-only
+key. The corrected isolated fixture removes only that seeded owner key and
+uses the real POST /api/quotedone/access handler to issue a valid key. This
+is a harness defect, not a product finding. The complete 105-file failed-run
+bundle and extraction hashes are retained in hosted-checkpoint-01.bundle.json.gz.

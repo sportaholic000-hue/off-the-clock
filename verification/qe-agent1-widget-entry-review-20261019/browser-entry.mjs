@@ -27,10 +27,11 @@ async function runService(spec){
  async function check(view,stage,fn){
   const row={type,viewport:view.name,stage,expectedCents:spec.cents,status:'running',started:new Date().toISOString()};
   try{await fn(row);row.status='passed';}catch(error){row.status='failed';row.error={message:error.message,stack:error.stack};}
-  if(page)try{row.visibleText=await page.locator('.panel').innerText({timeout:2000});if(row.status==='failed'){
+  if(page)try{row.visibleText=await page.locator('.panel').innerText({timeout:2000});}catch(error){row.textCaptureError=error.message;}
+  if(page&&row.status==='failed')try{
    row.screenshot=`${view.name}-${stage}.png`;await page.screenshot({path:path.join(dir,row.screenshot),fullPage:true,timeout:5000});
    row.controls=await page.locator('input,select,textarea,button').evaluateAll(nodes=>nodes.map(n=>({tag:n.tagName,type:n.type,label:n.getAttribute('aria-label'),text:n.textContent,value:n.value,checked:n.checked,visible:!!n.getClientRects().length})));
-  }}catch(error){row.captureError=error.message;}
+  }catch(error){row.captureError=error.message;}
   row.finished=new Date().toISOString();rows.push(row);results.push(row);write(dir,'results.json',rows);write(out,'results.json',results);
   console.log(JSON.stringify({type,viewport:view.name,stage,status:row.status,error:row.error?.message}));return row;
  }
