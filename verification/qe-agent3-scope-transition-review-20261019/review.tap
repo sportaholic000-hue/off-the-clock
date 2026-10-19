@@ -1,0 +1,62 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: widget transition: optional mowing work is added and removed without stale confirmation, charges or scope
+ok 1 - widget transition: optional mowing work is added and removed without stale confirmation, charges or scope
+  ---
+  duration_ms: 839.764412
+  type: 'test'
+  ...
+# Subtest: voice transition: optional mowing work is added and removed while each saved receipt keeps its own first visit and scope
+ok 2 - voice transition: optional mowing work is added and removed while each saved receipt keeps its own first visit and scope
+  ---
+  duration_ms: 334.807668
+  type: 'test'
+  ...
+# Subtest: widget transition: changing a named priced gate option cannot retain the old proof, amount or gate identity
+ok 3 - widget transition: changing a named priced gate option cannot retain the old proof, amount or gate identity
+  ---
+  duration_ms: 263.184719
+  type: 'test'
+  ...
+# Subtest: voice transition: changing a named priced gate option creates a distinct saved identity and preserves the walk-gate retry
+ok 4 - voice transition: changing a named priced gate option creates a distinct saved identity and preserves the walk-gate retry
+  ---
+  duration_ms: 327.464105
+  type: 'test'
+  ...
+# Subtest: widget transition: footprint partial to measured partial to measured full cannot inherit stale method, percentage or amount
+ok 5 - widget transition: footprint partial to measured partial to measured full cannot inherit stale method, percentage or amount
+  ---
+  duration_ms: 517.859388
+  type: 'test'
+  ...
+# Subtest: voice transition: footprint partial to measured partial to measured full keeps only the still-applicable underlayment receipt
+ok 6 - voice transition: footprint partial to measured partial to measured full keeps only the still-applicable underlayment receipt
+  ---
+  duration_ms: 502.160187
+  type: 'test'
+  ...
+# Subtest: widget transition: recurring to one-time and a saved-book revision cannot reuse first-visit data, intake proof or old amounts
+ok 7 - widget transition: recurring to one-time and a saved-book revision cannot reuse first-visit data, intake proof or old amounts
+  ---
+  duration_ms: 429.873527
+  type: 'test'
+  ...
+# Subtest: voice transition: recurring to one-time and a saved-book revision keep historical first visits while requiring a current handle for new amounts
+ok 8 - voice transition: recurring to one-time and a saved-book revision keep historical first visits while requiring a current handle for new amounts
+  ---
+  duration_ms: 575.442002
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4041.416603

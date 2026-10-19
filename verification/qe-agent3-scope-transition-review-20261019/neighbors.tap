@@ -1,0 +1,710 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Oct16 A4 caller-confirmed numeric estimates bind identically across all20 trade contracts; assumption markers select numeric input without inventing amounts
+ok 1 - Oct16 A4 caller-confirmed numeric estimates bind identically across all20 trade contracts; assumption markers select numeric input without inventing amounts
+  ---
+  duration_ms: 5.881453
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up maintained recurring5000 / first7500 cents survive widget intake, phone, stored record, email and public copy
+ok 2 - Oct16 follow-up maintained recurring5000 / first7500 cents survive widget intake, phone, stored record, email and public copy
+  ---
+  duration_ms: 1771.017882
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup widget/voice questions are optional and identically permit Not sure; 5 derived loads /60000 disposal cents persist in copy
+ok 3 - Oct16 follow-up cleanup widget/voice questions are optional and identically permit Not sure; 5 derived loads /60000 disposal cents persist in copy
+  ---
+  duration_ms: 792.266948
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up only a bag price configured remains live for stated bags; an unknown quantity requires owner load pricing rather than a false flat subtotal
+ok 4 - Oct16 follow-up only a bag price configured remains live for stated bags; an unknown quantity requires owner load pricing rather than a false flat subtotal
+  ---
+  duration_ms: 326.400737
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up new optional landscape prices round-trip through owner dollars and review with coverage left in square feet
+ok 5 - Oct16 follow-up new optional landscape prices round-trip through owner dollars and review with coverage left in square feet
+  ---
+  duration_ms: 15.71385
+  type: 'test'
+  ...
+# Subtest: Oct16 A4 estimated phone fence sections10/26/33 at8ft quote280800 cents and recap plain runs with on-site confirmation in email/public copy
+ok 6 - Oct16 A4 estimated phone fence sections10/26/33 at8ft quote280800 cents and recap plain runs with on-site confirmation in email/public copy
+  ---
+  duration_ms: 348.731963
+  type: 'test'
+  ...
+# Subtest: Oct16 A4 confirmed approximate total69ft with legacy assumption marker uses numeric facts, not a size allowance; fallback283800 cents
+ok 7 - Oct16 A4 confirmed approximate total69ft with legacy assumption marker uses numeric facts, not a size allowance; fallback283800 cents
+  ---
+  duration_ms: 381.877838
+  type: 'test'
+  ...
+# Subtest: Oct16 A4 the same estimate handling also quotes mowing: approximate10000sqft remains5000 recurring and7500 first cents
+ok 8 - Oct16 A4 the same estimate handling also quotes mowing: approximate10000sqft remains5000 recurring and7500 first cents
+  ---
+  duration_ms: 238.587097
+  type: 'test'
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Oct16 follow-up blank/null/zero mowing visit charges retain5000/7500 cents without a fabricated owner rate
+ok 9 - Oct16 follow-up blank/null/zero mowing visit charges retain5000/7500 cents without a fabricated owner rate
+  ---
+  duration_ms: 72.584741
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up first/recurring minima and fixed service charge are evaluated independently, with all fixed common fees charged once per visit
+ok 10 - Oct16 follow-up first/recurring minima and fixed service charge are evaluated independently, with all fixed common fees charged once per visit
+  ---
+  duration_ms: 11.557285
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up first visits retain each tier own prices and exclusions without changing the first valid option mirror
+ok 11 - Oct16 follow-up first visits retain each tier own prices and exclusions without changing the first valid option mirror
+  ---
+  duration_ms: 41.302522
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up explicitly stated fractional loads price exactly before the flat minimum; count-zero still pays the minimum
+ok 12 - Oct16 follow-up explicitly stated fractional loads price exactly before the flat minimum; count-zero still pays the minimum
+  ---
+  duration_ms: 10.002856
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up zero supplemental disposal prices preserve a positive flat minimum, without declaring the cleanup itself free
+ok 13 - Oct16 follow-up zero supplemental disposal prices preserve a positive flat minimum, without declaring the cleanup itself free
+  ---
+  duration_ms: 8.878714
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup exact ceiling honors every debris level; disposal and additional haul-away each replace common disposal only once
+ok 14 - Oct16 follow-up cleanup exact ceiling honors every debris level; disposal and additional haul-away each replace common disposal only once
+  ---
+  duration_ms: 10.853967
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up recurring weekly: 5000 cents maintained, separate first visit 7500 cents
+ok 15 - Oct16 follow-up recurring weekly: 5000 cents maintained, separate first visit 7500 cents
+  ---
+  duration_ms: 11.81921
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up recurring biweekly: 5000 cents maintained, separate first visit 7500 cents
+ok 16 - Oct16 follow-up recurring biweekly: 5000 cents maintained, separate first visit 7500 cents
+  ---
+  duration_ms: 13.389493
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up recurring monthly: 5000 cents maintained, separate first visit 7500 cents
+ok 17 - Oct16 follow-up recurring monthly: 5000 cents maintained, separate first visit 7500 cents
+  ---
+  duration_ms: 16.291911
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up mowing: one-time overgrown remains 7500 cents; recurring maintained 5000 with no separate first visit
+ok 18 - Oct16 follow-up mowing: one-time overgrown remains 7500 cents; recurring maintained 5000 with no separate first visit
+  ---
+  duration_ms: 7.39454
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up bagging follows its own visit: 1000 recurring and 1500 first, totals 6000/9000 cents
+ok 19 - Oct16 follow-up bagging follows its own visit: 1000 recurring and 1500 first, totals 6000/9000 cents
+  ---
+  duration_ms: 4.782178
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up per-visit charge: 4000 plus 5000 recurring, 4000 plus 7500 first; blank preserves cents
+ok 20 - Oct16 follow-up per-visit charge: 4000 plus 5000 recurring, 4000 plus 7500 first; blank preserves cents
+  ---
+  duration_ms: 12.359683
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up frequency and condition do not multiply the per-visit charge or its bagging basis
+ok 21 - Oct16 follow-up frequency and condition do not multiply the per-visit charge or its bagging basis
+  ---
+  duration_ms: 3.743555
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up edging is optional labor: 5000 mowing + 5000 edging earns 2000 seasonal surcharge and no materials-only tax
+ok 22 - Oct16 follow-up edging is optional labor: 5000 mowing + 5000 edging earns 2000 seasonal surcharge and no materials-only tax
+  ---
+  duration_ms: 3.996154
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup small estimated load
+ok 23 - Oct16 follow-up cleanup small estimated load
+  ---
+  duration_ms: 3.336702
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup large estimated load
+ok 24 - Oct16 follow-up cleanup large estimated load
+  ---
+  duration_ms: 2.820205
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup 12 stated bags
+ok 25 - Oct16 follow-up cleanup 12 stated bags
+  ---
+  duration_ms: 3.579718
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup 3 stated loads
+ok 26 - Oct16 follow-up cleanup 3 stated loads
+  ---
+  duration_ms: 3.101268
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup unknown bag and load counts
+ok 27 - Oct16 follow-up cleanup unknown bag and load counts
+  ---
+  duration_ms: 2.982359
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup legacy flat minimum at 1000 sq ft = 10000 disposal cents
+ok 28 - Oct16 follow-up cleanup legacy flat minimum at 1000 sq ft = 10000 disposal cents
+  ---
+  duration_ms: 3.293838
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup legacy flat minimum at 10000 sq ft = 10000 disposal cents
+ok 29 - Oct16 follow-up cleanup legacy flat minimum at 10000 sq ft = 10000 disposal cents
+  ---
+  duration_ms: 2.557058
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup count conflicts and invalid quantities require review; incomplete active load pricing cannot silently use the minimum
+ok 30 - Oct16 follow-up cleanup count conflicts and invalid quantities require review; incomplete active load pricing cannot silently use the minimum
+  ---
+  duration_ms: 24.255698
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up first-visit evidence cannot be changed or removed while a recurring estimate is released
+ok 31 - Oct16 follow-up first-visit evidence cannot be changed or removed while a recurring estimate is released
+  ---
+  duration_ms: 26.441078
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up uncovered fence height copy 6 ft needs no numeric article
+ok 32 - Oct16 follow-up uncovered fence height copy 6 ft needs no numeric article
+  ---
+  duration_ms: 5.443743
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up uncovered fence height copy 8 ft needs no numeric article
+ok 33 - Oct16 follow-up uncovered fence height copy 8 ft needs no numeric article
+  ---
+  duration_ms: 2.685872
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up uncovered fence height copy 11 ft needs no numeric article
+ok 34 - Oct16 follow-up uncovered fence height copy 11 ft needs no numeric article
+  ---
+  duration_ms: 2.747546
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up uncovered fence height copy 18 ft needs no numeric article
+ok 35 - Oct16 follow-up uncovered fence height copy 18 ft needs no numeric article
+  ---
+  duration_ms: 1.982684
+  type: 'test'
+  ...
+# (node:15) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: accuracy integration: full footprint roof keeps corrected underlayment through widget and voice
+ok 36 - accuracy integration: full footprint roof keeps corrected underlayment through widget and voice
+  ---
+  duration_ms: 2323.000214
+  type: 'test'
+  ...
+# Subtest: accuracy integration: partial footprint roof keeps corrected underlayment through widget and voice
+ok 37 - accuracy integration: partial footprint roof keeps corrected underlayment through widget and voice
+  ---
+  duration_ms: 863.553836
+  type: 'test'
+  ...
+# Subtest: accuracy integration: sod component disclosure and unchanged cents cross widget and voice
+ok 38 - accuracy integration: sod component disclosure and unchanged cents cross widget and voice
+  ---
+  duration_ms: 492.466146
+  type: 'test'
+  ...
+# Subtest: accuracy integration: genuine v7 sod approval stays stale while frozen retries remain exact
+ok 39 - accuracy integration: genuine v7 sod approval stays stale while frozen retries remain exact
+  ---
+  duration_ms: 404.23921
+  type: 'test'
+  ...
+# (node:21) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: QE-020 exact partial-roof evidence 999999.9 * 33.33333333333333/100
+ok 40 - QE-020 exact partial-roof evidence 999999.9 * 33.33333333333333/100
+  ---
+  duration_ms: 59.61888
+  type: 'test'
+  ...
+# Subtest: QE-020 exact partial-roof evidence 50 * 2/100
+ok 41 - QE-020 exact partial-roof evidence 50 * 2/100
+  ---
+  duration_ms: 26.365404
+  type: 'test'
+  ...
+# Subtest: QE-020 exact partial-roof evidence 1000 * 0.1/100
+ok 42 - QE-020 exact partial-roof evidence 1000 * 0.1/100
+  ---
+  duration_ms: 23.62593
+  type: 'test'
+  ...
+# Subtest: QE-020 exact partial-roof evidence 1000000 * 99.999/100
+ok 43 - QE-020 exact partial-roof evidence 1000000 * 99.999/100
+  ---
+  duration_ms: 16.705765
+  type: 'test'
+  ...
+# Subtest: QE-020 exact partial-roof evidence 999999.9 * 0.1/100
+ok 44 - QE-020 exact partial-roof evidence 999999.9 * 0.1/100
+  ---
+  duration_ms: 18.89835
+  type: 'test'
+  ...
+# Subtest: QE-020 exact partial-roof evidence 12345.6789 * 12.3456789/100
+ok 45 - QE-020 exact partial-roof evidence 12345.6789 * 12.3456789/100
+  ---
+  duration_ms: 19.994024
+  type: 'test'
+  ...
+# Subtest: QE-020 extreme independent oracle and unchanged whole-cent charges persist/replay at application boundary
+ok 46 - QE-020 extreme independent oracle and unchanged whole-cent charges persist/replay at application boundary
+  ---
+  duration_ms: 1556.054549
+  type: 'test'
+  ...
+# Subtest: QE-020 new-rule application boundary preserves the exact partial-area oracle and whole-cent charges
+ok 47 - QE-020 new-rule application boundary preserves the exact partial-area oracle and whole-cent charges
+  ---
+  duration_ms: 562.611132
+  type: 'test'
+  ...
+# Subtest: QE-020 explicit measured partial area wins; contradictory percentages still require review
+ok 48 - QE-020 explicit measured partial area wins; contradictory percentages still require review
+  ---
+  duration_ms: 21.89085
+  type: 'test'
+  ...
+# Subtest: QE-020 representative flat-roof derivation retains the same independent exact partial-area oracle
+ok 49 - QE-020 representative flat-roof derivation retains the same independent exact partial-area oracle
+  ---
+  duration_ms: 5.081162
+  type: 'test'
+  ...
+# (node:23) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Offering optional INTERIOR_PAINTING installed ceiling prices do not disable base work
+ok 50 - Offering optional INTERIOR_PAINTING installed ceiling prices do not disable base work
+  ---
+  duration_ms: 124.419219
+  type: 'test'
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING installed trim prices do not disable base work
+ok 51 - Offering optional INTERIOR_PAINTING installed trim prices do not disable base work
+  ---
+  duration_ms: 58.332794
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_INSTALL installed gate prices do not disable base work
+ok 52 - Offering optional FENCING_INSTALL installed gate prices do not disable base work
+  ---
+  duration_ms: 39.081033
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT installed gate prices do not disable base work
+ok 53 - Offering optional FENCING_REPLACEMENT installed gate prices do not disable base work
+  ---
+  duration_ms: 47.666554
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT installed removal prices do not disable base work
+ok 54 - Offering optional FENCING_REPLACEMENT installed removal prices do not disable base work
+  ---
+  duration_ms: 40.622613
+  type: 'test'
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING itemized ceiling prices do not disable base work
+ok 55 - Offering optional INTERIOR_PAINTING itemized ceiling prices do not disable base work
+  ---
+  duration_ms: 221.739035
+  type: 'test'
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING itemized trim prices do not disable base work
+ok 56 - Offering optional INTERIOR_PAINTING itemized trim prices do not disable base work
+  ---
+  duration_ms: 69.198448
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_INSTALL itemized gate prices do not disable base work
+ok 57 - Offering optional FENCING_INSTALL itemized gate prices do not disable base work
+  ---
+  duration_ms: 34.575491
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT itemized gate prices do not disable base work
+ok 58 - Offering optional FENCING_REPLACEMENT itemized gate prices do not disable base work
+  ---
+  duration_ms: 40.293347
+  type: 'test'
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT itemized removal prices do not disable base work
+ok 59 - Offering optional FENCING_REPLACEMENT itemized removal prices do not disable base work
+  ---
+  duration_ms: 40.978549
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.price does not contradict wall prices
+ok 60 - Shared paint purchase group: unfinished paint_ceiling.price does not contradict wall prices
+  ---
+  duration_ms: 52.277324
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.coverage does not contradict wall prices
+ok 61 - Shared paint purchase group: unfinished paint_ceiling.coverage does not contradict wall prices
+  ---
+  duration_ms: 43.622238
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.wastePercent does not contradict wall prices
+ok 62 - Shared paint purchase group: unfinished paint_ceiling.wastePercent does not contradict wall prices
+  ---
+  duration_ms: 40.627671
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.description does not contradict wall prices
+ok 63 - Shared paint purchase group: unfinished paint_ceiling.description does not contradict wall prices
+  ---
+  duration_ms: 47.672835
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.productKey does not contradict wall prices
+ok 64 - Shared paint purchase group: unfinished paint_ceiling.productKey does not contradict wall prices
+  ---
+  duration_ms: 36.421219
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.price does not contradict wall prices
+ok 65 - Shared paint purchase group: unfinished paint_ceiling_primer.price does not contradict wall prices
+  ---
+  duration_ms: 39.40829
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.coverage does not contradict wall prices
+ok 66 - Shared paint purchase group: unfinished paint_ceiling_primer.coverage does not contradict wall prices
+  ---
+  duration_ms: 34.701111
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.wastePercent does not contradict wall prices
+ok 67 - Shared paint purchase group: unfinished paint_ceiling_primer.wastePercent does not contradict wall prices
+  ---
+  duration_ms: 42.177433
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.description does not contradict wall prices
+ok 68 - Shared paint purchase group: unfinished paint_ceiling_primer.description does not contradict wall prices
+  ---
+  duration_ms: 42.276232
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.productKey does not contradict wall prices
+ok 69 - Shared paint purchase group: unfinished paint_ceiling_primer.productKey does not contradict wall prices
+  ---
+  duration_ms: 37.990761
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group rejects conflicting supplied values in either map order false
+ok 70 - Shared paint purchase group rejects conflicting supplied values in either map order false
+  ---
+  duration_ms: 82.972411
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group rejects conflicting supplied values in either map order true
+ok 71 - Shared paint purchase group rejects conflicting supplied values in either map order true
+  ---
+  duration_ms: 91.306069
+  type: 'test'
+  ...
+# (node:28) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Optional scope stairs-installed: missing price or description isolates only selected work
+ok 72 - Optional scope stairs-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 169.525371
+  type: 'test'
+  ...
+# Subtest: Optional scope stairs-installed: saved approval and tier completion preserve the boundary
+ok 73 - Optional scope stairs-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 532.26363
+  type: 'test'
+  ...
+# Subtest: Optional scope stairs-itemized: missing price or description isolates only selected work
+ok 74 - Optional scope stairs-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 182.435793
+  type: 'test'
+  ...
+# Subtest: Optional scope stairs-itemized: saved approval and tier completion preserve the boundary
+ok 75 - Optional scope stairs-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 280.553083
+  type: 'test'
+  ...
+# Subtest: Optional scope overlay-installed: missing price or description isolates only selected work
+ok 76 - Optional scope overlay-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 59.745912
+  type: 'test'
+  ...
+# Subtest: Optional scope overlay-installed: saved approval and tier completion preserve the boundary
+ok 77 - Optional scope overlay-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 348.304865
+  type: 'test'
+  ...
+# Subtest: Optional scope overlay-itemized: missing price or description isolates only selected work
+ok 78 - Optional scope overlay-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 96.209363
+  type: 'test'
+  ...
+# Subtest: Optional scope overlay-itemized: saved approval and tier completion preserve the boundary
+ok 79 - Optional scope overlay-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 316.954017
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-trim-installed: missing price or description isolates only selected work
+ok 80 - Optional scope siding-trim-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 34.619132
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-trim-installed: saved approval and tier completion preserve the boundary
+ok 81 - Optional scope siding-trim-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 260.257004
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-trim-itemized: missing price or description isolates only selected work
+ok 82 - Optional scope siding-trim-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 51.685374
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-trim-itemized: saved approval and tier completion preserve the boundary
+ok 83 - Optional scope siding-trim-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 179.50555
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-removal-installed: missing price or description isolates only selected work
+ok 84 - Optional scope siding-removal-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 36.413439
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-removal-installed: saved approval and tier completion preserve the boundary
+ok 85 - Optional scope siding-removal-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 170.464659
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-removal-itemized: missing price or description isolates only selected work
+ok 86 - Optional scope siding-removal-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 27.347495
+  type: 'test'
+  ...
+# Subtest: Optional scope siding-removal-itemized: saved approval and tier completion preserve the boundary
+ok 87 - Optional scope siding-removal-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 138.486906
+  type: 'test'
+  ...
+# Subtest: Optional scope demolition-installed: missing price or description isolates only selected work
+ok 88 - Optional scope demolition-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 377.35091
+  type: 'test'
+  ...
+# Subtest: Optional scope demolition-installed: saved approval and tier completion preserve the boundary
+ok 89 - Optional scope demolition-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 1108.657323
+  type: 'test'
+  ...
+# Subtest: Optional scope demolition-itemized: missing price or description isolates only selected work
+ok 90 - Optional scope demolition-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 404.107807
+  type: 'test'
+  ...
+# Subtest: Optional scope demolition-itemized: saved approval and tier completion preserve the boundary
+ok 91 - Optional scope demolition-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 962.636564
+  type: 'test'
+  ...
+# Subtest: Optional scope exposed-installed: missing price or description isolates only selected work
+ok 92 - Optional scope exposed-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 266.319007
+  type: 'test'
+  ...
+# Subtest: Optional scope exposed-installed: saved approval and tier completion preserve the boundary
+ok 93 - Optional scope exposed-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 866.82666
+  type: 'test'
+  ...
+# Subtest: Optional scope exposed-itemized: missing price or description isolates only selected work
+ok 94 - Optional scope exposed-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 441.790263
+  type: 'test'
+  ...
+# Subtest: Optional scope exposed-itemized: saved approval and tier completion preserve the boundary
+ok 95 - Optional scope exposed-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 836.54661
+  type: 'test'
+  ...
+# Subtest: Optional scope commercial-installed: missing price or description isolates only selected work
+ok 96 - Optional scope commercial-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 37.225826
+  type: 'test'
+  ...
+# Subtest: Optional scope commercial-installed: saved approval and tier completion preserve the boundary
+ok 97 - Optional scope commercial-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 150.670864
+  type: 'test'
+  ...
+# Subtest: Optional scope commercial-itemized: missing price or description isolates only selected work
+ok 98 - Optional scope commercial-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 60.923506
+  type: 'test'
+  ...
+# Subtest: Optional scope commercial-itemized: saved approval and tier completion preserve the boundary
+ok 99 - Optional scope commercial-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 146.725772
+  type: 'test'
+  ...
+# (node:44) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: voice corrections: changed dimensions require structured confirmation and price the corrected area
+ok 100 - voice corrections: changed dimensions require structured confirmation and price the corrected area
+  ---
+  duration_ms: 2249.808662
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":1,"receiptHashes":["b35da9a4f4203c3d1c70ab0b37ac21af0cbf7febebb5c5474d4e36dd52ea1177"],"quoteHashes":["ceadceebb34a1a046a5acf942e78ddf515fd2d0e96f7820b6d8aa2c8c04ade01"]}
+# Subtest: voice corrections: adding stairs and then changing the selected stair package needs its own current scope token
+ok 101 - voice corrections: adding stairs and then changing the selected stair package needs its own current scope token
+  ---
+  duration_ms: 1352.078966
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"quoted","low":1152,"mid":1152,"high":1152,"receiptCount":1,"receiptHashes":["fe2371c172295a7ed8d622f7158e4b5ec8dc02a1cb0db1484bde53e6a9447650"],"quoteHashes":["aa2d84b1fcfbcc60b52b332dee0c82f188c5a1007ad1ffa489eb8848160ed0b4"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["fe2371c172295a7ed8d622f7158e4b5ec8dc02a1cb0db1484bde53e6a9447650"],"quoteHashes":["aa2d84b1fcfbcc60b52b332dee0c82f188c5a1007ad1ffa489eb8848160ed0b4"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":1332,"mid":1332,"high":1332,"receiptCount":2,"receiptHashes":["fe2371c172295a7ed8d622f7158e4b5ec8dc02a1cb0db1484bde53e6a9447650","8a9eeca178d68f9f00373ae5f207d535f8b7a69afb665b1af34a418aca4b4f87"],"quoteHashes":["aa2d84b1fcfbcc60b52b332dee0c82f188c5a1007ad1ffa489eb8848160ed0b4","26567829a25df7a7bfeeeacf9080379ea86583262760776b022b59ce93cf3d34"]}
+# Subtest: voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable
+ok 102 - voice corrections: product change cannot reuse laminate confirmation for hardwood and original receipt stays immutable
+  ---
+  duration_ms: 1056.023748
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["b08a266b48875588fdef7a916ea75c9990a627ae4ab1c0d8152ab873950b9166"],"quoteHashes":["452c9070d42f5c042144cc3059880b44ae2f8004a452e6c312f5ec0cc786faac"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["b08a266b48875588fdef7a916ea75c9990a627ae4ab1c0d8152ab873950b9166"],"quoteHashes":["452c9070d42f5c042144cc3059880b44ae2f8004a452e6c312f5ec0cc786faac"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"quoted","low":1940,"mid":1940,"high":1940,"receiptCount":2,"receiptHashes":["b08a266b48875588fdef7a916ea75c9990a627ae4ab1c0d8152ab873950b9166","6548e643a36428f42d124c1ad799537733064f78f2799595695b598439de7003"],"quoteHashes":["452c9070d42f5c042144cc3059880b44ae2f8004a452e6c312f5ec0cc786faac","0dba8b6ac57ac0b8092e872f939a7bab2eca4deb3dfd59dd349e10851a05a5d8"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["b08a266b48875588fdef7a916ea75c9990a627ae4ab1c0d8152ab873950b9166","6548e643a36428f42d124c1ad799537733064f78f2799595695b598439de7003"],"quoteHashes":["452c9070d42f5c042144cc3059880b44ae2f8004a452e6c312f5ec0cc786faac","0dba8b6ac57ac0b8092e872f939a7bab2eca4deb3dfd59dd349e10851a05a5d8"]}
+# Subtest: voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay
+ok 103 - voice corrections: mid-call saved-book revision denies stale new requests but preserves historical receipt replay
+  ---
+  duration_ms: 1245.516145
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["4adfa9c32ac2280cdfe4f97fac0a46401e7f113404a1f1664423f2ae808771fc"],"quoteHashes":["eaa76f8bb6711510fc98d515526aefcc4ce5aa915fe29fe2222b2777efb832f8"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["4adfa9c32ac2280cdfe4f97fac0a46401e7f113404a1f1664423f2ae808771fc"],"quoteHashes":["eaa76f8bb6711510fc98d515526aefcc4ce5aa915fe29fe2222b2777efb832f8"]}
+# {"tool":"matchService","id":"correction-5","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":1,"receiptHashes":["4adfa9c32ac2280cdfe4f97fac0a46401e7f113404a1f1664423f2ae808771fc"],"quoteHashes":["eaa76f8bb6711510fc98d515526aefcc4ce5aa915fe29fe2222b2777efb832f8"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["4adfa9c32ac2280cdfe4f97fac0a46401e7f113404a1f1664423f2ae808771fc"],"quoteHashes":["eaa76f8bb6711510fc98d515526aefcc4ce5aa915fe29fe2222b2777efb832f8"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000001","status":"quoted","low":1335,"mid":1335,"high":1335,"receiptCount":2,"receiptHashes":["4adfa9c32ac2280cdfe4f97fac0a46401e7f113404a1f1664423f2ae808771fc","172ebaf5cf7be842f935984ec0e3cfaaf007e9a8d2ce9f40e2565b8c00d2c78a"],"quoteHashes":["eaa76f8bb6711510fc98d515526aefcc4ce5aa915fe29fe2222b2777efb832f8","59733e6089c86cac5dde538875897924aeed0b6921638e22ac29676d79453455"]}
+# {"tool":"getQuote","id":"correction-8","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["4adfa9c32ac2280cdfe4f97fac0a46401e7f113404a1f1664423f2ae808771fc","172ebaf5cf7be842f935984ec0e3cfaaf007e9a8d2ce9f40e2565b8c00d2c78a"],"quoteHashes":["eaa76f8bb6711510fc98d515526aefcc4ce5aa915fe29fe2222b2777efb832f8","59733e6089c86cac5dde538875897924aeed0b6921638e22ac29676d79453455"]}
+# Subtest: voice corrections: scope token and service handle cannot authorize another call
+ok 104 - voice corrections: scope token and service handle cannot authorize another call
+  ---
+  duration_ms: 995.529323
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["8a21d19210875788b7e48bbf26c453d3f8381ffa40ee173ae6a855734166e1dd"],"quoteHashes":["5731c8664f4d4fef4bbfa762e410d1b6d43346556d4c7ce14120f8ea825530d7"]}
+# {"tool":"getQuote","id":"correction-4","call":"CA00000000000000000000000000000002","status":"needs_details","receiptCount":1,"receiptHashes":["8a21d19210875788b7e48bbf26c453d3f8381ffa40ee173ae6a855734166e1dd"],"quoteHashes":["5731c8664f4d4fef4bbfa762e410d1b6d43346556d4c7ce14120f8ea825530d7"]}
+# {"tool":"matchService","id":"correction-5","call":"CA00000000000000000000000000000002","status":"matched","receiptCount":1,"receiptHashes":["8a21d19210875788b7e48bbf26c453d3f8381ffa40ee173ae6a855734166e1dd"],"quoteHashes":["5731c8664f4d4fef4bbfa762e410d1b6d43346556d4c7ce14120f8ea825530d7"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000002","status":"needs_details","receiptCount":1,"receiptHashes":["8a21d19210875788b7e48bbf26c453d3f8381ffa40ee173ae6a855734166e1dd"],"quoteHashes":["5731c8664f4d4fef4bbfa762e410d1b6d43346556d4c7ce14120f8ea825530d7"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000002","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["8a21d19210875788b7e48bbf26c453d3f8381ffa40ee173ae6a855734166e1dd","2bb35dc7c5ae77f24a2fa098b38d5e4c54d8734517212b151db0641ba0ca727d"],"quoteHashes":["5731c8664f4d4fef4bbfa762e410d1b6d43346556d4c7ce14120f8ea825530d7","a2a98e131a845fe12ff300fc911a658100ea8b42aafad2822b67d70b6044f9d5"]}
+# Subtest: voice corrections: same-call same-revision service change cannot reuse another service scope token
+ok 105 - voice corrections: same-call same-revision service change cannot reuse another service scope token
+  ---
+  duration_ms: 1478.49904
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-2","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"correction-3","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["88ee341a0c71f32c10c605085e335797f0f85d10d17389e3977a103ce2e2fef9"],"quoteHashes":["5ea56a0cd9c59bf73b8a1ee09a64a67d9e101abe3e6c6a6d0cc0b6fe73705f7c"]}
+# {"tool":"matchService","id":"correction-4","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":1,"receiptHashes":["88ee341a0c71f32c10c605085e335797f0f85d10d17389e3977a103ce2e2fef9"],"quoteHashes":["5ea56a0cd9c59bf73b8a1ee09a64a67d9e101abe3e6c6a6d0cc0b6fe73705f7c"]}
+# {"tool":"getQuote","id":"correction-5","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["88ee341a0c71f32c10c605085e335797f0f85d10d17389e3977a103ce2e2fef9"],"quoteHashes":["5ea56a0cd9c59bf73b8a1ee09a64a67d9e101abe3e6c6a6d0cc0b6fe73705f7c"]}
+# {"tool":"getQuote","id":"correction-6","call":"CA00000000000000000000000000000001","status":"quoted","low":1072,"mid":1072,"high":1072,"receiptCount":2,"receiptHashes":["88ee341a0c71f32c10c605085e335797f0f85d10d17389e3977a103ce2e2fef9","8bf15b5be39d90225251d3ba76a6b2507837b83df3ac8c921c3a343b59dc0925"],"quoteHashes":["5ea56a0cd9c59bf73b8a1ee09a64a67d9e101abe3e6c6a6d0cc0b6fe73705f7c","0b8f680d01df676b304adc50c6c55e8a860ad56f94056c6e0894fd177a818acd"]}
+# {"tool":"getQuote","id":"correction-7","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["88ee341a0c71f32c10c605085e335797f0f85d10d17389e3977a103ce2e2fef9","8bf15b5be39d90225251d3ba76a6b2507837b83df3ac8c921c3a343b59dc0925"],"quoteHashes":["5ea56a0cd9c59bf73b8a1ee09a64a67d9e101abe3e6c6a6d0cc0b6fe73705f7c","0b8f680d01df676b304adc50c6c55e8a860ad56f94056c6e0894fd177a818acd"]}
+# Subtest: voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct
+ok 106 - voice corrections: repeated tool-call IDs conflict with corrections; fresh corrected requests and original replays remain distinct
+  ---
+  duration_ms: 915.482224
+  type: 'test'
+  ...
+# {"tool":"matchService","id":"correction-1","call":"CA00000000000000000000000000000001","status":"matched","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"awaiting-confirmation","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":0,"receiptHashes":[],"quoteHashes":[]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["8cb1912406a79e5932bcb0fc86109857f313fe63c86326679e9ab893ebed68c5"],"quoteHashes":["e0ac39b451f4948e8f36e1af882787c61eae28ba8b5e225775f1a2e1e944846e"]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":1,"receiptHashes":["8cb1912406a79e5932bcb0fc86109857f313fe63c86326679e9ab893ebed68c5"],"quoteHashes":["e0ac39b451f4948e8f36e1af882787c61eae28ba8b5e225775f1a2e1e944846e"]}
+# {"tool":"getQuote","id":"confirmed-original","call":"CA00000000000000000000000000000001","status":"needs_details","receiptCount":1,"receiptHashes":["8cb1912406a79e5932bcb0fc86109857f313fe63c86326679e9ab893ebed68c5"],"quoteHashes":["e0ac39b451f4948e8f36e1af882787c61eae28ba8b5e225775f1a2e1e944846e"]}
+# {"tool":"getQuote","id":"confirmed-correction","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":2,"receiptHashes":["8cb1912406a79e5932bcb0fc86109857f313fe63c86326679e9ab893ebed68c5","887c288a6a0ec1d4ae5220fff9328ec2fdc110cfc75e888d713c8ceebfeb62bb"],"quoteHashes":["e0ac39b451f4948e8f36e1af882787c61eae28ba8b5e225775f1a2e1e944846e","d4fc59c0f1e375680ce94565bf523ef75d502eba371895e1e8e066db330433ee"]}
+# {"tool":"getQuote","id":"fresh-original-replay","call":"CA00000000000000000000000000000001","status":"quoted","low":852,"mid":852,"high":852,"receiptCount":2,"receiptHashes":["8cb1912406a79e5932bcb0fc86109857f313fe63c86326679e9ab893ebed68c5","887c288a6a0ec1d4ae5220fff9328ec2fdc110cfc75e888d713c8ceebfeb62bb"],"quoteHashes":["e0ac39b451f4948e8f36e1af882787c61eae28ba8b5e225775f1a2e1e944846e","d4fc59c0f1e375680ce94565bf523ef75d502eba371895e1e8e066db330433ee"]}
+# {"tool":"getQuote","id":"fresh-correction-replay","call":"CA00000000000000000000000000000001","status":"quoted","low":1065,"mid":1065,"high":1065,"receiptCount":2,"receiptHashes":["8cb1912406a79e5932bcb0fc86109857f313fe63c86326679e9ab893ebed68c5","887c288a6a0ec1d4ae5220fff9328ec2fdc110cfc75e888d713c8ceebfeb62bb"],"quoteHashes":["e0ac39b451f4948e8f36e1af882787c61eae28ba8b5e225775f1a2e1e944846e","d4fc59c0f1e375680ce94565bf523ef75d502eba371895e1e8e066db330433ee"]}
+1..106
+# tests 106
+# suites 0
+# pass 106
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9836.544667
