@@ -97,6 +97,9 @@ test('qe-agent3 widget request races and persisted recovery through real public 
       await page.route('**/api/public/quote/**',async route=>{
         const req=route.request(),row={method:req.method(),path:new URL(req.url()).pathname,raw:req.postData(),request:req.postDataJSON()};
         log.requests.push(row);
+        // Preserve native Fetch Metadata on same-origin catalogue GETs. The
+        // public origin guard intentionally rejects APIRequestContext GETs.
+        if(req.method()==='GET'){await route.continue();return;}
         const barrier=barriers.find(b=>!b.used&&b.match(row));if(barrier)barrier.used=true;
         try{
           const response=await route.fetch();row.status=response.status();row.response=await response.json();
@@ -157,6 +160,7 @@ test('qe-agent3 widget request races and persisted recovery through real public 
         await run(h);assert.deepEqual(errors,[]);log.passed=true;
       }catch(e){log.passed=false;log.failure=e.stack;throw e;}
       finally{
+        log.display=await page.locator('#root').innerText().catch(()=>null);log.pageErrors=errors;
         log.after=counts();log.storage=await page.evaluate(()=>Object.fromEntries(Object.keys(sessionStorage).map(k=>[k,sessionStorage.getItem(k)]))).catch(()=>null);
         if(output){mkdirSync(output,{recursive:true});await page.screenshot({path:path.join(output,name.split(' ')[0]+'.png'),fullPage:true}).catch(()=>{});}
         for(const b of barriers)b.release.resolve('abort');record();await ctx.close();
