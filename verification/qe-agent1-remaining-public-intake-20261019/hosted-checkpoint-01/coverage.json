@@ -1,0 +1,427 @@
+{
+  "a3BrowserCovered": [
+    "CONCRETE_DRIVEWAY",
+    "FENCING_INSTALL",
+    "FLAT_ROOF_REPAIR",
+    "FLOORING_REPLACEMENT",
+    "LANDSCAPING_MOWING",
+    "LANDSCAPING_MULCH",
+    "LANDSCAPING_PLANTING",
+    "ROOFING_REPAIR"
+  ],
+  "a1Reviewed": [
+    "ROOFING_REPLACEMENT",
+    "FLAT_ROOF_REPLACEMENT",
+    "INTERIOR_PAINTING",
+    "EXTERIOR_PAINTING",
+    "FLOORING_INSTALL",
+    "FENCING_REPLACEMENT",
+    "SIDING_REPLACEMENT",
+    "SIDING_REPAIR",
+    "CONCRETE_PATIO_SLAB",
+    "LANDSCAPING_CLEANUP",
+    "LANDSCAPING_SOD",
+    "CUSTOM"
+  ],
+  "registered": [
+    "ROOFING_REPLACEMENT",
+    "ROOFING_REPAIR",
+    "FLAT_ROOF_REPLACEMENT",
+    "FLAT_ROOF_REPAIR",
+    "INTERIOR_PAINTING",
+    "EXTERIOR_PAINTING",
+    "FLOORING_INSTALL",
+    "FLOORING_REPLACEMENT",
+    "FENCING_INSTALL",
+    "FENCING_REPLACEMENT",
+    "SIDING_REPLACEMENT",
+    "SIDING_REPAIR",
+    "CONCRETE_DRIVEWAY",
+    "CONCRETE_PATIO_SLAB",
+    "LANDSCAPING_CLEANUP",
+    "LANDSCAPING_MULCH",
+    "LANDSCAPING_SOD",
+    "LANDSCAPING_PLANTING",
+    "LANDSCAPING_MOWING",
+    "CUSTOM"
+  ],
+  "untestedServices": [],
+  "stages": {
+    "ROOFING_REPLACEMENT": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "FLAT_ROOF_REPLACEMENT": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "partial-to-full-dependency",
+        "status": "failed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "INTERIOR_PAINTING": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "EXTERIOR_PAINTING": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "FLOORING_INSTALL": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "selected-unpriced-removal",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "FENCING_REPLACEMENT": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "removal-off-dependency",
+        "status": "failed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "SIDING_REPLACEMENT": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "SIDING_REPAIR": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "CONCRETE_PATIO_SLAB": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "measurement-method-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "LANDSCAPING_CLEANUP": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "LANDSCAPING_SOD": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ],
+    "CUSTOM": [
+      {
+        "stage": "valid",
+        "status": "passed"
+      },
+      {
+        "stage": "correction",
+        "status": "passed"
+      },
+      {
+        "stage": "invalid-and-recovery",
+        "status": "passed"
+      },
+      {
+        "stage": "stale-scope-proof",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-correction",
+        "status": "passed"
+      },
+      {
+        "stage": "book-stale-proof-and-original-replay",
+        "status": "passed"
+      },
+      {
+        "stage": "original-replay-after-restart",
+        "status": "passed"
+      }
+    ]
+  }
+}

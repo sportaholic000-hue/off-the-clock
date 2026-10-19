@@ -1,0 +1,277 @@
+[
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "valid",
+    "cents": [
+      244600
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "corrected",
+    "cents": [
+      244698
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "valid",
+    "cents": [
+      1805000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "corrected",
+    "cents": [
+      1805903
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "valid",
+    "cents": [
+      300000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "corrected",
+    "cents": [
+      300300
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "valid",
+    "cents": [
+      318000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "corrected",
+    "cents": [
+      318318
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "valid",
+    "cents": [
+      260670
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "corrected",
+    "cents": [
+      260940
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "valid",
+    "cents": [
+      490000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "corrected",
+    "cents": [
+      492000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "valid",
+    "cents": [
+      1170000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "corrected",
+    "cents": [
+      1170585
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "valid",
+    "cents": [
+      54000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "corrected",
+    "cents": [
+      54000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "valid",
+    "cents": [
+      353889
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "corrected",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "invalid",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "valid",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "corrected",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "invalid",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "valid",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "corrected",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "invalid",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "valid",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "corrected",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "invalid",
+    "status": "failed",
+    "error": {
+      "message": "{\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"error\":\"Please wait before trying again.\"}\n\n429 !== 200\n\n    at api (file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:13:354)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/scratch/db2901c56e80/a1-remaining-services/verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs:27:12"
+    }
+  }
+]

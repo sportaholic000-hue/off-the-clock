@@ -1,0 +1,92 @@
+# Subtest: qe-agent1 independent fence and flat-roof dependency reproductions
+2026-10-19T16:53:54.8053346Z     # Subtest: FENCING_REPLACEMENT removal-off-dependency
+2026-10-19T16:53:54.8053793Z     not ok 1 - FENCING_REPLACEMENT removal-off-dependency
+2026-10-19T16:53:54.8054087Z       ---
+2026-10-19T16:53:54.8054278Z       duration_ms: 0.961057
+2026-10-19T16:53:54.8054503Z       type: 'test'
+2026-10-19T16:53:54.8055169Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs:34:32'
+2026-10-19T16:53:54.8055850Z       failureType: 'testCodeFailure'
+2026-10-19T16:53:54.8056110Z       error: |-
+2026-10-19T16:53:54.8059574Z         {"message":"hidden old-fence length retained after removal was deselected\n\ntrue !== false\n","stack":"AssertionError [ERR_ASSERTION]: hidden old-fence length retained after removal was deselected\n\ntrue !== false\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:101:202\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:39:6)\n    at async dependencies (file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:101:2)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:135:3"}
+2026-10-19T16:53:54.8062863Z         
+2026-10-19T16:53:54.8063069Z         'failed' !== 'passed'
+2026-10-19T16:53:54.8063292Z         
+2026-10-19T16:53:54.8063474Z       code: 'ERR_ASSERTION'
+2026-10-19T16:53:54.8063710Z       name: 'AssertionError'
+2026-10-19T16:53:54.8063944Z       expected: 'passed'
+2026-10-19T16:53:54.8064166Z       actual: 'failed'
+2026-10-19T16:53:54.8064380Z       operator: 'strictEqual'
+2026-10-19T16:53:54.8064610Z       stack: |-
+2026-10-19T16:53:54.8065382Z         TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs:34:71)
+2026-10-19T16:53:54.8066393Z         Test.runInAsyncScope (node:async_hooks:214:14)
+2026-10-19T16:53:54.8066776Z         Test.run (node:internal/test_runner/test:1047:25)
+2026-10-19T16:53:54.8067131Z         Test.start (node:internal/test_runner/test:944:17)
+2026-10-19T16:53:54.8067526Z         TestContext.test (node:internal/test_runner/test:373:20)
+2026-10-19T16:53:54.8068372Z         TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs:34:32)
+2026-10-19T16:53:54.8073290Z         Test.runInAsyncScope (node:async_hooks:214:14)
+2026-10-19T16:53:54.8073699Z         Test.run (node:internal/test_runner/test:1047:25)
+2026-10-19T16:53:54.8074077Z         Test.start (node:internal/test_runner/test:944:17)
+2026-10-19T16:53:54.8074532Z         startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-10-19T16:53:54.8074906Z       ...
+2026-10-19T16:53:54.8075204Z     # Subtest: FLAT_ROOF_REPLACEMENT partial-to-full-dependency
+2026-10-19T16:53:54.8075628Z     not ok 2 - FLAT_ROOF_REPLACEMENT partial-to-full-dependency
+2026-10-19T16:53:54.8075968Z       ---
+2026-10-19T16:53:54.8076159Z       duration_ms: 0.160303
+2026-10-19T16:53:54.8076382Z       type: 'test'
+2026-10-19T16:53:54.8077040Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs:34:32'
+2026-10-19T16:53:54.8077731Z       failureType: 'testCodeFailure'
+2026-10-19T16:53:54.8077971Z       error: |-
+2026-10-19T16:53:54.8081299Z         {"message":"hidden partial scope retained: partialAreaSqft\n\ntrue !== false\n","stack":"AssertionError [ERR_ASSERTION]: hidden partial scope retained: partialAreaSqft\n\ntrue !== false\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:102:358\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:39:6)\n    at async dependencies (file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:102:2)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:135:3"}
+2026-10-19T16:53:54.8084130Z         
+2026-10-19T16:53:54.8084320Z         'failed' !== 'passed'
+2026-10-19T16:53:54.8084539Z         
+2026-10-19T16:53:54.8084718Z       code: 'ERR_ASSERTION'
+2026-10-19T16:53:54.8084953Z       name: 'AssertionError'
+2026-10-19T16:53:54.8085191Z       expected: 'passed'
+2026-10-19T16:53:54.8085408Z       actual: 'failed'
+2026-10-19T16:53:54.8085624Z       operator: 'strictEqual'
+2026-10-19T16:53:54.8085848Z       stack: |-
+2026-10-19T16:53:54.8086575Z         TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs:34:71)
+2026-10-19T16:53:54.8087562Z         Test.runInAsyncScope (node:async_hooks:214:14)
+2026-10-19T16:53:54.8087947Z         Test.run (node:internal/test_runner/test:1047:25)
+2026-10-19T16:53:54.8088316Z         Test.start (node:internal/test_runner/test:944:17)
+2026-10-19T16:53:54.8088721Z         TestContext.test (node:internal/test_runner/test:373:20)
+2026-10-19T16:53:54.8089736Z         TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs:34:32)
+2026-10-19T16:53:54.8090537Z         async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-19T16:53:54.8091025Z         async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-10-19T16:53:54.8091411Z       ...
+2026-10-19T16:53:54.8091739Z     # Subtest: FENCING_REPLACEMENT independent-cleared-removal-control
+2026-10-19T16:53:54.8092229Z     ok 3 - FENCING_REPLACEMENT independent-cleared-removal-control
+2026-10-19T16:53:54.8092564Z       ---
+2026-10-19T16:53:54.8092760Z       duration_ms: 0.082755
+2026-10-19T16:53:54.8093117Z       type: 'test'
+2026-10-19T16:53:54.8093307Z       ...
+2026-10-19T16:53:54.8093609Z     # Subtest: FLAT_ROOF_REPLACEMENT independent-full-scope-control
+2026-10-19T16:53:54.8094055Z     ok 4 - FLAT_ROOF_REPLACEMENT independent-full-scope-control
+2026-10-19T16:53:54.8094366Z       ---
+2026-10-19T16:53:54.8094574Z       duration_ms: 0.054533
+2026-10-19T16:53:54.8094794Z       type: 'test'
+2026-10-19T16:53:54.8094976Z       ...
+2026-10-19T16:53:54.8095169Z     1..4
+2026-10-19T16:53:54.8095550Z not ok 3069 - qe-agent1 independent fence and flat-roof dependency reproductions
+2026-10-19T16:53:54.8095926Z   ---
+2026-10-19T16:53:54.8096112Z   duration_ms: 17170.664708
+2026-10-19T16:53:54.8096330Z   type: 'test'
+2026-10-19T16:53:54.8096972Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs:12:1'
+2026-10-19T16:53:54.8097665Z   failureType: 'testCodeFailure'
+2026-10-19T16:53:54.8097895Z   error: |-
+2026-10-19T16:53:54.8098112Z     See individual failing cases
+2026-10-19T16:53:54.8098332Z     
+2026-10-19T16:53:54.8098498Z     2 !== 0
+2026-10-19T16:53:54.8098666Z     
+2026-10-19T16:53:54.8098842Z   code: 'ERR_ASSERTION'
+2026-10-19T16:53:54.8099162Z   name: 'AssertionError'
+2026-10-19T16:53:54.8099364Z   expected: 0
+2026-10-19T16:53:54.8099549Z   actual: 2
+2026-10-19T16:53:54.8099734Z   operator: 'strictEqual'
+2026-10-19T16:53:54.8099945Z   stack: |-
+2026-10-19T16:53:54.8100647Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs:35:9)
+2026-10-19T16:53:54.8101434Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-19T16:53:54.8101915Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-10-19T16:53:54.8102293Z   ...
+2026-10-19T16:53:54.8136038Z # 

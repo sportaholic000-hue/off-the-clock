@@ -1,0 +1,15 @@
+{
+  "FENCING_REPLACEMENT-removal-off-dependency.png": "d3660213f14d81ef363bf0196298d16062153f61b6587bd4db10ce83af907c2c",
+  "FLAT_ROOF_REPLACEMENT-partial-to-full-dependency.png": "676fc1b367ea6eb69df48a389868b6a5dd8e2b13da1653ecec04d08fd7e80fc1",
+  "approved-book.json": "8a68fc8c3ea7169a7873641c3b33b548d5f6e3f8212cad4841b10ce49c6955e2",
+  "catalog.json": "dfbfa3136b1ccd91e75a269a91cb506c2be7c3d4327310fbf81fd8663eb4a3cf",
+  "coverage.json": "a32f5df777f30d34dfad3bb902906c29c654d90c67530e33cfaab4f9d5172f36",
+  "expectations.json": "8db4ce27d9814411243acf1ff24124b876846379aff22afa020e662d46a9c02e",
+  "http.json": "bdf552278a4a9ddfc4064fa32433a92be47428bcb86cb415bb2218303e3d8c84",
+  "original-receipts.json": "4f24ba157c734ed7740acfeb4fdc62cee617fa94bed5dfa0909af8c83dfbab18",
+  "price-edited-book.json": "b8f8554a63c69a88461fcc0ed89925bd31167f417efb6fa3057a09fee1f9dc43",
+  "result.json": "c3b75797027b420002cb3674c33ad0761bf702cac8338a88136d93edfac4a962",
+  "results.json": "f10210558b8ca6ea6e6de9528903a7b423d9e03eb2ae7f8ab9d882c3033dab91",
+  "source-binding.json": "31937c1574cd88118185065addf47e1e4b73db29bc75ae7ae3d616ce3c73db77",
+  "stale-catalog.json": "0256ca01bd062b3af941b50db8001a1dea527c97df2f4cce6de4623e39caa30c"
+}

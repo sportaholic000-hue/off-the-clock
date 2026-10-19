@@ -1,0 +1,8 @@
+{
+  "run": 39289284610,
+  "job": 118185396680,
+  "head": "f02b8d4abb0c85bf47db7816e472de345d7a5e90",
+  "source": "Complete133/133 evidence chunks; gzip CRC validated",
+  "classification": "All4 independent explicit-correction/clean-scope checks pass. Initial two product-defect classifications are withdrawn.",
+  "bundleSha256": "22e102174f210bad3a896a74fc710858cc3b25384a9bb9736d40b7d86174ed0f"
+}

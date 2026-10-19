@@ -1,0 +1,434 @@
+[
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "valid",
+    "cents": [
+      244600
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "corrected",
+    "cents": [
+      244698
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "valid",
+    "cents": [
+      1805000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "corrected",
+    "cents": [
+      1805903
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "valid",
+    "cents": [
+      300000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "corrected",
+    "cents": [
+      300300
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "valid",
+    "cents": [
+      318000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "corrected",
+    "cents": [
+      318318
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "valid",
+    "cents": [
+      260670
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "corrected",
+    "cents": [
+      260940
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "valid",
+    "cents": [
+      490000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "corrected",
+    "cents": [
+      492000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "valid",
+    "cents": [
+      1170000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "corrected",
+    "cents": [
+      1170585
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "valid",
+    "cents": [
+      54000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "corrected",
+    "cents": [
+      54000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "valid",
+    "cents": [
+      353889
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "corrected",
+    "cents": [
+      361486
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "valid",
+    "cents": [
+      40000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "corrected",
+    "cents": [
+      35000
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "valid",
+    "cents": [
+      253750
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "corrected",
+    "cents": [
+      203750
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "valid",
+    "cents": [
+      12500
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "corrected",
+    "cents": [
+      12500
+    ],
+    "status": "passed"
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "invalid",
+    "status": "passed"
+  },
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "stale-scope-proof",
+    "status": "passed"
+  },
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "stale-price-proof-and-original-replay",
+    "status": "passed"
+  },
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  },
+  {
+    "type": "CUSTOM",
+    "variant": "original-replay-after-restart",
+    "status": "passed"
+  }
+]
