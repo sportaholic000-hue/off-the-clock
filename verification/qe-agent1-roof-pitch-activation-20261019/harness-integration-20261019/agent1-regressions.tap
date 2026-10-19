@@ -1,0 +1,696 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 actual HTTP and voice matrix completes all independent cases
+ok 1 - AP01/AP02 actual HTTP and voice matrix completes all independent cases
+  ---
+  duration_ms: 26.427944
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--low
+ok 2 - AP01/AP02 saved widget + actual voice: missing-unknown--low
+  ---
+  duration_ms: 0.823568
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--over12
+ok 3 - AP01/AP02 saved widget + actual voice: missing-unknown--over12
+  ---
+  duration_ms: 0.107057
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--mixed-zero
+ok 4 - AP01/AP02 saved widget + actual voice: missing-unknown--mixed-zero
+  ---
+  duration_ms: 0.124954
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--mixed-positive
+ok 5 - AP01/AP02 saved widget + actual voice: missing-unknown--mixed-positive
+  ---
+  duration_ms: 0.206193
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--unknown
+ok 6 - AP01/AP02 saved widget + actual voice: missing-unknown--unknown
+  ---
+  duration_ms: 0.152734
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--low
+ok 7 - AP01/AP02 saved widget + actual voice: missing-install--low
+  ---
+  duration_ms: 0.230078
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--over12
+ok 8 - AP01/AP02 saved widget + actual voice: missing-install--over12
+  ---
+  duration_ms: 0.103832
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--mixed-zero
+ok 9 - AP01/AP02 saved widget + actual voice: missing-install--mixed-zero
+  ---
+  duration_ms: 0.327791
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--mixed-positive
+ok 10 - AP01/AP02 saved widget + actual voice: missing-install--mixed-positive
+  ---
+  duration_ms: 0.461016
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--unknown
+ok 11 - AP01/AP02 saved widget + actual voice: missing-install--unknown
+  ---
+  duration_ms: 0.188967
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--low
+ok 12 - AP01/AP02 saved widget + actual voice: missing-removal--low
+  ---
+  duration_ms: 0.10214
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--over12
+ok 13 - AP01/AP02 saved widget + actual voice: missing-removal--over12
+  ---
+  duration_ms: 0.110943
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--mixed-zero
+ok 14 - AP01/AP02 saved widget + actual voice: missing-removal--mixed-zero
+  ---
+  duration_ms: 0.075611
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--mixed-positive
+ok 15 - AP01/AP02 saved widget + actual voice: missing-removal--mixed-positive
+  ---
+  duration_ms: 0.106216
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--unknown
+ok 16 - AP01/AP02 saved widget + actual voice: missing-removal--unknown
+  ---
+  duration_ms: 0.076873
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--low
+ok 17 - AP01/AP02 saved widget + actual voice: missing-both--low
+  ---
+  duration_ms: 0.078715
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--over12
+ok 18 - AP01/AP02 saved widget + actual voice: missing-both--over12
+  ---
+  duration_ms: 0.07464
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--mixed-zero
+ok 19 - AP01/AP02 saved widget + actual voice: missing-both--mixed-zero
+  ---
+  duration_ms: 0.070113
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--mixed-positive
+ok 20 - AP01/AP02 saved widget + actual voice: missing-both--mixed-positive
+  ---
+  duration_ms: 0.074289
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--unknown
+ok 21 - AP01/AP02 saved widget + actual voice: missing-both--unknown
+  ---
+  duration_ms: 0.060529
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--low
+ok 22 - AP01/AP02 saved widget + actual voice: complete-positive--low
+  ---
+  duration_ms: 0.058205
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--over12
+ok 23 - AP01/AP02 saved widget + actual voice: complete-positive--over12
+  ---
+  duration_ms: 0.057264
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--mixed-zero
+ok 24 - AP01/AP02 saved widget + actual voice: complete-positive--mixed-zero
+  ---
+  duration_ms: 0.065637
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--mixed-positive
+ok 25 - AP01/AP02 saved widget + actual voice: complete-positive--mixed-positive
+  ---
+  duration_ms: 0.18398
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--unknown
+ok 26 - AP01/AP02 saved widget + actual voice: complete-positive--unknown
+  ---
+  duration_ms: 0.082221
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--low
+ok 27 - AP01/AP02 saved widget + actual voice: explicit-zero--low
+  ---
+  duration_ms: 0.062912
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--over12
+ok 28 - AP01/AP02 saved widget + actual voice: explicit-zero--over12
+  ---
+  duration_ms: 0.065767
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--mixed-zero
+ok 29 - AP01/AP02 saved widget + actual voice: explicit-zero--mixed-zero
+  ---
+  duration_ms: 0.064475
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--mixed-positive
+ok 30 - AP01/AP02 saved widget + actual voice: explicit-zero--mixed-positive
+  ---
+  duration_ms: 0.06094
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--unknown
+ok 31 - AP01/AP02 saved widget + actual voice: explicit-zero--unknown
+  ---
+  duration_ms: 0.058286
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--low
+ok 32 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--low
+  ---
+  duration_ms: 0.063293
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--over12
+ok 33 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--over12
+  ---
+  duration_ms: 0.069972
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-zero
+ok 34 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-zero
+  ---
+  duration_ms: 0.065917
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-positive
+ok 35 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-positive
+  ---
+  duration_ms: 0.375962
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--unknown
+ok 36 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--unknown
+  ---
+  duration_ms: 0.097423
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--low
+ok 37 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--low
+  ---
+  duration_ms: 0.078065
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--over12
+ok 38 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--over12
+  ---
+  duration_ms: 0.069642
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-zero
+ok 39 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-zero
+  ---
+  duration_ms: 0.070053
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-positive
+ok 40 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-positive
+  ---
+  duration_ms: 0.06815
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--unknown
+ok 41 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--unknown
+  ---
+  duration_ms: 0.079015
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-up_to_six
+ok 42 - AP01/AP02 saved widget + actual voice: unknown-band-up_to_six
+  ---
+  duration_ms: 0.111153
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-seven_to_nine
+ok 43 - AP01/AP02 saved widget + actual voice: unknown-band-seven_to_nine
+  ---
+  duration_ms: 0.211931
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-ten_to_twelve
+ok 44 - AP01/AP02 saved widget + actual voice: unknown-band-ten_to_twelve
+  ---
+  duration_ms: 0.081519
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--low
+ok 45 - AP01/AP02 saved widget + actual voice: tier-completion--low
+  ---
+  duration_ms: 0.08922
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--over12
+ok 46 - AP01/AP02 saved widget + actual voice: tier-completion--over12
+  ---
+  duration_ms: 0.065126
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--unknown
+ok 47 - AP01/AP02 saved widget + actual voice: tier-completion--unknown
+  ---
+  duration_ms: 0.058425
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-explicit-zero--low
+ok 48 - AP01/AP02 saved widget + actual voice: tier-explicit-zero--low
+  ---
+  duration_ms: 0.071024
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-explicit-zero--over12
+ok 49 - AP01/AP02 saved widget + actual voice: tier-explicit-zero--over12
+  ---
+  duration_ms: 0.061971
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--complete
+ok 50 - AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--complete
+  ---
+  duration_ms: 0.063894
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--incomplete
+ok 51 - AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--incomplete
+  ---
+  duration_ms: 0.08167
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--complete
+ok 52 - AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--complete
+  ---
+  duration_ms: 0.064755
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--incomplete
+ok 53 - AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--incomplete
+  ---
+  duration_ms: 0.058265
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--complete
+ok 54 - AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--complete
+  ---
+  duration_ms: 0.061239
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--incomplete
+ok 55 - AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--incomplete
+  ---
+  duration_ms: 0.064715
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--complete
+ok 56 - AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--complete
+  ---
+  duration_ms: 0.06138
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--incomplete
+ok 57 - AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--incomplete
+  ---
+  duration_ms: 0.064225
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--complete
+ok 58 - AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--complete
+  ---
+  duration_ms: 0.062972
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--incomplete
+ok 59 - AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--incomplete
+  ---
+  duration_ms: 0.064254
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--complete
+ok 60 - AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--complete
+  ---
+  duration_ms: 0.069782
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--incomplete
+ok 61 - AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--incomplete
+  ---
+  duration_ms: 0.069682
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: historical-missing-measurement
+ok 62 - AP01/AP02 saved widget + actual voice: historical-missing-measurement
+  ---
+  duration_ms: 0.105865
+  type: 'test'
+  ...
+# (node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-known-request
+ok 63 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-known-request
+  ---
+  duration_ms: 313.409799
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request
+ok 64 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request
+  ---
+  duration_ms: 185.413108
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request
+ok 65 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request
+  ---
+  duration_ms: 156.967535
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request
+ok 66 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request
+  ---
+  duration_ms: 176.896349
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--base
+ok 67 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--base
+  ---
+  duration_ms: 210.669559
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: historical-missing-measurement
+ok 68 - AP01/AP02 authentic v12 immutable priced/review receipts: historical-missing-measurement
+  ---
+  duration_ms: 198.221247
+  type: 'test'
+  ...
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog unknown quick=false
+ok 69 - AP01/AP02 complete lower-pitch product remains live: 1 catalog unknown quick=false
+  ---
+  duration_ms: 70.007238
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog unknown quick=true
+ok 70 - AP01/AP02 complete lower-pitch product remains live: 1 catalog unknown quick=true
+  ---
+  duration_ms: 28.852422
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog install quick=false
+ok 71 - AP01/AP02 complete lower-pitch product remains live: 1 catalog install quick=false
+  ---
+  duration_ms: 26.412382
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog install quick=true
+ok 72 - AP01/AP02 complete lower-pitch product remains live: 1 catalog install quick=true
+  ---
+  duration_ms: 23.177155
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog removal quick=false
+ok 73 - AP01/AP02 complete lower-pitch product remains live: 1 catalog removal quick=false
+  ---
+  duration_ms: 24.165134
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog removal quick=true
+ok 74 - AP01/AP02 complete lower-pitch product remains live: 1 catalog removal quick=true
+  ---
+  duration_ms: 24.18262
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog both quick=false
+ok 75 - AP01/AP02 complete lower-pitch product remains live: 1 catalog both quick=false
+  ---
+  duration_ms: 21.155499
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog both quick=true
+ok 76 - AP01/AP02 complete lower-pitch product remains live: 1 catalog both quick=true
+  ---
+  duration_ms: 21.250077
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog unknownIncomplete quick=false
+ok 77 - AP01/AP02 complete lower-pitch product remains live: 1 catalog unknownIncomplete quick=false
+  ---
+  duration_ms: 20.554668
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 1 catalog unknownIncomplete quick=true
+ok 78 - AP01/AP02 complete lower-pitch product remains live: 1 catalog unknownIncomplete quick=true
+  ---
+  duration_ms: 20.745558
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog unknown quick=false
+ok 79 - AP01/AP02 complete lower-pitch product remains live: 2 catalog unknown quick=false
+  ---
+  duration_ms: 44.63051
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog unknown quick=true
+ok 80 - AP01/AP02 complete lower-pitch product remains live: 2 catalog unknown quick=true
+  ---
+  duration_ms: 24.224372
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog install quick=false
+ok 81 - AP01/AP02 complete lower-pitch product remains live: 2 catalog install quick=false
+  ---
+  duration_ms: 47.905255
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog install quick=true
+ok 82 - AP01/AP02 complete lower-pitch product remains live: 2 catalog install quick=true
+  ---
+  duration_ms: 25.199342
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog removal quick=false
+ok 83 - AP01/AP02 complete lower-pitch product remains live: 2 catalog removal quick=false
+  ---
+  duration_ms: 45.280824
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog removal quick=true
+ok 84 - AP01/AP02 complete lower-pitch product remains live: 2 catalog removal quick=true
+  ---
+  duration_ms: 24.762871
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog both quick=false
+ok 85 - AP01/AP02 complete lower-pitch product remains live: 2 catalog both quick=false
+  ---
+  duration_ms: 29.509876
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog both quick=true
+ok 86 - AP01/AP02 complete lower-pitch product remains live: 2 catalog both quick=true
+  ---
+  duration_ms: 18.072696
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog unknownIncomplete quick=false
+ok 87 - AP01/AP02 complete lower-pitch product remains live: 2 catalog unknownIncomplete quick=false
+  ---
+  duration_ms: 24.967802
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 2 catalog unknownIncomplete quick=true
+ok 88 - AP01/AP02 complete lower-pitch product remains live: 2 catalog unknownIncomplete quick=true
+  ---
+  duration_ms: 15.752743
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog unknown quick=false
+ok 89 - AP01/AP02 complete lower-pitch product remains live: 11 catalog unknown quick=false
+  ---
+  duration_ms: 114.278918
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog unknown quick=true
+ok 90 - AP01/AP02 complete lower-pitch product remains live: 11 catalog unknown quick=true
+  ---
+  duration_ms: 18.74386
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog install quick=false
+ok 91 - AP01/AP02 complete lower-pitch product remains live: 11 catalog install quick=false
+  ---
+  duration_ms: 107.783007
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog install quick=true
+ok 92 - AP01/AP02 complete lower-pitch product remains live: 11 catalog install quick=true
+  ---
+  duration_ms: 18.092384
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog removal quick=false
+ok 93 - AP01/AP02 complete lower-pitch product remains live: 11 catalog removal quick=false
+  ---
+  duration_ms: 123.418502
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog removal quick=true
+ok 94 - AP01/AP02 complete lower-pitch product remains live: 11 catalog removal quick=true
+  ---
+  duration_ms: 20.149774
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog both quick=false
+ok 95 - AP01/AP02 complete lower-pitch product remains live: 11 catalog both quick=false
+  ---
+  duration_ms: 137.863901
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog both quick=true
+ok 96 - AP01/AP02 complete lower-pitch product remains live: 11 catalog both quick=true
+  ---
+  duration_ms: 22.299668
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog unknownIncomplete quick=false
+ok 97 - AP01/AP02 complete lower-pitch product remains live: 11 catalog unknownIncomplete quick=false
+  ---
+  duration_ms: 125.522524
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 complete lower-pitch product remains live: 11 catalog unknownIncomplete quick=true
+ok 98 - AP01/AP02 complete lower-pitch product remains live: 11 catalog unknownIncomplete quick=true
+  ---
+  duration_ms: 26.021558
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 null over12
+ok 99 - AP01/AP02 retains global/boundary safeguards: 1 null over12
+  ---
+  duration_ms: 4.060598
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 negative over12
+ok 100 - AP01/AP02 retains global/boundary safeguards: 1 negative over12
+  ---
+  duration_ms: 3.7689
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 malformed unknown band
+ok 101 - AP01/AP02 retains global/boundary safeguards: 1 malformed unknown band
+  ---
+  duration_ms: 3.341873
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 malformed sibling price
+ok 102 - AP01/AP02 retains global/boundary safeguards: 1 malformed sibling price
+  ---
+  duration_ms: 3.335213
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 invalid shared fee
+ok 103 - AP01/AP02 retains global/boundary safeguards: 1 invalid shared fee
+  ---
+  duration_ms: 7.870608
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 1 unsafe maximum-area arithmetic
+ok 104 - AP01/AP02 retains global/boundary safeguards: 1 unsafe maximum-area arithmetic
+  ---
+  duration_ms: 14.555876
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 null over12
+ok 105 - AP01/AP02 retains global/boundary safeguards: 11 null over12
+  ---
+  duration_ms: 4.382279
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 negative over12
+ok 106 - AP01/AP02 retains global/boundary safeguards: 11 negative over12
+  ---
+  duration_ms: 4.650253
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 malformed unknown band
+ok 107 - AP01/AP02 retains global/boundary safeguards: 11 malformed unknown band
+  ---
+  duration_ms: 4.331084
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 malformed sibling price
+ok 108 - AP01/AP02 retains global/boundary safeguards: 11 malformed sibling price
+  ---
+  duration_ms: 4.282563
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 invalid shared fee
+ok 109 - AP01/AP02 retains global/boundary safeguards: 11 invalid shared fee
+  ---
+  duration_ms: 55.916059
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains global/boundary safeguards: 11 unsafe maximum-area arithmetic
+ok 110 - AP01/AP02 retains global/boundary safeguards: 11 unsafe maximum-area arithmetic
+  ---
+  duration_ms: 90.530875
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 retains all standard pitch and large boundary probes, plus complete optional pitches
+ok 111 - AP01/AP02 retains all standard pitch and large boundary probes, plus complete optional pitches
+  ---
+  duration_ms: 0.806854
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 still probes complete optional steep arithmetic at its maximum: 1
+ok 112 - AP01/AP02 still probes complete optional steep arithmetic at its maximum: 1
+  ---
+  duration_ms: 62.232616
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 still probes complete optional steep arithmetic at its maximum: 11
+ok 113 - AP01/AP02 still probes complete optional steep arithmetic at its maximum: 11
+  ---
+  duration_ms: 413.931928
+  type: 'test'
+  ...
+1..113
+# tests 113
+# suites 0
+# pass 113
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 67768.598431

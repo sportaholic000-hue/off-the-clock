@@ -18,9 +18,8 @@ const zipped=(file,x)=>fs.writeFileSync(path.join(out,file+'.json.gz'),gzipSync(
 write('expectations.json',selected.map(({id,serviceType,variant,expected,note})=>({id,serviceType,variant,expected,note})));
 const source=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const productionBase='2b452feeb1af7c288c19b12bea5b95e48b81920e';
-// Bind source ownership; build-generated client/dist is not source and CI builds it first.
-const changed=execFileSync('git',['diff','--name-only',productionBase,'--','server','test','specs','.github','client/src','scripts','package.json','package-lock.json'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
-if(changed.some(p=>p!=='server/quote-engine-vnext/priceBook.js'&&!p.startsWith('verification/qe-agent1-roof-pitch-activation-20261019/')&&!/^test\/(?:voice)?qeAgent1RoofPitchActivation.*\.spec\.mjs$/.test(p)))throw Error('Unowned changes');
+// Branch ownership is qualified separately with qualify-source.mjs BASE HEAD.
+// Behavioral regressions run against the current tree, including approved merges.
 if(process.env.CAPTURE&&execFileSync('git',['diff','--','server'],{encoding:'utf8'}))throw Error('Capture requires pristine production');
 write('production-diff.json',{diff:execFileSync('git',['diff',productionBase,'--','server'],{encoding:'utf8'})});
 write('binding.json',{source,productionBase,node:process.version,started:new Date().toISOString(),expectationsSha256:createHash('sha256').update(fs.readFileSync(path.join(out,'expectations.json'))).digest('hex'),providers:'synthetic only',selected:selected.length});

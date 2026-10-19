@@ -1,0 +1,44 @@
+(node:7) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source qualification accepts the explicit scoped commit range
+ok 1 - source qualification accepts the explicit scoped commit range
+  ---
+  duration_ms: 39.435452
+  type: 'test'
+  ...
+# Subtest: source qualification ignores unrelated committed and dirty checkout content outside the named range
+ok 2 - source qualification ignores unrelated committed and dirty checkout content outside the named range
+  ---
+  duration_ms: 47.678311
+  type: 'test'
+  ...
+# Subtest: source qualification rejects an unowned change within the named range
+ok 3 - source qualification rejects an unowned change within the named range
+  ---
+  duration_ms: 49.571772
+  type: 'test'
+  ...
+# Subtest: source qualification requires forward ancestry
+ok 4 - source qualification requires forward ancestry
+  ---
+  duration_ms: 31.821428
+  type: 'test'
+  ...
+# Subtest: source qualification CLI refuses omitted commit refs
+ok 5 - source qualification CLI refuses omitted commit refs
+  ---
+  duration_ms: 54.689553
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 313.585562
