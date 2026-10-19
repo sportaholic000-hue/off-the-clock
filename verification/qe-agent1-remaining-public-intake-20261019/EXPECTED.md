@@ -27,8 +27,18 @@ For the eleven non-custom corrections, obtain a genuine proof for the original s
 
 Replay each original successful final body after correction: HTTP200, byte-identical customer result, original submitted scope and saved calculation receipt, with no duplicate rows. Then increase one explicitly identified owner price by one dollar per service using real save. Approvals must not silently renew. An unsaved original proof must be stale; old successful receipts must still replay unchanged, including after application restart. This is real history captured before the synthetic edit, not a manufactured receipt.
 
-Additional correction controls: fence removal Yes→No should omit its now-inapplicable length and quote450000; flat roof partial→full should omit partial-only fields and quote1805000; patio exact→measured area/perimeter should omit old dimensions and quote353889. Missing selected optional prices must remain review-only. Any mismatch is recorded separately with exact input, saved configuration, HTTP response and screenshot; the remaining cases continue. F2 is outside this review.
+Superseded automatic-clear hypothesis (retained here as failed-run evidence): fence removal Yes→No should omit its now-inapplicable length and quote450000; flat roof partial→full should omit partial-only fields and quote1805000; patio exact→measured area/perimeter should omit old dimensions and quote353889. Missing selected optional prices must remain review-only. Any mismatch is recorded separately with exact input, saved configuration, HTTP response and screenshot; the remaining cases continue. F2 is outside this review.
 
 ## Independent reproduction controls
 
 After the first hosted run recorded the two dependency failures, a separate invocation with a fresh application/database/book repeats those exact transitions. It also submits the same requested work with the inapplicable field absent: fence removal off is 100×4000+2×25000=450000 cents; full flat-roof replacement remains 1805000 cents. These expectations precede execution of the separate reproduction. The original 88-case regression and its assertions remain intact. The separate four-case regression also requires correct behavior and deliberately remains red for an unfixed defect.
+
+## Corrected contract expectations, written before the next execution
+
+The first two automatic-clear assertions were mistaken. Existing `server/scopeConfiguration.js:138–144` explicitly retains a supplied field on screen for customer correction, and CustomerMeasurements uses that visibility contract. The approved catalog defines these fields without a conditional visibility restriction. A3's existing fence correction fixture also distinguishes the contradictory supplied length from the explicitly cleared request. No new automatic-deletion policy is assumed.
+
+For fence removal Yes→No with50LF already supplied: the50LF control must remain visible and editable; submitting the contradiction must require details and create no durable rows. After Change details and explicit clearing of that control, a fresh preparation/final submission must omit removalLengthLF and quote450000 cents.
+
+For flat-roof partial→full with500sqft partial area supplied: that control must remain visible and editable; the contradiction must require details without persistence. After Change details and explicit clearing, fresh preparation/final submission must omit partial measurements and quote1805000 cents.
+
+These replace only the new A1 audit's unsupported automatic-clear expectations. They add rendered visibility, retained-value, review and explicit-correction assertions. Every pre-existing A3 test/assertion, all original failed-run evidence and the independent amounts remain unchanged. The two initial product-defect classifications are withdrawn pending execution of this correct contract path.

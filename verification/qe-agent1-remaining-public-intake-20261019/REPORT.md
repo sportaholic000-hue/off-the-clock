@@ -1,5 +1,7 @@
 # Remaining-service public-intake review
 
+The two initially reported product defects are **withdrawn**: the audit assumed automatic deletion despite the existing explicit-correction contract. The strengthened rendered correction checks are awaiting hosted execution. Original failed runs and their mistaken expectations are preserved.
+
 Review base: `1f8b1a20e1b910c7787a05dd820814894b01a961` (approved A3). Unique branch: `codex/qe-agent1-remaining-services-chromium-review-20261019`. Personal execution; no subagents. Only new A1 test/evidence files are changed. A2's branch is untouched.
 
 ## Coverage and independent expectations
@@ -25,12 +27,15 @@ The complete 555/555 diagnostic chunks were recovered and gzip/JSON validated. `
 
 Published-checkpoint HTTP rerun 05 at `fe2387e3f2cf0e8271557c7f464e09feada43d0c`: **72/72 passed**, exit 0, using the committed HTTP harness. Its output is separate from all earlier runs. The 88-case review reproduced86 passed/2 failed at that checkpoint. The new separate-reproduction file was selected by full but did not initially reach quote sources through imports, so strict did not run it and the workflow skipped full after strict failed. This harness gap is preserved in the run evidence. The reproduction now uses its documented service-fixture catalog to validate the two service types; both strict and full selectors include it without any selector changes. Independent Chromium reproduction results remain pending.
 
-## Confirmed findings
+## Corrected audit classification
 
-- **A1-R12-01 — fence removal deselection retains hidden length.** In the configured FENCING_REPLACEMENT fixture, change oldFenceRemoval from true to false using the rendered select. The real prepare request still has removalLengthLF=50, violating the existing configured-offering contract. The requested work should omit removal and quote **450000 cents** (100×4000 +2×25000), versus the original 490000. Source: `client/src/quoteDoneControls.jsx`, CustomerMeasurements.update; server diagnostic: `server/quote-engine-vnext/configuredOfferings.js` (removal length supplied while removal excluded). No arithmetic or server-validation relaxation is proposed.
-- **A1-R12-02 — flat-roof full scope retains hidden partial area.** Restore the valid partial-scope draft with partialAreaSqft=500, then choose full scope in Chromium. The real prepare request retains partialAreaSqft=500. Correct full-scope work should omit partial measurements and quote **1805000 cents**. Source: the same CustomerMeasurements.update; existing flat-roof contract: `server/quote-engine-vnext/contracts.js`, full-scope partial-measurement diagnostics. These are customer correction failures, not evidence of incorrect engine arithmetic.
+The two original optional-transition assertions demanded automatic removal of supplied fence length / partial-roof area. That assumption was unsupported. `server/scopeConfiguration.js:138–144` explicitly retains supplied values on screen for customer correction; `CustomerMeasurements` uses that visibility contract. The approved catalog also supplies these fields without conditional visibility restrictions. A3's existing fence API correction fixture distinguishes the contradiction from the explicitly cleared valid request.
 
-A separate fresh-application Chromium invocation repeats those two transitions and includes clean-scope controls with independent 450000/1805000 expectations. `test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs` is normally selected without selector changes. Both new tests require correct behavior and retain failing assertions until the product defects are repaired. Production is outside this review's ownership and remains untouched.
+Thus the observed `needs_details` responses correctly reject contradictions; they do not establish hidden-field defects. The initial A1-R12-01/A1-R12-02 product-defect classifications are withdrawn. No production repair or new policy is proposed.
+
+The new A1 checks now require the supplied50LF/500sqft controls to remain visible and editable, require review with no persistence while contradictory, then use Change details and explicitly clear the field. Fresh prepare/final calls must quote the unchanged independent450000/1805000-cent expectations. This adds visibility, retained-value, review and explicit-clear assertions. All pre-existing tests, prices, production and original failed evidence remain unchanged. The corrected expectations were written before executing this path.
+
+A separate fresh-application invocation checks the same transitions and two clean-scope controls. Both new tests are verified selected by strict and full without editing selectors. Detailed classification history is in `FINDINGS.md`.
 
 ## Commands
 
@@ -50,11 +55,11 @@ Each row passed all seven main Chromium/public-HTTP lifecycle checks: valid, cor
 | Service | Base cents | Corrected cents | Main cases | Extra cases |
 |---|---:|---:|---:|---|
 | ROOFING_REPLACEMENT | 244600 | 244698 | 7/7 passed | — |
-| FLAT_ROOF_REPLACEMENT | 1805000 | 1805903 | 7/7 passed | Partial-to-full failed |
+| FLAT_ROOF_REPLACEMENT | 1805000 | 1805903 | 7/7 passed | Automatic-clear hypothesis failed; explicit correction pending |
 | INTERIOR_PAINTING | 300000 | 300300 | 7/7 passed | — |
 | EXTERIOR_PAINTING | 318000 | 318318 | 7/7 passed | — |
 | FLOORING_INSTALL | 260670 | 260940 | 7/7 passed | Unpriced removal review passed |
-| FENCING_REPLACEMENT | 490000 | 492000 | 7/7 passed | Removal-off failed |
+| FENCING_REPLACEMENT | 490000 | 492000 | 7/7 passed | Automatic-clear hypothesis failed; explicit correction pending |
 | SIDING_REPLACEMENT | 1170000 | 1170585 | 7/7 passed | — |
 | SIDING_REPAIR | 54000 | 54000 | 7/7 passed | — |
 | CONCRETE_PATIO_SLAB | 353889 | 361486 | 7/7 passed | Measurement correction passed |

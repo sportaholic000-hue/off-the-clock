@@ -98,8 +98,25 @@ async function replay(type){
 }
 
 async function dependencies(){
- await check('FENCING_REPLACEMENT','removal-off-dependency',async()=>{await restore('FENCING_REPLACEMENT');await field('FENCING_REPLACEMENT','oldFenceRemoval',false);const p=await prepare(null);assert.equal(Object.hasOwn(p.request.customerInputs,'removalLengthLF'),false,'hidden old-fence length retained after removal was deselected');assert.equal(p.response.status,'ready');const c=clone(f.get('FENCING_REPLACEMENT').customerInputs);c.oldFenceRemoval=false;delete c.removalLengthLF;await final('FENCING_REPLACEMENT',p,c,450000);});
- await check('FLAT_ROOF_REPLACEMENT','partial-to-full-dependency',async()=>{await restore('FLAT_ROOF_REPLACEMENT',{...f.get('FLAT_ROOF_REPLACEMENT').customerInputs,serviceScope:'partial',partialAreaSqft:500});await field('FLAT_ROOF_REPLACEMENT','serviceScope','full');const p=await prepare(null);for(const key of ['partialAreaSqft','partialPercent'])assert.equal(Object.hasOwn(p.request.customerInputs,key),false,'hidden partial scope retained: '+key);assert.equal(p.response.status,'ready');await final('FLAT_ROOF_REPLACEMENT',p,f.get('FLAT_ROOF_REPLACEMENT').customerInputs,1805000);});
+ await check('FENCING_REPLACEMENT','removal-off-dependency',async()=>{
+  await restore('FENCING_REPLACEMENT');await field('FENCING_REPLACEMENT','oldFenceRemoval',false);
+  const control=page.getByLabel('Measured old fence length to remove',{exact:true});
+  current.retainedControl={visible:await control.isVisible(),value:await control.inputValue()};
+  assert.deepEqual(current.retainedControl,{visible:true,value:'50'},'Supplied removal length must remain editable for explicit correction');
+  const contradictory=await prepare('needs_details');assert.equal(contradictory.request.customerInputs.oldFenceRemoval,false);assert.equal(contradictory.request.customerInputs.removalLengthLF,50);
+  await changeDetails();assert.equal(await control.isVisible(),true);await field('FENCING_REPLACEMENT','removalLengthLF',undefined);
+  const c=clone(f.get('FENCING_REPLACEMENT').customerInputs);c.oldFenceRemoval=false;delete c.removalLengthLF;
+  const p=await prepare();assert.equal(Object.hasOwn(p.request.customerInputs,'removalLengthLF'),false,'Explicitly cleared removal length must be absent');await final('FENCING_REPLACEMENT',p,c,450000);
+ });
+ await check('FLAT_ROOF_REPLACEMENT','partial-to-full-dependency',async()=>{
+  await restore('FLAT_ROOF_REPLACEMENT',{...f.get('FLAT_ROOF_REPLACEMENT').customerInputs,serviceScope:'partial',partialAreaSqft:500});await field('FLAT_ROOF_REPLACEMENT','serviceScope','full');
+  const control=page.getByLabel('Measured affected roof area',{exact:true});
+  current.retainedControl={visible:await control.isVisible(),value:await control.inputValue()};
+  assert.deepEqual(current.retainedControl,{visible:true,value:'500'},'Supplied partial area must remain editable for explicit correction');
+  const contradictory=await prepare('needs_details');assert.equal(contradictory.request.customerInputs.serviceScope,'full');assert.equal(contradictory.request.customerInputs.partialAreaSqft,500);
+  await changeDetails();assert.equal(await control.isVisible(),true);await field('FLAT_ROOF_REPLACEMENT','partialAreaSqft',undefined);
+  const p=await prepare();for(const key of ['partialAreaSqft','partialPercent'])assert.equal(Object.hasOwn(p.request.customerInputs,key),false,'Explicitly corrected full scope must omit '+key);await final('FLAT_ROOF_REPLACEMENT',p,f.get('FLAT_ROOF_REPLACEMENT').customerInputs,1805000);
+ });
 }
 
 try{
