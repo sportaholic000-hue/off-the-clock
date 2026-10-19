@@ -1,0 +1,102 @@
+[
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "cents": 244600,
+    "required": "roofSizeInput"
+  },
+  {
+    "type": "ROOFING_REPAIR",
+    "cents": 58600,
+    "required": "affectedArea"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "cents": 1805000,
+    "required": "roofSqft"
+  },
+  {
+    "type": "FLAT_ROOF_REPAIR",
+    "cents": 36000,
+    "required": "affectedArea"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "cents": 300000,
+    "required": "wallAreaSqft"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "cents": 318000,
+    "required": "exteriorAreaSqft"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "cents": 260670,
+    "required": "sqft"
+  },
+  {
+    "type": "FLOORING_REPLACEMENT",
+    "cents": 311280,
+    "required": "sqft"
+  },
+  {
+    "type": "FENCING_INSTALL",
+    "cents": 450000,
+    "required": "fenceHeight"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "cents": 490000,
+    "required": "fenceHeight"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "cents": 1170000,
+    "required": "sidingAreaSqft"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "cents": 54000,
+    "required": "affectedArea"
+  },
+  {
+    "type": "CONCRETE_DRIVEWAY",
+    "cents": 892222,
+    "required": "length"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "cents": 353889,
+    "required": "length"
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "cents": 40000,
+    "required": "yardSqft"
+  },
+  {
+    "type": "LANDSCAPING_MULCH",
+    "cents": 32275,
+    "required": "mulchArea"
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "cents": 253750,
+    "required": "sodSqft"
+  },
+  {
+    "type": "LANDSCAPING_PLANTING",
+    "cents": 28500,
+    "required": "plantsBySize"
+  },
+  {
+    "type": "LANDSCAPING_MOWING",
+    "cents": 16000,
+    "required": "yardSqft"
+  },
+  {
+    "type": "CUSTOM",
+    "cents": 12500,
+    "required": "serviceConfirmed"
+  }
+]

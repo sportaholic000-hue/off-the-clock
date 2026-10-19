@@ -1,0 +1,17 @@
+{
+  "head": "915f8e711e078f453c99255484b5bdf8abb8ad39",
+  "node": "v22.23.3",
+  "files": {
+    "client/public/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376",
+    "client/dist/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376",
+    "client/dist/widget-app.js": "9a6cacaa678964314ac1928434220a2779289374946f82291581acb7481fc015",
+    "client/src/widget-entry.jsx": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab",
+    "client/src/quoteWizard.jsx": "e96b00ff1263e6244c026319d1e6ac536753fea6bf0dd2fa95cce5603c3e84e9",
+    "client/src/quotedone.jsx": "20f8bd85d628c406549b0cbeee42e4283f23ba54cb08c35832f389a09fe0a6b4",
+    "client/src/quoteDoneControls.jsx": "577659d2771d04ca46739a4873680067c6c62886520436a602e12704154a1ed4",
+    "verification/qe-agent1-widget-entry-review-20261019/EXPECTED.md": "68b8403d6eec0a6872bd5afa9f2ebd6abeefe87ae6b444d2a50eaf505c7bbf65",
+    "verification/qe-agent1-widget-entry-review-20261019/browser-entry.mjs": "4cd1d4850c56f4f4b62e1c1afdf3e9c6d237b39feda769a39bb1501bb94fe9d2",
+    "verification/qe-agent1-widget-entry-review-20261019/application.mjs": "fd03b5e15dd0a7c9956da4dacc0409bbaa7c313916d5b43eadce45e520255005",
+    "verification/qe-agent1-widget-entry-review-20261019/cases.mjs": "d8f4809a43e80ab34fbea4e104fccc25050df205c0085eeb0ace773546e177dd"
+  }
+}
