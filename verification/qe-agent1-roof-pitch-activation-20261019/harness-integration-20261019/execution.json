@@ -1,0 +1,33 @@
+{
+  "node": "v22.23.3",
+  "beforeAuditExit": 1,
+  "beforeChannelExit": 1,
+  "agent1": {
+    "tests": 113,
+    "pass": 113,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "combined": {
+    "tests": 690,
+    "pass": 690,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "sourceQualification": {
+    "tests": 5,
+    "pass": 5,
+    "fail": 0
+  },
+  "expectedStartupFailure": {
+    "exitCode": 1,
+    "fatal": true,
+    "casesExecuted": 0
+  },
+  "qualificationOfScopedRangeFromCombined": true,
+  "qualificationOfCombinedRangeExit": 1
+}

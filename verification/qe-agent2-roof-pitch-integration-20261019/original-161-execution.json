@@ -1,0 +1,102 @@
+{
+  "command": [
+    "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+    "--experimental-test-module-mocks",
+    "verification/qe-agent1-roof-pitch-activation-20261019/audit.mjs",
+    "/workspace/scratch/754089be5e74/off-the-clock-integration/verification/qe-agent2-roof-pitch-integration-20261019/original-161"
+  ],
+  "node": "v22.23.3",
+  "exit_code": 0,
+  "seconds": 113.643,
+  "summary": {
+    "executed": 161,
+    "matched": 161,
+    "mismatched": 0,
+    "ended": "2026-10-19T15:59:32.252Z"
+  },
+  "identical_to_accepted_161_results": true,
+  "controls": [
+    {
+      "id": "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request",
+      "serviceType": "ROOFING_REPLACEMENT",
+      "variant": "absent-unknown-pitch-policy-known-request",
+      "faults": [],
+      "approval": true,
+      "ownerStatus": "QUOTING LIVE",
+      "catalog": 1,
+      "direct": "INSTANT_ESTIMATE_READY",
+      "widget": "INSTANT_ESTIMATE_READY",
+      "voice": "quoted",
+      "amounts": {
+        "direct": [
+          391000
+        ],
+        "widget": [
+          391000
+        ],
+        "voice": [
+          391000
+        ]
+      }
+    },
+    {
+      "id": "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request",
+      "serviceType": "ROOFING_REPLACEMENT",
+      "variant": "absent-unknown-pitch-policy-unknown-request",
+      "faults": [],
+      "approval": true,
+      "ownerStatus": "QUOTING LIVE",
+      "catalog": 1,
+      "direct": "ESTIMATE_REQUIRES_REVIEW",
+      "widget": "ESTIMATE_REQUIRES_REVIEW",
+      "voice": "needs_details",
+      "amounts": {
+        "direct": [],
+        "widget": [],
+        "voice": []
+      }
+    },
+    {
+      "id": "ROOFING_REPLACEMENT--absent-over12-adjustment-known-request",
+      "serviceType": "ROOFING_REPLACEMENT",
+      "variant": "absent-over12-adjustment-known-request",
+      "faults": [],
+      "approval": true,
+      "ownerStatus": "QUOTING LIVE",
+      "catalog": 1,
+      "direct": "INSTANT_ESTIMATE_READY",
+      "widget": "INSTANT_ESTIMATE_READY",
+      "voice": "quoted",
+      "amounts": {
+        "direct": [
+          391000
+        ],
+        "widget": [
+          391000
+        ],
+        "voice": [
+          391000
+        ]
+      }
+    },
+    {
+      "id": "ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request",
+      "serviceType": "ROOFING_REPLACEMENT",
+      "variant": "absent-over12-adjustment-over12-request",
+      "faults": [],
+      "approval": true,
+      "ownerStatus": "QUOTING LIVE",
+      "catalog": 1,
+      "direct": "ESTIMATE_REQUIRES_REVIEW",
+      "widget": "ESTIMATE_REQUIRES_REVIEW",
+      "voice": "needs_details",
+      "amounts": {
+        "direct": [],
+        "widget": [],
+        "voice": []
+      }
+    }
+  ],
+  "problems": [],
+  "passed": true
+}

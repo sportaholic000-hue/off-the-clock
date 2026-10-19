@@ -1,0 +1,614 @@
+{
+  "CONCRETE_DRIVEWAY--base.json": {
+    "bytes": 387673,
+    "sha256": "67d633758e2d4111ec7a5a578b99f0116bdbb01638297e8ffa8e11a12c8c90de"
+  },
+  "CONCRETE_DRIVEWAY--explicit-thickness-band-contradictory.json": {
+    "bytes": 165257,
+    "sha256": "657c991794261bd44bb55e4731d048c92fe7eb28408356a43da6cefe81c39e73"
+  },
+  "CONCRETE_DRIVEWAY--explicit-thickness-band-matching.json": {
+    "bytes": 388927,
+    "sha256": "f1acf84683f5c61ab74d6cf3bfbb9722d2f26b17d6bd1ac1efa7c725a5a8f4f9"
+  },
+  "CONCRETE_DRIVEWAY--inherited-and-explicit-tiers.json": {
+    "bytes": 619191,
+    "sha256": "a00b8b4f353f194828557e62a936ac809d9e4ff182874e80e0c34b8002a81bf1"
+  },
+  "CONCRETE_DRIVEWAY--optional-absent-selected.json": {
+    "bytes": 167515,
+    "sha256": "af0db7e5440e7106cde9510c449338c89a9200a2c46e2d8f275d0051a688b148"
+  },
+  "CONCRETE_DRIVEWAY--optional-absent-unselected.json": {
+    "bytes": 387739,
+    "sha256": "6988d2533c4d32d5dbe3cb2ad2ba286aab8e3a1c1a127c07c41511f799f505d6"
+  },
+  "CONCRETE_DRIVEWAY--optional-priced-selected.json": {
+    "bytes": 419664,
+    "sha256": "b52e138f816ad7183482e57b3b48b8104d57573a971a555191acf5c36837fc0f"
+  },
+  "CONCRETE_DRIVEWAY--optional-tier-completion.json": {
+    "bytes": 472709,
+    "sha256": "764a21c0b97f0ba7b0697fd3059686dc709070b651be9a1d9a3b02655b61fa1c"
+  },
+  "CONCRETE_DRIVEWAY--thickness-tier-isolation.json": {
+    "bytes": 425279,
+    "sha256": "e55bb1925389b1181bcb6a68b933b57182b9030cc376d950b9be9de28ffa6e07"
+  },
+  "CONCRETE_PATIO_SLAB--base.json": {
+    "bytes": 387951,
+    "sha256": "7f6f125ee3e8bf02803966ba265d50d90bba2fd34be331b782fe64cdce341a43"
+  },
+  "CONCRETE_PATIO_SLAB--explicit-thickness-band-contradictory.json": {
+    "bytes": 165423,
+    "sha256": "659e05065c4df012c2cdfa10ddadb2a0452f5e4c96520378c7e677485c8e8971"
+  },
+  "CONCRETE_PATIO_SLAB--explicit-thickness-band-matching.json": {
+    "bytes": 389171,
+    "sha256": "2d19c36b9868ff9cc0c88d47cf2c02fc69e9ff6bbbd529bcfe41b3bb9e1c3359"
+  },
+  "CONCRETE_PATIO_SLAB--inherited-and-explicit-tiers.json": {
+    "bytes": 619489,
+    "sha256": "79e862db4f7fbdd7de661e22905bc745f979e37d18be13cecd6310aa888d52f0"
+  },
+  "CONCRETE_PATIO_SLAB--optional-absent-selected.json": {
+    "bytes": 167711,
+    "sha256": "24a0410f8f36ea1b4c4169273d34afa0076a2da04191471d30ebfc7019206351"
+  },
+  "CONCRETE_PATIO_SLAB--optional-absent-unselected.json": {
+    "bytes": 388017,
+    "sha256": "8a97f65edc6cbb33793d7341f59dd8beb0b47bc511e51612fd421f9597879e39"
+  },
+  "CONCRETE_PATIO_SLAB--optional-priced-selected.json": {
+    "bytes": 419942,
+    "sha256": "8aa29e21ec21234a10a79e91ddba31b58ceca5f7c73f570163a6098ea2a03835"
+  },
+  "CONCRETE_PATIO_SLAB--optional-tier-completion.json": {
+    "bytes": 472953,
+    "sha256": "74094a29f2832fd6a069ceef9e8ebfc50bbff7b93163a0eb2615e38e75597aa8"
+  },
+  "CONCRETE_PATIO_SLAB--thickness-tier-isolation.json": {
+    "bytes": 425523,
+    "sha256": "f35eb3df3e3a436c801e35b4d4407a5e4fad4dd816970cce1b6a16b1e4b90f2f"
+  },
+  "CUSTOM--base.json": {
+    "bytes": 201632,
+    "sha256": "b1917c5213040e39018f4ca8a24c87cc048551821d8b3bb6766104568aa3233b"
+  },
+  "CUSTOM--explicit-unit-contradiction.json": {
+    "bytes": 97629,
+    "sha256": "46210b374a3c00afe684aeec5721591dffa5e6cb83091f93355d7f33daa7d387"
+  },
+  "CUSTOM--inherited-and-explicit-tiers.json": {
+    "bytes": 295621,
+    "sha256": "e58c85ea6855fa0f26d5314ec050615d8d7e0581d7ceed5259b8dba60747692c"
+  },
+  "EXTERIOR_PAINTING--absent-optional-baseline-detail.json": {
+    "bytes": 472813,
+    "sha256": "4755682234dd15454b82941317a6bd0a96beaeeac28e25240645a4938edbf14a"
+  },
+  "EXTERIOR_PAINTING--base.json": {
+    "bytes": 474333,
+    "sha256": "b4efabbe434be2995bf8259eb2fcd69214400ad17b04eb88990e73dbea197732"
+  },
+  "EXTERIOR_PAINTING--explicit-coat-contradiction.json": {
+    "bytes": 305211,
+    "sha256": "afef7230a5eb7b92cf51b7691ef20daaaf858596ad23e6e9ce8ced42d61cba80"
+  },
+  "EXTERIOR_PAINTING--inherited-and-explicit-tiers.json": {
+    "bytes": 648073,
+    "sha256": "038cef1c7ee38d380b74a49e4ba9f2a46c564668558cee5e1aa5953e87e7c360"
+  },
+  "EXTERIOR_PAINTING--optional-absent-selected.json": {
+    "bytes": 493453,
+    "sha256": "b4ff2a978b33b6c1bdbab2f687440a465a82232a419c909f437316c74d937b4d"
+  },
+  "EXTERIOR_PAINTING--optional-absent-unselected.json": {
+    "bytes": 474399,
+    "sha256": "efa6575f2e3acb13096e1957b01f99e11486995893f079aca8aee5a7949b6305"
+  },
+  "EXTERIOR_PAINTING--optional-priced-selected.json": {
+    "bytes": 531265,
+    "sha256": "c8d6cb2a6b966be9b5babb1d7b4298685986a31695a0badd4f2b5aa346f9452c"
+  },
+  "EXTERIOR_PAINTING--optional-tier-completion.json": {
+    "bytes": 707305,
+    "sha256": "22ae9f6b3af8a142fe58f9f88b08b9d2639ad112cbb375aae368085b0fbc0c2c"
+  },
+  "FENCING_INSTALL--absent-optional-baseline-detail.json": {
+    "bytes": 270429,
+    "sha256": "f292bb620fb9dfd0c78112887b3ecd27200410b2fa553dda929d890091608701"
+  },
+  "FENCING_INSTALL--base.json": {
+    "bytes": 270930,
+    "sha256": "f6a976ae6fc29b2c73ca6fa49f19165e14a4c80532c45352ef23b7107e84182c"
+  },
+  "FENCING_INSTALL--explicit-unoffered-removal-or-type.json": {
+    "bytes": 118816,
+    "sha256": "f68e994557023301870ade8a0c246b3b2e71adb7c283fb69882c9d9ece82768a"
+  },
+  "FENCING_INSTALL--inherited-and-explicit-tiers.json": {
+    "bytes": 410599,
+    "sha256": "9715dbc6a87d6864e7911ab3187a542133e66256982007e5aed4326c92704a34"
+  },
+  "FENCING_INSTALL--minimal-prices.json": {
+    "bytes": 259232,
+    "sha256": "6ddb3140857c48611ffe7b4ffb4655217505c6462fee8644afb5c0d614852c0c"
+  },
+  "FENCING_INSTALL--optional-absent-selected.json": {
+    "bytes": 138648,
+    "sha256": "14688ea875a80aebf7a6d95eb8ad88583ece325d5a62f3b401e2be48abb49ff6"
+  },
+  "FENCING_INSTALL--optional-absent-unselected.json": {
+    "bytes": 268689,
+    "sha256": "c136ed79437b0d8dd97b18bdd7948734f1e40237c61783fe6317ed85afe234ea"
+  },
+  "FENCING_INSTALL--optional-priced-selected.json": {
+    "bytes": 319009,
+    "sha256": "0c0d592e7f8da523ad1de8284cc0b4a67d25d0a823ea7eacefdf4eb080fc566e"
+  },
+  "FENCING_INSTALL--optional-tier-completion.json": {
+    "bytes": 363104,
+    "sha256": "ab20b9e4858286efae402ec61049706fd5731bb0a7450c607cccb0e1d4a2e339"
+  },
+  "FENCING_REPLACEMENT--absent-optional-baseline-detail.json": {
+    "bytes": 285176,
+    "sha256": "44d35bbeb6e0fa8a8369be6fa13dca5e0a13d1fc4fd4d60265f5f575ad027225"
+  },
+  "FENCING_REPLACEMENT--base.json": {
+    "bytes": 285677,
+    "sha256": "a623bc73d458375ace84846441768a595c92b4bf5feedf657d45b812a108fe7d"
+  },
+  "FENCING_REPLACEMENT--explicit-unoffered-removal-or-type.json": {
+    "bytes": 131481,
+    "sha256": "a7fb6abfae1f37a14b7866f1975fcb0802ea46231317553c0008ba6ab393db7a"
+  },
+  "FENCING_REPLACEMENT--inherited-and-explicit-tiers.json": {
+    "bytes": 433980,
+    "sha256": "8bb83efd0f288e340c8d51b06afb7950fd66ffb19c4638155de580b226e7916d"
+  },
+  "FENCING_REPLACEMENT--minimal-prices.json": {
+    "bytes": 264304,
+    "sha256": "f35b724905910230c525aea5400a2a8669705afc6b70f068c2cca2c88f6c7448"
+  },
+  "FENCING_REPLACEMENT--optional-absent-selected.json": {
+    "bytes": 151653,
+    "sha256": "cfcbe979c0cafa79989e1b04a1cb4e6854979cfb91ea70063a708c817137f052"
+  },
+  "FENCING_REPLACEMENT--optional-absent-unselected.json": {
+    "bytes": 283436,
+    "sha256": "62a5b4a5995239edea6d05d024d70763b26e913d2ee47e161d94f4602d022b88"
+  },
+  "FENCING_REPLACEMENT--optional-priced-selected.json": {
+    "bytes": 333756,
+    "sha256": "e6c51237a86a9f97fa0b2dc45cf3318563e61e02dd34994e65a0df7eca023228"
+  },
+  "FENCING_REPLACEMENT--optional-tier-completion.json": {
+    "bytes": 386238,
+    "sha256": "f285ba8cbd532b48f6e5ead5f706e8363412f0c286984b238ad234a65b762025"
+  },
+  "FLAT_ROOF_REPAIR--absent-large-limit-small.json": {
+    "bytes": 141987,
+    "sha256": "656ed50f01dad51fe5b1b8d9369245236856dd044ede68bcfc02c1eaa1d26d5d"
+  },
+  "FLAT_ROOF_REPAIR--base.json": {
+    "bytes": 290553,
+    "sha256": "7edc91176d801a489e3263579366b51a181f58446032000eb57ade2d6dec61cc"
+  },
+  "FLAT_ROOF_REPAIR--explicit-large-limit-exceeded.json": {
+    "bytes": 143156,
+    "sha256": "30f7d55c59ae34c22d17c7e0b194a1197af25e87c584eed7c7c9b329effbd0d9"
+  },
+  "FLAT_ROOF_REPAIR--inherited-and-explicit-tiers.json": {
+    "bytes": 443188,
+    "sha256": "b6b9434c74cf4eae91e54148da222bb54af159393227a9a1dab6ca30f9acf239"
+  },
+  "FLAT_ROOF_REPAIR--optional-absent-selected.json": {
+    "bytes": 294424,
+    "sha256": "b4e939c315148cea7cf4faf803b1aa2ad2a6e6ad846503fc5e7349b3e5c44a49"
+  },
+  "FLAT_ROOF_REPAIR--optional-absent-unselected.json": {
+    "bytes": 290619,
+    "sha256": "ffd3ca699c5e66bf463ce17c483321cc2246a5a8d888440d117d82e7f01ed16f"
+  },
+  "FLAT_ROOF_REPAIR--optional-priced-selected.json": {
+    "bytes": 313131,
+    "sha256": "064b151108ab3350a7e55cf1591a715e1690d611c768526e800d5b934c5d783b"
+  },
+  "FLAT_ROOF_REPAIR--optional-tier-completion.json": {
+    "bytes": 466979,
+    "sha256": "2c4ed8f2e5e6afffe7159222988c75770879e6f2e4dfdbfc5c0069a8364591f5"
+  },
+  "FLAT_ROOF_REPLACEMENT--base.json": {
+    "bytes": 371204,
+    "sha256": "023d7f7e30cc47804951e48a37f98bb8741476266a5e6c460207ca2f05fa6a45"
+  },
+  "FLAT_ROOF_REPLACEMENT--deck-basis-absent-selected.json": {
+    "bytes": 410752,
+    "sha256": "14b9f3b927b5304d0df9e8eea25241ce71d7fd51684fc09a4ec753e2ef28dfa5"
+  },
+  "FLAT_ROOF_REPLACEMENT--deck-basis-absent-unselected.json": {
+    "bytes": 377430,
+    "sha256": "1b005b0268c2ecd37fbb913bc3a7ffa8e8a8cef2afba728fc3ce16b91d5e0978"
+  },
+  "FLAT_ROOF_REPLACEMENT--deck-basis-installed-selected.json": {
+    "bytes": 423572,
+    "sha256": "9959c6ecccefff3c45258a6355caa3547f39b04a712a5f18d326c811a5e111f8"
+  },
+  "FLAT_ROOF_REPLACEMENT--deck-basis-installed-unselected.json": {
+    "bytes": 380248,
+    "sha256": "e8fa98fe3d51a1d308ec09f7d6be8615afef29bd58f20e13688bc601687aa33c"
+  },
+  "FLAT_ROOF_REPLACEMENT--deck-basis-material-selected.json": {
+    "bytes": 411937,
+    "sha256": "73254bc65032a5f9c3d100f58b4b22500f5685abfffd5ae84f03084edb3f72cb"
+  },
+  "FLAT_ROOF_REPLACEMENT--inherited-and-explicit-tiers.json": {
+    "bytes": 582190,
+    "sha256": "9e71652342ca99a10fd74707f15696f68c01314b1446afe525d7613579aeb083"
+  },
+  "FLAT_ROOF_REPLACEMENT--optional-absent-selected.json": {
+    "bytes": 153374,
+    "sha256": "ad3f183c3238e6b72128d8ca66c0e0b6751e2b1bf3631f3849565b7a5afa7763"
+  },
+  "FLAT_ROOF_REPLACEMENT--optional-absent-unselected.json": {
+    "bytes": 371270,
+    "sha256": "ddb7ba6d13ee555da24942686455f5669fe77d54b5caf50026fa5986f280c85c"
+  },
+  "FLAT_ROOF_REPLACEMENT--optional-priced-selected.json": {
+    "bytes": 435968,
+    "sha256": "e993e798be677a15a0da94770de99f1724f22a4cd9a48d0cf8c2f73691088865"
+  },
+  "FLAT_ROOF_REPLACEMENT--optional-tier-completion.json": {
+    "bytes": 477799,
+    "sha256": "6c1715495a898a98ebde49f971d15876bc7ea8cb061e4352106b631c53e41ac7"
+  },
+  "FLOORING_INSTALL--absent-furniture-unit-unselected.json": {
+    "bytes": 879058,
+    "sha256": "b1eefdf67f98015f73c249313102940cb074c00a6de74c5cb2f314126d15ae6e"
+  },
+  "FLOORING_INSTALL--base.json": {
+    "bytes": 878974,
+    "sha256": "483d15ecf5000b6731a7b7d4c709dbe3ffe0379639908ecd7299ded5a4da5920"
+  },
+  "FLOORING_INSTALL--explicit-furniture-flat.json": {
+    "bytes": 923918,
+    "sha256": "24a0795f833a3d87786b1213da1b16daea0223a57daf2691e6d5581833b06165"
+  },
+  "FLOORING_INSTALL--explicit-furniture-room.json": {
+    "bytes": 926906,
+    "sha256": "68bbe47355f1e19535cba578506a821b1f7af391015f8d65ba29fe9a702a6f02"
+  },
+  "FLOORING_INSTALL--inherited-and-explicit-tiers.json": {
+    "bytes": 1105127,
+    "sha256": "f9fb1cf711dc87c1d2cc5e9d5893936cd4b5c7e52f9407be0565653718b2deb2"
+  },
+  "FLOORING_INSTALL--optional-absent-selected.json": {
+    "bytes": 883889,
+    "sha256": "e04db608cd2dd591408d8fa7c548833288bfbe19ffada14e5ba6f54a4d706802"
+  },
+  "FLOORING_INSTALL--optional-absent-unselected.json": {
+    "bytes": 879040,
+    "sha256": "1a3f05f56cffd3dcadd83f324a35126bcf3522234dc4d3a0fec498f266686bdf"
+  },
+  "FLOORING_INSTALL--optional-priced-selected.json": {
+    "bytes": 926997,
+    "sha256": "ebe6594adaab92bf1385852a8abc63894608b5454f1cbe4baea2f89da98b41e5"
+  },
+  "FLOORING_INSTALL--optional-tier-completion.json": {
+    "bytes": 1151640,
+    "sha256": "b6442aa9ef3dc4c75710f2609bd48ba9374431c0fd4062260aac434ef0cc6df7"
+  },
+  "FLOORING_REPLACEMENT--absent-furniture-unit-unselected.json": {
+    "bytes": 883790,
+    "sha256": "f45422088149e1f21f353bd8017f8afb40888f8b0bd124802afacf2ec7a75b02"
+  },
+  "FLOORING_REPLACEMENT--base.json": {
+    "bytes": 883706,
+    "sha256": "b6388aca6ef080a132cbac86441f32f2a422d09a59a897b7d468c21a7d67bcf5"
+  },
+  "FLOORING_REPLACEMENT--explicit-furniture-flat.json": {
+    "bytes": 928650,
+    "sha256": "e99324eea9268572df4aa241ce71466b2a111d7028da96f5711948f844adf492"
+  },
+  "FLOORING_REPLACEMENT--explicit-furniture-room.json": {
+    "bytes": 931638,
+    "sha256": "b020fb1502519181570649a594f4a88c2d601dff755e79c99fd8c27c7aa2a271"
+  },
+  "FLOORING_REPLACEMENT--inherited-and-explicit-tiers.json": {
+    "bytes": 1111141,
+    "sha256": "7957deaecb577e2344909c1da733c0ad040ad0018529fdf73cc98decebfb0cb9"
+  },
+  "FLOORING_REPLACEMENT--optional-absent-selected.json": {
+    "bytes": 888621,
+    "sha256": "1d7dfca973ac398839d815038a494f4214a0bed2e4fdd1e98289523e5275ee17"
+  },
+  "FLOORING_REPLACEMENT--optional-absent-unselected.json": {
+    "bytes": 883772,
+    "sha256": "c1e9ed0636345b458eac38ad5f3956a758d856b255b283e8850808bc322bc018"
+  },
+  "FLOORING_REPLACEMENT--optional-priced-selected.json": {
+    "bytes": 931729,
+    "sha256": "93275a3e631992dd79a9ba4660c027e3ac268cd22f0a1b8d265cb12a63218818"
+  },
+  "FLOORING_REPLACEMENT--optional-tier-completion.json": {
+    "bytes": 1157642,
+    "sha256": "dc02f9e9fec0ef481063723930a6ccd786aeee332b9dddedba50d1342c9ce51f"
+  },
+  "INTERIOR_PAINTING--absent-optional-baseline-detail.json": {
+    "bytes": 516480,
+    "sha256": "64e12208bc9348ac195e3d7f6a77fe61379242b55e36d447cfc61ad8d53a023c"
+  },
+  "INTERIOR_PAINTING--absent-trim-constraints.json": {
+    "bytes": 570442,
+    "sha256": "a5e5c4cc1b8631921a5e6f4da9b5e92889c020914236a758f501a0bec6d2c641"
+  },
+  "INTERIOR_PAINTING--base.json": {
+    "bytes": 517267,
+    "sha256": "dc53becca084e70ce8cd9dcad27fd94dc893a2da405ea5f2f276cc065fb31f7b"
+  },
+  "INTERIOR_PAINTING--explicit-trim-contradictory.json": {
+    "bytes": 345985,
+    "sha256": "85a5545090b886e13e8aff8b3b2fab555a5f72496c8c145eb6f75f6c2dc15ac0"
+  },
+  "INTERIOR_PAINTING--explicit-trim-matching.json": {
+    "bytes": 572211,
+    "sha256": "90af0dcc4ddd9924e0331fee3a1f47067b8c7c0d232c68b76d1fcfe693546458"
+  },
+  "INTERIOR_PAINTING--inherited-and-explicit-tiers.json": {
+    "bytes": 713260,
+    "sha256": "d2ba1a53dc5af7297263ba32cde20cfa5dc04008c633d30f5de88375d1af268d"
+  },
+  "INTERIOR_PAINTING--minimal-prices.json": {
+    "bytes": 508561,
+    "sha256": "0f897cda1ef43b8e7fcf514b4b61a00bbcb4fddf4828dcc9acb2751ea96e3640"
+  },
+  "INTERIOR_PAINTING--optional-absent-selected.json": {
+    "bytes": 352264,
+    "sha256": "4dabeb4486a7db22afa61e39a88d659c2c5fc028ccee0acf623aec8832a5745e"
+  },
+  "INTERIOR_PAINTING--optional-absent-unselected.json": {
+    "bytes": 512800,
+    "sha256": "27bdcd9b18ac91ab73d0bc641161428b8958281802c1fee4143da6a7beb0bb33"
+  },
+  "INTERIOR_PAINTING--optional-priced-selected.json": {
+    "bytes": 572405,
+    "sha256": "76e48cb20ede7d29efa76e979d8c2a278123156ca20b0ef8d3859f2759fd3825"
+  },
+  "INTERIOR_PAINTING--optional-tier-completion.json": {
+    "bytes": 674979,
+    "sha256": "613931a55dbc5d5e5905e57f79eb512a7236be68ad68af3d82c09bbe030c234c"
+  },
+  "LANDSCAPING_CLEANUP--base.json": {
+    "bytes": 258189,
+    "sha256": "fddfed47c900ac3f9a4a573c007cb33393d2381ff3a7f379c10bfe4cac8d3fca"
+  },
+  "LANDSCAPING_CLEANUP--explicit-bag-disposal.json": {
+    "bytes": 111963,
+    "sha256": "914797bf55257874f363efd01e4c09b802568670a6d8414ce24ca5b194173995"
+  },
+  "LANDSCAPING_CLEANUP--inherited-and-explicit-tiers.json": {
+    "bytes": 399553,
+    "sha256": "4eca492da50392477cf8dbe5449918f56cf763fc04248bff9306ba554d8f281f"
+  },
+  "LANDSCAPING_CLEANUP--optional-absent-selected.json": {
+    "bytes": 113109,
+    "sha256": "5b53de52511b206dc0f696d2981ed11b15187f4147308654daf1e4d4761ec9af"
+  },
+  "LANDSCAPING_CLEANUP--optional-absent-unselected.json": {
+    "bytes": 258255,
+    "sha256": "3a88190323d63667318898d00b57df11d56e52041497bacce31bd82bbad6ca18"
+  },
+  "LANDSCAPING_CLEANUP--optional-priced-selected.json": {
+    "bytes": 279861,
+    "sha256": "ee4500e85a2787b345d210b3d99563d144b1075e18968a2f2ebe8dd898307e99"
+  },
+  "LANDSCAPING_CLEANUP--optional-tier-completion.json": {
+    "bytes": 311291,
+    "sha256": "3b7c5e8d0c3d2f5918e0b80e3375f673143f6dc304c87ee013346b70e76ebbb5"
+  },
+  "LANDSCAPING_MOWING--base.json": {
+    "bytes": 231066,
+    "sha256": "0a1a80941d5834c6b8e8563a1fb5c8b979e060df25172c19818d975a54b011c3"
+  },
+  "LANDSCAPING_MOWING--explicit-visit-charge.json": {
+    "bytes": 253407,
+    "sha256": "f91b3a561a4e81b409306dcabae76876bcdb5ae51ecb5e1c975a4e11c9ab00c4"
+  },
+  "LANDSCAPING_MOWING--inherited-and-explicit-tiers.json": {
+    "bytes": 347678,
+    "sha256": "60153e12df31da0d9f4f917a0fc8cd769c41d7b7f5962cac1939d7defa074766"
+  },
+  "LANDSCAPING_MOWING--optional-absent-selected.json": {
+    "bytes": 235387,
+    "sha256": "89ea05c78eec6ec601ec8e6cd200cf8e615284ebf8245513aa7432c9cceb0b73"
+  },
+  "LANDSCAPING_MOWING--optional-absent-unselected.json": {
+    "bytes": 231132,
+    "sha256": "2222148357d6dfd334c255b92fc1cfba121657fee0cca2659f45377adfc764da"
+  },
+  "LANDSCAPING_MOWING--optional-priced-selected.json": {
+    "bytes": 260401,
+    "sha256": "b0399a928ffcd27eb424df75eca4204e44797911419c59c1f829a28dae7a1c95"
+  },
+  "LANDSCAPING_MOWING--optional-tier-completion.json": {
+    "bytes": 377530,
+    "sha256": "d801c5fc24f5503c12f73c8aad240198c27796d976b8e1c1a3c1fc0507f81c31"
+  },
+  "LANDSCAPING_MULCH--base.json": {
+    "bytes": 299238,
+    "sha256": "8645205191d6499a1a138c471998008e3aaf4223d58626c5c45d5510295db837"
+  },
+  "LANDSCAPING_MULCH--explicit-stated-yards.json": {
+    "bytes": 292095,
+    "sha256": "31951be0935c32ddf3dc5b9316d4ce8310ae57255a78bc2952a70fab2a748359"
+  },
+  "LANDSCAPING_MULCH--inherited-and-explicit-tiers.json": {
+    "bytes": 459476,
+    "sha256": "b36ef243ef317dfe4bfe1426fcaa878a85a38fcf561e6ee5a061902966419302"
+  },
+  "LANDSCAPING_MULCH--optional-absent-selected.json": {
+    "bytes": 142642,
+    "sha256": "3ec8231014cc4fa2a1c2adcf0f69d6114bde3505bdbe2ca0a0fda6760af48604"
+  },
+  "LANDSCAPING_MULCH--optional-absent-unselected.json": {
+    "bytes": 299304,
+    "sha256": "fb6c03d1855511bf23d64e5d566d17cb5c5ae69b4937511e3bb64e03fe8b951c"
+  },
+  "LANDSCAPING_MULCH--optional-priced-selected.json": {
+    "bytes": 344703,
+    "sha256": "b86c76b789393b74099a73ac4ab46f904a3e8b99b1e9f2f61a8258d95a9a16f0"
+  },
+  "LANDSCAPING_MULCH--optional-tier-completion.json": {
+    "bytes": 379723,
+    "sha256": "8c650939615345876185b9c78744658586b536dee995d27e778d310601d0af1c"
+  },
+  "LANDSCAPING_PLANTING--base.json": {
+    "bytes": 419969,
+    "sha256": "653f17b674e25a0c5b58d40dfc3c2b4292b43c8c93476aa1e2872b9bc2e260dc"
+  },
+  "LANDSCAPING_PLANTING--inherited-and-explicit-tiers.json": {
+    "bytes": 693933,
+    "sha256": "2b39cb9498661d0f1094e951aabf79c35cc0267f8f39b271d7d72c4fc1188757"
+  },
+  "LANDSCAPING_PLANTING--optional-absent-selected.json": {
+    "bytes": 147740,
+    "sha256": "ca3b68e903b5c21c3aa570ac2c18988703a781c8ac0064a130bf3ce9a5e91332"
+  },
+  "LANDSCAPING_PLANTING--optional-absent-unselected.json": {
+    "bytes": 420035,
+    "sha256": "18eb23ece0fdd45757eeea63cc93574ccc1eedf42a8821b68241ff703c90b02d"
+  },
+  "LANDSCAPING_PLANTING--optional-priced-selected.json": {
+    "bytes": 511264,
+    "sha256": "af5b3d8391b88ba44824a780a6159f5a35050c981a7e3876dd9c02c571a9ee42"
+  },
+  "LANDSCAPING_PLANTING--optional-tier-completion.json": {
+    "bytes": 554376,
+    "sha256": "6cc4946f0f2490182f2af754a1b720ed2f89399961d9f77977a490fcaf543d54"
+  },
+  "LANDSCAPING_SOD--base.json": {
+    "bytes": 275297,
+    "sha256": "33292b24b4680518e14183800d1e8221dcf6d33e61f1f46e17156a12b228be21"
+  },
+  "LANDSCAPING_SOD--inherited-and-explicit-tiers.json": {
+    "bytes": 432579,
+    "sha256": "c492df1ba3a09383da91086280beb2db39a3cbe222799440f5ac89843219b148"
+  },
+  "LANDSCAPING_SOD--optional-absent-selected.json": {
+    "bytes": 108749,
+    "sha256": "1dc1ed377efd9b7e141533096f36514c14e3d97ca4b115c64b33f3d3c43a7182"
+  },
+  "LANDSCAPING_SOD--optional-absent-unselected.json": {
+    "bytes": 275363,
+    "sha256": "bbd9ddd16e9f9ea4119a117d07d21222f4791fd058ce6de6d8bebaf780c493c1"
+  },
+  "LANDSCAPING_SOD--optional-priced-selected.json": {
+    "bytes": 308662,
+    "sha256": "309c1e97179cc43a685c81bb0938d5aae052e8d88e441a5b04d683b13d81269d"
+  },
+  "LANDSCAPING_SOD--optional-tier-completion.json": {
+    "bytes": 335029,
+    "sha256": "c6f0918d9d6bb0cedccee26ecbf6343922c53f2436b1976dc95936c519768236"
+  },
+  "LANDSCAPING_SOD--topsoil-depth-stated.json": {
+    "bytes": 336220,
+    "sha256": "c0aab7d34e8c8227f16bb0ed57165f523abcbb0b364a9eff5758b8cb456dfb12"
+  },
+  "LANDSCAPING_SOD--topsoil-depth-unknown.json": {
+    "bytes": 341441,
+    "sha256": "15594d01dc0ed1d175bd4a02ef0acf432aba7160e5bfa296db09ec55f7749af5"
+  },
+  "LANDSCAPING_SOD--topsoil-priced-unselected.json": {
+    "bytes": 282788,
+    "sha256": "a74f444e716995dca0737421b4fd96a67b3a5b6573382e7c866618a968023b61"
+  },
+  "ROOFING_REPAIR--absent-large-limit-small.json": {
+    "bytes": 144253,
+    "sha256": "6203be8054974f52437b6d85d05c6e07076749ccd7f4512c9b736d2e1d40258a"
+  },
+  "ROOFING_REPAIR--base.json": {
+    "bytes": 297169,
+    "sha256": "6de37620674fb7235a198bba7a35a9421e1167c4c16d84ece6e14382bee0206e"
+  },
+  "ROOFING_REPAIR--explicit-large-limit-exceeded.json": {
+    "bytes": 143612,
+    "sha256": "2d4304bc9d1d778ffdf533f4b9bb82e64f1cc86c727d0c90f58ea31d25ac953c"
+  },
+  "ROOFING_REPAIR--inherited-and-explicit-tiers.json": {
+    "bytes": 457985,
+    "sha256": "d627fa1114d76629eb884e5378aa2aacffef4cb5d15e950ce3a40cabbcbc8764"
+  },
+  "ROOFING_REPLACEMENT--base.json": {
+    "bytes": 550722,
+    "sha256": "39c1f8bd132a6f0a758c909a13c7daf9acd4f890de0760b5288c527dee6486d0"
+  },
+  "ROOFING_REPLACEMENT--inherited-and-explicit-tiers.json": {
+    "bytes": 888651,
+    "sha256": "d9b11715e3fda5af59cdf9f3ec88cad22308637cecd8cd285502ec39507e034c"
+  },
+  "ROOFING_REPLACEMENT--optional-absent-selected.json": {
+    "bytes": 278652,
+    "sha256": "561a9cc3eae51c2824d12dd529626d3aa471da904eae0de1c6020fb0b8ea093c"
+  },
+  "ROOFING_REPLACEMENT--optional-absent-unselected.json": {
+    "bytes": 550788,
+    "sha256": "842379bfdbf893be17eac446a1322bdaa332ffe346090f057700f7e983b5cde6"
+  },
+  "ROOFING_REPLACEMENT--optional-priced-selected.json": {
+    "bytes": 592524,
+    "sha256": "f9d9b99b5c7a4282dbe8c67859caf08fe65b92d2e0069f79abc3832250c0487e"
+  },
+  "ROOFING_REPLACEMENT--optional-tier-completion.json": {
+    "bytes": 709932,
+    "sha256": "60cb30f16faba686d6f5838360719ad5effdbb0ff405ab6f8095f27bea40950b"
+  },
+  "SIDING_REPAIR--absent-large-limit-small.json": {
+    "bytes": 127869,
+    "sha256": "dc611332385de89a8115e1e8a27103eb692ace7eccbbcd481e2cc897a822c90a"
+  },
+  "SIDING_REPAIR--base.json": {
+    "bytes": 265430,
+    "sha256": "e3c61570f8432ecb9949507cf61312c8c527bc910481fce5fc9695abd2e492bb"
+  },
+  "SIDING_REPAIR--explicit-large-limit-exceeded.json": {
+    "bytes": 121013,
+    "sha256": "a7ca30584a5ee76935e17b6a6d5b052c9c60d8b96a7379345a2f34d7d11d270b"
+  },
+  "SIDING_REPAIR--inherited-and-explicit-tiers.json": {
+    "bytes": 412023,
+    "sha256": "3643503548afb7c0fe544295a0fa0764c00e456576bc05552935b59d2cc06275"
+  },
+  "SIDING_REPLACEMENT--base.json": {
+    "bytes": 317721,
+    "sha256": "6db6fabdb8c704f707cb5c9c4da2954041cfe738d4ffe676726b6306da08aa22"
+  },
+  "SIDING_REPLACEMENT--explicit-area-convention.json": {
+    "bytes": 323484,
+    "sha256": "d8a056b7572f41058ccf2dafbd629217e473338db3337134492a5cdf2c1f076e"
+  },
+  "SIDING_REPLACEMENT--inherited-and-explicit-tiers.json": {
+    "bytes": 492718,
+    "sha256": "9ae38bef8693548f2eca5d2e248bb6d8c1e85977264a00102e5e10de8518697a"
+  },
+  "SIDING_REPLACEMENT--optional-absent-selected.json": {
+    "bytes": 157050,
+    "sha256": "365a4caa8ec2f6a870ec9cdd50c2430bb19132c58734eb1349da6b5d9d55bcc0"
+  },
+  "SIDING_REPLACEMENT--optional-absent-unselected.json": {
+    "bytes": 317787,
+    "sha256": "7bdf7915348ba9382439c2271715b23e73b1e99420ef7d7ac339d4996d532bf4"
+  },
+  "SIDING_REPLACEMENT--optional-priced-selected.json": {
+    "bytes": 382035,
+    "sha256": "da370bc79b9d22b7a01b0338c66cb0faf7428415f4abdef5e7dcc963fa99228b"
+  },
+  "SIDING_REPLACEMENT--optional-tier-completion.json": {
+    "bytes": 442486,
+    "sha256": "5eeb61d29d40a169cf2d8a0d9eaefcc1b08b7cf8e0e38ba9ca9011663d6601a1"
+  },
+  "server-log.json": {
+    "bytes": 289,
+    "sha256": "3a1a17e8dbda67b60484635594819c4c087c639e5c7f948abd22cd037e242aeb"
+  }
+}

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "historical-missing-measurement",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "historical-missing-measurement",
+    "faults": [],
+    "approval": true,
+    "ownerStatus": "QUOTING LIVE",
+    "catalog": 1,
+    "direct": "ESTIMATE_REQUIRES_REVIEW",
+    "widget": "ESTIMATE_REQUIRES_REVIEW",
+    "voice": "needs_details",
+    "amounts": {
+      "direct": [],
+      "widget": [],
+      "voice": []
+    }
+  }
+]

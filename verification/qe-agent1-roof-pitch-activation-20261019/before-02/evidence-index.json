@@ -1,0 +1,10 @@
+{
+  "historical-missing-measurement.json": {
+    "bytes": 297026,
+    "sha256": "c9eab3013cbce5a6361eea7bb6b83de36c58bdc4e4d84995ef6b6c4951b26ac1"
+  },
+  "server-log.json": {
+    "bytes": 289,
+    "sha256": "4cd3b1a91f1afe142005a9ad26727f8dafe22851165361ac034db99074e6c932"
+  }
+}

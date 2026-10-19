@@ -1,0 +1,359 @@
+[
+  {
+    "check": "a1-parser",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs",
+      "test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs",
+      "test/qeAgent1RoofPitchActivationReadiness20261019.spec.mjs",
+      "test/voiceListedPriceConditions20261018.spec.mjs",
+      "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "test/websitePriceImport.spec.mjs",
+      "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "test/websitePriceDraftRoutes.spec.mjs",
+      "test/claudeListedUnits20261008.spec.mjs",
+      "test/engineAuditListedPrices20261008.spec.mjs",
+      "test/fixedPricesKnowledge20261005.spec.mjs",
+      "test/voiceCore20261007.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/voiceRuntimeRoutes.spec.mjs",
+      "test/voicePromptCompiler.spec.mjs",
+      "test/voiceSecurity.spec.mjs",
+      "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 84.333,
+    "summary": {
+      "tests": 987,
+      "suites": 0,
+      "pass": 987,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/a1-parser.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "activation-neighbors",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/configuredOfferings.spec.mjs",
+      "test/quoteActivationParity20261005.spec.mjs",
+      "test/quoteOfferingScopeIsolation.spec.mjs",
+      "test/surfacePricingLaneCFixes20261016.spec.mjs",
+      "test/surfacePricing20261016.spec.mjs",
+      "test/surfacePricing20261016.dom.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 6.475,
+    "summary": {
+      "tests": 177,
+      "suites": 0,
+      "pass": 177,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/activation-neighbors.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 5.545,
+    "summary": {},
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/build.log",
+    "verification_passed": true
+  },
+  {
+    "check": "compatibility",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/backupRestoreRehearsal.spec.mjs",
+      "test/everytrade20261017.spec.mjs",
+      "test/qeAccuracyIntegration20261018.spec.mjs",
+      "test/qeAgent1CoreAccuracy20261018.spec.mjs",
+      "test/qeAgent1Historical20261018.spec.mjs",
+      "test/qeRoofExactSubtraction20261018.spec.mjs",
+      "test/qeRoofUnderlaymentAccuracy20261018.spec.mjs",
+      "test/qeRoofZeroAdjustments20261018.spec.mjs",
+      "test/quoteConcreteLandscape20261016.spec.mjs",
+      "test/quoteEngineVNext.spec.js",
+      "test/quoteEngineVNextAdversarial.spec.js",
+      "test/quoteReviewFixes.spec.mjs",
+      "test/quoteStartingValues20261017.browser.spec.mjs",
+      "test/quoteStartingValues20261017.spec.mjs",
+      "test/releaseProductionEngineGuard.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 61.185,
+    "summary": {
+      "tests": 491,
+      "suites": 0,
+      "pass": 491,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/compatibility.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "f16-direct",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/qeAgent1ApprovalPrecision20261018.spec.mjs",
+      "verification/qe-agent1-core-accuracy-20261018/f16-with-agent2.spec.mjs",
+      "test/qeAgent2PricePrecision.spec.mjs",
+      "test/qeAgent2PriceMetadata.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 6.877,
+    "summary": {
+      "tests": 94,
+      "suites": 0,
+      "pass": 94,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/f16-direct.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "f16-entry",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/qeAgent2IntegrationF16PricePrecision20261019.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 1.682,
+    "summary": {
+      "tests": 14,
+      "suites": 0,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/f16-entry.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "f18",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/voiceAgent4F18Integration20261018.spec.mjs",
+      "test/voiceAgent4F18Repair20261018.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 2.192,
+    "summary": {
+      "tests": 41,
+      "suites": 0,
+      "pass": 41,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/f18.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "f18-matrix",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "verification/qe-agent2-roof-pitch-integration-20261019/f18-original-matrix.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 0.253,
+    "summary": {
+      "tests": 91,
+      "suites": 0,
+      "pass": 91,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/f18-matrix.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "geometry",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/qeAgent1GeometryBoundaries20261019.spec.mjs",
+      "test/qeAgent1GeometryDelivery20261019.spec.mjs",
+      "test/qeAgent1GeometryHistorical20261019.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 19.868,
+    "summary": {
+      "tests": 525,
+      "suites": 0,
+      "pass": 525,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/geometry.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "pi00",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/qeAgent1InteriorActivation20261019.spec.mjs",
+      "test/qeAgent1InteriorDelivery20261019.spec.mjs",
+      "test/qeAgent1InteriorHistorical20261019.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 7.368,
+    "summary": {
+      "tests": 45,
+      "suites": 0,
+      "pass": 45,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/pi00.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "qualification",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "verification/qe-agent1-roof-pitch-activation-20261019/harness-integration-20261019/qualification.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 0.38,
+    "summary": {
+      "tests": 5,
+      "suites": 0,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/qualification.tap",
+    "verification_passed": true
+  },
+  {
+    "check": "rendered",
+    "command": [
+      "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test-concurrency=1",
+      "--test",
+      "--test-reporter=tap",
+      "test/qeAgent3ScopePresentation20261018.spec.mjs",
+      "test/qeAgent2PriceEditor.browser.spec.mjs"
+    ],
+    "node": "v22.23.3",
+    "exit_code": 0,
+    "seconds": 4.84,
+    "summary": {
+      "tests": 5,
+      "suites": 0,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "verification/qe-agent2-roof-pitch-integration-20261019/rendered.tap",
+    "verification_passed": true
+  }
+]

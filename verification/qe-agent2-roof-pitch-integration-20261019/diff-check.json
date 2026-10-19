@@ -1,0 +1,20 @@
+{
+  "whole_diff": {
+    "exit_code": 2,
+    "warning_count": 274,
+    "frozen_incoming_tap_files": {
+      "verification/qe-agent1-activation-parity-review-20261019/reproduce-findings.tap": 4,
+      "verification/qe-agent1-roof-pitch-activation-20261019/before-readiness.tap": 50,
+      "verification/qe-agent1-roof-pitch-activation-20261019/before-regressions-02.tap": 84,
+      "verification/qe-agent1-roof-pitch-activation-20261019/before-regressions.tap": 136
+    },
+    "all_warning_files_byte_identical_to_incoming": true,
+    "raw_diagnostics": "diff-check-initial.json.gz"
+  },
+  "production_regressions_and_new_evidence": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "resolution": "Preserve the incoming failed TAP evidence verbatim, including its original whitespace. No production, regression, or new evidence whitespace defect was found."
+}

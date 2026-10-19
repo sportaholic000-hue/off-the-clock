@@ -1,0 +1,329 @@
+{
+  "agent1Reviewed": "150aa4786c0f96b2eb612bf6e02c19fd423cfb74",
+  "a2Exact": "00523290be44c522254e2e736756d0a6eba0aba3",
+  "localMerge": "fe15d4318315703a617f3c0b2b464bae616de890",
+  "localMergeParents": [
+    "150aa4786c0f96b2eb612bf6e02c19fd423cfb74",
+    "00523290be44c522254e2e736756d0a6eba0aba3"
+  ],
+  "correctedCombined": "a335fc761ff8bf448b14a4b5cfc7b175dbe35fac",
+  "correctedCombinedParent": "fe15d4318315703a617f3c0b2b464bae616de890",
+  "correctedCombinedTree": "629185bb1f718a28ae14e2723749006901a68819",
+  "bothHistoriesPreserved": true,
+  "a2SevenSourceAndTestFilesUnchanged": true,
+  "reviewedPriceBookBlob": "8697893a2b5081ff4eb29ccd8fb44b152b2ba60f",
+  "reviewed113RegressionsUnchanged": true,
+  "protectedOriginalFiles": [
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "sha256": "811e97e3569cf9adb9e38f2052e2ac5b1c480143643deedf107628857a9d9cdb",
+      "unchanged": true
+    },
+    {
+      "path": "test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs",
+      "sha256": "d4e7f462bd2d93364237a391048deb7ce5b7a61a3e77dd07e11edabcebec5d8a",
+      "unchanged": true
+    },
+    {
+      "path": "test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs",
+      "sha256": "dde3e13470eda46c316eb83ed6c3c93d6f700938f20dd491680448d58652defa",
+      "unchanged": true
+    },
+    {
+      "path": "test/qeAgent1RoofPitchActivationReadiness20261019.spec.mjs",
+      "sha256": "949bf6d1d9ca9d840787bd8f386231843323c73cf4ec12c9131191c03e033bb4",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/COMMANDS.md",
+      "sha256": "280eeef1e4ffe402b17524a81134771f4006bb70dce197bf61e96ac90c5f968e",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/EXPECTED.md",
+      "sha256": "62771d9e8c62fc6f0e7b873f3231ef0f52ed783c451a74df0e8ade86b1031f93",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/REPORT.md",
+      "sha256": "8453f8a8dfe9caa0595ea846c0c62b730591db9dfddb950909f63fdb75b78f87",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/SHA256SUMS",
+      "sha256": "3569fc14d47373bc908d82560e1d3049db2323d81c15d2bad74fa87f1da74a3f",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01.log",
+      "sha256": "09348f60ec04316515b7f6d6d3675aa56c061829b2a0330611c6cefee7824959",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01/binding.json",
+      "sha256": "0a98c013afad200fb7352d02299f163d69a8480a784ffd3ce8d0ddba9dd38f05",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01/evidence-index.json",
+      "sha256": "eed9f44be31c13655af0b7f066514fe520dc4271b749830700486916f3790352",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01/evidence.tar.gz",
+      "sha256": "c2e8ce5a5725a374a7a09082aecca590e286bc2eaea6d7013f621d2d101f3074",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01/execution-counts.json",
+      "sha256": "ff85b1e162a80b9eabd105e437539f29cd09f14617a4c223e1b99c817d2d87d8",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01/expectations.json",
+      "sha256": "ba69af91e2f22ef949f493188c469585364ea0ef1bb385262b0d42c5ed1e4db4",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01/production-diff.json",
+      "sha256": "d8084db684d3661db555eb6cacd6166f62901b811bfd8899174ad29b5873d828",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01/results.json",
+      "sha256": "e5c04aea993f4261a338397b8fcda984bae73b7859cd36d8ec54ba297000044d",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-after-01/summary.json",
+      "sha256": "8dfbbe919934173ae26abb31ac654f5ed896be9c704ac0290faf37253925413f",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/audit-161-delta.json",
+      "sha256": "6ec1e41be1be260263ac2710f5797853fd3dc8ed35f0fe391664a6e35ad7a8c7",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-01.log",
+      "sha256": "bbb67f647ae42617406e1ea616fddb5dc1c4471c702af2038159a4cba644411e",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-01/binding.json",
+      "sha256": "c9a6b8f1496be30a8c38faedd66ea5f6ac5f8aba285a56f57221fb298b68378e",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-01/evidence-index.json",
+      "sha256": "dc784e4c3d903e533772cfb883819b0adc773706b87c82c5c36a4d76bcacde75",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-01/evidence.tar.gz",
+      "sha256": "b4b277ddea918b1c2ac31d3e53f2fe73ff56dc1b24eb3d03c45df4dd9e91a1bf",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-01/expectations.json",
+      "sha256": "1cc9d0b0838ace53b13d8435191fe228d55f6e27c10453d2cd41152a3c5a240d",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-01/production-diff.json",
+      "sha256": "bfe94c108fb111bb48cc82f2250e2e7574e5fd7f4db6cd370f842cd7bfc837b1",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-01/results.json",
+      "sha256": "2f5e9fac10043ee0e545d1ec2892d921124f0cc61351b0979cbf546d5ea33c7e",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-01/summary.json",
+      "sha256": "b9cffd6278436164e7384503d5bc0bc34f7452772f9ffe03dd5c4c0f0be59196",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-02.log",
+      "sha256": "48ced54c18e2bc8433d73656a5905a65dcb3e7ec3a6dd88ed408aae6a75a941b",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-02/binding.json",
+      "sha256": "63ea2ca69677071f2b9a61c3e50ba38ebb92588e3d80076e9401596ceb72912a",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-02/evidence-index.json",
+      "sha256": "53c1c51ac86e697fa918ef9ab76d6327342e049e72dc368e935ee1c00a6b5674",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-02/evidence.tar.gz",
+      "sha256": "14746f00abaefcf126b33d563d2a49d88cec2f9a22a4af000d5952812c9e6f86",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-02/expectations.json",
+      "sha256": "822fc8df5435b2e69a875829881694eb2e407d1d28929f604cc8510c41e44088",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-02/production-diff.json",
+      "sha256": "bfe94c108fb111bb48cc82f2250e2e7574e5fd7f4db6cd370f842cd7bfc837b1",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-02/results.json",
+      "sha256": "a38a2913c866c1228fa9535ef3ce669e76962616b113948d28c500ccf57be849",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-02/summary.json",
+      "sha256": "b4da6023a427bd589bceeb6a820349a62927d38ac6e029cfdd6f1d4118617661",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-03.log",
+      "sha256": "3229253dd34ec4c77ac1cc4227467955fceab52c2b413aeb028ddcdd8f71a97b",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-03/binding.json",
+      "sha256": "9b0075b732fbb45ec2b393d6c9b934903382a5efe062339721b3ff1f1717ac41",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-03/evidence-index.json",
+      "sha256": "c926e9943bc4bdcc5e7ba3412d058cdd05a445091f35f8255ea05c8613fab908",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-03/evidence.tar.gz",
+      "sha256": "d798b4b12f9aad7e756ecd4521234e771ae25922a04bbf49d4f8a112b44b4143",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-03/expectations.json",
+      "sha256": "822fc8df5435b2e69a875829881694eb2e407d1d28929f604cc8510c41e44088",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-03/production-diff.json",
+      "sha256": "bfe94c108fb111bb48cc82f2250e2e7574e5fd7f4db6cd370f842cd7bfc837b1",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-03/results.json",
+      "sha256": "a38a2913c866c1228fa9535ef3ce669e76962616b113948d28c500ccf57be849",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-03/summary.json",
+      "sha256": "cf88af7b186e32361705bdf5a35bb248bc50ed95247dd810713dd3fff7f829f9",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-readiness.tap",
+      "sha256": "28ab55e3e212958388b5224aca5df2b3a9da528974e774eaafc4d26a2f09adab",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-regressions-02.tap",
+      "sha256": "b1c91faefd7c12cf8c11d53a2aa5502e78da472c827d8901310d921603ab2dbe",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/before-regressions.tap",
+      "sha256": "639a9576e5cfcee6355d405c8a5b5ed59e4cf3ec47d01c3e6a5008c8bd36c345",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/build.log",
+      "sha256": "e9b95d36225632fc4bb3d3d0f8351848f8fe542f30dea927f6dfe8a91137d8f8",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/cases.mjs",
+      "sha256": "a10d294a7324f8c6d415131f0e7cf0876566e4b1b29c3e69012adc64d18d51a5",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/focused-01.tap",
+      "sha256": "c5e022dd78084ed0fcf27e5373232674450adf9c03c84d65a18299f575124be6",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/focused-final.tap",
+      "sha256": "c6e5d7569b03b5363f7aa72804f8db862666c16a9749f24739c76eeaa0f38a7f",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/historical-v12.json.gz",
+      "sha256": "3082c6b37cd97e11cbde324fab6ff51797ed33f49812a648a064fc28352a37e4",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/historical-v12.sha256",
+      "sha256": "e2270422c7e857d2f152ece1abc6e052422bb5f08acefcd4aad2d4c2fa88bb52",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/pack-evidence.py",
+      "sha256": "b1ab28d299632d7ce72c75bd6e0a7f1d069337a910760919525737a827d3ca09",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/production.patch",
+      "sha256": "3a2ba7be860ba253dbdf97c163f29b176e4cc04452d51c3f16794d01d28b2327",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01.log",
+      "sha256": "c76faca4b3a2a6328c57ea62c008e958850be7829b65e8d4c85a14bb0a8808f7",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01/binding.json",
+      "sha256": "5ae472b1c4ef53f55b56afd5fceced02b18703510d7bdf76fa3a35b20e585f41",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01/evidence-index.json",
+      "sha256": "4911866c2a710c03483f73fe38a74167e093a504d9c6dbc3634094f5565f840e",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01/evidence.tar.gz",
+      "sha256": "60b45da35708f765a1852400d96f1fad524beb62fbd419a77da615b8d84b831b",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01/execution-counts.json",
+      "sha256": "ac34af1aabf3c07432388d25cf8cf996b3370d790cfd38facfdb5c8e60ef9326",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01/expectations.json",
+      "sha256": "16c3a5ef66b9382a25ddfff77e751c65d2f27f0ece7275e9bca063ab6e4ae284",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01/production-diff.json",
+      "sha256": "d8084db684d3661db555eb6cacd6166f62901b811bfd8899174ad29b5873d828",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01/results.json",
+      "sha256": "f815b288a3b53bcb74b5fea4bd468f5d2e447573211423ffb67df966081e664e",
+      "unchanged": true
+    },
+    {
+      "path": "verification/qe-agent1-roof-pitch-activation-20261019/repair-matrix-after-01/summary.json",
+      "sha256": "61539d8c6a65879c72d2a429c957ad82d48abc30cdb0da58ace3aa072ab2b087",
+      "unchanged": true
+    }
+  ],
+  "sourceDiff": "diff --git a/verification/qe-agent1-roof-pitch-activation-20261019/audit.mjs b/verification/qe-agent1-roof-pitch-activation-20261019/audit.mjs\nindex 11989bc..67a618a 100644\n--- a/verification/qe-agent1-roof-pitch-activation-20261019/audit.mjs\n+++ b/verification/qe-agent1-roof-pitch-activation-20261019/audit.mjs\n@@ -18,9 +18,8 @@ const zipped=(file,x)=>fs.writeFileSync(path.join(out,file+'.json.gz'),gzipSync(\n write('expectations.json',selected.map(({id,serviceType,variant,expected,note})=>({id,serviceType,variant,expected,note})));\n const source=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();\n const productionBase='2b452feeb1af7c288c19b12bea5b95e48b81920e';\n-// Bind source ownership; build-generated client/dist is not source and CI builds it first.\n-const changed=execFileSync('git',['diff','--name-only',productionBase,'--','server','test','specs','.github','client/src','scripts','package.json','package-lock.json'],{encoding:'utf8'}).trim().split('\\n').filter(Boolean);\n-if(changed.some(p=>p!=='server/quote-engine-vnext/priceBook.js'&&!p.startsWith('verification/qe-agent1-roof-pitch-activation-20261019/')&&!/^test\\/(?:voice)?qeAgent1RoofPitchActivation.*\\.spec\\.mjs$/.test(p)))throw Error('Unowned changes');\n+// Branch ownership is qualified separately with qualify-source.mjs BASE HEAD.\n+// Behavioral regressions run against the current tree, including approved merges.\n if(process.env.CAPTURE&&execFileSync('git',['diff','--','server'],{encoding:'utf8'}))throw Error('Capture requires pristine production');\n write('production-diff.json',{diff:execFileSync('git',['diff',productionBase,'--','server'],{encoding:'utf8'})});\n write('binding.json',{source,productionBase,node:process.version,started:new Date().toISOString(),expectationsSha256:createHash('sha256').update(fs.readFileSync(path.join(out,'expectations.json'))).digest('hex'),providers:'synthetic only',selected:selected.length});\n"
+}

@@ -1,0 +1,1607 @@
+[
+  {
+    "id": "ROOFING_REPLACEMENT--base",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391100
+    },
+    "note": "200000 labor +110000 field material +60000 removal +1100 underlayment +20000 disposal; material squares 11. Total 391100 (see correction below)."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--inherited-and-explicit-tiers",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391100,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--optional-absent-unselected",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391100
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--optional-absent-selected",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391100,
+      "excluded": true
+    },
+    "note": "ADDON missing: base estimate retained with exclusion."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--optional-priced-selected",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 401100
+    },
+    "note": "Base 391100 + optional 10000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--optional-tier-completion",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391100,
+      "options": 2,
+      "allCents": [
+        391100,
+        401100
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "ROOFING_REPAIR--base",
+    "serviceType": "ROOFING_REPAIR",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 24000
+    },
+    "note": "Small repair:2 hours *10000 + 4000 fixed material."
+  },
+  {
+    "id": "ROOFING_REPAIR--inherited-and-explicit-tiers",
+    "serviceType": "ROOFING_REPAIR",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 24000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "ROOFING_REPAIR--absent-large-limit-small",
+    "serviceType": "ROOFING_REPAIR",
+    "variant": "absent-large-limit-small",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 24000
+    },
+    "note": "Large limit is required for large repairs, not a small repair; small/medium remain available."
+  },
+  {
+    "id": "ROOFING_REPAIR--explicit-large-limit-exceeded",
+    "serviceType": "ROOFING_REPAIR",
+    "variant": "explicit-large-limit-exceeded",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "1001sqft exceeds explicitly configured1000; review without amount; service still available."
+  },
+  {
+    "id": "SIDING_REPAIR--base",
+    "serviceType": "SIDING_REPAIR",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 25000
+    },
+    "note": "Small repair:2 hours *10000 + 5000 fixed material."
+  },
+  {
+    "id": "SIDING_REPAIR--inherited-and-explicit-tiers",
+    "serviceType": "SIDING_REPAIR",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 25000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "SIDING_REPAIR--absent-large-limit-small",
+    "serviceType": "SIDING_REPAIR",
+    "variant": "absent-large-limit-small",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 25000
+    },
+    "note": "Large limit is required for large repairs, not a small repair; small/medium remain available."
+  },
+  {
+    "id": "SIDING_REPAIR--explicit-large-limit-exceeded",
+    "serviceType": "SIDING_REPAIR",
+    "variant": "explicit-large-limit-exceeded",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "1001sqft exceeds explicitly configured1000; review without amount; service still available."
+  },
+  {
+    "id": "FLAT_ROOF_REPLACEMENT--base",
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1470000
+    },
+    "note": "1000*500 labor +1000*1.1*700 membrane +1000*200 removal."
+  },
+  {
+    "id": "FLAT_ROOF_REPLACEMENT--inherited-and-explicit-tiers",
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1470000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "FLAT_ROOF_REPLACEMENT--optional-absent-unselected",
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1470000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "FLAT_ROOF_REPLACEMENT--optional-absent-selected",
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "FLAT_ROOF_REPLACEMENT--optional-priced-selected",
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1510000
+    },
+    "note": "Base 1470000 + optional 40000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "FLAT_ROOF_REPLACEMENT--optional-tier-completion",
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1510000,
+      "options": 1,
+      "allCents": [
+        1510000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--base",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 36000
+    },
+    "note": "3 hours*10000 +6000 material."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--inherited-and-explicit-tiers",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 36000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--optional-absent-unselected",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 36000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--optional-absent-selected",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 36000,
+      "excluded": true
+    },
+    "note": "ADDON missing: base estimate retained with exclusion."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--optional-priced-selected",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 43000
+    },
+    "note": "Base 36000 + optional 7000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--optional-tier-completion",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 36000,
+      "options": 2,
+      "allCents": [
+        36000,
+        43000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--absent-large-limit-small",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "absent-large-limit-small",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 36000
+    },
+    "note": "Large limit is required for large repairs, not a small repair; small/medium remain available."
+  },
+  {
+    "id": "FLAT_ROOF_REPAIR--explicit-large-limit-exceeded",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "variant": "explicit-large-limit-exceeded",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "1001sqft exceeds explicitly configured1000; review without amount; service still available."
+  },
+  {
+    "id": "INTERIOR_PAINTING--base",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000
+    },
+    "note": "500sqft*600 installed at baseline height/story; no extras."
+  },
+  {
+    "id": "INTERIOR_PAINTING--inherited-and-explicit-tiers",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "INTERIOR_PAINTING--optional-absent-unselected",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "INTERIOR_PAINTING--optional-absent-selected",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "INTERIOR_PAINTING--optional-priced-selected",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 360000
+    },
+    "note": "Base 300000 + optional 60000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "INTERIOR_PAINTING--optional-tier-completion",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 360000,
+      "options": 1,
+      "allCents": [
+        360000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "INTERIOR_PAINTING--absent-trim-constraints",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "absent-trim-constraints",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 320000
+    },
+    "note": "Installed trim100*200; absent optional structured constraints are legal. Explicit constraints must match."
+  },
+  {
+    "id": "INTERIOR_PAINTING--explicit-trim-matching",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "explicit-trim-matching",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 320000
+    },
+    "note": "Installed trim100*200; absent optional structured constraints are legal. Explicit constraints must match."
+  },
+  {
+    "id": "INTERIOR_PAINTING--explicit-trim-contradictory",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "explicit-trim-contradictory",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Installed trim100*200; absent optional structured constraints are legal. Explicit constraints must match."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--base",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000
+    },
+    "note": "500sqft*600 installed at baseline height/story; no extras."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--inherited-and-explicit-tiers",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--optional-absent-unselected",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--optional-absent-selected",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000,
+      "excluded": true
+    },
+    "note": "ADDON missing: base estimate retained with exclusion."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--optional-priced-selected",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 302000
+    },
+    "note": "Base 300000 + optional 2000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--optional-tier-completion",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 300000,
+      "options": 2,
+      "allCents": [
+        300000,
+        302000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--explicit-coat-contradiction",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "explicit-coat-contradiction",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Installed owner2-coat scope cannot price3coats."
+  },
+  {
+    "id": "FENCING_INSTALL--base",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 400000
+    },
+    "note": "100LF*4000 installed; no gates/removal."
+  },
+  {
+    "id": "FENCING_INSTALL--inherited-and-explicit-tiers",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 400000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "FENCING_INSTALL--optional-absent-unselected",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 400000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "FENCING_INSTALL--optional-absent-selected",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "FENCING_INSTALL--optional-priced-selected",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 450000
+    },
+    "note": "Base 400000 + optional 50000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "FENCING_INSTALL--optional-tier-completion",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 450000,
+      "options": 1,
+      "allCents": [
+        450000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "FENCING_INSTALL--explicit-unoffered-removal-or-type",
+    "serviceType": "FENCING_INSTALL",
+    "variant": "explicit-unoffered-removal-or-type",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Unregistered/unoffered type must not be priced as wood."
+  },
+  {
+    "id": "FENCING_REPLACEMENT--base",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 400000
+    },
+    "note": "100LF*4000 installed; no gates/removal."
+  },
+  {
+    "id": "FENCING_REPLACEMENT--inherited-and-explicit-tiers",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 400000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "FENCING_REPLACEMENT--optional-absent-unselected",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 400000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "FENCING_REPLACEMENT--optional-absent-selected",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "FENCING_REPLACEMENT--optional-priced-selected",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 450000
+    },
+    "note": "Base 400000 + optional 50000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "FENCING_REPLACEMENT--optional-tier-completion",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 450000,
+      "options": 1,
+      "allCents": [
+        450000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "FENCING_REPLACEMENT--explicit-unoffered-removal-or-type",
+    "serviceType": "FENCING_REPLACEMENT",
+    "variant": "explicit-unoffered-removal-or-type",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Unregistered/unoffered type must not be priced as wood."
+  },
+  {
+    "id": "FLOORING_INSTALL--base",
+    "serviceType": "FLOORING_INSTALL",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000
+    },
+    "note": "200*300*1.10 labor +200*1.12*500 material. One medium room; no carton increment."
+  },
+  {
+    "id": "FLOORING_INSTALL--inherited-and-explicit-tiers",
+    "serviceType": "FLOORING_INSTALL",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "FLOORING_INSTALL--optional-absent-unselected",
+    "serviceType": "FLOORING_INSTALL",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "FLOORING_INSTALL--optional-absent-selected",
+    "serviceType": "FLOORING_INSTALL",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000,
+      "excluded": true
+    },
+    "note": "ADDON missing: base estimate retained with exclusion."
+  },
+  {
+    "id": "FLOORING_INSTALL--optional-priced-selected",
+    "serviceType": "FLOORING_INSTALL",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 180000
+    },
+    "note": "Base 178000 + optional 2000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "FLOORING_INSTALL--optional-tier-completion",
+    "serviceType": "FLOORING_INSTALL",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000,
+      "options": 2,
+      "allCents": [
+        178000,
+        180000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "FLOORING_REPLACEMENT--base",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000
+    },
+    "note": "200*300*1.10 labor +200*1.12*500 material. One medium room; no carton increment."
+  },
+  {
+    "id": "FLOORING_REPLACEMENT--inherited-and-explicit-tiers",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "FLOORING_REPLACEMENT--optional-absent-unselected",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "FLOORING_REPLACEMENT--optional-absent-selected",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000,
+      "excluded": true
+    },
+    "note": "ADDON missing: base estimate retained with exclusion."
+  },
+  {
+    "id": "FLOORING_REPLACEMENT--optional-priced-selected",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 180000
+    },
+    "note": "Base 178000 + optional 2000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "FLOORING_REPLACEMENT--optional-tier-completion",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 178000,
+      "options": 2,
+      "allCents": [
+        178000,
+        180000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "SIDING_REPLACEMENT--base",
+    "serviceType": "SIDING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1170000
+    },
+    "note": "1000*400 labor +1000*1.1*700 material."
+  },
+  {
+    "id": "SIDING_REPLACEMENT--inherited-and-explicit-tiers",
+    "serviceType": "SIDING_REPLACEMENT",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1170000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "SIDING_REPLACEMENT--optional-absent-unselected",
+    "serviceType": "SIDING_REPLACEMENT",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1170000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "SIDING_REPLACEMENT--optional-absent-selected",
+    "serviceType": "SIDING_REPLACEMENT",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "SIDING_REPLACEMENT--optional-priced-selected",
+    "serviceType": "SIDING_REPLACEMENT",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1220000
+    },
+    "note": "Base 1170000 + optional 50000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "SIDING_REPLACEMENT--optional-tier-completion",
+    "serviceType": "SIDING_REPLACEMENT",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 1220000,
+      "options": 1,
+      "allCents": [
+        1220000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--base",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889
+    },
+    "note": "120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--inherited-and-explicit-tiers",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--optional-absent-unselected",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--optional-absent-selected",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--optional-priced-selected",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 353889
+    },
+    "note": "Base 318889 + optional 35000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--optional-tier-completion",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 353889,
+      "options": 1,
+      "allCents": [
+        353889
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--explicit-thickness-band-matching",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "explicit-thickness-band-matching",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889
+    },
+    "note": "120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--explicit-thickness-band-contradictory",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "explicit-thickness-band-contradictory",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "4in request lies outside explicit5–6in labor band; no subtotal, availability retained for5–6in."
+  },
+  {
+    "id": "CONCRETE_DRIVEWAY--thickness-tier-isolation",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "variant": "thickness-tier-isolation",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889,
+      "options": 1
+    },
+    "note": "120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--base",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889
+    },
+    "note": "120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--inherited-and-explicit-tiers",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--optional-absent-unselected",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--optional-absent-selected",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--optional-priced-selected",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 353889
+    },
+    "note": "Base 318889 + optional 35000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--optional-tier-completion",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 353889,
+      "options": 1,
+      "allCents": [
+        353889
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--explicit-thickness-band-matching",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "explicit-thickness-band-matching",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889
+    },
+    "note": "120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--explicit-thickness-band-contradictory",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "explicit-thickness-band-contradictory",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "4in request lies outside explicit5–6in labor band; no subtotal, availability retained for5–6in."
+  },
+  {
+    "id": "CONCRETE_PATIO_SLAB--thickness-tier-isolation",
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "variant": "thickness-tier-isolation",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 318889,
+      "options": 1
+    },
+    "note": "120000 labor +round(200*4/324*1.1*18000)=48889 concrete +60LF*2500=150000 forms."
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--base",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 15000
+    },
+    "note": "1000*10 labor +5000 light debris disposal."
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--inherited-and-explicit-tiers",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 15000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--optional-absent-unselected",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 15000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--optional-absent-selected",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--optional-priced-selected",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 20000
+    },
+    "note": "Base 15000 + optional 5000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--optional-tier-completion",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 20000,
+      "options": 1,
+      "allCents": [
+        20000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "LANDSCAPING_MULCH--base",
+    "serviceType": "LANDSCAPING_MULCH",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 21875
+    },
+    "note": "2.5yd*3000 labor +2.5yd*1.15*5000 material."
+  },
+  {
+    "id": "LANDSCAPING_MULCH--inherited-and-explicit-tiers",
+    "serviceType": "LANDSCAPING_MULCH",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 21875,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "LANDSCAPING_MULCH--optional-absent-unselected",
+    "serviceType": "LANDSCAPING_MULCH",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 21875
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "LANDSCAPING_MULCH--optional-absent-selected",
+    "serviceType": "LANDSCAPING_MULCH",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "LANDSCAPING_MULCH--optional-priced-selected",
+    "serviceType": "LANDSCAPING_MULCH",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 26875
+    },
+    "note": "Base 21875 + optional 5000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "LANDSCAPING_MULCH--optional-tier-completion",
+    "serviceType": "LANDSCAPING_MULCH",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 26875,
+      "options": 1,
+      "allCents": [
+        26875
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "LANDSCAPING_SOD--base",
+    "serviceType": "LANDSCAPING_SOD",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 203750
+    },
+    "note": "1000*125 labor +1000*1.05*75 material."
+  },
+  {
+    "id": "LANDSCAPING_SOD--inherited-and-explicit-tiers",
+    "serviceType": "LANDSCAPING_SOD",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 203750,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "LANDSCAPING_SOD--optional-absent-unselected",
+    "serviceType": "LANDSCAPING_SOD",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 203750
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "LANDSCAPING_SOD--optional-absent-selected",
+    "serviceType": "LANDSCAPING_SOD",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "LANDSCAPING_SOD--optional-priced-selected",
+    "serviceType": "LANDSCAPING_SOD",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 253750
+    },
+    "note": "Base 203750 + optional 50000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "LANDSCAPING_SOD--optional-tier-completion",
+    "serviceType": "LANDSCAPING_SOD",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 253750,
+      "options": 1,
+      "allCents": [
+        253750
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "LANDSCAPING_PLANTING--base",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10500
+    },
+    "note": "2small+1medium+1large:7000 labor +3500 material."
+  },
+  {
+    "id": "LANDSCAPING_PLANTING--inherited-and-explicit-tiers",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10500,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "LANDSCAPING_PLANTING--optional-absent-unselected",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10500
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "LANDSCAPING_PLANTING--optional-absent-selected",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "SCOPE missing: review, no subtotal; base service stays available."
+  },
+  {
+    "id": "LANDSCAPING_PLANTING--optional-priced-selected",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 26500
+    },
+    "note": "Base 10500 + optional 16000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "LANDSCAPING_PLANTING--optional-tier-completion",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 26500,
+      "options": 1,
+      "allCents": [
+        26500
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "LANDSCAPING_MOWING--base",
+    "serviceType": "LANDSCAPING_MOWING",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10000
+    },
+    "note": "5000*2 weekly maintained labor."
+  },
+  {
+    "id": "LANDSCAPING_MOWING--inherited-and-explicit-tiers",
+    "serviceType": "LANDSCAPING_MOWING",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10000,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "LANDSCAPING_MOWING--optional-absent-unselected",
+    "serviceType": "LANDSCAPING_MOWING",
+    "variant": "optional-absent-unselected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10000
+    },
+    "note": "No optional money or owner constraint is invented. Base amount unchanged."
+  },
+  {
+    "id": "LANDSCAPING_MOWING--optional-absent-selected",
+    "serviceType": "LANDSCAPING_MOWING",
+    "variant": "optional-absent-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10000,
+      "excluded": true
+    },
+    "note": "ADDON missing: base estimate retained with exclusion."
+  },
+  {
+    "id": "LANDSCAPING_MOWING--optional-priced-selected",
+    "serviceType": "LANDSCAPING_MOWING",
+    "variant": "optional-priced-selected",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 11000
+    },
+    "note": "Base 10000 + optional 1000 cents. Planting stated yards have no overage; installed prices no second markup."
+  },
+  {
+    "id": "LANDSCAPING_MOWING--optional-tier-completion",
+    "serviceType": "LANDSCAPING_MOWING",
+    "variant": "optional-tier-completion",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 10000,
+      "options": 2,
+      "allCents": [
+        10000,
+        11000
+      ]
+    },
+    "note": "Incomplete SCOPE option is isolated; ADDON retains base option with exclusion plus complete priced option."
+  },
+  {
+    "id": "CUSTOM--base",
+    "serviceType": "CUSTOM",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 12500
+    },
+    "note": "One fixed labor-classified selling price12500."
+  },
+  {
+    "id": "CUSTOM--inherited-and-explicit-tiers",
+    "serviceType": "CUSTOM",
+    "variant": "inherited-and-explicit-tiers",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 12500,
+      "options": 2
+    },
+    "note": "Both effective options use exactly the independently calculated base prices and settings; 2 equal options."
+  },
+  {
+    "id": "CUSTOM--explicit-unit-contradiction",
+    "serviceType": "CUSTOM",
+    "variant": "explicit-unit-contradiction",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Flat owner definition is not hourly pricing; clarify mismatch."
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "counts": {
+    "cases": 161,
+    "explicitApprovals": 161,
+    "booksUnchanged": 161,
+    "preApprovalHidden": 161,
+    "widgetReceipts": 161,
+    "voiceMatchCalls": 161,
+    "voiceGetQuoteCalls": 162,
+    "providerSends": 0,
+    "staleLifecycleCases": 0
+  },
+  "outcomes": {
+    "widget:INSTANT_ESTIMATE_READY": 131,
+    "voice:quoted": 132,
+    "widget:ESTIMATE_REQUIRES_REVIEW": 29,
+    "voice:needs_details": 26,
+    "widget:PARTIAL_ESTIMATE_READY": 1,
+    "voice:unavailable": 3
+  }
+}

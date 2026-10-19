@@ -1,0 +1,86 @@
+{
+  "CONCRETE_DRIVEWAY--base.json": {
+    "bytes": 177885,
+    "sha256": "0c188a30c8ad336a27b2c33963f9950edeaea90b3334b77d1654e941417c2f90"
+  },
+  "CONCRETE_PATIO_SLAB--base.json": {
+    "bytes": 178037,
+    "sha256": "6df500e435f784a125f98179b8889de89cec58f5dac17e6815c021f251f6a9b8"
+  },
+  "CUSTOM--base.json": {
+    "bytes": 98954,
+    "sha256": "ecd0b75af78788d2a526e86004ef3174c4b98a2f4cb4e984723047043c70a881"
+  },
+  "EXTERIOR_PAINTING--base.json": {
+    "bytes": 300935,
+    "sha256": "b3997e88a6f7f1a90050851e2dd239811ed6f49d6813f9586f4d653e3214816b"
+  },
+  "FENCING_INSTALL--base.json": {
+    "bytes": 135803,
+    "sha256": "8ebd37f34efc55b2260218fe58e21602e61b2f3419d283f76e2b314d0bbcf8a1"
+  },
+  "FENCING_REPLACEMENT--base.json": {
+    "bytes": 147848,
+    "sha256": "593ba7f5890e3bbc7eaa865ae52ecccfb7247bb53ceb63c650d702427525a40f"
+  },
+  "FLAT_ROOF_REPAIR--base.json": {
+    "bytes": 139149,
+    "sha256": "2ede5fbaca3d2bede9aa532072c5c89191a117ba657d94501e4a09f567251288"
+  },
+  "FLAT_ROOF_REPLACEMENT--base.json": {
+    "bytes": 160946,
+    "sha256": "4fa0207aca02aa3fd4e27504132c663ccfab8ce032bd5ef1edbddf63050e21d8"
+  },
+  "FLOORING_INSTALL--base.json": {
+    "bytes": 560978,
+    "sha256": "c6e942278d81941ae57a1fc113b332cac4652d891f0f8944933a605f34a74198"
+  },
+  "FLOORING_REPLACEMENT--base.json": {
+    "bytes": 564900,
+    "sha256": "ddac3760bd8defc0535d391b3c4f3303f7a62e05beebd37fa59b3f90558035b9"
+  },
+  "INTERIOR_PAINTING--base.json": {
+    "bytes": 335943,
+    "sha256": "b698c280d32514b42e1fbc985733d573d53bca7b7db67fa12fbc3c04cd0ba81b"
+  },
+  "LANDSCAPING_CLEANUP--base.json": {
+    "bytes": 116855,
+    "sha256": "44898cc7272590029a6eb7d5c2ebfe054380f816ae1ce03f88e65453335d8186"
+  },
+  "LANDSCAPING_MOWING--base.json": {
+    "bytes": 106160,
+    "sha256": "22566519b5cfca4e01554ed08e181a5b32eddfbe97ee5bf9149fb39fd0694f10"
+  },
+  "LANDSCAPING_MULCH--base.json": {
+    "bytes": 139811,
+    "sha256": "1ea527f94fea41dc9c15e1f8e14e694201678b975fffc995e1f175cb2e09f542"
+  },
+  "LANDSCAPING_PLANTING--base.json": {
+    "bytes": 151601,
+    "sha256": "182084c557bdbd988b9128a6480078c83c88cba8019819f2997f0e57bebdac11"
+  },
+  "LANDSCAPING_SOD--base.json": {
+    "bytes": 115395,
+    "sha256": "a3ae793b63a70a6dde8c51c83af7aeb3d1d7eb312d1f60c9cb179823c475d1aa"
+  },
+  "ROOFING_REPAIR--base.json": {
+    "bytes": 140250,
+    "sha256": "c6d67fa296130e6fca64ba8238dfcc26a945fa259d9906403d32f22fbfccdb7d"
+  },
+  "ROOFING_REPLACEMENT--base.json": {
+    "bytes": 277324,
+    "sha256": "2ff6d5532a7abf40bd96b3865d6829d86698b8175f3a842f4738264faede6cdd"
+  },
+  "SIDING_REPAIR--base.json": {
+    "bytes": 122698,
+    "sha256": "d8f916a28c6f3857d85b5711c37b182a08aca3dce92c429b129f86e898a8216f"
+  },
+  "SIDING_REPLACEMENT--base.json": {
+    "bytes": 164828,
+    "sha256": "f9f70537d2b2b53bd76663a8030a114db16f11d791e6452ef4e145cbed9d9529"
+  },
+  "server-log.json": {
+    "bytes": 289,
+    "sha256": "2a128f462281d7e3a9cbcbd7b251464c12e908b27bbf1171289dd427e0e546b3"
+  }
+}

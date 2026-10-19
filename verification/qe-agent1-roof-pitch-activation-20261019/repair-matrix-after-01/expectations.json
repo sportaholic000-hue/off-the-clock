@@ -1,0 +1,722 @@
+[
+  {
+    "id": "missing-unknown--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-unknown--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-unknown--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-unknown--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 539000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-unknown--mixed-zero",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-unknown--mixed-zero",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-unknown--mixed-positive",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-unknown--mixed-positive",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 465000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-unknown--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-unknown--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-install--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-install--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-install--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-install--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-install--mixed-zero",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-install--mixed-zero",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-install--mixed-positive",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-install--mixed-positive",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-install--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-install--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 451800
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-removal--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-removal--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-removal--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-removal--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-removal--mixed-zero",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-removal--mixed-zero",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-removal--mixed-positive",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-removal--mixed-positive",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-removal--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-removal--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 451800
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-both--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-both--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-both--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-both--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-both--mixed-zero",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-both--mixed-zero",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-both--mixed-positive",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-both--mixed-positive",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "missing-both--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "missing-both--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 451800
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "complete-positive--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "complete-positive--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "complete-positive--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "complete-positive--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 539000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "complete-positive--mixed-zero",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "complete-positive--mixed-zero",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "complete-positive--mixed-positive",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "complete-positive--mixed-positive",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 465000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "complete-positive--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "complete-positive--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 451800
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "explicit-zero--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "explicit-zero--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "explicit-zero--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "explicit-zero--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "explicit-zero--mixed-zero",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "explicit-zero--mixed-zero",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "explicit-zero--mixed-positive",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "explicit-zero--mixed-positive",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "explicit-zero--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "explicit-zero--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 451800
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-complete-over12--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-complete-over12--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-complete-over12--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-complete-over12--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 539000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-complete-over12--mixed-zero",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-complete-over12--mixed-zero",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-complete-over12--mixed-positive",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-complete-over12--mixed-positive",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 465000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-complete-over12--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-complete-over12--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 539000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-incomplete-over12--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-incomplete-over12--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-incomplete-over12--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-incomplete-over12--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-incomplete-over12--mixed-zero",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-incomplete-over12--mixed-zero",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-incomplete-over12--mixed-positive",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-incomplete-over12--mixed-positive",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-incomplete-over12--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-incomplete-over12--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-band-up_to_six",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-band-up_to_six",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-band-seven_to_nine",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-band-seven_to_nine",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 451800
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "unknown-band-ten_to_twelve",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "unknown-band-ten_to_twelve",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 485800
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "tier-completion--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "tier-completion--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000,
+      "options": 2
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "tier-completion--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "tier-completion--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 539000,
+      "options": 1
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "tier-completion--unknown",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "tier-completion--unknown",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 539000,
+      "options": 1
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "tier-explicit-zero--low",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "tier-explicit-zero--low",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000,
+      "options": 2
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "tier-explicit-zero--over12",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "tier-explicit-zero--over12",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000,
+      "options": 1
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-2-missing-unknown--complete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-2-missing-unknown--complete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-2-missing-unknown--incomplete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-2-missing-unknown--incomplete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-2-missing-removal--complete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-2-missing-removal--complete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-2-missing-removal--incomplete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-2-missing-removal--incomplete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-2-unknown-incomplete-over12--complete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-2-unknown-incomplete-over12--complete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-2-unknown-incomplete-over12--incomplete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-2-unknown-incomplete-over12--incomplete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-11-missing-unknown--complete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-11-missing-unknown--complete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-11-missing-unknown--incomplete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-11-missing-unknown--incomplete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-11-missing-removal--complete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-11-missing-removal--complete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-11-missing-removal--incomplete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-11-missing-removal--incomplete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-11-unknown-incomplete-over12--complete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-11-unknown-incomplete-over12--complete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "catalog-11-unknown-incomplete-over12--incomplete",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "catalog-11-unknown-incomplete-over12--incomplete",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  },
+  {
+    "id": "historical-missing-measurement",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "historical-missing-measurement",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  }
+]

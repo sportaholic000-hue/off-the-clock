@@ -1,0 +1,6 @@
+{
+  "source": "verification/qe-agent2-parser-integration-20261019/f18-original-matrix.spec.mjs",
+  "copy": "verification/qe-agent2-roof-pitch-integration-20261019/f18-original-matrix.spec.mjs",
+  "sha256": "ecdb946d6a543ae1c3d92aedd8e01744d826769db9cc16d6102941203b1fe42c",
+  "byte_identical": true
+}

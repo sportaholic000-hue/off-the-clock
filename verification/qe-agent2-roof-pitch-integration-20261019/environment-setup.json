@@ -1,0 +1,15 @@
+{
+  "node": "v22.23.3",
+  "lockfile_unchanged": true,
+  "successful_dependency_install": "setup-cold-install-exact.log",
+  "successful_playwright_install": "setup-playwright-install-exact.log",
+  "playwright": "1.56.0",
+  "successful_browser_install": "setup-chromium-shell-install.log",
+  "chromium_launch_version": "141.0.7390.37",
+  "initial_attempts_retained": [
+    "source-qualification-tests-initial.tap",
+    "setup-chromium-install.log",
+    "setup-chromium-install-retry.log"
+  ],
+  "note": "Initial restricted qualifier test process failed before individual tests; the workspace-TMPDIR run with required process access passed all 5. Full Chromium installation twice encountered a stale installation-lock error. Official headless-shell installation, launch probe, and rendered controls subsequently passed. A preliminary Playwright install with package-lock disabled re-resolved local packages; npm ci and the exact CI install command restored the lockfile-based test environment before application tests."
+}

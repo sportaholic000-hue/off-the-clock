@@ -1,0 +1,60 @@
+[
+  {
+    "id": "ROOFING_REPLACEMENT--base",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "base",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "200000 labor +110000 field material +60000 removal +1000 installed-area underlayment +20000 disposal; installed-area underlayment uses10 squares, no purchased waste."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "absent-unknown-pitch-policy-known-request",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Known up-to6 pitch does not use an unknown-pitch allowance; priceBookCopy says this setting is required before UNKNOWN pitch can quote.391000 known-pitch amount unchanged."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "absent-unknown-pitch-policy-unknown-request",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Unknown pitch needs the owner allowance; no conversion or implied policy. Known-pitch service availability should remain."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--absent-over12-adjustment-known-request",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "absent-over12-adjustment-known-request",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Known up-to6 pitch uses neither over12 adjustment; its valid scope should remain available. Missing over12 removal is selected-scope pricing, not malformed money."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "absent-over12-adjustment-over12-request",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Over12 selection cannot invent its missing removal adjustment. Known up-to6 scope remains available."
+  }
+]

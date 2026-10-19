@@ -1,0 +1,8 @@
+{
+  "source": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+  "node": "v22.23.3",
+  "started": "2026-10-19T06:06:22.868Z",
+  "expectationsSha256": "380da24ce59c47e6bc703500fa0684faa1cd80c1c9fcfd2aac2912ba3b0bcd65",
+  "providers": "synthetic only",
+  "selected": 152
+}

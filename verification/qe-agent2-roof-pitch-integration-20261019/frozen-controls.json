@@ -1,0 +1,62 @@
+{
+  ".github/workflows/ci.yml": {
+    "blob": "cd064413f371aa4f5ff4980fad03404098c2d46d",
+    "sha256": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+    "same_as_base": true
+  },
+  "scripts/testSelection.mjs": {
+    "blob": "9aaae5f85cf809f98157702854dbbc4a574e3e98",
+    "sha256": "b7395c0de38536403eb51b0cfb4e1c04b7b5a4304e3ccbee22d05e41b8a46197",
+    "same_as_base": true
+  },
+  "scripts/test-full.mjs": {
+    "blob": "34c58c8e2d9872fdfd74a0971662b3015de09861",
+    "sha256": "0f5a343ff7d8b6468d8bf04ff1d86da343d3523ec97c9330bc44dfad4893ac6f",
+    "same_as_base": true
+  },
+  "server/scripts/quote-vnext-gate.js": {
+    "blob": "bb4cef723b07098949a1233de240c32a7e6b0c81",
+    "sha256": "0875880512d633cb24cab4241a6cd07341f21943f20297511c1bceb85899bfd0",
+    "same_as_base": true
+  },
+  "server/quote-engine-vnext/engine.js": {
+    "blob": "907431c53c7657ed78d7ebf737a07a65328364d3",
+    "sha256": "b9d59a4f7566060078c896335672fc47cbd6a78a8d49528e1ee420a2974cb93f",
+    "same_as_base": true
+  },
+  "server/src/runtimeConfig.js": {
+    "blob": "3363aab393fdeffa885a00819f47eeb377967303",
+    "sha256": "60a7660e44c4af6c211ee2b50084c8d2bc5b1ea58ee5dfd5e96ebd9a41f6fa34",
+    "same_as_base": true
+  },
+  "server/priceBookMoney.js": {
+    "blob": "ce3626a2c4c951588af96c55bab2ba279234240e",
+    "sha256": "73fb97c42fad17445fd35db8b2f08042dd6fed3e3a0236aedbcec4075c6e547c",
+    "same_as_base": true
+  },
+  "server/priceMetadata.js": {
+    "blob": "24fdbd596f6be5eb4860274c6e70c0ec27dcddab",
+    "sha256": "d88a0f5c753333cb891a270fa299a1358796377a27b3ca025ac0f0e42a046e64",
+    "same_as_base": true
+  },
+  "server/pricePrecision.js": {
+    "blob": "a2db9e834ba2de8c9e0f900a5f1b109384c9b3dd",
+    "sha256": "5d80c8da286eb1836dbafcca6b2d0868d863a58af58394f1052e4db270696087",
+    "same_as_base": true
+  },
+  "server/quote-engine-vnext/configuredOfferings.js": {
+    "blob": "c385e1452ea14a4bd34d40b249de7bb020d5537e",
+    "sha256": "81b3324200fe968982ed92db72766281c04e44ab95f6de56533ef1191637703b",
+    "same_as_base": true
+  },
+  "server/src/quoteScopeDisclosure.js": {
+    "blob": "5ab9d84833897594ce51d620bfe750192714d8d6",
+    "sha256": "23296671d04de90083384b8603230ab1619b08f5c318b007cb71d9b5c6ffb2df",
+    "same_as_base": true
+  },
+  "server/src/voice/voiceQuotePresentation.js": {
+    "blob": "29bcbe0ef43fd665d3dae969f2868f893086651b",
+    "sha256": "9d29178a9767df6c6db2e6f6533143c7c4628ec488733a3770250ed998ed5369",
+    "same_as_base": true
+  }
+}

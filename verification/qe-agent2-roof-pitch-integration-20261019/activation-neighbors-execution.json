@@ -1,0 +1,32 @@
+{
+  "check": "activation-neighbors",
+  "command": [
+    "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test-concurrency=1",
+    "--test",
+    "--test-reporter=tap",
+    "test/configuredOfferings.spec.mjs",
+    "test/quoteActivationParity20261005.spec.mjs",
+    "test/quoteOfferingScopeIsolation.spec.mjs",
+    "test/surfacePricingLaneCFixes20261016.spec.mjs",
+    "test/surfacePricing20261016.spec.mjs",
+    "test/surfacePricing20261016.dom.spec.mjs"
+  ],
+  "node": "v22.23.3",
+  "exit_code": 0,
+  "seconds": 6.475,
+  "summary": {
+    "tests": 177,
+    "suites": 0,
+    "pass": 177,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "log": "verification/qe-agent2-roof-pitch-integration-20261019/activation-neighbors.tap",
+  "verification_passed": true
+}

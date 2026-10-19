@@ -1,0 +1,11 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+file:///workspace/scratch/db2901c56e80/ap-roof-combined-before/verification/qe-agent1-roof-pitch-activation-20261019/audit.mjs:23
+if(changed.some(p=>p!=='server/quote-engine-vnext/priceBook.js'&&!p.startsWith('verification/qe-agent1-roof-pitch-activation-20261019/')&&!/^test\/(?:voice)?qeAgent1RoofPitchActivation.*\.spec\.mjs$/.test(p)))throw Error('Unowned changes');
+                                                                                                                                                                                                                       ^
+
+Error: Unowned changes
+    at file:///workspace/scratch/db2901c56e80/ap-roof-combined-before/verification/qe-agent1-roof-pitch-activation-20261019/audit.mjs:23:216
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.3

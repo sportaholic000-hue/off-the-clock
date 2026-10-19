@@ -1,0 +1,978 @@
+{
+  "archive": "wire-evidence.tar.gz",
+  "archive_sha256": "058218db31c0b3a340bdf09f23b8b38e38d3069efaf5692ba00f43a7fd72d125",
+  "verified_members": [
+    {
+      "member": "CONCRETE_DRIVEWAY--base.json.gz",
+      "bytes": 31312,
+      "sha256": "af010c134e9a13f499a81285cd2040e15d243563e48dbd849e42e0c1736e36bc",
+      "uncompressed_sha256": "53b0a87fd33ccd9c2b167d5d1111adbf4239cf19d6a4a56d59e14ab177c6364a"
+    },
+    {
+      "member": "CONCRETE_DRIVEWAY--explicit-thickness-band-contradictory.json.gz",
+      "bytes": 16781,
+      "sha256": "c9443d032eac84042509c09e3b68abeb1f038f9a62ce1abb6d68b9035176b9a2",
+      "uncompressed_sha256": "de0ffca80721c2bb95ff9af7b5b64bf006fd9c3bfda9b8db2cfb058cc36447c7"
+    },
+    {
+      "member": "CONCRETE_DRIVEWAY--explicit-thickness-band-matching.json.gz",
+      "bytes": 31365,
+      "sha256": "19ac2be92277bb26a2a5b318e8819790593a1520c90b19c47b48dda7f6be057b",
+      "uncompressed_sha256": "187a869755820221cf581952865459d4b473a8685dfd58bf782a79a8993625bd"
+    },
+    {
+      "member": "CONCRETE_DRIVEWAY--inherited-and-explicit-tiers.json.gz",
+      "bytes": 37958,
+      "sha256": "27b32d8304926e38ae70de64514234892aae17511ef553ae98a670eada395c01",
+      "uncompressed_sha256": "893dfba8feb0e26e5bb374ee4967cbf1812e1b0be4b4eb3b20bbbc5362a7e761"
+    },
+    {
+      "member": "CONCRETE_DRIVEWAY--optional-absent-selected.json.gz",
+      "bytes": 17054,
+      "sha256": "212d19959ca0231d91928c64ea0c6521790e50b83f86f1e0531c001102ded981",
+      "uncompressed_sha256": "05e1e4b98e3510ad398e09621cddd980499c8da161caa06e735be8e55ac73bf4"
+    },
+    {
+      "member": "CONCRETE_DRIVEWAY--optional-absent-unselected.json.gz",
+      "bytes": 31334,
+      "sha256": "1212ea09f95af1feb1dc565ea482eafc9530e41e1ebcb15117adab62d94e856d",
+      "uncompressed_sha256": "955881d4fbb63723291f5eb30bd22f3187563db35488999b1a45b21506c48106"
+    },
+    {
+      "member": "CONCRETE_DRIVEWAY--optional-priced-selected.json.gz",
+      "bytes": 34197,
+      "sha256": "b24854c359b519b1d61033850cdd1c40af40715b1a819cd4b606b08da674b362",
+      "uncompressed_sha256": "823d028f2c57bb20c831b69aee908c167aa372620e86c1d751f9e1fffd19dbfd"
+    },
+    {
+      "member": "CONCRETE_DRIVEWAY--optional-tier-completion.json.gz",
+      "bytes": 39620,
+      "sha256": "2ac5ba5cb01c8a606182fb04b429173efa335da13193acf15bff0a4c89f30449",
+      "uncompressed_sha256": "36c1864ea314c0b68b0b2b6bd8e24f5b541d83c3569287d25964e81f20c9ddd0"
+    },
+    {
+      "member": "CONCRETE_DRIVEWAY--thickness-tier-isolation.json.gz",
+      "bytes": 34377,
+      "sha256": "ed6d9ed45b5ba5b8ff7f6c9078167a2f65d30a924f777e7d2aa584964eb552eb",
+      "uncompressed_sha256": "3b0d9b237aa56b14709b14054d304df62127529a381f7ebe6144a5cb3c8d5f0d"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--base.json.gz",
+      "bytes": 31283,
+      "sha256": "a9ecb1a354ad924726ceb49e0139ebb852ba85c31acaf18ff0264c8f5597882b",
+      "uncompressed_sha256": "45f4da751ca0ece035419eab2c85fa49a96b0644866c78a42f11080f35b3a696"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--explicit-thickness-band-contradictory.json.gz",
+      "bytes": 16790,
+      "sha256": "dd83194183b79f34f2a029057309cb26fb4a033c48195076515d3d3e408a13cd",
+      "uncompressed_sha256": "d6de81ff0146de829ba6960bf31c3bef4ae5e712f095129c4ea58474d88fb63d"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--explicit-thickness-band-matching.json.gz",
+      "bytes": 31372,
+      "sha256": "cca00f8b8258fe7ee52ae67e1942bc8722aa56e78d2a3b8e5b658b5d4aecb271",
+      "uncompressed_sha256": "7d85adb411dfb1272e705c293d33ebcffc421a70e6d08a0b27e7f278a52fe15c"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--inherited-and-explicit-tiers.json.gz",
+      "bytes": 37909,
+      "sha256": "6f6a9ed93c0e0fbbb3b1dd0ad2b29c9fe9412d691dc481f3349f186a1a6811ba",
+      "uncompressed_sha256": "808ed8d1d54f48310288fedbad75481ff96abd9421e7c3529d5b72f86746e2ad"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--optional-absent-selected.json.gz",
+      "bytes": 17049,
+      "sha256": "6365a902fc53bfee69fa12276bbd10f0d0c97e8001eb8febaa934e9e31137e45",
+      "uncompressed_sha256": "445d2dd1bba00a5b3426bd6b5019559c2080450c0971934cb0cd0dfd8cca894d"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--optional-absent-unselected.json.gz",
+      "bytes": 31324,
+      "sha256": "96cd608007d80c3399c205768f9a12a87264c7f4d70e23eb09e15eb2553704a7",
+      "uncompressed_sha256": "b8971fbb5793e2a0a7b58e758ebe9cfbe3ec60ba9c821aa3066137710ac6a2dc"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--optional-priced-selected.json.gz",
+      "bytes": 34172,
+      "sha256": "39ec412526811df65b2b19304b0cc0dba53f2c9e2d3ecd188b3db7970851f262",
+      "uncompressed_sha256": "9675d49a0a1bc5d74bcb9012d29ddfd43581dc766161d86f06052d5390826eab"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--optional-tier-completion.json.gz",
+      "bytes": 39602,
+      "sha256": "ff0423b4a1feb5dbb6296c02ce628b90ea214a43fe690735a1eb9f4179587f02",
+      "uncompressed_sha256": "3db8f9f7708352ed4b913f4582ab0a32174bcbf7557df2fdd43ced2f51421a05"
+    },
+    {
+      "member": "CONCRETE_PATIO_SLAB--thickness-tier-isolation.json.gz",
+      "bytes": 34416,
+      "sha256": "46c9f8964ae2ddfc4a27220351580689cc452e41541c2f8f5aeedb03984a4aab",
+      "uncompressed_sha256": "77d24a7a27bf6a7b19b1f3b034d0f6cfa2cffb5a5015d16f942a41652415c5fd"
+    },
+    {
+      "member": "CUSTOM--base.json.gz",
+      "bytes": 17594,
+      "sha256": "07a46469c2c61dfac15b62c5fc9cbf14f091474c329a6c95b1c0e267c51f0f80",
+      "uncompressed_sha256": "8e2653ac0f74beb225afde0916831d7e6f5ad4eecc9b6238cd20ac37ab506590"
+    },
+    {
+      "member": "CUSTOM--explicit-unit-contradiction.json.gz",
+      "bytes": 11494,
+      "sha256": "3a550f8de66d12368d3d63425072fbc29b58afa8ff99507de4bc0ed004d94ea3",
+      "uncompressed_sha256": "aa762d862feb627f49cbb3aea21335058d9338b61aaeb25a4cb163d1aabc5e28"
+    },
+    {
+      "member": "CUSTOM--inherited-and-explicit-tiers.json.gz",
+      "bytes": 21981,
+      "sha256": "ed49649a31aff4f32c3393cb6cbd70e2bbfa680c5ad6260d5b90ad5477dca509",
+      "uncompressed_sha256": "1234ef2ad2e86ded042d4974e88b18da9881a7d2e5e63bdd634254b3bd688359"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--absent-optional-baseline-detail.json.gz",
+      "bytes": 33974,
+      "sha256": "d0c2d2a81f00eb59c83340ccba622a8fcf03f482ed816f4972937f5aa79ec13a",
+      "uncompressed_sha256": "893d6435d5232af57165d0babb80957def97691e3a351ea2a514941d1cb5493a"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--base.json.gz",
+      "bytes": 34263,
+      "sha256": "d94cd2bb4ad8248b03b1d977d3ddeac9a9d15f2ffb38c960ff208517be2bb89b",
+      "uncompressed_sha256": "6e5449d6f2685e4d85edd7de0caa34d6c39deb53b33894ecb76519a6e1be895f"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--explicit-coat-contradiction.json.gz",
+      "bytes": 21942,
+      "sha256": "306c1ef0cec26adeec8f0e39cda35cfae1d123e6be324df22a69d8090dd78fca",
+      "uncompressed_sha256": "97c16044dde1f3e8a2688c35ce81d7dd898490bfb55173e56b4e5c13fd78d65c"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--inherited-and-explicit-tiers.json.gz",
+      "bytes": 43814,
+      "sha256": "02b43433ca64f84f493ebd3a3e8473d59c1f7e4f5b8e2dbd92f50ff30482881f",
+      "uncompressed_sha256": "eb4ca36c48efb7161e41f6bc4127ddca8574cef13aa0e72e0d2a540516b1c81c"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--itemized-absent-optional-details.json.gz",
+      "bytes": 58487,
+      "sha256": "64fabc62a849edfde76f460dde267d4da2f97a58116929cd0b06f83e4b74d992",
+      "uncompressed_sha256": "01b05269fb39b26c550b693fdec09b0f4a40a0b205d251d61dce301a3f649912"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--itemized-unpriced-condition.json.gz",
+      "bytes": 24386,
+      "sha256": "2d7fd5ad91ed19d8c989202f0f136be5e11e11a196abdff6f386f5071f8eff75",
+      "uncompressed_sha256": "86868bc6cd0ce89c4311ecd9b9c9d3b1738fee10f1a58213ca77ca4024524158"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--optional-absent-selected.json.gz",
+      "bytes": 36850,
+      "sha256": "dc9bfc161744d663e9c28cbd23f9120e148e4e63ff3da06a8178d81bf5ea0529",
+      "uncompressed_sha256": "30af695e710da9bf59382371cc33b389f335d684ff5ed386077b021e0844fc1a"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--optional-absent-unselected.json.gz",
+      "bytes": 34284,
+      "sha256": "6c192af97c07482a55ea075c9be23a9303943296cff0944d35fe5277be049aaa",
+      "uncompressed_sha256": "e4ea79a1e2c15c33c4e7b40110c31cf0ce912064dafb3b2e9352cd4461daddcd"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--optional-priced-selected.json.gz",
+      "bytes": 39143,
+      "sha256": "45f179aa33816a878cc22fd39a486efb6488b0ff5ac20b4c410ca82569cd8a9c",
+      "uncompressed_sha256": "a45b806fd28d2b65178b909937ecbc167dff1d95c95b1398a95096d160cdabe3"
+    },
+    {
+      "member": "EXTERIOR_PAINTING--optional-tier-completion.json.gz",
+      "bytes": 48618,
+      "sha256": "fd0dcdadd00dd5aaffd1630c01b0a48e06f522224a99d6665264ccc25470950a",
+      "uncompressed_sha256": "065742bd4bbb3b767bb27106a149524cbeb9bcbb478ff8a6b81ed7c38ab26209"
+    },
+    {
+      "member": "FENCING_INSTALL--absent-optional-baseline-detail.json.gz",
+      "bytes": 23486,
+      "sha256": "45e50147793c8e8c06bfdf35760561f44e6604cf7fa9d89598fcb8f89e83c2d7",
+      "uncompressed_sha256": "c9ca1d489204a997189d7890a2ef7bd87680b6505d6cde84cb644f9794c73dc1"
+    },
+    {
+      "member": "FENCING_INSTALL--base.json.gz",
+      "bytes": 23479,
+      "sha256": "66d87c6f4aee439b6df1a8d46f984643c6b046f9e1d2398ef82149e28c060608",
+      "uncompressed_sha256": "04833e79f05764c16fde1f51f650fbb81270441965bb175011ee1d68ce328f7e"
+    },
+    {
+      "member": "FENCING_INSTALL--explicit-unoffered-removal-or-type.json.gz",
+      "bytes": 14083,
+      "sha256": "dfee51a8a5c6204d878536bc252f6c4e8fd3b3566003e5384872915910370b76",
+      "uncompressed_sha256": "01b3d05c3f69af1af81e97a961d9c5e88ca851716079d10aaed2c550a917bcbe"
+    },
+    {
+      "member": "FENCING_INSTALL--inherited-and-explicit-tiers.json.gz",
+      "bytes": 30567,
+      "sha256": "dc6a4ddeac7fe7158ed1b6ed326c889dfbd7706f139a55dabdc74d91687eef3b",
+      "uncompressed_sha256": "5f80aa6bf55e658add6bcd51769cce188d0cf5e6a14e29f977f7866af72f87b8"
+    },
+    {
+      "member": "FENCING_INSTALL--minimal-prices.json.gz",
+      "bytes": 22597,
+      "sha256": "6afe1bb8023650bdaf8123d0a0d9bef1df7fcc4ab9545efe2d57c382cad98d95",
+      "uncompressed_sha256": "c4e5762f85aa47749b047caba5e45b552b2ac8320a42c42bcbb4aa41f3018a60"
+    },
+    {
+      "member": "FENCING_INSTALL--optional-absent-selected.json.gz",
+      "bytes": 15655,
+      "sha256": "56171392979426e82ba05353a6535f6355f7c04b9bc426921b147345743c0c5c",
+      "uncompressed_sha256": "242e04781d091a93f43aa2eef970994c1d5b042aa5f5ebb0adcf402d69b2e634"
+    },
+    {
+      "member": "FENCING_INSTALL--optional-absent-unselected.json.gz",
+      "bytes": 23392,
+      "sha256": "aa82eb63eb04b3c50af1b04cf0fa3cd8d06f0cdb38c781043ea778e4de175055",
+      "uncompressed_sha256": "09c5fc6b8c7db7b076e2bae68273f602b1d57bec1557674e686506361280c3c6"
+    },
+    {
+      "member": "FENCING_INSTALL--optional-priced-selected.json.gz",
+      "bytes": 26993,
+      "sha256": "afa8fd9822ef2405d534f61593bc2343ae2cbb63b0a8a4a3d637f7c5527e0661",
+      "uncompressed_sha256": "cd8cc46c10f1bc615d977389012285db69edaed4d9307a047952523757050547"
+    },
+    {
+      "member": "FENCING_INSTALL--optional-tier-completion.json.gz",
+      "bytes": 30835,
+      "sha256": "28b02646266b11935b188df9d98e6a7776888f820d41a87bae1b1ff83e110449",
+      "uncompressed_sha256": "5b570daa38ae126caa1f4a024295a1164dba72957a8d336e299a75598bf8c369"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--absent-optional-baseline-detail.json.gz",
+      "bytes": 24623,
+      "sha256": "d6ca62ffb2363420688595619af384e649e7ce182b78b4947437c7a9b9e02c06",
+      "uncompressed_sha256": "c6024d21e8d263edfcb7ba9306d056c0e74d4e0d59dc7e1da47c87ee237a6f5c"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--base.json.gz",
+      "bytes": 24599,
+      "sha256": "629870d95ebcc7caa00142b0617103591b1a951ac5c459e8afebd8259d1ccf40",
+      "uncompressed_sha256": "12572515739fcab0efaf48fff0a57bbaa232e46b7821486f0ec51ecbbd086060"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--explicit-unoffered-removal-or-type.json.gz",
+      "bytes": 15182,
+      "sha256": "664961e3f4ca9523f8570f9c543c14d3db0087608baebf12f08efed3a564b0e6",
+      "uncompressed_sha256": "a1f94f3db408991542386c9311759e9424b050ecea1da4d932e1005e50bd85b4"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--inherited-and-explicit-tiers.json.gz",
+      "bytes": 32037,
+      "sha256": "db36a3710640a9da658d70aae8f52d95a74aa88934ca6141fd760e7bba532059",
+      "uncompressed_sha256": "5ee7fc2f52d6fd3d803ec6f796f85bc26786e6d36277fe6ebc6a00f7438b5c50"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--minimal-prices.json.gz",
+      "bytes": 23023,
+      "sha256": "c954b5b4c537d8022b3f7be68e24a924874db5ef0ba6f280edfdac7aafdd7ddd",
+      "uncompressed_sha256": "093b05c16af56019adf540a3fca3057ebef675442fe13fe95b315d82a7791594"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--optional-absent-selected.json.gz",
+      "bytes": 16686,
+      "sha256": "6a10596e0670cbb25df02263f124c89b89a0f4c88f9423232c0a874509e2933b",
+      "uncompressed_sha256": "c1f9bc0ae24f34daef8f691313b36a5ded9bd25a5bf4209c7fbdf7f3daab1ca1"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--optional-absent-unselected.json.gz",
+      "bytes": 24579,
+      "sha256": "ffc1f6409ffae6e1aaf6c31c0a15399956a3f2a888db56f937038254d4859c09",
+      "uncompressed_sha256": "1a219dd421df7e0d192d653903f637d01cde263b135bff709230f3c4cc4d4a9d"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--optional-priced-selected.json.gz",
+      "bytes": 28467,
+      "sha256": "2f25e8c5022ed634d0dcfe8a2bc45cc9b04c97b4716d70eb9ae838cdd88af985",
+      "uncompressed_sha256": "1480c97b56d7dcb966f788c97e6273ca6d266d451bc4656aba5f762a5886cfd3"
+    },
+    {
+      "member": "FENCING_REPLACEMENT--optional-tier-completion.json.gz",
+      "bytes": 32130,
+      "sha256": "f60f0986cfaf6f88a0e752887134e4914775b884824295f940d6777fbef17522",
+      "uncompressed_sha256": "89298af77ec6705a635c17438d69017d97c38bc34cab0b060a0d8370872fa6e2"
+    },
+    {
+      "member": "FLAT_ROOF_REPAIR--absent-large-limit-small.json.gz",
+      "bytes": 16037,
+      "sha256": "66e3708020e98876f76b94c83816550e84ad341a3d8dfaa7a65a7d3cdf4022a8",
+      "uncompressed_sha256": "8e5669670c2445194f2a5a7550be804677fb9f5b01a00de6b47ad04ea8397d1a"
+    },
+    {
+      "member": "FLAT_ROOF_REPAIR--base.json.gz",
+      "bytes": 26323,
+      "sha256": "9728cebeb39e4ac1c120aa0de137bf671ea7c80d44b3405ca9c6e3aa955d7a92",
+      "uncompressed_sha256": "caf692c52a9dc5ef994763c8a6db4fc97ca86ce1f6001c4684ab184e2a73d620"
+    },
+    {
+      "member": "FLAT_ROOF_REPAIR--explicit-large-limit-exceeded.json.gz",
+      "bytes": 15265,
+      "sha256": "9a913a1fbe168d57ccc19cfd269ab0186d418d439ff97e04fb50445d0d78c711",
+      "uncompressed_sha256": "d09a04987ed2f65c8cb9b3aea0f4750953e2ec7dc91dfa878aef1a1416551bf0"
+    },
+    {
+      "member": "FLAT_ROOF_REPAIR--inherited-and-explicit-tiers.json.gz",
+      "bytes": 32091,
+      "sha256": "905d297fd32a79666751ef62bc9de3b5f2ca7a86d919535f6433cfe8fa39e924",
+      "uncompressed_sha256": "7ea91ac7e3e5f2365efa29821ec2d9b2b719189f8e193e44dc524429fe2753ff"
+    },
+    {
+      "member": "FLAT_ROOF_REPAIR--optional-absent-selected.json.gz",
+      "bytes": 26657,
+      "sha256": "207f381c77f5cd4e52c353ba8e5a398a85ce15e64bb882095ec3a6d2438d417e",
+      "uncompressed_sha256": "7f42f2d40bf21c0a82bb8ea46bea6d99d739eb76a2559140b45262d95881b50e"
+    },
+    {
+      "member": "FLAT_ROOF_REPAIR--optional-absent-unselected.json.gz",
+      "bytes": 26342,
+      "sha256": "ec2ec2e685e60027239e91efbb8bc3d45ea4132d4e46fa847f101f22cdcf1f82",
+      "uncompressed_sha256": "f1289b2108d4e5a00d0127dbf183863c9abc125c769265790e20bd1a80fab2e8"
+    },
+    {
+      "member": "FLAT_ROOF_REPAIR--optional-priced-selected.json.gz",
+      "bytes": 27420,
+      "sha256": "d611447c632bee113f141688c306aa88c0b9ae2e727144be2674234076d865de",
+      "uncompressed_sha256": "48d0fb95a24c29869478fb62f9459d671825fdb5cf64051a8fa77c3002f43761"
+    },
+    {
+      "member": "FLAT_ROOF_REPAIR--optional-tier-completion.json.gz",
+      "bytes": 34269,
+      "sha256": "f8df734959d7caec67b35eb2118eb7e8f1bb46b9e04fd634093103fbbbfdc6a1",
+      "uncompressed_sha256": "f06451f6cecf199be851cc42f3885ef16e23fd07374021e549d69f256fff2a1b"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--base.json.gz",
+      "bytes": 30061,
+      "sha256": "3d17da1d335df8eca8204d9f3bdbddabf5aeaf6f7ac61b1b2282734273dbdf8c",
+      "uncompressed_sha256": "15391bd7c5a7e45935bc3a6e08c3040b2063574a5d741cddcdd72041b9fa6507"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--deck-basis-absent-selected.json.gz",
+      "bytes": 34146,
+      "sha256": "c2c9fa0159e5ba196a8d2f90b52161db9072f75024216b42ce8b017836196456",
+      "uncompressed_sha256": "5ad8ea7948efac131b6dad1a58ee5dceee3485a9e06c93fade585afa8af119a6"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--deck-basis-absent-unselected.json.gz",
+      "bytes": 31018,
+      "sha256": "23314c46761b5be9c402b8c45b4a80dc92c811f2a37625779a5055a20bb8dc8e",
+      "uncompressed_sha256": "9e694e426949cea64d8c37a707715c6b81d581b2793a1fd5ef2d3abf576fd63b"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--deck-basis-installed-selected.json.gz",
+      "bytes": 36362,
+      "sha256": "a2f32a7abb4a3aa160e622368ab5e4a6cc37914eb6b19c286401f27ec48e1f91",
+      "uncompressed_sha256": "9b9a690bcc72eb3c6da7504c5b6c78f02aa8af777e51e4ad7fb5f698b0067747"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--deck-basis-installed-unselected.json.gz",
+      "bytes": 31392,
+      "sha256": "e998e2454aaa75bc26adb44021236d701b3716c3dcff6aec600fc06c8e9b3256",
+      "uncompressed_sha256": "7ddec4a02e86c01cff7a7f79facfb1cf8a42bf9efcd2c1fdd74e6fba6bd9c73b"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--deck-basis-material-selected.json.gz",
+      "bytes": 35558,
+      "sha256": "160ddc13e0a764c8698090ebebf5252ea2e4c114ece57290bab82fdc9a872477",
+      "uncompressed_sha256": "6db7289e804c4721bf77001447c5a2bbda25e74524b69174bec8c21f1b0a6462"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--inherited-and-explicit-tiers.json.gz",
+      "bytes": 36453,
+      "sha256": "4b4fe610c8733e83ac5b005edfb5c871197a4146ae830031e01ea486bd364559",
+      "uncompressed_sha256": "f731628baa2df16ead53c18dfdfb2d5a50f2493e17a21560940eb6d612613a68"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--optional-absent-selected.json.gz",
+      "bytes": 15962,
+      "sha256": "d52930a92bedd53586a64435be82fbd6bdb330a55f3e1128da4b1e2fea8714fd",
+      "uncompressed_sha256": "b964193e07a95d35f001f16197afa7ddf385dfc2290e2978a35084269afeb692"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--optional-absent-unselected.json.gz",
+      "bytes": 30108,
+      "sha256": "2044391e9c402bb09cd21b4d246afaf248e414621b74942104cfa56949896d79",
+      "uncompressed_sha256": "42bddb2a111ab199efc7495d4741fef8b0d8479bda8f6e7f066e4714f2db753b"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--optional-priced-selected.json.gz",
+      "bytes": 37253,
+      "sha256": "2e72e8196759f5a00ba2e31cd61498d479a27343aeb00e3b5752d79888e0bb82",
+      "uncompressed_sha256": "0e2e3f455450124b5250c9d18a03c70668c127303bf638836dae8a7d461de1ad"
+    },
+    {
+      "member": "FLAT_ROOF_REPLACEMENT--optional-tier-completion.json.gz",
+      "bytes": 40788,
+      "sha256": "4219b496a287ce937961516664b71e3a3c544c59b8897e9692359595d4933956",
+      "uncompressed_sha256": "b933380b93e157c9e1286f9dcf1e74e83f9f5adef754257634d98a08d04d0a67"
+    },
+    {
+      "member": "FLOORING_INSTALL--absent-furniture-unit-unselected.json.gz",
+      "bytes": 62366,
+      "sha256": "49b2e3b04438978fdb650a944d6f4d6a19a7eca69bd3178a4aadbb0bc2bf544a",
+      "uncompressed_sha256": "70eea51855070823a40ff5c55211e4566144faa09a2d608b6d038eaa6453585d"
+    },
+    {
+      "member": "FLOORING_INSTALL--base.json.gz",
+      "bytes": 62362,
+      "sha256": "4bde2b268dad53a176f67a048dbb260818f8e81308a6d5e0e98e165f0464cbdf",
+      "uncompressed_sha256": "cffabd4d21cead8dea0bd315e99a0106c8f64707d74e9b366a23cb0efab3ea4a"
+    },
+    {
+      "member": "FLOORING_INSTALL--explicit-furniture-flat.json.gz",
+      "bytes": 65932,
+      "sha256": "c21834589e6cf5cc3e5258b55478843aa44224593f4d528b444f16bc04be3bbb",
+      "uncompressed_sha256": "e046f4749a72239bcd71406b119aed28930bc7a028a385ba5fddd252074512a3"
+    },
+    {
+      "member": "FLOORING_INSTALL--explicit-furniture-room.json.gz",
+      "bytes": 66233,
+      "sha256": "2eb5f025bcec4e9e147313dff1f0e18f31e4b6c9bdffb8983f89668e27d7ec2b",
+      "uncompressed_sha256": "22f696884b15b8df04e8811d8743303c7f4ed8541eb0de31cf9fbb35b7096c1e"
+    },
+    {
+      "member": "FLOORING_INSTALL--inherited-and-explicit-tiers.json.gz",
+      "bytes": 70003,
+      "sha256": "2673abf2296baf4926b81f570e7aca5b684e811a25fdefd8711279a4df4dd6b7",
+      "uncompressed_sha256": "0a8bb56e19b6a7dd994cbb07c844aca33e013481d792e79529e5cc9b29bdcacd"
+    },
+    {
+      "member": "FLOORING_INSTALL--optional-absent-selected.json.gz",
+      "bytes": 62937,
+      "sha256": "2121a8333058c92ef13a36f159e143797f6ccd8c8b7e06f3fd6a7f0c8eb54d96",
+      "uncompressed_sha256": "9e2af973e1e356df2e3a65c50abd0c08c47d96b63835f8cae587e867ce0292d9"
+    },
+    {
+      "member": "FLOORING_INSTALL--optional-absent-unselected.json.gz",
+      "bytes": 62342,
+      "sha256": "92a53efceb0a268485894639008de1d7ba7fa805c1cc3087354fd62261ca5df4",
+      "uncompressed_sha256": "f6339c037b0ed3f21ad1b96c5e6a88c6c3844cedc77dc0d3b11f5852ccd03829"
+    },
+    {
+      "member": "FLOORING_INSTALL--optional-priced-selected.json.gz",
+      "bytes": 66007,
+      "sha256": "79bbeebe493dc99cae5a3a34d4e618033fdde582bcb7dc8972d8ba2f93c44a3f",
+      "uncompressed_sha256": "9223dc29372e19b141d7460d126f56500a4466820b38bf13c64c69d6d5484a9a"
+    },
+    {
+      "member": "FLOORING_INSTALL--optional-tier-completion.json.gz",
+      "bytes": 77269,
+      "sha256": "96fe9e09626993a8b4fbcbb34e7dc48a843cad1bbdc913083d6d49d10419da3c",
+      "uncompressed_sha256": "19d56a52ed4d1fd1db2abb4096625cc47cabdd9702f1e52cbe6bb3e05895bab2"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--absent-furniture-unit-unselected.json.gz",
+      "bytes": 62867,
+      "sha256": "64ac743136532b2d1096ecf53f12f28ab4163b14e198e8a4c96d100c966d8098",
+      "uncompressed_sha256": "19f156e8f550b5a6970c2bc7d06d5eb563c6e8194f7cbbebbf1139c809b485f7"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--base.json.gz",
+      "bytes": 62845,
+      "sha256": "848b9c0fb6e32cfe2d9726fccbba90cca94dff0c02ca49ca22a3dc137859271a",
+      "uncompressed_sha256": "7ebf613b997054aa13a65f0b7ce636c13deedc53af9f963624ab63b9dbb55bf7"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--explicit-furniture-flat.json.gz",
+      "bytes": 66350,
+      "sha256": "4f7d2d1a8bd7e4c56646063c9d56c8ef79b7fa2deb03fb8315019408462a84da",
+      "uncompressed_sha256": "ca7c11b708c66535f5a4f1798a125e61318fd6abb4d3637dc17c11fe865cb27c"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--explicit-furniture-room.json.gz",
+      "bytes": 66571,
+      "sha256": "6ddde3749874e74e521422ac466203017af92ee0dd2c5ccaebd2431344fe0812",
+      "uncompressed_sha256": "a2c6e6997af3050499cd2658c593332a282790781705c21c87cb1a5bcfe5eba3"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--inherited-and-explicit-tiers.json.gz",
+      "bytes": 70429,
+      "sha256": "5592760b0e32771cc8d52583ae95883295a4b9e7b07f091f2755f6a23c08310f",
+      "uncompressed_sha256": "ab5367cd8dce24f2fff7f4e4138e3cd6e5daae5ebdf8a1d638fe49b6a8c25a1f"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--optional-absent-selected.json.gz",
+      "bytes": 63291,
+      "sha256": "76832b5af109a876d512300184c5cdf5819969d5c2965cce4f18fc9e8a31cd43",
+      "uncompressed_sha256": "244bb5dfffb04d26e31cff0880357d1ca4b6cf0d973399861466257bab942e36"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--optional-absent-unselected.json.gz",
+      "bytes": 62854,
+      "sha256": "d359ba890761c0a1425a3b9d8481df5d4f74095d4e820fd2c6857f414309636b",
+      "uncompressed_sha256": "4216795c5d1cd05cd165e83a22020b1522f4d258223ce0d13d2f1e9f3ef31aee"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--optional-priced-selected.json.gz",
+      "bytes": 66448,
+      "sha256": "72c32220e82b6c8c1a8323607b9d46490465f6cccd5c7adf7bcf816fcc37263d",
+      "uncompressed_sha256": "386bb1f43fd54d403ef2b0ee601516d88446c88a5ea8c70f6e202582d107b817"
+    },
+    {
+      "member": "FLOORING_REPLACEMENT--optional-tier-completion.json.gz",
+      "bytes": 77733,
+      "sha256": "47ee4e4e29f1673d6f63aa377d1042c50876d284a23c9ae6c4535258b45a05d1",
+      "uncompressed_sha256": "62163754c1c636141ae378a82bcf45291368aca9147e61555f24d8fd26179dd3"
+    },
+    {
+      "member": "INTERIOR_PAINTING--absent-optional-baseline-detail.json.gz",
+      "bytes": 38387,
+      "sha256": "60e6c44a9c1a13a8e52ef0b876128e7f0838cfa93cc46290ede6cab10864dfc9",
+      "uncompressed_sha256": "d8d66e8d0a54d333276ce8388c145f6a048ef03ef97b74172a7999ddf8026512"
+    },
+    {
+      "member": "INTERIOR_PAINTING--absent-trim-constraints.json.gz",
+      "bytes": 42940,
+      "sha256": "24d0e0f5165a4839c68cb0cb9c8a298773ef3e107fc86d78ffb0be416685eefa",
+      "uncompressed_sha256": "c58bb7aafa5294183d7dba34800265f713431bdfe48372e4d63350647f2fb51f"
+    },
+    {
+      "member": "INTERIOR_PAINTING--base.json.gz",
+      "bytes": 38366,
+      "sha256": "552a13258ea5b8c8f0e27bcd48f3401454a64356aeebd511a341a1b242957dc9",
+      "uncompressed_sha256": "324044ea26335f04ddddcb1e0565486510bdf9908efb5127918e3ef4a0a9febb"
+    },
+    {
+      "member": "INTERIOR_PAINTING--explicit-trim-contradictory.json.gz",
+      "bytes": 24776,
+      "sha256": "c68a1e65e0e38fc827801d2335a368792df79b581b6e17aa300e131e3e8da95e",
+      "uncompressed_sha256": "3dc13de299c7218031e9444f1f54b5a2e6a4c448eecca414876f71562cf85803"
+    },
+    {
+      "member": "INTERIOR_PAINTING--explicit-trim-matching.json.gz",
+      "bytes": 42915,
+      "sha256": "e64625b832247a7842995c1af312ec6fa85cdb9fe0a8d60744717627c86d9d6b",
+      "uncompressed_sha256": "a0a930dd95f3ce43cf8cc30817cb111d19450f8c87f76e098b791c833d46d6ee"
+    },
+    {
+      "member": "INTERIOR_PAINTING--inherited-and-explicit-tiers.json.gz",
+      "bytes": 50281,
+      "sha256": "b67694239f304aba289aaad6371c82c687615340c98c749afa7d93bb3f7c7c27",
+      "uncompressed_sha256": "91792188f8005c1a9849ee12055c77c7c239da518c3606c782eabc9e621093ab"
+    },
+    {
+      "member": "INTERIOR_PAINTING--itemized-absent-optional-details.json.gz",
+      "bytes": 64953,
+      "sha256": "344b5013d39624cfd1376f3cf9f9b89275797426a83fa255ab281983bbfba26b",
+      "uncompressed_sha256": "f79df24b904b4ce092ff035a72bb20a2d8e24ee1437b65ae2e99313def029c46"
+    },
+    {
+      "member": "INTERIOR_PAINTING--itemized-unpriced-condition.json.gz",
+      "bytes": 28964,
+      "sha256": "dc0337e9965c949ab1962a411473cf4482341ca5962cf1476f3d434a14fc1de2",
+      "uncompressed_sha256": "37521e35af5bbd3776d892af22e16d920ac6a2571c6d52d586cc79ae760425b1"
+    },
+    {
+      "member": "INTERIOR_PAINTING--minimal-prices.json.gz",
+      "bytes": 37751,
+      "sha256": "f4b04bc3dc07679e12648d3d23301ba2ffe630b371114859a000315e0d7cc4fc",
+      "uncompressed_sha256": "3be7f36b68a731cde28b0366bfa453c83c5e64dbbb8ad4beb1c526a2c5383e7a"
+    },
+    {
+      "member": "INTERIOR_PAINTING--optional-absent-selected.json.gz",
+      "bytes": 25173,
+      "sha256": "593a18b84cfae07d96ccbe5e171c0ade4567c650a0713ae64e20d4776e618018",
+      "uncompressed_sha256": "7bb0663330b02869ef2c6f2c35d66e91a4d251d11724f1b2c9bb7710e0c2ceb2"
+    },
+    {
+      "member": "INTERIOR_PAINTING--optional-absent-unselected.json.gz",
+      "bytes": 38236,
+      "sha256": "b896ad98e46addaad39e0119012a46fdf2ae4402c902b3f9cbda61b7b2818eca",
+      "uncompressed_sha256": "e6836d2cd2e6923fe0b4fb8543c25021258b0b04801275583d89fdccd90483fb"
+    },
+    {
+      "member": "INTERIOR_PAINTING--optional-priced-selected.json.gz",
+      "bytes": 42938,
+      "sha256": "31b476894203bd22c757e2d9ea8b614c860a2f32b3bd58c96ced359fac1ea55a",
+      "uncompressed_sha256": "6c74ea6ebd0c4fc72a97cebf2ad9082b68b32ac68d23b45096096ff655cb65f0"
+    },
+    {
+      "member": "INTERIOR_PAINTING--optional-tier-completion.json.gz",
+      "bytes": 52019,
+      "sha256": "deaa50c2997adcf9a986fea09b3877d22267bb2c4158f2815e81ff14372d0bb1",
+      "uncompressed_sha256": "ddec19c9a412fa70ba6aad28e279760e894317da3ab2a5908ffd3d40782a384e"
+    },
+    {
+      "member": "LANDSCAPING_CLEANUP--base.json.gz",
+      "bytes": 22670,
+      "sha256": "4b1d896914c29c7ee37fceaaaa3c48bd9f238428df43c700e371c3067f6ccef8",
+      "uncompressed_sha256": "02c4a694fd0d4dff2e7b40dbc5c60e67deb7beded562c39a86c0a59331d176fe"
+    },
+    {
+      "member": "LANDSCAPING_CLEANUP--explicit-bag-disposal.json.gz",
+      "bytes": 23906,
+      "sha256": "9dbc729605eeb0dee77f8d03bab6cadd26f0734e40f186919567e9e51bc04fd6",
+      "uncompressed_sha256": "22ffd4f676ffbf3d323effede633847a156bbae52ec670111fc7082a65355587"
+    },
+    {
+      "member": "LANDSCAPING_CLEANUP--inherited-and-explicit-tiers.json.gz",
+      "bytes": 28217,
+      "sha256": "6543f5bc3e79a4a5c84b615333895944a72dafa27f3c53b81ef5ca1fc9c9e9c1",
+      "uncompressed_sha256": "2502f2a7ad046f5ff556aa4cf968efab19304eb311c3a828482b4f9313f2def1"
+    },
+    {
+      "member": "LANDSCAPING_CLEANUP--optional-absent-selected.json.gz",
+      "bytes": 13232,
+      "sha256": "661824b9d4e58f17703297713bae2757812bdc579bb2eaafeb71358b82f62b8f",
+      "uncompressed_sha256": "e2e8deebf8b4f0316f10ad60d3c061ec4fe4246f0e916f9be14863242f4f70de"
+    },
+    {
+      "member": "LANDSCAPING_CLEANUP--optional-absent-unselected.json.gz",
+      "bytes": 22692,
+      "sha256": "ea7aa797bcb63865c4565c1cd9478948f05e1ce331de854dda7de57be90b930c",
+      "uncompressed_sha256": "26e7bf11338e98175d22904a8c61a239d86cc71828ec9dc56f919d25c8089ee3"
+    },
+    {
+      "member": "LANDSCAPING_CLEANUP--optional-priced-selected.json.gz",
+      "bytes": 23491,
+      "sha256": "68534906087b25875578c91a78c32ce1d1c9439900fbe127616631174d20bc5c",
+      "uncompressed_sha256": "a040c5d683d09e70bf9cd862cb9714cb7df299ed5b4e2b9127ba850e2277555a"
+    },
+    {
+      "member": "LANDSCAPING_CLEANUP--optional-tier-completion.json.gz",
+      "bytes": 26943,
+      "sha256": "1149e1112248615373bfff13a4f195497e085c579b3724dd26912f53927a4e7d",
+      "uncompressed_sha256": "0a5ca5f0215c713c35dca6266c5ff3b76374a0e2e9ee7024d60f6623f7b83f0e"
+    },
+    {
+      "member": "LANDSCAPING_MOWING--base.json.gz",
+      "bytes": 19726,
+      "sha256": "c0a5d914aad0a1469fc545b332698e83ab0dd01df854f8201f25ce4a406c1568",
+      "uncompressed_sha256": "e71ac59b7eec3943ca4f97fb9e6ed27b65f08932940f51463c3970a8480cc144"
+    },
+    {
+      "member": "LANDSCAPING_MOWING--explicit-visit-charge.json.gz",
+      "bytes": 22362,
+      "sha256": "59fb1393754c031e737a0dc983e85603ab1cf6466febf447c143c5a5350ad5ff",
+      "uncompressed_sha256": "bc4322220261194eec6ed55ad5136e3ab47e15b08325876198f9071b19eb2b34"
+    },
+    {
+      "member": "LANDSCAPING_MOWING--inherited-and-explicit-tiers.json.gz",
+      "bytes": 24837,
+      "sha256": "08aa33a55ef2312b859ea2d0ef455f6b91ddcc99082076969f9aad815336b600",
+      "uncompressed_sha256": "edd55ca30f01a0afff26221cd590e4849b3b1cad6466e30f44364d70f1f0488e"
+    },
+    {
+      "member": "LANDSCAPING_MOWING--optional-absent-selected.json.gz",
+      "bytes": 20209,
+      "sha256": "a2da86bdf1966882e715b7fcc503a7182c59c4d423c1e92214e6c20231cb7a41",
+      "uncompressed_sha256": "0a0bed870bc3ef72497fb2e9f2e065a2cb52f881057e69e48743684caca0bf8b"
+    },
+    {
+      "member": "LANDSCAPING_MOWING--optional-absent-unselected.json.gz",
+      "bytes": 19755,
+      "sha256": "8a81bfbcdad7b1d6be559c1ec03db9ce546c33bfcca2816386feca068bb8210b",
+      "uncompressed_sha256": "090069c3962e2186a3b36e40f2b23c65ef6e53fa8ef603afde9af4ebad4d45b5"
+    },
+    {
+      "member": "LANDSCAPING_MOWING--optional-priced-selected.json.gz",
+      "bytes": 22697,
+      "sha256": "c64c04a4c55876f63444f5d1aff98ed94aab9353fc8ddac5da19f2079e8fd74c",
+      "uncompressed_sha256": "c9e337145b5c6ee13ada5af11eaf0aa9a304cec074d244da3ab62f188ec074a3"
+    },
+    {
+      "member": "LANDSCAPING_MOWING--optional-tier-completion.json.gz",
+      "bytes": 28107,
+      "sha256": "041227a4ce50047db0b341d5d229fe50fd42965164e7435509d9b2b5dd0269b3",
+      "uncompressed_sha256": "f780cf4f03adf276600aa7da1a102e4e3d533b98baf10efc8244bfce982d573b"
+    },
+    {
+      "member": "LANDSCAPING_MULCH--base.json.gz",
+      "bytes": 26298,
+      "sha256": "3886565deefd2c3b24e5d8e69885a85f842b65520339fdea716f15f360f05453",
+      "uncompressed_sha256": "e052ffbcda1557f26edae0ed670ea360ee7050279b72e614cea615d71bdd834d"
+    },
+    {
+      "member": "LANDSCAPING_MULCH--explicit-stated-yards.json.gz",
+      "bytes": 25547,
+      "sha256": "57a66fafae44d5bd372db504766c61eaa9d4761f4214750ad57e49692290bbc2",
+      "uncompressed_sha256": "a582525a91e6913964dc4c446e51d0c0ec680429b277174cadd116840cfa39aa"
+    },
+    {
+      "member": "LANDSCAPING_MULCH--inherited-and-explicit-tiers.json.gz",
+      "bytes": 31482,
+      "sha256": "098bd387e5a7f2984da851f30728c91e8f15f1f039554ace234c2ea584ead558",
+      "uncompressed_sha256": "4248b7ddb5b0a364214348ca154fecbd93294e0ecd202e1fa4a21da27d9c999c"
+    },
+    {
+      "member": "LANDSCAPING_MULCH--optional-absent-selected.json.gz",
+      "bytes": 15330,
+      "sha256": "e239022f7dc0a05d6d50de6b2a811b099675587e5f7bc04e52d6184d86626ac7",
+      "uncompressed_sha256": "a3af4d8555c5cf01f364469a12f7479893e85d2cb61e3d00f5e24ed8171312b8"
+    },
+    {
+      "member": "LANDSCAPING_MULCH--optional-absent-unselected.json.gz",
+      "bytes": 26311,
+      "sha256": "3983533c8bfc17829bc1279176dc9aaf495dcf8cb1d150f9518fb723dcf2a3f7",
+      "uncompressed_sha256": "2f3241597a94d6d03af2e1b5331747e9e7de271bf192d02c50b811db6cd7fcb5"
+    },
+    {
+      "member": "LANDSCAPING_MULCH--optional-priced-selected.json.gz",
+      "bytes": 28622,
+      "sha256": "f8adae16521a63e92d98405e4af271a22c31b5d48808c84017276fe67c6a474c",
+      "uncompressed_sha256": "3beb3bf3c0eb364ed5a73746f01a4389eb034f8a4fd3f8b6d8e62c1d4242225a"
+    },
+    {
+      "member": "LANDSCAPING_MULCH--optional-tier-completion.json.gz",
+      "bytes": 31334,
+      "sha256": "be9cc4f0bded3a724d9d958e52ab77bd7b1ce4cb70464ea164d66e5053f19eb0",
+      "uncompressed_sha256": "affcb3ad2a8de12f25fd5ae88b68bb0303d61c31788296a556e4c4fdb6a16316"
+    },
+    {
+      "member": "LANDSCAPING_PLANTING--base.json.gz",
+      "bytes": 32811,
+      "sha256": "961f489de7a3d690ef4563a11e6b8b55cb717d12e3065544ce7daa196f0f11fa",
+      "uncompressed_sha256": "4b93ece5ae00f3eff609e3812008c32b2633b5ebcb5dffd288241d270cab5f0e"
+    },
+    {
+      "member": "LANDSCAPING_PLANTING--inherited-and-explicit-tiers.json.gz",
+      "bytes": 41661,
+      "sha256": "83543dafd3ffb4657d3fa092db5d534996ec23c491e2625c5ba0d15c4f65bf2e",
+      "uncompressed_sha256": "6e70f23b618cf1660a6d2cb2e6cb8be287b37cda8064b191a1c1e87826eec21b"
+    },
+    {
+      "member": "LANDSCAPING_PLANTING--optional-absent-selected.json.gz",
+      "bytes": 15477,
+      "sha256": "9f4f67f697990476fb927fbb528b651b68753e81a433fd4829b8c039b8513d24",
+      "uncompressed_sha256": "532b1b66456a39566ba7076fdc0e37201e8b6ad283e131607fcb9b21e7bcb267"
+    },
+    {
+      "member": "LANDSCAPING_PLANTING--optional-absent-unselected.json.gz",
+      "bytes": 32834,
+      "sha256": "36bf3bfb8984d5a6282a2be647941f9f516db3fa78e6e9247a0fb924ccf424aa",
+      "uncompressed_sha256": "11a09c83c6c633551d03d23e6632ab196b2afef6ce444d3a0b0e5a4be042afb0"
+    },
+    {
+      "member": "LANDSCAPING_PLANTING--optional-priced-selected.json.gz",
+      "bytes": 42021,
+      "sha256": "8ebd2f4f25848cf02a9e6871629e8dbbd08714814ce0baf6f684d19a0b0e02fd",
+      "uncompressed_sha256": "929324f793aecbb81e47445713ea3789fd7d78928b6be600e098ee33f75fdcd3"
+    },
+    {
+      "member": "LANDSCAPING_PLANTING--optional-tier-completion.json.gz",
+      "bytes": 45568,
+      "sha256": "b08bfc2115f9c4d408f6415e41234f6c6172a3637bb1aa855ddf55c4bce06aa1",
+      "uncompressed_sha256": "81afd2089f0457b489cc14b4246cb765ef29447bc3d9ea82bdc1bf76044eb5e9"
+    },
+    {
+      "member": "LANDSCAPING_SOD--base.json.gz",
+      "bytes": 23650,
+      "sha256": "f8fd9b440159efaa165ef2502a2053061d22f95f8b48139299a7602d226006ba",
+      "uncompressed_sha256": "43135beeae5638c0a07afaf268fd38999753fcc1cbf3d683bc2dc32a8062e568"
+    },
+    {
+      "member": "LANDSCAPING_SOD--inherited-and-explicit-tiers.json.gz",
+      "bytes": 29087,
+      "sha256": "8244a1c759a4b93ef6168bef3a0420744470999fcc9459d29476b48b40af842b",
+      "uncompressed_sha256": "45d21d1a538d17e171a89cf5fc72a1663708a7271503efefab9d423b8ffc9db2"
+    },
+    {
+      "member": "LANDSCAPING_SOD--optional-absent-selected.json.gz",
+      "bytes": 12402,
+      "sha256": "421eb40a52d88388da0bd47b57d8bf4f9a08db1dc250cb2e9c0f442e98611682",
+      "uncompressed_sha256": "11b501aaf038d37d206bfa4a4da89fe9ef0aeb99fb7074710a38ae03e23a466b"
+    },
+    {
+      "member": "LANDSCAPING_SOD--optional-absent-unselected.json.gz",
+      "bytes": 23690,
+      "sha256": "02d03c00f136c8ff97d5294ff975618f568533198f75bb19a9ac1964b787613e",
+      "uncompressed_sha256": "b00dedf7a0ace5107ae437585dad110c282bc2f15d72476ba33c0dc4b3fca687"
+    },
+    {
+      "member": "LANDSCAPING_SOD--optional-priced-selected.json.gz",
+      "bytes": 25633,
+      "sha256": "149865d965048bdb6f08d6b622fc4eaba19010ce82c3b57a886f8fbdaf2e87f6",
+      "uncompressed_sha256": "32ed276f7deb706f971304765c928ccad112b9f35690dc8f1f4e7fccbcd761a1"
+    },
+    {
+      "member": "LANDSCAPING_SOD--optional-tier-completion.json.gz",
+      "bytes": 28174,
+      "sha256": "0c433c23e4f13f8e312f9d4605c05b2f6ce32e23f665d5c1fc3b8314147f14b7",
+      "uncompressed_sha256": "a5cb5e8bb0c4b3a241e50537bf4acd5b981931fbf95e19eeefabe67f10ee7c97"
+    },
+    {
+      "member": "LANDSCAPING_SOD--topsoil-depth-stated.json.gz",
+      "bytes": 27835,
+      "sha256": "3ee8b7f65482491c22386bac3e5566a09a081a4f50b03a1b9f036dd1d828523d",
+      "uncompressed_sha256": "6d735ddfe7360446b5bae842a1a8136e48e8480c5f3574a603f539e8f0f5bcf0"
+    },
+    {
+      "member": "LANDSCAPING_SOD--topsoil-depth-unknown.json.gz",
+      "bytes": 27878,
+      "sha256": "0c2452ba2bfa349c6f1930aafe31172b9a5fe94f42d65747e443b2181e6c6df4",
+      "uncompressed_sha256": "923a55efcf136a57f28fe9d83484192f505b1f5b6a274b09c5a4698bc5687170"
+    },
+    {
+      "member": "LANDSCAPING_SOD--topsoil-priced-unselected.json.gz",
+      "bytes": 24741,
+      "sha256": "45898b931e4d2859f84f6c5a9433e1f5ea8c7387bcc8a9552af05bb3d95da709",
+      "uncompressed_sha256": "1c8df5da5292de1f2166f37f87e9156b4203e085049b6238c4e4fb8a48b77d2a"
+    },
+    {
+      "member": "ROOFING_REPAIR--absent-large-limit-small.json.gz",
+      "bytes": 16015,
+      "sha256": "4618e8557cd08e233934e5d8961ffb10bc04d83c07adbbe42a65f00098dd0c3e",
+      "uncompressed_sha256": "346c831a56407e1e5b3985db74fee934e8b41d34012a5f382917461037ebeaaf"
+    },
+    {
+      "member": "ROOFING_REPAIR--base.json.gz",
+      "bytes": 26537,
+      "sha256": "20b13d0a35f5fac08bca453dfc6ee3cb732240362137310ccd100d6ebdb42d76",
+      "uncompressed_sha256": "1d171234d94060a84c598ca5c8e87da73c0d079dbeb980e6627f24cd8aa93034"
+    },
+    {
+      "member": "ROOFING_REPAIR--explicit-large-limit-exceeded.json.gz",
+      "bytes": 15230,
+      "sha256": "92b6803bede1a458d5f2b1986f1c6eac07a4253465a14e0d09f3d6aef64182a8",
+      "uncompressed_sha256": "b38c4f3c475a3a87ac4ce751a69482b114a96f2e98b8b7cc42e633f67fd24e7c"
+    },
+    {
+      "member": "ROOFING_REPAIR--inherited-and-explicit-tiers.json.gz",
+      "bytes": 32410,
+      "sha256": "a2c856d10a1977b09beb6b2f32ee49e1b008a116d728dc2c3ffedbf6f1993008",
+      "uncompressed_sha256": "3859742c69c27332b182f57942a70f0da421b3415a5cba7589b5f94b1aa369bb"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--absent-over12-adjustment-known-request.json.gz",
+      "bytes": 43444,
+      "sha256": "9351c9829dd1b4a9bd45bebc1451daecfab43563ff2a731b33dcfe7107e8ec3a",
+      "uncompressed_sha256": "e1c116a39b33a257dcc6f155d808f73cb6ec41b65ab2b3a8b042488eb748b12e"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request.json.gz",
+      "bytes": 21083,
+      "sha256": "4384a58d825089b0858387e8040553df3bce99d1a77e67e9c621c37ebe06cbb0",
+      "uncompressed_sha256": "97a6fee7ce672cfdd74f63f5b8b0b4377d5ed44499d5056736041d15573e39da"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request.json.gz",
+      "bytes": 43420,
+      "sha256": "fa36e538dee50134e710c21bec0166aa0e8959a34135344b593b5e8449505cf1",
+      "uncompressed_sha256": "70d02b8984d02bcd14d280fd59b267ad8c6622bd29412bcf815fedf68db15edc"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request.json.gz",
+      "bytes": 21009,
+      "sha256": "f75fa6da01fc755b57c8c875cd671ac4595165f23f4fab28b3e2c8c7d3eb69f5",
+      "uncompressed_sha256": "56998af8e5879a661aba1d9e16bd94eece0fd33f70fed9ee5303bb26554093bd"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--base.json.gz",
+      "bytes": 43495,
+      "sha256": "f2bcf18ee79b83f37d041f05cd1357f8901929735af75292c098478a17f57695",
+      "uncompressed_sha256": "d5dfef26f3221581b77534fbe6a62d4e49a268ff5e050f37745f06773ba02746"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--inherited-and-explicit-tiers.json.gz",
+      "bytes": 53996,
+      "sha256": "8b2adad3a3df6caf716fcd7d4b8d825bc94663951fa8f81d536a999a662f5022",
+      "uncompressed_sha256": "ea1bae8bfbd9872b7aa135823755ada4d4e21d448084977b66d027fd34d55dfb"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--optional-absent-selected.json.gz",
+      "bytes": 21565,
+      "sha256": "b6dac62006e5ca3d0a8416ef2303cc42529cdadfd72120ab43a9aa16f4b494db",
+      "uncompressed_sha256": "ef20a32473de89fb2e863a10ad851748ca51082ac4b8d6ed9f3c37f71b0a5e3d"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--optional-absent-unselected.json.gz",
+      "bytes": 43509,
+      "sha256": "adcff623c0eb9f5ec58510090310ecbd580e48adac345553fd1bd4f9208138f6",
+      "uncompressed_sha256": "6c86435fbcbe38ad360dfd42a4b431f1cfd767662e465c1f70fd4e119eda81c8"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--optional-priced-selected.json.gz",
+      "bytes": 51510,
+      "sha256": "97228a9f288e3fac9a631e48b380e95c164bb10be7e5d21474ee47d284803303",
+      "uncompressed_sha256": "b267261951035c61dc3736aab2a315d6c468222ba7639ce28e1c66b0aa5ad975"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--optional-tier-completion.json.gz",
+      "bytes": 60537,
+      "sha256": "8cab4f146a15e49cd2fae28505a4f11a5a983a0b63cb848ca2bea592edb30e22",
+      "uncompressed_sha256": "774fcd647a86f2f709f52670962992cb54a8d494bbd955b1d37c9e3436f52b3c"
+    },
+    {
+      "member": "ROOFING_REPLACEMENT--tier-completes-unknown-pitch-policy.json.gz",
+      "bytes": 50360,
+      "sha256": "bfa239cefc7f542f78b7c3014875929a5d5356b528b812385dddfdbcb31e8e28",
+      "uncompressed_sha256": "65f8529ef02b3ac355ed6fdf83ee9e18cd11713c0dfad0cf34e038d062d47d4e"
+    },
+    {
+      "member": "SIDING_REPAIR--absent-large-limit-small.json.gz",
+      "bytes": 14628,
+      "sha256": "e546029eb293198fdc00c325f87be44d486867a2e8fe8b35307ae48e9d05c376",
+      "uncompressed_sha256": "4f170d9da07b2ef3e4269eb338b37d41987e7e73d619d92c4032355f256307d9"
+    },
+    {
+      "member": "SIDING_REPAIR--base.json.gz",
+      "bytes": 23530,
+      "sha256": "48f34b5a82d42fc51c8dbe6873b8adf4954816fb566ddda12df62921d073b5db",
+      "uncompressed_sha256": "06f8652dc5a428460eeb549ae1287805a637036e488447adcf0c93b4b2c6836b"
+    },
+    {
+      "member": "SIDING_REPAIR--explicit-large-limit-exceeded.json.gz",
+      "bytes": 13926,
+      "sha256": "df1cb50128308b8b53aa4f20e4cfb697f1cd8956e7fdaa9c6b9536a78320336f",
+      "uncompressed_sha256": "2036e61db36ecfd80670e4098bd0ae3e13b7dcafff8b63e1ae6a6972af2d339c"
+    },
+    {
+      "member": "SIDING_REPAIR--inherited-and-explicit-tiers.json.gz",
+      "bytes": 28944,
+      "sha256": "1fcf5188201d610c256020c899c9b367a92033f8b88dd5ea6f5ac4db8b4e6742",
+      "uncompressed_sha256": "b02e82f5321bfefbc5cfd523126686470ea6eb00d64343c317d4525b93b2f236"
+    },
+    {
+      "member": "SIDING_REPLACEMENT--base.json.gz",
+      "bytes": 28750,
+      "sha256": "a11978267e9e92d14982b1784272015f68cabd1e205945dacb164d139a0c6792",
+      "uncompressed_sha256": "f96b07fd1d3c900067d164020edbb5a764b6243ec39e84696d7f44480d9ca21d"
+    },
+    {
+      "member": "SIDING_REPLACEMENT--explicit-area-convention.json.gz",
+      "bytes": 29579,
+      "sha256": "71889b76db004af1ea9f5400a34852e5f77424546e8a7088f7fdda13ba6001ca",
+      "uncompressed_sha256": "3f19aed1ffd59ff264d14917936848c5d5c5e3eaeb21b7d481e0718c9bbc57b1"
+    },
+    {
+      "member": "SIDING_REPLACEMENT--inherited-and-explicit-tiers.json.gz",
+      "bytes": 35994,
+      "sha256": "1bb17bd3cf964e9b981bd19d526c261dae909268ff4d6f4a7f43960d2dcb352f",
+      "uncompressed_sha256": "2ce05526427209e2c8e5fc98334f945851514906dd6359e687c02697ac3847cd"
+    },
+    {
+      "member": "SIDING_REPLACEMENT--optional-absent-selected.json.gz",
+      "bytes": 17547,
+      "sha256": "1bfb61078addea7bf16c5311349ce4b9fea2dec4cdd61d66c43330f351ff7228",
+      "uncompressed_sha256": "e8884044862cf9f823b6d7ddfacf6314363fd576b7be3ded3cacb2777abb9c14"
+    },
+    {
+      "member": "SIDING_REPLACEMENT--optional-absent-unselected.json.gz",
+      "bytes": 28771,
+      "sha256": "d25b1cadf1a6c1e911b608ed477906854b9b1f8f3412b470a807d8904c6c2fe2",
+      "uncompressed_sha256": "6e2123ba42c3e788938ccec7c4bfd99a154ed5cc1320bed3174118b40ce63ca8"
+    },
+    {
+      "member": "SIDING_REPLACEMENT--optional-priced-selected.json.gz",
+      "bytes": 33013,
+      "sha256": "32cb56e514d09ec3365b2c7bc2b304d4938b03718b1d1316eabe4e86d9c239bf",
+      "uncompressed_sha256": "fc5a42c0dfe1a07d3e1bd5a244899b7a766dbcb5095361f1bf6752c65df6b296"
+    },
+    {
+      "member": "SIDING_REPLACEMENT--optional-tier-completion.json.gz",
+      "bytes": 38034,
+      "sha256": "9e7390c18cdfd3241e1ecbcd9ad882503adba651baa3977b4ba6d65be852469d",
+      "uncompressed_sha256": "0449c1dbfee75f184641dfbb47d76606208ba75bdc5187b32b76cb329b133722"
+    },
+    {
+      "member": "server-log.json.gz",
+      "bytes": 124,
+      "sha256": "8b6daf6d304930d4ef8f1cf423e1ee52fbea9129279cc043ce285826bd4775b5",
+      "uncompressed_sha256": "b739ffb5722335d03db51a9da6bcccf0b2a7d92528e7597e8f774fdae6a1115c"
+    }
+  ]
+}

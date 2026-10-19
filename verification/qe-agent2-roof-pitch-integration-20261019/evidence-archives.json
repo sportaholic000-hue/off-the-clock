@@ -1,0 +1,196 @@
+{
+  "compressed": [
+    {
+      "original_path": "a1-parser.tap",
+      "archive_path": "a1-parser.tap.gz",
+      "original_bytes": 232062,
+      "sha256": "e60237a683fcfdf1ad1bb2e887f9dd6cfd654f9215684184a989b11975dfae1a",
+      "archive_sha256": "c3cae1eba8337128f53dff7f190f84958b6bd2dc882bd26a878ec6b8b2d77183"
+    },
+    {
+      "original_path": "activation-neighbors.tap",
+      "archive_path": "activation-neighbors.tap.gz",
+      "original_bytes": 41454,
+      "sha256": "788168f55ff708def28fdb8bf5702052047cbf529314be172635990ea1566f69",
+      "archive_sha256": "86ec3416ab823d3cc1e49fc90e154ffa22ae47d4ad5e18a1da920c4f1acee5c2"
+    },
+    {
+      "original_path": "compatibility.tap",
+      "archive_path": "compatibility.tap.gz",
+      "original_bytes": 106561,
+      "sha256": "6fecee81c1d1e3a35bb2b53ed4656ad259a822aa68b7037beb9740093a41850e",
+      "archive_sha256": "f20a7b27a29aff7c09d3cc634d949c04e1138e0ae0b30232c560907c1018a87e"
+    },
+    {
+      "original_path": "f16-direct.tap",
+      "archive_path": "f16-direct.tap.gz",
+      "original_bytes": 23039,
+      "sha256": "ef8888c980f7d5c1a995830ddbdae3be18cdc2862f4463d77d2a55e39f6b6955",
+      "archive_sha256": "9aad1ad97bc72d444d42a1322e3a61b6d37cd769d49360b6f83745d585898f1e"
+    },
+    {
+      "original_path": "f16-entry.tap",
+      "archive_path": "f16-entry.tap.gz",
+      "original_bytes": 3324,
+      "sha256": "8fcb577e2b2addcc11461bf01bcb6ea42f65fc38b17d5fbacb653c21b294952a",
+      "archive_sha256": "cad57f1a096e73b936a02bcb5bde7749f9f475d520f0630f22f9815fd2cdbb1e"
+    },
+    {
+      "original_path": "f18-matrix.tap",
+      "archive_path": "f18-matrix.tap.gz",
+      "original_bytes": 17801,
+      "sha256": "533fe715c7f06a83835c0bc2267fef9dcfc6713a9186a14512df8d8d54b43baf",
+      "archive_sha256": "9c649786c8b1213053b87e97623d44c467afa8a74dbd5992f2c3713eacb1c1cf"
+    },
+    {
+      "original_path": "f18.tap",
+      "archive_path": "f18.tap.gz",
+      "original_bytes": 7634,
+      "sha256": "628ffca4c0dbdeffe66f39707ad0f2c3c4ad8d996675e60058220906accad30b",
+      "archive_sha256": "b4b49f2830dc5fcf8292126a035adfac69536cc916d81fb6047a55d89bae139a"
+    },
+    {
+      "original_path": "geometry.tap",
+      "archive_path": "geometry.tap.gz",
+      "original_bytes": 84450,
+      "sha256": "e4a695b8c0d48d79413204a7403fe3436dfb2e59679a58541249a5dd4f8a77e3",
+      "archive_sha256": "11181b0545d0743f22041979f88a7df7e3c1158ed51298991ae5c88f31b57fdf"
+    },
+    {
+      "original_path": "pi00.tap",
+      "archive_path": "pi00.tap.gz",
+      "original_bytes": 10135,
+      "sha256": "59d9b82aec6d3fd01b2ca63cd43d26781dc4d89a4b30152518a94d96c82c53ed",
+      "archive_sha256": "58b7735114e7d38dbe60b3a461a90bafc42aea9b428c2beec3322893683908a4"
+    },
+    {
+      "original_path": "qualification.tap",
+      "archive_path": "qualification.tap.gz",
+      "original_bytes": 1132,
+      "sha256": "4697c7089f859773ee7edd5d2b3ae00d86c27a4ce18197d1374e44dbd30d9421",
+      "archive_sha256": "d49bf32bce317cae6390c965adb73edff024dd99010eca408af5a31214268c4b"
+    },
+    {
+      "original_path": "rendered.tap",
+      "archive_path": "rendered.tap.gz",
+      "original_bytes": 1368,
+      "sha256": "98fd59265e58005002c0cbb8ceb4055c9d7de496f664e24d0c3090fc357f985b",
+      "archive_sha256": "7ef8b14c8dbe4809dcf88d296f04f764dae18ae22a7cbef9fc22b06a62866a67"
+    },
+    {
+      "original_path": "source-qualification-tests-initial.tap",
+      "archive_path": "source-qualification-tests-initial.tap.gz",
+      "original_bytes": 695,
+      "sha256": "c1768453fa165aa2fe92b12e0eeb8bde692958a526e420506a27fb9f9bf7137a",
+      "archive_sha256": "deb29afafd0c492a9a0cef2ec7b73c615e5a4368f579d1dcc37d761fc2ab40a1"
+    },
+    {
+      "original_path": "build.log",
+      "archive_path": "build.log.gz",
+      "original_bytes": 1200,
+      "sha256": "3463b38f57e07f1d93e594d0d70a072fe34344345b75d716fc6ca321a70c3e3e",
+      "archive_sha256": "fc7032bc5d097a36c217afeb706314c776ea84f014115347e344b239b0320a06"
+    },
+    {
+      "original_path": "original-161.log",
+      "archive_path": "original-161.log.gz",
+      "original_bytes": 55359,
+      "sha256": "d71c1ae0217242f7839649933aadc2ebd1ec2465f4133588b46d8d8ea88b5d53",
+      "archive_sha256": "53f82b3818558f6106ee1d2fc4a1d0ff375dfb50ac5c03a46f0f53d33edf448a"
+    },
+    {
+      "original_path": "setup-chromium-install-retry.log",
+      "archive_path": "setup-chromium-install-retry.log.gz",
+      "original_bytes": 4438,
+      "sha256": "efa5a4f80135ad918201461efe65153a292636e5fca6bb45a4d2906b5f21cbc8",
+      "archive_sha256": "4bf34be6f0e833d2c599f3e1a94d0025c67d0d43a97729c34c7042586492b894"
+    },
+    {
+      "original_path": "setup-chromium-install.log",
+      "archive_path": "setup-chromium-install.log.gz",
+      "original_bytes": 4341,
+      "sha256": "07049b8fd701b39349bd9a3a82076a394cb5c3c2636a0a5c0990ce2a25a620b3",
+      "archive_sha256": "829969106be3ce88003d6d105a7f95286ea417c687452df23bfd5d74e3c6776f"
+    },
+    {
+      "original_path": "setup-chromium-shell-install.log",
+      "archive_path": "setup-chromium-shell-install.log.gz",
+      "original_bytes": 6797,
+      "sha256": "eb76f3ea7d65ef1d67ca1fedb1ac340b04fca5477143c13b108abe247e098aad",
+      "archive_sha256": "7371567e9b9ce15cce389b7f715efa62c8512089704ab2c6c713bb946ada7a17"
+    },
+    {
+      "original_path": "setup-cold-install-exact.log",
+      "archive_path": "setup-cold-install-exact.log.gz",
+      "original_bytes": 566,
+      "sha256": "6a6e3c80f160e765558b5b05d4e6c937b4b09645eb0a3e06d6aeb31be621174a",
+      "archive_sha256": "a703ee505b891f6fcb9e70c51bf71555875c12533e34960edf0f00534edf5675"
+    },
+    {
+      "original_path": "setup-cold-install.log",
+      "archive_path": "setup-cold-install.log.gz",
+      "original_bytes": 567,
+      "sha256": "e86da65e5663e55aa11a4116dc4719cbe094a79199737c9e8a8763175297ee4b",
+      "archive_sha256": "a9d19771c6c6e8d5aa2287e43cd2e867f1f778b1b151d1dc28bc64648cbb6c2b"
+    },
+    {
+      "original_path": "setup-playwright-install-exact.log",
+      "archive_path": "setup-playwright-install-exact.log.gz",
+      "original_bytes": 126,
+      "sha256": "5bba9afca0ba6db041a7f06484fcc0ac66c76ffc25c5db75389886120caf01ce",
+      "archive_sha256": "9f92a46268b96e0828eac248db8dfaf0a0f1b362a1522a385e58f25a800ecedc"
+    },
+    {
+      "original_path": "setup-playwright-install.log",
+      "archive_path": "setup-playwright-install.log.gz",
+      "original_bytes": 170,
+      "sha256": "7adfc12eda7762776a799a03480aa9b841ff18b7f941b659ab74918b2f185c95",
+      "archive_sha256": "3143af93bfd65769a3b874d04c157a69288c1c8465f4457dc500414252f81afb"
+    },
+    {
+      "original_path": "setup-runtime-install.log",
+      "archive_path": "setup-runtime-install.log.gz",
+      "original_bytes": 332,
+      "sha256": "d5f31fbcf48b780f8a78de7271830eb6f71d2f250446a39ff30e437524fbdfad",
+      "archive_sha256": "b27d7532e95a9c403c0cecddf5a251ef600c86dfc92f02d777baa3e2aa998883"
+    },
+    {
+      "original_path": "incoming-a1-name-audit.json",
+      "archive_path": "incoming-a1-name-audit.json.gz",
+      "original_bytes": 35781,
+      "sha256": "aea69308386fdd3f590e6eefd419d8d0e3252b63c795421398eab62c59c5dccb",
+      "archive_sha256": "6da5ced3e00b9ff167bbce9015c2bf38aad3d1cf268f35f93774ab38ecc43f42"
+    },
+    {
+      "original_path": "local-name-audit-initial.json",
+      "archive_path": "local-name-audit-initial.json.gz",
+      "original_bytes": 300425,
+      "sha256": "5f31014fc71905f9b464004e9f792dd60188bc69a11fb6c91da6ca0f2aebaf41",
+      "archive_sha256": "2d106e24c7df5a133719b05f845d136e8af980570faeb34b58632df7433785d5"
+    },
+    {
+      "original_path": "local-name-audit.json",
+      "archive_path": "local-name-audit.json.gz",
+      "original_bytes": 375779,
+      "sha256": "9cf274e42854aea7faffd8c3c3f21b2347f5caaa639591c01e8c2abe86b83c0a",
+      "archive_sha256": "32d6f1a7e586111bf5ab28a3882716c46541e6a0d87d5bbc6fd0c0ac2582f2d5"
+    },
+    {
+      "original_path": "observations.json",
+      "archive_path": "observations.json.gz",
+      "original_bytes": 491346,
+      "sha256": "40a264333081aa0c3238616b52946f7e2b83d28b0c58c52ff0fee5e7c224d2a7",
+      "archive_sha256": "ce6af21b354fbc4f67524e880f8a5e7421aca68c83991378f9f16187ff2dfc1c"
+    },
+    {
+      "original_path": "receipts.sqlite",
+      "archive_path": "receipts.sqlite.gz",
+      "original_bytes": 57344,
+      "sha256": "4faf4c890695e0ee39042bcef014d4e30e63f990f5a9ba4e52ea97064c7f0fd2",
+      "archive_sha256": "5ead54cc82ff7c728fe8ef7b4ceb42ae0c3298e2b1a9e2474f515c4cfb8b764c"
+    }
+  ],
+  "original_audit_archive": "original-161/wire-evidence.tar.gz",
+  "wire_members": 162,
+  "all_readback_verified": true
+}

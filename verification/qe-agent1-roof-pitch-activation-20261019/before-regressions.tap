@@ -1,0 +1,2670 @@
+(node:6) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 actual HTTP and voice matrix completes all independent cases
+not ok 1 - AP01/AP02 actual HTTP and voice matrix completes all independent cases
+  ---
+  duration_ms: 16.83718
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:17:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-unknown--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-unknown--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-unknown--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-unknown--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-both--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-both--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-both--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-both--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-both--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"complete-positive--low","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"complete-positive--over12","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"complete-positive--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"complete-positive--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"complete-positive--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"explicit-zero--low","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"explicit-zero--over12","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"explicit-zero--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"explicit-zero--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"explicit-zero--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-complete-over12--low","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-complete-over12--over12","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-complete-over12--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-complete-over12--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-complete-over12--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--low","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--over12","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-band-up_to_six","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-up_to_six","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-band-seven_to_nine","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-seven_to_nine","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-band-ten_to_twelve","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-ten_to_twelve","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"tier-completion--low","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"tier-completion--over12","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"tier-completion--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"tier-explicit-zero--low","serviceType":"ROOFING_REPLACEMENT","variant":"tier-explicit-zero--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"tier-explicit-zero--over12","serviceType":"ROOFING_REPLACEMENT","variant":"tier-explicit-zero--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-missing-unknown--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-unknown--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-missing-unknown--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-unknown--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-missing-removal--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-removal--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-missing-removal--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-removal--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-unknown-incomplete-over12--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-unknown-incomplete-over12--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-unknown-incomplete-over12--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-unknown-incomplete-over12--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-missing-unknown--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-unknown--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-missing-unknown--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-unknown--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-missing-removal--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-removal--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-missing-removal--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-removal--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-unknown-incomplete-over12--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-unknown-incomplete-over12--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-unknown-incomplete-over12--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-unknown-incomplete-over12--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"historical-missing-measurement","serviceType":"ROOFING_REPLACEMENT","variant":"historical-missing-measurement","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    
+    (node:29) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:18:87)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--low
+not ok 2 - AP01/AP02 saved widget + actual voice: missing-unknown--low
+  ---
+  duration_ms: 0.934857
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--over12
+not ok 3 - AP01/AP02 saved widget + actual voice: missing-unknown--over12
+  ---
+  duration_ms: 0.778261
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--mixed-zero
+not ok 4 - AP01/AP02 saved widget + actual voice: missing-unknown--mixed-zero
+  ---
+  duration_ms: 0.172189
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--mixed-positive
+not ok 5 - AP01/AP02 saved widget + actual voice: missing-unknown--mixed-positive
+  ---
+  duration_ms: 0.214713
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--unknown
+not ok 6 - AP01/AP02 saved widget + actual voice: missing-unknown--unknown
+  ---
+  duration_ms: 0.171378
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--low
+not ok 7 - AP01/AP02 saved widget + actual voice: missing-install--low
+  ---
+  duration_ms: 0.112469
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--over12
+not ok 8 - AP01/AP02 saved widget + actual voice: missing-install--over12
+  ---
+  duration_ms: 0.262094
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--mixed-zero
+not ok 9 - AP01/AP02 saved widget + actual voice: missing-install--mixed-zero
+  ---
+  duration_ms: 0.493423
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--mixed-positive
+not ok 10 - AP01/AP02 saved widget + actual voice: missing-install--mixed-positive
+  ---
+  duration_ms: 0.393962
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--unknown
+not ok 11 - AP01/AP02 saved widget + actual voice: missing-install--unknown
+  ---
+  duration_ms: 0.248594
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--low
+not ok 12 - AP01/AP02 saved widget + actual voice: missing-removal--low
+  ---
+  duration_ms: 0.279821
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--over12
+not ok 13 - AP01/AP02 saved widget + actual voice: missing-removal--over12
+  ---
+  duration_ms: 0.164358
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--mixed-zero
+not ok 14 - AP01/AP02 saved widget + actual voice: missing-removal--mixed-zero
+  ---
+  duration_ms: 0.110246
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--mixed-positive
+not ok 15 - AP01/AP02 saved widget + actual voice: missing-removal--mixed-positive
+  ---
+  duration_ms: 0.192369
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--unknown
+not ok 16 - AP01/AP02 saved widget + actual voice: missing-removal--unknown
+  ---
+  duration_ms: 0.10637
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--low
+not ok 17 - AP01/AP02 saved widget + actual voice: missing-both--low
+  ---
+  duration_ms: 0.095994
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-both--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--over12
+not ok 18 - AP01/AP02 saved widget + actual voice: missing-both--over12
+  ---
+  duration_ms: 0.094793
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-both--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--mixed-zero
+not ok 19 - AP01/AP02 saved widget + actual voice: missing-both--mixed-zero
+  ---
+  duration_ms: 0.123175
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-both--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--mixed-positive
+not ok 20 - AP01/AP02 saved widget + actual voice: missing-both--mixed-positive
+  ---
+  duration_ms: 0.264618
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-both--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--unknown
+not ok 21 - AP01/AP02 saved widget + actual voice: missing-both--unknown
+  ---
+  duration_ms: 0.107141
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-both--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--low
+not ok 22 - AP01/AP02 saved widget + actual voice: complete-positive--low
+  ---
+  duration_ms: 0.100752
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"complete-positive--low","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--over12
+not ok 23 - AP01/AP02 saved widget + actual voice: complete-positive--over12
+  ---
+  duration_ms: 0.094362
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"complete-positive--over12","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--mixed-zero
+not ok 24 - AP01/AP02 saved widget + actual voice: complete-positive--mixed-zero
+  ---
+  duration_ms: 0.089024
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"complete-positive--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--mixed-positive
+not ok 25 - AP01/AP02 saved widget + actual voice: complete-positive--mixed-positive
+  ---
+  duration_ms: 0.085409
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"complete-positive--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--unknown
+not ok 26 - AP01/AP02 saved widget + actual voice: complete-positive--unknown
+  ---
+  duration_ms: 0.085578
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"complete-positive--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--low
+not ok 27 - AP01/AP02 saved widget + actual voice: explicit-zero--low
+  ---
+  duration_ms: 0.151518
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"explicit-zero--low","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--over12
+not ok 28 - AP01/AP02 saved widget + actual voice: explicit-zero--over12
+  ---
+  duration_ms: 0.098048
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"explicit-zero--over12","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--mixed-zero
+not ok 29 - AP01/AP02 saved widget + actual voice: explicit-zero--mixed-zero
+  ---
+  duration_ms: 0.144948
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"explicit-zero--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--mixed-positive
+not ok 30 - AP01/AP02 saved widget + actual voice: explicit-zero--mixed-positive
+  ---
+  duration_ms: 0.208433
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"explicit-zero--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--unknown
+not ok 31 - AP01/AP02 saved widget + actual voice: explicit-zero--unknown
+  ---
+  duration_ms: 0.101943
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"explicit-zero--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--low
+not ok 32 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--low
+  ---
+  duration_ms: 0.088543
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-complete-over12--low","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--over12
+not ok 33 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--over12
+  ---
+  duration_ms: 0.226631
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-complete-over12--over12","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-zero
+not ok 34 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-zero
+  ---
+  duration_ms: 0.105408
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-complete-over12--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-positive
+not ok 35 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-positive
+  ---
+  duration_ms: 0.091067
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-complete-over12--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--unknown
+not ok 36 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--unknown
+  ---
+  duration_ms: 0.095393
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-complete-over12--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--low
+not ok 37 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--low
+  ---
+  duration_ms: 0.09272
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--low","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--over12
+not ok 38 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--over12
+  ---
+  duration_ms: 0.08655
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--over12","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-zero
+not ok 39 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-zero
+  ---
+  duration_ms: 0.085819
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--mixed-zero","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-positive
+not ok 40 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-positive
+  ---
+  duration_ms: 0.084377
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--mixed-positive","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--unknown
+not ok 41 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--unknown
+  ---
+  duration_ms: 0.082625
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-up_to_six
+not ok 42 - AP01/AP02 saved widget + actual voice: unknown-band-up_to_six
+  ---
+  duration_ms: 0.309055
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-band-up_to_six","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-up_to_six","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-seven_to_nine
+not ok 43 - AP01/AP02 saved widget + actual voice: unknown-band-seven_to_nine
+  ---
+  duration_ms: 0.123385
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-band-seven_to_nine","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-seven_to_nine","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-ten_to_twelve
+not ok 44 - AP01/AP02 saved widget + actual voice: unknown-band-ten_to_twelve
+  ---
+  duration_ms: 0.101683
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-band-ten_to_twelve","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-ten_to_twelve","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--low
+not ok 45 - AP01/AP02 saved widget + actual voice: tier-completion--low
+  ---
+  duration_ms: 0.088123
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"tier-completion--low","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--over12
+not ok 46 - AP01/AP02 saved widget + actual voice: tier-completion--over12
+  ---
+  duration_ms: 0.083876
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"tier-completion--over12","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--unknown
+not ok 47 - AP01/AP02 saved widget + actual voice: tier-completion--unknown
+  ---
+  duration_ms: 0.169004
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"tier-completion--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--unknown","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-explicit-zero--low
+not ok 48 - AP01/AP02 saved widget + actual voice: tier-explicit-zero--low
+  ---
+  duration_ms: 0.237638
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"tier-explicit-zero--low","serviceType":"ROOFING_REPLACEMENT","variant":"tier-explicit-zero--low","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-explicit-zero--over12
+not ok 49 - AP01/AP02 saved widget + actual voice: tier-explicit-zero--over12
+  ---
+  duration_ms: 0.110065
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"tier-explicit-zero--over12","serviceType":"ROOFING_REPLACEMENT","variant":"tier-explicit-zero--over12","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--complete
+not ok 50 - AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--complete
+  ---
+  duration_ms: 0.088644
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-missing-unknown--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-unknown--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--incomplete
+not ok 51 - AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--incomplete
+  ---
+  duration_ms: 0.086009
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-missing-unknown--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-unknown--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--complete
+not ok 52 - AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--complete
+  ---
+  duration_ms: 0.082514
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-missing-removal--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-removal--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--incomplete
+not ok 53 - AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--incomplete
+  ---
+  duration_ms: 0.081222
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-missing-removal--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-removal--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--complete
+not ok 54 - AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--complete
+  ---
+  duration_ms: 0.084237
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-unknown-incomplete-over12--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-unknown-incomplete-over12--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--incomplete
+not ok 55 - AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--incomplete
+  ---
+  duration_ms: 0.081183
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-unknown-incomplete-over12--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-unknown-incomplete-over12--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--complete
+not ok 56 - AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--complete
+  ---
+  duration_ms: 0.083085
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-missing-unknown--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-unknown--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--incomplete
+not ok 57 - AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--incomplete
+  ---
+  duration_ms: 0.1392
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-missing-unknown--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-unknown--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--complete
+not ok 58 - AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--complete
+  ---
+  duration_ms: 0.097287
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-missing-removal--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-removal--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--incomplete
+not ok 59 - AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--incomplete
+  ---
+  duration_ms: 0.086951
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-missing-removal--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-removal--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--complete
+not ok 60 - AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--complete
+  ---
+  duration_ms: 0.085669
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-unknown-incomplete-over12--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-unknown-incomplete-over12--complete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--incomplete
+not ok 61 - AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--incomplete
+  ---
+  duration_ms: 0.084227
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-unknown-incomplete-over12--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-unknown-incomplete-over12--incomplete","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: historical-missing-measurement
+not ok 62 - AP01/AP02 saved widget + actual voice: historical-missing-measurement
+  ---
+  duration_ms: 0.084627
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"historical-missing-measurement","serviceType":"ROOFING_REPLACEMENT","variant":"historical-missing-measurement","faults":["execution: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"],"amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: `execution: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-known-request
+not ok 63 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-known-request
+  ---
+  duration_ms: 184.044069
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request
+not ok 64 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request
+  ---
+  duration_ms: 47.397111
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request
+not ok 65 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request
+  ---
+  duration_ms: 46.265523
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request
+not ok 66 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request
+  ---
+  duration_ms: 46.368733
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--base
+not ok 67 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--base
+  ---
+  duration_ms: 69.357373
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      {
+        defaults: {
+          currency: 'CAD',
+          disposalFee: 0,
+          markupApplies: {
+    ...
+              'laborPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:39:37.781Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'materialCostPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:39:37.781Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'tearOffPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:39:37.781Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'underlaymentPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:39:37.781Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              disposalPerSquare: {
+    +           changedAt: '2026-10-19T06:39:37.781Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              minimumJob: {
+    +           changedAt: '2026-10-19T06:39:37.781Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              }
+            },
+            pricing: {
+              accessoryPricingMode: 'per_square_allin',
+              accessoryWasteFactor: {
+    ...
+        ],
+    +   updatedAt: '2026-10-19T06:39:37.781Z'
+    -   updatedAt: '2026-10-06T12:00:00.000Z'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    ownerId: 'audit-before-01-0'
+    services:
+      0:
+        id: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+        source: 'MANUAL'
+        knownOfferings:
+          existingRoofType:
+            asphalt_shingle: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            metal: '95287887-6ab3-470c-86a4-2860be4901f3'
+            standing_seam: 'ef0cfba0-4262-423d-81db-9e4bc13ea81f'
+            cedar_shake: '00cd67b0-fc7d-4cb9-8a48-a22c08d883c4'
+          replacementRoofType:
+            asphalt_shingle: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+            metal: '6acea723-58b6-4140-8005-43e31caa0414'
+            standing_seam: 'b36b4695-4384-491e-8b0c-5ecf897f7b5c'
+            cedar_shake: '5eb27e69-d64e-46e2-8b41-59064724363e'
+        active: true
+        serviceType: 'ROOFING_REPLACEMENT'
+        service: '[SYNTHETIC ACTIVATION AUDIT] ROOFING_REPLACEMENT'
+        pricing:
+          laborPerSquare:
+            asphalt_shingle: 20000
+          materialCostPerSquare:
+            asphalt_shingle: 10000
+          tearOffPerSquare:
+            asphalt_shingle: 6000
+          underlaymentPerSquare:
+            asphalt_shingle: 100
+          underlaymentPriceBasis:
+            asphalt_shingle: 'installed_area_sell_price'
+          installedLaborPercent:
+            underlaymentPerSquare.asphalt_shingle: 0
+          installedMaterialsPercent:
+            underlaymentPerSquare.asphalt_shingle: 100
+          disposalPerSquare: 2000
+          accessoryPricingMode: 'per_square_allin'
+          minimumJob: 0
+          pitchInstallationAdderOverTwelve: 0.5
+          pitchRemovalAdderOverTwelve: 0.6
+          unknownPitchBand: 'seven_to_nine'
+          wasteFactorByComplexity:
+            simple: 0.1
+            moderate: 0.13
+            complex: 0.18
+          pitchMultiplier:
+            low: 1
+            medium: 1.15
+            steep: 1.25
+            very_steep: 1.4
+          storyMultiplier:
+            1: 1
+            2: 1.1
+            3: 1.2
+          pitchInstallationAdder:
+            seven_to_nine: 0.2
+            ten_to_twelve: 0.31
+          pitchRemovalAdder:
+            seven_to_nine: 0.26
+            ten_to_twelve: 0.41
+          complexityLaborMultiplier:
+            simple: 1
+            moderate: 1.2
+            complex: 1.4
+          additionalLayerRemovalFactor: 0.7
+          accessoryWasteFactor:
+            starterPerLF: 0.1
+            dripEdgePerLF: 0.1
+            ridgeCapPerLF: 0.1
+        feeRules:
+          travel: 'not_applicable'
+          disposal: 'not_applicable'
+          permit: 'not_applicable'
+          overhead: 'not_applicable'
+        priceBasisByCategory:
+          labor: 'cost'
+          material: 'sell_price'
+          removal: 'cost'
+          prep: 'cost'
+          addon: 'cost'
+          equipment: 'cost'
+          travel: 'cost'
+          disposal: 'cost'
+          permit: 'cost'
+          overhead: 'cost'
+          surcharge: 'cost'
+        taxabilityByCategory:
+          labor: false
+          material: false
+          removal: false
+          prep: false
+          addon: false
+          equipment: false
+          travel: false
+          disposal: false
+          permit: false
+          overhead: false
+          surcharge: false
+        peakMonths:
+        peakSurchargePercent: 0
+        validationInputs:
+          roofSizeMethod: 'roof_measured'
+          roofSizeInput: 1000
+          existingRoofType: 'asphalt_shingle'
+          replacementRoofType: 'asphalt_shingle'
+          pitchMethod: 'whole_roof'
+          pitchBand: 'up_to_six'
+          stories: 1
+          existingLayers: 1
+          roofComplexity: 'simple'
+          serviceScope: 'full'
+          confirmedFacts:
+            existingRoofType:
+              status: 'identified'
+              field: 'existingRoofType'
+              value: 'asphalt_shingle'
+              offeringId: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            replacementRoofType:
+              status: 'identified'
+              field: 'replacementRoofType'
+              value: 'asphalt_shingle'
+              offeringId: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+        confirmedFields:
+        origin:
+          serviceId: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+          serviceType: 'ROOFING_REPLACEMENT'
+          source: 'MANUAL'
+          ownerId: 'audit-before-01-0'
+          operationId: 'c053d031-3a68-4f4d-a0f5-52f10e4bb4a8'
+          createdAt: '2026-10-06T12:00:00.000Z'
+        startingValueAdoptions:
+          roofing_replacement_20261016:
+            mode: 'new'
+            introducedAt: '2026-10-06T12:00:00.000Z'
+        dependentLineState:
+          roofing_flashing_vents.asphalt_shingle:
+            definitionSignature: '{"basePriceNewWording":"Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.","basePricePath":"materialCostPerSquare.asphalt_shingle","id":"roofing_flashing_vents.asphalt_shingle"}'
+            basePricePath: 'materialCostPerSquare.asphalt_shingle'
+            basePriceNewWording: 'Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.'
+            baseValue: 10000
+            reentered: true
+            confirmed: true
+            introducedAt: '2026-10-06T12:00:00.000Z'
+            reenteredAt: '2026-10-06T12:00:00.000Z'
+            confirmedAt: '2026-10-06T12:00:00.000Z'
+            ownerId: 'audit-before-01-0'
+        priceMetadata:
+          laborPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          materialCostPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          tearOffPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          underlaymentPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          disposalPerSquare:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          minimumJob:
+            changedAt: '2026-10-06T12:00:00.000Z'
+        quoteDoneApproval:
+          ownerId: 'audit-before-01-0'
+          serviceId: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+          operationId: '6fb11e8a-8d51-4c7b-8c91-9c414f6eec27'
+          approvedAt: '2026-10-06T12:00:00.000Z'
+          engineVersion: 'quote-engine-vnext-geometry-20261019-v12'
+          moneyUnitVersion: 'roof-minimum-cents-v1'
+          contentDigest: '16b7de78d97dcfbb2f03fe226c87f99db7edd78eb6cac5d45a2bb38308236ae0'
+          sectionDigests:
+            service.feeRules: '54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4'
+            service.id: '1cff58a3e9dd4e3a3699e341b9106e23628aad8b9481ebfaa1a3ff1af4e6fa84'
+            service.knownOfferings: '6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672'
+            service.origin: '8ab0f4ebc2623b5aba38c098bde8fd39ece049c7dd97c44019042af7676fb61e'
+            service.peakMonths: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            service.peakSurchargePercent: '5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9'
+            service.priceBasisByCategory: '5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d'
+            service.pricing: 'ac475e7110cb637b2f9bad7dcbc60b6573c75ce2a26b9bfd373bd5b0aea0aae4'
+            service.service: 'f457060cb1c89bc2144e70a08b04aa980a525304810dfd9b4b433ad3867924da'
+            service.serviceType: '82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94'
+            service.source: 'bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65'
+            service.startingValueAdoptions: '4de99fe8d145df66054112b8698ab9baf23a1501f84aa591ffcbb8bf7226a0dc'
+            service.taxabilityByCategory: '3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540'
+            service.tiers: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            businessDefaults: '0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e'
+            legacySettings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            feeSelections: '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
+          operation: 'owner_confirmed_quotedone_registration'
+    defaults:
+      markupPercent: 0
+      markupMode: 'markup'
+      overheadFixed: 0
+      minimumJobPrice: 0
+      travelFee: 0
+      disposalFee: 0
+      permitFee: 0
+      taxMode: 'TAX_NONE'
+      taxPercent: 0
+      rangeBufferPercent: 0
+      markupApplies:
+        labor: true
+        material: true
+        removal: true
+        prep: true
+        addon: true
+        equipment: true
+        travel: true
+        disposal: true
+        permit: true
+        overhead: true
+        surcharge: true
+      peakMonths:
+      peakSurchargePercent: 0
+      currency: 'CAD'
+      quoteTimeZone: 'UTC'
+    updatedAt: '2026-10-06T12:00:00.000Z'
+  actual:
+    ownerId: 'audit-before-01-0'
+    services:
+      0:
+        id: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+        source: 'MANUAL'
+        knownOfferings:
+          existingRoofType:
+            asphalt_shingle: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            metal: '95287887-6ab3-470c-86a4-2860be4901f3'
+            standing_seam: 'ef0cfba0-4262-423d-81db-9e4bc13ea81f'
+            cedar_shake: '00cd67b0-fc7d-4cb9-8a48-a22c08d883c4'
+          replacementRoofType:
+            asphalt_shingle: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+            metal: '6acea723-58b6-4140-8005-43e31caa0414'
+            standing_seam: 'b36b4695-4384-491e-8b0c-5ecf897f7b5c'
+            cedar_shake: '5eb27e69-d64e-46e2-8b41-59064724363e'
+        active: true
+        serviceType: 'ROOFING_REPLACEMENT'
+        service: '[SYNTHETIC ACTIVATION AUDIT] ROOFING_REPLACEMENT'
+        pricing:
+          laborPerSquare:
+            asphalt_shingle: 20000
+          materialCostPerSquare:
+            asphalt_shingle: 10000
+          tearOffPerSquare:
+            asphalt_shingle: 6000
+          underlaymentPerSquare:
+            asphalt_shingle: 100
+          underlaymentPriceBasis:
+            asphalt_shingle: 'installed_area_sell_price'
+          installedLaborPercent:
+            underlaymentPerSquare.asphalt_shingle: 0
+          installedMaterialsPercent:
+            underlaymentPerSquare.asphalt_shingle: 100
+          disposalPerSquare: 2000
+          accessoryPricingMode: 'per_square_allin'
+          minimumJob: 0
+          pitchInstallationAdderOverTwelve: 0.5
+          pitchRemovalAdderOverTwelve: 0.6
+          unknownPitchBand: 'seven_to_nine'
+          wasteFactorByComplexity:
+            simple: 0.1
+            moderate: 0.13
+            complex: 0.18
+          pitchMultiplier:
+            low: 1
+            medium: 1.15
+            steep: 1.25
+            very_steep: 1.4
+          storyMultiplier:
+            1: 1
+            2: 1.1
+            3: 1.2
+          pitchInstallationAdder:
+            seven_to_nine: 0.2
+            ten_to_twelve: 0.31
+          pitchRemovalAdder:
+            seven_to_nine: 0.26
+            ten_to_twelve: 0.41
+          complexityLaborMultiplier:
+            simple: 1
+            moderate: 1.2
+            complex: 1.4
+          additionalLayerRemovalFactor: 0.7
+          accessoryWasteFactor:
+            starterPerLF: 0.1
+            dripEdgePerLF: 0.1
+            ridgeCapPerLF: 0.1
+        feeRules:
+          travel: 'not_applicable'
+          disposal: 'not_applicable'
+          permit: 'not_applicable'
+          overhead: 'not_applicable'
+        priceBasisByCategory:
+          labor: 'cost'
+          material: 'sell_price'
+          removal: 'cost'
+          prep: 'cost'
+          addon: 'cost'
+          equipment: 'cost'
+          travel: 'cost'
+          disposal: 'cost'
+          permit: 'cost'
+          overhead: 'cost'
+          surcharge: 'cost'
+        taxabilityByCategory:
+          labor: false
+          material: false
+          removal: false
+          prep: false
+          addon: false
+          equipment: false
+          travel: false
+          disposal: false
+          permit: false
+          overhead: false
+          surcharge: false
+        peakMonths:
+        peakSurchargePercent: 0
+        validationInputs:
+          roofSizeMethod: 'roof_measured'
+          roofSizeInput: 1000
+          existingRoofType: 'asphalt_shingle'
+          replacementRoofType: 'asphalt_shingle'
+          pitchMethod: 'whole_roof'
+          pitchBand: 'up_to_six'
+          stories: 1
+          existingLayers: 1
+          roofComplexity: 'simple'
+          serviceScope: 'full'
+          confirmedFacts:
+            existingRoofType:
+              status: 'identified'
+              field: 'existingRoofType'
+              value: 'asphalt_shingle'
+              offeringId: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            replacementRoofType:
+              status: 'identified'
+              field: 'replacementRoofType'
+              value: 'asphalt_shingle'
+              offeringId: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+        confirmedFields:
+        origin:
+          serviceId: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+          serviceType: 'ROOFING_REPLACEMENT'
+          source: 'MANUAL'
+          ownerId: 'audit-before-01-0'
+          operationId: 'c053d031-3a68-4f4d-a0f5-52f10e4bb4a8'
+          createdAt: '2026-10-06T12:00:00.000Z'
+        startingValueAdoptions:
+          roofing_replacement_20261016:
+            mode: 'new'
+            introducedAt: '2026-10-06T12:00:00.000Z'
+        dependentLineState:
+          roofing_flashing_vents.asphalt_shingle:
+            definitionSignature: '{"basePriceNewWording":"Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.","basePricePath":"materialCostPerSquare.asphalt_shingle","id":"roofing_flashing_vents.asphalt_shingle"}'
+            basePricePath: 'materialCostPerSquare.asphalt_shingle'
+            basePriceNewWording: 'Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.'
+            baseValue: 10000
+            reentered: true
+            confirmed: true
+            introducedAt: '2026-10-06T12:00:00.000Z'
+            reenteredAt: '2026-10-06T12:00:00.000Z'
+            confirmedAt: '2026-10-06T12:00:00.000Z'
+            ownerId: 'audit-before-01-0'
+        priceMetadata:
+          laborPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:39:37.781Z'
+          materialCostPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:39:37.781Z'
+          tearOffPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:39:37.781Z'
+          underlaymentPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:39:37.781Z'
+          disposalPerSquare:
+            changedAt: '2026-10-19T06:39:37.781Z'
+          minimumJob:
+            changedAt: '2026-10-19T06:39:37.781Z'
+        quoteDoneApproval:
+          ownerId: 'audit-before-01-0'
+          serviceId: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+          operationId: '6fb11e8a-8d51-4c7b-8c91-9c414f6eec27'
+          approvedAt: '2026-10-06T12:00:00.000Z'
+          engineVersion: 'quote-engine-vnext-geometry-20261019-v12'
+          moneyUnitVersion: 'roof-minimum-cents-v1'
+          contentDigest: '16b7de78d97dcfbb2f03fe226c87f99db7edd78eb6cac5d45a2bb38308236ae0'
+          sectionDigests:
+            service.feeRules: '54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4'
+            service.id: '1cff58a3e9dd4e3a3699e341b9106e23628aad8b9481ebfaa1a3ff1af4e6fa84'
+            service.knownOfferings: '6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672'
+            service.origin: '8ab0f4ebc2623b5aba38c098bde8fd39ece049c7dd97c44019042af7676fb61e'
+            service.peakMonths: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            service.peakSurchargePercent: '5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9'
+            service.priceBasisByCategory: '5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d'
+            service.pricing: 'ac475e7110cb637b2f9bad7dcbc60b6573c75ce2a26b9bfd373bd5b0aea0aae4'
+            service.service: 'f457060cb1c89bc2144e70a08b04aa980a525304810dfd9b4b433ad3867924da'
+            service.serviceType: '82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94'
+            service.source: 'bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65'
+            service.startingValueAdoptions: '4de99fe8d145df66054112b8698ab9baf23a1501f84aa591ffcbb8bf7226a0dc'
+            service.taxabilityByCategory: '3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540'
+            service.tiers: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            businessDefaults: '0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e'
+            legacySettings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            feeSelections: '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
+          operation: 'owner_confirmed_quotedone_registration'
+    defaults:
+      markupPercent: 0
+      markupMode: 'markup'
+      overheadFixed: 0
+      minimumJobPrice: 0
+      travelFee: 0
+      disposalFee: 0
+      permitFee: 0
+      taxMode: 'TAX_NONE'
+      taxPercent: 0
+      rangeBufferPercent: 0
+      markupApplies:
+        labor: true
+        material: true
+        removal: true
+        prep: true
+        addon: true
+        equipment: true
+        travel: true
+        disposal: true
+        permit: true
+        overhead: true
+        surcharge: true
+      peakMonths:
+      peakSurchargePercent: 0
+      currency: 'CAD'
+      quoteTimeZone: 'UTC'
+    updatedAt: '2026-10-19T06:39:37.781Z'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:36:24)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: historical-missing-measurement
+not ok 68 - AP01/AP02 authentic v12 immutable priced/review receipts: historical-missing-measurement
+  ---
+  duration_ms: 7.12631
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: 'UNIQUE constraint failed: calls.callSid'
+  code: 'SQLITE_CONSTRAINT_UNIQUE'
+  ...
+1..68
+# tests 68
+# suites 0
+# pass 0
+# fail 68
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2051.85391

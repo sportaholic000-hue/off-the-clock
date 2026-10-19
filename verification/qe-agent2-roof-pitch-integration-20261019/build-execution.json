@@ -1,0 +1,14 @@
+{
+  "check": "build",
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "node": "v22.23.3",
+  "exit_code": 0,
+  "seconds": 5.545,
+  "summary": {},
+  "log": "verification/qe-agent2-roof-pitch-integration-20261019/build.log",
+  "verification_passed": true
+}

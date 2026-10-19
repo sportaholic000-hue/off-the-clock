@@ -1,0 +1,119 @@
+[
+  {
+    "id": "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "absent-unknown-pitch-policy-known-request",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Known up-to6 pitch does not use an unknown-pitch allowance; priceBookCopy says this setting is required before UNKNOWN pitch can quote.391000 known-pitch amount unchanged."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "absent-unknown-pitch-policy-unknown-request",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Unknown pitch needs the owner allowance; no conversion or implied policy. Known-pitch service availability should remain."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--absent-over12-adjustment-known-request",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "absent-over12-adjustment-known-request",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000
+    },
+    "note": "Known up-to6 pitch uses neither over12 adjustment; its valid scope should remain available. Missing over12 removal is selected-scope pricing, not malformed money."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "absent-over12-adjustment-over12-request",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Over12 selection cannot invent its missing removal adjustment. Known up-to6 scope remains available."
+  },
+  {
+    "id": "ROOFING_REPLACEMENT--tier-completes-unknown-pitch-policy",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "tier-completes-unknown-pitch-policy",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 391000,
+      "options": 2
+    },
+    "note": "Both effective tiers can price a known low pitch; only the second can price an unknown pitch. No amount changes for known-pitch request."
+  },
+  {
+    "id": "INTERIOR_PAINTING--itemized-absent-optional-details",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "itemized-absent-optional-details",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 230000
+    },
+    "note": "Itemized walls: finish labor100000+prep50000+primer25000+finish materials33000+prep11000+primer11000=230000. No generic-condition meaning inferred. Only fair preparation is priced; good requests review but fair remains available."
+  },
+  {
+    "id": "INTERIOR_PAINTING--itemized-unpriced-condition",
+    "serviceType": "INTERIOR_PAINTING",
+    "variant": "itemized-unpriced-condition",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Itemized walls: finish labor100000+prep50000+primer25000+finish materials33000+prep11000+primer11000=230000. No generic-condition meaning inferred. Only fair preparation is priced; good requests review but fair remains available."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--itemized-absent-optional-details",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "itemized-absent-optional-details",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 230000
+    },
+    "note": "Itemized walls: finish labor100000+prep50000+primer25000+finish materials33000+prep11000+primer11000=230000. No generic-condition meaning inferred. Only fair preparation is priced; good requests review but fair remains available."
+  },
+  {
+    "id": "EXTERIOR_PAINTING--itemized-unpriced-condition",
+    "serviceType": "EXTERIOR_PAINTING",
+    "variant": "itemized-unpriced-condition",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Itemized walls: finish labor100000+prep50000+primer25000+finish materials33000+prep11000+primer11000=230000. No generic-condition meaning inferred. Only fair preparation is priced; good requests review but fair remains available."
+  },
+  {
+    "id": "LANDSCAPING_CLEANUP--explicit-bag-disposal",
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "variant": "explicit-bag-disposal",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": true,
+      "cents": 20000
+    },
+    "note": "10 bags*1000 exceeds light debris minimum5000; cleanup labor10000 +disposal10000."
+  }
+]

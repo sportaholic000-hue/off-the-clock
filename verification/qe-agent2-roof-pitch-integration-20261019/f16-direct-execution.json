@@ -1,0 +1,30 @@
+{
+  "check": "f16-direct",
+  "command": [
+    "/workspace/scratch/754089be5e74/qe-integration-runtime/node_modules/.bin/node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test-concurrency=1",
+    "--test",
+    "--test-reporter=tap",
+    "test/qeAgent1ApprovalPrecision20261018.spec.mjs",
+    "verification/qe-agent1-core-accuracy-20261018/f16-with-agent2.spec.mjs",
+    "test/qeAgent2PricePrecision.spec.mjs",
+    "test/qeAgent2PriceMetadata.spec.mjs"
+  ],
+  "node": "v22.23.3",
+  "exit_code": 0,
+  "seconds": 6.877,
+  "summary": {
+    "tests": 94,
+    "suites": 0,
+    "pass": 94,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "log": "verification/qe-agent2-roof-pitch-integration-20261019/f16-direct.tap",
+  "verification_passed": true
+}

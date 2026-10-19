@@ -1,0 +1,22 @@
+{
+  "ordered_parents": [
+    "00523290be44c522254e2e736756d0a6eba0aba3",
+    "17701c5c20563be2c59607e3391bb6fccb0e97c6"
+  ],
+  "merge_base": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+  "inherited_paths_verified": 3859,
+  "inherited_mismatches": [],
+  "conflicts": [],
+  "additional_integration_files": 69,
+  "changed_files": 214,
+  "production": [
+    "server/quote-engine-vnext/priceBook.js"
+  ],
+  "tests": [
+    "test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs",
+    "test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs",
+    "test/qeAgent1RoofPitchActivationReadiness20261019.spec.mjs"
+  ],
+  "all_other_changes_are_verification": true,
+  "all_inherited_paths_still_identical": true
+}
