@@ -1,0 +1,29 @@
+{
+  "base": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "groups": {
+    "server": {
+      "files": 246,
+      "gitBlobListSha256": "4deec09396294efab6835452807c5e06738dc9993955dd6e94972b69b6b3d31a"
+    },
+    "specifications": {
+      "files": 20,
+      "gitBlobListSha256": "df4a816c05d77bced73d1c5e46cb9f07a54768455523e1c05a3d37e029e74281"
+    },
+    "workflows": {
+      "files": 14,
+      "gitBlobListSha256": "991f28e04e7c09ed880f4283e87206b5c0c1387c1db3f3ab3e87e4312f6cdcb3"
+    },
+    "existing_tests": {
+      "files": 428,
+      "gitBlobListSha256": "d70b00a08832fcb258e213c05ce4b74cff79743be3f42585bcfb58ca98cdb249"
+    },
+    "dependency_manifests": {
+      "files": 3,
+      "gitBlobListSha256": "6724a6f603a83fe0e6c592ee66931b13a3e36ff1edb2f0b14cded8145542d020"
+    },
+    "other_client_source": {
+      "files": 67,
+      "gitBlobListSha256": "04dec9f8041f0689b30a8e46091ffb4b0b44724fe8698c5df873b4594c5601a9"
+    }
+  }
+}

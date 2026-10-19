@@ -12,8 +12,8 @@ import {convertApplicationBook} from '../server/src/quoteDoneBridge.js';
 import {auditFixtures} from '../verification/qe-agent3-widget-dependencies-20261019/audit-fixtures.mjs';
 
 // Independent arithmetic was recorded in EXPECTED.md before this suite ran.
-const EXPECTED={original:{cents:16000,range:'$144 – $176',area:5000},corrected:{cents:27000,range:'$243 – $297',area:10000},
-  revised:{cents:21500,range:'$193.50 – $236.50',area:5000},cleanup:{cents:40000,range:'$360 – $440',area:1000}};
+const EXPECTED={original:{cents:16000,range:'$144 – $176',rangeCents:[14400,16000,17600],area:5000},corrected:{cents:27000,range:'$243 – $297',rangeCents:[24300,27000,29700],area:10000},
+  revised:{cents:21500,range:'$193 – $237',rangeCents:[19350,21500,23650],area:5000},cleanup:{cents:40000,range:'$360 – $440',rangeCents:[36000,40000,44000],area:1000}};
 const MOWING='LANDSCAPING_MOWING',CLEANUP='LANDSCAPING_CLEANUP';
 const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};};
 const copy=value=>structuredClone(value);
@@ -142,6 +142,8 @@ test('qe-agent3 widget request races and persisted recovery through real public 
           assert.equal(JSON.parse(saved.customerResponseJson).quoteId,row.response.quoteId);
           const internal=JSON.parse(saved.internalOutcomeJson).internalResult;
           assert.deepEqual(internal.options.map(option=>option.calculationRecord.scenarios.mid.finalTotalCents),[expected.cents]);
+          const range=internal.options[0].calculationRecord.range;
+          assert.deepEqual([range.lowCents,range.midCents,range.highCents],expected.rangeCents);
           assert.equal(row.response.midEstimate,expected.cents/100);
           assert.equal(row.request.customerInputs.yardSqft,expected.area);
           const storedInputs=app.db.prepare('SELECT customerInputsJson FROM quotes WHERE ownerId=? AND id=?').get(owner,saved.recordId);

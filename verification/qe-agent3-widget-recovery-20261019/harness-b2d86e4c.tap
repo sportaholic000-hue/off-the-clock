@@ -1,0 +1,177 @@
+2026-10-19T18:37:17.3522477Z # Subtest: qe-agent3 widget request races and persisted recovery through real public HTTP
+2026-10-19T18:37:17.3523398Z     # Subtest: R01 rapid double preparation and confirmation create one immutable receipt
+2026-10-19T18:37:17.3524186Z     not ok 1 - R01 rapid double preparation and confirmation create one immutable receipt
+2026-10-19T18:37:17.3526595Z       ---
+2026-10-19T18:37:17.3526896Z       duration_ms: 8148.286881
+2026-10-19T18:37:17.3527206Z       type: 'test'
+2026-10-19T18:37:17.3527972Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:37:17.3528871Z       failureType: 'testCodeFailure'
+2026-10-19T18:37:17.3529326Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:37:17.3529759Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:37:17.3530064Z       name: 'TimeoutError'
+2026-10-19T18:37:17.3530416Z       stack: |-
+2026-10-19T18:37:17.3531206Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:37:17.3532117Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:37:17.3533368Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:167:3)
+2026-10-19T18:37:17.3534152Z       ...
+2026-10-19T18:37:25.4814238Z     # Subtest: R02a saved response lost then retry recovers identical payload and receipt
+2026-10-19T18:37:25.4815513Z     not ok 2 - R02a saved response lost then retry recovers identical payload and receipt
+2026-10-19T18:37:25.4816203Z       ---
+2026-10-19T18:37:25.4816595Z       duration_ms: 8130.08472
+2026-10-19T18:37:25.4817006Z       type: 'test'
+2026-10-19T18:37:25.4817763Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:37:25.4818753Z       failureType: 'testCodeFailure'
+2026-10-19T18:37:25.4819399Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:37:25.4820360Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:37:25.4820802Z       name: 'TimeoutError'
+2026-10-19T18:37:25.4821199Z       stack: |-
+2026-10-19T18:37:25.4822088Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:37:25.4823506Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:37:25.4825021Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:181:36)
+2026-10-19T18:37:25.4825968Z       ...
+2026-10-19T18:37:33.6090373Z     # Subtest: R02b saved response lost then reload and retry recovers identical payload and receipt
+2026-10-19T18:37:33.6094524Z     not ok 3 - R02b saved response lost then reload and retry recovers identical payload and receipt
+2026-10-19T18:37:33.6095460Z       ---
+2026-10-19T18:37:33.6095885Z       duration_ms: 8127.727974
+2026-10-19T18:37:33.6096360Z       type: 'test'
+2026-10-19T18:37:33.6097251Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:37:33.6098194Z       failureType: 'testCodeFailure'
+2026-10-19T18:37:33.6099324Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:37:33.6099998Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:37:33.6100450Z       name: 'TimeoutError'
+2026-10-19T18:37:33.6100899Z       stack: |-
+2026-10-19T18:37:33.6102003Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:37:33.6103594Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:37:33.6105100Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:181:36)
+2026-10-19T18:37:33.6106077Z       ...
+2026-10-19T18:37:41.7409584Z     # Subtest: R03 delayed preparation cannot replace a corrected measured area
+2026-10-19T18:37:41.7410470Z     not ok 4 - R03 delayed preparation cannot replace a corrected measured area
+2026-10-19T18:37:41.7410884Z       ---
+2026-10-19T18:37:41.7411245Z       duration_ms: 8131.461206
+2026-10-19T18:37:41.7411593Z       type: 'test'
+2026-10-19T18:37:41.7412300Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:37:41.7412879Z       failureType: 'testCodeFailure'
+2026-10-19T18:37:41.7413383Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:37:41.7413796Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:37:41.7414156Z       name: 'TimeoutError'
+2026-10-19T18:37:41.7414495Z       stack: |-
+2026-10-19T18:37:41.7415207Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:37:41.7416435Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:37:41.7417749Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:191:3)
+2026-10-19T18:37:41.7418661Z       ...
+2026-10-19T18:37:49.8626329Z     # Subtest: R04 delayed preparation cannot replace a different selected service
+2026-10-19T18:37:49.8627314Z     not ok 5 - R04 delayed preparation cannot replace a different selected service
+2026-10-19T18:37:49.8634993Z       ---
+2026-10-19T18:37:49.8636289Z       duration_ms: 8121.594384
+2026-10-19T18:37:49.8637122Z       type: 'test'
+2026-10-19T18:37:49.8637925Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:37:49.8638857Z       failureType: 'testCodeFailure'
+2026-10-19T18:37:49.8639633Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:37:49.8643845Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:37:49.8644195Z       name: 'TimeoutError'
+2026-10-19T18:37:49.8644563Z       stack: |-
+2026-10-19T18:37:49.8646529Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:37:49.8647531Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:37:49.8649916Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:200:3)
+2026-10-19T18:37:49.8650520Z       ...
+2026-10-19T18:37:57.9873490Z     # Subtest: R05 superseded response cannot unlock a newer in-flight preparation
+2026-10-19T18:37:57.9874661Z     not ok 6 - R05 superseded response cannot unlock a newer in-flight preparation
+2026-10-19T18:37:57.9875660Z       ---
+2026-10-19T18:37:57.9876698Z       duration_ms: 8124.635477
+2026-10-19T18:37:57.9877816Z       type: 'test'
+2026-10-19T18:37:57.9878872Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:37:57.9879866Z       failureType: 'testCodeFailure'
+2026-10-19T18:37:57.9880835Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:37:57.9881408Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:37:57.9881917Z       name: 'TimeoutError'
+2026-10-19T18:37:57.9882325Z       stack: |-
+2026-10-19T18:37:57.9883245Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:37:57.9884597Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:37:57.9885947Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:207:3)
+2026-10-19T18:37:57.9886853Z       ...
+2026-10-19T18:38:06.1200567Z     # Subtest: R06 same-key widget instances preserve independent completed and pending recovery on reload
+2026-10-19T18:38:06.1201769Z     not ok 7 - R06 same-key widget instances preserve independent completed and pending recovery on reload
+2026-10-19T18:38:06.1203461Z       ---
+2026-10-19T18:38:06.1203867Z       duration_ms: 8131.622627
+2026-10-19T18:38:06.1204323Z       type: 'test'
+2026-10-19T18:38:06.1205187Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:38:06.1206146Z       failureType: 'testCodeFailure'
+2026-10-19T18:38:06.1206805Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:38:06.1207426Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:38:06.1207908Z       name: 'TimeoutError'
+2026-10-19T18:38:06.1208362Z       stack: |-
+2026-10-19T18:38:06.1209528Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:38:06.1210932Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:38:06.1226534Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:216:3)
+2026-10-19T18:38:06.1227322Z       ...
+2026-10-19T18:38:14.2504848Z     # Subtest: R05b obsolete success cannot replace a newer completed preparation
+2026-10-19T18:38:14.2515961Z     not ok 8 - R05b obsolete success cannot replace a newer completed preparation
+2026-10-19T18:38:14.2517038Z       ---
+2026-10-19T18:38:14.2517314Z       duration_ms: 8130.724415
+2026-10-19T18:38:14.2517519Z       type: 'test'
+2026-10-19T18:38:14.2518287Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:38:14.2519688Z       failureType: 'testCodeFailure'
+2026-10-19T18:38:14.2520166Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:38:14.2520603Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:38:14.2520909Z       name: 'TimeoutError'
+2026-10-19T18:38:14.2521202Z       stack: |-
+2026-10-19T18:38:14.2521999Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:38:14.2523316Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:38:14.2524629Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:228:3)
+2026-10-19T18:38:14.2525406Z       ...
+2026-10-19T18:38:22.3776738Z     # Subtest: R05c obsolete real validation error cannot overwrite a corrected preparation
+2026-10-19T18:38:22.3777388Z     not ok 9 - R05c obsolete real validation error cannot overwrite a corrected preparation
+2026-10-19T18:38:22.3777787Z       ---
+2026-10-19T18:38:22.3778002Z       duration_ms: 8126.920276
+2026-10-19T18:38:22.3778235Z       type: 'test'
+2026-10-19T18:38:22.3782060Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:38:22.3782871Z       failureType: 'testCodeFailure'
+2026-10-19T18:38:22.3783335Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:38:22.3784045Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:38:22.3784347Z       name: 'TimeoutError'
+2026-10-19T18:38:22.3784627Z       stack: |-
+2026-10-19T18:38:22.3785383Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:38:22.3786629Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:38:22.3787870Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:235:3)
+2026-10-19T18:38:22.3788757Z       ...
+2026-10-19T18:38:30.5215413Z     # Subtest: R07 public-key replacement rejects a delayed saved result without losing original recovery
+2026-10-19T18:38:30.5216770Z     not ok 10 - R07 public-key replacement rejects a delayed saved result without losing original recovery
+2026-10-19T18:38:30.5217424Z       ---
+2026-10-19T18:38:30.5217704Z       duration_ms: 8143.854561
+2026-10-19T18:38:30.5218044Z       type: 'test'
+2026-10-19T18:38:30.5218995Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:38:30.5219692Z       failureType: 'testCodeFailure'
+2026-10-19T18:38:30.5220129Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:38:30.5220573Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:38:30.5220904Z       name: 'TimeoutError'
+2026-10-19T18:38:30.5221164Z       stack: |-
+2026-10-19T18:38:30.5221971Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:38:30.5223130Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:38:30.5224266Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:243:3)
+2026-10-19T18:38:30.5225030Z       ...
+2026-10-19T18:38:38.6486098Z     # Subtest: R08 owner revision rejects stale confirmation and historical retries stay immutable
+2026-10-19T18:38:38.6487362Z     not ok 11 - R08 owner revision rejects stale confirmation and historical retries stay immutable
+2026-10-19T18:38:38.6488077Z       ---
+2026-10-19T18:38:38.6488658Z       duration_ms: 8126.572461
+2026-10-19T18:38:38.6489562Z       type: 'test'
+2026-10-19T18:38:38.6490477Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:13'
+2026-10-19T18:38:38.6491415Z       failureType: 'testCodeFailure'
+2026-10-19T18:38:38.6492169Z       error: 'page.waitForFunction: Timeout 8000ms exceeded.'
+2026-10-19T18:38:38.6492697Z       code: 'ERR_TEST_FAILURE'
+2026-10-19T18:38:38.6493089Z       name: 'TimeoutError'
+2026-10-19T18:38:38.6493372Z       stack: |-
+2026-10-19T18:38:38.6494128Z         TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:155:72)
+2026-10-19T18:38:38.6495282Z         async scenario (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:89:5)
+2026-10-19T18:38:38.6496482Z         async TestContext.<anonymous> (/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:250:3)
+2026-10-19T18:38:38.6497309Z       ...
+2026-10-19T18:38:38.6880906Z     1..11
+2026-10-19T18:38:38.6881526Z not ok 3313 - qe-agent3 widget request races and persisted recovery through real public HTTP
+2026-10-19T18:38:38.6881939Z   ---
+2026-10-19T18:38:38.6882126Z   duration_ms: 90898.31914
+2026-10-19T18:38:38.6882318Z   type: 'test'
+2026-10-19T18:38:38.6883123Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent3WidgetRecovery20261019.browser.spec.mjs:21:1'
+2026-10-19T18:38:38.6883631Z   failureType: 'subtestsFailed'
+2026-10-19T18:38:38.6883879Z   error: '11 subtests failed'
+2026-10-19T18:38:38.6884118Z   code: 'ERR_TEST_FAILURE'
+2026-10-19T18:38:38.6884368Z   ...
+

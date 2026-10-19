@@ -52,3 +52,20 @@ handlers, owner save/approve HTTP, and a temporary persisted SQLite database.
 Only the harness document is synthetic. Request barriers forward requests to
 the real handler and explicitly release, abort, or reverse response delivery;
 no sleeps select the race order.
+
+## Display correction recorded before the repaired run
+
+The original table above is retained as pre-execution evidence. Its revised-rate
+display cell confused the internal cent range with customer display. Engine
+specification STEP 9, CUSTOMER DISPLAY, requires a standard buffered quote's
+lower endpoint rounded down to a whole dollar and upper endpoint up unless its
+minimum/zero exception applies. Neither exception applies here:
+
+- Internal range: 21,500 × 0.9 = 19,350 cents; 21,500 × 1.1 = 23,650 cents.
+- Customer range: floor(193.50) = **$193**, ceil(236.50) = **$237**.
+- Midpoint remains **$215**. No pricing/specification change is required.
+
+The corrected test asserts both the independent internal cents and the specified
+customer display. Baseline `6ef93587` passed the stale-confirmation 409 and the
+21,500-cent calculation before failing this mistaken display expectation; that
+last assertion is a harness expectation error, not a server defect.

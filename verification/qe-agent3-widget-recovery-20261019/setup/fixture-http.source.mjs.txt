@@ -1,0 +1,75 @@
+import './pricebookTestEnv.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
+import {createRequire} from 'node:module';
+import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
+import path from 'node:path';
+import {gzipSync} from 'node:zlib';
+import {build} from 'esbuild';
+import {application} from './fixtures/bookingCalendarApplication20261006.mjs';
+import {convertApplicationBook} from '../server/src/quoteDoneBridge.js';
+import {auditFixtures} from '../verification/qe-agent3-widget-dependencies-20261019/audit-fixtures.mjs';
+
+// Independent arithmetic was recorded in EXPECTED.md before this suite ran.
+const EXPECTED={original:{cents:16000,range:'$144 – $176',area:5000},corrected:{cents:27000,range:'$243 – $297',area:10000},
+  revised:{cents:21500,range:'$193.50 – $236.50',area:5000},cleanup:{cents:40000,range:'$360 – $440',area:1000}};
+const MOWING='LANDSCAPING_MOWING',CLEANUP='LANDSCAPING_CLEANUP';
+const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};};
+const copy=value=>structuredClone(value);
+
+test('qe-agent3 widget request races and persisted recovery through real public HTTP',{timeout:240_000},async t=>{
+  const app=await application(t),owner='synthetic-a',fixtures=auditFixtures(),evidence={node:process.version,expected:EXPECTED,cases:[],sources:{}};
+  for(const file of ['client/src/quotedone.jsx','client/src/quoteSubmission.js',path.relative(process.cwd(),new URL(import.meta.url).pathname)])
+    evidence.sources[file]=crypto.createHash('sha256').update(readFileSync(file)).digest('hex');
+  const output=process.env.A3_RECOVERY_EVIDENCE;
+  const record=()=>{if(output){mkdirSync(output,{recursive:true});writeFileSync(path.join(output,'results.json'),JSON.stringify(evidence,null,2)+'\n');}};
+  async function ownerApi(method,url,body){
+    const res=await app.request(url,{method,body,owner});
+    assert.equal(res.status,200,`${method} ${url}: ${JSON.stringify(res.body)}`);return res.body;
+  }
+  async function approveAll(){
+    let saved=await ownerApi('GET','/api/pricebook/'+owner);
+    for(let pass=0;pass<3;pass++){
+      const actionable=saved.services.some(s=>Object.keys(s.startingValueState||{}).length||Object.values(s.dependentLineState||{}).some(v=>!v.confirmed||!v.reentered));
+      if(!actionable)break;
+      for(const s of saved.services){
+        const start=Object.keys(s.startingValueState||{}),dependent=Object.keys(s.dependentLineState||{});
+        if(start.length)s.startingValueActions={confirmPaths:start};
+        if(dependent.length)s.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
+      }
+      await ownerApi('POST','/api/pricebook/save',saved);saved=await ownerApi('GET','/api/pricebook/'+owner);
+    }
+    for(const type of [MOWING,CLEANUP]){
+      saved=await ownerApi('GET','/api/pricebook/'+owner);
+      const service=saved.services.find(s=>s.serviceType===type),validation=await ownerApi('POST','/api/pricebook/validate',saved);
+      const status=validation.statuses.find(s=>s.serviceId===service.id);
+      await ownerApi('POST',`/api/pricebook/services/${service.id}/approve`,{revision:saved.revision,confirmConfiguration:true,confirmLegacySettings:true,fields:status.confirmationFields||[]});
+    }
+  }
+  const initial=await ownerApi('GET','/api/pricebook/'+owner);
+  const services=[MOWING,CLEANUP].map(type=>{
+    const s=copy(fixtures.get(type).ownerPricing);
+    for(const k of ['origin','quoteDoneApproval','startingValueState','startingValueAdoptions','dependentLineState'])delete s[k];
+    s.service='[SYNTHETIC A3 RECOVERY] '+type;s.validationInputs=copy(fixtures.get(type).customerInputs);s.tiers=[];return s;
+  });
+  const book=convertApplicationBook({services,defaults:{...fixtures.get(MOWING).businessDefaults,currency:'CAD',quoteTimeZone:'UTC'}},'toDollars');
+  await ownerApi('POST','/api/pricebook/save',{...initial,services:book.services,defaults:book.defaults});await approveAll();
+  const {publicKey}=await ownerApi('POST','/api/quotedone/access',{allowedOrigins:[app.base]});
+  const publicPath='/api/public/quote/'+publicKey,cacheKey='quotedone-pending-'+publicKey;
+  const catalog=(await app.request(publicPath,{publicRequest:true})).body,byType=new Map(catalog.services.map(s=>[s.serviceType,s]));
+  assert.equal(byType.size,2);
+
+  for (const [type,expected] of [[MOWING,EXPECTED.original],[CLEANUP,EXPECTED.cleanup]]) {
+    const body={requestId:crypto.randomUUID(),serviceId:byType.get(type).id,serviceRequest:byType.get(type).name,customerInputs:copy(fixtures.get(type).customerInputs),customerFeeSelections:{},additionalWork:[],contact:{email:'a3-recovery@example.invalid'},intakeFlow:'job-details-v1',context:'',explicitUnknowns:'',urgency:'flexible'};
+    const preparation=await app.request(publicPath+'/prepare',{method:'POST',body,publicRequest:true});
+    assert.equal(preparation.status,200);assert.equal(preparation.body.status,'ready');
+    const submission={...body,intakeConfirmation:preparation.body.confirmation};
+    const saved=await app.request(publicPath,{method:'POST',body:submission,publicRequest:true});
+    assert.equal(saved.status,201);assert.equal(saved.body.midEstimate,expected.cents/100);
+    const row=app.db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(owner,body.requestId);
+    const internal=JSON.parse(row.internalOutcomeJson).internalResult;
+    assert.deepEqual(internal.options.map(option=>option.calculationRecord.scenarios.mid.finalTotalCents),[expected.cents]);
+    console.log(JSON.stringify({type,preparation:preparation.body.summary,response:saved.body,customerFields:byType.get(type).customerFields}));
+  }
+});

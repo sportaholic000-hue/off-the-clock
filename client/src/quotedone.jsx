@@ -7,7 +7,7 @@ import React,{useEffect,useRef,useState} from 'react';
 import {api,go} from './api.js';
 import {AppShell,Button,Field,Select,TextInput,Textarea,Notice,ErrorMessage,PageHeader} from './ui.jsx';
 import {CustomerMeasurements} from './quoteDoneControls.jsx';
-import {submissionCanBeEdited,submissionTooLarge} from './quoteSubmission.js';
+import {submissionCanBeEdited,submissionTooLarge,claimSubmissionCache} from './quoteSubmission.js';
 import {QuoteWizard} from './quoteWizard.jsx';
 import {catalogMode,pricingEnvelope,widgetBranding} from './widgetTransport.js';
 import {WidgetBooking} from './widgetBooking.jsx';
@@ -29,17 +29,35 @@ function SavedQuoteEmail({row}) {
   <ErrorMessage error={error}/>
  </form>;
 }
-export function CustomerQuote({publicKey,request=api,progressive=false,cachePrefix='quotedone-',persistResult=false,onCatalog,renderNextSteps}){
+export function CustomerQuote(props){
+ const baseKey=(props.cachePrefix??'quotedone-')+'pending-'+props.publicKey;
+ const [recovery,setRecovery]=useState(null);
+ useEffect(()=>{const claim=claimSubmissionCache(baseKey);setRecovery({baseKey,key:claim.key});return claim.release;},[baseKey]);
+ // A different public key/prefix owns a fresh lifecycle. Old requests must not
+ // populate it or replace the original form's uncertain-save recovery.
+ return recovery?.baseKey===baseKey?<CustomerQuoteSession key={recovery.key} {...props} cacheKey={recovery.key}/>:null;
+}
+function CustomerQuoteSession({publicKey,request=api,progressive=false,cachePrefix='quotedone-',cacheKey,persistResult=false,onCatalog,renderNextSteps}){
  const FLOW='job-details-v1';
  const addressLabels={addressLine1:'Project location',addressLine2:'Address line 2',city:'City',region:'State / province',postalCode:'Postal / ZIP code',country:'Country'};
  const [services,setServices]=useState([]),[serviceId,setServiceId]=useState(''),[inputs,setInputs]=useState({}),[contact,setContact]=useState({}),[location,setLocation]=useState({}),[context,setContext]=useState(''),[unknowns,setUnknowns]=useState(''),[urgency,setUrgency]=useState(''),[fees,setFees]=useState({}),[result,setResult]=useState(null),[pending,setPending]=useState(null),[prepared,setPrepared]=useState(null),[restored,setRestored]=useState(null),[legacy,setLegacy]=useState(false),[sending,setSending]=useState(false),[error,setError]=useState(null);
- const cacheKey=cachePrefix+'pending-'+publicKey,inFlight=useRef(false);
+ const inFlight=useRef(null),active=useRef(true),catalogFlight=useRef(null),draftDirty=useRef(false);
+ useEffect(()=>{active.current=true;return()=>{active.current=false;inFlight.current=null;catalogFlight.current=null;};},[]);
+ const current=flight=>active.current&&inFlight.current===flight;
+ function begin(kind){const flight={kind};draftDirty.current=false;inFlight.current=flight;setSending(true);setError(null);return flight;}
+ function finish(flight){if(current(flight)){inFlight.current=null;setSending(false);}}
  const [catalogLoading,setCatalogLoading]=useState(true),[catalogError,setCatalogError]=useState(null),[catalog,setCatalog]=useState(null),[mode,setMode]=useState('legacy');
  const [completedSubmission,setCompletedSubmission]=useState(null),[followUpDraft,setFollowUpDraft]=useState(null),[bookingPending,setBookingPending]=useState(false);
  const catalogCallback=useRef(onCatalog);catalogCallback.current=onCatalog;
  const mainRef=useRef(null);
  useEffect(()=>{if(progressive&&(prepared||result)){const heading=mainRef.current?.querySelector('h2');heading?.setAttribute('tabindex','-1');heading?.focus({preventScroll:true});const scroll=mainRef.current?.closest('.widget-scroll');if(scroll)scroll.scrollTop=0;}},[progressive,prepared?.status,result?.quoteId]);
- async function loadCatalog(){setCatalogLoading(true);setCatalogError(null);setServices([]);try{const value=await request('/api/public/quote/'+publicKey,{auth:false});const nextMode=catalogMode(value);setMode(nextMode);setCatalog(value);setServices(value.services);catalogCallback.current?.(value);}catch(e){setCatalogError(e);}finally{setCatalogLoading(false);}}
+ async function loadCatalog(){
+  const flight={};catalogFlight.current=flight;const currentCatalog=()=>active.current&&catalogFlight.current===flight;
+  setCatalogLoading(true);setCatalogError(null);setServices([]);
+  try{const value=await request('/api/public/quote/'+publicKey,{auth:false});if(!currentCatalog())return;
+   const nextMode=catalogMode(value);setMode(nextMode);setCatalog(value);setServices(value.services);catalogCallback.current?.(value);
+  }catch(e){if(currentCatalog())setCatalogError(e);}finally{if(currentCatalog())setCatalogLoading(false);}
+ }
  const [requestedService,setRequestedService]=useState(undefined);
  const [additionalWork,setAdditionalWork]=useState([]);
  const cache=value=>{try{if(value)sessionStorage.setItem(cacheKey,JSON.stringify(value));else sessionStorage.removeItem(cacheKey);}catch{/* In-memory recovery remains available. */}};
@@ -50,11 +68,11 @@ export function CustomerQuote({publicKey,request=api,progressive=false,cachePref
   setAdditionalWork(submission.additionalWork??[]);
   setRestored(submission);setLegacy(submission.intakeFlow!==FLOW);setServiceId(submission.serviceId||'');setInputs(submission.customerInputs||{});setContact(submission.contact||{});setLocation(submission.location??{});setContext(submission.context??'');setUnknowns(submission.explicitUnknowns??'');setUrgency(submission.urgency??'');setFees(submission.customerFeeSelections||{});
  }
+ useEffect(()=>{loadCatalog();return()=>{catalogFlight.current=null;};},[publicKey,request]);
  useEffect(()=>{
-  loadCatalog();
   try{setFollowUpDraft(JSON.parse(sessionStorage.getItem(cacheKey+'-followup')||'null'));}catch{}
   try{const prior=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(prior?.kind==='completed'&&persistResult){setResult(prior.result);setCompletedSubmission(prior.submission||null);}else if(prior?.kind==='editable')restore(prior.submission);else if(prior?.kind==='prepared'){restore(prior.submission);setPrepared(prior);}else if(prior)setPending(prior);}catch{}
- },[publicKey,request]);
+ },[]);
  const service=services.find(s=>s.id===serviceId);
  function newSubmission(){
   const submission={...restored,requestId:crypto.randomUUID(),serviceId,serviceRequest:requestedService===undefined?service?.name:requestedService,customerInputs:inputs,contact,location,context,explicitUnknowns:unknowns,urgency,customerFeeSelections:fees,additionalWork};
@@ -63,13 +81,31 @@ export function CustomerQuote({publicKey,request=api,progressive=false,cachePref
   if(!legacy)submission.intakeFlow=FLOW;
   return pricingEnvelope(submission,mode);
  }
- async function save(submission){
+ function invalidatePreparation(){
+  if(inFlight.current?.kind==='save')return false;
+  inFlight.current=null;setSending(false);setError(null);draftDirty.current=true;return true;
+ }
+ function change(field,value){
+  if(!invalidatePreparation())return;
+  ({requestedService:setRequestedService,inputs:setInputs,contact:setContact,location:setLocation,context:setContext,unknowns:setUnknowns,urgency:setUrgency,fees:setFees,additionalWork:setAdditionalWork}[field])(value);
+ }
+ function changeService(value){
+  if(!invalidatePreparation())return;
+  if(requestedService===undefined||typeof requestedService==='string'&&requestedService.trim().toLowerCase()===service?.name?.trim().toLowerCase())setRequestedService(undefined);
+  setServiceId(value);setInputs({});setFees({});
+ }
+ useEffect(()=>{
+  if(draftDirty.current&&!pending&&!prepared&&!result){draftDirty.current=false;cache({kind:'editable',submission:newSubmission()});}
+ },[serviceId,requestedService,inputs,contact,location,context,unknowns,urgency,fees,additionalWork]);
+ async function save(submission,flight){
   setPending(submission);setPrepared(null);cache(submission);
   try{
    const response=await request('/api/public/quote/'+publicKey,{method:'POST',body:submission,auth:false});
+   if(!current(flight))return;
    if(!['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY','ESTIMATE_REQUIRES_REVIEW'].includes(response.resultType)||typeof response.quoteId!=='string')throw new Error('The saved request could not be confirmed. Retry the same request.');
    setResult(response);setCompletedSubmission(submission);setPending(null);cache(persistResult?{kind:'completed',result:response,submission}:null);
   }catch(e){
+   if(!current(flight))return;
    if(submissionCanBeEdited(e.status)){restore(submission);setPending(null);cache({kind:'editable',submission});}
    setError(e);
   }
@@ -78,34 +114,36 @@ export function CustomerQuote({publicKey,request=api,progressive=false,cachePref
   if(inFlight.current||(!pending&&(catalogLoading||catalogError)))return;
   const submission=pending||newSubmission();
   if(!pending&&submissionTooLarge(submission)){setError(new Error('Your request is too large. Shorten the additional project details before submitting.'));return;}
-  inFlight.current=true;setSending(true);setError(null);
+  const flight=begin(pending||legacy?'save':'prepare');
   try{
-   if(pending||legacy){await save(submission);return;}
+   if(pending||legacy){await save(submission,flight);return;}
    // Checking details never saves a quote. An uncertain preparation response
    // stays editable; only the actual submission uses immutable retry recovery.
    cache({kind:'editable',submission});
    const details=await request('/api/public/quote/'+publicKey+'/prepare',{method:'POST',body:submission,auth:false});
+   if(!current(flight))return;
    if(!['ready','needs_details'].includes(details.status)||!details.summary)throw new Error('The job details could not be checked. Please try again.');
    const value={kind:'prepared',submission,...details};setPrepared(value);cache(value);
-  }catch(e){setError(e);}
-  finally{inFlight.current=false;setSending(false);}
+  }catch(e){if(current(flight))setError(e);}
+  finally{finish(flight);}
  }
  async function confirm(){
   if(inFlight.current||!prepared)return;
-  inFlight.current=true;setSending(true);setError(null);
+  const flight=begin('save');
   const submission={...prepared.submission,...(prepared.status==='ready'?{intakeConfirmation:prepared.confirmation}:{reviewRequested:true})};
-  try{await save(submission);}finally{inFlight.current=false;setSending(false);}
+  try{await save(submission,flight);}finally{finish(flight);}
  }
  async function clarify(){
   if(inFlight.current||!prepared)return;
-  inFlight.current=true;setSending(true);setError(null);
+  const flight=begin('prepare');
   const submission={...prepared.submission,intakeClarification:{receipt:prepared.clarification.receipt,answers:prepared.answers||{}}};
   try{
    const details=await request('/api/public/quote/'+publicKey+'/prepare',{method:'POST',body:submission,auth:false});
+   if(!current(flight))return;
    if(!['ready','needs_details'].includes(details.status)||!details.summary)throw new Error('The answers could not be checked. Please try again.');
    const value={kind:'prepared',submission,answers:prepared.answers,...details};setPrepared(value);cache(value);
-  }catch(e){setError(e);}
-  finally{inFlight.current=false;setSending(false);}
+  }catch(e){if(current(flight))setError(e);}
+  finally{finish(flight);}
  }
  function answer(field,value){const next={...prepared,answers:{...prepared.answers,[field]:value}};setPrepared(next);cache(next);}
  function edit(){
@@ -169,24 +207,23 @@ export function CustomerQuote({publicKey,request=api,progressive=false,cachePref
    </section>:<>
     {mode==='pricing-only-v2'&&restoredScheduling&&<Notice title="Earlier draft details retained">Your earlier name and site details are preserved below. Keep work requests and measurement changes in the job details. If these fields are rejected, clear them here and enter them again when arranging the visit.</Notice>}
     {pending?<Notice title="Submission awaiting confirmation">Retry sends the exact same request. It will not create another quote or lead if the first save succeeded.</Notice>:progressive&&!legacy?<QuoteWizard pricingOnly={pricingOnly} services={services} service={service} values={{serviceId,requestedService,inputs,contact,location,context,unknowns,urgency,fees,additionalWork}} sending={sending||catalogLoading} onSubmit={send}
-      change={(field,value)=>({requestedService:setRequestedService,inputs:setInputs,contact:setContact,location:setLocation,context:setContext,unknowns:setUnknowns,urgency:setUrgency,fees:setFees,additionalWork:setAdditionalWork}[field])(value)}
-      onServiceChange={value=>{if(requestedService===undefined||typeof requestedService==='string'&&requestedService.trim().toLowerCase()===service?.name?.trim().toLowerCase())setRequestedService(undefined);setServiceId(value);setInputs({});setFees({});}}/>:<>
-     <Field label="Service"><Select aria-label="Service" value={serviceId} onChange={e=>{if(requestedService===undefined||typeof requestedService==='string'&&requestedService.trim().toLowerCase()===service?.name?.trim().toLowerCase())setRequestedService(undefined);setServiceId(e.target.value);setInputs({});setFees({});}}><option value="">Choose a service</option>{services.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</Select></Field>
-     {requestedService!==undefined&&<Field label="Requested work" help="Your earlier description is preserved. Correct it here if the work you want has changed."><Textarea aria-label="Requested work" value={shown(requestedService)} onChange={e=>setRequestedService(e.target.value)}/></Field>}
+      change={change} onServiceChange={changeService}/>:<>
+     <Field label="Service"><Select aria-label="Service" value={serviceId} onChange={e=>changeService(e.target.value)}><option value="">Choose a service</option>{services.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</Select></Field>
+     {requestedService!==undefined&&<Field label="Requested work" help="Your earlier description is preserved. Correct it here if the work you want has changed."><Textarea aria-label="Requested work" value={shown(requestedService)} onChange={e=>change('requestedService',e.target.value)}/></Field>}
      {!!service?.offeringSummary?.length&&<Notice title="What this offering covers"><ul>{service.offeringSummary.map((detail,i)=><li key={i}>{detail}</li>)}</ul></Notice>}
-     {service&&<CustomerMeasurements fields={service.customerFields} value={inputs} onChange={setInputs} knownOfferings={service.knownOfferings}/>}
+     {service&&<CustomerMeasurements fields={service.customerFields} value={inputs} onChange={value=>change('inputs',value)} knownOfferings={service.knownOfferings}/>}
      <section className="editor-section"><h2>Contact and project details</h2>
       <p>Provide an email address or phone number. {pricingOnly?'You can add your name and job site after the estimate.':'Your name and address identify you and the job site.'} Put work requests and uncertain facts in the project fields below.</p>
-      {(pricingOnly?['email','phone']:['name','email','phone']).map(field=><Field key={field} label={field[0].toUpperCase()+field.slice(1)}><TextInput value={text(contact[field])} onChange={e=>setContact({...contact,[field]:e.target.value})}/></Field>)}
-      {!pricingOnly&&(legacy?<Field label="Project location"><TextInput value={text(location)} onChange={e=>setLocation(e.target.value)}/></Field>
-       :Object.entries(addressLabels).map(([key,label])=><Field key={key} label={label}><TextInput value={text(location?.[key])} onChange={e=>setLocation({...location,[key]:e.target.value})}/></Field>))}
-      <Field label="Measurements or facts you do not know" help="List any required facts that still need checking. Leave this blank if none remain."><Textarea aria-label="Measurements or facts you do not know" value={text(unknowns)} onChange={e=>setUnknowns(e.target.value)}/></Field>
-      <Field label="Urgency">{legacy?<TextInput value={text(urgency)} onChange={e=>setUrgency(e.target.value)}/>
-       :<Select aria-label="Urgency" value={text(urgency)} onChange={e=>setUrgency(e.target.value)}><option value="">No timing preference</option><option value="flexible">Flexible timing</option><option value="contact_requested">Please contact me about timing</option></Select>}</Field>
-      <Field label="Additional project details" help="Include other requested work or details that affect this job. These details can be checked before you send the request to the business."><Textarea aria-label="Additional project details" value={text(context)} onChange={e=>setContext(e.target.value)}/></Field>
-      {(Array.isArray(additionalWork)&&additionalWork.length?additionalWork:['']).map((item,index)=><Field key={index} label={index?'More work for on-site estimate':'Additional work for on-site estimate'} help="Describe separate work that needs an on-site price. Keep measurements and changes to the selected service in its job details above."><Textarea aria-label={index?'More work for on-site estimate '+(index+1):'Additional work for on-site estimate'} value={shown(item)} onChange={e=>{const next=Array.isArray(additionalWork)?[...additionalWork]:[];next[index]=e.target.value;setAdditionalWork(next.length===1&&!e.target.value?[]:next);}}/></Field>)}
+      {(pricingOnly?['email','phone']:['name','email','phone']).map(field=><Field key={field} label={field[0].toUpperCase()+field.slice(1)}><TextInput value={text(contact[field])} onChange={e=>change('contact',{...contact,[field]:e.target.value})}/></Field>)}
+      {!pricingOnly&&(legacy?<Field label="Project location"><TextInput value={text(location)} onChange={e=>change('location',e.target.value)}/></Field>
+       :Object.entries(addressLabels).map(([key,label])=><Field key={key} label={label}><TextInput value={text(location?.[key])} onChange={e=>change('location',{...location,[key]:e.target.value})}/></Field>))}
+      <Field label="Measurements or facts you do not know" help="List any required facts that still need checking. Leave this blank if none remain."><Textarea aria-label="Measurements or facts you do not know" value={text(unknowns)} onChange={e=>change('unknowns',e.target.value)}/></Field>
+      <Field label="Urgency">{legacy?<TextInput value={text(urgency)} onChange={e=>change('urgency',e.target.value)}/>
+       :<Select aria-label="Urgency" value={text(urgency)} onChange={e=>change('urgency',e.target.value)}><option value="">No timing preference</option><option value="flexible">Flexible timing</option><option value="contact_requested">Please contact me about timing</option></Select>}</Field>
+      <Field label="Additional project details" help="Include other requested work or details that affect this job. These details can be checked before you send the request to the business."><Textarea aria-label="Additional project details" value={text(context)} onChange={e=>change('context',e.target.value)}/></Field>
+      {(Array.isArray(additionalWork)&&additionalWork.length?additionalWork:['']).map((item,index)=><Field key={index} label={index?'More work for on-site estimate':'Additional work for on-site estimate'} help="Describe separate work that needs an on-site price. Keep measurements and changes to the selected service in its job details above."><Textarea aria-label={index?'More work for on-site estimate '+(index+1):'Additional work for on-site estimate'} value={shown(item)} onChange={e=>{const next=Array.isArray(additionalWork)?[...additionalWork]:[];next[index]=e.target.value;change('additionalWork',next.length===1&&!e.target.value?[]:next);}}/></Field>)}
       {!Array.isArray(additionalWork)&&<Notice>Your earlier additional-work value is preserved. Enter a text description above to correct it.</Notice>}
-      {service?.customerFees?.map(fee=><Field key={fee} label={'Select '+fee+' charge'}><Select aria-label={'Select '+fee+' charge'} value={fees[fee]===undefined?'':String(fees[fee])} onChange={e=>setFees({...fees,[fee]:e.target.value===''?undefined:e.target.value==='true'})}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select></Field>)}
+      {service?.customerFees?.map(fee=><Field key={fee} label={'Select '+fee+' charge'}><Select aria-label={'Select '+fee+' charge'} value={fees[fee]===undefined?'':String(fees[fee])} onChange={e=>change('fees',{...fees,[fee]:e.target.value===''?undefined:e.target.value==='true'})}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select></Field>)}
       {legacy&&<Notice>Your earlier request is preserved for business review. Correct any fields that need changing before submitting.</Notice>}
      </section>
     </>}
