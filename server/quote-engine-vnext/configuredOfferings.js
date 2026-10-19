@@ -206,7 +206,11 @@ export function offeringContract(type,p,rules={}) {
       if(installed){equal('coats',d.finishCoats);equal('surfaceCondition',d.surfaceCondition);}
       if(installed&&c.ceilingsIncluded){equal('ceilingCoats',d.ceilingCoats);equal('ceilingSurfaceCondition',d.ceilingSurfaceCondition??d.surfaceCondition);}
       if(c.trimIncluded&&(installed||!trimComponentPricing(p))){
-        equal('trimCoats',d.trimFinishCoats);equal('trimSurfaceCondition',d.trimSurfaceCondition);
+        // Installed trim definitions may legitimately have only a description.
+        // Match structured constraints when supplied; absence is not a conflicting
+        // owner setting. Customer coat/condition types still validate normally.
+        if(d.trimFinishCoats!==undefined)equal('trimCoats',d.trimFinishCoats);
+        if(d.trimSurfaceCondition!==undefined)equal('trimSurfaceCondition',d.trimSurfaceCondition);
       }
       if(c.wallScopeUniform===false)bad('wallScopeUniform','Price differing wall zones as their separate measured offerings.');
       if(c.ceilingsIncluded===true&&!d.ceilingsOffered)bad('ceilingsIncluded','Ceilings are not offered in this configuration.');

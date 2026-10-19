@@ -1,0 +1,239 @@
+{
+  "ownerId": "synthetic-a",
+  "services": [
+    {
+      "id": "c7b839da-fea3-46ca-99a8-b74a37472931",
+      "source": "MANUAL",
+      "serviceType": "INTERIOR_PAINTING",
+      "service": "[SYNTHETIC PUBLIC INTAKE ACTIVATION] INTERIOR_PAINTING",
+      "active": true,
+      "knownOfferings": {},
+      "pricing": {
+        "minimumJob": 0,
+        "offeringMode": "installed",
+        "offeringDetails": {
+          "description": "[SYNTHETIC] Defined painting offering",
+          "substrate": "[SYNTHETIC] Drywall",
+          "coating": "[SYNTHETIC] Owner-specified coating",
+          "finishCoats": 2,
+          "surfaceCondition": "fair",
+          "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+          "primerCoats": 1,
+          "wallHeight": "standard",
+          "ceilingsOffered": true,
+          "trimOffered": true,
+          "ceilingCoats": 2,
+          "ceilingPrimerCoats": 1,
+          "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+        },
+        "offeringRates": {
+          "installedWallPerSqft": 600,
+          "installedCeilingPerSqft": 300,
+          "installedTrimPerLF": 200
+        },
+        "installedLaborPercent": {
+          "offeringRates.installedWallPerSqft": 60,
+          "offeringRates.installedCeilingPerSqft": 60,
+          "offeringRates.installedTrimPerLF": 60
+        },
+        "installedMaterialsPercent": {
+          "offeringRates.installedWallPerSqft": 40,
+          "offeringRates.installedCeilingPerSqft": 40,
+          "offeringRates.installedTrimPerLF": 40
+        },
+        "wallHeightLaborMultiplier": {
+          "standard": 1,
+          "high": 1.1,
+          "vaulted": 1.25
+        },
+        "paintWasteFactor": 0.1,
+        "primerWasteFactor": 0.1,
+        "prepMaterialWasteFactor": 0.1,
+        "paintingSettings": {
+          "wallAdditionalCoatRatio": 0.8,
+          "ceilingAdditionalCoatRatio": 0.8,
+          "trimAdditionalCoatRatio": 0.33
+        }
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "sell_price",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "sell_price",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 500,
+        "coats": 2,
+        "surfaceCondition": "fair",
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "ceilingsIncluded": true,
+        "ceilingAreaSqft": 200,
+        "trimIncluded": true,
+        "trimLengthLF": 100
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "c7b839da-fea3-46ca-99a8-b74a37472931",
+        "serviceType": "INTERIOR_PAINTING",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "1489c4cf-6e50-44a4-9250-e7cb8f3cc85d",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "startingValueState": {
+        "paintingSettings.wallAdditionalCoatRatio": {
+          "path": "paintingSettings.wallAdditionalCoatRatio",
+          "value": 0.8,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.wallAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.8}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "paintingSettings.ceilingAdditionalCoatRatio": {
+          "path": "paintingSettings.ceilingAdditionalCoatRatio",
+          "value": 0.8,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.ceilingAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.8}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "paintingSettings.trimAdditionalCoatRatio": {
+          "path": "paintingSettings.trimAdditionalCoatRatio",
+          "value": 0.33,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.trimAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.33}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        }
+      },
+      "startingValueAdoptions": {
+        "painting_coats_20261017": {
+          "mode": "new",
+          "introducedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "priceMetadata": {
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedWallPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedCeilingPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedTrimPerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "c7b839da-fea3-46ca-99a8-b74a37472931",
+        "operationId": "cdc3cbd9-00a5-4112-8693-b3365178bf7d",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-geometry-20261019-v12",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "161afd0fd2fcf064bc2c3f19f2f8663bf1d5ec83c42bbb746f3804e7f1f11b11",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "3c062c6e1708e05d498953054561722b4b4b4e288e1a8336123994f22165edbc",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "11b1ec00bcf5f4aed655467cfe65c60e7a89677834aff6d51ca803d6a317eb52",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "27781169552b7b9c6cd0cb6fb6a7865d15baeeda9756b9889802d7b4eb099225",
+          "service.pricing": "34c8e40a4852c5c64fde6d1d1de3ca5559ed4e75dd9e8512c216114948e8c7b2",
+          "service.service": "8909940be1bcbe866439a29d2ce155d2e1930b65be8183614f391bdcf9f5906f",
+          "service.serviceType": "1e41b95b9e3485a1e1ef06dc4f00fac11e2d5aa937e84a589d32b99813238a5d",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.startingValueAdoptions": "52e6dbc2aa328a4fbba5c6cd2180d847d7b1e83249ece0b9bd133ffad3aea9e3",
+          "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    }
+  ],
+  "defaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+      "labor": true,
+      "material": true,
+      "removal": true,
+      "prep": true,
+      "addon": true,
+      "equipment": true,
+      "travel": true,
+      "disposal": true,
+      "permit": true,
+      "overhead": true,
+      "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "currency": "CAD",
+    "quoteTimeZone": "UTC"
+  },
+  "updatedAt": "2026-10-31T12:00:00.000Z"
+}

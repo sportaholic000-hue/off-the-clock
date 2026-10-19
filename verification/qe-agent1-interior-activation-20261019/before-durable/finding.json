@@ -1,0 +1,29 @@
+{
+  "findingId": "PI-00",
+  "serviceType": "INTERIOR_PAINTING",
+  "configuration": "new installed offering with ceiling and trim prices",
+  "ownerApprovalCurrent": true,
+  "status": "NEEDS PRICING",
+  "invalidOwnerFields": [
+    "customerInputs.trimCoats",
+    "customerInputs.trimSurfaceCondition"
+  ],
+  "activationDiagnostics": [
+    {
+      "type": "invalid",
+      "kind": "activation_scenario",
+      "path": "customerInputs.trimCoats",
+      "message": "Project details were invalid or internally inconsistent."
+    },
+    {
+      "type": "invalid",
+      "kind": "activation_scenario",
+      "path": "customerInputs.trimSurfaceCondition",
+      "message": "Project details were invalid or internally inconsistent."
+    }
+  ],
+  "publicCatalogServiceTypes": [],
+  "expected": "A syntactically complete installed offering whose starting values were explicitly confirmed and whose saved configuration was approved is eligible for its configured wall, ceiling and trim scope.",
+  "actual": "Activation replays the valid trim inputs against a contract that rejects trimCoats and trimSurfaceCondition; the approved service remains NEEDS PRICING and is omitted from the public catalog.",
+  "isolation": "The all-20 public matrix uses an independently disclosed wall-only installed offering so this availability defect does not erase coverage for INTERIOR_PAINTING."
+}

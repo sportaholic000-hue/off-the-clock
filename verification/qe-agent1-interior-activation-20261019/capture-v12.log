@@ -1,0 +1,4 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"id":"legacy-full-interior","engineVersion":"quote-engine-vnext-geometry-20261019-v12","widgetCents":380000,"voiceCents":380000,"independentCents":380000,"submissions":2,"providerCalls":0}
+{"id":"legacy-wall-only","engineVersion":"quote-engine-vnext-geometry-20261019-v12","widgetCents":300000,"voiceCents":300000,"independentCents":300000,"submissions":2,"providerCalls":0}
