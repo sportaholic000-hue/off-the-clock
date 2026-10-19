@@ -1,0 +1,52 @@
+{
+  "parent": "8c34b6c6e984723586ac9a7fe9c38fa6e212da25",
+  "authorized_entry": "src/voice/productionVoiceRuntime.js",
+  "previous_source_sha256": "8485138ef9a4ff020b8e235d5a13aaaf4c5e0a4387c6aa538775abc10994b3ea",
+  "reviewed_source_sha256": "5ceb2387f1b9bf6987292991caf6a7de98653f057664fad262e3e0b46f2fa655",
+  "other_inventory_entries_unchanged": 25,
+  "inventory_file_sha256": {
+    "before": "20e308cb95a18842ad7b884249e20d6465650eca879997e6700e28901373eb43",
+    "after": "3828d6ae8f515b08cc6bbfd0aa647ccae6ef034f823bbe4f57b09f078e0481e5"
+  },
+  "only_existing_file_modified": "verification/tenant-isolation-20261007/route-sources.json",
+  "unchanged_guard_input_sha256": {
+    "test/tenantIsolationRoutes.spec.mjs": "f60280cd1b0be728a65e3e26da7dc6579fe849763b2935f1b30842c38ac119d4",
+    "test/helpers/tenantRouteInventory.mjs": "7682b3e96bd4ae08d0960077d659fc384c56f63d0bc0f56f128e0dbc59d4cf50",
+    "verification/tenant-isolation-20261007/routes.json": "00147012f10c3ccd94d67991a3b3a05f952e519966808d56ff9f9e1be1b0e0b1",
+    "verification/tenant-isolation-20261007/middleware.json": "5dddc3861df7f8d41a3bc037ae714bbc48a5b7e7b13b1879a84c2a6fbd098cf9",
+    ".github/workflows/ci.yml": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+    "verification/voice-agent2-facts-refresh-20261019/voice-verify-hosted.py": "3abb28993758811a1b105913c73d699cd36d250c5ae45062f3e23913e0cc4645"
+  },
+  "source_sha256": {
+    "server/src/voice/googleGenAiLiveAdapter.js": "f5e7383b4b4c84bc520919c12d57562b5586feac6e21586428e749ae53daec82",
+    "server/src/voice/productionVoiceRuntime.js": "5ceb2387f1b9bf6987292991caf6a7de98653f057664fad262e3e0b46f2fa655",
+    "server/src/voice/geminiMediaBridge.js": "a194f11a38768da8d7c38c0d88a4471988d89b64cfa9298940210bc0aa452dcd",
+    "test/voiceAgent2FactsRefresh20261019.spec.mjs": "8cdb0b12ca0b1e945176e36132e341af8290380e33d8f3ef7cd6d2a5509b8fdf",
+    "test/voiceAgent2FactsRefresh20261019Fixture.mjs": "d82cd6658453d41fc99fcddd391b45420423aee946b94f1f4f9e9f4bab27ac10",
+    "test/voiceAgent2FactsRefreshHistorical20261019.spec.mjs": "b0819e9aad3b8a834c65f7390af494c8cc9dba008902a5894c07b316b4992904",
+    "test/voiceAgent2FactsRefreshProduction20261019.spec.mjs": "cb1f585b8d31f18e59da9b007dc1152be52e550cb17e902a9dc0be1716d67577",
+    "test/voiceAgent2FactsRefreshProduction20261019Fixture.mjs": "030395c32e4592742e14e5007bf2cd9b11e3ccc23875ba80608665ef6f16afdc"
+  },
+  "tenant_matrices": {
+    "summary": {
+      "tests": 270,
+      "suites": 0,
+      "pass": 270,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 18822.09855
+    },
+    "required_passing_names": {
+      "every runtime registered route is covered; new and removed routes fail": 2,
+      "synthetic full server tenant matrix (development/preview)": 1,
+      "synthetic full server tenant matrix (production)": 1
+    },
+    "middleware_assertion_passed_in_both_modes": true,
+    "log_sha256": "9c39b289c101d09042ef27a304c35291d53c0d06b5198a6bf4f40a3f8318657f"
+  },
+  "preserved_failed_run_id": 39311667129,
+  "new_normal_tests": 0,
+  "hosted_acceptance": "pending exact-child run; expected strict 6070 and full 7761"
+}

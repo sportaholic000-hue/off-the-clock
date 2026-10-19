@@ -1,0 +1,42 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test-concurrency=1",
+    "--test",
+    "--test-reporter=tap",
+    "test/tenantIsolationRoutes.spec.mjs"
+  ],
+  "started_at": "2026-10-19T20:11:35.072134+00:00",
+  "finished_at": "2026-10-19T20:11:53.940367+00:00",
+  "head": "8c34b6c6e984723586ac9a7fe9c38fa6e212da25",
+  "changed_paths": [
+    "verification/tenant-isolation-20261007/route-sources.json"
+  ],
+  "source_sha256": {
+    "server/src/voice/googleGenAiLiveAdapter.js": "f5e7383b4b4c84bc520919c12d57562b5586feac6e21586428e749ae53daec82",
+    "server/src/voice/productionVoiceRuntime.js": "5ceb2387f1b9bf6987292991caf6a7de98653f057664fad262e3e0b46f2fa655",
+    "server/src/voice/geminiMediaBridge.js": "a194f11a38768da8d7c38c0d88a4471988d89b64cfa9298940210bc0aa452dcd",
+    "test/voiceAgent2FactsRefresh20261019.spec.mjs": "8cdb0b12ca0b1e945176e36132e341af8290380e33d8f3ef7cd6d2a5509b8fdf",
+    "test/voiceAgent2FactsRefresh20261019Fixture.mjs": "d82cd6658453d41fc99fcddd391b45420423aee946b94f1f4f9e9f4bab27ac10",
+    "test/voiceAgent2FactsRefreshHistorical20261019.spec.mjs": "b0819e9aad3b8a834c65f7390af494c8cc9dba008902a5894c07b316b4992904",
+    "test/voiceAgent2FactsRefreshProduction20261019.spec.mjs": "cb1f585b8d31f18e59da9b007dc1152be52e550cb17e902a9dc0be1716d67577",
+    "test/voiceAgent2FactsRefreshProduction20261019Fixture.mjs": "030395c32e4592742e14e5007bf2cd9b11e3ccc23875ba80608665ef6f16afdc"
+  },
+  "exit_code": 0,
+  "summary": {
+    "tests": 270,
+    "suites": 0,
+    "pass": 270,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 18822.09855
+  },
+  "log": "tenant-matrices-authorized-01.tap",
+  "log_bytes": 48258,
+  "log_sha256": "9c39b289c101d09042ef27a304c35291d53c0d06b5198a6bf4f40a3f8318657f"
+}

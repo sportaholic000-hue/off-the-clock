@@ -1,0 +1,676 @@
+{
+  "qualified": false,
+  "sha": "8c34b6c6e984723586ac9a7fe9c38fa6e212da25",
+  "ordered_parents": [
+    "04df35cd8e9ced136ef611cfc2b25f2de64c21bf"
+  ],
+  "run_id": 39311667129,
+  "run_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39311667129",
+  "remote_sha": "8c34b6c6e984723586ac9a7fe9c38fa6e212da25",
+  "working_tree_clean": true,
+  "published_changed_files": 100,
+  "existing_changed_files": [
+    "server/src/voice/geminiMediaBridge.js",
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "hosted": {
+    "strict": {
+      "tests": 6070,
+      "suites": 0,
+      "pass": 6066,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "strict_failed_names": [
+      {
+        "name": "every runtime registered route is covered; new and removed routes fail",
+        "count": 2
+      },
+      {
+        "name": "synthetic full server tenant matrix (development/preview)",
+        "count": 1
+      },
+      {
+        "name": "synthetic full server tenant matrix (production)",
+        "count": 1
+      }
+    ],
+    "every_base_strict_name_executed_same_multiplicity": true,
+    "browser": {
+      "tests": 12,
+      "suites": 0,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "browser_passing_names": [
+      {
+        "name": "owner alert retry: paused worker renders PENDING, accepts once and never resends",
+        "count": 1
+      },
+      {
+        "name": "owner alert retry: worker before refresh renders BLOCKED, accepts once and never resends",
+        "count": 1
+      },
+      {
+        "name": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+        "count": 1
+      },
+      {
+        "name": "owner/staff read DELIVERED accurately on saved inquiry and refreshed Calls; wrong tenant sees no request",
+        "count": 1
+      },
+      {
+        "name": "dashboard reaches oldest failure and retry preserves unsaved editor URL",
+        "count": 1
+      },
+      {
+        "name": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+        "count": 1
+      },
+      {
+        "name": "search, filters, deep link, stored billing and text transcript download",
+        "count": 1
+      },
+      {
+        "name": "owner reviews captured lead and retains customer material qualification",
+        "count": 1
+      },
+      {
+        "name": "owner records real progression without caller delivery and saves an exact invoice",
+        "count": 1
+      },
+      {
+        "name": "reports expose period, actual value and funnel with an explicit unknown after-hours count",
+        "count": 1
+      },
+      {
+        "name": "staff has safe work-area reads but no owner review or reports",
+        "count": 1
+      },
+      {
+        "name": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+        "count": 1
+      }
+    ],
+    "build": "success",
+    "docker": "success",
+    "full": "skipped after strict failure",
+    "checker": "skipped",
+    "dependency_audit": "skipped"
+  },
+  "individual_H2_names": [
+    {
+      "name": "voice H2 provider receives amount increase before next caller audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 provider receives amount decrease before next caller audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 provider receives added qualification before next caller audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 provider receives removed qualification before next caller audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 provider receives replaced qualification before next caller audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 provider receives removed listing before next caller audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 unchanged saved facts avoid provider replacement across repeated input",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 connected provider refreshes while caller is idle",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 stale provider speech is cleared without waiting for caller audio or tools",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 a save during queued separate messages suppresses the remaining old output",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 a save during queued multiple parts suppresses the remaining old output",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 refreshed speech and caller input wait for queued telephony output to clear",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 rejected telephony clear fails closed instead of accepting stale or refreshed speech",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 normal close retains final current caller and provider transcripts",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 normal close drains an already accepted tool response before retiring its provider",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 cold continuity waits for already received caller words to finish persistence",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 consecutive completed saves replace each provider in order",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 later save wins while an earlier provider replacement is connecting",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 later save wins while facts compilation is delayed",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 goAway resumption uses current saved facts and the same handle",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 onclose resumption uses current saved facts and the same handle",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 onerror resumption uses current saved facts and the same handle",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 cold replacement retains received conversation and historical tool context",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 pending tool reply drains before replacement without deadlocking waiting audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 every tool in an accepted batch drains once before refresh",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 revision refresh failure closes safely without forwarding stale audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 compile refresh failure closes safely without forwarding stale audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 connect refresh failure closes safely without forwarding stale audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 timeout refresh failure closes safely without forwarding stale audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 continuation refresh failure closes safely without forwarding stale audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 missing-continuation-method refresh failure closes safely without forwarding stale audio",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 close during replacement retires a late successful provider without resurrection",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 refresh polling stops after call close",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 bounded cold continuity preserves newest words and labels omitted context",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 independent sessions never share facts, history or resume handles",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 owner facts refresh preserves authentic v12 receipt ROOFING_REPLACEMENT--base",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 owner facts refresh preserves authentic v12 receipt historical-missing-measurement",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP amount increase reaches fresh provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP amount decrease reaches fresh provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP added membership reaches fresh provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP removed membership reaches fresh provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP replaced qualification reaches fresh provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP removed price reaches fresh provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP amount increase reaches resumed provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP amount decrease reaches resumed provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP added membership reaches resumed provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP removed membership reaches resumed provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP replaced qualification reaches resumed provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 saved HTTP removed price reaches resumed provider and real dispatcher",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 actual idle call receives saved qualifications without a tool or media trigger",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 real media output suppresses stale speech and accepts the refreshed provider",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 actual consecutive owner saves reach the latest provider at a shared timestamp",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 real saved update cannot be overwritten by a delayed earlier connection",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 real GoAway reconnect reads the latest saved facts and keeps the phone stream",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 failed refresh ends the real call through existing fallback with zero billed minutes",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 refresh failure after a real tool response completes shutdown without a queue cycle",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 a failed telephony clear while a real response drains completes fallback",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 a failed refreshed audio write completes shutdown and retains received caller words",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 simultaneous owners retain separate facts, requests and provider handles",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    },
+    {
+      "name": "voice H2 two calls for one owner refresh independently without exchanging caller context",
+      "local_focused_passes": 1,
+      "local_combined_passes": 1,
+      "hosted_strict": 0,
+      "hosted_full": "not executed"
+    }
+  ],
+  "local": {
+    "focused-final-02": {
+      "exit_code": 0,
+      "summary": {
+        "tests": 60,
+        "suites": 0,
+        "pass": 60,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 6143.230874
+      },
+      "log_sha256": "cc174128bec9ed3d5ef3d33f2d1d061ee329765430e9fe64bbe3acbed14b0864",
+      "source_hashes_match_published_head": true
+    },
+    "lifecycle-final-02": {
+      "exit_code": 0,
+      "summary": {
+        "tests": 88,
+        "suites": 0,
+        "pass": 88,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 5064.344523
+      },
+      "log_sha256": "88d34c263f9bb582ca1c8a0de5999c4cf970e63e7866630ce4cd3997ad7417c1",
+      "source_hashes_match_published_head": true
+    },
+    "combined-regressions-final": {
+      "exit_code": 0,
+      "summary": {
+        "tests": 1834,
+        "suites": 0,
+        "pass": 1834,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 131265.263748
+      },
+      "log_sha256": "e2376ed231f3e5bce4874eafb25e37b7b4eaa59e89033d4056bf3432484780b4",
+      "source_hashes_match_published_head": true
+    },
+    "rendered-controls-01": {
+      "exit_code": 0,
+      "summary": {
+        "tests": 47,
+        "suites": 0,
+        "pass": 47,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 77399.794346
+      },
+      "log_sha256": "a5bf178f83c46740ca49775c64b284a090624847695858818297c81767840a89",
+      "source_hashes_match_published_head": false
+    },
+    "build-final-01": {
+      "exit_code": 0,
+      "summary": {},
+      "log_sha256": "3ff6b0b2e253f1ec70332cff82a82eed9687c0ce78b6300bbc76252a2bdc20c8",
+      "source_hashes_match_published_head": true
+    },
+    "dependency-audit-final": {
+      "exit_code": 0,
+      "summary": {},
+      "log_sha256": "68d7b0e53628962865da889964201260d748d6d98ba492735e201d6b80cc9bb5",
+      "source_hashes_match_published_head": true
+    },
+    "original-h2-final-02": {
+      "exit_code": 0,
+      "summary": {
+        "tests": 2,
+        "suites": 0,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 1280.122312
+      },
+      "log_sha256": "42d9f04417c377ac2680c8ae8641f5e4255ce1f3ca47a2cb78f0024846a08dce",
+      "source_hashes_match_published_head": true
+    },
+    "original-f16-final": {
+      "exit_code": 0,
+      "summary": {
+        "tests": 14,
+        "suites": 0,
+        "pass": 14,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 2064.774625
+      },
+      "log_sha256": "9fd4cd8078d923e79f4d949809f1c2fe1e1714674544f8ce2474996864f8a1a7",
+      "source_hashes_match_published_head": true
+    },
+    "original-f18-final": {
+      "exit_code": 0,
+      "summary": {
+        "tests": 91,
+        "suites": 0,
+        "pass": 91,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 280.174378
+      },
+      "log_sha256": "fc08adca6591b7115db6f11064042ac338f1dc2460bfa258ae508e341f95d73a",
+      "source_hashes_match_published_head": true
+    }
+  },
+  "source_review": {
+    "reviewed_inventory_files": 26,
+    "only_inventory_difference": [
+      {
+        "expected": {
+          "file": "src/voice/productionVoiceRuntime.js",
+          "sha256": "8485138ef9a4ff020b8e235d5a13aaaf4c5e0a4387c6aa538775abc10994b3ea"
+        },
+        "actual": {
+          "file": "src/voice/productionVoiceRuntime.js",
+          "sha256": "5ceb2387f1b9bf6987292991caf6a7de98653f057664fad262e3e0b46f2fa655"
+        }
+      }
+    ],
+    "route_registration_or_authentication_code_changed": false,
+    "facts_revision_query": "usageOwnerQuery; p.ownerId=context.ownerId; joined user is the owner; no provider raw-pricebook projection change",
+    "proposed_patch": "voice-route-fingerprint-review.patch",
+    "patch_sha256": "b90e456351f1c1f1e3a5dde0bf84f6b957b97a4bed0c15de2b3c113bb198b12b",
+    "git_apply_check": "passes without applying",
+    "proposed_inventory_matches_current_source": true,
+    "patch_applied": false,
+    "required_permission": "Existing tenant-isolation evidence is outside the user-authorized existing voice files and new voice-prefixed tests/evidence."
+  },
+  "log_sha256": {
+    "base_test": "9eb433b7a9716681a777dda2509da295174b282eedac29f937627c87621b7d11",
+    "failed_test": "993e43091830f66a86f5e9883121239ceec7758f53833dfb0d49b3e7eb7fd4cd",
+    "docker": "09f62a9489e72cefe354ed07406a0b0f647043a409550fd8b70b16784915d448"
+  }
+}
