@@ -1,0 +1,98 @@
+[
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "cents": 244600,
+    "field": "roofSizeInput",
+    "value": 1000.5,
+    "correctedCents": 244698,
+    "pricePath": "laborPerSquare.asphalt_shingle"
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "cents": 1805000,
+    "field": "roofSqft",
+    "value": 1000.5,
+    "correctedCents": 1805903,
+    "pricePath": "laborPerSqft.epdm"
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "cents": 300000,
+    "field": "wallAreaSqft",
+    "value": 500.5,
+    "correctedCents": 300300,
+    "pricePath": "offeringRates.installedWallPerSqft"
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "cents": 318000,
+    "field": "exteriorAreaSqft",
+    "value": 500.5,
+    "correctedCents": 318318,
+    "pricePath": "offeringRates.installedWallPerSqft"
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "cents": 260670,
+    "field": "sqft",
+    "value": 300.5,
+    "correctedCents": 260940,
+    "pricePath": "laborPerSqft.vinyl_plank"
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "cents": 490000,
+    "field": "linearFeet",
+    "value": 100.5,
+    "correctedCents": 492000,
+    "pricePath": "offeringRates.installedFencePerLF"
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "cents": 1170000,
+    "field": "sidingAreaSqft",
+    "value": 1000.5,
+    "correctedCents": 1170585,
+    "pricePath": "laborPerSqft.vinyl"
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "cents": 54000,
+    "field": "affectedArea",
+    "value": 50.25,
+    "correctedCents": 54000,
+    "pricePath": "laborHourlyRate"
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "cents": 353889,
+    "field": "length",
+    "value": 20.5,
+    "correctedCents": 361486,
+    "pricePath": "laborPerSqft"
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "cents": 40000,
+    "field": "haulAway",
+    "value": false,
+    "correctedCents": 35000,
+    "pricePath": "cleanupBaseRatePerSqft"
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "cents": 253750,
+    "field": "groundPrepNeeded",
+    "value": false,
+    "correctedCents": 203750,
+    "pricePath": "sodInstallLaborPerSqft"
+  },
+  {
+    "type": "CUSTOM",
+    "cents": 12500,
+    "field": "serviceConfirmed",
+    "value": true,
+    "correctedCents": 12500,
+    "pricePath": "price"
+  }
+]
