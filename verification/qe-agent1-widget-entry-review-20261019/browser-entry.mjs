@@ -7,7 +7,7 @@ import {execFileSync} from 'node:child_process';
 import {SERVICE_TYPES} from '../../server/quote-engine-vnext/contracts.js';
 import {customerFieldForInputs} from '../../server/scopeConfiguration.js';
 import {serviceApplication} from './application.mjs';
-import {CASES,VIEWPORTS,fixtures,ADDITIONAL} from './cases.mjs';
+import {CASES,VIEWPORTS,fixtures,ADDITIONAL,QUANTITY_TEXT} from './cases.mjs';
 
 const root=path.resolve(process.argv[2]||'.'),out=path.resolve(process.argv[3]);
 assert.equal(fs.existsSync(out),false,'Use a fresh evidence directory');fs.mkdirSync(out,{recursive:true});
@@ -70,20 +70,29 @@ async function runService(spec){
     if(field.type==='slug'&&catalog.knownOfferings?.[field.name]?.[value])await page.getByLabel('I have identified this exact offering.',{exact:true}).check();
    }else throw Error('Audit control not implemented: '+field.type+' '+field.name);
   }
+  async function scopeFacts(facts){
+   const shown=await page.locator('.panel dt').evaluateAll(nodes=>nodes.map(node=>({label:node.textContent,value:node.nextElementSibling?.textContent,visible:node.checkVisibility()})));
+   for(const fact of facts){
+    const matches=shown.filter(row=>row.label===fact.label&&row.visible);
+    assert.ok(matches.some(row=>row.value?.includes(fact.value)),`Visible scope label/value pair missing: ${fact.label}: ${fact.value}`);
+    for(const detail of fact.details||[])assert.ok(matches.some(row=>row.value?.includes(detail)),`Scope detail missing: ${fact.label}: ${detail}`);
+   }
+  }
   async function walk(view,{omit}={}){
    const steps=[],visited=new Set();
    for(let i=0;i<120;i++){
     const wizard=page.locator('form.quote-wizard');await wizard.waitFor();
-    const title=await wizard.locator('h2').innerText(),progress=await wizard.locator('.wizard-progress').innerText();
+    const title=await wizard.locator('h2').innerText(),progress=await wizard.locator('.wizard-progress').textContent();
     const field=catalog.customerFields.filter(x=>x.type!=='confirmed_facts').map(x=>customerFieldForInputs(x,f.customerInputs)).find(x=>x.label===title);
-    const step={title,progress,field:field?.name};
+    const step={title,progress,field:field?.name};steps.push(step);
+    const trace=()=>write(dir,view.name+'-'+(omit?'required':'valid')+'-wizard.json',steps);trace();
     if(field){visited.add(field.name);step.unit=field.unit;
      if(Object.hasOwn(f.customerInputs,field.name)&&field.name!==omit){step.answer=f.customerInputs[field.name];await enter(field,step.answer);}
      else step.answer='[left blank]';
     }else if(title==='How can the business reach you?')await page.getByLabel('Email',{exact:true}).fill('synthetic-widget-entry@example.invalid');
     else if(title==='When do you need the work?')await page.getByLabel('Urgency',{exact:true}).selectOption('flexible');
     else if(title==='Additional work for on-site estimate'&&view.mobile)await page.getByLabel('Additional work for on-site estimate',{exact:true}).fill(ADDITIONAL);
-    steps.push(step);
+    step.completed=true;trace();
     const submit=wizard.getByRole('button',{name:'Submit estimate request',exact:true});
     if(await submit.count()){
      const before=service.counts(),waiting=page.waitForResponse(r=>new URL(r.url()).pathname===publicPath+'/prepare'&&r.request().method()==='POST');
@@ -92,8 +101,9 @@ async function runService(spec){
      await page.getByRole('heading',{name:'Check your job details',exact:true}).waitFor();
      return {steps,visited:[...visited],request,response:body,status:response.status()};
     }
+    const beforeContinue=await wizard.locator('.wizard-progress').textContent();
     await wizard.getByRole('button',{name:'Continue',exact:true}).click();
-    await page.waitForFunction(old=>{const host=document.querySelector('[data-otc-widget]');return host?.shadowRoot?.querySelector('.wizard-progress')?.textContent!==old;},progress);
+    await page.waitForFunction(old=>{const host=document.querySelector('[data-otc-widget]');return host?.shadowRoot?.querySelector('.wizard-progress')?.textContent!==old;},beforeContinue);
    }
    throw Error('Wizard did not finish within 120 visible steps');
   }
@@ -117,7 +127,7 @@ async function runService(spec){
      assert.ok(prepared.visited.includes(field.name),'Supplied scope question was not shown: '+field.name);
      assert.deepEqual(prepared.request.customerInputs[field.name],f.customerInputs[field.name],'Entered scope was discarded: '+field.name);
     }
-    for(const fact of prepared.response.summary.facts)assert.ok((await page.locator('.panel').innerText()).includes(fact.value),'Summary fact missing: '+fact.label+' '+fact.value);
+    await scopeFacts(prepared.response.summary.facts);
     const before=service.counts(),waiting=page.waitForResponse(r=>new URL(r.url()).pathname===publicPath&&r.request().method()==='POST');
     await page.getByRole('button',{name:'Get estimate',exact:true}).click();const response=await waiting,request=response.request().postDataJSON(),body=await response.json();
     assert.equal(response.status(),201,JSON.stringify(body));
@@ -131,11 +141,12 @@ async function runService(spec){
     assert.equal(body.resultType,view.mobile?'PARTIAL_ESTIMATE_READY':'INSTANT_ESTIMATE_READY');
     assert.deepEqual((estimate.options?.length?estimate.options:[estimate]).map(o=>o.midEstimate),[spec.cents/100]);
     assert.equal(body.fullJobTotal,null);assert.ok(body.scopeNotice);
-    if(view.mobile){assert.equal(body.midEstimate,undefined);assert.equal(body.lowEstimate,undefined);assert.equal(body.highEstimate,undefined);assert.ok(body.additionalWork.some(w=>w.description===ADDITIONAL));}
+    if(view.mobile){assert.equal(body.midEstimate,undefined);assert.equal(body.lowEstimate,undefined);assert.equal(body.highEstimate,undefined);assert.equal(body.options,undefined);assert.ok(body.additionalWork.some(w=>w.description===ADDITIONAL));}
     await page.getByRole('heading',{name:view.mobile?'Estimate for selected work':'Estimate',exact:true}).waitFor();
     const text=await page.locator('.panel').innerText();assert.ok(text.includes(money(spec.cents)),'Exact price missing from rendered widget');
     assert.ok(text.includes(body.scopeNotice),'Scope boundary missing');
-    for(const fact of body.pricedScope.facts)assert.ok(text.includes(fact.value),'Priced scope fact missing: '+fact.label);
+    await scopeFacts(body.pricedScope.facts);
+    assert.match(text,QUANTITY_TEXT[type],'Independent quantity/unit disclosure missing');
     assert.match(text,/Canadian dollars \(CAD\)/);assert.match(text,/No tax/i);
     if(view.mobile){assert.ok(text.includes(ADDITIONAL));assert.ok(text.includes('Total for all requested work: not yet available.'));assert.ok(text.includes(body.customerMessage));}
     if(type==='LANDSCAPING_MOWING')assert.ok(text.includes('per visit'));
@@ -161,7 +172,7 @@ try{
  const require=createRequire(import.meta.url),{chromium}=require(process.env.PUBLIC_INTAKE_PLAYWRIGHT_MODULE||'playwright');
  browser=await chromium.launch({headless:true,executablePath:process.env.PUBLIC_INTAKE_BROWSER_EXECUTABLE||process.env.PRICEBOOK_BROWSER_EXECUTABLE||undefined,args:['--no-sandbox','--disable-dev-shm-usage']});
  source.browser=await browser.version();write(out,'source-binding.json',source);
- let index=0;await Promise.all(Array.from({length:2},async()=>{while(index<CASES.length)await runService(CASES[index++]);}));
+ let index=0;await Promise.all(Array.from({length:4},async()=>{while(index<CASES.length)await runService(CASES[index++]);}));
  const failed=results.filter(r=>r.status!=='passed').length;write(out,'result.json',{status:failed?'failed':'passed',services:CASES.length,viewports:VIEWPORTS,caseCount:results.length,passed:results.length-failed,failed});
  write(out,'coverage.json',CASES.map(c=>({...c,results:results.filter(r=>r.type===c.type).map(({viewport,stage,status,error})=>({viewport,stage,status,error}))})));
  if(failed)process.exitCode=1;

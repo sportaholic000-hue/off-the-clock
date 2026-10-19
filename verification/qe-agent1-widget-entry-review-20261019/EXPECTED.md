@@ -62,7 +62,7 @@ mowing. Replay each genuine original final request unchanged and compare the ent
 receipt, saved quote and response without duplicating rows or renewing approval.
 
 Each service has an independent application/book so one failure cannot contaminate
-the next. Two service workers may run concurrently; each service uses its original
+the next. Up to four service workers may run concurrently; each service uses its original
 public identity and stays below the unchanged limiter. No clock/limiter reset or
 identity rotation. Capture exact source, saved book, browser controls/steps, HTTP,
 screenshots and receipts for failures and continue all services. Loader retry and

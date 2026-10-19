@@ -1,0 +1,19 @@
+{
+  "headAtExecution": "7aac065d08fa6339dade2aa25891513a8dbc110c",
+  "qualification": "Supplemental local HTTP only; owned helper/quantity-assertion changes were not yet committed. Exact executed helper hashes below; no local Chromium success.",
+  "files": {
+    "application.mjs": "fd03b5e15dd0a7c9956da4dacc0409bbaa7c313916d5b43eadce45e520255005",
+    "cases.mjs": "9b2a3d45727350a45fd12862ce636c6faf6f52b71068714c27f8c6634ceb721c",
+    "http-preflight.mjs": "45693b83c7e0acd5fe652342fedaf0fba7cc2513293b9506629416cc67464f33",
+    "EXPECTED.md": "68b8403d6eec0a6872bd5afa9f2ebd6abeefe87ae6b444d2a50eaf505c7bbf65"
+  },
+  "summary": {
+    "scope": "HTTP only; not rendered execution",
+    "cases": 120,
+    "passed": 120,
+    "failed": 0
+  },
+  "archive": "http-preflight-01.json.gz",
+  "fileCount": 83,
+  "sha256": "940d578542c526dcab7a015cecf25460708b7dcd723734ca0402503fe88e2412"
+}
