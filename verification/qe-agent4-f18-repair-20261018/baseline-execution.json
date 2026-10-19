@@ -1,0 +1,30 @@
+{
+  "commands": [
+    {
+      "name": "baseline-matrix",
+      "command": [
+        "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/.bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "verification/qe-agent4-f18-repair-20261018/review.spec.mjs"
+      ],
+      "exitCode": 1
+    },
+    {
+      "name": "baseline-regressions",
+      "command": [
+        "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/.bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "test/voiceAgent4F18Repair20261018.spec.mjs"
+      ],
+      "exitCode": 1
+    }
+  ],
+  "sourceHashes": {
+    "server/src/quoteScopeDisclosure.js": "7b06d7b2fee2c984efe319107e2f1a988250deebeb83ca9cbe208b04fa0a517f",
+    "server/src/voice/voiceQuotePresentation.js": "de5c5a780631eca579acc81f8b08258a3f7e0f6849e0657f833592db4514bd87",
+    "test/voiceAgent4F18Repair20261018.spec.mjs": "171c40b29ea8451204ecac417be1d3625f75f0df97a912a8fa73f58c906058c3",
+    "verification/qe-agent4-f18-repair-20261018/review.spec.mjs": "ecdb946d6a543ae1c3d92aedd8e01744d826769db9cc16d6102941203b1fe42c"
+  }
+}

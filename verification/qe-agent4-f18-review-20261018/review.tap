@@ -1,0 +1,918 @@
+TAP version 13
+# Subtest: single-excluded / customerReceiptPresentation / scope
+ok 1 - single-excluded / customerReceiptPresentation / scope
+  ---
+  duration_ms: 3.903497
+  type: 'test'
+  ...
+# Subtest: single-excluded / projectVoiceQuote / scope
+ok 2 - single-excluded / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.224307
+  type: 'test'
+  ...
+# Subtest: single-excluded / projectSavedQuoteContext / scope
+ok 3 - single-excluded / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.104176
+  type: 'test'
+  ...
+# Subtest: single-excluded / amounts, options and private fields
+ok 4 - single-excluded / amounts, options and private fields
+  ---
+  duration_ms: 0.916438
+  type: 'test'
+  ...
+# Subtest: single-excluded / stable projections, frozen input and unchanged stored receipt
+ok 5 - single-excluded / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.970489
+  type: 'test'
+  ...
+# Subtest: single-included / customerReceiptPresentation / scope
+ok 6 - single-included / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.10625
+  type: 'test'
+  ...
+# Subtest: single-included / projectVoiceQuote / scope
+ok 7 - single-included / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.125239
+  type: 'test'
+  ...
+# Subtest: single-included / projectSavedQuoteContext / scope
+ok 8 - single-included / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.078017
+  type: 'test'
+  ...
+# Subtest: single-included / amounts, options and private fields
+ok 9 - single-included / amounts, options and private fields
+  ---
+  duration_ms: 0.357036
+  type: 'test'
+  ...
+# Subtest: single-included / stable projections, frozen input and unchanged stored receipt
+ok 10 - single-included / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.702065
+  type: 'test'
+  ...
+# Subtest: mixed-options / customerReceiptPresentation / scope
+ok 11 - mixed-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.138378
+  type: 'test'
+  ...
+# Subtest: mixed-options / projectVoiceQuote / scope
+ok 12 - mixed-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.077106
+  type: 'test'
+  ...
+# Subtest: mixed-options / projectSavedQuoteContext / scope
+ok 13 - mixed-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.058558
+  type: 'test'
+  ...
+# Subtest: mixed-options / amounts, options and private fields
+ok 14 - mixed-options / amounts, options and private fields
+  ---
+  duration_ms: 0.26652
+  type: 'test'
+  ...
+# Subtest: mixed-options / stable projections, frozen input and unchanged stored receipt
+ok 15 - mixed-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.684659
+  type: 'test'
+  ...
+# Subtest: shared-intersection / customerReceiptPresentation / scope
+ok 16 - shared-intersection / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.094081
+  type: 'test'
+  ...
+# Subtest: shared-intersection / projectVoiceQuote / scope
+ok 17 - shared-intersection / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.071738
+  type: 'test'
+  ...
+# Subtest: shared-intersection / projectSavedQuoteContext / scope
+ok 18 - shared-intersection / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.100431
+  type: 'test'
+  ...
+# Subtest: shared-intersection / amounts, options and private fields
+ok 19 - shared-intersection / amounts, options and private fields
+  ---
+  duration_ms: 0.297517
+  type: 'test'
+  ...
+# Subtest: shared-intersection / stable projections, frozen input and unchanged stored receipt
+ok 20 - shared-intersection / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.760503
+  type: 'test'
+  ...
+# Subtest: shared-every-option / customerReceiptPresentation / scope
+ok 21 - shared-every-option / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.130226
+  type: 'test'
+  ...
+# Subtest: shared-every-option / projectVoiceQuote / scope
+ok 22 - shared-every-option / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.110676
+  type: 'test'
+  ...
+# Subtest: shared-every-option / projectSavedQuoteContext / scope
+ok 23 - shared-every-option / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.061282
+  type: 'test'
+  ...
+# Subtest: shared-every-option / amounts, options and private fields
+ok 24 - shared-every-option / amounts, options and private fields
+  ---
+  duration_ms: 0.305129
+  type: 'test'
+  ...
+# Subtest: shared-every-option / stable projections, frozen input and unchanged stored receipt
+ok 25 - shared-every-option / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.843928
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / customerReceiptPresentation / scope
+ok 26 - genuine-mixed / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.120641
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / projectVoiceQuote / scope
+ok 27 - genuine-mixed / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.07324
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / projectSavedQuoteContext / scope
+ok 28 - genuine-mixed / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.058398
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / amounts, options and private fields
+ok 29 - genuine-mixed / amounts, options and private fields
+  ---
+  duration_ms: 0.311528
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / stable projections, frozen input and unchanged stored receipt
+ok 30 - genuine-mixed / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.641665
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / customerReceiptPresentation / scope
+ok 31 - genuine-same-label / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.079229
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / projectVoiceQuote / scope
+ok 32 - genuine-same-label / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.065248
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / projectSavedQuoteContext / scope
+ok 33 - genuine-same-label / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.068673
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / amounts, options and private fields
+ok 34 - genuine-same-label / amounts, options and private fields
+  ---
+  duration_ms: 0.200061
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / stable projections, frozen input and unchanged stored receipt
+ok 35 - genuine-same-label / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.619832
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / customerReceiptPresentation / scope
+ok 36 - genuine-and-shared / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.145458
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / projectVoiceQuote / scope
+ok 37 - genuine-and-shared / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.071417
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / projectSavedQuoteContext / scope
+ok 38 - genuine-and-shared / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.096214
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / amounts, options and private fields
+ok 39 - genuine-and-shared / amounts, options and private fields
+  ---
+  duration_ms: 0.204107
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / stable projections, frozen input and unchanged stored receipt
+ok 40 - genuine-and-shared / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.736427
+  type: 'test'
+  ...
+# Subtest: single-without-options / customerReceiptPresentation / scope
+ok 41 - single-without-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.069294
+  type: 'test'
+  ...
+# Subtest: single-without-options / projectVoiceQuote / scope
+ok 42 - single-without-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.057827
+  type: 'test'
+  ...
+# Subtest: single-without-options / projectSavedQuoteContext / scope
+ok 43 - single-without-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.06629
+  type: 'test'
+  ...
+# Subtest: single-without-options / amounts, options and private fields
+ok 44 - single-without-options / amounts, options and private fields
+  ---
+  duration_ms: 0.211458
+  type: 'test'
+  ...
+# Subtest: single-without-options / stable projections, frozen input and unchanged stored receipt
+ok 45 - single-without-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.478539
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / customerReceiptPresentation / scope
+ok 46 - already-ready-mixed / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.067502
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / projectVoiceQuote / scope
+ok 47 - already-ready-mixed / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.054482
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / projectSavedQuoteContext / scope
+ok 48 - already-ready-mixed / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.045318
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / amounts, options and private fields
+ok 49 - already-ready-mixed / amounts, options and private fields
+  ---
+  duration_ms: 0.218768
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / stable projections, frozen input and unchanged stored receipt
+ok 50 - already-ready-mixed / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.622566
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / customerReceiptPresentation / scope
+not ok 51 - malformed-before-single / customerReceiptPresentation / scope
+  ---
+  duration_ms: 1.223339
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-before-single / projectVoiceQuote / scope
+ok 52 - malformed-before-single / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.069895
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / projectSavedQuoteContext / scope
+not ok 53 - malformed-before-single / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.188814
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-before-single / amounts, options and private fields
+ok 54 - malformed-before-single / amounts, options and private fields
+  ---
+  duration_ms: 0.15289
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / stable projections, frozen input and unchanged stored receipt
+ok 55 - malformed-before-single / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.468814
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / customerReceiptPresentation / scope
+not ok 56 - malformed-after-single / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.187492
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-after-single / projectVoiceQuote / scope
+ok 57 - malformed-after-single / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.069244
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / projectSavedQuoteContext / scope
+not ok 58 - malformed-after-single / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.130105
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-after-single / amounts, options and private fields
+ok 59 - malformed-after-single / amounts, options and private fields
+  ---
+  duration_ms: 0.167532
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / stable projections, frozen input and unchanged stored receipt
+ok 60 - malformed-after-single / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.462345
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / customerReceiptPresentation / scope
+not ok 61 - malformed-with-two-shared / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.17306
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-with-two-shared / projectVoiceQuote / scope
+ok 62 - malformed-with-two-shared / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.044196
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / projectSavedQuoteContext / scope
+not ok 63 - malformed-with-two-shared / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 1.099412
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-with-two-shared / amounts, options and private fields
+ok 64 - malformed-with-two-shared / amounts, options and private fields
+  ---
+  duration_ms: 0.157877
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / stable projections, frozen input and unchanged stored receipt
+ok 65 - malformed-with-two-shared / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.39938
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / customerReceiptPresentation / scope
+ok 66 - malformed-mixed-genuine / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.069364
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / projectVoiceQuote / scope
+ok 67 - malformed-mixed-genuine / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.09962
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / projectSavedQuoteContext / scope
+ok 68 - malformed-mixed-genuine / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.054852
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / amounts, options and private fields
+ok 69 - malformed-mixed-genuine / amounts, options and private fields
+  ---
+  duration_ms: 0.18597
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / stable projections, frozen input and unchanged stored receipt
+ok 70 - malformed-mixed-genuine / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.433532
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / customerReceiptPresentation / scope
+not ok 71 - malformed-empty-object / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.157296
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-empty-object / projectVoiceQuote / scope
+ok 72 - malformed-empty-object / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.043896
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / projectSavedQuoteContext / scope
+not ok 73 - malformed-empty-object / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.127041
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-empty-object / amounts, options and private fields
+not ok 74 - malformed-empty-object / amounts, options and private fields
+  ---
+  duration_ms: 0.958931
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:111:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'projectSavedQuoteContext: voice must retain valid options without publishing malformed options\n' +
+    +     '\n' +
+    +     '2 !== 1\n'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: |-
+      projectSavedQuoteContext: voice must retain valid options without publishing malformed options
+      
+      2 !== 1
+      
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:119:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-empty-object / stable projections, frozen input and unchanged stored receipt
+ok 75 - malformed-empty-object / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.460192
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / customerReceiptPresentation / scope
+not ok 76 - malformed-reversed-range / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.236906
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-reversed-range / projectVoiceQuote / scope
+ok 77 - malformed-reversed-range / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.047902
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / projectSavedQuoteContext / scope
+not ok 78 - malformed-reversed-range / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.148633
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-reversed-range / amounts, options and private fields
+not ok 79 - malformed-reversed-range / amounts, options and private fields
+  ---
+  duration_ms: 0.389976
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:111:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'projectSavedQuoteContext: voice must retain valid options without publishing malformed options\n' +
+    +     '\n' +
+    +     '2 !== 1\n'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: |-
+      projectSavedQuoteContext: voice must retain valid options without publishing malformed options
+      
+      2 !== 1
+      
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:119:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-reversed-range / stable projections, frozen input and unchanged stored receipt
+ok 80 - malformed-reversed-range / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.475624
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / customerReceiptPresentation / scope
+not ok 81 - malformed-all-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.139891
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-all-options / projectVoiceQuote / scope
+ok 82 - malformed-all-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.082834
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / projectSavedQuoteContext / scope
+not ok 83 - malformed-all-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.224517
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    scope classification changed
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:91:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-all-options / amounts, options and private fields
+ok 84 - malformed-all-options / amounts, options and private fields
+  ---
+  duration_ms: 0.095764
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / stable projections, frozen input and unchanged stored receipt
+ok 85 - malformed-all-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.285039
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / customerReceiptPresentation / scope
+ok 86 - malformed-options-container / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.074051
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / projectVoiceQuote / scope
+not ok 87 - malformed-options-container / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.11313
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    malformed option container was accepted
+    + actual - expected
+    
+    + 'returned'
+    - 'rejected'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'rejected'
+  actual: 'returned'
+  operator: 'strictEqual'
+  stack: |-
+    assertScope (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:87:25)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/verification/qe-agent4-f18-review-20261018/review.spec.mjs:110:95)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: malformed-options-container / projectSavedQuoteContext / scope
+ok 88 - malformed-options-container / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.041853
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / amounts, options and private fields
+ok 89 - malformed-options-container / amounts, options and private fields
+  ---
+  duration_ms: 0.089454
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / stable projections, frozen input and unchanged stored receipt
+ok 90 - malformed-options-container / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.492851
+  type: 'test'
+  ...
+# Subtest: all stored receipt bytes remain unchanged
+ok 91 - all stored receipt bytes remain unchanged
+  ---
+  duration_ms: 0.716587
+  type: 'test'
+  ...
+1..91
+# tests 91
+# suites 0
+# pass 76
+# fail 15
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 211.286703

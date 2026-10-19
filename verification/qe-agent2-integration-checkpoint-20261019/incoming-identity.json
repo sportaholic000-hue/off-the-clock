@@ -1,0 +1,104 @@
+{
+  "histories": {
+    "A3": "eaca39b875fd11274ca00bb56a9d67fa8b48142f",
+    "A1": "abc2becff9cd252a63ff30258e9950a07af2c020",
+    "A2": "b06583ec119500762f37d437b434debb11246f29",
+    "F18": "17d224c421b82f39cb2c6eb786db45e118e13ac3"
+  },
+  "protected_source": [
+    {
+      "owner": "A3",
+      "path": "client/src/pricebook.jsx",
+      "blob": "4a7189ed932b99f63bf7f7b773c2fa1e8df649e1"
+    },
+    {
+      "owner": "A3",
+      "path": "server/priceBookCopy.js",
+      "blob": "d0cf75e3210f94d9e8ba01046495a554ab4eb51d"
+    },
+    {
+      "owner": "A3",
+      "path": "test/qeAgent3ScopePresentation20261018.spec.mjs",
+      "blob": "47fb8210db7da25fc1aaa8f99e1ef2a84f0084e6"
+    },
+    {
+      "owner": "A1",
+      "path": "server/src/quoteDoneBridge.js",
+      "blob": "a6d50e1b98caed41964cb9b8766b59ac76c50447"
+    },
+    {
+      "owner": "A1",
+      "path": "test/qeAgent1ApprovalPrecision20261018.spec.mjs",
+      "blob": "9754066d6f5a9b9744254cc7e5f6f8dc7230f011"
+    },
+    {
+      "owner": "A1",
+      "path": "verification/qe-agent1-core-accuracy-20261018/f16-with-agent2.spec.mjs",
+      "blob": "c1cce1d1903785a71215225bfb1d5981651532cf"
+    },
+    {
+      "owner": "A1",
+      "path": "verification/qe-agent1-core-accuracy-20261018/f16-approval-cases.mjs",
+      "blob": "c6fa935666af646e8d736241f707822342536504"
+    },
+    {
+      "owner": "A1",
+      "path": "verification/qe-agent1-core-accuracy-20261018/f16-legacy-approvals.json",
+      "blob": "17e55aa8b86c966efcd8431739c763e6ee06db71"
+    },
+    {
+      "owner": "A2",
+      "path": "server/priceBookMoney.js",
+      "blob": "ce3626a2c4c951588af96c55bab2ba279234240e"
+    },
+    {
+      "owner": "A2",
+      "path": "server/pricePrecision.js",
+      "blob": "a2db9e834ba2de8c9e0f900a5f1b109384c9b3dd"
+    },
+    {
+      "owner": "A2",
+      "path": "test/qeAgent2PriceEditor.browser.spec.mjs",
+      "blob": "81d66535ac342419e49019155a9b4d717780b68a"
+    },
+    {
+      "owner": "A2",
+      "path": "test/qeAgent2PriceMetadata.spec.mjs",
+      "blob": "20baa52e251ad60a39f16fe94e74711d9fa4a40b"
+    },
+    {
+      "owner": "A2",
+      "path": "test/qeAgent2PricePrecision.spec.mjs",
+      "blob": "9a77d541ff0a45a4a0ebfbd7fa35bf887b6b6db2"
+    },
+    {
+      "owner": "F18",
+      "path": "server/src/quoteScopeDisclosure.js",
+      "blob": "5ab9d84833897594ce51d620bfe750192714d8d6"
+    },
+    {
+      "owner": "F18",
+      "path": "server/src/voice/voiceQuotePresentation.js",
+      "blob": "29bcbe0ef43fd665d3dae969f2868f893086651b"
+    },
+    {
+      "owner": "F18",
+      "path": "test/voiceAgent4F18Integration20261018.spec.mjs",
+      "blob": "a5ca0958f7d6ab0c9e7120533851f6461237455b"
+    },
+    {
+      "owner": "F18",
+      "path": "test/voiceAgent4F18Repair20261018.spec.mjs",
+      "blob": "4191034b46bc8716be70df11669c07f663c30326"
+    }
+  ],
+  "all_incoming_evidence_identical": true,
+  "selectors_identical_to_A3": [
+    "scripts/testSelection.mjs",
+    "server/scripts/quote-vnext-gate.js",
+    "scripts/test-full.mjs",
+    ".github/scripts/check-test-results.mjs",
+    ".github/workflows/ci.yml"
+  ],
+  "merge_conflicts": []
+}

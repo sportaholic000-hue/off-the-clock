@@ -1,0 +1,86 @@
+[
+  {
+    "original": "build.log",
+    "archive": "build.log.gz",
+    "uncompressed_bytes": 1200,
+    "uncompressed_sha256": "f2d825cc5311788b5819695beed7538baf53af49a5645ab19f981650835fbe6c",
+    "archive_sha256": "01ada83ba78c3f32c6b8ce9b31d749e51b56f6197fd80c5e0bac5d8051387a43"
+  },
+  {
+    "original": "chromium-install.log",
+    "archive": "chromium-install.log.gz",
+    "uncompressed_bytes": 10168,
+    "uncompressed_sha256": "152c0fe3ae8386939d7e39ea26b4136a9c40380706aac14a898ad1a9826557bd",
+    "archive_sha256": "bae84a3e70e74d195157b09a6b1c2dc9a7c36b7fe522ec753c9ca8f05a07ea26"
+  },
+  {
+    "original": "f16-direct-combined.tap",
+    "archive": "f16-direct-combined.tap.gz",
+    "uncompressed_bytes": 23022,
+    "uncompressed_sha256": "ff9090af64f090248d7c5f8e65e8cb60a9ee71b3d7db3a25eb8f0fc37bd50139",
+    "archive_sha256": "59c3006e31a1cb113a10e0a2bc90d9827633971749fc301e0f8288340898657c"
+  },
+  {
+    "original": "f16-normal-entry.tap",
+    "archive": "f16-normal-entry.tap.gz",
+    "uncompressed_bytes": 3324,
+    "uncompressed_sha256": "6dcc66b71f9faab4a17743a683dc3b3ae6e218fa0771742a9a815e96a579acfa",
+    "archive_sha256": "15664e57457b1ad21180e616ca45b2db10dabf04c749bb78fdfc853d669bd768"
+  },
+  {
+    "original": "f18-original-matrix.tap",
+    "archive": "f18-original-matrix.tap.gz",
+    "uncompressed_bytes": 17797,
+    "uncompressed_sha256": "ba729aa16ef4118d50851b2942f08cca96230132ae9c9d5d1463eab1670bfc9f",
+    "archive_sha256": "1881a6a473cbc68f15b7007e4dbfaa6784d28d802fd3438208da9f4a4840f80e"
+  },
+  {
+    "original": "f18-regressions.tap",
+    "archive": "f18-regressions.tap.gz",
+    "uncompressed_bytes": 7630,
+    "uncompressed_sha256": "f79f38669415e68bf9b2cec483f1fcc9241c7053b507042d74fdab3ae09be3ea",
+    "archive_sha256": "a219eeb36be3dc84f5ddb8c7492b0bbfd36e2eaf895ef123767520ba9805b82f"
+  },
+  {
+    "original": "neighboring-a1-roofing-adoption.tap",
+    "archive": "neighboring-a1-roofing-adoption.tap.gz",
+    "uncompressed_bytes": 29047,
+    "uncompressed_sha256": "d8625f9a2721a2c2e5be9b76f22aa12359dd34e1cf634aba590701d7190bedbd",
+    "archive_sha256": "cf4e6baf8f8caa905db6db8604d5a7214b3063f9fd301f05f53fa9d655bed4dd"
+  },
+  {
+    "original": "npm-ci.log",
+    "archive": "npm-ci.log.gz",
+    "uncompressed_bytes": 566,
+    "uncompressed_sha256": "00ae153b246bacef1f48fdedd4b35e410db9e87719ddd79ceab8ef392c8a69b0",
+    "archive_sha256": "726d30d934da4e2e15071977254d542038bcf657e8019512f6f52a1dc0144e6c"
+  },
+  {
+    "original": "observations.json",
+    "archive": "observations.json.gz",
+    "uncompressed_bytes": 491346,
+    "uncompressed_sha256": "a62325dbf124b5d219b9288bbe84fd021bd3aa33d80e9e5096a41f6ab7d21191",
+    "archive_sha256": "44d1c9dcb654c1d1ecf9f3c5ef49ff165d95ef3f0ec56fdeaf45602608cfbb5f"
+  },
+  {
+    "original": "playwright-install.log",
+    "archive": "playwright-install.log.gz",
+    "uncompressed_bytes": 123,
+    "uncompressed_sha256": "bce80c50625c4e51ff18a9894c9691dcec86ddb9f367bd55debd1262a34d0f64",
+    "archive_sha256": "418bdaac603b8973ebf0817465f09157eba7ec7042379f2c21af3d8d8cefb42d"
+  },
+  {
+    "original": "receipts.sqlite",
+    "archive": "receipts.sqlite.gz",
+    "uncompressed_bytes": 57344,
+    "uncompressed_sha256": "4faf4c890695e0ee39042bcef014d4e30e63f990f5a9ba4e52ea97064c7f0fd2",
+    "archive_sha256": "f86e7d9fc1e909b3b0e7d543610899be418fcef3e647a366f1b98ec8e5c2ccc0"
+  },
+  {
+    "original": "rendered-a3-a2.tap",
+    "archive": "rendered-a3-a2.tap.gz",
+    "uncompressed_bytes": 1368,
+    "uncompressed_sha256": "f02cf2578b61205f1c6bb37fffe6daaf0fb4a161a99979a09835d0e33d16a2fe",
+    "archive_sha256": "8386a360ff117abf767d9e7408db337f1cb9395e3abd874d02de6d04502a3cb2"
+  }
+]

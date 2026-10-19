@@ -1,0 +1,26 @@
+[
+  {
+    "log": "f16-direct-combined.tap.gz",
+    "group": "f16",
+    "expected_names": 14,
+    "each_passed_exactly_once": true
+  },
+  {
+    "log": "f16-normal-entry.tap.gz",
+    "group": "f16",
+    "expected_names": 14,
+    "each_passed_exactly_once": true
+  },
+  {
+    "log": "f18-regressions.tap.gz",
+    "group": "f18",
+    "expected_names": 41,
+    "each_passed_exactly_once": true
+  },
+  {
+    "log": "rendered-a3-a2.tap.gz",
+    "group": "a3_rendered",
+    "expected_names": 4,
+    "each_passed_exactly_once": true
+  }
+]

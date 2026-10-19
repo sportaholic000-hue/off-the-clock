@@ -1,0 +1,16 @@
+{
+  "agent1Base": "3b1e4b32c1cf31260ba2344fbf3bbdf418c81b5c",
+  "agent2Dependency": "7e9dfcedc6f11f80b45b8ca0554aa5b83935d15b",
+  "agent2Files": {
+    "server/priceBookMoney.js": {
+      "blob": "ce3626a2c4c951588af96c55bab2ba279234240e",
+      "matchesA2": true
+    },
+    "server/pricePrecision.js": {
+      "blob": "a2db9e834ba2de8c9e0f900a5f1b109384c9b3dd",
+      "matchesA2": true
+    }
+  },
+  "testedBridgeBlob": "a6d50e1b98caed41964cb9b8766b59ac76c50447",
+  "scope": "Isolated local combined checkout; A2 files are unchanged and are not copied into the Agent1 published change."
+}

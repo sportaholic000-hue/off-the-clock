@@ -1,0 +1,230 @@
+[
+  {
+    "id": "instant",
+    "input": {
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "options": [
+        null,
+        "invalid",
+        {
+          "tierName": "[PLACEHOLDER] Saved",
+          "lowEstimate": 221.23,
+          "highEstimate": 243.35,
+          "currency": "CAD",
+          "skippedAddons": [
+            "Door sides"
+          ]
+        }
+      ]
+    },
+    "actual": {
+      "customerReceiptPresentation": {
+        "returned": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "options": [
+            null,
+            "invalid",
+            {
+              "tierName": "[PLACEHOLDER] Saved",
+              "lowEstimate": 221.23,
+              "highEstimate": 243.35,
+              "currency": "CAD",
+              "skippedAddons": [
+                "Door sides"
+              ]
+            }
+          ]
+        }
+      },
+      "projectVoiceQuote": {
+        "rejected": {
+          "name": "TypeError",
+          "message": "Invalid voice quote range."
+        }
+      },
+      "projectSavedQuoteContext": {
+        "returned": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "options": [
+            {
+              "lowEstimate": 221.23,
+              "highEstimate": 243.35,
+              "currency": "CAD",
+              "tierName": "[PLACEHOLDER] Saved",
+              "skippedAddons": [
+                "Door sides"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "partial",
+    "input": {
+      "resultType": "PARTIAL_ESTIMATE_READY",
+      "pricedEstimate": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "options": [
+          null,
+          "invalid",
+          {
+            "tierName": "[PLACEHOLDER] Saved",
+            "lowEstimate": 221.23,
+            "highEstimate": 243.35,
+            "currency": "CAD",
+            "skippedAddons": [
+              "Door sides"
+            ]
+          }
+        ]
+      },
+      "additionalWork": [
+        {
+          "source": "unpriced_surface_work",
+          "description": "Door sides"
+        }
+      ],
+      "additionalWorkStatus": "ON_SITE_ESTIMATE_REQUIRED",
+      "fullJobTotal": null
+    },
+    "actual": {
+      "customerReceiptPresentation": {
+        "returned": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "options": [
+            null,
+            "invalid",
+            {
+              "tierName": "[PLACEHOLDER] Saved",
+              "lowEstimate": 221.23,
+              "highEstimate": 243.35,
+              "currency": "CAD",
+              "skippedAddons": [
+                "Door sides"
+              ]
+            }
+          ],
+          "fullJobTotal": null
+        }
+      },
+      "projectVoiceQuote": {
+        "rejected": {
+          "name": "TypeError",
+          "message": "Invalid voice quote range."
+        }
+      },
+      "projectSavedQuoteContext": {
+        "returned": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "options": [
+            {
+              "lowEstimate": 221.23,
+              "highEstimate": 243.35,
+              "currency": "CAD",
+              "tierName": "[PLACEHOLDER] Saved",
+              "skippedAddons": [
+                "Door sides"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "reversed",
+    "input": {
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "options": [
+        {
+          "tierName": "[PLACEHOLDER] Reversed",
+          "lowEstimate": 300,
+          "highEstimate": 200,
+          "currency": "CAD"
+        }
+      ]
+    },
+    "actual": {
+      "customerReceiptPresentation": {
+        "returned": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "options": [
+            {
+              "tierName": "[PLACEHOLDER] Reversed",
+              "lowEstimate": 300,
+              "highEstimate": 200,
+              "currency": "CAD"
+            }
+          ]
+        }
+      },
+      "projectVoiceQuote": {
+        "rejected": {
+          "name": "TypeError",
+          "message": "Invalid voice quote range."
+        }
+      },
+      "projectSavedQuoteContext": {
+        "returned": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "options": [
+            {
+              "lowEstimate": 300,
+              "highEstimate": 200,
+              "currency": "CAD",
+              "tierName": "[PLACEHOLDER] Reversed"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "container",
+    "input": {
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "lowEstimate": 221.23,
+      "highEstimate": 243.35,
+      "currency": "CAD",
+      "options": {
+        "invalid": "[PLACEHOLDER] malformed options"
+      }
+    },
+    "actual": {
+      "customerReceiptPresentation": {
+        "returned": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "lowEstimate": 221.23,
+          "highEstimate": 243.35,
+          "currency": "CAD",
+          "options": {
+            "invalid": "[PLACEHOLDER] malformed options"
+          }
+        }
+      },
+      "projectVoiceQuote": {
+        "returned": {
+          "status": "quoted",
+          "quoteHandle": "placeholder-f18-minimal-handle-1234",
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "lowEstimate": 221.23,
+          "highEstimate": 243.35,
+          "currency": "CAD",
+          "priceDrivers": [],
+          "skippedAddons": [],
+          "voiceSummary": "$221.23 to $243.35 CAD. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option.",
+          "disclaimer": "$221.23 to $243.35 CAD. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option.",
+          "quoteNarration": "$221.23 to $243.35 CAD. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option."
+        }
+      },
+      "projectSavedQuoteContext": {
+        "rejected": {
+          "name": "TypeError",
+          "message": "Invalid saved options."
+        }
+      }
+    }
+  }
+]

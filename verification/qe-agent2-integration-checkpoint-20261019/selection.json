@@ -1,0 +1,23 @@
+{
+  "full_files": 345,
+  "strict_files": 280,
+  "f16": {
+    "file": "test/qeAgent2IntegrationF16PricePrecision20261019.spec.mjs",
+    "in_full": true,
+    "in_strict": true,
+    "original_dependency_reached": true
+  },
+  "f18": [
+    {
+      "file": "test/voiceAgent4F18Integration20261018.spec.mjs",
+      "in_full": true,
+      "in_strict": false
+    },
+    {
+      "file": "test/voiceAgent4F18Repair20261018.spec.mjs",
+      "in_full": true,
+      "in_strict": false
+    }
+  ],
+  "selectors_edited": false
+}

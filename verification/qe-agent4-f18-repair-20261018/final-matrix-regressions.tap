@@ -1,0 +1,811 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F18 real saved retry preserves qualified scope, exact identity, options and stored JSON
+ok 1 - F18 real saved retry preserves qualified scope, exact identity, options and stored JSON
+  ---
+  duration_ms: 596.03525
+  type: 'test'
+  ...
+# Subtest: F18 real history dispatcher safely projects D15 junk
+ok 2 - F18 real history dispatcher safely projects D15 junk
+  ---
+  duration_ms: 33.119277
+  type: 'test'
+  ...
+# Subtest: F18 real history dispatcher safely projects inverted
+ok 3 - F18 real history dispatcher safely projects inverted
+  ---
+  duration_ms: 24.944898
+  type: 'test'
+  ...
+# Subtest: F18 real history dispatcher safely projects empty record
+ok 4 - F18 real history dispatcher safely projects empty record
+  ---
+  duration_ms: 24.937526
+  type: 'test'
+  ...
+# Subtest: F18 real history dispatcher safely projects no price
+ok 5 - F18 real history dispatcher safely projects no price
+  ---
+  duration_ms: 24.384406
+  type: 'test'
+  ...
+# Subtest: F18 real live dispatcher preserves mixed options and genuine work 0
+ok 6 - F18 real live dispatcher preserves mixed options and genuine work 0
+  ---
+  duration_ms: 249.989317
+  type: 'test'
+  ...
+# Subtest: F18 real live dispatcher preserves mixed options and genuine work 1
+ok 7 - F18 real live dispatcher preserves mixed options and genuine work 1
+  ---
+  duration_ms: 263.883252
+  type: 'test'
+  ...
+# Subtest: F18 real live dispatcher saves malformed options as review without an amount or narration
+ok 8 - F18 real live dispatcher saves malformed options as review without an amount or narration
+  ---
+  duration_ms: 216.213077
+  type: 'test'
+  ...
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F18 shared exclusions survive junk before
+ok 9 - F18 shared exclusions survive junk before
+  ---
+  duration_ms: 3.11327
+  type: 'test'
+  ...
+# Subtest: F18 shared exclusions survive junk after
+ok 10 - F18 shared exclusions survive junk after
+  ---
+  duration_ms: 0.581124
+  type: 'test'
+  ...
+# Subtest: F18 shared exclusions survive junk between
+ok 11 - F18 shared exclusions survive junk between
+  ---
+  duration_ms: 0.407824
+  type: 'test'
+  ...
+# Subtest: F18 shared exclusions survive empty record
+ok 12 - F18 shared exclusions survive empty record
+  ---
+  duration_ms: 0.362755
+  type: 'test'
+  ...
+# Subtest: F18 shared exclusions survive inverted record
+ok 13 - F18 shared exclusions survive inverted record
+  ---
+  duration_ms: 0.496135
+  type: 'test'
+  ...
+# Subtest: F18 uncertain partial scope stays partial: no prices
+ok 14 - F18 uncertain partial scope stays partial: no prices
+  ---
+  duration_ms: 0.257607
+  type: 'test'
+  ...
+# Subtest: F18 uncertain partial scope stays partial: all junk
+ok 15 - F18 uncertain partial scope stays partial: all junk
+  ---
+  duration_ms: 0.190326
+  type: 'test'
+  ...
+# Subtest: F18 uncertain partial scope stays partial: empty record
+ok 16 - F18 uncertain partial scope stays partial: empty record
+  ---
+  duration_ms: 0.217367
+  type: 'test'
+  ...
+# Subtest: F18 uncertain partial scope stays partial: empty options
+ok 17 - F18 uncertain partial scope stays partial: empty options
+  ---
+  duration_ms: 0.609016
+  type: 'test'
+  ...
+# Subtest: F18 uncertain partial scope stays partial: invalid top range
+ok 18 - F18 uncertain partial scope stays partial: invalid top range
+  ---
+  duration_ms: 0.817799
+  type: 'test'
+  ...
+# Subtest: F18 uncertain partial scope stays partial: missing exclusion evidence
+ok 19 - F18 uncertain partial scope stays partial: missing exclusion evidence
+  ---
+  duration_ms: 0.276105
+  type: 'test'
+  ...
+# Subtest: F18 uncertain partial scope stays partial: malformed exclusion evidence
+ok 20 - F18 uncertain partial scope stays partial: malformed exclusion evidence
+  ---
+  duration_ms: 0.183516
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: inverted
+ok 21 - F18 voice rejects invalid option range: inverted
+  ---
+  duration_ms: 1.961728
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: negative
+ok 22 - F18 voice rejects invalid option range: negative
+  ---
+  duration_ms: 0.560162
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: missing low
+ok 23 - F18 voice rejects invalid option range: missing low
+  ---
+  duration_ms: 0.429225
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: missing high
+ok 24 - F18 voice rejects invalid option range: missing high
+  ---
+  duration_ms: 0.269835
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: string
+ok 25 - F18 voice rejects invalid option range: string
+  ---
+  duration_ms: 0.25932
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: NaN
+ok 26 - F18 voice rejects invalid option range: NaN
+  ---
+  duration_ms: 1.22413
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: infinite
+ok 27 - F18 voice rejects invalid option range: infinite
+  ---
+  duration_ms: 0.243396
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: mid below
+ok 28 - F18 voice rejects invalid option range: mid below
+  ---
+  duration_ms: 0.323166
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: mid above
+ok 29 - F18 voice rejects invalid option range: mid above
+  ---
+  duration_ms: 0.224938
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: mid string
+ok 30 - F18 voice rejects invalid option range: mid string
+  ---
+  duration_ms: 0.228984
+  type: 'test'
+  ...
+# Subtest: F18 voice rejects invalid option range: mid null
+ok 31 - F18 voice rejects invalid option range: mid null
+  ---
+  duration_ms: 0.43229
+  type: 'test'
+  ...
+# Subtest: F18 live rejects non-array options null
+ok 32 - F18 live rejects non-array options null
+  ---
+  duration_ms: 0.305749
+  type: 'test'
+  ...
+# Subtest: F18 live rejects non-array options {}
+ok 33 - F18 live rejects non-array options {}
+  ---
+  duration_ms: 0.134562
+  type: 'test'
+  ...
+# Subtest: F18 live rejects non-array options "invalid"
+ok 34 - F18 live rejects non-array options "invalid"
+  ---
+  duration_ms: 0.111608
+  type: 'test'
+  ...
+# Subtest: F18 live rejects non-array options 42
+ok 35 - F18 live rejects non-array options 42
+  ---
+  duration_ms: 0.118177
+  type: 'test'
+  ...
+# Subtest: F18 live rejects non-array options false
+ok 36 - F18 live rejects non-array options false
+  ---
+  duration_ms: 0.130677
+  type: 'test'
+  ...
+# Subtest: F18 voices reject ready or partial receipts with no valid pricing evidence
+ok 37 - F18 voices reject ready or partial receipts with no valid pricing evidence
+  ---
+  duration_ms: 0.586752
+  type: 'test'
+  ...
+# Subtest: F18 D15 keeps exact valid saved ranges surrounded by non-record junk
+ok 38 - F18 D15 keeps exact valid saved ranges surrounded by non-record junk
+  ---
+  duration_ms: 0.316827
+  type: 'test'
+  ...
+# Subtest: F18 valid mixed options remove only false generated work and preserve genuine same-label work
+ok 39 - F18 valid mixed options remove only false generated work and preserve genuine same-label work
+  ---
+  duration_ms: 13.113073
+  type: 'test'
+  ...
+# Subtest: F18 valid zero and decimal ranges, privacy, frozen receipt and projection stability
+ok 40 - F18 valid zero and decimal ranges, privacy, frozen receipt and projection stability
+  ---
+  duration_ms: 1.722019
+  type: 'test'
+  ...
+# Subtest: F18 malformed record cannot promote uncertain mixed scope or invent a global exclusion
+ok 41 - F18 malformed record cannot promote uncertain mixed scope or invent a global exclusion
+  ---
+  duration_ms: 0.335595
+  type: 'test'
+  ...
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: single-excluded / customerReceiptPresentation / scope
+ok 42 - single-excluded / customerReceiptPresentation / scope
+  ---
+  duration_ms: 1.786926
+  type: 'test'
+  ...
+# Subtest: single-excluded / projectVoiceQuote / scope
+ok 43 - single-excluded / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.134422
+  type: 'test'
+  ...
+# Subtest: single-excluded / projectSavedQuoteContext / scope
+ok 44 - single-excluded / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.077887
+  type: 'test'
+  ...
+# Subtest: single-excluded / amounts, options and private fields
+ok 45 - single-excluded / amounts, options and private fields
+  ---
+  duration_ms: 1.090519
+  type: 'test'
+  ...
+# Subtest: single-excluded / stable projections, frozen input and unchanged stored receipt
+ok 46 - single-excluded / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.961225
+  type: 'test'
+  ...
+# Subtest: single-included / customerReceiptPresentation / scope
+ok 47 - single-included / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.096024
+  type: 'test'
+  ...
+# Subtest: single-included / projectVoiceQuote / scope
+ok 48 - single-included / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.125629
+  type: 'test'
+  ...
+# Subtest: single-included / projectSavedQuoteContext / scope
+ok 49 - single-included / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.066931
+  type: 'test'
+  ...
+# Subtest: single-included / amounts, options and private fields
+ok 50 - single-included / amounts, options and private fields
+  ---
+  duration_ms: 0.574564
+  type: 'test'
+  ...
+# Subtest: single-included / stable projections, frozen input and unchanged stored receipt
+ok 51 - single-included / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.786492
+  type: 'test'
+  ...
+# Subtest: mixed-options / customerReceiptPresentation / scope
+ok 52 - mixed-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.142825
+  type: 'test'
+  ...
+# Subtest: mixed-options / projectVoiceQuote / scope
+ok 53 - mixed-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.074151
+  type: 'test'
+  ...
+# Subtest: mixed-options / projectSavedQuoteContext / scope
+ok 54 - mixed-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.052859
+  type: 'test'
+  ...
+# Subtest: mixed-options / amounts, options and private fields
+ok 55 - mixed-options / amounts, options and private fields
+  ---
+  duration_ms: 0.298739
+  type: 'test'
+  ...
+# Subtest: mixed-options / stable projections, frozen input and unchanged stored receipt
+ok 56 - mixed-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.65198
+  type: 'test'
+  ...
+# Subtest: shared-intersection / customerReceiptPresentation / scope
+ok 57 - shared-intersection / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.084587
+  type: 'test'
+  ...
+# Subtest: shared-intersection / projectVoiceQuote / scope
+ok 58 - shared-intersection / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.09972
+  type: 'test'
+  ...
+# Subtest: shared-intersection / projectSavedQuoteContext / scope
+ok 59 - shared-intersection / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.055102
+  type: 'test'
+  ...
+# Subtest: shared-intersection / amounts, options and private fields
+ok 60 - shared-intersection / amounts, options and private fields
+  ---
+  duration_ms: 0.247782
+  type: 'test'
+  ...
+# Subtest: shared-intersection / stable projections, frozen input and unchanged stored receipt
+ok 61 - shared-intersection / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.788406
+  type: 'test'
+  ...
+# Subtest: shared-every-option / customerReceiptPresentation / scope
+ok 62 - shared-every-option / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.087562
+  type: 'test'
+  ...
+# Subtest: shared-every-option / projectVoiceQuote / scope
+ok 63 - shared-every-option / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.114001
+  type: 'test'
+  ...
+# Subtest: shared-every-option / projectSavedQuoteContext / scope
+ok 64 - shared-every-option / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.058468
+  type: 'test'
+  ...
+# Subtest: shared-every-option / amounts, options and private fields
+ok 65 - shared-every-option / amounts, options and private fields
+  ---
+  duration_ms: 0.286791
+  type: 'test'
+  ...
+# Subtest: shared-every-option / stable projections, frozen input and unchanged stored receipt
+ok 66 - shared-every-option / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.708435
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / customerReceiptPresentation / scope
+ok 67 - genuine-mixed / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.077536
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / projectVoiceQuote / scope
+ok 68 - genuine-mixed / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.062374
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / projectSavedQuoteContext / scope
+ok 69 - genuine-mixed / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.056665
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / amounts, options and private fields
+ok 70 - genuine-mixed / amounts, options and private fields
+  ---
+  duration_ms: 0.228985
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / stable projections, frozen input and unchanged stored receipt
+ok 71 - genuine-mixed / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.727033
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / customerReceiptPresentation / scope
+ok 72 - genuine-same-label / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.11326
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / projectVoiceQuote / scope
+ok 73 - genuine-same-label / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.104507
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / projectSavedQuoteContext / scope
+ok 74 - genuine-same-label / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.0997
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / amounts, options and private fields
+ok 75 - genuine-same-label / amounts, options and private fields
+  ---
+  duration_ms: 0.283265
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / stable projections, frozen input and unchanged stored receipt
+ok 76 - genuine-same-label / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.822276
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / customerReceiptPresentation / scope
+ok 77 - genuine-and-shared / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.10642
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / projectVoiceQuote / scope
+ok 78 - genuine-and-shared / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.06683
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / projectSavedQuoteContext / scope
+ok 79 - genuine-and-shared / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.054963
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / amounts, options and private fields
+ok 80 - genuine-and-shared / amounts, options and private fields
+  ---
+  duration_ms: 0.238489
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / stable projections, frozen input and unchanged stored receipt
+ok 81 - genuine-and-shared / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 1.757803
+  type: 'test'
+  ...
+# Subtest: single-without-options / customerReceiptPresentation / scope
+ok 82 - single-without-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.065829
+  type: 'test'
+  ...
+# Subtest: single-without-options / projectVoiceQuote / scope
+ok 83 - single-without-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.051658
+  type: 'test'
+  ...
+# Subtest: single-without-options / projectSavedQuoteContext / scope
+ok 84 - single-without-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.042324
+  type: 'test'
+  ...
+# Subtest: single-without-options / amounts, options and private fields
+ok 85 - single-without-options / amounts, options and private fields
+  ---
+  duration_ms: 0.095563
+  type: 'test'
+  ...
+# Subtest: single-without-options / stable projections, frozen input and unchanged stored receipt
+ok 86 - single-without-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.526661
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / customerReceiptPresentation / scope
+ok 87 - already-ready-mixed / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.065218
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / projectVoiceQuote / scope
+ok 88 - already-ready-mixed / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.048833
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / projectSavedQuoteContext / scope
+ok 89 - already-ready-mixed / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.036114
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / amounts, options and private fields
+ok 90 - already-ready-mixed / amounts, options and private fields
+  ---
+  duration_ms: 0.151017
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / stable projections, frozen input and unchanged stored receipt
+ok 91 - already-ready-mixed / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.464678
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / customerReceiptPresentation / scope
+ok 92 - malformed-before-single / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.065188
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / projectVoiceQuote / scope
+ok 93 - malformed-before-single / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.03325
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / projectSavedQuoteContext / scope
+ok 94 - malformed-before-single / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.037977
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / amounts, options and private fields
+ok 95 - malformed-before-single / amounts, options and private fields
+  ---
+  duration_ms: 0.103486
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / stable projections, frozen input and unchanged stored receipt
+ok 96 - malformed-before-single / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.290757
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / customerReceiptPresentation / scope
+ok 97 - malformed-after-single / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.054412
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / projectVoiceQuote / scope
+ok 98 - malformed-after-single / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.030747
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / projectSavedQuoteContext / scope
+ok 99 - malformed-after-single / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.036625
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / amounts, options and private fields
+ok 100 - malformed-after-single / amounts, options and private fields
+  ---
+  duration_ms: 0.096555
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / stable projections, frozen input and unchanged stored receipt
+ok 101 - malformed-after-single / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.313702
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / customerReceiptPresentation / scope
+ok 102 - malformed-with-two-shared / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.057156
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / projectVoiceQuote / scope
+ok 103 - malformed-with-two-shared / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.030405
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / projectSavedQuoteContext / scope
+ok 104 - malformed-with-two-shared / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.035012
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / amounts, options and private fields
+ok 105 - malformed-with-two-shared / amounts, options and private fields
+  ---
+  duration_ms: 0.106941
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / stable projections, frozen input and unchanged stored receipt
+ok 106 - malformed-with-two-shared / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.279981
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / customerReceiptPresentation / scope
+ok 107 - malformed-mixed-genuine / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.140972
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / projectVoiceQuote / scope
+ok 108 - malformed-mixed-genuine / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.078178
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / projectSavedQuoteContext / scope
+ok 109 - malformed-mixed-genuine / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.045979
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / amounts, options and private fields
+ok 110 - malformed-mixed-genuine / amounts, options and private fields
+  ---
+  duration_ms: 0.117527
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / stable projections, frozen input and unchanged stored receipt
+ok 111 - malformed-mixed-genuine / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.290947
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / customerReceiptPresentation / scope
+ok 112 - malformed-empty-object / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.058428
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / projectVoiceQuote / scope
+ok 113 - malformed-empty-object / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.042864
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / projectSavedQuoteContext / scope
+ok 114 - malformed-empty-object / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.030446
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / amounts, options and private fields
+ok 115 - malformed-empty-object / amounts, options and private fields
+  ---
+  duration_ms: 0.091057
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / stable projections, frozen input and unchanged stored receipt
+ok 116 - malformed-empty-object / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.382626
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / customerReceiptPresentation / scope
+ok 117 - malformed-reversed-range / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.068463
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / projectVoiceQuote / scope
+ok 118 - malformed-reversed-range / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.033801
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / projectSavedQuoteContext / scope
+ok 119 - malformed-reversed-range / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.07321
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / amounts, options and private fields
+ok 120 - malformed-reversed-range / amounts, options and private fields
+  ---
+  duration_ms: 0.105669
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / stable projections, frozen input and unchanged stored receipt
+ok 121 - malformed-reversed-range / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.290126
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / customerReceiptPresentation / scope
+ok 122 - malformed-all-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.062664
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / projectVoiceQuote / scope
+ok 123 - malformed-all-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.08016
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / projectSavedQuoteContext / scope
+ok 124 - malformed-all-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.054212
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / amounts, options and private fields
+ok 125 - malformed-all-options / amounts, options and private fields
+  ---
+  duration_ms: 0.095974
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / stable projections, frozen input and unchanged stored receipt
+ok 126 - malformed-all-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.381464
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / customerReceiptPresentation / scope
+ok 127 - malformed-options-container / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.080891
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / projectVoiceQuote / scope
+ok 128 - malformed-options-container / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.190286
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / projectSavedQuoteContext / scope
+ok 129 - malformed-options-container / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.053099
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / amounts, options and private fields
+ok 130 - malformed-options-container / amounts, options and private fields
+  ---
+  duration_ms: 0.081883
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / stable projections, frozen input and unchanged stored receipt
+ok 131 - malformed-options-container / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.274883
+  type: 'test'
+  ...
+# Subtest: all stored receipt bytes remain unchanged
+ok 132 - all stored receipt bytes remain unchanged
+  ---
+  duration_ms: 0.684689
+  type: 'test'
+  ...
+1..132
+# tests 132
+# suites 0
+# pass 132
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1697.356167

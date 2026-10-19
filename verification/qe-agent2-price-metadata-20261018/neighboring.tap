@@ -1,0 +1,1999 @@
+TAP version 13
+# Subtest: independent script and decompressed cases retain their original exact bytes
+ok 1 - independent script and decompressed cases retain their original exact bytes
+  ---
+  duration_ms: 2.04169
+  type: 'test'
+  ...
+# Subtest: original runner still rejects a one-byte fixture change
+ok 2 - original runner still rejects a one-byte fixture change
+  ---
+  duration_ms: 69.965613
+  type: 'test'
+  ...
+# Subtest: separate test processes recreate synthetic owners while each still refuses a lost saved book
+ok 3 - separate test processes recreate synthetic owners while each still refuses a lost saved book
+  ---
+  duration_ms: 383.851358
+  type: 'test'
+  ...
+# Subtest: every current Class 2 factor survives root, nested and tier money boundaries without scaling
+ok 4 - every current Class 2 factor survives root, nested and tier money boundaries without scaling
+  ---
+  duration_ms: 32.546856
+  type: 'test'
+  ...
+# Subtest: current product map FLOORING_INSTALL.removalPerSqft validates root and inherited tier values
+ok 5 - current product map FLOORING_INSTALL.removalPerSqft validates root and inherited tier values
+  ---
+  duration_ms: 41.872002
+  type: 'test'
+  ...
+# Subtest: current product map FLOORING_INSTALL.removalPerSqft validates nested and inherited tier values
+ok 6 - current product map FLOORING_INSTALL.removalPerSqft validates nested and inherited tier values
+  ---
+  duration_ms: 24.225124
+  type: 'test'
+  ...
+# Subtest: current product map FLOORING_REPLACEMENT.removalPerSqft validates root and inherited tier values
+ok 7 - current product map FLOORING_REPLACEMENT.removalPerSqft validates root and inherited tier values
+  ---
+  duration_ms: 21.134427
+  type: 'test'
+  ...
+# Subtest: current product map FLOORING_REPLACEMENT.removalPerSqft validates nested and inherited tier values
+ok 8 - current product map FLOORING_REPLACEMENT.removalPerSqft validates nested and inherited tier values
+  ---
+  duration_ms: 19.448983
+  type: 'test'
+  ...
+# Subtest: current product map LANDSCAPING_MULCH.bedPrepLaborPerSqft validates root and inherited tier values
+ok 9 - current product map LANDSCAPING_MULCH.bedPrepLaborPerSqft validates root and inherited tier values
+  ---
+  duration_ms: 22.661218
+  type: 'test'
+  ...
+# Subtest: current product map LANDSCAPING_MULCH.bedPrepLaborPerSqft validates nested and inherited tier values
+ok 10 - current product map LANDSCAPING_MULCH.bedPrepLaborPerSqft validates nested and inherited tier values
+  ---
+  duration_ms: 15.937804
+  type: 'test'
+  ...
+# Subtest: current product map LANDSCAPING_PLANTING.bedPrepLaborPerSqft validates root and inherited tier values
+ok 11 - current product map LANDSCAPING_PLANTING.bedPrepLaborPerSqft validates root and inherited tier values
+  ---
+  duration_ms: 12.872825
+  type: 'test'
+  ...
+# Subtest: current product map LANDSCAPING_PLANTING.bedPrepLaborPerSqft validates nested and inherited tier values
+ok 12 - current product map LANDSCAPING_PLANTING.bedPrepLaborPerSqft validates nested and inherited tier values
+  ---
+  duration_ms: 11.323506
+  type: 'test'
+  ...
+# Subtest: a scope tier cannot reinterpret an inherited fractional-cent rate as a fixed package charge
+ok 13 - a scope tier cannot reinterpret an inherited fractional-cent rate as a fixed package charge
+  ---
+  duration_ms: 1.152483
+  type: 'test'
+  ...
+# Subtest: pure nested editor views retain identity while mixed current and retained factors stay visible
+ok 14 - pure nested editor views retain identity while mixed current and retained factors stay visible
+  ---
+  duration_ms: 0.885191
+  type: 'test'
+  ...
+# Subtest: a server creation receipt enables draft preview without granting customer approval or changing saved prices
+ok 15 - a server creation receipt enables draft preview without granting customer approval or changing saved prices
+  ---
+  duration_ms: 294.587248
+  type: 'test'
+  ...
+# Subtest: a save flushes a sibling file and a pause marker, renames, flushes, then clears the marker before reporting success
+ok 16 - a save flushes a sibling file and a pause marker, renames, flushes, then clears the marker before reporting success
+  ---
+  duration_ms: 4.307988
+  type: 'test'
+  ...
+# Subtest: a failed or partial write keeps the previous book and removes the partial file
+ok 17 - a failed or partial write keeps the previous book and removes the partial file
+  ---
+  duration_ms: 1.524653
+  type: 'test'
+  ...
+# Subtest: a failed rename keeps the previous book and removes the temporary file
+ok 18 - a failed rename keeps the previous book and removes the temporary file
+  ---
+  duration_ms: 1.557582
+  type: 'test'
+  ...
+# Subtest: a real rename failure (saved book path is a directory) leaves no temporary file
+ok 19 - a real rename failure (saved book path is a directory) leaves no temporary file
+  ---
+  duration_ms: 2.035741
+  type: 'test'
+  ...
+# Subtest: a directory flush failure before replacement keeps the previous book; after replacement it is reported and quoting stays paused
+ok 20 - a directory flush failure before replacement keeps the previous book; after replacement it is reported and quoting stays paused
+  ---
+  duration_ms: 3.703639
+  type: 'test'
+  ...
+# Subtest: a corrupted saved book stops quoting; it never falls back to defaults, a temporary file or earlier prices
+ok 21 - a corrupted saved book stops quoting; it never falls back to defaults, a temporary file or earlier prices
+  ---
+  duration_ms: 378.130296
+  type: 'test'
+  ...
+# Subtest: another business's book in this owner's file stops quoting
+ok 22 - another business's book in this owner's file stops quoting
+  ---
+  duration_ms: 284.874013
+  type: 'test'
+  ...
+# Subtest: a missing book is a new, empty book with nothing to quote; a valid save after it is read back exactly
+ok 23 - a missing book is a new, empty book with nothing to quote; a valid save after it is read back exactly
+  ---
+  duration_ms: 159.868814
+  type: 'test'
+  ...
+# Subtest: F04 fee changes discard only incompatible owner answers, including false
+ok 24 - F04 fee changes discard only incompatible owner answers, including false
+  ---
+  duration_ms: 1.065892
+  type: 'test'
+  ...
+# Subtest: F04 stale drafts stay visible until the owner corrects them
+ok 25 - F04 stale drafts stay visible until the owner corrects them
+  ---
+  duration_ms: 0.468675
+  type: 'test'
+  ...
+# Subtest: F05 preview answers are scoped to service and fee rules
+ok 26 - F05 preview answers are scoped to service and fee rules
+  ---
+  duration_ms: 0.176525
+  type: 'test'
+  ...
+# Subtest: F07 approving B preserves unsaved A, tiers, defaults and added services
+ok 27 - F07 approving B preserves unsaved A, tiers, defaults and added services
+  ---
+  duration_ms: 0.421764
+  type: 'test'
+  ...
+# Subtest: F07 changing reviewed values invalidates confirmation without erasing the draft
+ok 28 - F07 changing reviewed values invalidates confirmation without erasing the draft
+  ---
+  duration_ms: 0.271379
+  type: 'test'
+  ...
+# Subtest: F07 newer remote revisions cannot silently replace unsaved editor content
+ok 29 - F07 newer remote revisions cannot silently replace unsaved editor content
+  ---
+  duration_ms: 0.529556
+  type: 'test'
+  ...
+# Subtest: F08 both transfers recover only for the bound authenticated owner
+ok 30 - F08 both transfers recover only for the bound authenticated owner
+  ---
+  duration_ms: 0.661504
+  type: 'test'
+  ...
+# Subtest: F08 legacy malformed and unbound values are rejected without assigning an owner
+ok 31 - F08 legacy malformed and unbound values are rejected without assigning an owner
+  ---
+  duration_ms: 0.210737
+  type: 'test'
+  ...
+# Subtest: F08 only price-book transfers clear on logout/account changes, same-owner refresh retains
+ok 32 - F08 only price-book transfers clear on logout/account changes, same-owner refresh retains
+  ---
+  duration_ms: 0.714064
+  type: 'test'
+  ...
+# Subtest: F11 current repair tree wins over legacy two-level hints and preserves zero
+ok 33 - F11 current repair tree wins over legacy two-level hints and preserves zero
+  ---
+  duration_ms: 1.490071
+  type: 'test'
+  ...
+# Subtest: F11 enum and boolean maps retain exact keys, false, and unanswered distinctions
+ok 34 - F11 enum and boolean maps retain exact keys, false, and unanswered distinctions
+  ---
+  duration_ms: 0.310417
+  type: 'test'
+  ...
+# Subtest: F13 scalar rejects lossy input, blank and invalid fixed amounts, retains unit precision
+ok 35 - F13 scalar rejects lossy input, blank and invalid fixed amounts, retains unit precision
+  ---
+  duration_ms: 0.661324
+  type: 'test'
+  ...
+# Subtest: F13 all map depths reject unrepresentable raw text before readback
+ok 36 - F13 all map depths reject unrepresentable raw text before readback
+  ---
+  duration_ms: 3.250467
+  type: 'test'
+  ...
+# Subtest: F05 changing one fee retains compatible No answers and cannot revive removed answers
+ok 37 - F05 changing one fee retains compatible No answers and cannot revive removed answers
+  ---
+  duration_ms: 0.207412
+  type: 'test'
+  ...
+# Subtest: metadata sweep round-trips every exposed service money field at base and tier boundaries
+ok 38 - metadata sweep round-trips every exposed service money field at base and tier boundaries
+  ---
+  duration_ms: 53.20005
+  type: 'test'
+  ...
+# Subtest: dynamic offering prices round-trip unit and fixed money at base and tier boundaries
+ok 39 - dynamic offering prices round-trip unit and fixed money at base and tier boundaries
+  ---
+  duration_ms: 1.180485
+  type: 'test'
+  ...
+# Subtest: dynamic scope prices round-trip unit and package fixed money
+ok 40 - dynamic scope prices round-trip unit and package fixed money
+  ---
+  duration_ms: 0.978071
+  type: 'test'
+  ...
+# Subtest: nested mixed-value maps convert only their declared money leaves
+ok 41 - nested mixed-value maps convert only their declared money leaves
+  ---
+  duration_ms: 0.282725
+  type: 'test'
+  ...
+# Subtest: a partial operating-system write failure leaves the previous price book intact
+ok 42 - a partial operating-system write failure leaves the previous price book intact
+  ---
+  duration_ms: 3.645461
+  type: 'test'
+  ...
+# Subtest: a corrected save reloads complete exact values and disabled intent
+ok 43 - a corrected save reloads complete exact values and disabled intent
+  ---
+  duration_ms: 2.506939
+  type: 'test'
+  ...
+# Subtest: a failed replacement preserves the accepted file and removes only its own temporary file
+ok 44 - a failed replacement preserves the accepted file and removes only its own temporary file
+  ---
+  duration_ms: 2.222922
+  type: 'test'
+  ...
+# Subtest: serialization failure cannot disturb existing owner data
+ok 45 - serialization failure cannot disturb existing owner data
+  ---
+  duration_ms: 1.157461
+  type: 'test'
+  ...
+# Subtest: one metadata-driven converter handles custom fixed prices identically at every boundary
+ok 46 - one metadata-driven converter handles custom fixed prices identically at every boundary
+  ---
+  duration_ms: 4.176951
+  type: 'test'
+  ...
+# Subtest: a durable creation record distinguishes a new owner from a lost saved file and refuses replacement
+ok 47 - a durable creation record distinguishes a new owner from a lost saved file and refuses replacement
+  ---
+  duration_ms: 7.92161
+  type: 'test'
+  ...
+# Subtest: shared saves assign valid IDs after spreading input and reject case-insensitive duplicates
+ok 48 - shared saves assign valid IDs after spreading input and reject case-insensitive duplicates
+  ---
+  duration_ms: 4.273005
+  type: 'test'
+  ...
+# Subtest: peak months reject invalid or duplicate values and save in canonical order
+ok 49 - peak months reject invalid or duplicate values and save in canonical order
+  ---
+  duration_ms: 2.042762
+  type: 'test'
+  ...
+# Subtest: readiness cache keeps distinct diagnostics for multiple unsaved services
+ok 50 - readiness cache keeps distinct diagnostics for multiple unsaved services
+  ---
+  duration_ms: 67.155493
+  type: 'test'
+  ...
+# Subtest: effective editor pricing preserves root-only, nested-only and mixed offering and scope settings
+ok 51 - effective editor pricing preserves root-only, nested-only and mixed offering and scope settings
+  ---
+  duration_ms: 0.315835
+  type: 'test'
+  ...
+# Subtest: owner preview uses the draft service for both calculation and scope presentation
+ok 52 - owner preview uses the draft service for both calculation and scope presentation
+  ---
+  duration_ms: 104.268195
+  type: 'test'
+  ...
+# Subtest: batch interview normalization resolves structural names before dependent offering rates
+ok 53 - batch interview normalization resolves structural names before dependent offering rates
+  ---
+  duration_ms: 91.617874
+  type: 'test'
+  ...
+# Subtest: interview draft compare-and-swap rejects a stale revision without losing the accepted update
+ok 54 - interview draft compare-and-swap rejects a stale revision without losing the accepted update
+  ---
+  duration_ms: 46.422545
+  type: 'test'
+  ...
+# Subtest: configured-offering tier controls expose installed labor and material share maps
+ok 55 - configured-offering tier controls expose installed labor and material share maps
+  ---
+  duration_ms: 101.66078
+  type: 'test'
+  ...
+# Subtest: concrete browser owner saves dollar rates and unscaled depths, warns about spacing and reloads
+ok 56 - concrete browser owner saves dollar rates and unscaled depths, warns about spacing and reloads
+  ---
+  duration_ms: 2129.578006
+  type: 'test'
+  ...
+# Subtest: planting browser edits owner size names and per-plant prices and persists both
+ok 57 - planting browser edits owner size names and per-plant prices and persists both
+  ---
+  duration_ms: 516.332658
+  type: 'test'
+  ...
+# Subtest: customer browser answers Not sure for chute/topsoil and uses exact custom size names
+ok 58 - customer browser answers Not sure for chute/topsoil and uses exact custom size names
+  ---
+  duration_ms: 588.655776
+  type: 'test'
+  ...
+# Subtest: plant owner DOM exposes definitions, edits the exact name and persists it
+ok 59 - plant owner DOM exposes definitions, edits the exact name and persists it
+  ---
+  duration_ms: 619.220662
+  type: 'test'
+  ...
+# Subtest: concrete owner DOM keeps new fields blank and saves rates, control joints and placement choices
+ok 60 - concrete owner DOM keeps new fields blank and saves rates, control joints and placement choices
+  ---
+  duration_ms: 782.332671
+  type: 'test'
+  ...
+# Subtest: concrete ordered patio 1.5 yd /27000; short 3.5 yd /14000, or flat /15000
+ok 61 - concrete ordered patio 1.5 yd /27000; short 3.5 yd /14000, or flat /15000
+  ---
+  duration_ms: 43.6448
+  type: 'test'
+  ...
+# Subtest: control joints 20x30: 70 LF / 10500 cents
+ok 62 - control joints 20x30: 70 LF / 10500 cents
+  ---
+  duration_ms: 8.037253
+  type: 'test'
+  ...
+# Subtest: control joints 12x18: 30 LF / 4500 cents
+ok 63 - control joints 12x18: 30 LF / 4500 cents
+  ---
+  duration_ms: 6.277665
+  type: 'test'
+  ...
+# Subtest: control joints 20x20: 40 LF / 6000 cents
+ok 64 - control joints 20x20: 40 LF / 6000 cents
+  ---
+  duration_ms: 5.283429
+  type: 'test'
+  ...
+# Subtest: nonrectangle 600 sqft joints square allowance97.98LF /14697 cents; owner spacing warning
+ok 65 - nonrectangle 600 sqft joints square allowance97.98LF /14697 cents; owner spacing warning
+  ---
+  duration_ms: 3.345073
+  type: 'test'
+  ...
+# Subtest: 4–6 inch labor band accepts5, reviews8 naming the band; blank accepts8
+ok 66 - 4–6 inch labor band accepts5, reviews8 naming the band; blank accepts8
+  ---
+  duration_ms: 8.67344
+  type: 'test'
+  ...
+# Subtest: No chute: pump150000; buggy1.5*3000=4500; no offered method reviews
+ok 67 - No chute: pump150000; buggy1.5*3000=4500; no offered method reviews
+  ---
+  duration_ms: 8.1619
+  type: 'test'
+  ...
+# Subtest: Not sure: owner pump150000 with site allowance, or no line and extra-cost note
+ok 68 - Not sure: owner pump150000 with site allowance, or no line and extra-cost note
+  ---
+  duration_ms: 4.728394
+  type: 'test'
+  ...
+# Subtest: 600sqft base4in plus20%: 8.888yd /40000; labor72000 or90000 at1.25 access
+ok 69 - 600sqft base4in plus20%: 8.888yd /40000; labor72000 or90000 at1.25 access
+  ---
+  duration_ms: 5.350761
+  type: 'test'
+  ...
+# Subtest: sod existing3: topsoil 9259 cents
+ok 70 - sod existing3: topsoil 9259 cents
+  ---
+  duration_ms: 3.791045
+  type: 'test'
+  ...
+# Subtest: sod existing4: topsoil 0 cents
+ok 71 - sod existing4: topsoil 0 cents
+  ---
+  duration_ms: 2.55846
+  type: 'test'
+  ...
+# Subtest: sod existingunknown: topsoil 18519 cents
+ok 72 - sod existingunknown: topsoil 18519 cents
+  ---
+  duration_ms: 2.879422
+  type: 'test'
+  ...
+# Subtest: sod removal+grading190000 on flat;218500 with1.15 slope; no duplicate disposal
+ok 73 - sod removal+grading190000 on flat;218500 with1.15 slope; no duplicate disposal
+  ---
+  duration_ms: 6.196884
+  type: 'test'
+  ...
+# Subtest: custom names:4 \#5 shrubs30000 and1 two-inch B&B tree43000
+ok 74 - custom names:4 \#5 shrubs30000 and1 two-inch B&B tree43000
+  ---
+  duration_ms: 6.066778
+  type: 'test'
+  ...
+# Subtest: all42 concrete/sod/planting baseline quotes retain their exact8b53169 cents and quantities
+ok 75 - all42 concrete/sod/planting baseline quotes retain their exact8b53169 cents and quantities
+  ---
+  duration_ms: 112.591918
+  type: 'test'
+  ...
+# Subtest: blank optional values preserve187000-cent patio and355000-cent sod; invalid negative price reviews
+ok 76 - blank optional values preserve187000-cent patio and355000-cent sod; invalid negative price reviews
+  ---
+  duration_ms: 8.153939
+  type: 'test'
+  ...
+# Subtest: about10by10 with uncertain chute quotes337000c with150000c pump allowance and estimate sentence
+ok 77 - about10by10 with uncertain chute quotes337000c with150000c pump allowance and estimate sentence
+  ---
+  duration_ms: 595.378519
+  type: 'test'
+  ...
+# Subtest: uncertain chute without owner allowance quotes187000c and preserves extra-cost note in saved public copy
+ok 78 - uncertain chute without owner allowance quotes187000c and preserves extra-cost note in saved public copy
+  ---
+  duration_ms: 699.251164
+  type: 'test'
+  ...
+# Subtest: custom plant sizes reach both question contracts, phone name binding, saved job facts and public copy at30000c
+ok 79 - custom plant sizes reach both question contracts, phone name binding, saved job facts and public copy at30000c
+  ---
+  duration_ms: 191.793243
+  type: 'test'
+  ...
+# Subtest: concrete and sod optional controls have labels, blank new services, exact money conversion and persisted settings
+ok 80 - concrete and sod optional controls have labels, blank new services, exact money conversion and persisted settings
+  ---
+  duration_ms: 110.79163
+  type: 'test'
+  ...
+# Subtest: custom plant definitions and prices survive owner dollars, interview validation and review with exact names
+ok 81 - custom plant definitions and prices survive owner dollars, interview validation and review with exact names
+  ---
+  duration_ms: 67.477238
+  type: 'test'
+  ...
+# Subtest: 4–6 inch concrete rate and custom planting are live;15ft spacing is a warning, not a quote block
+ok 82 - 4–6 inch concrete rate and custom planting are live;15ft spacing is a warning, not a quote block
+  ---
+  duration_ms: 64.171916
+  type: 'test'
+  ...
+# Subtest: phone prompts add concrete/sod/planting blocks while retaining immutable guide and caller-estimate instruction
+ok 83 - phone prompts add concrete/sod/planting blocks while retaining immutable guide and caller-estimate instruction
+  ---
+  duration_ms: 1.933409
+  type: 'test'
+  ...
+# Subtest: exact threshold uses ordered5yd, no short load; both fee modes reject
+ok 84 - exact threshold uses ordered5yd, no short load; both fee modes reject
+  ---
+  duration_ms: 32.504848
+  type: 'test'
+  ...
+# Subtest: placement flat plus volume uses150000+4500; Yes ignores both; multiple methods require a choice
+ok 85 - placement flat plus volume uses150000+4500; Yes ignores both; multiple methods require a choice
+  ---
+  duration_ms: 9.628056
+  type: 'test'
+  ...
+# Subtest: unconfigured depths review only selected preparation and never silently charge legacy prep
+ok 86 - unconfigured depths review only selected preparation and never silently charge legacy prep
+  ---
+  duration_ms: 6.379078
+  type: 'test'
+  ...
+# Subtest: topsoil above target and zero typical import need no topsoil material; allowance still disclosed
+ok 87 - topsoil above target and zero typical import need no topsoil material; allowance still disclosed
+  ---
+  duration_ms: 5.047925
+  type: 'test'
+  ...
+# Subtest: outline area600 uses97.98LF too; rectangle10x10 at10ft has no saw-cut line
+ok 88 - outline area600 uses97.98LF too; rectangle10x10 at10ft has no saw-cut line
+  ---
+  duration_ms: 5.885937
+  type: 'test'
+  ...
+# Subtest: tree height/bare-root is supported at43000c; ambiguous size definitions and unknown keys review
+ok 89 - tree height/bare-root is supported at43000c; ambiguous size definitions and unknown keys review
+  ---
+  duration_ms: 5.213595
+  type: 'test'
+  ...
+# Subtest: tier-specific4–6 and8–12 thickness ranges select the supported option
+ok 90 - tier-specific4–6 and8–12 thickness ranges select the supported option
+  ---
+  duration_ms: 3.112443
+  type: 'test'
+  ...
+# Subtest: empty range strings retain live readiness without inferring a zero thickness
+ok 91 - empty range strings retain live readiness without inferring a zero thickness
+  ---
+  duration_ms: 53.392786
+  type: 'test'
+  ...
+# Subtest: new optional notices preserve invalid service-type diagnostics without throwing
+ok 92 - new optional notices preserve invalid service-type diagnostics without throwing
+  ---
+  duration_ms: 0.560133
+  type: 'test'
+  ...
+# Subtest: concrete labor access reaches saw cuts but placement retains its stated per-pour amount
+ok 93 - concrete labor access reaches saw cuts but placement retains its stated per-pour amount
+  ---
+  duration_ms: 2.879082
+  type: 'test'
+  ...
+# Subtest: lane A starting value provenance blocks only a request that uses the unconfirmed test factor
+ok 94 - lane A starting value provenance blocks only a request that uses the unconfirmed test factor
+  ---
+  duration_ms: 28.842447
+  type: 'test'
+  ...
+# Subtest: lane A dependent-line receipt keeps a test-only extracted line off until the base is re-entered and confirmed
+ok 95 - lane A dependent-line receipt keeps a test-only extracted line off until the base is re-entered and confirmed
+  ---
+  duration_ms: 2.380161
+  type: 'test'
+  ...
+# Subtest: lane A per-price dates use the injected server clock and unchanged saves retain the old date
+ok 96 - lane A per-price dates use the injected server clock and unchanged saves retain the old date
+  ---
+  duration_ms: 15.518129
+  type: 'test'
+  ...
+# Subtest: lane A 90-day stale listing includes a 100-day-old material and a legacy undated price
+ok 97 - lane A 90-day stale listing includes a 100-day-old material and a legacy undated price
+  ---
+  duration_ms: 12.309802
+  type: 'test'
+  ...
+# Subtest: lane A AI placeholder survives confirmation and clears only on edit or explicit owner adoption
+ok 98 - lane A AI placeholder survives confirmation and clears only on edit or explicit owner adoption
+  ---
+  duration_ms: 10.915463
+  type: 'test'
+  ...
+# Subtest: lane A shared purchase rounding prices materials only and blank package fields preserve today
+ok 99 - lane A shared purchase rounding prices materials only and blank package fields preserve today
+  ---
+  duration_ms: 20.391161
+  type: 'test'
+  ...
+# Subtest: lane A blank package sizes preserve all five pre-groundwork material amounts to the cent
+ok 100 - lane A blank package sizes preserve all five pre-groundwork material amounts to the cent
+  ---
+  duration_ms: 9.88294
+  type: 'test'
+  ...
+# Subtest: lane A 30-day validity is frozen into widget-safe and voice copy; blank emits nothing
+ok 101 - lane A 30-day validity is frozen into widget-safe and voice copy; blank emits nothing
+  ---
+  duration_ms: 19.056203
+  type: 'test'
+  ...
+# Subtest: lane A base and tier price dates and sources follow stable service and tier identities
+ok 102 - lane A base and tier price dates and sources follow stable service and tier identities
+  ---
+  duration_ms: 14.01729
+  type: 'test'
+  ...
+# Subtest: lane A starting-value and dependent-line receipts survive durable save and reload
+ok 103 - lane A starting-value and dependent-line receipts survive durable save and reload
+  ---
+  duration_ms: 11.430238
+  type: 'test'
+  ...
+# Subtest: lane A owner status lists stale prices and legacy AI placeholders without blocking readiness policy
+ok 104 - lane A owner status lists stale prices and legacy AI placeholders without blocking readiness policy
+  ---
+  duration_ms: 74.052802
+  type: 'test'
+  ...
+# Subtest: lane A actual saved widget, email, public copy and voice freeze the 30-day validity statement
+ok 105 - lane A actual saved widget, email, public copy and voice freeze the 30-day validity statement
+  ---
+  duration_ms: 1027.480698
+  type: 'test'
+  ...
+# Subtest: integration: fence height-row prices retain dates and AI provenance independently
+ok 106 - integration: fence height-row prices retain dates and AI provenance independently
+  ---
+  duration_ms: 23.504755
+  type: 'test'
+  ...
+# Subtest: integration: fence tier dates follow their type and tier name when reordered
+ok 107 - integration: fence tier dates follow their type and tier name when reordered
+  ---
+  duration_ms: 27.947942
+  type: 'test'
+  ...
+# Subtest: integration: mowing edging uses the labor cost basis for stale-price reminders
+ok 108 - integration: mowing edging uses the labor cost basis for stale-price reminders
+  ---
+  duration_ms: 1.108769
+  type: 'test'
+  ...
+# Subtest: integration: actual editor preserves fence provenance across 18 named and numeric tier reorderings
+ok 109 - integration: actual editor preserves fence provenance across 18 named and numeric tier reorderings
+  ---
+  duration_ms: 530.418407
+  type: 'test'
+  ...
+# Subtest: integration: actual editor retains ordinary tier AI provenance through a rename
+ok 110 - integration: actual editor retains ordinary tier AI provenance through a rename
+  ---
+  duration_ms: 1.22262
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:laborPerSquare.asphalt_shingle unit_rate
+ok 111 - rate precision matrix ROOFING_REPLACEMENT:laborPerSquare.asphalt_shingle unit_rate
+  ---
+  duration_ms: 11.248885
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:materialCostPerSquare.asphalt_shingle unit_rate
+ok 112 - rate precision matrix ROOFING_REPLACEMENT:materialCostPerSquare.asphalt_shingle unit_rate
+  ---
+  duration_ms: 19.461152
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:tearOffPerSquare.asphalt_shingle unit_rate
+ok 113 - rate precision matrix ROOFING_REPLACEMENT:tearOffPerSquare.asphalt_shingle unit_rate
+  ---
+  duration_ms: 8.116722
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:underlaymentPerSquare.asphalt_shingle unit_rate
+ok 114 - rate precision matrix ROOFING_REPLACEMENT:underlaymentPerSquare.asphalt_shingle unit_rate
+  ---
+  duration_ms: 4.859096
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:starterPerLF unit_rate
+ok 115 - rate precision matrix ROOFING_REPLACEMENT:starterPerLF unit_rate
+  ---
+  duration_ms: 5.439925
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:dripEdgePerLF unit_rate
+ok 116 - rate precision matrix ROOFING_REPLACEMENT:dripEdgePerLF unit_rate
+  ---
+  duration_ms: 4.025267
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:ridgeCapPerLF unit_rate
+ok 117 - rate precision matrix ROOFING_REPLACEMENT:ridgeCapPerLF unit_rate
+  ---
+  duration_ms: 4.347441
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:deckingPerSheet fixed_amount
+ok 118 - rate precision matrix ROOFING_REPLACEMENT:deckingPerSheet fixed_amount
+  ---
+  duration_ms: 4.566982
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPAIR:laborHourlyRate unit_rate
+ok 119 - rate precision matrix ROOFING_REPAIR:laborHourlyRate unit_rate
+  ---
+  duration_ms: 3.939017
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPAIR:repairMaterialAllowance.asphalt_shingle.shingle_patch.medium fixed_amount
+ok 120 - rate precision matrix ROOFING_REPAIR:repairMaterialAllowance.asphalt_shingle.shingle_patch.medium fixed_amount
+  ---
+  duration_ms: 1.800619
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:laborPerSqft.epdm unit_rate
+ok 121 - rate precision matrix FLAT_ROOF_REPLACEMENT:laborPerSqft.epdm unit_rate
+  ---
+  duration_ms: 3.095858
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:membraneCostPerSqft.epdm unit_rate
+ok 122 - rate precision matrix FLAT_ROOF_REPLACEMENT:membraneCostPerSqft.epdm unit_rate
+  ---
+  duration_ms: 3.13061
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:tearOffPerSqft.epdm unit_rate
+ok 123 - rate precision matrix FLAT_ROOF_REPLACEMENT:tearOffPerSqft.epdm unit_rate
+  ---
+  duration_ms: 2.767204
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPAIR:laborHourlyRate unit_rate
+ok 124 - rate precision matrix FLAT_ROOF_REPAIR:laborHourlyRate unit_rate
+  ---
+  duration_ms: 2.053209
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPAIR:patchMaterialAllowance.epdm.seam_patch.small fixed_amount
+ok 125 - rate precision matrix FLAT_ROOF_REPAIR:patchMaterialAllowance.epdm.seam_patch.small fixed_amount
+  ---
+  duration_ms: 1.902272
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:laborPerWallSqftPerCoat unit_rate
+ok 126 - rate precision matrix INTERIOR_PAINTING:laborPerWallSqftPerCoat unit_rate
+  ---
+  duration_ms: 4.608905
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:materialPerWallSqftPerCoat unit_rate
+ok 127 - rate precision matrix INTERIOR_PAINTING:materialPerWallSqftPerCoat unit_rate
+  ---
+  duration_ms: 3.294207
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:trimLaborPerLF unit_rate
+ok 128 - rate precision matrix INTERIOR_PAINTING:trimLaborPerLF unit_rate
+  ---
+  duration_ms: 3.172824
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:trimMaterialPerLF unit_rate
+ok 129 - rate precision matrix INTERIOR_PAINTING:trimMaterialPerLF unit_rate
+  ---
+  duration_ms: 3.431713
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:laborPerSqft.vinyl_plank unit_rate
+ok 130 - rate precision matrix FLOORING_INSTALL:laborPerSqft.vinyl_plank unit_rate
+  ---
+  duration_ms: 4.17407
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:materialPerSqft.vinyl_plank unit_rate
+ok 131 - rate precision matrix FLOORING_INSTALL:materialPerSqft.vinyl_plank unit_rate
+  ---
+  duration_ms: 4.029513
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_REPLACEMENT:laborPerSqft.tile unit_rate
+ok 132 - rate precision matrix FLOORING_REPLACEMENT:laborPerSqft.tile unit_rate
+  ---
+  duration_ms: 4.739781
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_REPLACEMENT:materialPerSqft.tile unit_rate
+ok 133 - rate precision matrix FLOORING_REPLACEMENT:materialPerSqft.tile unit_rate
+  ---
+  duration_ms: 2.946323
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_REPLACEMENT:removalPerSqft.vinyl unit_rate
+ok 134 - rate precision matrix FLOORING_REPLACEMENT:removalPerSqft.vinyl unit_rate
+  ---
+  duration_ms: 2.877459
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_REPLACEMENT:subfloorAllowancePerSqft unit_rate
+ok 135 - rate precision matrix FLOORING_REPLACEMENT:subfloorAllowancePerSqft unit_rate
+  ---
+  duration_ms: 2.67217
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_DRIVEWAY:laborPerSqft unit_rate
+ok 136 - rate precision matrix CONCRETE_DRIVEWAY:laborPerSqft unit_rate
+  ---
+  duration_ms: 3.674309
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_DRIVEWAY:concreteCostPerCubicYard unit_rate
+ok 137 - rate precision matrix CONCRETE_DRIVEWAY:concreteCostPerCubicYard unit_rate
+  ---
+  duration_ms: 3.545965
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_DRIVEWAY:formworkPerLF unit_rate
+ok 138 - rate precision matrix CONCRETE_DRIVEWAY:formworkPerLF unit_rate
+  ---
+  duration_ms: 4.291487
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_DRIVEWAY:basePrepPerSqft unit_rate
+ok 139 - rate precision matrix CONCRETE_DRIVEWAY:basePrepPerSqft unit_rate
+  ---
+  duration_ms: 4.806773
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_DRIVEWAY:wireReinforcementPerSqft unit_rate
+ok 140 - rate precision matrix CONCRETE_DRIVEWAY:wireReinforcementPerSqft unit_rate
+  ---
+  duration_ms: 3.000725
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:laborPerSqft unit_rate
+ok 141 - rate precision matrix CONCRETE_PATIO_SLAB:laborPerSqft unit_rate
+  ---
+  duration_ms: 3.539356
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:concreteCostPerCubicYard unit_rate
+ok 142 - rate precision matrix CONCRETE_PATIO_SLAB:concreteCostPerCubicYard unit_rate
+  ---
+  duration_ms: 4.235193
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:formworkPerLF unit_rate
+ok 143 - rate precision matrix CONCRETE_PATIO_SLAB:formworkPerLF unit_rate
+  ---
+  duration_ms: 3.490672
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:basePrepPerSqft unit_rate
+ok 144 - rate precision matrix CONCRETE_PATIO_SLAB:basePrepPerSqft unit_rate
+  ---
+  duration_ms: 2.883769
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_CLEANUP:cleanupBaseRatePerSqft unit_rate
+ok 145 - rate precision matrix LANDSCAPING_CLEANUP:cleanupBaseRatePerSqft unit_rate
+  ---
+  duration_ms: 2.280701
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_CLEANUP:haulAwayFee fixed_amount
+ok 146 - rate precision matrix LANDSCAPING_CLEANUP:haulAwayFee fixed_amount
+  ---
+  duration_ms: 1.71526
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_MULCH:bedPrepLaborPerSqft.needs_weeding unit_rate
+ok 147 - rate precision matrix LANDSCAPING_MULCH:bedPrepLaborPerSqft.needs_weeding unit_rate
+  ---
+  duration_ms: 2.457508
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_MULCH:mulchMaterialPerYard.brown unit_rate
+ok 148 - rate precision matrix LANDSCAPING_MULCH:mulchMaterialPerYard.brown unit_rate
+  ---
+  duration_ms: 2.766904
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_MULCH:mulchInstallLaborPerYard unit_rate
+ok 149 - rate precision matrix LANDSCAPING_MULCH:mulchInstallLaborPerYard unit_rate
+  ---
+  duration_ms: 3.711835
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_MULCH:edgingPerLinearFoot unit_rate
+ok 150 - rate precision matrix LANDSCAPING_MULCH:edgingPerLinearFoot unit_rate
+  ---
+  duration_ms: 2.792722
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_SOD:sodMaterialPerSqft unit_rate
+ok 151 - rate precision matrix LANDSCAPING_SOD:sodMaterialPerSqft unit_rate
+  ---
+  duration_ms: 3.014236
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_SOD:sodInstallLaborPerSqft unit_rate
+ok 152 - rate precision matrix LANDSCAPING_SOD:sodInstallLaborPerSqft unit_rate
+  ---
+  duration_ms: 2.690388
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_SOD:groundPrepPerSqft unit_rate
+ok 153 - rate precision matrix LANDSCAPING_SOD:groundPrepPerSqft unit_rate
+  ---
+  duration_ms: 2.457868
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:plantingLaborPerPlant.small fixed_amount
+ok 154 - rate precision matrix LANDSCAPING_PLANTING:plantingLaborPerPlant.small fixed_amount
+  ---
+  duration_ms: 1.885106
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:plantMaterialAllowance.small fixed_amount
+ok 155 - rate precision matrix LANDSCAPING_PLANTING:plantMaterialAllowance.small fixed_amount
+  ---
+  duration_ms: 1.715451
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:plantingLaborPerPlant.medium fixed_amount
+ok 156 - rate precision matrix LANDSCAPING_PLANTING:plantingLaborPerPlant.medium fixed_amount
+  ---
+  duration_ms: 1.619777
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:plantMaterialAllowance.medium fixed_amount
+ok 157 - rate precision matrix LANDSCAPING_PLANTING:plantMaterialAllowance.medium fixed_amount
+  ---
+  duration_ms: 1.743954
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:plantingLaborPerPlant.large fixed_amount
+ok 158 - rate precision matrix LANDSCAPING_PLANTING:plantingLaborPerPlant.large fixed_amount
+  ---
+  duration_ms: 2.231517
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:plantMaterialAllowance.large fixed_amount
+ok 159 - rate precision matrix LANDSCAPING_PLANTING:plantMaterialAllowance.large fixed_amount
+  ---
+  duration_ms: 1.467928
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:bedPrepLaborPerSqft.needs_weeding unit_rate
+ok 160 - rate precision matrix LANDSCAPING_PLANTING:bedPrepLaborPerSqft.needs_weeding unit_rate
+  ---
+  duration_ms: 6.791719
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:mulchMaterialPerYard.brown unit_rate
+ok 161 - rate precision matrix LANDSCAPING_PLANTING:mulchMaterialPerYard.brown unit_rate
+  ---
+  duration_ms: 4.425899
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_PLANTING:mulchInstallLaborPerYard unit_rate
+ok 162 - rate precision matrix LANDSCAPING_PLANTING:mulchInstallLaborPerYard unit_rate
+  ---
+  duration_ms: 4.254381
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_MOWING:mowingBaseRatePerSqft unit_rate
+ok 163 - rate precision matrix LANDSCAPING_MOWING:mowingBaseRatePerSqft unit_rate
+  ---
+  duration_ms: 2.714574
+  type: 'test'
+  ...
+# Subtest: rate precision matrix LANDSCAPING_MOWING:edgingPerLinearFoot unit_rate
+ok 164 - rate precision matrix LANDSCAPING_MOWING:edgingPerLinearFoot unit_rate
+  ---
+  duration_ms: 2.749477
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPLACEMENT:laborPerSqft.vinyl unit_rate
+ok 165 - rate precision matrix SIDING_REPLACEMENT:laborPerSqft.vinyl unit_rate
+  ---
+  duration_ms: 3.479044
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPLACEMENT:materialPerSqft.vinyl unit_rate
+ok 166 - rate precision matrix SIDING_REPLACEMENT:materialPerSqft.vinyl unit_rate
+  ---
+  duration_ms: 2.540993
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPAIR:laborHourlyRate unit_rate
+ok 167 - rate precision matrix SIDING_REPAIR:laborHourlyRate unit_rate
+  ---
+  duration_ms: 1.986499
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPAIR:materialAllowance.vinyl.minor.medium fixed_amount
+ok 168 - rate precision matrix SIDING_REPAIR:materialAllowance.vinyl.minor.medium fixed_amount
+  ---
+  duration_ms: 1.30287
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CUSTOM:price fixed_amount
+ok 169 - rate precision matrix CUSTOM:price fixed_amount
+  ---
+  duration_ms: 0.904501
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_INSTALL:offeringRates.installedFencePerLF unit_rate
+ok 170 - rate precision matrix FENCING_INSTALL:offeringRates.installedFencePerLF unit_rate
+  ---
+  duration_ms: 2.919363
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_INSTALL:offeringRates.gate_walk fixed_amount
+ok 171 - rate precision matrix FENCING_INSTALL:offeringRates.gate_walk fixed_amount
+  ---
+  duration_ms: 1.338674
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_INSTALL:offeringRates.fenceLaborPerLF unit_rate
+ok 172 - rate precision matrix FENCING_INSTALL:offeringRates.fenceLaborPerLF unit_rate
+  ---
+  duration_ms: 2.981726
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_INSTALL:offeringRates.fenceMaterialPerLF unit_rate
+ok 173 - rate precision matrix FENCING_INSTALL:offeringRates.fenceMaterialPerLF unit_rate
+  ---
+  duration_ms: 3.612605
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_INSTALL:offeringRates.postMaterialEach fixed_amount
+ok 174 - rate precision matrix FENCING_INSTALL:offeringRates.postMaterialEach fixed_amount
+  ---
+  duration_ms: 1.495269
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_INSTALL:offeringRates.footingLaborEach fixed_amount
+ok 175 - rate precision matrix FENCING_INSTALL:offeringRates.footingLaborEach fixed_amount
+  ---
+  duration_ms: 1.459907
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_INSTALL:offeringRates.footingMaterialEach fixed_amount
+ok 176 - rate precision matrix FENCING_INSTALL:offeringRates.footingMaterialEach fixed_amount
+  ---
+  duration_ms: 1.461909
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_REPLACEMENT:offeringRates.installedFencePerLF unit_rate
+ok 177 - rate precision matrix FENCING_REPLACEMENT:offeringRates.installedFencePerLF unit_rate
+  ---
+  duration_ms: 3.348028
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_REPLACEMENT:offeringRates.gate_walk fixed_amount
+ok 178 - rate precision matrix FENCING_REPLACEMENT:offeringRates.gate_walk fixed_amount
+  ---
+  duration_ms: 1.247297
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_REPLACEMENT:offeringRates.removalPerLF unit_rate
+ok 179 - rate precision matrix FENCING_REPLACEMENT:offeringRates.removalPerLF unit_rate
+  ---
+  duration_ms: 2.903118
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_REPLACEMENT:offeringRates.fenceLaborPerLF unit_rate
+ok 180 - rate precision matrix FENCING_REPLACEMENT:offeringRates.fenceLaborPerLF unit_rate
+  ---
+  duration_ms: 4.128261
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_REPLACEMENT:offeringRates.fenceMaterialPerLF unit_rate
+ok 181 - rate precision matrix FENCING_REPLACEMENT:offeringRates.fenceMaterialPerLF unit_rate
+  ---
+  duration_ms: 4.564708
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_REPLACEMENT:offeringRates.postMaterialEach fixed_amount
+ok 182 - rate precision matrix FENCING_REPLACEMENT:offeringRates.postMaterialEach fixed_amount
+  ---
+  duration_ms: 2.168793
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_REPLACEMENT:offeringRates.footingLaborEach fixed_amount
+ok 183 - rate precision matrix FENCING_REPLACEMENT:offeringRates.footingLaborEach fixed_amount
+  ---
+  duration_ms: 2.243255
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FENCING_REPLACEMENT:offeringRates.footingMaterialEach fixed_amount
+ok 184 - rate precision matrix FENCING_REPLACEMENT:offeringRates.footingMaterialEach fixed_amount
+  ---
+  duration_ms: 1.307607
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.installedWallPerSqft unit_rate
+ok 185 - rate precision matrix INTERIOR_PAINTING:offeringRates.installedWallPerSqft unit_rate
+  ---
+  duration_ms: 2.317326
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.installedCeilingPerSqft unit_rate
+ok 186 - rate precision matrix INTERIOR_PAINTING:offeringRates.installedCeilingPerSqft unit_rate
+  ---
+  duration_ms: 2.675886
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.installedTrimPerLF unit_rate
+ok 187 - rate precision matrix INTERIOR_PAINTING:offeringRates.installedTrimPerLF unit_rate
+  ---
+  duration_ms: 2.126069
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.wallLaborPerSqftPerCoat unit_rate
+ok 188 - rate precision matrix INTERIOR_PAINTING:offeringRates.wallLaborPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 4.062573
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.wallMaterialPerSqftPerCoat unit_rate
+ok 189 - rate precision matrix INTERIOR_PAINTING:offeringRates.wallMaterialPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 3.590472
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.primerLaborPerSqftPerCoat unit_rate
+ok 190 - rate precision matrix INTERIOR_PAINTING:offeringRates.primerLaborPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 4.25983
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.primerMaterialPerSqftPerCoat unit_rate
+ok 191 - rate precision matrix INTERIOR_PAINTING:offeringRates.primerMaterialPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 3.985316
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.prepLaborPerSqft unit_rate
+ok 192 - rate precision matrix INTERIOR_PAINTING:offeringRates.prepLaborPerSqft unit_rate
+  ---
+  duration_ms: 3.478414
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.prepMaterialPerSqft unit_rate
+ok 193 - rate precision matrix INTERIOR_PAINTING:offeringRates.prepMaterialPerSqft unit_rate
+  ---
+  duration_ms: 3.56919
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.ceilingLaborPerSqftPerCoat unit_rate
+ok 194 - rate precision matrix INTERIOR_PAINTING:offeringRates.ceilingLaborPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 4.028071
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.ceilingMaterialPerSqftPerCoat unit_rate
+ok 195 - rate precision matrix INTERIOR_PAINTING:offeringRates.ceilingMaterialPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 3.45586
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.ceilingPrimerLaborPerSqftPerCoat unit_rate
+ok 196 - rate precision matrix INTERIOR_PAINTING:offeringRates.ceilingPrimerLaborPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 3.857053
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:offeringRates.ceilingPrimerMaterialPerSqftPerCoat unit_rate
+ok 197 - rate precision matrix INTERIOR_PAINTING:offeringRates.ceilingPrimerMaterialPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 4.683547
+  type: 'test'
+  ...
+# Subtest: rate precision matrix EXTERIOR_PAINTING:offeringRates.installedWallPerSqft unit_rate
+ok 198 - rate precision matrix EXTERIOR_PAINTING:offeringRates.installedWallPerSqft unit_rate
+  ---
+  duration_ms: 2.223295
+  type: 'test'
+  ...
+# Subtest: rate precision matrix EXTERIOR_PAINTING:offeringRates.wallLaborPerSqftPerCoat unit_rate
+ok 199 - rate precision matrix EXTERIOR_PAINTING:offeringRates.wallLaborPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 2.80508
+  type: 'test'
+  ...
+# Subtest: rate precision matrix EXTERIOR_PAINTING:offeringRates.wallMaterialPerSqftPerCoat unit_rate
+ok 200 - rate precision matrix EXTERIOR_PAINTING:offeringRates.wallMaterialPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 3.001706
+  type: 'test'
+  ...
+# Subtest: rate precision matrix EXTERIOR_PAINTING:offeringRates.primerLaborPerSqftPerCoat unit_rate
+ok 201 - rate precision matrix EXTERIOR_PAINTING:offeringRates.primerLaborPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 2.661044
+  type: 'test'
+  ...
+# Subtest: rate precision matrix EXTERIOR_PAINTING:offeringRates.primerMaterialPerSqftPerCoat unit_rate
+ok 202 - rate precision matrix EXTERIOR_PAINTING:offeringRates.primerMaterialPerSqftPerCoat unit_rate
+  ---
+  duration_ms: 5.238672
+  type: 'test'
+  ...
+# Subtest: rate precision matrix EXTERIOR_PAINTING:offeringRates.prepLaborPerSqft unit_rate
+ok 203 - rate precision matrix EXTERIOR_PAINTING:offeringRates.prepLaborPerSqft unit_rate
+  ---
+  duration_ms: 4.184126
+  type: 'test'
+  ...
+# Subtest: rate precision matrix EXTERIOR_PAINTING:offeringRates.prepMaterialPerSqft unit_rate
+ok 204 - rate precision matrix EXTERIOR_PAINTING:offeringRates.prepMaterialPerSqft unit_rate
+  ---
+  duration_ms: 3.491273
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:laborPerSqft.hardwood unit_rate
+ok 205 - rate precision matrix FLOORING_INSTALL:laborPerSqft.hardwood unit_rate
+  ---
+  duration_ms: 3.945746
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:materialPerSqft.hardwood unit_rate
+ok 206 - rate precision matrix FLOORING_INSTALL:materialPerSqft.hardwood unit_rate
+  ---
+  duration_ms: 3.046564
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.floor_underlayment_hardwood unit_rate
+ok 207 - rate precision matrix FLOORING_INSTALL:scopeRates.floor_underlayment_hardwood unit_rate
+  ---
+  duration_ms: 3.651624
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:laborPerSqft.laminate unit_rate
+ok 208 - rate precision matrix FLOORING_INSTALL:laborPerSqft.laminate unit_rate
+  ---
+  duration_ms: 3.803994
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:materialPerSqft.laminate unit_rate
+ok 209 - rate precision matrix FLOORING_INSTALL:materialPerSqft.laminate unit_rate
+  ---
+  duration_ms: 7.199603
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.floor_underlayment_laminate unit_rate
+ok 210 - rate precision matrix FLOORING_INSTALL:scopeRates.floor_underlayment_laminate unit_rate
+  ---
+  duration_ms: 3.203731
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:laborPerSqft.carpet unit_rate
+ok 211 - rate precision matrix FLOORING_INSTALL:laborPerSqft.carpet unit_rate
+  ---
+  duration_ms: 3.132793
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:materialPerSqft.carpet unit_rate
+ok 212 - rate precision matrix FLOORING_INSTALL:materialPerSqft.carpet unit_rate
+  ---
+  duration_ms: 3.730748
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.floor_underlayment_carpet unit_rate
+ok 213 - rate precision matrix FLOORING_INSTALL:scopeRates.floor_underlayment_carpet unit_rate
+  ---
+  duration_ms: 3.204742
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.floor_underlayment_vinyl_plank fixed_amount
+ok 214 - rate precision matrix FLOORING_INSTALL:scopeRates.floor_underlayment_vinyl_plank fixed_amount
+  ---
+  duration_ms: 1.511384
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:laborPerSqft.tile unit_rate
+ok 215 - rate precision matrix FLOORING_INSTALL:laborPerSqft.tile unit_rate
+  ---
+  duration_ms: 2.773603
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:materialPerSqft.tile unit_rate
+ok 216 - rate precision matrix FLOORING_INSTALL:materialPerSqft.tile unit_rate
+  ---
+  duration_ms: 4.043478
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.stairs_installed fixed_amount
+ok 217 - rate precision matrix FLOORING_INSTALL:scopeRates.stairs_installed fixed_amount
+  ---
+  duration_ms: 1.503362
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.floor_overlay_installed unit_rate
+ok 218 - rate precision matrix FLOORING_INSTALL:scopeRates.floor_overlay_installed unit_rate
+  ---
+  duration_ms: 2.656497
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_trim_installed unit_rate
+ok 219 - rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_trim_installed unit_rate
+  ---
+  duration_ms: 2.18657
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_removal_installed unit_rate
+ok 220 - rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_removal_installed unit_rate
+  ---
+  duration_ms: 2.40544
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.demolition_installed unit_rate
+ok 221 - rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.demolition_installed unit_rate
+  ---
+  duration_ms: 2.971861
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.exposed_aggregate_installed unit_rate
+ok 222 - rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.exposed_aggregate_installed unit_rate
+  ---
+  duration_ms: 2.980394
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.insulation_installed unit_rate
+ok 223 - rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.insulation_installed unit_rate
+  ---
+  duration_ms: 2.632852
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.coverboard_installed unit_rate
+ok 224 - rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.coverboard_installed unit_rate
+  ---
+  duration_ms: 2.721154
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.stairs_labor fixed_amount
+ok 225 - rate precision matrix FLOORING_INSTALL:scopeRates.stairs_labor fixed_amount
+  ---
+  duration_ms: 1.565886
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.stairs_material fixed_amount
+ok 226 - rate precision matrix FLOORING_INSTALL:scopeRates.stairs_material fixed_amount
+  ---
+  duration_ms: 1.544473
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.stairs_underlayment fixed_amount
+ok 227 - rate precision matrix FLOORING_INSTALL:scopeRates.stairs_underlayment fixed_amount
+  ---
+  duration_ms: 1.439496
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.stairs_removal fixed_amount
+ok 228 - rate precision matrix FLOORING_INSTALL:scopeRates.stairs_removal fixed_amount
+  ---
+  duration_ms: 1.777285
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.stairs_disposal fixed_amount
+ok 229 - rate precision matrix FLOORING_INSTALL:scopeRates.stairs_disposal fixed_amount
+  ---
+  duration_ms: 1.404123
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.floor_overlay_prep unit_rate
+ok 230 - rate precision matrix FLOORING_INSTALL:scopeRates.floor_overlay_prep unit_rate
+  ---
+  duration_ms: 2.981016
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLOORING_INSTALL:scopeRates.floor_overlay_material unit_rate
+ok 231 - rate precision matrix FLOORING_INSTALL:scopeRates.floor_overlay_material unit_rate
+  ---
+  duration_ms: 2.771299
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_trim_labor unit_rate
+ok 232 - rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_trim_labor unit_rate
+  ---
+  duration_ms: 2.531118
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_trim_material unit_rate
+ok 233 - rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_trim_material unit_rate
+  ---
+  duration_ms: 2.819393
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_removal_removal unit_rate
+ok 234 - rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_removal_removal unit_rate
+  ---
+  duration_ms: 2.311909
+  type: 'test'
+  ...
+# Subtest: rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_removal_disposal unit_rate
+ok 235 - rate precision matrix SIDING_REPLACEMENT:scopeRates.siding_removal_disposal unit_rate
+  ---
+  duration_ms: 2.312099
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.demolition_removal unit_rate
+ok 236 - rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.demolition_removal unit_rate
+  ---
+  duration_ms: 2.909839
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.demolition_disposal unit_rate
+ok 237 - rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.demolition_disposal unit_rate
+  ---
+  duration_ms: 2.745871
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.exposed_aggregate_labor unit_rate
+ok 238 - rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.exposed_aggregate_labor unit_rate
+  ---
+  duration_ms: 3.042147
+  type: 'test'
+  ...
+# Subtest: rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.exposed_aggregate_material unit_rate
+ok 239 - rate precision matrix CONCRETE_PATIO_SLAB:scopeRates.exposed_aggregate_material unit_rate
+  ---
+  duration_ms: 3.134387
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.insulation_labor unit_rate
+ok 240 - rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.insulation_labor unit_rate
+  ---
+  duration_ms: 4.397136
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.insulation_material unit_rate
+ok 241 - rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.insulation_material unit_rate
+  ---
+  duration_ms: 4.751499
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.coverboard_labor unit_rate
+ok 242 - rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.coverboard_labor unit_rate
+  ---
+  duration_ms: 8.346138
+  type: 'test'
+  ...
+# Subtest: rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.coverboard_material unit_rate
+ok 243 - rate precision matrix FLAT_ROOF_REPLACEMENT:scopeRates.coverboard_material unit_rate
+  ---
+  duration_ms: 3.245563
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:scopeRates.paint_wall fixed_amount
+ok 244 - rate precision matrix INTERIOR_PAINTING:scopeRates.paint_wall fixed_amount
+  ---
+  duration_ms: 2.363356
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:scopeRates.paint_primer fixed_amount
+ok 245 - rate precision matrix INTERIOR_PAINTING:scopeRates.paint_primer fixed_amount
+  ---
+  duration_ms: 1.950224
+  type: 'test'
+  ...
+# Subtest: rate precision matrix INTERIOR_PAINTING:scopeRates.paint_prep fixed_amount
+ok 246 - rate precision matrix INTERIOR_PAINTING:scopeRates.paint_prep fixed_amount
+  ---
+  duration_ms: 2.591089
+  type: 'test'
+  ...
+# Subtest: rate precision matrix ROOFING_REPLACEMENT:scopeRates.roof_underlayment_asphalt_shingle fixed_amount
+ok 247 - rate precision matrix ROOFING_REPLACEMENT:scopeRates.roof_underlayment_asphalt_shingle fixed_amount
+  ---
+  duration_ms: 1.571445
+  type: 'test'
+  ...
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: roofing Chromium: historical service shows sources and adopts every new starting value in one action
+ok 248 - roofing Chromium: historical service shows sources and adopts every new starting value in one action
+  ---
+  duration_ms: 900.997478
+  type: 'test'
+  ...
+# Subtest: roof adoption keeps legacy mode unchanged and adopted mixed pitch uses additive per-band charges
+ok 249 - roof adoption keeps legacy mode unchanged and adopted mixed pitch uses additive per-band charges
+  ---
+  duration_ms: 31.662374
+  type: 'test'
+  ...
+# Subtest: adopted upper pitch, story and complexity additions do not multiply
+ok 250 - adopted upper pitch, story and complexity additions do not multiply
+  ---
+  duration_ms: 6.179248
+  type: 'test'
+  ...
+# Subtest: adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit
+ok 251 - adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit
+  ---
+  duration_ms: 24.525624
+  type: 'test'
+  ...
+# Subtest: roof dependent accessory lines, distinct labels and decking allocation are exact
+ok 252 - roof dependent accessory lines, distinct labels and decking allocation are exact
+  ---
+  duration_ms: 15.61145
+  type: 'test'
+  ...
+# Subtest: caller approximate roofing inputs quote and voice retains the exact on-site line
+ok 253 - caller approximate roofing inputs quote and voice retains the exact on-site line
+  ---
+  duration_ms: 15.566583
+  type: 'test'
+  ...
+# Subtest: every legacy roof pitch, story, layer and complexity combination stays on the prior formula until adoption
+ok 254 - every legacy roof pitch, story, layer and complexity combination stays on the prior formula until adoption
+  ---
+  duration_ms: 215.88648
+  type: 'test'
+  ...
+# Subtest: group adoption confirms current system values together, preserves owner values and later definition changes unconfirm
+ok 255 - group adoption confirms current system values together, preserves owner values and later definition changes unconfirm
+  ---
+  duration_ms: 3.815816
+  type: 'test'
+  ...
+# Subtest: application adoption keeps a historically approved roof live, then atomically binds the new rules
+ok 256 - application adoption keeps a historically approved roof live, then atomically binds the new rules
+  ---
+  duration_ms: 292.112468
+  type: 'test'
+  ...
+# Subtest: new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band
+ok 257 - new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band
+  ---
+  duration_ms: 845.414506
+  type: 'test'
+  ...
+# Subtest: new roofing decking exactly preserves the established optional-line and customer-note behavior
+ok 258 - new roofing decking exactly preserves the established optional-line and customer-note behavior
+  ---
+  duration_ms: 10.382339
+  type: 'test'
+  ...
+# Subtest: new roofing partial pitch areas describe only the replaced area and reject whole-roof totals
+ok 259 - new roofing partial pitch areas describe only the replaced area and reject whole-roof totals
+  ---
+  duration_ms: 7.116093
+  type: 'test'
+  ...
+# Subtest: partial pitch-area contradictions ask for correction at the widget application boundary
+ok 260 - partial pitch-area contradictions ask for correction at the widget application boundary
+  ---
+  duration_ms: 342.267422
+  type: 'test'
+  ...
+# Subtest: partial pitch-area contradictions ask for correction through the receptionist
+ok 261 - partial pitch-area contradictions ask for correction through the receptionist
+  ---
+  duration_ms: 265.557097
+  type: 'test'
+  ...
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:16:
+#       3 │ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DE...
+#         ╵                 ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: surface DOM Oct16: owner coat ratios start blank and retain the entered decimal
+ok 262 - surface DOM Oct16: owner coat ratios start blank and retain the entered decimal
+  ---
+  duration_ms: 355.966983
+  type: 'test'
+  ...
+# Subtest: surface DOM Oct16: room widget inputs reach the same arithmetic contract
+ok 263 - surface DOM Oct16: room widget inputs reach the same arithmetic contract
+  ---
+  duration_ms: 230.819684
+  type: 'test'
+  ...
+# Subtest: surface DOM Oct16: a large opening stays bound to its room
+ok 264 - surface DOM Oct16: a large opening stays bound to its room
+  ---
+  duration_ms: 250.104878
+  type: 'test'
+  ...
+# Subtest: surface DOM Oct16: optional selector hides unpriced quantities and selection survives submission
+ok 265 - surface DOM Oct16: optional selector hides unpriced quantities and selection survives submission
+  ---
+  duration_ms: 147.554683
+  type: 'test'
+  ...
+# Subtest: surface DOM Oct16: floor-to-ceiling answer changes labor but not paint
+ok 266 - surface DOM Oct16: floor-to-ceiling answer changes labor but not paint
+  ---
+  duration_ms: 290.4732
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 1
+ok 267 - surface Oct16: exact wall coat split 1
+  ---
+  duration_ms: 25.583059
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 2
+ok 268 - surface Oct16: exact wall coat split 2
+  ---
+  duration_ms: 4.925196
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 3
+ok 269 - surface Oct16: exact wall coat split 3
+  ---
+  duration_ms: 5.345178
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 1
+ok 270 - surface Oct16: blank ratio retains linear coats 1
+  ---
+  duration_ms: 4.630273
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 2
+ok 271 - surface Oct16: blank ratio retains linear coats 2
+  ---
+  duration_ms: 5.902026
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 3
+ok 272 - surface Oct16: blank ratio retains linear coats 3
+  ---
+  duration_ms: 3.453714
+  type: 'test'
+  ...
+# Subtest: surface Oct16: converted rates retain exact fractional cents and approved independent rounding
+ok 273 - surface Oct16: converted rates retain exact fractional cents and approved independent rounding
+  ---
+  duration_ms: 7.231824
+  type: 'test'
+  ...
+# Subtest: surface Oct16: poor wall preparation and good ceiling coats are independent
+ok 274 - surface Oct16: poor wall preparation and good ceiling coats are independent
+  ---
+  duration_ms: 11.853905
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic painting still sends fair and poor walls to review
+ok 275 - surface Oct16: basic painting still sends fair and poor walls to review
+  ---
+  duration_ms: 3.316427
+  type: 'test'
+  ...
+# Subtest: surface Oct16: room dimensions separate labor from net paint without blocking a best guess
+ok 276 - surface Oct16: room dimensions separate labor from net paint without blocking a best guess
+  ---
+  duration_ms: 34.181789
+  type: 'test'
+  ...
+# Subtest: surface Oct16: siding openings_left_in convention and gables
+ok 277 - surface Oct16: siding openings_left_in convention and gables
+  ---
+  duration_ms: 5.310245
+  type: 'test'
+  ...
+# Subtest: surface Oct16: siding openings_subtracted convention and gables
+ok 278 - surface Oct16: siding openings_subtracted convention and gables
+  ---
+  duration_ms: 3.82376
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exterior labor leaves ordinary openings in and paint subtracts all openings
+ok 279 - surface Oct16: exterior labor leaves ordinary openings in and paint subtracts all openings
+  ---
+  duration_ms: 6.259313
+  type: 'test'
+  ...
+# Subtest: surface Oct16: priced door sides and fascia extend once; unpriced requested doors are excluded
+ok 280 - surface Oct16: priced door sides and fascia extend once; unpriced requested doors are excluded
+  ---
+  duration_ms: 16.696056
+  type: 'test'
+  ...
+# Subtest: surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim
+ok 281 - surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim
+  ---
+  duration_ms: 5.439429
+  type: 'test'
+  ...
+# Subtest: surface Oct16: legacy no-new-input prices keep baseline cents
+ok 282 - surface Oct16: legacy no-new-input prices keep baseline cents
+  ---
+  duration_ms: 14.729348
+  type: 'test'
+  ...
+# Subtest: surface Oct16: missing siding convention names owner pricing rather than guessing a basis
+ok 283 - surface Oct16: missing siding convention names owner pricing rather than guessing a basis
+  ---
+  duration_ms: 1.957284
+  type: 'test'
+  ...
+# Subtest: surface Oct16: malformed new fields and inconsistent measurements cannot quote
+ok 284 - surface Oct16: malformed new fields and inconsistent measurements cannot quote
+  ---
+  duration_ms: 7.845297
+  type: 'test'
+  ...
+# Subtest: surface Oct16: widget and voice expose the same room and per-surface names without private rates
+ok 285 - surface Oct16: widget and voice expose the same room and per-surface names without private rates
+  ---
+  duration_ms: 2.116813
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic ceiling has its own exact coat split
+ok 286 - surface Oct16: basic ceiling has its own exact coat split
+  ---
+  duration_ms: 3.502697
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic trim has its own exact coat split
+ok 287 - surface Oct16: basic trim has its own exact coat split
+  ---
+  duration_ms: 4.231603
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic primer has its own exact coat split
+ok 288 - surface Oct16: basic primer has its own exact coat split
+  ---
+  duration_ms: 3.492292
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic ceilingPrimer has its own exact coat split
+ok 289 - surface Oct16: basic ceilingPrimer has its own exact coat split
+  ---
+  duration_ms: 2.590596
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic trimPrimer has its own exact coat split
+ok 290 - surface Oct16: basic trimPrimer has its own exact coat split
+  ---
+  duration_ms: 2.248551
+  type: 'test'
+  ...
+# Subtest: surface Oct16: itemized trim has independent coats and no height adjustment
+ok 291 - surface Oct16: itemized trim has independent coats and no height adjustment
+  ---
+  duration_ms: 3.603779
+  type: 'test'
+  ...
+# Subtest: surface Oct16: mixed-height installed room prices adjust only their labor shares
+ok 292 - surface Oct16: mixed-height installed room prices adjust only their labor shares
+  ---
+  duration_ms: 3.14566
+  type: 'test'
+  ...
+# Subtest: surface Oct16: optional siding soffit unit square_feet
+ok 293 - surface Oct16: optional siding soffit unit square_feet
+  ---
+  duration_ms: 2.687591
+  type: 'test'
+  ...
+# Subtest: surface Oct16: optional siding soffit unit linear_feet
+ok 294 - surface Oct16: optional siding soffit unit linear_feet
+  ---
+  duration_ms: 1.75555
+  type: 'test'
+  ...
+# Subtest: surface Oct16: differing garage openings subtract qualifying openings from painting labor
+ok 295 - surface Oct16: differing garage openings subtract qualifying openings from painting labor
+  ---
+  duration_ms: 3.401815
+  type: 'test'
+  ...
+# Subtest: surface Oct16: new settings persist, can be approved, and changed content invalidates approval
+ok 296 - surface Oct16: new settings persist, can be approved, and changed content invalidates approval
+  ---
+  duration_ms: 749.414401
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic wall and ceiling primer labor follow each room height
+ok 297 - surface Oct16: basic wall and ceiling primer labor follow each room height
+  ---
+  duration_ms: 6.098219
+  type: 'test'
+  ...
+# Subtest: surface Oct16: net room paint and trim primer package costs replace component materials
+ok 298 - surface Oct16: net room paint and trim primer package costs replace component materials
+  ---
+  duration_ms: 7.762202
+  type: 'test'
+  ...
+# Subtest: surface Oct16: large room openings use their own room height instead of an allocation
+ok 299 - surface Oct16: large room openings use their own room height instead of an allocation
+  ---
+  duration_ms: 4.524174
+  type: 'test'
+  ...
+# Subtest: surface Oct16: direct wall area can retain labor openings and subtract net paint
+ok 300 - surface Oct16: direct wall area can retain labor openings and subtract net paint
+  ---
+  duration_ms: 2.454431
+  type: 'test'
+  ...
+# Subtest: surface Oct16: explicitly priced good trim preparation is charged without height adjustment
+ok 301 - surface Oct16: explicitly priced good trim preparation is charged without height adjustment
+  ---
+  duration_ms: 3.539182
+  type: 'test'
+  ...
+# Subtest: surface Oct16: cost-based trim preparation uses its package instead of area-rate material
+ok 302 - surface Oct16: cost-based trim preparation uses its package instead of area-rate material
+  ---
+  duration_ms: 4.846517
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic explicit trim components replace retained prices and split coats
+ok 303 - surface Oct16: basic explicit trim components replace retained prices and split coats
+  ---
+  duration_ms: 3.520244
+  type: 'test'
+  ...
+# Subtest: surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs
+ok 304 - surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs
+  ---
+  duration_ms: 1.261107
+  type: 'test'
+  ...
+# Subtest: surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding
+ok 305 - surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding
+  ---
+  duration_ms: 6.823811
+  type: 'test'
+  ...
+# Subtest: surface Oct16: zero net paint uses zero packages while labor still quotes
+ok 306 - surface Oct16: zero net paint uses zero packages while labor still quotes
+  ---
+  duration_ms: 2.019006
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact derived wall area survives preparation extension to a safe-integer boundary
+ok 307 - surface Oct16: exact derived wall area survives preparation extension to a safe-integer boundary
+  ---
+  duration_ms: 3.878613
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":12.5,"heightFeet":8,"runsFloorToCeiling":false}
+ok 308 - lane C fixes: room opening {"widthFeet":12.5,"heightFeet":8,"runsFloorToCeiling":false}
+  ---
+  duration_ms: 22.24558
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":true}
+ok 309 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":true}
+  ---
+  duration_ms: 5.684337
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":false}
+ok 310 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":false}
+  ---
+  duration_ms: 5.541683
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9}
+ok 311 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9}
+  ---
+  duration_ms: 4.600228
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":5,"heightFeet":9,"runsFloorToCeiling":true}
+ok 312 - lane C fixes: room opening {"widthFeet":5,"heightFeet":9,"runsFloorToCeiling":true}
+  ---
+  duration_ms: 5.104475
+  type: 'test'
+  ...
+# Subtest: lane C fixes: interior direct-area openings use the same dimensions and floor-to-ceiling rule
+ok 313 - lane C fixes: interior direct-area openings use the same dimensions and floor-to-ceiling rule
+  ---
+  duration_ms: 3.166241
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"largeOpenings":[{"areaSqft":100}],"garageDoorCount":0}
+ok 314 - lane C fixes: exterior100-sqft threshold {"largeOpenings":[{"areaSqft":100}],"garageDoorCount":0}
+  ---
+  duration_ms: 7.551175
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageDoorWidthFeet":12.5,"garageDoorHeightFeet":8}
+ok 315 - lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageDoorWidthFeet":12.5,"garageDoorHeightFeet":8}
+  ---
+  duration_ms: 5.059148
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageOpenings":[{"widthFeet":12.5,"heightFeet":8}]}
+ok 316 - lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageOpenings":[{"widthFeet":12.5,"heightFeet":8}]}
+  ---
+  duration_ms: 6.515097
+  type: 'test'
+  ...
+# Subtest: lane C fixes:9x7 garage openings_left_in
+ok 317 - lane C fixes:9x7 garage openings_left_in
+  ---
+  duration_ms: 4.511114
+  type: 'test'
+  ...
+# Subtest: lane C fixes:9x7 garage openings_subtracted
+ok 318 - lane C fixes:9x7 garage openings_subtracted
+  ---
+  duration_ms: 2.262522
+  type: 'test'
+  ...
+# Subtest: lane C fixes: siding halves every other opening and every individual garage opening
+ok 319 - lane C fixes: siding halves every other opening and every individual garage opening
+  ---
+  duration_ms: 2.452378
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING basic
+ok 320 - lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING basic
+  ---
+  duration_ms: 1.716171
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING itemized
+ok 321 - lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING itemized
+  ---
+  duration_ms: 0.49861
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities EXTERIOR_PAINTING itemized
+ok 322 - lane C fixes: one optional selector and no unpriced quantities EXTERIOR_PAINTING itemized
+  ---
+  duration_ms: 0.348935
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities SIDING_REPLACEMENT basic
+ok 323 - lane C fixes: one optional selector and no unpriced quantities SIDING_REPLACEMENT basic
+  ---
+  duration_ms: 0.331869
+  type: 'test'
+  ...
+# Subtest: lane C fixes: unpriced selection excludes door sides without asking a quantity
+ok 324 - lane C fixes: unpriced selection excludes door sides without asking a quantity
+  ---
+  duration_ms: 7.770464
+  type: 'test'
+  ...
+# Subtest: lane C fixes: only selected priced quantities are asked, required and charged
+ok 325 - lane C fixes: only selected priced quantities are asked, required and charged
+  ---
+  duration_ms: 6.338912
+  type: 'test'
+  ...
+# Subtest: lane C fixes: selected soffit uses saved square_feet
+ok 326 - lane C fixes: selected soffit uses saved square_feet
+  ---
+  duration_ms: 2.323294
+  type: 'test'
+  ...
+# Subtest: lane C fixes: selected soffit uses saved linear_feet
+ok 327 - lane C fixes: selected soffit uses saved linear_feet
+  ---
+  duration_ms: 1.86913
+  type: 'test'
+  ...
+# Subtest: lane C fixes: unpriced siding soffit needs no unit or quantity
+ok 328 - lane C fixes: unpriced siding soffit needs no unit or quantity
+  ---
+  duration_ms: 2.615352
+  type: 'test'
+  ...
+# Subtest: lane C fixes: invalid optional selections and floor-to-ceiling flags do not quote
+ok 329 - lane C fixes: invalid optional selections and floor-to-ceiling flags do not quote
+  ---
+  duration_ms: 0.936969
+  type: 'test'
+  ...
+1..329
+# tests 329
+# suites 0
+# pass 329
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22063.222017

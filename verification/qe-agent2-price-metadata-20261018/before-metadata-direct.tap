@@ -1,0 +1,1318 @@
+TAP version 13
+# Subtest: Agent 2 F9 independent key inventory covers all painting and surface definitions
+ok 1 - Agent 2 F9 independent key inventory covers all painting and surface definitions
+  ---
+  duration_ms: 1.640386
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+not ok 2 - Agent 2 F9 INTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 3.560442
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    base and explicit overrides only
+    
+    2 !== 38
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 38
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    assertClassifications (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:54:7)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+not ok 3 - Agent 2 F9 INTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 8.629793
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:66:3'
+  failureType: 'testCodeFailure'
+  error: 'paintingRates.primerLaborPerSqftPerCoat metadata survived save/reload'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    check (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:76:16)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:84:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+not ok 4 - Agent 2 F9 INTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 7.206133
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:103:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    paintingRates.primerLaborPerSqftPerCoat
+    + actual - expected
+    
+    + undefined
+    - {
+    -   sourceNote: '[SYNTHETIC] service source for paintingRates.primerLaborPerSqftPerCoat'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    sourceNote: '[SYNTHETIC] service source for paintingRates.primerLaborPerSqftPerCoat'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:112:81)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+not ok 5 - Agent 2 F9 INTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 14.538725
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:117:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'materialPerWallSqftPerCoat',
+    -   'paintingRates.ceilingPrimerLaborPerSqftPerCoat',
+    -   'paintingRates.ceilingPrimerMaterialPerSqftPerCoat',
+    -   'paintingRates.primerLaborPerSqftPerCoat',
+    -   'paintingRates.primerMaterialPerSqftPerCoat',
+    -   'paintingRates.trimLaborPerLFPerCoat',
+    -   'paintingRates.trimMaterialPerLFPerCoat',
+    -   'paintingRates.trimPrepLaborPerLF_fair',
+    -   'paintingRates.trimPrepLaborPerLF_good',
+    -   'paintingRates.trimPrepLaborPerLF_poor',
+    -   'paintingRates.trimPrepMaterialPerLF_fair',
+    -   'paintingRates.trimPrepMaterialPerLF_good',
+    -   'paintingRates.trimPrepMaterialPerLF_poor',
+    -   'paintingRates.trimPrimerLaborPerLFPerCoat',
+    -   'paintingRates.trimPrimerMaterialPerLFPerCoat',
+        'tiers.0.overrides.materialPerWallSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.ceilingPrimerLaborPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.ceilingPrimerMaterialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.primerLaborPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.primerMaterialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimLaborPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimMaterialPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_fair',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_good',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_poor',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_fair',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_good',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_poor',
+    -   'tiers.0.overrides.paintingRates.trimPrimerLaborPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimPrimerMaterialPerLFPerCoat'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'materialPerWallSqftPerCoat'
+    1: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+    2: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+    3: 'paintingRates.primerLaborPerSqftPerCoat'
+    4: 'paintingRates.primerMaterialPerSqftPerCoat'
+    5: 'paintingRates.trimLaborPerLFPerCoat'
+    6: 'paintingRates.trimMaterialPerLFPerCoat'
+    7: 'paintingRates.trimPrepLaborPerLF_fair'
+    8: 'paintingRates.trimPrepLaborPerLF_good'
+    9: 'paintingRates.trimPrepLaborPerLF_poor'
+    10: 'paintingRates.trimPrepMaterialPerLF_fair'
+    11: 'paintingRates.trimPrepMaterialPerLF_good'
+    12: 'paintingRates.trimPrepMaterialPerLF_poor'
+    13: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+    14: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+    15: 'tiers.0.overrides.materialPerWallSqftPerCoat'
+    16: 'tiers.0.overrides.paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+    17: 'tiers.0.overrides.paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+    18: 'tiers.0.overrides.paintingRates.primerLaborPerSqftPerCoat'
+    19: 'tiers.0.overrides.paintingRates.primerMaterialPerSqftPerCoat'
+    20: 'tiers.0.overrides.paintingRates.trimLaborPerLFPerCoat'
+    21: 'tiers.0.overrides.paintingRates.trimMaterialPerLFPerCoat'
+    22: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_fair'
+    23: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_good'
+    24: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_poor'
+    25: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_fair'
+    26: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_good'
+    27: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_poor'
+    28: 'tiers.0.overrides.paintingRates.trimPrimerLaborPerLFPerCoat'
+    29: 'tiers.0.overrides.paintingRates.trimPrimerMaterialPerLFPerCoat'
+  actual:
+    0: 'materialPerWallSqftPerCoat'
+    1: 'tiers.0.overrides.materialPerWallSqftPerCoat'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:123:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 INTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+not ok 6 - Agent 2 F9 INTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 1.453815
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:142:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'materialPerWallSqftPerCoat',
+    -   'paintingRates.ceilingPrimerLaborPerSqftPerCoat',
+    -   'paintingRates.ceilingPrimerMaterialPerSqftPerCoat',
+    -   'paintingRates.primerLaborPerSqftPerCoat',
+    -   'paintingRates.primerMaterialPerSqftPerCoat',
+    -   'paintingRates.trimLaborPerLFPerCoat',
+    -   'paintingRates.trimMaterialPerLFPerCoat',
+    -   'paintingRates.trimPrepLaborPerLF_fair',
+    -   'paintingRates.trimPrepLaborPerLF_good',
+    -   'paintingRates.trimPrepLaborPerLF_poor',
+    -   'paintingRates.trimPrepMaterialPerLF_fair',
+    -   'paintingRates.trimPrepMaterialPerLF_good',
+    -   'paintingRates.trimPrepMaterialPerLF_poor',
+    -   'paintingRates.trimPrimerLaborPerLFPerCoat',
+    -   'paintingRates.trimPrimerMaterialPerLFPerCoat',
+    -   'surfaceExtraRates.cabinetFaces',
+    -   'surfaceExtraRates.doorFrames',
+    -   'surfaceExtraRates.doorSides',
+    -   'surfaceExtraRates.windows',
+        'tiers.0.overrides.materialPerWallSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.ceilingPrimerLaborPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.ceilingPrimerMaterialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.primerLaborPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.primerMaterialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimLaborPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimMaterialPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_fair',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_good',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_poor',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_fair',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_good',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_poor',
+    -   'tiers.0.overrides.paintingRates.trimPrimerLaborPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimPrimerMaterialPerLFPerCoat',
+    -   'tiers.0.overrides.surfaceExtraRates.cabinetFaces',
+    -   'tiers.0.overrides.surfaceExtraRates.doorFrames',
+    -   'tiers.0.overrides.surfaceExtraRates.doorSides',
+    -   'tiers.0.overrides.surfaceExtraRates.windows'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'materialPerWallSqftPerCoat'
+    1: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+    2: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+    3: 'paintingRates.primerLaborPerSqftPerCoat'
+    4: 'paintingRates.primerMaterialPerSqftPerCoat'
+    5: 'paintingRates.trimLaborPerLFPerCoat'
+    6: 'paintingRates.trimMaterialPerLFPerCoat'
+    7: 'paintingRates.trimPrepLaborPerLF_fair'
+    8: 'paintingRates.trimPrepLaborPerLF_good'
+    9: 'paintingRates.trimPrepLaborPerLF_poor'
+    10: 'paintingRates.trimPrepMaterialPerLF_fair'
+    11: 'paintingRates.trimPrepMaterialPerLF_good'
+    12: 'paintingRates.trimPrepMaterialPerLF_poor'
+    13: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+    14: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+    15: 'surfaceExtraRates.cabinetFaces'
+    16: 'surfaceExtraRates.doorFrames'
+    17: 'surfaceExtraRates.doorSides'
+    18: 'surfaceExtraRates.windows'
+    19: 'tiers.0.overrides.materialPerWallSqftPerCoat'
+    20: 'tiers.0.overrides.paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+    21: 'tiers.0.overrides.paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+    22: 'tiers.0.overrides.paintingRates.primerLaborPerSqftPerCoat'
+    23: 'tiers.0.overrides.paintingRates.primerMaterialPerSqftPerCoat'
+    24: 'tiers.0.overrides.paintingRates.trimLaborPerLFPerCoat'
+    25: 'tiers.0.overrides.paintingRates.trimMaterialPerLFPerCoat'
+    26: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_fair'
+    27: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_good'
+    28: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_poor'
+    29: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_fair'
+    30: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_good'
+    31: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_poor'
+    32: 'tiers.0.overrides.paintingRates.trimPrimerLaborPerLFPerCoat'
+    33: 'tiers.0.overrides.paintingRates.trimPrimerMaterialPerLFPerCoat'
+    34: 'tiers.0.overrides.surfaceExtraRates.cabinetFaces'
+    35: 'tiers.0.overrides.surfaceExtraRates.doorFrames'
+    36: 'tiers.0.overrides.surfaceExtraRates.doorSides'
+    37: 'tiers.0.overrides.surfaceExtraRates.windows'
+  actual:
+    0: 'materialPerWallSqftPerCoat'
+    1: 'tiers.0.overrides.materialPerWallSqftPerCoat'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:146:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+not ok 7 - Agent 2 F9 EXTERIOR_PAINTING classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.402605
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    base and explicit overrides only
+    
+    2 !== 46
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 46
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    assertClassifications (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:54:7)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+not ok 8 - Agent 2 F9 EXTERIOR_PAINTING real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 5.468401
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:66:3'
+  failureType: 'testCodeFailure'
+  error: 'paintingRates.primerLaborPerSqftPerCoat metadata survived save/reload'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    check (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:76:16)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:84:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+not ok 9 - Agent 2 F9 EXTERIOR_PAINTING unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 6.964138
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:103:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    paintingRates.primerLaborPerSqftPerCoat
+    + actual - expected
+    
+    + undefined
+    - {
+    -   sourceNote: '[SYNTHETIC] service source for paintingRates.primerLaborPerSqftPerCoat'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    sourceNote: '[SYNTHETIC] service source for paintingRates.primerLaborPerSqftPerCoat'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:112:81)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+not ok 10 - Agent 2 F9 EXTERIOR_PAINTING freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 1.432824
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:117:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'materialPerSqftPerCoat',
+    -   'paintingRates.ceilingPrimerLaborPerSqftPerCoat',
+    -   'paintingRates.ceilingPrimerMaterialPerSqftPerCoat',
+    -   'paintingRates.primerLaborPerSqftPerCoat',
+    -   'paintingRates.primerMaterialPerSqftPerCoat',
+    -   'paintingRates.trimLaborPerLFPerCoat',
+    -   'paintingRates.trimMaterialPerLFPerCoat',
+    -   'paintingRates.trimPrepLaborPerLF_fair',
+    -   'paintingRates.trimPrepLaborPerLF_good',
+    -   'paintingRates.trimPrepLaborPerLF_poor',
+    -   'paintingRates.trimPrepMaterialPerLF_fair',
+    -   'paintingRates.trimPrepMaterialPerLF_good',
+    -   'paintingRates.trimPrepMaterialPerLF_poor',
+    -   'paintingRates.trimPrimerLaborPerLFPerCoat',
+    -   'paintingRates.trimPrimerMaterialPerLFPerCoat',
+        'tiers.0.overrides.materialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.ceilingPrimerLaborPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.ceilingPrimerMaterialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.primerLaborPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.primerMaterialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimLaborPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimMaterialPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_fair',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_good',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_poor',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_fair',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_good',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_poor',
+    -   'tiers.0.overrides.paintingRates.trimPrimerLaborPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimPrimerMaterialPerLFPerCoat'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'materialPerSqftPerCoat'
+    1: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+    2: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+    3: 'paintingRates.primerLaborPerSqftPerCoat'
+    4: 'paintingRates.primerMaterialPerSqftPerCoat'
+    5: 'paintingRates.trimLaborPerLFPerCoat'
+    6: 'paintingRates.trimMaterialPerLFPerCoat'
+    7: 'paintingRates.trimPrepLaborPerLF_fair'
+    8: 'paintingRates.trimPrepLaborPerLF_good'
+    9: 'paintingRates.trimPrepLaborPerLF_poor'
+    10: 'paintingRates.trimPrepMaterialPerLF_fair'
+    11: 'paintingRates.trimPrepMaterialPerLF_good'
+    12: 'paintingRates.trimPrepMaterialPerLF_poor'
+    13: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+    14: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+    15: 'tiers.0.overrides.materialPerSqftPerCoat'
+    16: 'tiers.0.overrides.paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+    17: 'tiers.0.overrides.paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+    18: 'tiers.0.overrides.paintingRates.primerLaborPerSqftPerCoat'
+    19: 'tiers.0.overrides.paintingRates.primerMaterialPerSqftPerCoat'
+    20: 'tiers.0.overrides.paintingRates.trimLaborPerLFPerCoat'
+    21: 'tiers.0.overrides.paintingRates.trimMaterialPerLFPerCoat'
+    22: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_fair'
+    23: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_good'
+    24: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_poor'
+    25: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_fair'
+    26: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_good'
+    27: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_poor'
+    28: 'tiers.0.overrides.paintingRates.trimPrimerLaborPerLFPerCoat'
+    29: 'tiers.0.overrides.paintingRates.trimPrimerMaterialPerLFPerCoat'
+  actual:
+    0: 'materialPerSqftPerCoat'
+    1: 'tiers.0.overrides.materialPerSqftPerCoat'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:123:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 EXTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+not ok 11 - Agent 2 F9 EXTERIOR_PAINTING AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 0.989297
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:142:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'materialPerSqftPerCoat',
+    -   'paintingRates.ceilingPrimerLaborPerSqftPerCoat',
+    -   'paintingRates.ceilingPrimerMaterialPerSqftPerCoat',
+    -   'paintingRates.primerLaborPerSqftPerCoat',
+    -   'paintingRates.primerMaterialPerSqftPerCoat',
+    -   'paintingRates.trimLaborPerLFPerCoat',
+    -   'paintingRates.trimMaterialPerLFPerCoat',
+    -   'paintingRates.trimPrepLaborPerLF_fair',
+    -   'paintingRates.trimPrepLaborPerLF_good',
+    -   'paintingRates.trimPrepLaborPerLF_poor',
+    -   'paintingRates.trimPrepMaterialPerLF_fair',
+    -   'paintingRates.trimPrepMaterialPerLF_good',
+    -   'paintingRates.trimPrepMaterialPerLF_poor',
+    -   'paintingRates.trimPrimerLaborPerLFPerCoat',
+    -   'paintingRates.trimPrimerMaterialPerLFPerCoat',
+    -   'surfaceExtraRates.doors',
+    -   'surfaceExtraRates.exteriorTrim',
+    -   'surfaceExtraRates.fascia',
+    -   'surfaceExtraRates.garageDoors',
+    -   'surfaceExtraRates.powerWashing',
+    -   'surfaceExtraRates.shutters',
+    -   'surfaceExtraRates.soffit',
+    -   'surfaceExtraRates.windows',
+        'tiers.0.overrides.materialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.ceilingPrimerLaborPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.ceilingPrimerMaterialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.primerLaborPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.primerMaterialPerSqftPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimLaborPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimMaterialPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_fair',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_good',
+    -   'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_poor',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_fair',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_good',
+    -   'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_poor',
+    -   'tiers.0.overrides.paintingRates.trimPrimerLaborPerLFPerCoat',
+    -   'tiers.0.overrides.paintingRates.trimPrimerMaterialPerLFPerCoat',
+    -   'tiers.0.overrides.surfaceExtraRates.doors',
+    -   'tiers.0.overrides.surfaceExtraRates.exteriorTrim',
+    -   'tiers.0.overrides.surfaceExtraRates.fascia',
+    -   'tiers.0.overrides.surfaceExtraRates.garageDoors',
+    -   'tiers.0.overrides.surfaceExtraRates.powerWashing',
+    -   'tiers.0.overrides.surfaceExtraRates.shutters',
+    -   'tiers.0.overrides.surfaceExtraRates.soffit',
+    -   'tiers.0.overrides.surfaceExtraRates.windows'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'materialPerSqftPerCoat'
+    1: 'paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+    2: 'paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+    3: 'paintingRates.primerLaborPerSqftPerCoat'
+    4: 'paintingRates.primerMaterialPerSqftPerCoat'
+    5: 'paintingRates.trimLaborPerLFPerCoat'
+    6: 'paintingRates.trimMaterialPerLFPerCoat'
+    7: 'paintingRates.trimPrepLaborPerLF_fair'
+    8: 'paintingRates.trimPrepLaborPerLF_good'
+    9: 'paintingRates.trimPrepLaborPerLF_poor'
+    10: 'paintingRates.trimPrepMaterialPerLF_fair'
+    11: 'paintingRates.trimPrepMaterialPerLF_good'
+    12: 'paintingRates.trimPrepMaterialPerLF_poor'
+    13: 'paintingRates.trimPrimerLaborPerLFPerCoat'
+    14: 'paintingRates.trimPrimerMaterialPerLFPerCoat'
+    15: 'surfaceExtraRates.doors'
+    16: 'surfaceExtraRates.exteriorTrim'
+    17: 'surfaceExtraRates.fascia'
+    18: 'surfaceExtraRates.garageDoors'
+    19: 'surfaceExtraRates.powerWashing'
+    20: 'surfaceExtraRates.shutters'
+    21: 'surfaceExtraRates.soffit'
+    22: 'surfaceExtraRates.windows'
+    23: 'tiers.0.overrides.materialPerSqftPerCoat'
+    24: 'tiers.0.overrides.paintingRates.ceilingPrimerLaborPerSqftPerCoat'
+    25: 'tiers.0.overrides.paintingRates.ceilingPrimerMaterialPerSqftPerCoat'
+    26: 'tiers.0.overrides.paintingRates.primerLaborPerSqftPerCoat'
+    27: 'tiers.0.overrides.paintingRates.primerMaterialPerSqftPerCoat'
+    28: 'tiers.0.overrides.paintingRates.trimLaborPerLFPerCoat'
+    29: 'tiers.0.overrides.paintingRates.trimMaterialPerLFPerCoat'
+    30: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_fair'
+    31: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_good'
+    32: 'tiers.0.overrides.paintingRates.trimPrepLaborPerLF_poor'
+    33: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_fair'
+    34: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_good'
+    35: 'tiers.0.overrides.paintingRates.trimPrepMaterialPerLF_poor'
+    36: 'tiers.0.overrides.paintingRates.trimPrimerLaborPerLFPerCoat'
+    37: 'tiers.0.overrides.paintingRates.trimPrimerMaterialPerLFPerCoat'
+    38: 'tiers.0.overrides.surfaceExtraRates.doors'
+    39: 'tiers.0.overrides.surfaceExtraRates.exteriorTrim'
+    40: 'tiers.0.overrides.surfaceExtraRates.fascia'
+    41: 'tiers.0.overrides.surfaceExtraRates.garageDoors'
+    42: 'tiers.0.overrides.surfaceExtraRates.powerWashing'
+    43: 'tiers.0.overrides.surfaceExtraRates.shutters'
+    44: 'tiers.0.overrides.surfaceExtraRates.soffit'
+    45: 'tiers.0.overrides.surfaceExtraRates.windows'
+  actual:
+    0: 'materialPerSqftPerCoat'
+    1: 'tiers.0.overrides.materialPerSqftPerCoat'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:146:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet classifies every base/tier leaf using the configured basis
+not ok 12 - Agent 2 F9 SIDING_REPLACEMENT linear_feet classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.802496
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    base and explicit overrides only
+    
+    2 !== 6
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 6
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    assertClassifications (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:54:7)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet real save/reload retains notes and independently dates every changed leaf
+not ok 13 - Agent 2 F9 SIDING_REPLACEMENT linear_feet real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 3.673011
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:66:3'
+  failureType: 'testCodeFailure'
+  error: 'surfaceExtraRates.soffit metadata survived save/reload'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    check (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:76:16)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:84:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet unchanged legacy prices gain neither dates nor invented provenance
+not ok 14 - Agent 2 F9 SIDING_REPLACEMENT linear_feet unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 5.069721
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:103:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    surfaceExtraRates.soffit
+    + actual - expected
+    
+    + undefined
+    - {
+    -   sourceNote: '[SYNTHETIC] service source for surfaceExtraRates.soffit'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    sourceNote: '[SYNTHETIC] service source for surfaceExtraRates.soffit'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:112:81)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet freshness checks all leaves and respects selling-price exclusions
+ok 15 - Agent 2 F9 SIDING_REPLACEMENT linear_feet freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 6.414272
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT linear_feet AI adoption and source-note edits preserve every unchanged date
+not ok 16 - Agent 2 F9 SIDING_REPLACEMENT linear_feet AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 0.534894
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:142:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'materialPerSqft.vinyl',
+    -   'surfaceExtraRates.fascia',
+    -   'surfaceExtraRates.soffit',
+        'tiers.0.overrides.materialPerSqft.vinyl',
+    -   'tiers.0.overrides.surfaceExtraRates.fascia',
+    -   'tiers.0.overrides.surfaceExtraRates.soffit'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'materialPerSqft.vinyl'
+    1: 'surfaceExtraRates.fascia'
+    2: 'surfaceExtraRates.soffit'
+    3: 'tiers.0.overrides.materialPerSqft.vinyl'
+    4: 'tiers.0.overrides.surfaceExtraRates.fascia'
+    5: 'tiers.0.overrides.surfaceExtraRates.soffit'
+  actual:
+    0: 'materialPerSqft.vinyl'
+    1: 'tiers.0.overrides.materialPerSqft.vinyl'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:146:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet classifies every base/tier leaf using the configured basis
+not ok 17 - Agent 2 F9 SIDING_REPLACEMENT square_feet classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.269525
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    base and explicit overrides only
+    
+    2 !== 6
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 6
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    assertClassifications (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:54:7)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet real save/reload retains notes and independently dates every changed leaf
+not ok 18 - Agent 2 F9 SIDING_REPLACEMENT square_feet real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 3.251187
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:66:3'
+  failureType: 'testCodeFailure'
+  error: 'surfaceExtraRates.soffit metadata survived save/reload'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    check (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:76:16)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:84:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet unchanged legacy prices gain neither dates nor invented provenance
+not ok 19 - Agent 2 F9 SIDING_REPLACEMENT square_feet unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 4.658693
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:103:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    surfaceExtraRates.soffit
+    + actual - expected
+    
+    + undefined
+    - {
+    -   sourceNote: '[SYNTHETIC] service source for surfaceExtraRates.soffit'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    sourceNote: '[SYNTHETIC] service source for surfaceExtraRates.soffit'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:112:81)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet freshness checks all leaves and respects selling-price exclusions
+ok 20 - Agent 2 F9 SIDING_REPLACEMENT square_feet freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 7.001655
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 SIDING_REPLACEMENT square_feet AI adoption and source-note edits preserve every unchanged date
+not ok 21 - Agent 2 F9 SIDING_REPLACEMENT square_feet AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 0.448954
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:142:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'materialPerSqft.vinyl',
+    -   'surfaceExtraRates.fascia',
+    -   'surfaceExtraRates.soffit',
+        'tiers.0.overrides.materialPerSqft.vinyl',
+    -   'tiers.0.overrides.surfaceExtraRates.fascia',
+    -   'tiers.0.overrides.surfaceExtraRates.soffit'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'materialPerSqft.vinyl'
+    1: 'surfaceExtraRates.fascia'
+    2: 'surfaceExtraRates.soffit'
+    3: 'tiers.0.overrides.materialPerSqft.vinyl'
+    4: 'tiers.0.overrides.surfaceExtraRates.fascia'
+    5: 'tiers.0.overrides.surfaceExtraRates.soffit'
+  actual:
+    0: 'materialPerSqft.vinyl'
+    1: 'tiers.0.overrides.materialPerSqft.vinyl'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:146:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT classifies every base/tier leaf using the configured basis
+not ok 22 - Agent 2 F21 ROOFING_REPLACEMENT classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.819272
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    iceWaterBarrierPerSqft category
+    
+    null !== 'material'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'material'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertClassifications (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:33:12)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:54:7)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT real save/reload retains notes and independently dates every changed leaf
+ok 23 - Agent 2 F21 ROOFING_REPLACEMENT real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 58.736969
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT unchanged legacy prices gain neither dates nor invented provenance
+ok 24 - Agent 2 F21 ROOFING_REPLACEMENT unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 7.675328
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT freshness checks all leaves and respects selling-price exclusions
+not ok 25 - Agent 2 F21 ROOFING_REPLACEMENT freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 1.076288
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:117:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'iceWaterBarrierPerLF',
+    -   'iceWaterBarrierPerSqft',
+        'materialCostPerSquare.asphalt_shingle',
+    -   'pipeJackEach',
+    -   'ridgeVentPerLF',
+    -   'stepFlashingPerLF',
+    -   'tiers.0.overrides.iceWaterBarrierPerLF',
+    -   'tiers.0.overrides.iceWaterBarrierPerSqft',
+        'tiers.0.overrides.materialCostPerSquare.asphalt_shingle',
+    -   'tiers.0.overrides.pipeJackEach',
+    -   'tiers.0.overrides.ridgeVentPerLF',
+    -   'tiers.0.overrides.stepFlashingPerLF',
+    -   'tiers.0.overrides.valleyPerLF',
+    -   'valleyPerLF'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'iceWaterBarrierPerLF'
+    1: 'iceWaterBarrierPerSqft'
+    2: 'materialCostPerSquare.asphalt_shingle'
+    3: 'pipeJackEach'
+    4: 'ridgeVentPerLF'
+    5: 'stepFlashingPerLF'
+    6: 'tiers.0.overrides.iceWaterBarrierPerLF'
+    7: 'tiers.0.overrides.iceWaterBarrierPerSqft'
+    8: 'tiers.0.overrides.materialCostPerSquare.asphalt_shingle'
+    9: 'tiers.0.overrides.pipeJackEach'
+    10: 'tiers.0.overrides.ridgeVentPerLF'
+    11: 'tiers.0.overrides.stepFlashingPerLF'
+    12: 'tiers.0.overrides.valleyPerLF'
+    13: 'valleyPerLF'
+  actual:
+    0: 'materialCostPerSquare.asphalt_shingle'
+    1: 'tiers.0.overrides.materialCostPerSquare.asphalt_shingle'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:123:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 ROOFING_REPLACEMENT AI adoption and source-note edits preserve every unchanged date
+ok 26 - Agent 2 F21 ROOFING_REPLACEMENT AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 24.634272
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB classifies every base/tier leaf using the configured basis
+not ok 27 - Agent 2 F21 CONCRETE_PATIO_SLAB classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.643227
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    shortLoadPerYard category
+    
+    null !== 'material'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'material'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertClassifications (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:33:12)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:54:7)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB real save/reload retains notes and independently dates every changed leaf
+ok 28 - Agent 2 F21 CONCRETE_PATIO_SLAB real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 55.84347
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB unchanged legacy prices gain neither dates nor invented provenance
+ok 29 - Agent 2 F21 CONCRETE_PATIO_SLAB unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 4.032673
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB freshness checks all leaves and respects selling-price exclusions
+not ok 30 - Agent 2 F21 CONCRETE_PATIO_SLAB freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 0.564769
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:117:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'baseExcavationGradingPerSqft',
+    -   'baseGravelPerCubicYard',
+        'concreteCostPerCubicYard',
+    -   'placementFlat.pump',
+    -   'placementPerCubicYard.pump',
+    -   'sawCutPerLF',
+    -   'shortLoadFlatFee',
+    -   'shortLoadPerYard',
+    -   'tiers.0.overrides.baseExcavationGradingPerSqft',
+    -   'tiers.0.overrides.baseGravelPerCubicYard',
+        'tiers.0.overrides.concreteCostPerCubicYard',
+    -   'tiers.0.overrides.placementFlat.pump',
+    -   'tiers.0.overrides.placementPerCubicYard.pump',
+    -   'tiers.0.overrides.sawCutPerLF',
+    -   'tiers.0.overrides.shortLoadFlatFee',
+    -   'tiers.0.overrides.shortLoadPerYard'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'baseExcavationGradingPerSqft'
+    1: 'baseGravelPerCubicYard'
+    2: 'concreteCostPerCubicYard'
+    3: 'placementFlat.pump'
+    4: 'placementPerCubicYard.pump'
+    5: 'sawCutPerLF'
+    6: 'shortLoadFlatFee'
+    7: 'shortLoadPerYard'
+    8: 'tiers.0.overrides.baseExcavationGradingPerSqft'
+    9: 'tiers.0.overrides.baseGravelPerCubicYard'
+    10: 'tiers.0.overrides.concreteCostPerCubicYard'
+    11: 'tiers.0.overrides.placementFlat.pump'
+    12: 'tiers.0.overrides.placementPerCubicYard.pump'
+    13: 'tiers.0.overrides.sawCutPerLF'
+    14: 'tiers.0.overrides.shortLoadFlatFee'
+    15: 'tiers.0.overrides.shortLoadPerYard'
+  actual:
+    0: 'concreteCostPerCubicYard'
+    1: 'tiers.0.overrides.concreteCostPerCubicYard'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:123:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 CONCRETE_PATIO_SLAB AI adoption and source-note edits preserve every unchanged date
+ok 31 - Agent 2 F21 CONCRETE_PATIO_SLAB AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 10.625874
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY classifies every base/tier leaf using the configured basis
+not ok 32 - Agent 2 F21 CONCRETE_DRIVEWAY classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.284457
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    shortLoadPerYard category
+    
+    null !== 'material'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'material'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertClassifications (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:33:12)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:54:7)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY real save/reload retains notes and independently dates every changed leaf
+ok 33 - Agent 2 F21 CONCRETE_DRIVEWAY real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 38.476572
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY unchanged legacy prices gain neither dates nor invented provenance
+ok 34 - Agent 2 F21 CONCRETE_DRIVEWAY unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 4.64955
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY freshness checks all leaves and respects selling-price exclusions
+not ok 35 - Agent 2 F21 CONCRETE_DRIVEWAY freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 0.647053
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:117:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'baseExcavationGradingPerSqft',
+    -   'baseGravelPerCubicYard',
+        'concreteCostPerCubicYard',
+    -   'placementFlat.pump',
+    -   'placementPerCubicYard.pump',
+    -   'sawCutPerLF',
+    -   'shortLoadFlatFee',
+    -   'shortLoadPerYard',
+    -   'tiers.0.overrides.baseExcavationGradingPerSqft',
+    -   'tiers.0.overrides.baseGravelPerCubicYard',
+        'tiers.0.overrides.concreteCostPerCubicYard',
+    -   'tiers.0.overrides.placementFlat.pump',
+    -   'tiers.0.overrides.placementPerCubicYard.pump',
+    -   'tiers.0.overrides.sawCutPerLF',
+    -   'tiers.0.overrides.shortLoadFlatFee',
+    -   'tiers.0.overrides.shortLoadPerYard'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'baseExcavationGradingPerSqft'
+    1: 'baseGravelPerCubicYard'
+    2: 'concreteCostPerCubicYard'
+    3: 'placementFlat.pump'
+    4: 'placementPerCubicYard.pump'
+    5: 'sawCutPerLF'
+    6: 'shortLoadFlatFee'
+    7: 'shortLoadPerYard'
+    8: 'tiers.0.overrides.baseExcavationGradingPerSqft'
+    9: 'tiers.0.overrides.baseGravelPerCubicYard'
+    10: 'tiers.0.overrides.concreteCostPerCubicYard'
+    11: 'tiers.0.overrides.placementFlat.pump'
+    12: 'tiers.0.overrides.placementPerCubicYard.pump'
+    13: 'tiers.0.overrides.sawCutPerLF'
+    14: 'tiers.0.overrides.shortLoadFlatFee'
+    15: 'tiers.0.overrides.shortLoadPerYard'
+  actual:
+    0: 'concreteCostPerCubicYard'
+    1: 'tiers.0.overrides.concreteCostPerCubicYard'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:123:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 CONCRETE_DRIVEWAY AI adoption and source-note edits preserve every unchanged date
+ok 36 - Agent 2 F21 CONCRETE_DRIVEWAY AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 10.940187
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD classifies every base/tier leaf using the configured basis
+not ok 37 - Agent 2 F21 LANDSCAPING_SOD classifies every base/tier leaf using the configured basis
+  ---
+  duration_ms: 0.401634
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:50:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    sodGradingPerSqft category
+    
+    null !== 'labor'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'labor'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertClassifications (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:33:12)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:54:7)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD real save/reload retains notes and independently dates every changed leaf
+ok 38 - Agent 2 F21 LANDSCAPING_SOD real save/reload retains notes and independently dates every changed leaf
+  ---
+  duration_ms: 16.806305
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD unchanged legacy prices gain neither dates nor invented provenance
+ok 39 - Agent 2 F21 LANDSCAPING_SOD unchanged legacy prices gain neither dates nor invented provenance
+  ---
+  duration_ms: 4.248336
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD freshness checks all leaves and respects selling-price exclusions
+not ok 40 - Agent 2 F21 LANDSCAPING_SOD freshness checks all leaves and respects selling-price exclusions
+  ---
+  duration_ms: 0.801064
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:117:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'sodGradingPerSqft',
+        'sodMaterialPerSqft',
+    -   'tiers.0.overrides.sodGradingPerSqft',
+        'tiers.0.overrides.sodMaterialPerSqft',
+    -   'tiers.0.overrides.topsoilPerCubicYard',
+    -   'topsoilPerCubicYard'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'sodGradingPerSqft'
+    1: 'sodMaterialPerSqft'
+    2: 'tiers.0.overrides.sodGradingPerSqft'
+    3: 'tiers.0.overrides.sodMaterialPerSqft'
+    4: 'tiers.0.overrides.topsoilPerCubicYard'
+    5: 'topsoilPerCubicYard'
+  actual:
+    0: 'sodMaterialPerSqft'
+    1: 'tiers.0.overrides.sodMaterialPerSqft'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:123:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 LANDSCAPING_SOD AI adoption and source-note edits preserve every unchanged date
+ok 41 - Agent 2 F21 LANDSCAPING_SOD AI adoption and source-note edits preserve every unchanged date
+  ---
+  duration_ms: 1.392844
+  type: 'test'
+  ...
+# Subtest: Agent 2 F9 absent/unknown/nested dynamic leaves and non-money settings stay excluded
+not ok 42 - Agent 2 F9 absent/unknown/nested dynamic leaves and non-money settings stay excluded
+  ---
+  duration_ms: 0.459771
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:161:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'paintingRates.trimLaborPerLFPerCoat',
+    -   'surfaceExtraRates.doorSides'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'paintingRates.trimLaborPerLFPerCoat'
+    1: 'surfaceExtraRates.doorSides'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:163:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F9 reordered named tiers, removed prices and metadata views remain independent
+not ok 43 - Agent 2 F9 reordered named tiers, removed prices and metadata views remain independent
+  ---
+  duration_ms: 0.922136
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:168:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'sourceNote')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:176:75)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 all placement methods use addon basis and quantity/minimum controls stay excluded
+not ok 44 - Agent 2 F21 all placement methods use addon basis and quantity/minimum controls stay excluded
+  ---
+  duration_ms: 3.736277
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:185:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(placement.every(row=>row.category==='addon'&&!row.material&&!row.costBasis))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PriceMetadata.spec.mjs:191:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 15
+# fail 29
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 365.851942

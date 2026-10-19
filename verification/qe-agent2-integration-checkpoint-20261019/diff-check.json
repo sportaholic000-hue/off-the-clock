@@ -1,0 +1,19 @@
+{
+  "full_merged_diff_exit_code": 2,
+  "inherited_evidence_whitespace_paths": [
+    "verification/qe-agent2-price-metadata-20261018/after-first.tap",
+    "verification/qe-agent2-price-metadata-20261018/before-final-tests.tap",
+    "verification/qe-agent2-price-metadata-20261018/before-first-native.tap",
+    "verification/qe-agent2-price-metadata-20261018/before-metadata-direct.tap",
+    "verification/qe-agent2-price-metadata-20261018/before-precision-direct.tap",
+    "verification/qe-agent2-price-metadata-20261018/build.log",
+    "verification/qe-agent4-f18-repair-20261018/baseline-integration.tap",
+    "verification/qe-agent4-f18-repair-20261018/baseline-matrix.tap",
+    "verification/qe-agent4-f18-repair-20261018/baseline-regressions.tap",
+    "verification/qe-agent4-f18-review-20261018/initial-fixtures/review.tap",
+    "verification/qe-agent4-f18-review-20261018/prior-source-comparison.diff",
+    "verification/qe-agent4-f18-review-20261018/review.tap"
+  ],
+  "source_test_workflow_diff_exit_code": 0,
+  "incoming_evidence_preserved_without_reformatting": true
+}

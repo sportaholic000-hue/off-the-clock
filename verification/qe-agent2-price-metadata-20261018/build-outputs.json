@@ -1,0 +1,15 @@
+{
+  "note": "Both owner and widget builds passed. Tracked generated client/dist files were restored to the pinned base; no build output is included as a source change.",
+  "tracked_generated_changes": [
+    "client/dist/assets/index-Cwi6Aiz2.css",
+    "client/dist/assets/index-DdcfYsVT.js",
+    "client/dist/index.html"
+  ],
+  "discarded_generated_diff_sha256": "6bcea85fbfbadf465028cb6aadc23870d195c025ab088322b8cb2d3352102d27",
+  "build_outputs": {
+    "client/dist/assets/index-RRevNfiB.css": "da227114b0b8fea2161e0f97aea291ac00886348fb2228762c140d6464265ccb",
+    "client/dist/assets/index-DWQ059PK.js": "e4ede51124f54bdedd403b4e47cca10c32463c7370a512541ee475f09f54eca8",
+    "client/dist/widget-app.js": "37cda51b4673cbb982dda05c068eed971529bfc2c774764b0332f4ec97bc550a",
+    "client/dist/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376"
+  }
+}

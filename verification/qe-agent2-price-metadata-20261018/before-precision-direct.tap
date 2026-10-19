@@ -1,0 +1,305 @@
+TAP version 13
+# Subtest: Agent 2 F16 pipeJackEach is fixed whole-cent money in server and editor metadata
+not ok 1 - Agent 2 F16 pipeJackEach is fixed whole-cent money in server and editor metadata
+  ---
+  duration_ms: 1.358322
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:32:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at root
+not ok 2 - Agent 2 F16 rejects $1.005 without mutation at root
+  ---
+  duration_ms: 1.213494
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:40:49'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:46:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at pricing
+not ok 3 - Agent 2 F16 rejects $1.005 without mutation at pricing
+  ---
+  duration_ms: 0.671499
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:40:49'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:46:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F16 rejects $1.005 without mutation at tier
+not ok 4 - Agent 2 F16 rejects $1.005 without mutation at tier
+  ---
+  duration_ms: 0.443016
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:40:49'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:46:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F16 whole-cent control $0 stores 0 cents
+ok 5 - Agent 2 F16 whole-cent control $0 stores 0 cents
+  ---
+  duration_ms: 32.569182
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $1 stores 100 cents
+ok 6 - Agent 2 F16 whole-cent control $1 stores 100 cents
+  ---
+  duration_ms: 18.189685
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $1.01 stores 101 cents
+ok 7 - Agent 2 F16 whole-cent control $1.01 stores 101 cents
+  ---
+  duration_ms: 14.641781
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 whole-cent control $12.34 stores 1234 cents
+ok 8 - Agent 2 F16 whole-cent control $12.34 stores 1234 cents
+  ---
+  duration_ms: 14.378556
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 actual application saves reject fractional each-prices and preserve the durable book
+not ok 9 - Agent 2 F16 actual application saves reject fractional each-prices and preserve the durable book
+  ---
+  duration_ms: 105.855603
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:60:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:71:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F16 legacy fractional each-prices remain visible but fail owner validation and quoting
+not ok 10 - Agent 2 F16 legacy fractional each-prices remain visible but fail owner validation and quoting
+  ---
+  duration_ms: 4.432934
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:78:1'
+  failureType: 'testCodeFailure'
+  error: '{"ok":true,"missingOwnerFields":[],"invalidOwnerFields":[],"crossFieldOwnerFields":[],"unsupportedOwnerFields":[],"unexpectedOwnerFields":[],"ownerDecisionRequired":[],"ownerDiagnostics":[],"validationMessages":[]}'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:82:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F16 measured roofing rates retain fractional cents and round only the extended charge
+ok 11 - Agent 2 F16 measured roofing rates retain fractional cents and round only the extended charge
+  ---
+  duration_ms: 105.352668
+  type: 'test'
+  ...
+# Subtest: Agent 2 F21 roofing classifications match actual quote lines, linear_feet
+not ok 12 - Agent 2 F21 roofing classifications match actual quote lines, linear_feet
+  ---
+  duration_ms: 10.828408
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:106:49'
+  failureType: 'testCodeFailure'
+  error: |-
+    iceWaterBarrierPerLF enumeration category
+    
+    null !== 'material'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'material'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertLine (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:110:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 roofing classifications match actual quote lines, square_feet
+not ok 13 - Agent 2 F21 roofing classifications match actual quote lines, square_feet
+  ---
+  duration_ms: 9.510598
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:106:49'
+  failureType: 'testCodeFailure'
+  error: |-
+    iceWaterBarrierPerSqft enumeration category
+    
+    null !== 'material'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'material'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertLine (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:110:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_PATIO_SLAB
+not ok 14 - Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 27.16037
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:117:70'
+  failureType: 'testCodeFailure'
+  error: |-
+    shortLoadPerYard enumeration category
+    
+    null !== 'material'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'material'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertLine (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:123:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_DRIVEWAY
+not ok 15 - Agent 2 F21 concrete classifications follow supplier/material, labor and addon lines: CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 5.20153
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:117:70'
+  failureType: 'testCodeFailure'
+  error: |-
+    shortLoadPerYard enumeration category
+    
+    null !== 'material'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'material'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertLine (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:123:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines
+not ok 16 - Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines
+  ---
+  duration_ms: 4.426163
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:140:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    sodGradingPerSqft enumeration category
+    
+    null !== 'labor'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'labor'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    assertLine (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:26:10)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock/test/qeAgent2PricePrecision.spec.mjs:144:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 5
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 367.161906

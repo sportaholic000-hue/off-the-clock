@@ -56,6 +56,17 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'deckingPriceBasis','iceWaterBarrierUnit','unknownPitchBand','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates','paintingRates','surfaceExtraRates']);
+// Match the categories of the painting component lines. Preparation labor
+// uses the preparation category, while its materials remain material prices.
+const PAINTING_MONEY_CATEGORIES = {
+  primerLaborPerSqftPerCoat:'labor',primerMaterialPerSqftPerCoat:'material',
+  ceilingPrimerLaborPerSqftPerCoat:'labor',ceilingPrimerMaterialPerSqftPerCoat:'material',
+  trimLaborPerLFPerCoat:'labor',trimMaterialPerLFPerCoat:'material',
+  trimPrimerLaborPerLFPerCoat:'labor',trimPrimerMaterialPerLFPerCoat:'material',
+  trimPrepLaborPerLF_good:'prep',trimPrepMaterialPerLF_good:'material',
+  trimPrepLaborPerLF_fair:'prep',trimPrepMaterialPerLF_fair:'material',
+  trimPrepLaborPerLF_poor:'prep',trimPrepMaterialPerLF_poor:'material'
+};
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);
 // Current product-price maps supplement the retained legacy field definitions.
 // The editor and draft validator must use the same shapes.
@@ -307,12 +318,19 @@ function offeringDefinitions(serviceType, pricing) {
     ...offeringRateDefinitions(serviceType,{...pricing,offeringMode:'itemized',offeringDetails:details})
   };
 }
+function dynamicMoneyDefinitions(serviceType, field, effectivePricing) {
+  if(field==='paintingRates')return Object.fromEntries(Object.entries(PAINTING_RATES).map(([key,label])=>[key,{label,moneyKind:'unit_rate',category:PAINTING_MONEY_CATEGORIES[key]}]));
+  // Optional surface work is a complete selling price in the quote builder,
+  // regardless of the owner's category-wide basis for other additional work.
+  if(field==='surfaceExtraRates')return Object.fromEntries(Object.entries(surfaceExtraDefinitions(serviceType,effectivePricing)).map(([key,definition])=>[key,{...definition,moneyKind:definition.integer?'fixed_amount':'unit_rate',category:'addon',priceBasis:'sell_price'}]));
+  return field === 'offeringRates'
+    ? offeringDefinitions(serviceType, effectivePricing)
+    : scopeRateDefinitions(serviceType, effectivePricing, true);
+}
 function convertDynamicMoneyMap(value, serviceType, field, effectivePricing, direction, path) {
   if (absentValue(value)) return value;
   if (!isRecord(value)) failure(path, `${field} must be a map of named prices.`);
-  const definitions = field === 'paintingRates'?Object.fromEntries(Object.entries(PAINTING_RATES).map(([key,label])=>[key,{label,moneyKind:'unit_rate'}])):field==='surfaceExtraRates'?Object.fromEntries(Object.entries(surfaceExtraDefinitions(serviceType,effectivePricing)).map(([key,d])=>[key,{...d,moneyKind:d.integer?'fixed_amount':'unit_rate'}])):field === 'offeringRates'
-    ? offeringDefinitions(serviceType, effectivePricing)
-    : scopeRateDefinitions(serviceType, effectivePricing, true);
+  const definitions = dynamicMoneyDefinitions(serviceType, field, effectivePricing);
   return Object.fromEntries(Object.entries(value).map(([key, amount]) => {
     const definition = definitions[key];
     if (!definition) failure(`${path}.${key}`, 'This money field has no supported conversion path for the configured pricing metadata.');
@@ -390,6 +408,14 @@ function moneyLeafEntries(value,kind,path,category){
 function ordinaryMoneyCategory(field,serviceType,effectivePricing){
   if(serviceType==='CUSTOM'&&['price','low','high'].includes(field))return effectivePricing.customChargeClassification||null;
   const exact={
+    // These categories follow their actual quote lines, including supplier
+    // short-load charges, separately priced labor and placement add-ons.
+    iceWaterBarrierPerSqft:'material',iceWaterBarrierPerLF:'material',valleyPerLF:'material',
+    stepFlashingPerLF:'material',pipeJackEach:'material',ridgeVentPerLF:'material',
+    shortLoadPerYard:'material',shortLoadFlatFee:'material',sawCutPerLF:'labor',
+    baseGravelPerCubicYard:'material',baseExcavationGradingPerSqft:'labor',
+    placementFlat:'addon',placementPerCubicYard:'addon',
+    sodGradingPerSqft:'labor',topsoilPerCubicYard:'material',
     baseboardReinstallPerLF:'labor',furnitureMovingPrice:'labor',toiletPullResetEach:'labor',floorLevelingPerSqft:'prep',transitionPriceEach:'addon',
     cleanupBaseRatePerSqft:'labor',mowingBaseRatePerSqft:'labor',
     pondingWaterSurcharge:'addon',perStepPrice:'addon',
@@ -436,11 +462,11 @@ function moneyEntriesForContainer(container,serviceType,effectivePricing){
       continue;
     }
     if(DYNAMIC_MONEY_MAPS.has(field)){
-      const definitions=field==='offeringRates'?offeringDefinitions(serviceType,effectivePricing):scopeRateDefinitions(serviceType,effectivePricing,true);
+      const definitions=dynamicMoneyDefinitions(serviceType,field,effectivePricing);
       for(const [key,amount] of Object.entries(isRecord(value)?value:{})){
         const definition=definitions[key];
         if(!definition||absentValue(amount)||isRecord(amount)||Array.isArray(amount))continue;
-        entries.push({path:field+'.'+key,value:amount,kind:definition.moneyKind||(field==='offeringRates'?offeringMoneyKind(key):'unit_rate'),category:definition.category||null});
+        entries.push({path:field+'.'+key,value:amount,kind:definition.moneyKind||(field==='offeringRates'?offeringMoneyKind(key):'unit_rate'),category:definition.category||null,...(field==='surfaceExtraRates'?{priceBasis:definition.priceBasis}:{})});
       }
       continue;
     }
@@ -459,7 +485,7 @@ function moneyEntriesForContainer(container,serviceType,effectivePricing){
 export function ownerMoneyEntries(service){
   if(!isRecord(service)||typeof service.serviceType!=='string')return [];
   const effective=effectiveServicePricing(service),baseContainer={...rootPricing(service),...(isRecord(service.pricing)?service.pricing:{})};
-  const decorate=(entry,metadata,extra={})=>({...entry,...extra,metadata:isRecord(metadata?.[entry.path])?cloneData(metadata[entry.path]):undefined,material:entry.category==='material',costBasis:entry.category!==null&&service.priceBasisByCategory?.[entry.category]==='cost'});
+  const decorate=(entry,metadata,extra={})=>({...entry,...extra,metadata:isRecord(metadata?.[entry.path])?cloneData(metadata[entry.path]):undefined,material:entry.category==='material',costBasis:entry.category!==null&&(entry.priceBasis||service.priceBasisByCategory?.[entry.category])==='cost'});
   const out=moneyEntriesForContainer(baseContainer,service.serviceType,effective).map(entry=>decorate(entry,service.priceMetadata,{scope:'service'}));
   for(const [tierIndex,tier] of (Array.isArray(service.tiers)?service.tiers:[]).entries()){
     if(!isRecord(tier)||!isRecord(tier.overrides))continue;

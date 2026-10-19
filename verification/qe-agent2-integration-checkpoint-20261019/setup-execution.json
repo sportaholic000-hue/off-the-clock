@@ -1,0 +1,38 @@
+[
+  {
+    "check": "npm-ci",
+    "command": [
+      "npm",
+      "ci"
+    ],
+    "exit_code": 0,
+    "seconds": 6.011,
+    "retained_log": "npm-ci.log.gz"
+  },
+  {
+    "check": "playwright-install",
+    "command": [
+      "npm",
+      "install",
+      "--no-save",
+      "--no-audit",
+      "--no-fund",
+      "playwright@1.56.0"
+    ],
+    "exit_code": 0,
+    "seconds": 1.686,
+    "retained_log": "playwright-install.log.gz"
+  },
+  {
+    "check": "chromium-install",
+    "command": [
+      "npx",
+      "playwright",
+      "install",
+      "chromium"
+    ],
+    "exit_code": 0,
+    "seconds": 12.402,
+    "retained_log": "chromium-install.log.gz"
+  }
+]

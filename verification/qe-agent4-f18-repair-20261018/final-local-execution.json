@@ -1,0 +1,50 @@
+{
+  "base": "03b29925437e73acb24b916ba6e69e5a002dfff1",
+  "node": "v22.23.1",
+  "recordedAt": "2026-10-18T23:56:07.535706+00:00",
+  "finalMatrixCommand": "node --test --test-reporter=tap verification/qe-agent4-f18-repair-20261018/review.spec.mjs test/voiceAgent4F18Repair20261018.spec.mjs test/voiceAgent4F18Integration20261018.spec.mjs",
+  "finalMatrixExitCode": 0,
+  "finalMatrixCounts": {
+    "tests": 132,
+    "pass": 132,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "neighborsCommand": "node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/callerHistoryFollowup20261006.spec.mjs test/callerHistoryFollowup20261006Summary.spec.mjs test/callerHistoryFollowup20261006Http.spec.mjs test/callerHistoryFollowup20261006Live.spec.mjs test/callerHistoryFollowup20261006Web.spec.mjs test/voiceQuotePathRegression20261005.spec.mjs test/voiceQuoteDateIntegration.spec.mjs test/voiceSurfacePricing20261016.spec.mjs test/quoteDeliveryBatch20261015Gates.spec.mjs test/quoteDeliveryBatch20261015Email.spec.mjs test/qeSodScopeDisclosure20261018.spec.mjs test/qeConcreteBaseScope20261018.spec.mjs test/surfacePricing20261016.spec.mjs test/surfacePricingLaneCFixes20261016.spec.mjs test/quoteOptionalScopeIsolation.spec.mjs test/quoteOfferingScopeIsolation.spec.mjs",
+  "neighborsExitCode": 0,
+  "neighborsCounts": {
+    "tests": 267,
+    "pass": 267,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "generatedTrackedDistRestored": true
+  },
+  "gitDryRun": {
+    "exitCode": 128,
+    "error": "fatal: could not read Username for 'https://github.com': terminal prompts disabled"
+  },
+  "sourceHashes": {
+    ".github/workflows/ci.yml": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+    "server/src/quoteScopeDisclosure.js": "23296671d04de90083384b8603230ab1619b08f5c318b007cb71d9b5c6ffb2df",
+    "server/src/voice/voiceQuotePresentation.js": "9d29178a9767df6c6db2e6f6533143c7c4628ec488733a3770250ed998ed5369",
+    "test/voiceAgent4F18Repair20261018.spec.mjs": "00678bf8d499d68cab4d29fa185217dbfe6a75f4a93b2bfa31309b5574149528",
+    "test/voiceAgent4F18Integration20261018.spec.mjs": "388396cf7cdf918121c8a3320d53815409aaabe5c95844e8c73eb391b1ab9e5e",
+    "verification/qe-agent4-f18-repair-20261018/review.spec.mjs": "ecdb946d6a543ae1c3d92aedd8e01744d826769db9cc16d6102941203b1fe42c"
+  },
+  "changedTrackedPaths": [
+    ".github/workflows/ci.yml",
+    "server/src/quoteScopeDisclosure.js",
+    "server/src/voice/voiceQuotePresentation.js"
+  ],
+  "originalReviewFilesUnchanged": 26,
+  "retainedTrackedFilesUnchanged": 3143,
+  "existingTestDirectoryFilesUnchanged": 387
+}

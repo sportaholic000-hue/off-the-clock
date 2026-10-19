@@ -3,7 +3,7 @@
 export const FIXED_PRICE_FIELDS = new Set([
   'shortLoadFlatFee','placementFlat',
   'flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairAreaMinimum',
-  'deckingPerSheet','perStepPrice','postPrice','concretePerPost','gatePrice',
+  'deckingPerSheet','pipeJackEach','perStepPrice','postPrice','concretePerPost','gatePrice',
   'plantingLaborPerPlant','plantMaterialAllowance','repairMinimum',
   'repairMaterialAllowance','minimumJob','minimumServiceCharge','disposalFlat',
   'haulAwayFee','mowingVisitCharge','disposalPerBag','disposalPerLoad','materialAllowance','patchMaterialAllowance','pondingWaterSurcharge',

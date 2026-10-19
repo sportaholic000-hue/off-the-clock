@@ -1,0 +1,200 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F18 real saved retry preserves qualified scope, exact identity, options and stored JSON
+not ok 1 - F18 real saved retry preserves qualified scope, exact identity, options and stored JSON
+  ---
+  duration_ms: 644.169755
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:21:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          description: '[PLACEHOLDER] Repair the detached fence.',
+          source: 'additionalWork[0]'
+        },
+    -   {
+    -     description: 'Door sides',
+    -     source: 'unpriced_surface_work'
+    -   }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      source: 'additionalWork[0]'
+      description: '[PLACEHOLDER] Repair the detached fence.'
+    1:
+      source: 'unpriced_surface_work'
+      description: 'Door sides'
+  actual:
+    0:
+      source: 'additionalWork[0]'
+      description: '[PLACEHOLDER] Repair the detached fence.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:34:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: F18 real history dispatcher safely projects D15 junk
+not ok 2 - F18 real history dispatcher safely projects D15 junk
+  ---
+  duration_ms: 30.768214
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:44:69'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        '[PLACEHOLDER] Repair the detached fence.',
+    -   'Door sides'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '[PLACEHOLDER] Repair the detached fence.'
+    1: 'Door sides'
+  actual:
+    0: '[PLACEHOLDER] Repair the detached fence.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:59:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 real history dispatcher safely projects inverted
+not ok 3 - F18 real history dispatcher safely projects inverted
+  ---
+  duration_ms: 23.952758
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:44:69'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'PARTIAL_ESTIMATE_READY'
+    - 'ESTIMATE_REQUIRES_REVIEW'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ESTIMATE_REQUIRES_REVIEW'
+  actual: 'PARTIAL_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:66:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 real history dispatcher safely projects empty record
+not ok 4 - F18 real history dispatcher safely projects empty record
+  ---
+  duration_ms: 23.485545
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:44:69'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'PARTIAL_ESTIMATE_READY'
+    - 'ESTIMATE_REQUIRES_REVIEW'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ESTIMATE_REQUIRES_REVIEW'
+  actual: 'PARTIAL_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:66:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 real history dispatcher safely projects no price
+not ok 5 - F18 real history dispatcher safely projects no price
+  ---
+  duration_ms: 23.627488
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:44:69'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'PARTIAL_ESTIMATE_READY'
+    - 'ESTIMATE_REQUIRES_REVIEW'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ESTIMATE_REQUIRES_REVIEW'
+  actual: 'PARTIAL_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:66:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 real live dispatcher preserves mixed options and genuine work 0
+ok 6 - F18 real live dispatcher preserves mixed options and genuine work 0
+  ---
+  duration_ms: 239.91485
+  type: 'test'
+  ...
+# Subtest: F18 real live dispatcher preserves mixed options and genuine work 1
+ok 7 - F18 real live dispatcher preserves mixed options and genuine work 1
+  ---
+  duration_ms: 233.847138
+  type: 'test'
+  ...
+# Subtest: F18 real live dispatcher saves malformed options as review without an amount or narration
+not ok 8 - F18 real live dispatcher saves malformed options as review without an amount or narration
+  ---
+  duration_ms: 201.788595
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:89:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'quoted'
+    - 'needs_details'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_details'
+  actual: 'quoted'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Integration20261018.spec.mjs:96:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 2
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1652.015146

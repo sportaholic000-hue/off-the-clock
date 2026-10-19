@@ -1,0 +1,7 @@
+{
+  "selected": [
+    "test/qeAgent2PriceEditor.browser.spec.mjs",
+    "test/qeAgent2PriceMetadata.spec.mjs",
+    "test/qeAgent2PricePrecision.spec.mjs"
+  ]
+}

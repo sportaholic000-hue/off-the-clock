@@ -1,0 +1,741 @@
+(node:20) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:27) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F18 shared exclusions survive junk before
+not ok 1 - F18 shared exclusions survive junk before
+  ---
+  duration_ms: 1.934529
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:23:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: F18 shared exclusions survive junk after
+not ok 2 - F18 shared exclusions survive junk after
+  ---
+  duration_ms: 0.28589
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:23:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: F18 shared exclusions survive junk between
+not ok 3 - F18 shared exclusions survive junk between
+  ---
+  duration_ms: 0.281323
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:23:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 shared exclusions survive empty record
+not ok 4 - F18 shared exclusions survive empty record
+  ---
+  duration_ms: 0.230287
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:23:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 shared exclusions survive inverted record
+not ok 5 - F18 shared exclusions survive inverted record
+  ---
+  duration_ms: 0.27272
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:23:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 uncertain partial scope stays partial: no prices
+not ok 6 - F18 uncertain partial scope stays partial: no prices
+  ---
+  duration_ms: 0.569616
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 uncertain partial scope stays partial: all junk
+not ok 7 - F18 uncertain partial scope stays partial: all junk
+  ---
+  duration_ms: 0.240081
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 uncertain partial scope stays partial: empty record
+not ok 8 - F18 uncertain partial scope stays partial: empty record
+  ---
+  duration_ms: 0.301113
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 uncertain partial scope stays partial: empty options
+not ok 9 - F18 uncertain partial scope stays partial: empty options
+  ---
+  duration_ms: 0.478399
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 uncertain partial scope stays partial: invalid top range
+not ok 10 - F18 uncertain partial scope stays partial: invalid top range
+  ---
+  duration_ms: 0.412881
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 uncertain partial scope stays partial: missing exclusion evidence
+not ok 11 - F18 uncertain partial scope stays partial: missing exclusion evidence
+  ---
+  duration_ms: 0.216025
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 uncertain partial scope stays partial: malformed exclusion evidence
+not ok 12 - F18 uncertain partial scope stays partial: malformed exclusion evidence
+  ---
+  duration_ms: 0.246461
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: inverted
+not ok 13 - F18 voice rejects invalid option range: inverted
+  ---
+  duration_ms: 18.770255
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:60:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: negative
+not ok 14 - F18 voice rejects invalid option range: negative
+  ---
+  duration_ms: 0.347322
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: missing low
+not ok 15 - F18 voice rejects invalid option range: missing low
+  ---
+  duration_ms: 0.324238
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: missing high
+not ok 16 - F18 voice rejects invalid option range: missing high
+  ---
+  duration_ms: 0.301463
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: string
+not ok 17 - F18 voice rejects invalid option range: string
+  ---
+  duration_ms: 0.206391
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: NaN
+not ok 18 - F18 voice rejects invalid option range: NaN
+  ---
+  duration_ms: 0.302054
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: infinite
+not ok 19 - F18 voice rejects invalid option range: infinite
+  ---
+  duration_ms: 0.234663
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: mid below
+not ok 20 - F18 voice rejects invalid option range: mid below
+  ---
+  duration_ms: 0.570908
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:60:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: mid above
+not ok 21 - F18 voice rejects invalid option range: mid above
+  ---
+  duration_ms: 0.303466
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:60:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: mid string
+not ok 22 - F18 voice rejects invalid option range: mid string
+  ---
+  duration_ms: 1.227666
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:60:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voice rejects invalid option range: mid null
+not ok 23 - F18 voice rejects invalid option range: mid null
+  ---
+  duration_ms: 0.277467
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:57:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:60:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 live rejects non-array options null
+not ok 24 - F18 live rejects non-array options null
+  ---
+  duration_ms: 0.511459
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:66:53'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:68:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 live rejects non-array options {}
+not ok 25 - F18 live rejects non-array options {}
+  ---
+  duration_ms: 0.217086
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:66:53'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:68:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 live rejects non-array options "invalid"
+not ok 26 - F18 live rejects non-array options "invalid"
+  ---
+  duration_ms: 0.211278
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:66:53'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:68:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 live rejects non-array options 42
+not ok 27 - F18 live rejects non-array options 42
+  ---
+  duration_ms: 0.331579
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:66:53'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:68:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 live rejects non-array options false
+not ok 28 - F18 live rejects non-array options false
+  ---
+  duration_ms: 0.261473
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:66:53'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:68:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 voices reject ready or partial receipts with no valid pricing evidence
+not ok 29 - F18 voices reject ready or partial receipts with no valid pricing evidence
+  ---
+  duration_ms: 0.208604
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:71:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception (TypeError).'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:74:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 D15 keeps exact valid saved ranges surrounded by non-record junk
+not ok 30 - F18 D15 keeps exact valid saved ranges surrounded by non-record junk
+  ---
+  duration_ms: 0.3193
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'INSTANT_ESTIMATE_READY'
+    - 'PARTIAL_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PARTIAL_ESTIMATE_READY'
+  actual: 'INSTANT_ESTIMATE_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-f18-review/test/voiceAgent4F18Repair20261018.spec.mjs:83:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F18 valid mixed options remove only false generated work and preserve genuine same-label work
+ok 31 - F18 valid mixed options remove only false generated work and preserve genuine same-label work
+  ---
+  duration_ms: 1.604052
+  type: 'test'
+  ...
+# Subtest: F18 valid zero and decimal ranges, privacy, frozen receipt and projection stability
+ok 32 - F18 valid zero and decimal ranges, privacy, frozen receipt and projection stability
+  ---
+  duration_ms: 1.90879
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 2
+# fail 30
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 141.341552
