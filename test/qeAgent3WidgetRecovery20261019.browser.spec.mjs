@@ -114,10 +114,11 @@ test('qe-agent3 widget request races and persisted recovery through real public 
         async request(body,pathname=publicPath){return page.evaluate(async({pathname,body})=>{const r=await fetch(pathname,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});return {status:r.status,body:await r.json()};},{pathname,body});},
         async fill(type,inputs=fixtures.get(type).customerInputs,root=main){
           const service=byType.get(type);await root.getByLabel('Service',{exact:true}).selectOption(service.id);
-          for(const [key,value] of Object.entries(inputs)){
+          const entries=Object.entries(inputs).sort(([a],[b])=>Number(b==='sqftMethod')-Number(a==='sqftMethod'));
+          for(const [key,value] of entries){
             const field=service.customerFields.find(f=>f.name===key);if(!field||key==='confirmedFacts')continue;
             const control=root.getByLabel(field.label,{exact:true});
-            if(typeof value==='boolean'||field.type==='select')await control.selectOption(String(value));else await control.fill(String(value));
+            if(typeof value==='boolean'||field.type==='enum')await control.selectOption(String(value));else await control.fill(String(value));
           }
           await root.getByLabel('Email',{exact:true}).fill('a3-recovery@example.invalid');
         },
