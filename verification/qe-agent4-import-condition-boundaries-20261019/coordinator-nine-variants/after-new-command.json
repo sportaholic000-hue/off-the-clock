@@ -1,0 +1,35 @@
+{
+  "name": "after-new",
+  "command": [
+    "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/voiceAgent4ImportNineVariants20261019.spec.mjs"
+  ],
+  "startedAt": "2026-10-19T17:07:32.274040+00:00",
+  "environment": {
+    "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp",
+    "node": "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node"
+  },
+  "sourceHashes": {
+    "server/src/websitePriceExtraction.js": "bbaa112c8d6be2d8cb3a8085dfcb1e088ec15fcf7928d142b6fc8b70e6487c36",
+    "server/src/websitePriceImport.js": "7ceecb5525ee7dd46176a7482bd764597a1225a14af5965d75d7a7edeef27b43",
+    ".github/workflows/ci.yml": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+    "test/voiceAgent4ImportNineVariants20261019.spec.mjs": "88ec6cf22ee84045b4a43cb1d380e0fffacfad5c19e0ff23b2fd81c32899cccc"
+  },
+  "exitCode": 0,
+  "summary": {
+    "tests": "105",
+    "suites": "0",
+    "pass": "105",
+    "fail": "0",
+    "cancelled": "0",
+    "skipped": "0",
+    "todo": "0",
+    "duration_ms": "6267.744807"
+  }
+}
