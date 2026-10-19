@@ -1,0 +1,6 @@
+git merge --no-ff --no-commit 59d5c282ad8d88be0cce6d59eff2c6fb207d41d2
+Exit 128 before merging: Committer identity unknown.
+fatal: unable to auto-detect email address (got 'root@388c655bab11.(none)')
+
+Environment setup diagnostic only. Reuse the existing Agent 4 commit identity
+as command-local Git configuration; do not alter global settings or assertions.

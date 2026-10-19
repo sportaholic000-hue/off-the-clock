@@ -1,0 +1,10 @@
+{
+  "head": "f02b8d4abb0c85bf47db7816e472de345d7a5e90",
+  "node": "v22.23.3",
+  "browser": "141.0.7390.37",
+  "executablePath": "playwright default",
+  "fixtureAuthority": "A3 approved 1f8b1a20e1b910c7787a05dd820814894b01a961",
+  "publicOrigin": "http://127.0.0.1:45023",
+  "liveProviders": false,
+  "mode": "dependency-reproduction"
+}

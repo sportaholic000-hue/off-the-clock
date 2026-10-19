@@ -1,0 +1,8 @@
+{
+  "status": "failed",
+  "serviceCount": 2,
+  "caseCount": 4,
+  "passed": 2,
+  "failed": 2,
+  "pageErrors": []
+}

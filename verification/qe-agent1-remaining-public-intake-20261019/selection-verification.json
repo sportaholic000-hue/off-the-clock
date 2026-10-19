@@ -1,0 +1,16 @@
+{
+  "selectorsChanged": false,
+  "checkedWith": "Node22.23.3; scripts/testSelection.mjs exports",
+  "tests": [
+    {
+      "file": "test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs",
+      "full": true,
+      "strict": true
+    },
+    {
+      "file": "test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs",
+      "full": true,
+      "strict": true
+    }
+  ]
+}

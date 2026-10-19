@@ -1,0 +1,107 @@
+{
+  "kind": "public-HTTP execution, not Chromium",
+  "productionHead": "0e2648930ab2f3ce64e92e9578e981dcdfa3522b",
+  "harnessWasUncommitted": true,
+  "harnessSha256": "12b06f150d997da81d81dd431988897dcc46b89ef2722198e36ac932e8c07c1b",
+  "cases": 72,
+  "passed": 72,
+  "failed": 0,
+  "services": {
+    "ROOFING_REPLACEMENT": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "FLAT_ROOF_REPLACEMENT": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "INTERIOR_PAINTING": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "EXTERIOR_PAINTING": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "FLOORING_INSTALL": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "FENCING_REPLACEMENT": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "SIDING_REPLACEMENT": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "SIDING_REPAIR": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "CONCRETE_PATIO_SLAB": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "LANDSCAPING_CLEANUP": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "LANDSCAPING_SOD": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    },
+    "CUSTOM": {
+      "valid": "passed",
+      "corrected": "passed",
+      "invalid": "passed",
+      "stale-scope-proof": "passed",
+      "stale-price-proof-and-original-replay": "passed",
+      "original-replay-after-restart": "passed"
+    }
+  }
+}

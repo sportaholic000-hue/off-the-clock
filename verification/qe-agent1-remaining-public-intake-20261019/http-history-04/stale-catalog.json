@@ -1,0 +1,16 @@
+{
+  "contractVersion": "2026-09-29.1",
+  "capabilities": {
+    "quoteEnvelope": "pricing-only-v2",
+    "booking": "booking-v1",
+    "postQuoteIdentity": true,
+    "serverPricingOnly": true
+  },
+  "branding": {
+    "businessName": "[SYNTHETIC]",
+    "accentColor": "#16A34A",
+    "launcherLabel": "Get an estimate",
+    "clickToCallNumber": null
+  },
+  "services": []
+}

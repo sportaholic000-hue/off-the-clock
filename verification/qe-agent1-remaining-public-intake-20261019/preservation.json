@@ -1,0 +1,11 @@
+{
+  "base": "1f8b1a20e1b910c7787a05dd820814894b01a961",
+  "existingTrackedDiff": [],
+  "preservedSha256": {
+    "test/qeAgent3RepresentativePublicIntake20261019.browser.spec.mjs": "9934d41e274214507a03ae0122aa7825118fdb9805f31ec1cc4a56b734395759",
+    "test/qeAgent3WidgetDependencies20261019.browser.spec.mjs": "ea9b34e10c8af4dd91d3545176d61af37be69963080573dbb1cb3bdd4c9a5471",
+    "test/qeAgent3WidgetDependencies20261019.spec.mjs": "63fd3b02e4301c7d30114ba9fd6621d58eb021f47e26619a36b478be6f1e3ed1",
+    "verification/qe-agent3-widget-dependencies-20261019/representative-browser-audit.mjs": "bde8f11578e2d7142e7cd62e650c7be0035de3f736af9eaa404353747997d548",
+    "client/src/quoteDoneControls.jsx": "577659d2771d04ca46739a4873680067c6c62886520436a602e12704154a1ed4"
+  }
+}

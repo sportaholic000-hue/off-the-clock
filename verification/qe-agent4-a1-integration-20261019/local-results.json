@@ -1,0 +1,58 @@
+[
+  {
+    "name": "importer-1208",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceListedPriceConditions20261018.spec.mjs",
+      "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "test/websitePriceImport.spec.mjs",
+      "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "test/websitePriceDraftRoutes.spec.mjs",
+      "test/claudeListedUnits20261008.spec.mjs",
+      "test/engineAuditListedPrices20261008.spec.mjs",
+      "test/fixedPricesKnowledge20261005.spec.mjs",
+      "test/voiceCore20261007.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/voiceRuntimeRoutes.spec.mjs",
+      "test/voicePromptCompiler.spec.mjs",
+      "test/voiceSecurity.spec.mjs",
+      "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs",
+      "test/voiceAgent4ImportConditionR1R2Followup20261019.spec.mjs",
+      "test/voiceAgent4ImportNineVariants20261019.spec.mjs",
+      "test/voiceAgent4ConditionExtensions20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T20:25:21.707260+00:00",
+    "exitCode": 0,
+    "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp",
+    "summary": {
+      "tests": 1208,
+      "pass": 1208,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "exactNamesMatch": true
+  },
+  {
+    "name": "chromium-probe",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--input-type=module",
+      "-e",
+      "import {chromium} from 'playwright';const b=await chromium.launch({headless:true,args:['--no-sandbox']});await b.close();"
+    ],
+    "startedAt": "2026-10-19T20:26:07.547993+00:00",
+    "exitCode": 1,
+    "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-r1-r2-tmp"
+  }
+]

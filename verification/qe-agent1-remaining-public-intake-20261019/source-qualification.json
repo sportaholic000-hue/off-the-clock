@@ -1,0 +1,21 @@
+{
+  "approvedBase": "1f8b1a20e1b910c7787a05dd820814894b01a961",
+  "completedChromiumCaseSource": "f02b8d4abb0c85bf47db7816e472de345d7a5e90",
+  "mainCases": {
+    "passed": 88,
+    "failed": 0
+  },
+  "independentCases": {
+    "passed": 4,
+    "failed": 0
+  },
+  "existingTrackedDiff": [],
+  "testAndHarnessSha256": {
+    "test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs": "a1c713eef831a9bbecd4ef9f43c559f594028478e667cb0903c569d2a63a4bbc",
+    "test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs": "e3c053ce01611e88d6aeb993e91fdd2d915b6a44722ecef014bbc704cb6ef4fb",
+    "verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs": "1002cee0212a38b2f421f3a44c583abc2f4969ac8d4a7e62e9af99f8294590bc",
+    "verification/qe-agent1-remaining-public-intake-20261019/cases.mjs": "08a3a5b24c198fe71aa6a44f8991f36c05b3c854c90e401d64c22ccfaba23bf7",
+    "verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs": "12b06f150d997da81d81dd431988897dcc46b89ef2722198e36ac932e8c07c1b"
+  },
+  "note": "Evidence-only recording after the completed case source. Branch-ownership qualification is not invoked by behavioral tests."
+}
