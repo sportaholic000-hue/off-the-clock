@@ -138,7 +138,7 @@ test('qe-agent3 widget request races and persisted recovery through real public 
           const saved=receipt(row.request.requestId);assert.ok(saved);assert.deepEqual(JSON.parse(saved.originalSubmissionJson),row.request);
           assert.equal(JSON.parse(saved.customerResponseJson).quoteId,row.response.quoteId);
           const internal=JSON.parse(saved.internalOutcomeJson).internalResult;
-          assert.equal(internal.calculationRecord.scenarios.mid.finalTotalCents,expected.cents);
+          assert.deepEqual(internal.options.map(option=>option.calculationRecord.scenarios.mid.finalTotalCents),[expected.cents]);
           assert.equal(row.response.midEstimate,expected.cents/100);
           assert.equal(row.request.customerInputs.yardSqft,expected.area);
           const storedInputs=app.db.prepare('SELECT customerInputsJson FROM quotes WHERE ownerId=? AND id=?').get(owner,saved.recordId);
