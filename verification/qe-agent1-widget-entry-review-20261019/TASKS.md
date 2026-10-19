@@ -12,9 +12,9 @@
 - [x] Add incremental visible-step traces, independent quantity/unit checks and paired scope-label/value checks to the new harness.
 - [x] Rename only the new owned test to `qeAgent1BlankWidgetEntry20261019.browser.spec.mjs` so its evidence precedes the older large log bundles; all wrapper assertions are byte-identical and both unchanged selectors still include it.
 - [x] Run at most four independent service fixtures concurrently; all 120 checks remain required. Compare the progress element's DOM text immediately before Continue, so CSS text transformation and dynamic step counts cannot satisfy the wait prematurely.
-- [ ] Complete all 20 services × desktop/mobile through empty-storage loader/wizard entry.
-- [ ] Record valid cents, required-answer review, scope disclosures and immutable original replay results.
-- [ ] Reproduce any product defects separately and continue the remaining cases.
+- [x] Complete all 20 services × desktop/mobile through empty-storage loader/wizard entry: 120/120 checks passed at af0fd1c in hosted run 39314728750.
+- [x] Validate exact cents, required-answer review, scope disclosures and immutable original replay in all 40 browser sessions; complete 185-file evidence bundle and per-file hashes retained.
+- [x] Continue every service after failures; no product defect reproduced in the corrected 120-check browser matrix. Preserve both earlier fixture-failure bundles.
 - [ ] Publish final evidence and verify strict/full/browser/build/Docker/checker/dependency audit on the exact head.
 
 Current limit: local Chromium exits with SIGTRAP. Hosted real Chromium supplies
@@ -28,3 +28,8 @@ key. The corrected isolated fixture removes only that seeded owner key and
 uses the real POST /api/quotedone/access handler to issue a valid key. This
 is a harness defect, not a product finding. The complete 105-file failed-run
 bundle and extraction hashes are retained in hosted-checkpoint-01.bundle.json.gz.
+
+Corrected rendered checkpoint af0fd1c: all 120 nested case assertions and parent
+passed. All 327 chunks were retrieved and validated; 185 JSON files and 1,272 observed
+wizard steps are retained. Broad exact-final hosted gates remain pending at
+evidence publication; the final handoff records the exact SHA and outcomes.

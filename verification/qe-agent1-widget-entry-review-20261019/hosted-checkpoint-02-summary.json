@@ -1,0 +1,47 @@
+{
+  "run": 39313837055,
+  "head": "f3fd1753d8feed79b90af048e3646875c6c6c5fc",
+  "result": {
+    "status": "failed",
+    "services": 20,
+    "viewports": [
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000,
+        "mobile": false
+      },
+      {
+        "name": "mobile",
+        "width": 390,
+        "height": 844,
+        "mobile": true
+      }
+    ],
+    "caseCount": 120,
+    "passed": 0,
+    "failed": 120
+  },
+  "classification": "Same short seeded test key; not a product finding.",
+  "bundle": "hosted-checkpoint-02.bundle.json.gz",
+  "bundleSha256": "82f92add6c8b18dda77dbfacdf28e7efa0c6fd300564225aef827b094820ee54",
+  "files": 105,
+  "source": {
+    "head": "f3fd1753d8feed79b90af048e3646875c6c6c5fc",
+    "node": "v22.23.3",
+    "files": {
+      "client/public/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376",
+      "client/dist/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376",
+      "client/dist/widget-app.js": "9a6cacaa678964314ac1928434220a2779289374946f82291581acb7481fc015",
+      "client/src/widget-entry.jsx": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab",
+      "client/src/quoteWizard.jsx": "e96b00ff1263e6244c026319d1e6ac536753fea6bf0dd2fa95cce5603c3e84e9",
+      "client/src/quotedone.jsx": "20f8bd85d628c406549b0cbeee42e4283f23ba54cb08c35832f389a09fe0a6b4",
+      "client/src/quoteDoneControls.jsx": "577659d2771d04ca46739a4873680067c6c62886520436a602e12704154a1ed4",
+      "verification/qe-agent1-widget-entry-review-20261019/EXPECTED.md": "e961d028fab7feb041d93ef4105051f3e0be88a9fbc48d9f23c4fc826cba75ca",
+      "verification/qe-agent1-widget-entry-review-20261019/browser-entry.mjs": "9491f2f583300ea2dd1050bb13f88e1278c65068387d0738bdefa582ffcc0c50",
+      "verification/qe-agent1-widget-entry-review-20261019/application.mjs": "fd03b5e15dd0a7c9956da4dacc0409bbaa7c313916d5b43eadce45e520255005",
+      "verification/qe-agent1-widget-entry-review-20261019/cases.mjs": "9b2a3d45727350a45fd12862ce636c6faf6f52b71068714c27f8c6634ceb721c"
+    },
+    "browser": "141.0.7390.37"
+  }
+}

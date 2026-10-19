@@ -1,0 +1,42 @@
+{
+  "head": "af0fd1c6118a19b2917eff53d7f3f2f5e5507c52",
+  "base": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "preservedCheckpoint": "59d5c282ad8d88be0cce6d59eff2c6fb207d41d2",
+  "merge": "915f8e711e078f453c99255484b5bdf8abb8ad39",
+  "mergeParents": [
+    "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+    "59d5c282ad8d88be0cce6d59eff2c6fb207d41d2"
+  ],
+  "productionClientSpecsWorkflowsDependenciesDiff": "empty",
+  "ownDeltaFromMerge": [
+    "A\ttest/qeAgent1BlankWidgetEntry20261019.browser.spec.mjs",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/EXPECTED.md",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/TASKS.md",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/application.mjs",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/browser-entry.mjs",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/cases.mjs",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/catalog-inspection-01-summary.json",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/catalog-inspection-01.json.gz",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/extract-evidence.py",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/hosted-checkpoint-01-summary.json",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/hosted-checkpoint-01.bundle.json.gz",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/http-preflight-01-summary.json",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/http-preflight-01.json.gz",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/http-preflight-01.log",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/http-preflight.mjs",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/local-build-01.log",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/local-chromium-01.log",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/local-chromium-01/expectations.json",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/local-chromium-01/fatal.json",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/local-chromium-01/result.json",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/local-chromium-01/results.json",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/local-chromium-01/source-binding.json",
+    "A\tverification/qe-agent1-widget-entry-review-20261019/local-chromium-probe-01.log"
+  ],
+  "unpublishedEvidence": [
+    "?? node_modules",
+    "?? verification/qe-agent1-widget-entry-review-20261019/http-preflight-02-summary.json",
+    "?? verification/qe-agent1-widget-entry-review-20261019/http-preflight-02.json.gz",
+    "?? verification/qe-agent1-widget-entry-review-20261019/http-preflight-02.log"
+  ]
+}

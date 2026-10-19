@@ -1,0 +1,983 @@
+{
+  "run": 39314728750,
+  "testJob": 118273123814,
+  "head": "af0fd1c6118a19b2917eff53d7f3f2f5e5507c52",
+  "result": {
+    "status": "passed",
+    "services": 20,
+    "viewports": [
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000,
+        "mobile": false
+      },
+      {
+        "name": "mobile",
+        "width": 390,
+        "height": 844,
+        "mobile": true
+      }
+    ],
+    "caseCount": 120,
+    "passed": 120,
+    "failed": 0
+  },
+  "source": {
+    "head": "af0fd1c6118a19b2917eff53d7f3f2f5e5507c52",
+    "node": "v22.23.3",
+    "files": {
+      "client/public/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376",
+      "client/dist/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376",
+      "client/dist/widget-app.js": "9a6cacaa678964314ac1928434220a2779289374946f82291581acb7481fc015",
+      "client/src/widget-entry.jsx": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab",
+      "client/src/quoteWizard.jsx": "e96b00ff1263e6244c026319d1e6ac536753fea6bf0dd2fa95cce5603c3e84e9",
+      "client/src/quotedone.jsx": "20f8bd85d628c406549b0cbeee42e4283f23ba54cb08c35832f389a09fe0a6b4",
+      "client/src/quoteDoneControls.jsx": "577659d2771d04ca46739a4873680067c6c62886520436a602e12704154a1ed4",
+      "verification/qe-agent1-widget-entry-review-20261019/EXPECTED.md": "e961d028fab7feb041d93ef4105051f3e0be88a9fbc48d9f23c4fc826cba75ca",
+      "verification/qe-agent1-widget-entry-review-20261019/browser-entry.mjs": "8040d2a045aed18388f957279f54bda6cc8c3a744d6e88871af523eafa8c1915",
+      "verification/qe-agent1-widget-entry-review-20261019/application.mjs": "4616d0a18236161078a2effe6a61e2fcf2017141b846b6d8e6dd4c843478b91b",
+      "verification/qe-agent1-widget-entry-review-20261019/cases.mjs": "9b2a3d45727350a45fd12862ce636c6faf6f52b71068714c27f8c6634ceb721c"
+    },
+    "browser": "141.0.7390.37"
+  },
+  "browserSessions": 40,
+  "wizardStepsObserved": 1272,
+  "stageCounts": {
+    "required-question": 40,
+    "valid-quote-and-scope": 40,
+    "original-receipt-replay": 40
+  },
+  "bundle": "hosted-checkpoint-03.bundle.json.gz",
+  "bundleSha256": "ab4e925c4378afe2a83af0ca92e1beb96272ee013ba78859cc103ecc1be1ba1d",
+  "files": 185,
+  "fileSha256": {
+    "CONCRETE_DRIVEWAY/approved-book.json": "37ae4882143aaeb1af3909b606c21206ae5ed202e7050805ff8148f683acfae9",
+    "CONCRETE_DRIVEWAY/catalog.json": "fe1407e52113afb107ba1a7e41b2e8d4676bc4e8b0a1a077e2882aae7d83058e",
+    "CONCRETE_DRIVEWAY/desktop-required-wizard.json": "9432fe99fef02ebc40f09b3af7caaca8b487cf094512dc0766325c7552f1688c",
+    "CONCRETE_DRIVEWAY/desktop-valid-wizard.json": "bb3358425a9ad17215604d2efb06c4c9ba10afa929eaf5afd772bef9c286ac94",
+    "CONCRETE_DRIVEWAY/http.json": "fb85074d6ac155cf2eaa5d493eaabfea06e3519b9316725900a06f9add26469c",
+    "CONCRETE_DRIVEWAY/mobile-required-wizard.json": "9432fe99fef02ebc40f09b3af7caaca8b487cf094512dc0766325c7552f1688c",
+    "CONCRETE_DRIVEWAY/mobile-valid-wizard.json": "bb3358425a9ad17215604d2efb06c4c9ba10afa929eaf5afd772bef9c286ac94",
+    "CONCRETE_DRIVEWAY/owner-validation.json": "d4abf4826d499a4a8786cc09f0b77355cda078accdc8d786389dd7e1660f3e1e",
+    "CONCRETE_DRIVEWAY/results.json": "175942f25561cabca1e2a35678d135260fe3cb532e8c1375ff02c9ba6a45f382",
+    "CONCRETE_PATIO_SLAB/approved-book.json": "a1107e6185dd31e2b9b843bf4c90bc16086f06453a2fa2e93dd2cf9993b1efdc",
+    "CONCRETE_PATIO_SLAB/catalog.json": "14c33f4be5d7de05feef90ab23f6d8d775999d9feb5ce1e54e6525f7e1204c97",
+    "CONCRETE_PATIO_SLAB/desktop-required-wizard.json": "9c9c008a6a25d6e472c91f5dea40f4cf29705ac145e7cc3e02c66bc9c66858be",
+    "CONCRETE_PATIO_SLAB/desktop-valid-wizard.json": "c7dc0a88a9f5f3c555644663979dac09830bcc3259959c432799f32703942862",
+    "CONCRETE_PATIO_SLAB/http.json": "59d474dd012046b5e90f9d6f42595e371b9344199a3b8b486617c7f69b615729",
+    "CONCRETE_PATIO_SLAB/mobile-required-wizard.json": "9c9c008a6a25d6e472c91f5dea40f4cf29705ac145e7cc3e02c66bc9c66858be",
+    "CONCRETE_PATIO_SLAB/mobile-valid-wizard.json": "c7dc0a88a9f5f3c555644663979dac09830bcc3259959c432799f32703942862",
+    "CONCRETE_PATIO_SLAB/owner-validation.json": "fd51f4a01f090982511dac2b5e7bccc24af9065f1144b63ee76a6f9b3f1f3328",
+    "CONCRETE_PATIO_SLAB/results.json": "df5f2de49bccd7af4da91a95d87b12215c4ac6623d3dcffba5ec4529b85cb448",
+    "CUSTOM/approved-book.json": "7f9d778643094798fa6793c9edd2cfb6db6fba00bc905c6b3e45d00f819d66cd",
+    "CUSTOM/catalog.json": "1d6452e49e92e00eccd15f37cd8f3f35ecf144d8ad4ed84f3e1c7482c7fb2f44",
+    "CUSTOM/desktop-required-wizard.json": "a41b867d6b61b01b9354f97559b090a4c7e95ec34a068684bc883fb75e68b546",
+    "CUSTOM/desktop-valid-wizard.json": "0ddd105738b54537f4a999781605212d37374c6f7648856d1e393a093b22ec76",
+    "CUSTOM/http.json": "523a2db51010abdb8ede018457f636d8b73ccd9ebb4a2ccc4ff537bc4dc7d188",
+    "CUSTOM/mobile-required-wizard.json": "a41b867d6b61b01b9354f97559b090a4c7e95ec34a068684bc883fb75e68b546",
+    "CUSTOM/mobile-valid-wizard.json": "0ddd105738b54537f4a999781605212d37374c6f7648856d1e393a093b22ec76",
+    "CUSTOM/owner-validation.json": "c82bb6775a1baddfbd5b59623c3c4a2a585e035a64dcc3e40f6f726a0a6af286",
+    "CUSTOM/results.json": "22e49e0bc0c0f2a7242748dc3a8def9003395220158a1ce29c1f12d0d27c173c",
+    "EXTERIOR_PAINTING/approved-book.json": "ff665de601a3a556bfd55df7ea87ef74ff11a0ad3c3b02ae20373c5099485b11",
+    "EXTERIOR_PAINTING/catalog.json": "c27c5e05966874a06b0801496349c3b92fbcc72c9f0876c29c9e678cc67cf577",
+    "EXTERIOR_PAINTING/desktop-required-wizard.json": "74375430868f00d7310b5dff5411cffd657d42b333d974e65c3aebc51d3966b7",
+    "EXTERIOR_PAINTING/desktop-valid-wizard.json": "33999a0b3400dd5dff659530a900d22faa0c996cb16b7e6b91a6a3ffe2dae72a",
+    "EXTERIOR_PAINTING/http.json": "c902e556fcbd191814e6a49be2840005cc9bfc3e41b8dd2befb0e5282d42e4ec",
+    "EXTERIOR_PAINTING/mobile-required-wizard.json": "74375430868f00d7310b5dff5411cffd657d42b333d974e65c3aebc51d3966b7",
+    "EXTERIOR_PAINTING/mobile-valid-wizard.json": "33999a0b3400dd5dff659530a900d22faa0c996cb16b7e6b91a6a3ffe2dae72a",
+    "EXTERIOR_PAINTING/owner-validation.json": "0222acff42b81131ea61af9638972d74664ad304a4d6ae041a825e7fc392be08",
+    "EXTERIOR_PAINTING/results.json": "97423eaabcd82bfc43d81711722cade04b50495dca30d7c937f633444b532177",
+    "FENCING_INSTALL/approved-book.json": "9466a3c8533d4d4a9bc0631a9451c3cfb2415015a2be08abb163e9b1fe0e02db",
+    "FENCING_INSTALL/catalog.json": "096eb93607049c6c48773fb53c4f7aee4ceb5a8ec16acdcea96f379ed7f474bb",
+    "FENCING_INSTALL/desktop-required-wizard.json": "0a296e84a50c278ed665b4a885a9f02e259cd1ab9709301e795c8dab8dadc31b",
+    "FENCING_INSTALL/desktop-valid-wizard.json": "4979564a13bbd183f44a7550bc3499d4bdf2a583404c0a2b6df5739c3a7b9ce3",
+    "FENCING_INSTALL/http.json": "14d1b06d0da22b8de24408c2435835af7eba8e47461db1178852e73acfb6b0cf",
+    "FENCING_INSTALL/mobile-required-wizard.json": "0a296e84a50c278ed665b4a885a9f02e259cd1ab9709301e795c8dab8dadc31b",
+    "FENCING_INSTALL/mobile-valid-wizard.json": "4979564a13bbd183f44a7550bc3499d4bdf2a583404c0a2b6df5739c3a7b9ce3",
+    "FENCING_INSTALL/owner-validation.json": "2d0a3408040986136a25dd5fc5834088bf5d7468eed1e9821a5dd7db792e7233",
+    "FENCING_INSTALL/results.json": "c156b686bfc64c498d61315a1e5ede9f58a7889c17e68d50fd63c73f87d99233",
+    "FENCING_REPLACEMENT/approved-book.json": "8d16a40e82fc96031db134a9bfab5b337004b9f10ebc44ccb9708deeb3414302",
+    "FENCING_REPLACEMENT/catalog.json": "075a07f0c946cf5c68786752dbe7c7f7e3c6c42ef16df26928f520a5b5246b8e",
+    "FENCING_REPLACEMENT/desktop-required-wizard.json": "a342ab2de4bf9ce273582c3f1b5777c1cc2909f75e3d54e4cef43694a0d9ff85",
+    "FENCING_REPLACEMENT/desktop-valid-wizard.json": "6b8d27ac7c015bcf38bc1c719befab470b883ff377dce9ae0e1a8e9172d48926",
+    "FENCING_REPLACEMENT/http.json": "fbcc211bb106da918193f1f7fb19f41f208168db092164998e866a5cf5f7872e",
+    "FENCING_REPLACEMENT/mobile-required-wizard.json": "a342ab2de4bf9ce273582c3f1b5777c1cc2909f75e3d54e4cef43694a0d9ff85",
+    "FENCING_REPLACEMENT/mobile-valid-wizard.json": "6b8d27ac7c015bcf38bc1c719befab470b883ff377dce9ae0e1a8e9172d48926",
+    "FENCING_REPLACEMENT/owner-validation.json": "348c64383da286d3f577484c5b37b70c81441a554345eb238d91ed72e7926609",
+    "FENCING_REPLACEMENT/results.json": "7e70d37b20a8faa94bbaf1239ef310eda551db755807c1ae01c9bc7111c07da9",
+    "FLAT_ROOF_REPAIR/approved-book.json": "ca517c5a64ee446d5421d6a087cbf245bf32eb6d30f269233ddc0a77d184b2e9",
+    "FLAT_ROOF_REPAIR/catalog.json": "f07866d5ecb4cd4a88ea6634b30bcf37d291fec9f2e7355d45d32787dd07d8d1",
+    "FLAT_ROOF_REPAIR/desktop-required-wizard.json": "6af7f18200441838f8fc3d27f40b48269b71482cbad03851dadd1387a11da90c",
+    "FLAT_ROOF_REPAIR/desktop-valid-wizard.json": "cd7d500eee7f0af05e9f8c90771aff12806589000dfc53919a72968a114f9e2d",
+    "FLAT_ROOF_REPAIR/http.json": "3d5240b93aab61dfc025112edf81934ced9e357c5e532b61492b259e63480296",
+    "FLAT_ROOF_REPAIR/mobile-required-wizard.json": "6af7f18200441838f8fc3d27f40b48269b71482cbad03851dadd1387a11da90c",
+    "FLAT_ROOF_REPAIR/mobile-valid-wizard.json": "cd7d500eee7f0af05e9f8c90771aff12806589000dfc53919a72968a114f9e2d",
+    "FLAT_ROOF_REPAIR/owner-validation.json": "4f75bd927d2231794ec4d94d12eb9006c9602529b25ce7928f3fccdb6b8315cf",
+    "FLAT_ROOF_REPAIR/results.json": "52519e2f046391a832a8f551e31b4b1bdfef802a964d1e38778e8f90996a3a03",
+    "FLAT_ROOF_REPLACEMENT/approved-book.json": "5713f39a26d395b60d39c8d3490942572bcf7fa1a1ca7555c0bf274789dc8459",
+    "FLAT_ROOF_REPLACEMENT/catalog.json": "08743bcd598d2ceb7d2f2e4f40b22c3b2ffa30e493207992c037c5425b27cde5",
+    "FLAT_ROOF_REPLACEMENT/desktop-required-wizard.json": "42a8ff1a7f23a3b95f1e50e1af5cdec6dbae2649852ee10127a2b897ae705b5d",
+    "FLAT_ROOF_REPLACEMENT/desktop-valid-wizard.json": "01f7b10b20ad6d1ef5c323d2373bcecf4497a79b268b1fc835cc0ea106416f8d",
+    "FLAT_ROOF_REPLACEMENT/http.json": "522f83a58a7412dfbaca0c6ad16ebe94ed53554f3a7f13ecb49b27bd5412de4f",
+    "FLAT_ROOF_REPLACEMENT/mobile-required-wizard.json": "42a8ff1a7f23a3b95f1e50e1af5cdec6dbae2649852ee10127a2b897ae705b5d",
+    "FLAT_ROOF_REPLACEMENT/mobile-valid-wizard.json": "01f7b10b20ad6d1ef5c323d2373bcecf4497a79b268b1fc835cc0ea106416f8d",
+    "FLAT_ROOF_REPLACEMENT/owner-validation.json": "fe44222ebb127e75c2f8fc5821fbb054c5e8874e6712fc62a0f85b7730f09486",
+    "FLAT_ROOF_REPLACEMENT/results.json": "cc1e971d81d6cbc218b690923b75bd78edc83db00e508d42968fb6a39a8e8f92",
+    "FLOORING_INSTALL/approved-book.json": "2da8b8b4a660832c3381bc021f50ea9ff7fa5f72aaac4a1c90e48aecf062bf6a",
+    "FLOORING_INSTALL/catalog.json": "8ade3644b648c2d8d4159b25ee9a22fb1b7773b588529df70bf9dee5f483d030",
+    "FLOORING_INSTALL/desktop-required-wizard.json": "53fb881764f700014563e4c3f7f94ea26873de27a004dfd0a99e71307caf0f23",
+    "FLOORING_INSTALL/desktop-valid-wizard.json": "5beecc090064ef2350af5d576d54e3d2f8c545e5a0639c8d2fcf537944f0e3db",
+    "FLOORING_INSTALL/http.json": "aae80072c0a6eb092533ca2cfacae2a3a0146790d35eec156c58edd9186482b7",
+    "FLOORING_INSTALL/mobile-required-wizard.json": "53fb881764f700014563e4c3f7f94ea26873de27a004dfd0a99e71307caf0f23",
+    "FLOORING_INSTALL/mobile-valid-wizard.json": "5beecc090064ef2350af5d576d54e3d2f8c545e5a0639c8d2fcf537944f0e3db",
+    "FLOORING_INSTALL/owner-validation.json": "dd4297a7e51cf6b4010ac9438959d46ddb330cd81ff9c80f0f76649dd9f7c3c9",
+    "FLOORING_INSTALL/results.json": "1be48f5785d1a083104ca881d3baa70bc3027cb3d9e05184e110ce88df4655d6",
+    "FLOORING_REPLACEMENT/approved-book.json": "310736136f073555e521bba1c583830c0ccec727549b225d603eadb58cd78c64",
+    "FLOORING_REPLACEMENT/catalog.json": "3492e008fca7d1377833246c38e53a32c31aa92da46a83cf988719290a4c09af",
+    "FLOORING_REPLACEMENT/desktop-required-wizard.json": "9f0308a1821f40687d8bc87f1e624f42fc54ada6501818825b21eae1eb71240c",
+    "FLOORING_REPLACEMENT/desktop-valid-wizard.json": "e2f2779865d9605e2e18c56cf01b85f7d75d4b57cb0abe98bcce46bf18d4e17b",
+    "FLOORING_REPLACEMENT/http.json": "421904d67b97ffa7728a828ebdf9f5ddeb6cc6ab8c28d7955024adccf3965c3f",
+    "FLOORING_REPLACEMENT/mobile-required-wizard.json": "9f0308a1821f40687d8bc87f1e624f42fc54ada6501818825b21eae1eb71240c",
+    "FLOORING_REPLACEMENT/mobile-valid-wizard.json": "e2f2779865d9605e2e18c56cf01b85f7d75d4b57cb0abe98bcce46bf18d4e17b",
+    "FLOORING_REPLACEMENT/owner-validation.json": "00807ad57af255b0f32571c574a1947e462b06cde8104e960670874c1cf0cd5d",
+    "FLOORING_REPLACEMENT/results.json": "8aebed32cacbfa369ea668a0022980b5efbbda72a4694348e06f8c9fc6752dcc",
+    "INTERIOR_PAINTING/approved-book.json": "0455fb5a6217f184a558cea57fb9b114f0b9da0d52062a73762ae4d7a8fc1d4b",
+    "INTERIOR_PAINTING/catalog.json": "17f287d29e307a409e6f85de95a03f333acfbbd9420d6a7fc2b5704817637024",
+    "INTERIOR_PAINTING/desktop-required-wizard.json": "6e5529a7d8534cda1f41042c907066e5622a5d275e8c212f5a738a93c6ac0ca3",
+    "INTERIOR_PAINTING/desktop-valid-wizard.json": "e6895f827bf9f145067f0e378b78afc7f0162601a9e08e9989b0b82dc840856c",
+    "INTERIOR_PAINTING/http.json": "a8e81f8ff35313a1ac24293d56f48efec2cc43cd790391bb99ee97ea6c4b3ac3",
+    "INTERIOR_PAINTING/mobile-required-wizard.json": "6e5529a7d8534cda1f41042c907066e5622a5d275e8c212f5a738a93c6ac0ca3",
+    "INTERIOR_PAINTING/mobile-valid-wizard.json": "e6895f827bf9f145067f0e378b78afc7f0162601a9e08e9989b0b82dc840856c",
+    "INTERIOR_PAINTING/owner-validation.json": "dd434271f0442d53efcbec5ce41a19f54630ce289a0814412bcefc86c5901751",
+    "INTERIOR_PAINTING/results.json": "e827e724e5d435b5d744503906e3d17d06b0d4bb945d34344345e79152bbe581",
+    "LANDSCAPING_CLEANUP/approved-book.json": "754c7922b79f9cf1160a9d6fdc00c8e4eca66bf83856ccd132544642792fe87d",
+    "LANDSCAPING_CLEANUP/catalog.json": "817b14a6ac929bcde251300cbbe8fac16bd6ba9c7de4c37547a6735eafe6db36",
+    "LANDSCAPING_CLEANUP/desktop-required-wizard.json": "42c16800b8467d9de34e745680c4ef081e51e265897143b0b6ea5be996c35044",
+    "LANDSCAPING_CLEANUP/desktop-valid-wizard.json": "7ee86c8471c6f88aec4bb5eba46267754890844a9e58af336d9435d9f03d41c0",
+    "LANDSCAPING_CLEANUP/http.json": "4bc17fa92b6bce7a4a766fd08a6b6ceadda4d719b547c4c0c0680208964da3de",
+    "LANDSCAPING_CLEANUP/mobile-required-wizard.json": "42c16800b8467d9de34e745680c4ef081e51e265897143b0b6ea5be996c35044",
+    "LANDSCAPING_CLEANUP/mobile-valid-wizard.json": "7ee86c8471c6f88aec4bb5eba46267754890844a9e58af336d9435d9f03d41c0",
+    "LANDSCAPING_CLEANUP/owner-validation.json": "74428230a9c1fb871afa8148f7658c2cb220513a294544071d769738676451c5",
+    "LANDSCAPING_CLEANUP/results.json": "4fe156009fe54e8d11339eeecc20b61a96266e9f583e8ea2fffe3b36647cf384",
+    "LANDSCAPING_MOWING/approved-book.json": "a95e785611f94411d24d99aa8aae120953e7021bed28ff102870468114cc10c1",
+    "LANDSCAPING_MOWING/catalog.json": "d1a4f3f2aedff3c8547341978e38206f61e51c8dcfd818e8e3608773b7da679f",
+    "LANDSCAPING_MOWING/desktop-required-wizard.json": "de826a4181c20f21bab702fc47063e0fa055d51ef11f39492bf57e34ff5f6e39",
+    "LANDSCAPING_MOWING/desktop-valid-wizard.json": "da2f84089737516066fc228ec31e30938ebe19015687de9ea1b98098679e679f",
+    "LANDSCAPING_MOWING/http.json": "e5c1dc544f8ea155769f2770f18467d762e2853b21ec8e614518264ccb688cd8",
+    "LANDSCAPING_MOWING/mobile-required-wizard.json": "de826a4181c20f21bab702fc47063e0fa055d51ef11f39492bf57e34ff5f6e39",
+    "LANDSCAPING_MOWING/mobile-valid-wizard.json": "da2f84089737516066fc228ec31e30938ebe19015687de9ea1b98098679e679f",
+    "LANDSCAPING_MOWING/owner-validation.json": "5921b8e48218c74f0a4ffb5e2d8bc9e6b20958f5d8dfdfbb641617f2a587cd84",
+    "LANDSCAPING_MOWING/results.json": "4c8f8ab1ffdb95cbb3b7b4c0ca0fa2f0a63ae4dddb410a4392e460a0adc4435e",
+    "LANDSCAPING_MULCH/approved-book.json": "1563db4a2bf3e600c17aab2958d5e05482ef73d32ed337e85bcdf5a4656c77c3",
+    "LANDSCAPING_MULCH/catalog.json": "61759bcc1f040a068ff875b5e471ee89efaee300cedfaf73796b84db239b9a7f",
+    "LANDSCAPING_MULCH/desktop-required-wizard.json": "b5a3c9d6770571e8ebd17a8870226ad0138b082abbabd5fa7fce1df7a55ff747",
+    "LANDSCAPING_MULCH/desktop-valid-wizard.json": "fb3207dc0b817d176d11012bf1e20060be600c4e8aa051e341f93ece94d4cb9b",
+    "LANDSCAPING_MULCH/http.json": "75de498fa205cbd63a8fd4155040419750bfeaf709b6f041d9e519418e6a1d49",
+    "LANDSCAPING_MULCH/mobile-required-wizard.json": "b5a3c9d6770571e8ebd17a8870226ad0138b082abbabd5fa7fce1df7a55ff747",
+    "LANDSCAPING_MULCH/mobile-valid-wizard.json": "fb3207dc0b817d176d11012bf1e20060be600c4e8aa051e341f93ece94d4cb9b",
+    "LANDSCAPING_MULCH/owner-validation.json": "cd9389b28aa6dacfd2384d2771ed8674f472824ad7da3682099b357b9df1999b",
+    "LANDSCAPING_MULCH/results.json": "b22a5eb97c55883ba5b6539209dc8ec17770780a0ca3f2614860e2fc22872be9",
+    "LANDSCAPING_PLANTING/approved-book.json": "6d41c251cb80c28f9be882697f17368c20d90d3434231e1dbe65d3ccae0bc2c2",
+    "LANDSCAPING_PLANTING/catalog.json": "a1b2372ea40a0b3ff454fc365e9f33a412f0dae55365b04e03a1dcc8883b82ba",
+    "LANDSCAPING_PLANTING/desktop-required-wizard.json": "d66a3b5d8251cf6f0f0e3b56394f6c5d9855b5594e15bea7b6a15cdcc22c0bdf",
+    "LANDSCAPING_PLANTING/desktop-valid-wizard.json": "dad2f96928e42f17a4a56f55b3de9c2952e565d58b9e69ea1f2b4be672ea7db6",
+    "LANDSCAPING_PLANTING/http.json": "78269f217fe5c34fdfabe5da84bf948d03551426e92b6ba14badbf0a0f703d7f",
+    "LANDSCAPING_PLANTING/mobile-required-wizard.json": "d66a3b5d8251cf6f0f0e3b56394f6c5d9855b5594e15bea7b6a15cdcc22c0bdf",
+    "LANDSCAPING_PLANTING/mobile-valid-wizard.json": "dad2f96928e42f17a4a56f55b3de9c2952e565d58b9e69ea1f2b4be672ea7db6",
+    "LANDSCAPING_PLANTING/owner-validation.json": "b90c897464351cb86c955fd5821ddc25df3ada7b7eb95455075ae41b9c2d794b",
+    "LANDSCAPING_PLANTING/results.json": "efbcc017460ef67dfe723bae3f63a6eba8511e9b7a4d9c9292591e36aa76e767",
+    "LANDSCAPING_SOD/approved-book.json": "bc0aebde8dee9c514d301f82d98b2ef43e8894470a61934b037c425df91577fb",
+    "LANDSCAPING_SOD/catalog.json": "ba1e1733efe85c4456ba6d2a194e51b471846c7af5ff44f5ca0d17e6a436bd9a",
+    "LANDSCAPING_SOD/desktop-required-wizard.json": "41189cfe9670dd51771f522486cef9a9e12315edf22a2e34f428cb95da925886",
+    "LANDSCAPING_SOD/desktop-valid-wizard.json": "a8908becb59d565b6d31aa1e75a4c3bf96eae56ac276f3cbf102b438de1f3811",
+    "LANDSCAPING_SOD/http.json": "3c809313cc8631ec0d9b833ba52ff06fff17542c07183e4ae5c6cf961a89e58d",
+    "LANDSCAPING_SOD/mobile-required-wizard.json": "41189cfe9670dd51771f522486cef9a9e12315edf22a2e34f428cb95da925886",
+    "LANDSCAPING_SOD/mobile-valid-wizard.json": "a8908becb59d565b6d31aa1e75a4c3bf96eae56ac276f3cbf102b438de1f3811",
+    "LANDSCAPING_SOD/owner-validation.json": "a17d1e20f5c209b02213c8d297f49b521a1d6a8c43ffa5a95770d3683c6556ed",
+    "LANDSCAPING_SOD/results.json": "c9366019443f3bf8ae392c1d22768fdc686eeb6961baeb5667d8b86cb146163f",
+    "ROOFING_REPAIR/approved-book.json": "8f00ddc1810b240ee8e7f77508abc1a6f7c1ca7f7e04155cf510537cc87fff5c",
+    "ROOFING_REPAIR/catalog.json": "29a81674301485cc5dc18b50fdf148c1a0e4c18f3b51e2793c4d892b58c2f75c",
+    "ROOFING_REPAIR/desktop-required-wizard.json": "295d253847379052a28b3ed186d1f4a8aae55f3c6f86dcc3782d2c45a0b7827e",
+    "ROOFING_REPAIR/desktop-valid-wizard.json": "a8f2979b7da7ef591da73da1c4bd8b6586cf9cdeeea158c024ce24bbd3887d62",
+    "ROOFING_REPAIR/http.json": "45ff18505a228e03b7292b450bebb9bf596b3114b6893843c9e81200038206b2",
+    "ROOFING_REPAIR/mobile-required-wizard.json": "295d253847379052a28b3ed186d1f4a8aae55f3c6f86dcc3782d2c45a0b7827e",
+    "ROOFING_REPAIR/mobile-valid-wizard.json": "a8f2979b7da7ef591da73da1c4bd8b6586cf9cdeeea158c024ce24bbd3887d62",
+    "ROOFING_REPAIR/owner-validation.json": "0569c7ca84de08b19e39750b9498ff485e244c4a8d54abda3c18af5c4765a5f6",
+    "ROOFING_REPAIR/results.json": "bbc74967cd330402bd99ff47a94cba850b28acefabbe75a7cfcfa919c8b8dbac",
+    "ROOFING_REPLACEMENT/approved-book.json": "0213cca6fa6e03efb582a6525cdc8968fea70c42e10e0e7ad33995411d13a326",
+    "ROOFING_REPLACEMENT/catalog.json": "7914c904dfadb1ea8ec5355ee95d9c887a9e2f56cc25a4a683a5127562e8cdc6",
+    "ROOFING_REPLACEMENT/desktop-required-wizard.json": "b7addcf1116d70081de65de1b937cd965b4b29c60b57ab2932d039eae59fdb28",
+    "ROOFING_REPLACEMENT/desktop-valid-wizard.json": "f9f4f7f91c07109d0a584664c8c1d1f4e72a7e7d9b9960455279393ebbe82ac4",
+    "ROOFING_REPLACEMENT/http.json": "a5f69f7a0d889a99b0f418e4ebddd1e43aee5c80f23bdf13437da909cf46edc6",
+    "ROOFING_REPLACEMENT/mobile-required-wizard.json": "b7addcf1116d70081de65de1b937cd965b4b29c60b57ab2932d039eae59fdb28",
+    "ROOFING_REPLACEMENT/mobile-valid-wizard.json": "f9f4f7f91c07109d0a584664c8c1d1f4e72a7e7d9b9960455279393ebbe82ac4",
+    "ROOFING_REPLACEMENT/owner-validation.json": "ef0e42be988821495beb7999e20450a587fd598ef174ef6367da6ef1fea25b90",
+    "ROOFING_REPLACEMENT/results.json": "b371b6ad14825e59dbefcec234813c30dc4fb248a6dfb51ea79f3184032a2b8f",
+    "SIDING_REPAIR/approved-book.json": "6623c547c29bbedfae5c0de67688a1ee6082cc53d9499d314485f04be475532f",
+    "SIDING_REPAIR/catalog.json": "c394e0d851adc6b33258b50573f4c68f9245e996da6ee08652a75ffe5636438f",
+    "SIDING_REPAIR/desktop-required-wizard.json": "632943b994384de5ef92fe0fbf8ff81e7cbabb2cc0df2af950e0d9003a932297",
+    "SIDING_REPAIR/desktop-valid-wizard.json": "a374a24c5f543d6f6e9a4ba1b28a1f487f1ef924341762cc912f942e322f5373",
+    "SIDING_REPAIR/http.json": "d46d7fad9ab3f50bae43601ced0f058e822c0f38038118865b8b1508fcce517c",
+    "SIDING_REPAIR/mobile-required-wizard.json": "632943b994384de5ef92fe0fbf8ff81e7cbabb2cc0df2af950e0d9003a932297",
+    "SIDING_REPAIR/mobile-valid-wizard.json": "a374a24c5f543d6f6e9a4ba1b28a1f487f1ef924341762cc912f942e322f5373",
+    "SIDING_REPAIR/owner-validation.json": "55bcffe93f863058ff7a2b4dd2159429e9650d09e67e57179f1b4e7390b9a436",
+    "SIDING_REPAIR/results.json": "07a90ffd742035de249b00196219a04b68e678ec9ef3d1d1fa295e4c063dff4a",
+    "SIDING_REPLACEMENT/approved-book.json": "a641e0bff606b07651c0462eae9fb2574763bfcde12e0b951573e38a0130345f",
+    "SIDING_REPLACEMENT/catalog.json": "b4e6db6ddc2a40d4ea5bf60431b43e4f76bb6f4d1fe6377f3faf29b7d1983566",
+    "SIDING_REPLACEMENT/desktop-required-wizard.json": "1fcc722ebc654dcb94a82de68a485a37a556378593db96eed7bd8963912e07f8",
+    "SIDING_REPLACEMENT/desktop-valid-wizard.json": "a56b29a9cc5907eb18e745b6e38de244ab24715b1cf2ec449a2125db42631328",
+    "SIDING_REPLACEMENT/http.json": "3707b2edd528fd7c3a6be08b9fa1aef22bff5301b4e281bfad4023b0819b3287",
+    "SIDING_REPLACEMENT/mobile-required-wizard.json": "1fcc722ebc654dcb94a82de68a485a37a556378593db96eed7bd8963912e07f8",
+    "SIDING_REPLACEMENT/mobile-valid-wizard.json": "a56b29a9cc5907eb18e745b6e38de244ab24715b1cf2ec449a2125db42631328",
+    "SIDING_REPLACEMENT/owner-validation.json": "083d127a8b5ee4b1240d1e832af36efefb037b7ac39237296e810f7d5d84b4cc",
+    "SIDING_REPLACEMENT/results.json": "dcf59fac26ec10aad13c4a654020ca814abda0bbb94d75e6633080f51c3b00e5",
+    "coverage.json": "34de8d823bfad1a9b0cc7d3cd2ebb8fe0b80bdcef229d7102549710987062965",
+    "expectations.json": "27294cd797f14184a38ac0853c5793f4d67bf148c67ab7edc980cf8d31847d54",
+    "result.json": "a6a7785f8393bf52fbcf43079e1e986292ddb7645d60aa9d458f7db1deffa35b",
+    "results.json": "297c96f8a1ae1457daafcc8c8a6b6c35df1c3922fc691600da7c10b1e02a560a",
+    "source-binding.json": "4016b28119a34ff3ce688f2c6f799537bba9c55f7629f4148c4f94941ddddded"
+  },
+  "coverage": [
+    {
+      "type": "ROOFING_REPLACEMENT",
+      "cents": 244600,
+      "required": "roofSizeInput",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "ROOFING_REPAIR",
+      "cents": 58600,
+      "required": "affectedArea",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "FLAT_ROOF_REPLACEMENT",
+      "cents": 1805000,
+      "required": "roofSqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "FLAT_ROOF_REPAIR",
+      "cents": 36000,
+      "required": "affectedArea",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "INTERIOR_PAINTING",
+      "cents": 300000,
+      "required": "wallAreaSqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "EXTERIOR_PAINTING",
+      "cents": 318000,
+      "required": "exteriorAreaSqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "FLOORING_INSTALL",
+      "cents": 260670,
+      "required": "sqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "FLOORING_REPLACEMENT",
+      "cents": 311280,
+      "required": "sqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "FENCING_INSTALL",
+      "cents": 450000,
+      "required": "fenceHeight",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "FENCING_REPLACEMENT",
+      "cents": 490000,
+      "required": "fenceHeight",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "SIDING_REPLACEMENT",
+      "cents": 1170000,
+      "required": "sidingAreaSqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "SIDING_REPAIR",
+      "cents": 54000,
+      "required": "affectedArea",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "CONCRETE_DRIVEWAY",
+      "cents": 892222,
+      "required": "length",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "CONCRETE_PATIO_SLAB",
+      "cents": 353889,
+      "required": "length",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "LANDSCAPING_CLEANUP",
+      "cents": 40000,
+      "required": "yardSqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "LANDSCAPING_MULCH",
+      "cents": 32275,
+      "required": "mulchArea",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "LANDSCAPING_SOD",
+      "cents": 253750,
+      "required": "sodSqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "LANDSCAPING_PLANTING",
+      "cents": 28500,
+      "required": "plantsBySize",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "LANDSCAPING_MOWING",
+      "cents": 16000,
+      "required": "yardSqft",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "type": "CUSTOM",
+      "cents": 12500,
+      "required": "serviceConfirmed",
+      "results": [
+        {
+          "viewport": "desktop",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "desktop",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "required-question",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "valid-quote-and-scope",
+          "status": "passed"
+        },
+        {
+          "viewport": "mobile",
+          "stage": "original-receipt-replay",
+          "status": "passed"
+        }
+      ]
+    }
+  ]
+}

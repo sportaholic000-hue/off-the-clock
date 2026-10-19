@@ -1,0 +1,13 @@
+{
+  "scope": "HTTP only; not rendered execution",
+  "cases": 120,
+  "passed": 120,
+  "failed": 0,
+  "fixtureCorrection": "Real HTTP access-key creation replaces the booking fixture short key.",
+  "sourceHead": "af0fd1c6118a19b2917eff53d7f3f2f5e5507c52",
+  "sourceTiming": "Execution preceded publication; application and cases bytes match this published commit.",
+  "bundleSha256": "5db6f747f2f56777f425beba93558fc57120a8d82149f334ce3017c91cecb566",
+  "jsonFiles": 82,
+  "applicationSha256": "4616d0a18236161078a2effe6a61e2fcf2017141b846b6d8e6dd4c843478b91b",
+  "casesSha256": "9b2a3d45727350a45fd12862ce636c6faf6f52b71068714c27f8c6634ceb721c"
+}
