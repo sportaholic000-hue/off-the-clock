@@ -1,0 +1,18 @@
+{
+  "base": "03ebb1a9acd0c36381ef166c7c9e78ca2e551ca3",
+  "existingFiles": 4188,
+  "unchangedExistingBlobsAndModes": 4187,
+  "onlyChangedExistingFile": ".github/workflows/ci.yml",
+  "exactReplacement": {
+    "from": "    timeout-minutes: 45",
+    "to": "    timeout-minutes: 60"
+  },
+  "allOtherExistingFilesUnchanged": true,
+  "oldWorkflowSha256": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+  "newWorkflowSha256": "01e04daeaefa5d2e8b134c6927a33526185254c67ffdf9c0cc730c06a0665131",
+  "expectedCounts": {
+    "strict": 6164,
+    "full": 8129,
+    "browser": 12
+  }
+}
