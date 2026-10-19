@@ -1,70 +1,59 @@
-# Remaining-service public-intake review
+# Remaining-service Chromium / public-HTTP review
 
-The two initially reported product defects are **withdrawn**: the audit assumed automatic deletion despite the existing explicit-correction contract. The strengthened rendered correction checks are awaiting hosted execution. Original failed runs and their mistaken expectations are preserved.
+**No new product defect is confirmed in the covered cases.** At published source `f02b8d4abb0c85bf47db7816e472de345d7a5e90`, real Chromium completed **88/88** twelve-service cases plus **4/4** independent explicit-correction controls. All passed, including exact cents, invalid-input recovery, stale confirmations and immutable original receipt replay. A separate public-HTTP run passed **72/72** at `fe2387e3f2cf0e8271557c7f464e09feada43d0c` with the committed HTTP harness.
 
-Review base: `1f8b1a20e1b910c7787a05dd820814894b01a961` (approved A3). Unique branch: `codex/qe-agent1-remaining-services-chromium-review-20261019`. Personal execution; no subagents. Only new A1 test/evidence files are changed. A2's branch is untouched.
+Base: approved A3 `1f8b1a20e1b910c7787a05dd820814894b01a961`. Unique branch: `codex/qe-agent1-remaining-services-chromium-review-20261019`. Personal work; no subagents. Only new A1 tests/evidence are added relative to the base. All production, pre-existing tests/assertions, prices, versions, approvals, specifications, dependencies, selectors and workflows are byte-identical. No A2 branch, main, integration or deployment writes.
 
-## Coverage and independent expectations
+## Execution and coverage
 
-`EXPECTED.md` and `cases.mjs` record the twelve base/corrected amounts before comparisons. The new normal browser regression runs 88 independent cases across the twelve services missing from A3's representative eight-service Chromium suite. It uses production CustomerQuote, the real application public catalog/prepare/final handlers and disposable SQLite/books. Mounting HTML is test supplied; quote HTTP responses are never mocked. Failures are recorded per case and do not stop later services.
+The harness uses actual authenticated save, explicit starting/dependent-value confirmation, approval, public catalog, preparation and final submission handlers, with disposable SQLite/books and synthetic providers. Production CustomerQuote is rendered in real Chromium at the application origin. Only mounting HTML is supplied by the harness; public quote HTTP responses are never mocked. Runtime: Node 22.23.3 and Chromium 141.0.7390.37.
 
-The review checks valid rendering/persistence/exact cents, rendered corrections, invalid-input correction/recovery, real stale-scope proof rejection, immutable original receipt replay after correction, stale proofs after saved price edits, and original replay after server restart. Additional transitions cover fence removal, flat-roof partial scope, patio measurement methods and selected unpriced floor removal. Hosted test diagnostics contain a lossless compressed evidence bundle without modifying workflows.
+For each service, the seven main cases verify: valid rendered quote and exact stored/customer cents; rendered correction; invalid-input review and explicit recovery; stale-scope proof rejection with no persistence; exact original replay after correction; stale-price proof rejection and original replay after a real saved price change; and original replay after application restart. Genuine receipts are captured before changing prices, including original body, stored quote and internal calculation receipt. Replay compares these complete records and the customer response, not only the amount. Quotes never renew approval.
 
-## Completed execution
-
-- Extended HTTP history04: **72/72 passed**, zero failed. All twelve services pass base/corrected exact cents, invalid input, stale scope proofs, stale price proofs, immutable original receipt replay and replay after application restart. Its execution metadata distinguishes the uncommitted extended HTTP harness from the published production head.
-- HTTP preflight03: **36/36 passed**, exit 0. Every service has independently checked base and corrected exact cents and an invalid-input review control. Every successful quote also receives an exact HTTP receipt retry.
-- Owner/widget build: passed, exit 0. Generated tracked index restored exactly to the approved base.
-- Chromium startup: blocked locally by SIGTRAP. No local rendered-browser pass is claimed. The real application setup/save/confirmation/approval/catalog completed before launch failed; its evidence is retained in local-chromium-01.
-- HTTP preflight01 and02:25 passed /11 failed because the60/minute public limiter was reached. These are harness failures, not product findings. The inherited application fixture freezes Date.now, so adding wall-time pacing alone did not expire its window. Preflight03 and the final harness pace requests1.1seconds apart and update only the fixture's synthetic clock by actual elapsed wall time. Production rate limiting is unchanged; no limiter reset, disablement or identity rotation.
-- The Playwright browser installer failed to maintain its local download lock. The matching official Chromium1194 headless archive was downloaded separately; its SHA256 is `d745c7210cc88b73c7991a22c9624819960d84bc3de77ac7336d2de841a8c91f`. It also exitsSIGTRAP here. No dependency or lockfile is changed.
-
-Hosted Chromium at published `0e2648930ab2f3ce64e92e9578e981dcdfa3522b`, run 39284239659 / job 118165547578: **88 cases executed, 86 passed, 2 failed**. The complete A1 test section is preserved in `hosted-checkpoint-01-test-excerpt.log`. All twelve services pass their seven main lifecycle checks. Patio measurement correction and selected unpriced floor-removal review also pass. The failing transitions are isolated after all main service cases, and subsequent stale-price/restart controls continue and pass.
-
-The first hosted strict gate completed **5998/6001 passing, 3 failing**, with zero cancellations, skips or TODOs within the suite. The failures are the two defect assertions plus their parent test. Build, the dedicated 12-test owner-alert/dashboard browser step, and Docker build/startup passed. The unchanged workflow skipped full-suite, checker and dependency-audit steps after strict failed; no completion claim is made for those gates.
-
-The complete 555/555 diagnostic chunks were recovered and gzip/JSON validated. `hosted-checkpoint-01/complete-evidence-bundle.json.gz` preserves all 13 original files; `extracted-sha256.json` identifies their exact bytes. Earlier partial log retrieval is superseded by that complete recovery. `source-binding.json` confirms Chromium 141.0.7390.37 and the published source SHA. The individual test excerpt, gate excerpt, exact failed requests, screenshots, approved configuration and genuine original receipts are retained.
-
-Published-checkpoint HTTP rerun 05 at `fe2387e3f2cf0e8271557c7f464e09feada43d0c`: **72/72 passed**, exit 0, using the committed HTTP harness. Its output is separate from all earlier runs. The 88-case review reproduced86 passed/2 failed at that checkpoint. The new separate-reproduction file was selected by full but did not initially reach quote sources through imports, so strict did not run it and the workflow skipped full after strict failed. This harness gap is preserved in the run evidence. The reproduction now uses its documented service-fixture catalog to validate the two service types; both strict and full selectors include it without any selector changes. Independent Chromium reproduction results remain pending.
-
-## Corrected audit classification
-
-The two original optional-transition assertions demanded automatic removal of supplied fence length / partial-roof area. That assumption was unsupported. `server/scopeConfiguration.js:138–144` explicitly retains supplied values on screen for customer correction; `CustomerMeasurements` uses that visibility contract. The approved catalog also supplies these fields without conditional visibility restrictions. A3's existing fence API correction fixture distinguishes the contradiction from the explicitly cleared valid request.
-
-Thus the observed `needs_details` responses correctly reject contradictions; they do not establish hidden-field defects. The initial A1-R12-01/A1-R12-02 product-defect classifications are withdrawn. No production repair or new policy is proposed.
-
-The new A1 checks now require the supplied50LF/500sqft controls to remain visible and editable, require review with no persistence while contradictory, then use Change details and explicitly clear the field. Fresh prepare/final calls must quote the unchanged independent450000/1805000-cent expectations. This adds visibility, retained-value, review and explicit-clear assertions. All pre-existing tests, prices, production and original failed evidence remain unchanged. The corrected expectations were written before executing this path.
-
-A separate fresh-application invocation checks the same transitions and two clean-scope controls. Both new tests are verified selected by strict and full without editing selectors. Detailed classification history is in `FINDINGS.md`.
-
-## Commands
-
-```sh
-node verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs <new-output-directory>
-node verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs . <new-output-directory>
-node --test test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs
-npm run build
-```
-
-Local runtime Node22.23.3; Playwright1.56.0 tooling is installed outside the repository. Existing A3 tests/assertions, all production, specifications, versions, approvals, selectors and workflows are preserved. This review does not cover actual provider calls, deployment or every possible configuration within each service; F2 remains outside scope.
-
-## Twelve-service execution matrix
-
-Each row passed all seven main Chromium/public-HTTP lifecycle checks: valid, correction, invalid/recovery, stale scope, original replay after correction, stale price/original replay and original replay after restart. Counts are from checkpoint01, not inferred from source.
-
-| Service | Base cents | Corrected cents | Main cases | Extra cases |
+| Service | Base cents | Corrected cents | Main cases | Additional control |
 |---|---:|---:|---:|---|
 | ROOFING_REPLACEMENT | 244600 | 244698 | 7/7 passed | — |
-| FLAT_ROOF_REPLACEMENT | 1805000 | 1805903 | 7/7 passed | Automatic-clear hypothesis failed; explicit correction pending |
+| FLAT_ROOF_REPLACEMENT | 1805000 | 1805903 | 7/7 passed | Visible contradiction → explicit clearing →1805000 cents |
 | INTERIOR_PAINTING | 300000 | 300300 | 7/7 passed | — |
 | EXTERIOR_PAINTING | 318000 | 318318 | 7/7 passed | — |
-| FLOORING_INSTALL | 260670 | 260940 | 7/7 passed | Unpriced removal review passed |
-| FENCING_REPLACEMENT | 490000 | 492000 | 7/7 passed | Automatic-clear hypothesis failed; explicit correction pending |
+| FLOORING_INSTALL | 260670 | 260940 | 7/7 passed | Selected unpriced removal requires review |
+| FENCING_REPLACEMENT | 490000 | 492000 | 7/7 passed | Visible contradiction → explicit clearing →450000 cents |
 | SIDING_REPLACEMENT | 1170000 | 1170585 | 7/7 passed | — |
 | SIDING_REPAIR | 54000 | 54000 | 7/7 passed | — |
-| CONCRETE_PATIO_SLAB | 353889 | 361486 | 7/7 passed | Measurement correction passed |
+| CONCRETE_PATIO_SLAB | 353889 | 361486 | 7/7 passed | Exact dimensions → measured area/perimeter,353889 cents |
 | LANDSCAPING_CLEANUP | 40000 | 35000 | 7/7 passed | — |
 | LANDSCAPING_SOD | 253750 | 203750 | 7/7 passed | — |
 | CUSTOM | 12500 | 12500 | 7/7 passed | — |
 
-Coverage limits: one documented base configuration per service, with targeted corrections; no exhaustive product/tier/optional-work matrix, live provider calls, mobile layout or every possible field transition. A3's existing representative eight-service suite is preserved, not relabeled as a complete lifecycle matrix. F2 remains outside this review. Local Chromium remains blocked by SIGTRAP; hosted Chromium supplies the rendered execution.
+The four additional cases pass, giving 88/88. An independent fresh application/book repeats the two supplied-scope correction paths and two clean-scope controls: 4/4 passed. Existing A3 Chromium coverage for CONCRETE_DRIVEWAY, FENCING_INSTALL, FLAT_ROOF_REPAIR, FLOORING_REPLACEMENT, LANDSCAPING_MOWING, LANDSCAPING_MULCH, LANDSCAPING_PLANTING and ROOFING_REPAIR remains untouched. The new test checks that those eight plus these twelve equal the complete registered service set.
+
+## Corrected audit assumptions and preserved failures
+
+The first A1 expectations incorrectly demanded automatic deletion of supplied fence-removal length and partial-roof area. Initial runs returned needs_details for the resulting contradictions, and those two assertions failed. The report initially mislabeled them as hidden-field defects. That classification is **withdrawn**.
+
+`server/scopeConfiguration.js:138–144` explicitly preserves supplied fields on screen for customer correction. The correct expectations were written before the next execution. Real Chromium then proved the 50 LF and 500 sqft controls visible and editable, review-only while contradictory, and correctly priced after Change details and explicit clearing. No automatic-deletion policy or production repair was introduced. Only the new A1 assumptions were corrected; existing assertions and all independent amounts remain preserved. See `FINDINGS.md` and the superseded expectations in `EXPECTED.md`.
+
+Failed evidence remains intact: local HTTP 01/02 reached the 60/minute limiter (25 passed/11 failed each); local Chromium failed at startup with SIGTRAP; hosted checkpoints 01/02 recorded 5998/6001 strict assertions passing (two mistaken case assertions plus parent failure); checkpoint 03 independently repeated the mistaken assertions while both clean-scope price controls passed. No failed run is rewritten or represented as a product regression. The separate reproduction initially qualified only for full selection; its fixture-catalog validation now makes the existing transitive strict selector include it as well. Selectors are unchanged.
+
+The real limiter remains enabled. Public requests are paced 1.1 seconds apart; the inherited fixture's frozen synthetic clock advances only by actual elapsed wall time so its limiter window can expire. No limiter reset, identity rotation or production clock change occurs.
+
+## Evidence and gate qualification
+
+- `hosted-checkpoint-04-passing-excerpt.log`: exact hosted TAP sections for all 92 passing leaf cases at f02b8d4, run 39289284610 / job 118185396680.
+- `hosted-checkpoint-04-reproduction/`: complete 133/133-chunk, CRC-validated evidence bundle, source binding, exact approved book, full case records and hashes. It records visible retained values 50/500 and all 4 passing results.
+- `hosted-checkpoint-01/`: complete 555/555-chunk original failed-run bundle, exact approved configuration, HTTP, original receipts, screenshots, source binding and hashes. The artifact's failure status records the superseded test assumptions.
+- `hosted-checkpoint-03-reproduction/`: complete 152/152-chunk independent old-expectation bundle and classification provenance.
+- `http-published-head-05/`: 72/72 public-HTTP results, original receipts, real book edits, stale catalog and exact committed-harness source binding.
+- `preservation.json`, `source-qualification.json`, `selection-verification.json` and `SHA256SUMS`: preservation, source identity, normal suite selection and artifact checksums.
+
+Build, dedicated 12-test browser and Docker steps passed on the observed checkpoints. Early full/checker/dependency-audit steps were skipped by the unchanged workflow after the mistaken strict assertions failed; they are not claimed completed for those runs. This report records the completed case evidence. The subsequent exact published-head Actions run supplies final strict/full/build/browser/Docker/checker/dependency-audit conclusions; use that run's exact SHA and actual counts rather than inferring a gate pass from this report. The final response identifies that run.
+
+```sh
+node --test test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.mjs
+node verification/qe-agent1-remaining-public-intake-20261019/http-preflight.mjs <new-output-directory>
+python3 verification/qe-agent1-remaining-public-intake-20261019/extract-hosted-evidence.py <job-log-or-complete-bundle.json.gz> <new-output-directory>
+```
+
+## Limits
+
+One documented base configuration per service, with targeted corrections; no exhaustive product/tier/optional-work matrix. These additions mount CustomerQuote with editable saved fixtures; they do not exercise every blank-form entry path, the full widget loader, the progressive wizard, mobile layout or live providers. A3's eight-service representative suite is not relabeled as a complete lifecycle matrix. Actual voice-tool coverage for these twelve is outside this public-HTTP review. Local Chromium remains blocked by SIGTRAP; hosted Chromium supplies the rendered evidence. F2 remains outside scope.

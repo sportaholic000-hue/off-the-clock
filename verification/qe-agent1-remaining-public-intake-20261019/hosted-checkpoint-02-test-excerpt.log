@@ -1,0 +1,610 @@
+# Subtest: qe-agent1 remaining twelve services use Chromium and real public HTTP
+2026-10-19T16:45:51.9207592Z     # Subtest: ROOFING_REPLACEMENT valid
+2026-10-19T16:45:51.9209390Z     ok 1 - ROOFING_REPLACEMENT valid
+2026-10-19T16:45:51.9212320Z       ---
+2026-10-19T16:45:51.9212591Z       duration_ms: 0.6745
+2026-10-19T16:45:51.9212876Z       type: 'test'
+2026-10-19T16:45:51.9213117Z       ...
+2026-10-19T16:45:51.9217570Z     # Subtest: ROOFING_REPLACEMENT correction
+2026-10-19T16:45:51.9219855Z     ok 2 - ROOFING_REPLACEMENT correction
+2026-10-19T16:45:51.9220239Z       ---
+2026-10-19T16:45:51.9220533Z       duration_ms: 0.105379
+2026-10-19T16:45:51.9220909Z       type: 'test'
+2026-10-19T16:45:51.9221267Z       ...
+2026-10-19T16:45:51.9226941Z     # Subtest: ROOFING_REPLACEMENT invalid-and-recovery
+2026-10-19T16:45:51.9227504Z     ok 3 - ROOFING_REPLACEMENT invalid-and-recovery
+2026-10-19T16:45:51.9227898Z       ---
+2026-10-19T16:45:51.9228154Z       duration_ms: 0.083326
+2026-10-19T16:45:51.9228932Z       type: 'test'
+2026-10-19T16:45:51.9229210Z       ...
+2026-10-19T16:45:51.9233481Z     # Subtest: ROOFING_REPLACEMENT stale-scope-proof
+2026-10-19T16:45:51.9233993Z     ok 4 - ROOFING_REPLACEMENT stale-scope-proof
+2026-10-19T16:45:51.9236376Z       ---
+2026-10-19T16:45:51.9236624Z       duration_ms: 0.086851
+2026-10-19T16:45:51.9236919Z       type: 'test'
+2026-10-19T16:45:51.9237165Z       ...
+2026-10-19T16:45:51.9237570Z     # Subtest: ROOFING_REPLACEMENT original-replay-after-correction
+2026-10-19T16:45:51.9238183Z     ok 5 - ROOFING_REPLACEMENT original-replay-after-correction
+2026-10-19T16:45:51.9238618Z       ---
+2026-10-19T16:45:51.9238862Z       duration_ms: 0.094543
+2026-10-19T16:45:51.9239149Z       type: 'test'
+2026-10-19T16:45:51.9239396Z       ...
+2026-10-19T16:45:51.9239855Z     # Subtest: FLAT_ROOF_REPLACEMENT valid
+2026-10-19T16:45:51.9240509Z     ok 6 - FLAT_ROOF_REPLACEMENT valid
+2026-10-19T16:45:51.9241146Z       ---
+2026-10-19T16:45:51.9241693Z       duration_ms: 0.089986
+2026-10-19T16:45:51.9242163Z       type: 'test'
+2026-10-19T16:45:51.9242859Z       ...
+2026-10-19T16:45:51.9243390Z     # Subtest: FLAT_ROOF_REPLACEMENT correction
+2026-10-19T16:45:51.9243993Z     ok 7 - FLAT_ROOF_REPLACEMENT correction
+2026-10-19T16:45:51.9244794Z       ---
+2026-10-19T16:45:51.9245196Z       duration_ms: 0.076165
+2026-10-19T16:45:51.9245664Z       type: 'test'
+2026-10-19T16:45:51.9246088Z       ...
+2026-10-19T16:45:51.9249027Z     # Subtest: FLAT_ROOF_REPLACEMENT invalid-and-recovery
+2026-10-19T16:45:51.9250625Z     ok 8 - FLAT_ROOF_REPLACEMENT invalid-and-recovery
+2026-10-19T16:45:51.9251171Z       ---
+2026-10-19T16:45:51.9251582Z       duration_ms: 0.210679
+2026-10-19T16:45:51.9252042Z       type: 'test'
+2026-10-19T16:45:51.9252459Z       ...
+2026-10-19T16:45:51.9257259Z     # Subtest: FLAT_ROOF_REPLACEMENT stale-scope-proof
+2026-10-19T16:45:51.9258875Z     ok 9 - FLAT_ROOF_REPLACEMENT stale-scope-proof
+2026-10-19T16:45:51.9259401Z       ---
+2026-10-19T16:45:51.9259810Z       duration_ms: 0.230438
+2026-10-19T16:45:51.9260253Z       type: 'test'
+2026-10-19T16:45:51.9260643Z       ...
+2026-10-19T16:45:51.9265714Z     # Subtest: FLAT_ROOF_REPLACEMENT original-replay-after-correction
+2026-10-19T16:45:51.9267201Z     ok 10 - FLAT_ROOF_REPLACEMENT original-replay-after-correction
+2026-10-19T16:45:51.9267783Z       ---
+2026-10-19T16:45:51.9268059Z       duration_ms: 0.161965
+2026-10-19T16:45:51.9268441Z       type: 'test'
+2026-10-19T16:45:51.9268707Z       ...
+2026-10-19T16:45:51.9272576Z     # Subtest: INTERIOR_PAINTING valid
+2026-10-19T16:45:51.9273167Z     ok 11 - INTERIOR_PAINTING valid
+2026-10-19T16:45:51.9273811Z       ---
+2026-10-19T16:45:51.9274316Z       duration_ms: 0.07908
+2026-10-19T16:45:51.9274794Z       type: 'test'
+2026-10-19T16:45:51.9275062Z       ...
+2026-10-19T16:45:51.9277318Z     # Subtest: INTERIOR_PAINTING correction
+2026-10-19T16:45:51.9277990Z     ok 12 - INTERIOR_PAINTING correction
+2026-10-19T16:45:51.9278333Z       ---
+2026-10-19T16:45:51.9278582Z       duration_ms: 0.057006
+2026-10-19T16:45:51.9278888Z       type: 'test'
+2026-10-19T16:45:51.9279134Z       ...
+2026-10-19T16:45:51.9308084Z     # Subtest: INTERIOR_PAINTING invalid-and-recovery
+2026-10-19T16:45:51.9334692Z     ok 13 - INTERIOR_PAINTING invalid-and-recovery
+2026-10-19T16:45:51.9335145Z       ---
+2026-10-19T16:45:51.9335415Z       duration_ms: 0.049154
+2026-10-19T16:45:51.9335717Z       type: 'test'
+2026-10-19T16:45:51.9335996Z       ...
+2026-10-19T16:45:51.9336348Z     # Subtest: INTERIOR_PAINTING stale-scope-proof
+2026-10-19T16:45:51.9336824Z     ok 14 - INTERIOR_PAINTING stale-scope-proof
+2026-10-19T16:45:51.9337218Z       ---
+2026-10-19T16:45:51.9337477Z       duration_ms: 0.05279
+2026-10-19T16:45:51.9337780Z       type: 'test'
+2026-10-19T16:45:51.9338029Z       ...
+2026-10-19T16:45:51.9338451Z     # Subtest: INTERIOR_PAINTING original-replay-after-correction
+2026-10-19T16:45:51.9339050Z     ok 15 - INTERIOR_PAINTING original-replay-after-correction
+2026-10-19T16:45:51.9339478Z       ---
+2026-10-19T16:45:51.9340081Z       duration_ms: 0.045589
+2026-10-19T16:45:51.9340385Z       type: 'test'
+2026-10-19T16:45:51.9340638Z       ...
+2026-10-19T16:45:51.9340931Z     # Subtest: EXTERIOR_PAINTING valid
+2026-10-19T16:45:51.9341310Z     ok 16 - EXTERIOR_PAINTING valid
+2026-10-19T16:45:51.9341623Z       ---
+2026-10-19T16:45:51.9341862Z       duration_ms: 0.044106
+2026-10-19T16:45:51.9342148Z       type: 'test'
+2026-10-19T16:45:51.9342394Z       ...
+2026-10-19T16:45:51.9342700Z     # Subtest: EXTERIOR_PAINTING correction
+2026-10-19T16:45:51.9343112Z     ok 17 - EXTERIOR_PAINTING correction
+2026-10-19T16:45:51.9343440Z       ---
+2026-10-19T16:45:51.9343682Z       duration_ms: 0.05957
+2026-10-19T16:45:51.9343975Z       type: 'test'
+2026-10-19T16:45:51.9344221Z       ...
+2026-10-19T16:45:51.9344797Z     # Subtest: EXTERIOR_PAINTING invalid-and-recovery
+2026-10-19T16:45:51.9345279Z     ok 18 - EXTERIOR_PAINTING invalid-and-recovery
+2026-10-19T16:45:51.9345650Z       ---
+2026-10-19T16:45:51.9345892Z       duration_ms: 0.048574
+2026-10-19T16:45:51.9346198Z       type: 'test'
+2026-10-19T16:45:51.9346632Z       ...
+2026-10-19T16:45:51.9346963Z     # Subtest: EXTERIOR_PAINTING stale-scope-proof
+2026-10-19T16:45:51.9347424Z     ok 19 - EXTERIOR_PAINTING stale-scope-proof
+2026-10-19T16:45:51.9347785Z       ---
+2026-10-19T16:45:51.9348025Z       duration_ms: 0.050667
+2026-10-19T16:45:51.9348324Z       type: 'test'
+2026-10-19T16:45:51.9348570Z       ...
+2026-10-19T16:45:51.9348980Z     # Subtest: EXTERIOR_PAINTING original-replay-after-correction
+2026-10-19T16:45:51.9349586Z     ok 20 - EXTERIOR_PAINTING original-replay-after-correction
+2026-10-19T16:45:51.9350004Z       ---
+2026-10-19T16:45:51.9350247Z       duration_ms: 0.04624
+2026-10-19T16:45:51.9350536Z       type: 'test'
+2026-10-19T16:45:51.9350763Z       ...
+2026-10-19T16:45:51.9351038Z     # Subtest: FLOORING_INSTALL valid
+2026-10-19T16:45:51.9351412Z     ok 21 - FLOORING_INSTALL valid
+2026-10-19T16:45:51.9351718Z       ---
+2026-10-19T16:45:51.9351951Z       duration_ms: 0.044728
+2026-10-19T16:45:51.9352244Z       type: 'test'
+2026-10-19T16:45:51.9352487Z       ...
+2026-10-19T16:45:51.9352765Z     # Subtest: FLOORING_INSTALL correction
+2026-10-19T16:45:51.9353152Z     ok 22 - FLOORING_INSTALL correction
+2026-10-19T16:45:51.9353465Z       ---
+2026-10-19T16:45:51.9353695Z       duration_ms: 0.044647
+2026-10-19T16:45:51.9353970Z       type: 'test'
+2026-10-19T16:45:51.9354208Z       ...
+2026-10-19T16:45:51.9354655Z     # Subtest: FLOORING_INSTALL invalid-and-recovery
+2026-10-19T16:45:51.9355102Z     ok 23 - FLOORING_INSTALL invalid-and-recovery
+2026-10-19T16:45:51.9355449Z       ---
+2026-10-19T16:45:51.9355671Z       duration_ms: 0.060952
+2026-10-19T16:45:51.9355943Z       type: 'test'
+2026-10-19T16:45:51.9356183Z       ...
+2026-10-19T16:45:51.9356482Z     # Subtest: FLOORING_INSTALL stale-scope-proof
+2026-10-19T16:45:51.9356898Z     ok 24 - FLOORING_INSTALL stale-scope-proof
+2026-10-19T16:45:51.9357119Z       ---
+2026-10-19T16:45:51.9357276Z       duration_ms: 0.044827
+2026-10-19T16:45:51.9357457Z       type: 'test'
+2026-10-19T16:45:51.9357623Z       ...
+2026-10-19T16:45:51.9357863Z     # Subtest: FLOORING_INSTALL original-replay-after-correction
+2026-10-19T16:45:51.9358205Z     ok 25 - FLOORING_INSTALL original-replay-after-correction
+2026-10-19T16:45:51.9358450Z       ---
+2026-10-19T16:45:51.9358607Z       duration_ms: 0.046009
+2026-10-19T16:45:51.9358792Z       type: 'test'
+2026-10-19T16:45:51.9358955Z       ...
+2026-10-19T16:45:51.9359139Z     # Subtest: FENCING_REPLACEMENT valid
+2026-10-19T16:45:51.9359378Z     ok 26 - FENCING_REPLACEMENT valid
+2026-10-19T16:45:51.9359575Z       ---
+2026-10-19T16:45:51.9359728Z       duration_ms: 0.043806
+2026-10-19T16:45:51.9359905Z       type: 'test'
+2026-10-19T16:45:51.9360111Z       ...
+2026-10-19T16:45:51.9360410Z     # Subtest: FENCING_REPLACEMENT correction
+2026-10-19T16:45:51.9360829Z     ok 27 - FENCING_REPLACEMENT correction
+2026-10-19T16:45:51.9361151Z       ---
+2026-10-19T16:45:51.9361381Z       duration_ms: 0.043456
+2026-10-19T16:45:51.9361860Z       type: 'test'
+2026-10-19T16:45:51.9362099Z       ...
+2026-10-19T16:45:51.9362428Z     # Subtest: FENCING_REPLACEMENT invalid-and-recovery
+2026-10-19T16:45:51.9362899Z     ok 28 - FENCING_REPLACEMENT invalid-and-recovery
+2026-10-19T16:45:51.9363258Z       ---
+2026-10-19T16:45:51.9363493Z       duration_ms: 0.044417
+2026-10-19T16:45:51.9363774Z       type: 'test'
+2026-10-19T16:45:51.9364006Z       ...
+2026-10-19T16:45:51.9364316Z     # Subtest: FENCING_REPLACEMENT stale-scope-proof
+2026-10-19T16:45:51.9371767Z     ok 29 - FENCING_REPLACEMENT stale-scope-proof
+2026-10-19T16:45:51.9372161Z       ---
+2026-10-19T16:45:51.9372418Z       duration_ms: 0.041062
+2026-10-19T16:45:51.9372720Z       type: 'test'
+2026-10-19T16:45:51.9372966Z       ...
+2026-10-19T16:45:51.9373379Z     # Subtest: FENCING_REPLACEMENT original-replay-after-correction
+2026-10-19T16:45:51.9373985Z     ok 30 - FENCING_REPLACEMENT original-replay-after-correction
+2026-10-19T16:45:51.9374559Z       ---
+2026-10-19T16:45:51.9374849Z       duration_ms: 0.051668
+2026-10-19T16:45:51.9375374Z       type: 'test'
+2026-10-19T16:45:51.9375627Z       ...
+2026-10-19T16:45:51.9375915Z     # Subtest: SIDING_REPLACEMENT valid
+2026-10-19T16:45:51.9376300Z     ok 31 - SIDING_REPLACEMENT valid
+2026-10-19T16:45:51.9376617Z       ---
+2026-10-19T16:45:51.9376867Z       duration_ms: 0.044046
+2026-10-19T16:45:51.9377149Z       type: 'test'
+2026-10-19T16:45:51.9377393Z       ...
+2026-10-19T16:45:51.9377685Z     # Subtest: SIDING_REPLACEMENT correction
+2026-10-19T16:45:51.9378094Z     ok 32 - SIDING_REPLACEMENT correction
+2026-10-19T16:45:51.9378426Z       ---
+2026-10-19T16:45:51.9378666Z       duration_ms: 0.041873
+2026-10-19T16:45:51.9378963Z       type: 'test'
+2026-10-19T16:45:51.9379204Z       ...
+2026-10-19T16:45:51.9379552Z     # Subtest: SIDING_REPLACEMENT invalid-and-recovery
+2026-10-19T16:45:51.9380028Z     ok 33 - SIDING_REPLACEMENT invalid-and-recovery
+2026-10-19T16:45:51.9380402Z       ---
+2026-10-19T16:45:51.9380643Z       duration_ms: 0.045799
+2026-10-19T16:45:51.9380950Z       type: 'test'
+2026-10-19T16:45:51.9381202Z       ...
+2026-10-19T16:45:51.9381538Z     # Subtest: SIDING_REPLACEMENT stale-scope-proof
+2026-10-19T16:45:51.9382047Z     ok 34 - SIDING_REPLACEMENT stale-scope-proof
+2026-10-19T16:45:51.9382400Z       ---
+2026-10-19T16:45:51.9382641Z       duration_ms: 0.043616
+2026-10-19T16:45:51.9382935Z       type: 'test'
+2026-10-19T16:45:51.9383175Z       ...
+2026-10-19T16:45:51.9383579Z     # Subtest: SIDING_REPLACEMENT original-replay-after-correction
+2026-10-19T16:45:51.9384168Z     ok 35 - SIDING_REPLACEMENT original-replay-after-correction
+2026-10-19T16:45:51.9384732Z       ---
+2026-10-19T16:45:51.9384972Z       duration_ms: 0.099911
+2026-10-19T16:45:51.9385264Z       type: 'test'
+2026-10-19T16:45:51.9385504Z       ...
+2026-10-19T16:45:51.9385775Z     # Subtest: SIDING_REPAIR valid
+2026-10-19T16:45:51.9386127Z     ok 36 - SIDING_REPAIR valid
+2026-10-19T16:45:51.9386420Z       ---
+2026-10-19T16:45:51.9386656Z       duration_ms: 0.055714
+2026-10-19T16:45:51.9386952Z       type: 'test'
+2026-10-19T16:45:51.9387200Z       ...
+2026-10-19T16:45:51.9387486Z     # Subtest: SIDING_REPAIR correction
+2026-10-19T16:45:51.9387868Z     ok 37 - SIDING_REPAIR correction
+2026-10-19T16:45:51.9388188Z       ---
+2026-10-19T16:45:51.9388428Z       duration_ms: 0.048413
+2026-10-19T16:45:51.9388719Z       type: 'test'
+2026-10-19T16:45:51.9388960Z       ...
+2026-10-19T16:45:51.9389274Z     # Subtest: SIDING_REPAIR invalid-and-recovery
+2026-10-19T16:45:51.9389731Z     ok 38 - SIDING_REPAIR invalid-and-recovery
+2026-10-19T16:45:51.9390089Z       ---
+2026-10-19T16:45:51.9390329Z       duration_ms: 0.040551
+2026-10-19T16:45:51.9390617Z       type: 'test'
+2026-10-19T16:45:51.9390860Z       ...
+2026-10-19T16:45:51.9391170Z     # Subtest: SIDING_REPAIR stale-scope-proof
+2026-10-19T16:45:51.9391599Z     ok 39 - SIDING_REPAIR stale-scope-proof
+2026-10-19T16:45:51.9391940Z       ---
+2026-10-19T16:45:51.9392177Z       duration_ms: 0.042935
+2026-10-19T16:45:51.9392470Z       type: 'test'
+2026-10-19T16:45:51.9392936Z       ...
+2026-10-19T16:45:51.9393341Z     # Subtest: SIDING_REPAIR original-replay-after-correction
+2026-10-19T16:45:51.9393903Z     ok 40 - SIDING_REPAIR original-replay-after-correction
+2026-10-19T16:45:51.9394309Z       ---
+2026-10-19T16:45:51.9394852Z       duration_ms: 0.041813
+2026-10-19T16:45:51.9403593Z       type: 'test'
+2026-10-19T16:45:51.9403884Z       ...
+2026-10-19T16:45:51.9404205Z     # Subtest: CONCRETE_PATIO_SLAB valid
+2026-10-19T16:45:51.9404892Z     ok 41 - CONCRETE_PATIO_SLAB valid
+2026-10-19T16:45:51.9405238Z       ---
+2026-10-19T16:45:51.9405498Z       duration_ms: 0.043235
+2026-10-19T16:45:51.9405799Z       type: 'test'
+2026-10-19T16:45:51.9406051Z       ...
+2026-10-19T16:45:51.9406371Z     # Subtest: CONCRETE_PATIO_SLAB correction
+2026-10-19T16:45:51.9406807Z     ok 42 - CONCRETE_PATIO_SLAB correction
+2026-10-19T16:45:51.9407164Z       ---
+2026-10-19T16:45:51.9407414Z       duration_ms: 0.053992
+2026-10-19T16:45:51.9407709Z       type: 'test'
+2026-10-19T16:45:51.9407978Z       ...
+2026-10-19T16:45:51.9408555Z     # Subtest: CONCRETE_PATIO_SLAB invalid-and-recovery
+2026-10-19T16:45:51.9409063Z     ok 43 - CONCRETE_PATIO_SLAB invalid-and-recovery
+2026-10-19T16:45:51.9409451Z       ---
+2026-10-19T16:45:51.9409707Z       duration_ms: 0.043015
+2026-10-19T16:45:51.9410002Z       type: 'test'
+2026-10-19T16:45:51.9410266Z       ...
+2026-10-19T16:45:51.9410618Z     # Subtest: CONCRETE_PATIO_SLAB stale-scope-proof
+2026-10-19T16:45:51.9411101Z     ok 44 - CONCRETE_PATIO_SLAB stale-scope-proof
+2026-10-19T16:45:51.9411484Z       ---
+2026-10-19T16:45:51.9411736Z       duration_ms: 0.045189
+2026-10-19T16:45:51.9412032Z       type: 'test'
+2026-10-19T16:45:51.9412295Z       ...
+2026-10-19T16:45:51.9412579Z     # Subtest: CONCRETE_PATIO_SLAB original-replay-after-correction
+2026-10-19T16:45:51.9412942Z     ok 45 - CONCRETE_PATIO_SLAB original-replay-after-correction
+2026-10-19T16:45:51.9413202Z       ---
+2026-10-19T16:45:51.9413364Z       duration_ms: 0.042574
+2026-10-19T16:45:51.9413560Z       type: 'test'
+2026-10-19T16:45:51.9413722Z       ...
+2026-10-19T16:45:51.9415211Z     # Subtest: LANDSCAPING_CLEANUP valid
+2026-10-19T16:45:51.9416757Z     ok 46 - LANDSCAPING_CLEANUP valid
+2026-10-19T16:45:51.9417259Z       ---
+2026-10-19T16:45:51.9417539Z       duration_ms: 0.080361
+2026-10-19T16:45:51.9417864Z       type: 'test'
+2026-10-19T16:45:51.9418118Z       ...
+2026-10-19T16:45:51.9418442Z     # Subtest: LANDSCAPING_CLEANUP correction
+2026-10-19T16:45:51.9419624Z     ok 47 - LANDSCAPING_CLEANUP correction
+2026-10-19T16:45:51.9419979Z       ---
+2026-10-19T16:45:51.9420245Z       duration_ms: 0.042174
+2026-10-19T16:45:51.9420535Z       type: 'test'
+2026-10-19T16:45:51.9420787Z       ...
+2026-10-19T16:45:51.9421133Z     # Subtest: LANDSCAPING_CLEANUP invalid-and-recovery
+2026-10-19T16:45:51.9421646Z     ok 48 - LANDSCAPING_CLEANUP invalid-and-recovery
+2026-10-19T16:45:51.9421986Z       ---
+2026-10-19T16:45:51.9422193Z       duration_ms: 0.041453
+2026-10-19T16:45:51.9422453Z       type: 'test'
+2026-10-19T16:45:51.9422696Z       ...
+2026-10-19T16:45:51.9432278Z     # Subtest: LANDSCAPING_CLEANUP stale-scope-proof
+2026-10-19T16:45:51.9433124Z     ok 49 - LANDSCAPING_CLEANUP stale-scope-proof
+2026-10-19T16:45:51.9433511Z       ---
+2026-10-19T16:45:51.9433767Z       duration_ms: 0.040662
+2026-10-19T16:45:51.9434063Z       type: 'test'
+2026-10-19T16:45:51.9434310Z       ...
+2026-10-19T16:45:51.9434914Z     # Subtest: LANDSCAPING_CLEANUP original-replay-after-correction
+2026-10-19T16:45:51.9435552Z     ok 50 - LANDSCAPING_CLEANUP original-replay-after-correction
+2026-10-19T16:45:51.9435982Z       ---
+2026-10-19T16:45:51.9436228Z       duration_ms: 0.041203
+2026-10-19T16:45:51.9436514Z       type: 'test'
+2026-10-19T16:45:51.9436756Z       ...
+2026-10-19T16:45:51.9437052Z     # Subtest: LANDSCAPING_SOD valid
+2026-10-19T16:45:51.9437427Z     ok 51 - LANDSCAPING_SOD valid
+2026-10-19T16:45:51.9437729Z       ---
+2026-10-19T16:45:51.9437974Z       duration_ms: 0.045289
+2026-10-19T16:45:51.9438547Z       type: 'test'
+2026-10-19T16:45:51.9438797Z       ...
+2026-10-19T16:45:51.9439085Z     # Subtest: LANDSCAPING_SOD correction
+2026-10-19T16:45:51.9439485Z     ok 52 - LANDSCAPING_SOD correction
+2026-10-19T16:45:51.9439802Z       ---
+2026-10-19T16:45:51.9440045Z       duration_ms: 0.049394
+2026-10-19T16:45:51.9440334Z       type: 'test'
+2026-10-19T16:45:51.9440580Z       ...
+2026-10-19T16:45:51.9440902Z     # Subtest: LANDSCAPING_SOD invalid-and-recovery
+2026-10-19T16:45:51.9441372Z     ok 53 - LANDSCAPING_SOD invalid-and-recovery
+2026-10-19T16:45:51.9441729Z       ---
+2026-10-19T16:45:51.9441967Z       duration_ms: 0.042515
+2026-10-19T16:45:51.9442246Z       type: 'test'
+2026-10-19T16:45:51.9442467Z       ...
+2026-10-19T16:45:51.9442749Z     # Subtest: LANDSCAPING_SOD stale-scope-proof
+2026-10-19T16:45:51.9443184Z     ok 54 - LANDSCAPING_SOD stale-scope-proof
+2026-10-19T16:45:51.9443522Z       ---
+2026-10-19T16:45:51.9443757Z       duration_ms: 0.057698
+2026-10-19T16:45:51.9444037Z       type: 'test'
+2026-10-19T16:45:51.9444278Z       ...
+2026-10-19T16:45:51.9444984Z     # Subtest: LANDSCAPING_SOD original-replay-after-correction
+2026-10-19T16:45:51.9445616Z     ok 55 - LANDSCAPING_SOD original-replay-after-correction
+2026-10-19T16:45:51.9446028Z       ---
+2026-10-19T16:45:51.9446268Z       duration_ms: 0.040561
+2026-10-19T16:45:51.9446551Z       type: 'test'
+2026-10-19T16:45:51.9446799Z       ...
+2026-10-19T16:45:51.9447057Z     # Subtest: CUSTOM valid
+2026-10-19T16:45:51.9447362Z     ok 56 - CUSTOM valid
+2026-10-19T16:45:51.9447635Z       ---
+2026-10-19T16:45:51.9447871Z       duration_ms: 0.078439
+2026-10-19T16:45:51.9448152Z       type: 'test'
+2026-10-19T16:45:51.9448392Z       ...
+2026-10-19T16:45:51.9448659Z     # Subtest: CUSTOM correction
+2026-10-19T16:45:51.9448989Z     ok 57 - CUSTOM correction
+2026-10-19T16:45:51.9449283Z       ---
+2026-10-19T16:45:51.9449519Z       duration_ms: 0.049204
+2026-10-19T16:45:51.9449805Z       type: 'test'
+2026-10-19T16:45:51.9450047Z       ...
+2026-10-19T16:45:51.9450353Z     # Subtest: CUSTOM invalid-and-recovery
+2026-10-19T16:45:51.9450768Z     ok 58 - CUSTOM invalid-and-recovery
+2026-10-19T16:45:51.9451101Z       ---
+2026-10-19T16:45:51.9451345Z       duration_ms: 0.044367
+2026-10-19T16:45:51.9451641Z       type: 'test'
+2026-10-19T16:45:51.9451867Z       ...
+2026-10-19T16:45:51.9452121Z     # Subtest: CUSTOM stale-scope-proof
+2026-10-19T16:45:51.9452485Z     ok 59 - CUSTOM stale-scope-proof
+2026-10-19T16:45:51.9452763Z       ---
+2026-10-19T16:45:51.9452966Z       duration_ms: 0.042665
+2026-10-19T16:45:51.9453219Z       type: 'test'
+2026-10-19T16:45:51.9453442Z       ...
+2026-10-19T16:45:51.9453771Z     # Subtest: CUSTOM original-replay-after-correction
+2026-10-19T16:45:51.9454222Z     ok 60 - CUSTOM original-replay-after-correction
+2026-10-19T16:45:51.9454739Z       ---
+2026-10-19T16:45:51.9454974Z       duration_ms: 0.044988
+2026-10-19T16:45:51.9455242Z       type: 'test'
+2026-10-19T16:45:51.9455459Z       ...
+2026-10-19T16:45:51.9464308Z     # Subtest: FENCING_REPLACEMENT removal-off-dependency
+2026-10-19T16:45:51.9465066Z     not ok 61 - FENCING_REPLACEMENT removal-off-dependency
+2026-10-19T16:45:51.9470333Z       ---
+2026-10-19T16:45:51.9470724Z       duration_ms: 0.788532
+2026-10-19T16:45:51.9471047Z       type: 'test'
+2026-10-19T16:45:51.9471869Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs:32:32'
+2026-10-19T16:45:51.9472727Z       failureType: 'testCodeFailure'
+2026-10-19T16:45:51.9473073Z       error: |-
+2026-10-19T16:45:51.9477566Z         {"message":"hidden old-fence length retained after removal was deselected\n\ntrue !== false\n","stack":"AssertionError [ERR_ASSERTION]: hidden old-fence length retained after removal was deselected\n\ntrue !== false\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:101:202\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:39:6)\n    at async dependencies (file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:101:2)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:146:2"}
+2026-10-19T16:45:51.9481757Z         
+2026-10-19T16:45:51.9482025Z         'failed' !== 'passed'
+2026-10-19T16:45:51.9482324Z         
+2026-10-19T16:45:51.9482571Z       code: 'ERR_ASSERTION'
+2026-10-19T16:45:51.9482881Z       name: 'AssertionError'
+2026-10-19T16:45:51.9483200Z       expected: 'passed'
+2026-10-19T16:45:51.9483489Z       actual: 'failed'
+2026-10-19T16:45:51.9483772Z       operator: 'strictEqual'
+2026-10-19T16:45:51.9484078Z       stack: |-
+2026-10-19T16:45:51.9485175Z         TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs:32:71)
+2026-10-19T16:45:51.9486372Z         Test.runInAsyncScope (node:async_hooks:214:14)
+2026-10-19T16:45:51.9486908Z         Test.run (node:internal/test_runner/test:1047:25)
+2026-10-19T16:45:51.9487424Z         Test.start (node:internal/test_runner/test:944:17)
+2026-10-19T16:45:51.9487966Z         TestContext.test (node:internal/test_runner/test:373:20)
+2026-10-19T16:45:51.9489088Z         TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs:32:32)
+2026-10-19T16:45:51.9490074Z         async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-19T16:45:51.9490742Z         async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-10-19T16:45:51.9491260Z       ...
+2026-10-19T16:45:51.9491655Z     # Subtest: FLAT_ROOF_REPLACEMENT partial-to-full-dependency
+2026-10-19T16:45:51.9492247Z     not ok 62 - FLAT_ROOF_REPLACEMENT partial-to-full-dependency
+2026-10-19T16:45:51.9492681Z       ---
+2026-10-19T16:45:51.9492942Z       duration_ms: 0.150878
+2026-10-19T16:45:51.9493241Z       type: 'test'
+2026-10-19T16:45:51.9494031Z       location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs:32:32'
+2026-10-19T16:45:51.9495013Z       failureType: 'testCodeFailure'
+2026-10-19T16:45:51.9495348Z       error: |-
+2026-10-19T16:45:51.9500940Z         {"message":"hidden partial scope retained: partialAreaSqft\n\ntrue !== false\n","stack":"AssertionError [ERR_ASSERTION]: hidden partial scope retained: partialAreaSqft\n\ntrue !== false\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:102:358\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:39:6)\n    at async dependencies (file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:102:2)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/qe-agent1-remaining-public-intake-20261019/browser-audit.mjs:146:2"}
+2026-10-19T16:45:51.9504825Z         
+2026-10-19T16:45:51.9505094Z         'failed' !== 'passed'
+2026-10-19T16:45:51.9505393Z         
+2026-10-19T16:45:51.9505638Z       code: 'ERR_ASSERTION'
+2026-10-19T16:45:51.9505941Z       name: 'AssertionError'
+2026-10-19T16:45:51.9506249Z       expected: 'passed'
+2026-10-19T16:45:51.9506539Z       actual: 'failed'
+2026-10-19T16:45:51.9506823Z       operator: 'strictEqual'
+2026-10-19T16:45:51.9507117Z       stack: |-
+2026-10-19T16:45:51.9508021Z         TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs:32:71)
+2026-10-19T16:45:51.9508956Z         Test.runInAsyncScope (node:async_hooks:214:14)
+2026-10-19T16:45:51.9509440Z         Test.run (node:internal/test_runner/test:1047:25)
+2026-10-19T16:45:51.9509908Z         Test.start (node:internal/test_runner/test:944:17)
+2026-10-19T16:45:51.9510634Z         TestContext.test (node:internal/test_runner/test:373:20)
+2026-10-19T16:45:51.9511575Z         TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs:32:32)
+2026-10-19T16:45:51.9512378Z         async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-19T16:45:51.9512904Z         async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-10-19T16:45:51.9513321Z       ...
+2026-10-19T16:45:51.9513642Z     # Subtest: CONCRETE_PATIO_SLAB measurement-method-correction
+2026-10-19T16:45:51.9514102Z     ok 63 - CONCRETE_PATIO_SLAB measurement-method-correction
+2026-10-19T16:45:51.9514597Z       ---
+2026-10-19T16:45:51.9514800Z       duration_ms: 0.057597
+2026-10-19T16:45:51.9515035Z       type: 'test'
+2026-10-19T16:45:51.9515234Z       ...
+2026-10-19T16:45:51.9515522Z     # Subtest: FLOORING_INSTALL selected-unpriced-removal
+2026-10-19T16:45:51.9516112Z     ok 64 - FLOORING_INSTALL selected-unpriced-removal
+2026-10-19T16:45:51.9516423Z       ---
+2026-10-19T16:45:51.9516620Z       duration_ms: 0.04614
+2026-10-19T16:45:51.9516847Z       type: 'test'
+2026-10-19T16:45:51.9517081Z       ...
+2026-10-19T16:45:51.9517515Z     # Subtest: ROOFING_REPLACEMENT book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9518172Z     ok 65 - ROOFING_REPLACEMENT book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9518626Z       ---
+2026-10-19T16:45:51.9518882Z       duration_ms: 0.044537
+2026-10-19T16:45:51.9519168Z       type: 'test'
+2026-10-19T16:45:51.9519416Z       ...
+2026-10-19T16:45:51.9519856Z     # Subtest: FLAT_ROOF_REPLACEMENT book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9520524Z     ok 66 - FLAT_ROOF_REPLACEMENT book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9520985Z       ---
+2026-10-19T16:45:51.9521241Z       duration_ms: 0.043906
+2026-10-19T16:45:51.9521525Z       type: 'test'
+2026-10-19T16:45:51.9521768Z       ...
+2026-10-19T16:45:51.9522199Z     # Subtest: INTERIOR_PAINTING book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9522834Z     ok 67 - INTERIOR_PAINTING book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9523284Z       ---
+2026-10-19T16:45:51.9523537Z       duration_ms: 0.067892
+2026-10-19T16:45:51.9523821Z       type: 'test'
+2026-10-19T16:45:51.9524064Z       ...
+2026-10-19T16:45:51.9524777Z     # Subtest: EXTERIOR_PAINTING book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9525420Z     ok 68 - EXTERIOR_PAINTING book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9525858Z       ---
+2026-10-19T16:45:51.9526096Z       duration_ms: 0.0463
+2026-10-19T16:45:51.9526377Z       type: 'test'
+2026-10-19T16:45:51.9526623Z       ...
+2026-10-19T16:45:51.9527036Z     # Subtest: FLOORING_INSTALL book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9527647Z     ok 69 - FLOORING_INSTALL book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9528083Z       ---
+2026-10-19T16:45:51.9528326Z       duration_ms: 0.04622
+2026-10-19T16:45:51.9528620Z       type: 'test'
+2026-10-19T16:45:51.9528869Z       ...
+2026-10-19T16:45:51.9529302Z     # Subtest: FENCING_REPLACEMENT book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9529947Z     ok 70 - FENCING_REPLACEMENT book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9530392Z       ---
+2026-10-19T16:45:51.9530632Z       duration_ms: 0.040051
+2026-10-19T16:45:51.9530920Z       type: 'test'
+2026-10-19T16:45:51.9531167Z       ...
+2026-10-19T16:45:51.9531617Z     # Subtest: SIDING_REPLACEMENT book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9532254Z     ok 71 - SIDING_REPLACEMENT book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9532694Z       ---
+2026-10-19T16:45:51.9532939Z       duration_ms: 0.042133
+2026-10-19T16:45:51.9533224Z       type: 'test'
+2026-10-19T16:45:51.9533472Z       ...
+2026-10-19T16:45:51.9533875Z     # Subtest: SIDING_REPAIR book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9534598Z     ok 72 - SIDING_REPAIR book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9535229Z       ---
+2026-10-19T16:45:51.9535478Z       duration_ms: 0.043296
+2026-10-19T16:45:51.9535762Z       type: 'test'
+2026-10-19T16:45:51.9536009Z       ...
+2026-10-19T16:45:51.9536440Z     # Subtest: CONCRETE_PATIO_SLAB book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9537074Z     ok 73 - CONCRETE_PATIO_SLAB book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9537517Z       ---
+2026-10-19T16:45:51.9537750Z       duration_ms: 0.043696
+2026-10-19T16:45:51.9538033Z       type: 'test'
+2026-10-19T16:45:51.9538275Z       ...
+2026-10-19T16:45:51.9538710Z     # Subtest: LANDSCAPING_CLEANUP book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9539348Z     ok 74 - LANDSCAPING_CLEANUP book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9539784Z       ---
+2026-10-19T16:45:51.9540024Z       duration_ms: 0.044387
+2026-10-19T16:45:51.9540308Z       type: 'test'
+2026-10-19T16:45:51.9540552Z       ...
+2026-10-19T16:45:51.9540960Z     # Subtest: LANDSCAPING_SOD book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9541734Z     ok 75 - LANDSCAPING_SOD book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9542185Z       ---
+2026-10-19T16:45:51.9542433Z       duration_ms: 0.043306
+2026-10-19T16:45:51.9542725Z       type: 'test'
+2026-10-19T16:45:51.9542964Z       ...
+2026-10-19T16:45:51.9543329Z     # Subtest: CUSTOM book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9543831Z     ok 76 - CUSTOM book-stale-proof-and-original-replay
+2026-10-19T16:45:51.9544214Z       ---
+2026-10-19T16:45:51.9544642Z       duration_ms: 0.041904
+2026-10-19T16:45:51.9544923Z       type: 'test'
+2026-10-19T16:45:51.9545153Z       ...
+2026-10-19T16:45:51.9545543Z     # Subtest: ROOFING_REPLACEMENT original-replay-after-restart
+2026-10-19T16:45:51.9546116Z     ok 77 - ROOFING_REPLACEMENT original-replay-after-restart
+2026-10-19T16:45:51.9546528Z       ---
+2026-10-19T16:45:51.9546766Z       duration_ms: 0.041513
+2026-10-19T16:45:51.9547043Z       type: 'test'
+2026-10-19T16:45:51.9547297Z       ...
+2026-10-19T16:45:51.9547706Z     # Subtest: FLAT_ROOF_REPLACEMENT original-replay-after-restart
+2026-10-19T16:45:51.9548290Z     ok 78 - FLAT_ROOF_REPLACEMENT original-replay-after-restart
+2026-10-19T16:45:51.9548704Z       ---
+2026-10-19T16:45:51.9548939Z       duration_ms: 0.042435
+2026-10-19T16:45:51.9549219Z       type: 'test'
+2026-10-19T16:45:51.9549464Z       ...
+2026-10-19T16:45:51.9549840Z     # Subtest: INTERIOR_PAINTING original-replay-after-restart
+2026-10-19T16:45:51.9550383Z     ok 79 - INTERIOR_PAINTING original-replay-after-restart
+2026-10-19T16:45:51.9550782Z       ---
+2026-10-19T16:45:51.9551034Z       duration_ms: 0.044197
+2026-10-19T16:45:51.9551318Z       type: 'test'
+2026-10-19T16:45:51.9551567Z       ...
+2026-10-19T16:45:51.9551948Z     # Subtest: EXTERIOR_PAINTING original-replay-after-restart
+2026-10-19T16:45:51.9552495Z     ok 80 - EXTERIOR_PAINTING original-replay-after-restart
+2026-10-19T16:45:51.9552888Z       ---
+2026-10-19T16:45:51.9553122Z       duration_ms: 0.056956
+2026-10-19T16:45:51.9553412Z       type: 'test'
+2026-10-19T16:45:51.9553670Z       ...
+2026-10-19T16:45:51.9554038Z     # Subtest: FLOORING_INSTALL original-replay-after-restart
+2026-10-19T16:45:51.9554734Z     ok 81 - FLOORING_INSTALL original-replay-after-restart
+2026-10-19T16:45:51.9555139Z       ---
+2026-10-19T16:45:51.9555375Z       duration_ms: 0.045669
+2026-10-19T16:45:51.9555662Z       type: 'test'
+2026-10-19T16:45:51.9555909Z       ...
+2026-10-19T16:45:51.9556298Z     # Subtest: FENCING_REPLACEMENT original-replay-after-restart
+2026-10-19T16:45:51.9556867Z     ok 82 - FENCING_REPLACEMENT original-replay-after-restart
+2026-10-19T16:45:51.9557265Z       ---
+2026-10-19T16:45:51.9557503Z       duration_ms: 0.043236
+2026-10-19T16:45:51.9557785Z       type: 'test'
+2026-10-19T16:45:51.9558034Z       ...
+2026-10-19T16:45:51.9558434Z     # Subtest: SIDING_REPLACEMENT original-replay-after-restart
+2026-10-19T16:45:51.9558988Z     ok 83 - SIDING_REPLACEMENT original-replay-after-restart
+2026-10-19T16:45:51.9559696Z       ---
+2026-10-19T16:45:51.9559949Z       duration_ms: 0.042915
+2026-10-19T16:45:51.9560235Z       type: 'test'
+2026-10-19T16:45:51.9560479Z       ...
+2026-10-19T16:45:51.9560848Z     # Subtest: SIDING_REPAIR original-replay-after-restart
+2026-10-19T16:45:51.9561381Z     ok 84 - SIDING_REPAIR original-replay-after-restart
+2026-10-19T16:45:51.9561764Z       ---
+2026-10-19T16:45:51.9562005Z       duration_ms: 0.044818
+2026-10-19T16:45:51.9562287Z       type: 'test'
+2026-10-19T16:45:51.9562539Z       ...
+2026-10-19T16:45:51.9562913Z     # Subtest: CONCRETE_PATIO_SLAB original-replay-after-restart
+2026-10-19T16:45:51.9563460Z     ok 85 - CONCRETE_PATIO_SLAB original-replay-after-restart
+2026-10-19T16:45:51.9585088Z       ---
+2026-10-19T16:45:51.9585377Z       duration_ms: 0.041132
+2026-10-19T16:45:51.9585691Z       type: 'test'
+2026-10-19T16:45:51.9585961Z       ...
+2026-10-19T16:45:51.9586389Z     # Subtest: LANDSCAPING_CLEANUP original-replay-after-restart
+2026-10-19T16:45:51.9587002Z     ok 86 - LANDSCAPING_CLEANUP original-replay-after-restart
+2026-10-19T16:45:51.9587683Z       ---
+2026-10-19T16:45:51.9587949Z       duration_ms: 0.05265
+2026-10-19T16:45:51.9588245Z       type: 'test'
+2026-10-19T16:45:51.9588513Z       ...
+2026-10-19T16:45:51.9588905Z     # Subtest: LANDSCAPING_SOD original-replay-after-restart
+2026-10-19T16:45:51.9589456Z     ok 87 - LANDSCAPING_SOD original-replay-after-restart
+2026-10-19T16:45:51.9589856Z       ---
+2026-10-19T16:45:51.9590067Z       duration_ms: 0.043656
+2026-10-19T16:45:51.9590258Z       type: 'test'
+2026-10-19T16:45:51.9590429Z       ...
+2026-10-19T16:45:51.9590647Z     # Subtest: CUSTOM original-replay-after-restart
+2026-10-19T16:45:51.9590945Z     ok 88 - CUSTOM original-replay-after-restart
+2026-10-19T16:45:51.9591177Z       ---
+2026-10-19T16:45:51.9591337Z       duration_ms: 0.040682
+2026-10-19T16:45:51.9591525Z       type: 'test'
+2026-10-19T16:45:51.9591688Z       ...
+2026-10-19T16:45:51.9591831Z     1..88
+2026-10-19T16:45:51.9592170Z not ok 3069 - qe-agent1 remaining twelve services use Chromium and real public HTTP
+2026-10-19T16:45:51.9592489Z   ---
+2026-10-19T16:45:51.9592650Z   duration_ms: 230415.94079
+2026-10-19T16:45:51.9592831Z   type: 'test'
+2026-10-19T16:45:51.9593308Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs:12:1'
+2026-10-19T16:45:51.9593779Z   failureType: 'testCodeFailure'
+2026-10-19T16:45:51.9593978Z   error: |-
+2026-10-19T16:45:51.9594165Z     See individual failing cases
+2026-10-19T16:45:51.9594504Z     
+2026-10-19T16:45:51.9594652Z     2 !== 0
+2026-10-19T16:45:51.9594797Z     
+2026-10-19T16:45:51.9594951Z   code: 'ERR_ASSERTION'
+2026-10-19T16:45:51.9595132Z   name: 'AssertionError'
+2026-10-19T16:45:51.9595311Z   expected: 0
+2026-10-19T16:45:51.9595465Z   actual: 2
+2026-10-19T16:45:51.9595622Z   operator: 'strictEqual'
+2026-10-19T16:45:51.9595799Z   stack: |-
+2026-10-19T16:45:51.9596330Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs:33:9)
+2026-10-19T16:45:51.9596898Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-19T16:45:51.9597278Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-10-19T16:45:51.9597575Z   ...
+2026-10-19T16:45:51.9640191Z # 
+EXCERPTED GATE SUMMARIES
+2026-10-19T16:36:08.5489429Z # tests 12
+2026-10-19T16:36:08.5489878Z # pass 12
+2026-10-19T16:36:08.5490096Z # fail 0
+2026-10-19T16:36:08.5490319Z # cancelled 0
+2026-10-19T16:36:08.5490553Z # skipped 0
+2026-10-19T16:36:08.5490958Z # todo 0
+2026-10-19T16:54:56.3811679Z # tests 6001
+2026-10-19T16:54:56.3812021Z # pass 5998
+2026-10-19T16:54:56.3812190Z # fail 3
+2026-10-19T16:54:56.3812350Z # cancelled 0
+2026-10-19T16:54:56.3812522Z # skipped 0
+2026-10-19T16:54:56.3812674Z # todo 0
+2026-10-19T16:54:56.3819591Z FAIL: /home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs did not complete every test successfully.
+2026-10-19T16:54:56.3820667Z FAIL: The complete test summary is missing or contains unsuccessful tests.
+2026-10-19T16:54:56.3949267Z ##[error]Process completed with exit code 1.

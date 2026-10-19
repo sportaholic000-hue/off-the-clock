@@ -1,4 +1,4 @@
-# Candidate classifications withdrawn; explicit correction under verification
+# Withdrawn candidates: explicit correction verified
 
 The initial two product-defect classifications were wrong. They were based on a new A1 test assumption that changing a controlling choice must automatically delete a supplied dependent measurement. The existing implementation deliberately preserves supplied values on screen so the customer can correct them explicitly (`server/scopeConfiguration.js:138–144`). `CustomerMeasurements` uses that visibility contract; the actual approved catalog defines both fields without a visibility condition. No production change or new automatic-deletion policy is appropriate based on the initial evidence.
 
@@ -28,4 +28,4 @@ node --test test/qeAgent1RemainingDependenciesReproduction20261019.browser.spec.
 python3 verification/qe-agent1-remaining-public-intake-20261019/extract-hosted-evidence.py verification/qe-agent1-remaining-public-intake-20261019/hosted-checkpoint-01/complete-evidence-bundle.json.gz <new-directory>
 ```
 
-No confirmed new product defect is established by these initial failures. Rendered explicit-correction verification is still pending at this checkpoint. F2 remains outside this review.
+No confirmed new product defect is established by these initial failures. Real Chromium at f02b8d4abb0c85bf47db7816e472de345d7a5e90 passed both full explicit-correction paths and both independent clean-scope controls (4/4). The main twelve-service run also passed all88 cases. The complete separate-run records show retainedControl.visible=true with values50 and500, followed by exact450000/1805000-cent results. See hosted-checkpoint-04-reproduction and the passing TAP excerpt. F2 remains outside this review.
