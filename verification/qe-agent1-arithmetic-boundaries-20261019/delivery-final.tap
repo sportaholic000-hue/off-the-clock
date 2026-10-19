@@ -1,0 +1,98 @@
+(node:7) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: audit delivery concrete-square-joint-0046
+ok 1 - audit delivery concrete-square-joint-0046
+  ---
+  duration_ms: 594.343921
+  type: 'test'
+  ...
+# Subtest: audit delivery concrete-square-joint-0047
+ok 2 - audit delivery concrete-square-joint-0047
+  ---
+  duration_ms: 415.799777
+  type: 'test'
+  ...
+# Subtest: audit delivery concrete-square-joint-0048
+ok 3 - audit delivery concrete-square-joint-0048
+  ---
+  duration_ms: 368.94657
+  type: 'test'
+  ...
+# Subtest: audit delivery concrete-square-joint-0051
+ok 4 - audit delivery concrete-square-joint-0051
+  ---
+  duration_ms: 382.637315
+  type: 'test'
+  ...
+# Subtest: audit delivery concrete-square-joint-0064
+ok 5 - audit delivery concrete-square-joint-0064
+  ---
+  duration_ms: 415.958436
+  type: 'test'
+  ...
+# Subtest: audit delivery concrete-square-joint-0068
+ok 6 - audit delivery concrete-square-joint-0068
+  ---
+  duration_ms: 376.280963
+  type: 'test'
+  ...
+# Subtest: audit delivery roof-footprint-0153
+ok 7 - audit delivery roof-footprint-0153
+  ---
+  duration_ms: 423.998248
+  type: 'test'
+  ...
+# Subtest: audit delivery roof-footprint-0154
+ok 8 - audit delivery roof-footprint-0154
+  ---
+  duration_ms: 836.539791
+  type: 'test'
+  ...
+# Subtest: audit delivery roof-footprint-0155
+ok 9 - audit delivery roof-footprint-0155
+  ---
+  duration_ms: 642.366145
+  type: 'test'
+  ...
+# Subtest: audit delivery roof-footprint-0157
+ok 10 - audit delivery roof-footprint-0157
+  ---
+  duration_ms: 387.726367
+  type: 'test'
+  ...
+# Subtest: audit delivery roof-footprint-0163
+ok 11 - audit delivery roof-footprint-0163
+  ---
+  duration_ms: 398.84517
+  type: 'test'
+  ...
+# Subtest: audit delivery roof-package-0279
+ok 12 - audit delivery roof-package-0279
+  ---
+  duration_ms: 459.186976
+  type: 'test'
+  ...
+# Subtest: audit delivery roof-package-0280
+ok 13 - audit delivery roof-package-0280
+  ---
+  duration_ms: 357.425478
+  type: 'test'
+  ...
+# Subtest: audit delivery roof-package-0281
+ok 14 - audit delivery roof-package-0281
+  ---
+  duration_ms: 368.040207
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7016.920396

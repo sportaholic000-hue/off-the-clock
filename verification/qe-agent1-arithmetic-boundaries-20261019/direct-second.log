@@ -1,0 +1,174 @@
+(node:10) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "source": "abc2becff9cd252a63ff30258e9950a07af2c020",
+  "expectedSha256": "021eba33c54a2d0f5b4f3427008e0c16ec2353fb187006e94fb399259765eabc",
+  "cases": 287,
+  "passed": 268,
+  "failed": 19,
+  "registeredTrades": [
+    "ROOFING_REPLACEMENT",
+    "ROOFING_REPAIR",
+    "FLAT_ROOF_REPLACEMENT",
+    "FLAT_ROOF_REPAIR",
+    "INTERIOR_PAINTING",
+    "EXTERIOR_PAINTING",
+    "FLOORING_INSTALL",
+    "FLOORING_REPLACEMENT",
+    "FENCING_INSTALL",
+    "FENCING_REPLACEMENT",
+    "SIDING_REPLACEMENT",
+    "SIDING_REPAIR",
+    "CONCRETE_DRIVEWAY",
+    "CONCRETE_PATIO_SLAB",
+    "LANDSCAPING_CLEANUP",
+    "LANDSCAPING_MULCH",
+    "LANDSCAPING_SOD",
+    "LANDSCAPING_PLANTING",
+    "LANDSCAPING_MOWING",
+    "CUSTOM"
+  ],
+  "testedTrades": [
+    "FLOORING_INSTALL",
+    "FLOORING_REPLACEMENT",
+    "CONCRETE_PATIO_SLAB",
+    "CONCRETE_DRIVEWAY",
+    "LANDSCAPING_SOD",
+    "LANDSCAPING_MULCH",
+    "LANDSCAPING_CLEANUP",
+    "FENCING_INSTALL",
+    "FENCING_REPLACEMENT",
+    "INTERIOR_PAINTING",
+    "EXTERIOR_PAINTING",
+    "SIDING_REPLACEMENT",
+    "ROOFING_REPAIR",
+    "FLAT_ROOF_REPAIR",
+    "SIDING_REPAIR",
+    "FLAT_ROOF_REPLACEMENT",
+    "ROOFING_REPLACEMENT",
+    "LANDSCAPING_PLANTING",
+    "LANDSCAPING_MOWING",
+    "CUSTOM"
+  ],
+  "families": {
+    "floor-half": {
+      "cases": 6,
+      "failed": 0
+    },
+    "floor-carton": {
+      "cases": 6,
+      "failed": 0
+    },
+    "floor-room": {
+      "cases": 22,
+      "failed": 0
+    },
+    "concrete-line": {
+      "cases": 6,
+      "failed": 0
+    },
+    "concrete-increment": {
+      "cases": 6,
+      "failed": 0
+    },
+    "concrete-joint": {
+      "cases": 6,
+      "failed": 0
+    },
+    "concrete-square-joint": {
+      "cases": 16,
+      "failed": 4
+    },
+    "sod-depth": {
+      "cases": 3,
+      "failed": 0
+    },
+    "mulch-increment": {
+      "cases": 3,
+      "failed": 0
+    },
+    "mulch-stated": {
+      "cases": 3,
+      "failed": 3
+    },
+    "cleanup-load": {
+      "cases": 3,
+      "failed": 0
+    },
+    "fence-span": {
+      "cases": 6,
+      "failed": 0
+    },
+    "carpet-cut": {
+      "cases": 3,
+      "failed": 0
+    },
+    "paint-coats": {
+      "cases": 3,
+      "failed": 0
+    },
+    "paint-package": {
+      "cases": 6,
+      "failed": 0
+    },
+    "siding-half": {
+      "cases": 3,
+      "failed": 0
+    },
+    "repair-area": {
+      "cases": 33,
+      "failed": 0
+    },
+    "repair-hour": {
+      "cases": 9,
+      "failed": 0
+    },
+    "flat-partial": {
+      "cases": 3,
+      "failed": 0
+    },
+    "roof-footprint": {
+      "cases": 24,
+      "failed": 3
+    },
+    "plant-count": {
+      "cases": 3,
+      "failed": 0
+    },
+    "mow-pipeline": {
+      "cases": 90,
+      "failed": 0
+    },
+    "custom-split": {
+      "cases": 12,
+      "failed": 0
+    },
+    "custom-measured": {
+      "cases": 3,
+      "failed": 0
+    },
+    "roof-package": {
+      "cases": 9,
+      "failed": 9
+    }
+  }
+}
+{"id":"concrete-square-joint-0047","params":{"type":"CONCRETE_PATIO_SLAB","area":"100.00000000000001"},"expected":12500,"actual":10500,"differences":[{"name":"Saw-cut control joints","expected":2000,"actual":null}]}
+{"id":"concrete-square-joint-0051","params":{"type":"CONCRETE_PATIO_SLAB","area":"400.00000000000006"},"expected":20000,"actual":16000,"differences":[{"name":"Saw-cut control joints","expected":8000,"actual":4000}]}
+{"id":"concrete-square-joint-0064","params":{"type":"CONCRETE_DRIVEWAY","area":"100.00000000000001"},"expected":12500,"actual":10500,"differences":[{"name":"Saw-cut control joints","expected":2000,"actual":null}]}
+{"id":"concrete-square-joint-0068","params":{"type":"CONCRETE_DRIVEWAY","area":"400.00000000000006"},"expected":20000,"actual":16000,"differences":[{"name":"Saw-cut control joints","expected":8000,"actual":4000}]}
+{"id":"mulch-stated-0075","params":{"qty":".9999"},"expected":8000,"actual":null,"differences":[{"name":"Mulch material","expected":5000,"actual":null},{"name":"Mulch installation labor","expected":3000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["mulchDepth"]}
+{"id":"mulch-stated-0076","params":{"qty":"1"},"expected":8000,"actual":null,"differences":[{"name":"Mulch material","expected":5000,"actual":null},{"name":"Mulch installation labor","expected":3000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["mulchDepth"]}
+{"id":"mulch-stated-0077","params":{"qty":"1.0001"},"expected":9250,"actual":null,"differences":[{"name":"Mulch material","expected":6250,"actual":null},{"name":"Mulch installation labor","expected":3000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["mulchDepth"]}
+{"id":"roof-footprint-0154","params":{"footprint":"600.06","rise":5},"expected":67607,"actual":67606,"differences":[{"name":"Roofing labor","expected":65007,"actual":65006}]}
+{"id":"roof-footprint-0157","params":{"footprint":"1200.06","rise":5},"expected":135207,"actual":135206,"differences":[{"name":"Roofing labor","expected":130007,"actual":130006}]}
+{"id":"roof-footprint-0163","params":{"footprint":"12000.06","rise":5},"expected":1352007,"actual":1352006,"differences":[{"name":"Roofing labor","expected":1300007,"actual":1300006}]}
+{"id":"roof-package-0273","params":{"footprint":"184.619999","rise":5,"coverage":"100"},"expected":50600,"actual":null,"differences":[{"name":"Roofing labor","expected":20000,"actual":null},{"name":"Field materials","expected":200,"actual":null},{"name":"Tear-off","expected":200,"actual":null},{"name":"Roofing disposal","expected":200,"actual":null},{"name":"Purchased materials: roof_roll","expected":30000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
+{"id":"roof-package-0274","params":{"footprint":"184.62","rise":5,"coverage":"100"},"expected":65601,"actual":null,"differences":[{"name":"Roofing labor","expected":20001,"actual":null},{"name":"Field materials","expected":200,"actual":null},{"name":"Tear-off","expected":200,"actual":null},{"name":"Roofing disposal","expected":200,"actual":null},{"name":"Purchased materials: roof_roll","expected":45000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
+{"id":"roof-package-0275","params":{"footprint":"184.620001","rise":5,"coverage":"100"},"expected":65601,"actual":null,"differences":[{"name":"Roofing labor","expected":20001,"actual":null},{"name":"Field materials","expected":200,"actual":null},{"name":"Tear-off","expected":200,"actual":null},{"name":"Roofing disposal","expected":200,"actual":null},{"name":"Purchased materials: roof_roll","expected":45000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
+{"id":"roof-package-0276","params":{"footprint":"1384.619999","rise":5,"coverage":"500"},"expected":199500,"actual":null,"differences":[{"name":"Roofing labor","expected":150000,"actual":null},{"name":"Field materials","expected":1500,"actual":null},{"name":"Tear-off","expected":1500,"actual":null},{"name":"Roofing disposal","expected":1500,"actual":null},{"name":"Purchased materials: roof_roll","expected":45000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
+{"id":"roof-package-0277","params":{"footprint":"1384.62","rise":5,"coverage":"500"},"expected":214501,"actual":null,"differences":[{"name":"Roofing labor","expected":150001,"actual":null},{"name":"Field materials","expected":1500,"actual":null},{"name":"Tear-off","expected":1500,"actual":null},{"name":"Roofing disposal","expected":1500,"actual":null},{"name":"Purchased materials: roof_roll","expected":60000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
+{"id":"roof-package-0278","params":{"footprint":"1384.620001","rise":5,"coverage":"500"},"expected":214501,"actual":null,"differences":[{"name":"Roofing labor","expected":150001,"actual":null},{"name":"Field materials","expected":1500,"actual":null},{"name":"Tear-off","expected":1500,"actual":null},{"name":"Roofing disposal","expected":1500,"actual":null},{"name":"Purchased materials: roof_roll","expected":60000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
+{"id":"roof-package-0279","params":{"footprint":"2584.619999","rise":5,"coverage":"400"},"expected":393400,"actual":null,"differences":[{"name":"Roofing labor","expected":280000,"actual":null},{"name":"Field materials","expected":2800,"actual":null},{"name":"Tear-off","expected":2800,"actual":null},{"name":"Roofing disposal","expected":2800,"actual":null},{"name":"Purchased materials: roof_roll","expected":105000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
+{"id":"roof-package-0280","params":{"footprint":"2584.62","rise":5,"coverage":"400"},"expected":408401,"actual":null,"differences":[{"name":"Roofing labor","expected":280001,"actual":null},{"name":"Field materials","expected":2800,"actual":null},{"name":"Tear-off","expected":2800,"actual":null},{"name":"Roofing disposal","expected":2800,"actual":null},{"name":"Purchased materials: roof_roll","expected":120000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
+{"id":"roof-package-0281","params":{"footprint":"2584.620001","rise":5,"coverage":"400"},"expected":408401,"actual":null,"differences":[{"name":"Roofing labor","expected":280001,"actual":null},{"name":"Field materials","expected":2800,"actual":null},{"name":"Tear-off","expected":2800,"actual":null},{"name":"Roofing disposal","expected":2800,"actual":null},{"name":"Purchased materials: roof_roll","expected":120000,"actual":null}],"reason":"Required measured project details were not provided.","missing":["roofUnderlaymentScopeConfirmed"],"invalid":["underlaymentScopeConfirmed"]}
