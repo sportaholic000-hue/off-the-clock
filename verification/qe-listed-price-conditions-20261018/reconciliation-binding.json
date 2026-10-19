@@ -1,0 +1,39 @@
+{
+  "base": "c1817621f6eccb31822979bf994efc4902682d34",
+  "mergeParents": [
+    "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "4f6152413a650085a7fe6002dfd077a542f9c0c2"
+  ],
+  "testBodies": [
+    {
+      "commit": "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+      "tests": 91,
+      "bodySha256": "c181eaab4f2dc22f1beeffe6c19c5b97c0a1f846b511068bf86a0f03716e4b69",
+      "retainedExactlyOnce": true
+    },
+    {
+      "commit": "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+      "tests": 206,
+      "bodySha256": "1fbcf64b424868917c9316a73e69136e14f4f53c02a12ede9ae3069503c76a6c",
+      "retainedExactlyOnce": true
+    }
+  ],
+  "arithmeticTailSha256": "c2d9b3174de178851434876cd0fb28bd0b021756b0dd36ca71fc1f67dce49916",
+  "unchangedControls": {
+    "scripts/testSelection.mjs": "b7395c0de38536403eb51b0cfb4e1c04b7b5a4304e3ccbee22d05e41b8a46197",
+    ".github/workflows/ci.yml": "7404738dc3d312eb45af686b431fb2ed26d4e21c750e9e6a7af5727a197afcf9",
+    ".github/scripts/check-test-results.mjs": "b3262b5599afccbd15b315a35ac48ae18fbc3ed35bd985bafb8316e067f753d8",
+    "server/src/voice/knowledgeText.js": "ecd3808ccc281632234a7e50ac720b524128c75e767ddbec36ce54bd7b46779e",
+    "server/src/voice/toolDispatcher.js": "a2f3a5337e668be3a26e5df02f48e8f88cf4bbd99dd85aa39cbf4609b3412012",
+    "server/src/voice/toolSchemas.js": "5b843a04583ba0efb714aa559a852b09e9b23fe4fe8bff105e4de7fde39d60aa",
+    "server/src/voice/voiceToolRuntime.js": "349c16c1ff9423c02bf887d6f824b81dfea1e1de424bb922c3245fe69ea5ff6a",
+    "server/src/voice/voicePromptCompiler.js": "b926a1d9635009dc999176bcb345bfbfc4b8e82fde5bb6fcf29d38ec5ea260af"
+  },
+  "originalReadmesAndBuildLogsByteIdentical": true,
+  "reconciledSourceSha256": {
+    "server/src/voice/listedPriceCalculation.js": "b52865192961deffada2e546adee69c518f0e0733a31974669864de535def6a7",
+    "test/voiceListedPriceConditions20261018.spec.mjs": "e522c4a0f86b30d51578d9e235c25d15e37f715d5b8cbe897c4e410e28d27bc9"
+  },
+  "additionalReconciliationRegressions": 8,
+  "totalReconciledRegressions": 305
+}

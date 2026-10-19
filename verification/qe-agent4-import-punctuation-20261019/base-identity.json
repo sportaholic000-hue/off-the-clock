@@ -1,0 +1,11 @@
+{
+  "head": "9af52ddc13c78beec84e7f090506da8c9b5fd691",
+  "parent": "101f0ae01b7d47fbc74782aec1c49b66088b9b13",
+  "tree": "62464ab7a27a354db65e3d01592a17f59752c3f4",
+  "branch": "codex/qe-agent4-import-punctuation-20261019",
+  "mergeParents": [
+    "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "4f6152413a650085a7fe6002dfd077a542f9c0c2"
+  ],
+  "trackedFiles": 3200
+}

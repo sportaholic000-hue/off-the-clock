@@ -1,0 +1,51 @@
+[
+  {
+    "name": "after-new",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T04:47:03.152277+00:00",
+    "sourceSha256": "74e4e022436512d3db4d1b04af1bcbe78b0e20312d75d2650763771b107f6753",
+    "testSha256": "2ccada1eac698216bd04f0689d59b71aac4cdf76999a536b514e34a2ccacc9fb",
+    "exitCode": 0
+  },
+  {
+    "name": "expanded-874",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceListedPriceConditions20261018.spec.mjs",
+      "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "test/websitePriceImport.spec.mjs",
+      "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "test/websitePriceDraftRoutes.spec.mjs",
+      "test/claudeListedUnits20261008.spec.mjs",
+      "test/engineAuditListedPrices20261008.spec.mjs",
+      "test/fixedPricesKnowledge20261005.spec.mjs",
+      "test/voiceCore20261007.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/voiceRuntimeRoutes.spec.mjs",
+      "test/voicePromptCompiler.spec.mjs",
+      "test/voiceSecurity.spec.mjs",
+      "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T04:47:06.080292+00:00",
+    "sourceSha256": "74e4e022436512d3db4d1b04af1bcbe78b0e20312d75d2650763771b107f6753",
+    "testSha256": "2ccada1eac698216bd04f0689d59b71aac4cdf76999a536b514e34a2ccacc9fb",
+    "exitCode": 0
+  }
+]

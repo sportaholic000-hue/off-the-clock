@@ -1,0 +1,925 @@
+{
+  "base": "e50c9f58459a4362537eb5da5dc1cf082fbc3ca8",
+  "incoming": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+  "conflicts": [],
+  "manual_production_edits": [],
+  "manual_test_reconciliations": [],
+  "counts": {
+    "incoming_production": 2,
+    "incoming_tests": 5,
+    "incoming_evidence": 144,
+    "new_integration_evidence": 31
+  },
+  "files": [
+    {
+      "status": "M",
+      "path": "server/src/voice/listedPriceCalculation.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "M",
+      "path": "server/src/websitePriceExtraction.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "A",
+      "path": "test/voiceAgent4ImportPunctuation20261019.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "test/voiceListedPriceConditions20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/EXPECTED.md",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/REPORT.md",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/additional-test-names.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/build.log.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/changed-files.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/compatibility.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/diff-check.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/evidence-archives.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/f16-direct.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/f16-entry.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/f18-matrix.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/f18-original-matrix.spec.mjs",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/f18.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/frozen-controls.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/geometry.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/hosted-log-name-mapping.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/incoming-name-audit-initial.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/incoming-qualification.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/incoming_all-diff-check.txt.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/local-execution.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/local-required-names.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/merge-identity.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/observations.json.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/parser.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/preservation-after-tests.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/preservation-before.json.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/receipts.sqlite.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/rendered.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/required-test-names.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/run-local.py",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-parser-integration-20261019/selection.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/BASELINE_SETUP.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/EXPECTED.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/REPORT.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/after-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/after-examples.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/after-exit.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/after-new.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/base-files.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/base-identity.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/baseline-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/baseline-examples.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/baseline-exit.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/baseline-new.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/baseline-results.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/before-heading-shape-after-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/before-heading-shape-after-exit.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/before-heading-shape-after-new.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/before-heading-shape-expanded-874.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/before-heading-shape-selection-commands.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/before-heading-shape.spec.mjs.txt",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/build-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/build.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/expanded-874.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/final-focused-commands.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/heading-shape-base-and-repair.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/initial-route-shape-baseline-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/initial-route-shape-baseline-exit.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/initial-route-shape-baseline-new.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/initial-route-shape.spec.mjs.txt",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/local-results.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/retained-758.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/retention.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-import-punctuation-20261019/selection-commands.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/COMMANDS.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/EXPECTED.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/REPORT.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/after-examples.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/after-focused.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/audit.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/audit.stderr",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/base-retention.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/baseline-initial-fixture.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/baseline-new.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/baseline-retained.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/before-examples.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/build.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/chromium-final-probe.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/chromium-install.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/chromium-probe.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/chromium-shell-retry.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/docker.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/examples.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/final-broad-status.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/full-checker-exit.txt",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/full-checker.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/full-initial-stall-runner.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/full-initial-stall.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/full-runner.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/full-stall.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/full.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/gate-exits.txt",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/gate-failures.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/install.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/local-results.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/neighbors.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/EXPECTED-initial-controls.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/EXPECTED.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/REPORT.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/after-new-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/after-new.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/base-retention.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/baseline-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/baseline-initial-controls-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/baseline-initial-controls-new.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/baseline-new.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/build-command.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/build.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/expanded-758.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/initial-controls.spec.mjs.txt",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/local-results.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/publication-preflight-connector.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/publication-preflight-git.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/publication-preflight-git.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/retained-722.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/retention.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/parentheses-followup/selection-commands.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/playwright-install.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/publication-access.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/retention.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/selection.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/setup-full-options-failure.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/setup-new-tmpdir-failure.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/setup-options-exits.txt",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/setup-retained-tmpdir-failure.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/setup-strict-options-failure.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/stall-diagnostic.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/strict-initial-stall.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/strict-stall.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/strict.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/summarize.py",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent4-listed-import-20261018/summary-and-binding.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/EXPECTED.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/README.local-235eb5c.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/README.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/README.remote-4f615241.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/after-tests.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/base-regressions.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/baseline-reproduction.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/baseline-tests.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/before-direct.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/build.local-235eb5c.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/build.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/build.remote-4f615241.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/colon-after.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/colon-before.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/compound-after.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/compound-before.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/evidence-preservation.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/final-build.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/final-local-failures.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/final-local-results.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/final-neighbors.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/focused.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/install.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/neighboring.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/neighbors.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-audit.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-audit.stderr",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-chromium.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-final-build.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-final-full.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-final-neighbors.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-final-strict.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-full.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-install.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-neighbors.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-sod-diagnostic.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconcile-strict.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconciled-focused.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/reconciliation-binding.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/remote-review-4f615241.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/selection.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/sod-test-failure-diagnosis.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-listed-price-conditions-20261018/source-binding.json",
+      "category": "incoming_evidence"
+    }
+  ]
+}

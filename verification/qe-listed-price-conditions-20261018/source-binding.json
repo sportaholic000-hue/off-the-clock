@@ -1,0 +1,43 @@
+{
+  "base": "c1817621f6eccb31822979bf994efc4902682d34",
+  "branch": "codex/qe-listed-price-conditions-20261018",
+  "node": "v22.23.3",
+  "productionSha256": "69119c8197d71b38aea1784e1d77301a5e64fb867b2a2cefb17365e320d6b931",
+  "regressionSha256": "4bc62dff77767cc09eaebfd49c21772c473905bcb196da88c86f6b5a37ae4c57",
+  "unchangedMonetaryTailSha256": "4ca80b5a33f92c15ce18e732ab3cbfb8460dc6bd2054adac0354201f8bd0ba41",
+  "unchangedControls": {
+    "scripts/testSelection.mjs": "b7395c0de38536403eb51b0cfb4e1c04b7b5a4304e3ccbee22d05e41b8a46197",
+    ".github/workflows/ci.yml": "7404738dc3d312eb45af686b431fb2ed26d4e21c750e9e6a7af5727a197afcf9",
+    "server/scripts/quote-vnext-gate.js": "0875880512d633cb24cab4241a6cd07341f21943f20297511c1bceb85899bfd0",
+    "server/quote-engine-vnext/engine.js": "36b172167b4e80f3f040b50f32748521c3025dc37eb19868f5daf297b0842e09",
+    "package-lock.json": "4404ca5aac3c5b8f8d5b6aefd7257382f929d31541a62f6dd5c7214d8db8ee91",
+    "package.json": "ab524c82123aa9e3ebac8dc99c5a8cc0ff1720343e2d8246e0fa5d60a968aebc"
+  },
+  "results": {
+    "base": {
+      "tests": 206,
+      "pass": 82,
+      "fail": 124,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "repaired": {
+      "tests": 206,
+      "pass": 206,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "neighboring": {
+      "tests": 339,
+      "pass": 339,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "build": "passed"
+  }
+}

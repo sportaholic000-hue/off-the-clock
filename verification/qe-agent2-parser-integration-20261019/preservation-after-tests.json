@@ -1,0 +1,10 @@
+{
+  "expected_paths_verified": 3621,
+  "incoming_paths_verified": 151,
+  "integration_paths_preserved": 428,
+  "issues": [],
+  "tracked_worktree_changes": [],
+  "build_output_restored": [
+    "client/dist/index.html"
+  ]
+}

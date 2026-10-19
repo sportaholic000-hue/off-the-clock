@@ -1,0 +1,26 @@
+{
+  "base": "101f0ae01b7d47fbc74782aec1c49b66088b9b13",
+  "trackedFiles": 3178,
+  "unchangedFiles": 3177,
+  "changed": [
+    "server/src/voice/listedPriceCalculation.js"
+  ],
+  "missing": [],
+  "existingTestFilesUnchanged": 387,
+  "existingVerificationFilesUnchanged": 2081,
+  "arithmeticCurrencyTailByteIdentical": true,
+  "preservedMerge": "c58ca997e9cf63739d399939bcdade83e97874d2",
+  "orderedMergeParents": [
+    "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "4f6152413a650085a7fe6002dfd077a542f9c0c2"
+  ],
+  "ancestorsVerified": [
+    "101f0ae01b7d47fbc74782aec1c49b66088b9b13",
+    "c58ca997e9cf63739d399939bcdade83e97874d2",
+    "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "c1817621f6eccb31822979bf994efc4902682d34"
+  ],
+  "parserSha256": "ea2650004c6dbb2ce69c339edb61abfcd1eac2c9bd6a1984efb744a85ddfde3d",
+  "retained305FileSha256": "e522c4a0f86b30d51578d9e235c25d15e37f715d5b8cbe897c4e410e28d27bc9"
+}

@@ -1,0 +1,230 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 parentheses direct refuses: Weather (permitting) $10 each
+ok 1 - Agent4 parentheses direct refuses: Weather (permitting) $10 each
+  ---
+  duration_ms: 7.969649
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather (permitting) $10 each
+ok 2 - Agent4 parentheses real dispatcher refuses: Weather (permitting) $10 each
+  ---
+  duration_ms: 30.928758
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online (orders) $10 each
+ok 3 - Agent4 parentheses direct refuses: Online (orders) $10 each
+  ---
+  duration_ms: 0.15265
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online (orders) $10 each
+ok 4 - Agent4 parentheses real dispatcher refuses: Online (orders) $10 each
+  ---
+  duration_ms: 21.318002
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather(permitting) $10 each
+ok 5 - Agent4 parentheses direct refuses: Weather(permitting) $10 each
+  ---
+  duration_ms: 0.18008
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather(permitting) $10 each
+ok 6 - Agent4 parentheses real dispatcher refuses: Weather(permitting) $10 each
+  ---
+  duration_ms: 21.885635
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online(orders) $10 each
+ok 7 - Agent4 parentheses direct refuses: Online(orders) $10 each
+  ---
+  duration_ms: 0.274352
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online(orders) $10 each
+ok 8 - Agent4 parentheses real dispatcher refuses: Online(orders) $10 each
+  ---
+  duration_ms: 20.69106
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: (Weather) permitting $10 each
+ok 9 - Agent4 parentheses direct refuses: (Weather) permitting $10 each
+  ---
+  duration_ms: 0.846903
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: (Weather) permitting $10 each
+ok 10 - Agent4 parentheses real dispatcher refuses: (Weather) permitting $10 each
+  ---
+  duration_ms: 22.027548
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: (Online) orders $10 each
+ok 11 - Agent4 parentheses direct refuses: (Online) orders $10 each
+  ---
+  duration_ms: 0.148303
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: (Online) orders $10 each
+ok 12 - Agent4 parentheses real dispatcher refuses: (Online) orders $10 each
+  ---
+  duration_ms: 20.043807
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather [permitting] $10 each
+ok 13 - Agent4 parentheses direct refuses: Weather [permitting] $10 each
+  ---
+  duration_ms: 0.150155
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather [permitting] $10 each
+ok 14 - Agent4 parentheses real dispatcher refuses: Weather [permitting] $10 each
+  ---
+  duration_ms: 21.634678
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online [orders] $10 each
+ok 15 - Agent4 parentheses direct refuses: Online [orders] $10 each
+  ---
+  duration_ms: 0.153501
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online [orders] $10 each
+ok 16 - Agent4 parentheses real dispatcher refuses: Online [orders] $10 each
+  ---
+  duration_ms: 21.066204
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Weather ’permitting’ $10 each
+ok 17 - Agent4 parentheses direct refuses: Weather ’permitting’ $10 each
+  ---
+  duration_ms: 4.720785
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Weather ’permitting’ $10 each
+ok 18 - Agent4 parentheses real dispatcher refuses: Weather ’permitting’ $10 each
+  ---
+  duration_ms: 20.726594
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Online 'orders' $10 each
+ok 19 - Agent4 parentheses direct refuses: Online 'orders' $10 each
+  ---
+  duration_ms: 0.111938
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Online 'orders' $10 each
+ok 20 - Agent4 parentheses real dispatcher refuses: Online 'orders' $10 each
+  ---
+  duration_ms: 20.109095
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Widget (weather-permitting) $10 each
+ok 21 - Agent4 parentheses direct refuses: Widget (weather-permitting) $10 each
+  ---
+  duration_ms: 0.151548
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Widget (weather-permitting) $10 each
+ok 22 - Agent4 parentheses real dispatcher refuses: Widget (weather-permitting) $10 each
+  ---
+  duration_ms: 20.442707
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses direct refuses: Widget (online/orders) $10 each
+ok 23 - Agent4 parentheses direct refuses: Widget (online/orders) $10 each
+  ---
+  duration_ms: 0.138689
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses real dispatcher refuses: Widget (online/orders) $10 each
+ok 24 - Agent4 parentheses real dispatcher refuses: Widget (online/orders) $10 each
+  ---
+  duration_ms: 20.960835
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Weather (station)
+ok 25 - Agent4 parentheses genuine product: Weather (station)
+  ---
+  duration_ms: 23.903648
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Online (training manual)
+ok 26 - Agent4 parentheses genuine product: Online (training manual)
+  ---
+  duration_ms: 21.554128
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Widget (Weather station)
+ok 27 - Agent4 parentheses genuine product: Widget (Weather station)
+  ---
+  duration_ms: 20.851401
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Manual (Online training)
+ok 28 - Agent4 parentheses genuine product: Manual (Online training)
+  ---
+  duration_ms: 21.44249
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Weatherproof (sensor)
+ok 29 - Agent4 parentheses genuine product: Weatherproof (sensor)
+  ---
+  duration_ms: 21.410921
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Online ordering manual
+ok 30 - Agent4 parentheses genuine product: Online ordering manual
+  ---
+  duration_ms: 19.84658
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Board-on-board (panel)
+ok 31 - Agent4 parentheses genuine product: Board-on-board (panel)
+  ---
+  duration_ms: 19.928614
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Nail-in (anchor)
+ok 32 - Agent4 parentheses genuine product: Nail-in (anchor)
+  ---
+  duration_ms: 19.862104
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses genuine product: Plug-in (adapter)
+ok 33 - Agent4 parentheses genuine product: Plug-in (adapter)
+  ---
+  duration_ms: 20.355356
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses retain exact saved identity through both paths
+ok 34 - Agent4 parentheses retain exact saved identity through both paths
+  ---
+  duration_ms: 21.616992
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses preserve verbatim qualified facts and fallback guidance
+ok 35 - Agent4 parentheses preserve verbatim qualified facts and fallback guidance
+  ---
+  duration_ms: 1.887267
+  type: 'test'
+  ...
+# Subtest: Agent4 parentheses file uses unchanged voice selection conventions
+ok 36 - Agent4 parentheses file uses unchanged voice selection conventions
+  ---
+  duration_ms: 1653.397154
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2374.30787

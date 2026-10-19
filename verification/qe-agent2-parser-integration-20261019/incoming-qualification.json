@@ -1,0 +1,185 @@
+{
+  "head": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+  "run_id": 39201472963,
+  "run_attempt": 1,
+  "run_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39201472963",
+  "conclusion": "success",
+  "completed_at": "2026-10-19T05:19:43Z",
+  "gates": {
+    "strict": {
+      "summary": {
+        "tests": 5006,
+        "suites": 0,
+        "pass": 5006,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 814029.492528
+      },
+      "passing_records": 5006,
+      "errors": [],
+      "receipt": [
+        "PASS: quote engine and price book gate (268 files, 5006/5006 tests, zero skips)."
+      ]
+    },
+    "full": {
+      "summary": {
+        "tests": 6593,
+        "suites": 0,
+        "pass": 6593,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 904729.779111
+      },
+      "passing_records": 6593,
+      "errors": [],
+      "receipt": []
+    },
+    "browser": {
+      "summary": {
+        "tests": 12,
+        "suites": 0,
+        "pass": 12,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 7274.212851
+      },
+      "passing_records": 12,
+      "errors": [],
+      "receipt": []
+    }
+  },
+  "required_steps_passed": [
+    "Install from lockfile (ignores committed node_modules)",
+    "Build owner app and widget",
+    "Owner alerts and dashboard browser regressions",
+    "Strict quote engine and price book gate",
+    "Full test suite",
+    "No failures beyond the known list",
+    "Production dependency audit"
+  ],
+  "parser_import_names": {
+    "required": 874,
+    "full_passing_once": 874,
+    "literal_names_matched": 873,
+    "hosted_redacted_name_matched": 1,
+    "missing_or_duplicate": []
+  },
+  "new_voice_names": {
+    "required": 577,
+    "full_passing_once": 577,
+    "strict_absent": 577
+  },
+  "hosted_name_mapping": {
+    "source_name": "website rejects URL before DNS https://user:password@business.example",
+    "hosted_name": "website rejects URL before DNS ***business.example",
+    "source_file": "test/websitePriceImport.spec.mjs",
+    "previous_name": "website rejects URL before DNS ftp://business.example",
+    "next_name": "website rejects URL before DNS https://business.example:8080",
+    "reason": "The hosted log masks the credential-bearing synthetic URL in this one test name. The unchanged source registration order and adjacent passing names identify its passing record. No test assertion or source name is changed.",
+    "passing_records": {
+      "strict": [
+        {
+          "number": 4590,
+          "name": "website rejects URL before DNS ftp://business.example"
+        },
+        {
+          "number": 4591,
+          "name": "website rejects URL before DNS ***business.example"
+        },
+        {
+          "number": 4592,
+          "name": "website rejects URL before DNS https://business.example:8080"
+        }
+      ],
+      "full": [
+        {
+          "number": 6120,
+          "name": "website rejects URL before DNS ftp://business.example"
+        },
+        {
+          "number": 6121,
+          "name": "website rejects URL before DNS ***business.example"
+        },
+        {
+          "number": 6122,
+          "name": "website rejects URL before DNS https://business.example:8080"
+        }
+      ]
+    }
+  },
+  "docker": "PASS: production Docker image, no specs, voice enabled, synthetic credentials, network disabled, /api/health 200",
+  "checker": "Known failures still failing: 0/0",
+  "dependency_audit": "found 0 vulnerabilities",
+  "jobs": [
+    {
+      "id": 117895157455,
+      "name": "test",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117895157746,
+      "name": "voice-docker-startup",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117902665294,
+      "name": "tag-candidate-j",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117902665462,
+      "name": "tag-candidate-i",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117902665580,
+      "name": "tag-candidate-k",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117902665735,
+      "name": "tag-candidate-n",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117902665783,
+      "name": "tag-candidate-m",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117902665789,
+      "name": "tag-candidate-h",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117902665976,
+      "name": "tag-candidate-l",
+      "head_sha": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "qualified": true
+}

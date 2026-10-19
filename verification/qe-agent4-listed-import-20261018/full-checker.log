@@ -1,0 +1,105 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Summary: {}
+Known failures still failing: 0/0
+::error::New test failure: Astra 2 browser: tier-only confirmation can be answered in measurement form
+::error::New test failure: Astra 2 browser: tier-only confirmation can be answered in customer wizard
+::error::New test failure: Astra 4 browser: product change shows its own confirmation and clears the old Yes
+::error::New test failure: billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation
+::error::New test failure: reactivation refreshes dashboard from persisted backend state and permits CSV download
+::error::New test failure: expired export window disables all CSV buttons and no longer offers setup/service
+::error::New test failure: real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
+::error::New test failure: scope editor groups entries of the same kind and names them by their matching facts
+::error::New test failure: compiled owner job costs, changes, reload, report coverage and staff privacy
+::error::New test failure: Oct16 Chromium: two separate 9 ft runs enter the verbatim questions and quote 6 posts / 75600 cents
+::error::New test failure: Oct16 Chromium: one gate between 7 and 9 ft sections quotes 5 posts / 91200 cents; total-only fallback asks runs
+::error::New test failure: Oct16 Chromium: four fence offerings retain twelve tiers; editing aluminum eight changes only its row spacing
+::error::New test failure: Oct16 Chromium: existing saved offering displays one exact-height row and the add-other-heights notice without mutating its prices
+::error::New test failure: F11 browser boolean leaves preserve No, unanswered and the exact key
+::error::New test failure: F11/F13 browser depth-three values retain zero, fractional rates and rejected text
+::error::New test failure: F13 browser legacy flat and two-level controls use the same exact parser
+::error::New test failure: Oct16 follow-up Chromium: lower fence bound uses whole feet and decimal inches; terminal/line unit labels are singular
+::error::New test failure: Oct16 follow-up Chromium: actual widget result shows recurring5000 cents and first7500 cents separately
+::error::New test failure: Oct16 follow-up Chromium: cleanup optional exact questions accept a stated count or Not sure without guessing
+::error::New test failure: lead capture repairs: production owner app navigation, stored contacts and live feed
+::error::New test failure: Operator: service-area city entry, validation, save and reopening in Chromium
+::error::New test failure: QuoteDone: service-area city entry, validation, save and reopening in Chromium
+::error::New test failure: Calendar exposes missing booking requirements and links to service-area setup in Chromium
+::error::New test failure: named review contact signup prefill remains unconfirmed until save and survives reopening
+::error::New test failure: named review contact AI draft, empty edit and rejected save preserve the confirmed person
+::error::New test failure: real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus
+::error::New test failure: QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge
+::error::New test failure: unverified period and pending historical charge are visible without an invented zero balance
+::error::New test failure: owner alert retry: paused worker renders PENDING, accepts once and never resends
+::error::New test failure: owner alert retry: worker before refresh renders BLOCKED, accepts once and never resends
+::error::New test failure: owner alert repairs: production dashboard, Calls, retry and staff visibility
+::error::New test failure: D19/D20: production browser shows saved quote email status and browses/retries older failures
+::error::New test failure: owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries
+::error::New test failure: editor D1: root factor survives no-edit blur save reopen and same-type switches
+::error::New test failure: editor D1: nested factor survives no-edit blur save reopen and same-type switches
+::error::New test failure: editor D1: flat factor survives no-edit blur save reopen and same-type switches
+::error::New test failure: editor D1: equal factor survives no-edit blur save reopen and same-type switches
+::error::New test failure: editor D1: a genuine absent default is displayed without being written by focus or blur
+::error::New test failure: editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
+::error::New test failure: editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
+::error::New test failure: editor locked rate: 0.0049 types blurs saves and reopens exactly
+::error::New test failure: editor locked rate: 0.0050 types blurs saves and reopens exactly
+::error::New test failure: editor locked rate: 0.0051 types blurs saves and reopens exactly
+::error::New test failure: editor locked invalid text: lossless rejection survives blur same-type switch and save
+::error::New test failure: editor locked maps tiers and explicit enablement stay separate for two same-type records
+::error::New test failure: editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
+::error::New test failure: editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
+::error::New test failure: editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
+::error::New test failure: pending manual save preserves a newer numeric edit and its question
+::error::New test failure: pending manual save preserves a newer structured price-map edit
+::error::New test failure: pending manual save prevents duplicate confirmation and premature review
+::error::New test failure: unchanged confirmed value saves once and advances normally
+::error::New test failure: failed manual save keeps the confirmed value available for retry
+::error::New test failure: stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer
+::error::New test failure: stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer
+::error::New test failure: late 200 response cannot replace a new service preview
+::error::New test failure: late 400 response cannot replace a new service preview
+::error::New test failure: old completion cannot clear current loading and invalid input cannot retain old ready
+::error::New test failure: invalid replacement rejects an old delayed success and unchanged focus blur does not request again
+::error::New test failure: painting geometry Oct18: Chromium shows the widget guidance at both measurement steps
+::error::New test failure: concrete browser owner saves dollar rates and unscaled depths, warns about spacing and reloads
+::error::New test failure: planting browser edits owner size names and per-plant prices and persists both
+::error::New test failure: customer browser answers Not sure for chute/topsoil and uses exact custom size names
+::error::New test failure: interview owner can add separate demolition entries and explicitly choose up-to access
+::error::New test failure: interview rate controls accept 3.5 cents per foot and reject fractional-cent gates
+::error::New test failure: interview accepts ordinary floor names and retains invalid drafts for correction
+::error::New test failure: QE-004/015 Chromium: full multi-gate widget choices, phone quote, saved scope, and owner copy agree
+::error::New test failure: QE-015 Chromium: distinct similar gates retain their keys and $4,550 across widget, phone, persistence, and public copy
+::error::New test failure: QE-005 Chromium: actual saved partial public page keeps measurement, unpriced work, and exact cents
+::error::New test failure: display browser: changing mulch quantity method requires a fresh quantity in its new unit
+::error::New test failure: display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520
+::error::New test failure: display browser: actual dashboard and owner preview show production missing-price labels
+::error::New test failure: display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse
+::error::New test failure: flooring Chromium owner: per-type waste is entered as percent; new prices, roll widths and furniture units save and reload
+::error::New test failure: flooring Chromium customer: estimated room dimensions replace area questions and quote labor on measured area
+::error::New test failure: flooring Chromium customer: connection selection supports Not sure, separate and manually grouped rooms
+::error::New test failure: flooring Chromium actual widget and saved public page keep the carpet seaming qualification
+::error::New test failure: lane A Chromium: owner package, freshness, validity and source controls save and reload exactly
+::error::New test failure: lane A Chromium: an unchanged confirmed AI number stays marked until This is my price is saved
+::error::New test failure: lane A Chromium: widget and actual public page show frozen validity, while blank stays silent
+::error::New test failure: QE-017: complete owner preview shows the authoritative withheld-option notice exactly once
+::error::New test failure: QE-017: one withheld option preserves the ready amount and the same authoritative notice
+::error::New test failure: QE-017: all unavailable options remain review-only and do not invent an availability notice
+::error::New test failure: QE-018: percent-entry waste help, conversion, save/reload, and concrete amount agree
+::error::New test failure: QE-019: rendered roof material copy changes completely with accessory mode and restores exactly
+::error::New test failure: QE-011/QE-012: tier allocations use exact paths and structured scope never renders as a decimal
+::error::New test failure: QE-013: real remove control saves cleanup while a complete tier remains quotable
+::error::New test failure: QE-013 follow-up: real removal, reload and owner reapproval preserve inherited materials tax and 268125 cents
+::error::New test failure: QE-016 owner decision: actual editor rejects 81 characters without truncation and preserves the saved name
+::error::New test failure: QE-016 owner decision: guided name rejects 81 without saving and resumes an exact 80-character Unicode name
+::error::New test failure: QE-008: Chromium guided allocation control preserves an exact dotted path and percentage
+::error::New test failure: QE-008: Chromium guided allocation control represents explicit no-allocation as an empty map
+::error::New test failure: QE-008: full guided interview persists and resumes exact paths and explicit empty allocation answers
+::error::New test failure: QE-009: full guided interview switches roof modes without confirming or reviewing inactive accessory fields
+::error::Missing final summary count: tests
+::error::Missing final summary count: suites
+::error::Missing final summary count: pass
+::error::Missing final summary count: fail
+::error::Missing final summary count: cancelled
+::error::Missing final summary count: skipped
+::error::Missing final summary count: todo

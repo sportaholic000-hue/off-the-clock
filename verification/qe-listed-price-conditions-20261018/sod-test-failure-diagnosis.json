@@ -1,0 +1,10 @@
+{
+  "matchingFields": [
+    {
+      "path": ".quoteHandle",
+      "value": "qEffLuXynzs-tioh1gNcB-moelgK9T32PP0SsXA0T90"
+    }
+  ],
+  "midEstimate": 2950,
+  "cause": "Existing broad regex matched 90 inside opaque quoteHandle; no other returned field matched. Test is unchanged from c1817621. Original full-suite failure is retained."
+}

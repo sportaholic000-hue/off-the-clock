@@ -1,0 +1,9 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "exitCode": 0,
+  "completedAt": "2026-10-19T04:47:35.538306+00:00"
+}

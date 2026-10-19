@@ -1,0 +1,14 @@
+{
+  "trackedBaseFiles": 3200,
+  "unchangedBaseFiles": 3199,
+  "changedBaseFiles": [
+    "server/src/websitePriceExtraction.js"
+  ],
+  "unchangedExistingTestFiles": 388,
+  "unchangedExistingEvidenceFiles": 2102,
+  "original305Sha256": "e522c4a0f86b30d51578d9e235c25d15e37f715d5b8cbe897c4e410e28d27bc9",
+  "newTestSha256": "2ccada1eac698216bd04f0689d59b71aac4cdf76999a536b514e34a2ccacc9fb",
+  "productionSha256": "74e4e022436512d3db4d1b04af1bcbe78b0e20312d75d2650763771b107f6753",
+  "parserArithmeticFileUnchanged": true,
+  "specsDependenciesWorkflowsSelectorsUnchanged": true
+}

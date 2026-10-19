@@ -1,0 +1,10 @@
+{
+  "first_parent": "e50c9f58459a4362537eb5da5dc1cf082fbc3ca8",
+  "second_parent": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+  "common_base": "c1817621f6eccb31822979bf994efc4902682d34",
+  "conflicts": [],
+  "expected_paths_verified": 3621,
+  "incoming_paths_verified": 151,
+  "integration_paths_preserved": 428,
+  "issues": []
+}

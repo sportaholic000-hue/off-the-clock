@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "push",
+    "--dry-run",
+    "origin",
+    "HEAD:refs/heads/codex/qe-agent4-listed-import-20261018"
+  ],
+  "head": "101f0ae01b7d47fbc74782aec1c49b66088b9b13",
+  "exitCode": 128,
+  "output": "fatal: could not read Username for 'https://github.com': terminal prompts disabled\n"
+}

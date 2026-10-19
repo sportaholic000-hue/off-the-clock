@@ -1,0 +1,1844 @@
+(node:7) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:14) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: listed conditions direct: If prepaid $10 per item
+ok 1 - listed conditions direct: If prepaid $10 per item
+  ---
+  duration_ms: 5.807954
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: If prepaid $10 per item
+ok 2 - listed conditions dispatcher: If prepaid $10 per item
+  ---
+  duration_ms: 30.734597
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: Unless delivered $10 per item
+ok 3 - listed conditions direct: Unless delivered $10 per item
+  ---
+  duration_ms: 0.188273
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: Unless delivered $10 per item
+ok 4 - listed conditions dispatcher: Unless delivered $10 per item
+  ---
+  duration_ms: 22.150772
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: When booked online $10 per item
+ok 5 - listed conditions direct: When booked online $10 per item
+  ---
+  duration_ms: 3.243662
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: When booked online $10 per item
+ok 6 - listed conditions dispatcher: When booked online $10 per item
+  ---
+  duration_ms: 24.872532
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: After inspection $10 per item
+ok 7 - listed conditions direct: After inspection $10 per item
+  ---
+  duration_ms: 0.244928
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: After inspection $10 per item
+ok 8 - listed conditions dispatcher: After inspection $10 per item
+  ---
+  duration_ms: 21.886386
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: Subject to approval $10 per item
+ok 9 - listed conditions direct: Subject to approval $10 per item
+  ---
+  duration_ms: 0.214382
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: Subject to approval $10 per item
+ok 10 - listed conditions dispatcher: Subject to approval $10 per item
+  ---
+  duration_ms: 23.860782
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: IF PREPAID: $10 per item
+ok 11 - listed conditions qualifier: IF PREPAID: $10 per item
+  ---
+  duration_ms: 22.836532
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets unless delivered: $10 per item
+ok 12 - listed conditions qualifier: Widgets unless delivered: $10 per item
+  ---
+  duration_ms: 20.896889
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets (when booked online): $10 per item
+ok 13 - listed conditions qualifier: Widgets (when booked online): $10 per item
+  ---
+  duration_ms: 21.744053
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets after inspection $10 each
+ok 14 - listed conditions qualifier: Widgets after inspection $10 each
+  ---
+  duration_ms: 23.185457
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets subject to approval $10 each
+ok 15 - listed conditions qualifier: Widgets subject to approval $10 each
+  ---
+  duration_ms: 21.208057
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Provided payment clears $10 each
+ok 16 - listed conditions qualifier: Provided payment clears $10 each
+  ---
+  duration_ms: 23.679358
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Providing access is available $10 each
+ok 17 - listed conditions qualifier: Providing access is available $10 each
+  ---
+  duration_ms: 21.527717
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Assuming pickup $10 each
+ok 18 - listed conditions qualifier: Assuming pickup $10 each
+  ---
+  duration_ms: 23.189614
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Pending inspection $10 each
+ok 19 - listed conditions qualifier: Pending inspection $10 each
+  ---
+  duration_ms: 22.084964
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Conditional upon approval $10 each
+ok 20 - listed conditions qualifier: Conditional upon approval $10 each
+  ---
+  duration_ms: 21.509985
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Before delivery $10 each
+ok 21 - listed conditions qualifier: Before delivery $10 each
+  ---
+  duration_ms: 21.112483
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Until supplies run out $10 each
+ok 22 - listed conditions qualifier: Until supplies run out $10 each
+  ---
+  duration_ms: 23.332579
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: While stock lasts $10 each
+ok 23 - listed conditions qualifier: While stock lasts $10 each
+  ---
+  duration_ms: 21.088487
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Once approved $10 each
+ok 24 - listed conditions qualifier: Once approved $10 each
+  ---
+  duration_ms: 21.66303
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Whenever collected $10 each
+ok 25 - listed conditions qualifier: Whenever collected $10 each
+  ---
+  duration_ms: 20.662577
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Depending on access $10 each
+ok 26 - listed conditions qualifier: Depending on access $10 each
+  ---
+  duration_ms: 22.355491
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Based on availability $10 each
+ok 27 - listed conditions qualifier: Based on availability $10 each
+  ---
+  duration_ms: 22.247659
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: With owner consent $10 each
+ok 28 - listed conditions qualifier: With owner consent $10 each
+  ---
+  duration_ms: 23.261491
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Without delivery $10 each
+ok 29 - listed conditions qualifier: Without delivery $10 each
+  ---
+  duration_ms: 21.956482
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: For members $10 each
+ok 30 - listed conditions qualifier: For members $10 each
+  ---
+  duration_ms: 22.524744
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Upon payment $10 each
+ok 31 - listed conditions qualifier: Upon payment $10 each
+  ---
+  duration_ms: 22.852147
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: On collection $10 each
+ok 32 - listed conditions qualifier: On collection $10 each
+  ---
+  duration_ms: 21.258092
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: At pickup $10 each
+ok 33 - listed conditions qualifier: At pickup $10 each
+  ---
+  duration_ms: 22.536572
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: By appointment $10 each
+ok 34 - listed conditions qualifier: By appointment $10 each
+  ---
+  duration_ms: 24.021503
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Prepaid widgets $10 each
+ok 35 - listed conditions qualifier: Prepaid widgets $10 each
+  ---
+  duration_ms: 24.211238
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Cash price $10 each
+ok 36 - listed conditions qualifier: Cash price $10 each
+  ---
+  duration_ms: 20.832842
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Members price $10 each
+ok 37 - listed conditions qualifier: Members price $10 each
+  ---
+  duration_ms: 20.784662
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Weekday service $10 each
+ok 38 - listed conditions qualifier: Weekday service $10 each
+  ---
+  duration_ms: 21.961408
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Monday service $10 each
+ok 39 - listed conditions qualifier: Monday service $10 each
+  ---
+  duration_ms: 20.149707
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Advance booking $10 each
+ok 40 - listed conditions qualifier: Advance booking $10 each
+  ---
+  duration_ms: 24.767624
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Approved orders $10 each
+ok 41 - listed conditions qualifier: Approved orders $10 each
+  ---
+  duration_ms: 20.596077
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Eligible orders $10 each
+ok 42 - listed conditions qualifier: Eligible orders $10 each
+  ---
+  duration_ms: 21.326604
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Deposit required $10 each
+ok 43 - listed conditions qualifier: Deposit required $10 each
+  ---
+  duration_ms: 21.797113
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Delivery excluded $10 each
+ok 44 - listed conditions qualifier: Delivery excluded $10 each
+  ---
+  duration_ms: 21.253665
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Materials billed separately $10 each
+ok 45 - listed conditions qualifier: Materials billed separately $10 each
+  ---
+  duration_ms: 20.938452
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Prices may vary $10 each
+ok 46 - listed conditions qualifier: Prices may vary $10 each
+  ---
+  duration_ms: 21.398382
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Payment terms apply $10 each
+ok 47 - listed conditions qualifier: Payment terms apply $10 each
+  ---
+  duration_ms: 22.441801
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Price negotiable $10 each
+ok 48 - listed conditions qualifier: Price negotiable $10 each
+  ---
+  duration_ms: 20.402277
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Approximate price $10 each
+ok 49 - listed conditions qualifier: Approximate price $10 each
+  ---
+  duration_ms: 21.136829
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Estimated price $10 each
+ok 50 - listed conditions qualifier: Estimated price $10 each
+  ---
+  duration_ms: 19.790929
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Grade 2 lumber if prepaid $10 each
+ok 51 - listed conditions qualifier: Grade 2 lumber if prepaid $10 each
+  ---
+  duration_ms: 21.594268
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: 2x4 stud when collected $10 each
+ok 52 - listed conditions qualifier: 2x4 stud when collected $10 each
+  ---
+  duration_ms: 20.077238
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: 3/4 inch plywood subject to inspection $10 each
+ok 53 - listed conditions qualifier: 3/4 inch plywood subject to inspection $10 each
+  ---
+  duration_ms: 21.617401
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: \#2 lumber after approval $10 each
+ok 54 - listed conditions qualifier: \#2 lumber after approval $10 each
+  ---
+  duration_ms: 20.160364
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets IF\\tprepaid $10 each
+ok 55 - listed conditions qualifier: Widgets IF\\tprepaid $10 each
+  ---
+  duration_ms: 22.837274
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets when booked online $10 each
+ok 56 - listed conditions qualifier: Widgets when booked online $10 each
+  ---
+  duration_ms: 21.048698
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets if-prepaid $10 each
+ok 57 - listed conditions qualifier: Widgets if-prepaid $10 each
+  ---
+  duration_ms: 21.344982
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets (subject-to-approval) $10 each
+ok 58 - listed conditions qualifier: Widgets (subject-to-approval) $10 each
+  ---
+  duration_ms: 21.994318
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each if prepaid
+ok 59 - listed conditions qualifier: Widgets $10 each if prepaid
+  ---
+  duration_ms: 21.856541
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each. Unclassified access restriction.
+ok 60 - listed conditions qualifier: Widgets $10 each. Unclassified access restriction.
+  ---
+  duration_ms: 24.119981
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: If prepaid $10 per item. Taxes extra.
+ok 61 - listed conditions qualifier: If prepaid $10 per item. Taxes extra.
+  ---
+  duration_ms: 20.712843
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each. If prepaid.
+ok 62 - listed conditions qualifier: Widgets $10 each. If prepaid.
+  ---
+  duration_ms: 22.201619
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each; subject to approval
+ok 63 - listed conditions qualifier: Widgets $10 each; subject to approval
+  ---
+  duration_ms: 21.578344
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Bricks $2 each
+ok 64 - listed conditions control: Bricks $2 each
+  ---
+  duration_ms: 23.122953
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Gutter cleaning: $2.50 per linear foot\\nAll prices plus HST.
+ok 65 - listed conditions control: Gutter cleaning: $2.50 per linear foot\\nAll prices plus HST.
+  ---
+  duration_ms: 24.153
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Pressure-treated 2x4 $3.50 each.
+ok 66 - listed conditions control: Pressure-treated 2x4 $3.50 each.
+  ---
+  duration_ms: 22.12896
+  type: 'test'
+  ...
+# Subtest: listed conditions control: 2×4 stud $3.50 each
+ok 67 - listed conditions control: 2×4 stud $3.50 each
+  ---
+  duration_ms: 21.669851
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Grade 2 lumber $5 each
+ok 68 - listed conditions control: Grade 2 lumber $5 each
+  ---
+  duration_ms: 22.032465
+  type: 'test'
+  ...
+# Subtest: listed conditions control: 3/4 inch plywood $5 each
+ok 69 - listed conditions control: 3/4 inch plywood $5 each
+  ---
+  duration_ms: 26.306134
+  type: 'test'
+  ...
+# Subtest: listed conditions control: \#2 lumber $5 each
+ok 70 - listed conditions control: \#2 lumber $5 each
+  ---
+  duration_ms: 20.961386
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Custom text engraving: $25 each
+ok 71 - listed conditions control: Custom text engraving: $25 each
+  ---
+  duration_ms: 22.060157
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Furnace tune-up: $129 each.
+ok 72 - listed conditions control: Furnace tune-up: $129 each.
+  ---
+  duration_ms: 22.114408
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Synthetic offshore periwinkle service: $10 each
+ok 73 - listed conditions control: Synthetic offshore periwinkle service: $10 each
+  ---
+  duration_ms: 21.338973
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Gift wrapping: $1.25 each
+ok 74 - listed conditions control: Gift wrapping: $1.25 each
+  ---
+  duration_ms: 20.337639
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Window washing $0.035 each
+ok 75 - listed conditions control: Window washing $0.035 each
+  ---
+  duration_ms: 21.235358
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget $0.005 each
+ok 76 - listed conditions control: Widget $0.005 each
+  ---
+  duration_ms: 21.623861
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget $0.10 each
+ok 77 - listed conditions control: Widget $0.10 each
+  ---
+  duration_ms: 20.314054
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget CAD 19.99 each. Taxes extra.
+ok 78 - listed conditions control: Widget CAD 19.99 each. Taxes extra.
+  ---
+  duration_ms: 21.985464
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget US$1,234.50 each
+ok 79 - listed conditions control: Widget US$1,234.50 each
+  ---
+  duration_ms: 21.457893
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget €2.50 each
+ok 80 - listed conditions control: Widget €2.50 each
+  ---
+  duration_ms: 23.423865
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget £10 each
+ok 81 - listed conditions control: Widget £10 each
+  ---
+  duration_ms: 20.904149
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget (blue): $10 each
+ok 82 - listed conditions control: Widget (blue): $10 each
+  ---
+  duration_ms: 20.156968
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Inspection $10 each
+ok 83 - listed conditions control: Inspection $10 each
+  ---
+  duration_ms: 22.376963
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Delivery $10 each
+ok 84 - listed conditions control: Delivery $10 each
+  ---
+  duration_ms: 20.739443
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Board-on-board panel $10 each
+ok 85 - listed conditions control: Board-on-board panel $10 each
+  ---
+  duration_ms: 20.143307
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Nail-in anchor $10 each
+ok 86 - listed conditions control: Nail-in anchor $10 each
+  ---
+  duration_ms: 21.929681
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Plug-in adapter $10 each
+ok 87 - listed conditions control: Plug-in adapter $10 each
+  ---
+  duration_ms: 20.228576
+  type: 'test'
+  ...
+# Subtest: listed conditions saved identity: edits, draft, foreign owner, duplicate and partial listings refuse
+ok 88 - listed conditions saved identity: edits, draft, foreign owner, duplicate and partial listings refuse
+  ---
+  duration_ms: 24.421233
+  type: 'test'
+  ...
+# Subtest: listed conditions confirmation and numeric domain are not relaxed
+ok 89 - listed conditions confirmation and numeric domain are not relaxed
+  ---
+  duration_ms: 29.314288
+  type: 'test'
+  ...
+# Subtest: listed conditions compiled fallback retains verbatim condition and ordinary contact rewrite
+ok 90 - listed conditions compiled fallback retains verbatim condition and ordinary contact rewrite
+  ---
+  duration_ms: 35.173896
+  type: 'test'
+  ...
+# Subtest: listed conditions selectors include this file only in the full suite
+ok 91 - listed conditions selectors include this file only in the full suite
+  ---
+  duration_ms: 1738.572391
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: If prepaid $10 per item
+ok 92 - listed conditions direct refuses: If prepaid $10 per item
+  ---
+  duration_ms: 0.362004
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: If prepaid $10 per item
+ok 93 - listed conditions dispatcher refuses: If prepaid $10 per item
+  ---
+  duration_ms: 23.044736
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Unless delivered $10 per item
+ok 94 - listed conditions direct refuses: Unless delivered $10 per item
+  ---
+  duration_ms: 0.120211
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Unless delivered $10 per item
+ok 95 - listed conditions dispatcher refuses: Unless delivered $10 per item
+  ---
+  duration_ms: 20.818342
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: When booked online $10 per item
+ok 96 - listed conditions direct refuses: When booked online $10 per item
+  ---
+  duration_ms: 0.18642
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: When booked online $10 per item
+ok 97 - listed conditions dispatcher refuses: When booked online $10 per item
+  ---
+  duration_ms: 20.747054
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: After inspection $10 per item
+ok 98 - listed conditions direct refuses: After inspection $10 per item
+  ---
+  duration_ms: 0.108863
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: After inspection $10 per item
+ok 99 - listed conditions dispatcher refuses: After inspection $10 per item
+  ---
+  duration_ms: 20.488146
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Subject to approval $10 per item
+ok 100 - listed conditions direct refuses: Subject to approval $10 per item
+  ---
+  duration_ms: 0.115494
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Subject to approval $10 per item
+ok 101 - listed conditions dispatcher refuses: Subject to approval $10 per item
+  ---
+  duration_ms: 22.365997
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item IF PREPAID: $10 each
+ok 102 - listed conditions direct refuses: [PLACEHOLDER] Item IF PREPAID: $10 each
+  ---
+  duration_ms: 0.106039
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item IF PREPAID: $10 each
+ok 103 - listed conditions dispatcher refuses: [PLACEHOLDER] Item IF PREPAID: $10 each
+  ---
+  duration_ms: 22.313228
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item (unless delivered): $10 each
+ok 104 - listed conditions direct refuses: [PLACEHOLDER] Item (unless delivered): $10 each
+  ---
+  duration_ms: 0.083575
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item (unless delivered): $10 each
+ok 105 - listed conditions dispatcher refuses: [PLACEHOLDER] Item (unless delivered): $10 each
+  ---
+  duration_ms: 20.904882
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: WhEn booked online $10 per item
+ok 106 - listed conditions direct refuses: WhEn booked online $10 per item
+  ---
+  duration_ms: 0.124728
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: WhEn booked online $10 per item
+ok 107 - listed conditions dispatcher refuses: WhEn booked online $10 per item
+  ---
+  duration_ms: 21.321327
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item subject-to-approval: $10 each
+ok 108 - listed conditions direct refuses: [PLACEHOLDER] Item subject-to-approval: $10 each
+  ---
+  duration_ms: 0.122544
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item subject-to-approval: $10 each
+ok 109 - listed conditions dispatcher refuses: [PLACEHOLDER] Item subject-to-approval: $10 each
+  ---
+  duration_ms: 21.201087
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Before payment clears $10 each
+ok 110 - listed conditions direct refuses: Before payment clears $10 each
+  ---
+  duration_ms: 0.119119
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Before payment clears $10 each
+ok 111 - listed conditions dispatcher refuses: Before payment clears $10 each
+  ---
+  duration_ms: 24.428826
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Until stock runs out $10 each
+ok 112 - listed conditions direct refuses: Until stock runs out $10 each
+  ---
+  duration_ms: 0.077807
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Until stock runs out $10 each
+ok 113 - listed conditions dispatcher refuses: Until stock runs out $10 each
+  ---
+  duration_ms: 23.775083
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: While supplies last $10 each
+ok 114 - listed conditions direct refuses: While supplies last $10 each
+  ---
+  duration_ms: 0.089755
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: While supplies last $10 each
+ok 115 - listed conditions dispatcher refuses: While supplies last $10 each
+  ---
+  duration_ms: 21.802589
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Whenever booked online $10 each
+ok 116 - listed conditions direct refuses: Whenever booked online $10 each
+  ---
+  duration_ms: 0.107161
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Whenever booked online $10 each
+ok 117 - listed conditions dispatcher refuses: Whenever booked online $10 each
+  ---
+  duration_ms: 20.920806
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Once approved $10 each
+ok 118 - listed conditions direct refuses: Once approved $10 each
+  ---
+  duration_ms: 0.114442
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Once approved $10 each
+ok 119 - listed conditions dispatcher refuses: Once approved $10 each
+  ---
+  duration_ms: 21.402479
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Upon inspection $10 each
+ok 120 - listed conditions direct refuses: Upon inspection $10 each
+  ---
+  duration_ms: 0.207682
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Upon inspection $10 each
+ok 121 - listed conditions dispatcher refuses: Upon inspection $10 each
+  ---
+  duration_ms: 20.651932
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: During business hours $10 each
+ok 122 - listed conditions direct refuses: During business hours $10 each
+  ---
+  duration_ms: 0.111748
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: During business hours $10 each
+ok 123 - listed conditions dispatcher refuses: During business hours $10 each
+  ---
+  duration_ms: 20.622998
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Provided payment clears $10 each
+ok 124 - listed conditions direct refuses: Provided payment clears $10 each
+  ---
+  duration_ms: 0.107662
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Provided payment clears $10 each
+ok 125 - listed conditions dispatcher refuses: Provided payment clears $10 each
+  ---
+  duration_ms: 22.116001
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Providing access is clear $10 each
+ok 126 - listed conditions direct refuses: Providing access is clear $10 each
+  ---
+  duration_ms: 0.105288
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Providing access is clear $10 each
+ok 127 - listed conditions dispatcher refuses: Providing access is clear $10 each
+  ---
+  duration_ms: 20.227103
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Pending assessment $10 each
+ok 128 - listed conditions direct refuses: Pending assessment $10 each
+  ---
+  duration_ms: 0.115954
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Pending assessment $10 each
+ok 129 - listed conditions dispatcher refuses: Pending assessment $10 each
+  ---
+  duration_ms: 21.584071
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Conditional service $10 each
+ok 130 - listed conditions direct refuses: Conditional service $10 each
+  ---
+  duration_ms: 0.108784
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Conditional service $10 each
+ok 131 - listed conditions dispatcher refuses: Conditional service $10 each
+  ---
+  duration_ms: 20.821697
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Contingent service $10 each
+ok 132 - listed conditions direct refuses: Contingent service $10 each
+  ---
+  duration_ms: 0.111367
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Contingent service $10 each
+ok 133 - listed conditions dispatcher refuses: Contingent service $10 each
+  ---
+  duration_ms: 20.695587
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Depending on access $10 each
+ok 134 - listed conditions direct refuses: Depending on access $10 each
+  ---
+  duration_ms: 0.114312
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Depending on access $10 each
+ok 135 - listed conditions dispatcher refuses: Depending on access $10 each
+  ---
+  duration_ms: 28.367492
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Payment required $10 each
+ok 136 - listed conditions direct refuses: Payment required $10 each
+  ---
+  duration_ms: 0.130085
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Payment required $10 each
+ok 137 - listed conditions dispatcher refuses: Payment required $10 each
+  ---
+  duration_ms: 26.149064
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Approval must be obtained $10 each
+ok 138 - listed conditions direct refuses: Approval must be obtained $10 each
+  ---
+  duration_ms: 0.153361
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Approval must be obtained $10 each
+ok 139 - listed conditions dispatcher refuses: Approval must be obtained $10 each
+  ---
+  duration_ms: 22.60196
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Price may change $10 each
+ok 140 - listed conditions direct refuses: Price may change $10 each
+  ---
+  duration_ms: 0.107141
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Price may change $10 each
+ok 141 - listed conditions dispatcher refuses: Price may change $10 each
+  ---
+  duration_ms: 21.338854
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Price might change $10 each
+ok 142 - listed conditions direct refuses: Price might change $10 each
+  ---
+  duration_ms: 0.181863
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Price might change $10 each
+ok 143 - listed conditions dispatcher refuses: Price might change $10 each
+  ---
+  duration_ms: 21.522449
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Price can change $10 each
+ok 144 - listed conditions direct refuses: Price can change $10 each
+  ---
+  duration_ms: 0.070856
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Price can change $10 each
+ok 145 - listed conditions dispatcher refuses: Price can change $10 each
+  ---
+  duration_ms: 22.858427
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Eligible accounts $10 each
+ok 146 - listed conditions direct refuses: Eligible accounts $10 each
+  ---
+  duration_ms: 0.091218
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Eligible accounts $10 each
+ok 147 - listed conditions dispatcher refuses: Eligible accounts $10 each
+  ---
+  duration_ms: 34.419061
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Qualifying orders $10 each
+ok 148 - listed conditions direct refuses: Qualifying orders $10 each
+  ---
+  duration_ms: 0.103926
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Qualifying orders $10 each
+ok 149 - listed conditions dispatcher refuses: Qualifying orders $10 each
+  ---
+  duration_ms: 34.342837
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Terms apply $10 each
+ok 150 - listed conditions direct refuses: Terms apply $10 each
+  ---
+  duration_ms: 0.077406
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Terms apply $10 each
+ok 151 - listed conditions dispatcher refuses: Terms apply $10 each
+  ---
+  duration_ms: 21.253835
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Restrictions apply $10 each
+ok 152 - listed conditions direct refuses: Restrictions apply $10 each
+  ---
+  duration_ms: 0.074232
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Restrictions apply $10 each
+ok 153 - listed conditions dispatcher refuses: Restrictions apply $10 each
+  ---
+  duration_ms: 23.351172
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Estimated service $10 each
+ok 154 - listed conditions direct refuses: Estimated service $10 each
+  ---
+  duration_ms: 0.082384
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Estimated service $10 each
+ok 155 - listed conditions dispatcher refuses: Estimated service $10 each
+  ---
+  duration_ms: 20.481255
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Provisional service $10 each
+ok 156 - listed conditions direct refuses: Provisional service $10 each
+  ---
+  duration_ms: 0.078768
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Provisional service $10 each
+ok 157 - listed conditions dispatcher refuses: Provisional service $10 each
+  ---
+  duration_ms: 21.548728
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Negotiable service $10 each
+ok 158 - listed conditions direct refuses: Negotiable service $10 each
+  ---
+  duration_ms: 0.103565
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Negotiable service $10 each
+ok 159 - listed conditions dispatcher refuses: Negotiable service $10 each
+  ---
+  duration_ms: 19.970618
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: For members $10 each
+ok 160 - listed conditions direct refuses: For members $10 each
+  ---
+  duration_ms: 0.078028
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: For members $10 each
+ok 161 - listed conditions dispatcher refuses: For members $10 each
+  ---
+  duration_ms: 19.92488
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: With a coupon $10 each
+ok 162 - listed conditions direct refuses: With a coupon $10 each
+  ---
+  duration_ms: 0.107251
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: With a coupon $10 each
+ok 163 - listed conditions dispatcher refuses: With a coupon $10 each
+  ---
+  duration_ms: 19.73207
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Without delivery $10 each
+ok 164 - listed conditions direct refuses: Without delivery $10 each
+  ---
+  duration_ms: 0.069594
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Without delivery $10 each
+ok 165 - listed conditions dispatcher refuses: Without delivery $10 each
+  ---
+  duration_ms: 19.783692
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Under contract $10 each
+ok 166 - listed conditions direct refuses: Under contract $10 each
+  ---
+  duration_ms: 0.068943
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Under contract $10 each
+ok 167 - listed conditions dispatcher refuses: Under contract $10 each
+  ---
+  duration_ms: 20.814606
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: On request $10 each
+ok 168 - listed conditions direct refuses: On request $10 each
+  ---
+  duration_ms: 0.082174
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: On request $10 each
+ok 169 - listed conditions dispatcher refuses: On request $10 each
+  ---
+  duration_ms: 20.159752
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: At owner discretion $10 each
+ok 170 - listed conditions direct refuses: At owner discretion $10 each
+  ---
+  duration_ms: 0.072619
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: At owner discretion $10 each
+ok 171 - listed conditions dispatcher refuses: At owner discretion $10 each
+  ---
+  duration_ms: 20.877541
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: By arrangement $10 each
+ok 172 - listed conditions direct refuses: By arrangement $10 each
+  ---
+  duration_ms: 0.107732
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: By arrangement $10 each
+ok 173 - listed conditions dispatcher refuses: By arrangement $10 each
+  ---
+  duration_ms: 20.752032
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: As agreed $10 each
+ok 174 - listed conditions direct refuses: As agreed $10 each
+  ---
+  duration_ms: 0.17999
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: As agreed $10 each
+ok 175 - listed conditions dispatcher refuses: As agreed $10 each
+  ---
+  duration_ms: 21.232294
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: ＩＦ prepaid $10 each
+ok 176 - listed conditions direct refuses: ＩＦ prepaid $10 each
+  ---
+  duration_ms: 0.762395
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: ＩＦ prepaid $10 each
+ok 177 - listed conditions dispatcher refuses: ＩＦ prepaid $10 each
+  ---
+  duration_ms: 20.315516
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Approximately $10 each
+ok 178 - listed conditions direct refuses: Approximately $10 each
+  ---
+  duration_ms: 0.128723
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Approximately $10 each
+ok 179 - listed conditions dispatcher refuses: Approximately $10 each
+  ---
+  duration_ms: 20.77027
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Approximate service $10 each
+ok 180 - listed conditions direct refuses: Approximate service $10 each
+  ---
+  duration_ms: 0.149364
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Approximate service $10 each
+ok 181 - listed conditions dispatcher refuses: Approximate service $10 each
+  ---
+  duration_ms: 21.990032
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Roughly $10 each
+ok 182 - listed conditions direct refuses: Roughly $10 each
+  ---
+  duration_ms: 0.175103
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Roughly $10 each
+ok 183 - listed conditions dispatcher refuses: Roughly $10 each
+  ---
+  duration_ms: 22.53447
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Ballpark service $10 each
+ok 184 - listed conditions direct refuses: Ballpark service $10 each
+  ---
+  duration_ms: 0.137847
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Ballpark service $10 each
+ok 185 - listed conditions dispatcher refuses: Ballpark service $10 each
+  ---
+  duration_ms: 21.74991
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Suggested service $10 each
+ok 186 - listed conditions direct refuses: Suggested service $10 each
+  ---
+  duration_ms: 0.185789
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Suggested service $10 each
+ok 187 - listed conditions dispatcher refuses: Suggested service $10 each
+  ---
+  duration_ms: 22.225876
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Variable service $10 each
+ok 188 - listed conditions direct refuses: Variable service $10 each
+  ---
+  duration_ms: 0.145378
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Variable service $10 each
+ok 189 - listed conditions dispatcher refuses: Variable service $10 each
+  ---
+  duration_ms: 21.340176
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Usually $10 each
+ok 190 - listed conditions direct refuses: Usually $10 each
+  ---
+  duration_ms: 0.140461
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Usually $10 each
+ok 191 - listed conditions dispatcher refuses: Usually $10 each
+  ---
+  duration_ms: 21.012963
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Prepaid service $10 each
+ok 192 - listed conditions direct refuses: Prepaid service $10 each
+  ---
+  duration_ms: 0.138948
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Prepaid service $10 each
+ok 193 - listed conditions dispatcher refuses: Prepaid service $10 each
+  ---
+  duration_ms: 20.960125
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Member service $10 each
+ok 194 - listed conditions direct refuses: Member service $10 each
+  ---
+  duration_ms: 0.168223
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Member service $10 each
+ok 195 - listed conditions dispatcher refuses: Member service $10 each
+  ---
+  duration_ms: 22.251905
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Daily rental $10 per item
+ok 196 - listed conditions direct refuses: Daily rental $10 per item
+  ---
+  duration_ms: 0.131898
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Daily rental $10 per item
+ok 197 - listed conditions dispatcher refuses: Daily rental $10 per item
+  ---
+  duration_ms: 20.700495
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Monthly rental $10 per item
+ok 198 - listed conditions direct refuses: Monthly rental $10 per item
+  ---
+  duration_ms: 0.112389
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Monthly rental $10 per item
+ok 199 - listed conditions dispatcher refuses: Monthly rental $10 per item
+  ---
+  duration_ms: 20.452422
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Weekday service $10 each
+ok 200 - listed conditions direct refuses: Weekday service $10 each
+  ---
+  duration_ms: 0.155904
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Weekday service $10 each
+ok 201 - listed conditions dispatcher refuses: Weekday service $10 each
+  ---
+  duration_ms: 21.344181
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: Plus delivery $10 each
+ok 202 - listed conditions direct refuses: Plus delivery $10 each
+  ---
+  duration_ms: 0.093641
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: Plus delivery $10 each
+ok 203 - listed conditions dispatcher refuses: Plus delivery $10 each
+  ---
+  duration_ms: 21.119174
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item [for members] $10 each
+ok 204 - listed conditions direct refuses: [PLACEHOLDER] Item [for members] $10 each
+  ---
+  duration_ms: 0.137957
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item [for members] $10 each
+ok 205 - listed conditions dispatcher refuses: [PLACEHOLDER] Item [for members] $10 each
+  ---
+  duration_ms: 21.102899
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item (with delivery) $10 each
+ok 206 - listed conditions direct refuses: [PLACEHOLDER] Item (with delivery) $10 each
+  ---
+  duration_ms: 0.17987
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item (with delivery) $10 each
+ok 207 - listed conditions dispatcher refuses: [PLACEHOLDER] Item (with delivery) $10 each
+  ---
+  duration_ms: 20.67096
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: In store $10 each
+ok 208 - listed conditions direct refuses: In store $10 each
+  ---
+  duration_ms: 0.150326
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: In store $10 each
+ok 209 - listed conditions dispatcher refuses: In store $10 each
+  ---
+  duration_ms: 21.485844
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: In-store $10 each
+ok 210 - listed conditions direct refuses: In-store $10 each
+  ---
+  duration_ms: 0.154442
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: In-store $10 each
+ok 211 - listed conditions dispatcher refuses: In-store $10 each
+  ---
+  duration_ms: 21.476962
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item (in store): $10 each
+ok 212 - listed conditions direct refuses: [PLACEHOLDER] Item (in store): $10 each
+  ---
+  duration_ms: 0.240151
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item (in store): $10 each
+ok 213 - listed conditions dispatcher refuses: [PLACEHOLDER] Item (in store): $10 each
+  ---
+  duration_ms: 23.606389
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: To account holders $10 each
+ok 214 - listed conditions direct refuses: To account holders $10 each
+  ---
+  duration_ms: 0.09327
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: To account holders $10 each
+ok 215 - listed conditions dispatcher refuses: To account holders $10 each
+  ---
+  duration_ms: 21.168137
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each if prepaid
+ok 216 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each if prepaid
+  ---
+  duration_ms: 0.09967
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each if prepaid
+ok 217 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each if prepaid
+  ---
+  duration_ms: 20.113973
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each. Subject to approval.
+ok 218 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each. Subject to approval.
+  ---
+  duration_ms: 0.143886
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each. Subject to approval.
+ok 219 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each. Subject to approval.
+  ---
+  duration_ms: 22.402401
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each\\nUnless delivered
+ok 220 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each\\nUnless delivered
+  ---
+  duration_ms: 0.090415
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each\\nUnless delivered
+ok 221 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each\\nUnless delivered
+  ---
+  duration_ms: 22.118805
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each minimum
+ok 222 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each minimum
+  ---
+  duration_ms: 0.080481
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each minimum
+ok 223 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each minimum
+  ---
+  duration_ms: 24.150477
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 per hour or part thereof
+ok 224 - listed conditions direct refuses: [PLACEHOLDER] Item $10 per hour or part thereof
+  ---
+  duration_ms: 0.114452
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per hour or part thereof
+ok 225 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per hour or part thereof
+  ---
+  duration_ms: 25.761637
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 per sqft per coat
+ok 226 - listed conditions direct refuses: [PLACEHOLDER] Item $10 per sqft per coat
+  ---
+  duration_ms: 0.12591
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per sqft per coat
+ok 227 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per sqft per coat
+  ---
+  duration_ms: 22.487459
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 per item daily
+ok 228 - listed conditions direct refuses: [PLACEHOLDER] Item $10 per item daily
+  ---
+  duration_ms: 0.065929
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per item daily
+ok 229 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 per item daily
+  ---
+  duration_ms: 21.675999
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each. Second item half price.
+ok 230 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each. Second item half price.
+  ---
+  duration_ms: 0.14022
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each. Second item half price.
+ok 231 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each. Second item half price.
+  ---
+  duration_ms: 21.703522
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item $10 each or $8 each for bulk orders
+ok 232 - listed conditions direct refuses: [PLACEHOLDER] Item $10 each or $8 each for bulk orders
+  ---
+  duration_ms: 0.077075
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each or $8 each for bulk orders
+ok 233 - listed conditions dispatcher refuses: [PLACEHOLDER] Item $10 each or $8 each for bulk orders
+  ---
+  duration_ms: 20.700444
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: [PLACEHOLDER] Item 3 $10 each
+ok 234 - listed conditions direct refuses: [PLACEHOLDER] Item 3 $10 each
+  ---
+  duration_ms: 0.108182
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: [PLACEHOLDER] Item 3 $10 each
+ok 235 - listed conditions dispatcher refuses: [PLACEHOLDER] Item 3 $10 each
+  ---
+  duration_ms: 20.956289
+  type: 'test'
+  ...
+# Subtest: listed conditions direct refuses: First [PLACEHOLDER] item $10 each
+ok 236 - listed conditions direct refuses: First [PLACEHOLDER] item $10 each
+  ---
+  duration_ms: 0.095664
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses: First [PLACEHOLDER] item $10 each
+ok 237 - listed conditions dispatcher refuses: First [PLACEHOLDER] item $10 each
+  ---
+  duration_ms: 20.53749
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $10 each
+ok 238 - listed conditions direct preserves flat: [PLACEHOLDER] Item $10 each
+  ---
+  duration_ms: 0.277286
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $10 each
+ok 239 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $10 each
+  ---
+  duration_ms: 21.739065
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Gutter cleaning: $2.50 per linear foot
+ok 240 - listed conditions direct preserves flat: Gutter cleaning: $2.50 per linear foot
+  ---
+  duration_ms: 0.147762
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Gutter cleaning: $2.50 per linear foot
+ok 241 - listed conditions dispatcher preserves flat: Gutter cleaning: $2.50 per linear foot
+  ---
+  duration_ms: 23.177275
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Trim CAD 0.035 per linear foot
+ok 242 - listed conditions direct preserves flat: Trim CAD 0.035 per linear foot
+  ---
+  duration_ms: 0.116595
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Trim CAD 0.035 per linear foot
+ok 243 - listed conditions dispatcher preserves flat: Trim CAD 0.035 per linear foot
+  ---
+  duration_ms: 20.875267
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $0.025 each
+ok 244 - listed conditions direct preserves flat: [PLACEHOLDER] Item $0.025 each
+  ---
+  duration_ms: 0.121723
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $0.025 each
+ok 245 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $0.025 each
+  ---
+  duration_ms: 21.711333
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $0.004 each
+ok 246 - listed conditions direct preserves flat: [PLACEHOLDER] Item $0.004 each
+  ---
+  duration_ms: 0.240551
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $0.004 each
+ok 247 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $0.004 each
+  ---
+  duration_ms: 19.816646
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $1.25 each
+ok 248 - listed conditions direct preserves flat: [PLACEHOLDER] Item $1.25 each
+  ---
+  duration_ms: 0.116325
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1.25 each
+ok 249 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1.25 each
+  ---
+  duration_ms: 21.112453
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $1.000000 each
+ok 250 - listed conditions direct preserves flat: [PLACEHOLDER] Item $1.000000 each
+  ---
+  duration_ms: 0.14022
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1.000000 each
+ok 251 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1.000000 each
+  ---
+  duration_ms: 19.71195
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item $1,234.50 each
+ok 252 - listed conditions direct preserves flat: [PLACEHOLDER] Item $1,234.50 each
+  ---
+  duration_ms: 0.141853
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1,234.50 each
+ok 253 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item $1,234.50 each
+  ---
+  duration_ms: 20.175566
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item EUR 2.50 each
+ok 254 - listed conditions direct preserves flat: [PLACEHOLDER] Item EUR 2.50 each
+  ---
+  duration_ms: 0.199199
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item EUR 2.50 each
+ok 255 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item EUR 2.50 each
+  ---
+  duration_ms: 20.239723
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Sod $1.20 per square foot
+ok 256 - listed conditions direct preserves flat: Sod $1.20 per square foot
+  ---
+  duration_ms: 0.267912
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Sod $1.20 per square foot
+ok 257 - listed conditions dispatcher preserves flat: Sod $1.20 per square foot
+  ---
+  duration_ms: 19.799051
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: 2x4 Lumber $10 each
+ok 258 - listed conditions direct preserves flat: 2x4 Lumber $10 each
+  ---
+  duration_ms: 0.111437
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: 2x4 Lumber $10 each
+ok 259 - listed conditions dispatcher preserves flat: 2x4 Lumber $10 each
+  ---
+  duration_ms: 20.725142
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: 2×4 Lumber $10 each
+ok 260 - listed conditions direct preserves flat: 2×4 Lumber $10 each
+  ---
+  duration_ms: 0.111297
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: 2×4 Lumber $10 each
+ok 261 - listed conditions dispatcher preserves flat: 2×4 Lumber $10 each
+  ---
+  duration_ms: 20.148635
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Grade 2 Lumber $10 each
+ok 262 - listed conditions direct preserves flat: Grade 2 Lumber $10 each
+  ---
+  duration_ms: 0.108973
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Grade 2 Lumber $10 each
+ok 263 - listed conditions dispatcher preserves flat: Grade 2 Lumber $10 each
+  ---
+  duration_ms: 20.417219
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: 3/4 inch Plywood $10 each
+ok 264 - listed conditions direct preserves flat: 3/4 inch Plywood $10 each
+  ---
+  duration_ms: 0.123566
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: 3/4 inch Plywood $10 each
+ok 265 - listed conditions dispatcher preserves flat: 3/4 inch Plywood $10 each
+  ---
+  duration_ms: 21.197651
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: \#2 Lumber $10 each
+ok 266 - listed conditions direct preserves flat: \#2 Lumber $10 each
+  ---
+  duration_ms: 0.107992
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: \#2 Lumber $10 each
+ok 267 - listed conditions dispatcher preserves flat: \#2 Lumber $10 each
+  ---
+  duration_ms: 19.732971
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: 2x4 Grade 2 \#2 Lumber $10 each
+ok 268 - listed conditions direct preserves flat: 2x4 Grade 2 \#2 Lumber $10 each
+  ---
+  duration_ms: 0.088042
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: 2x4 Grade 2 \#2 Lumber $10 each
+ok 269 - listed conditions dispatcher preserves flat: 2x4 Grade 2 \#2 Lumber $10 each
+  ---
+  duration_ms: 20.657179
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Offshore periwinkle service $10 each
+ok 270 - listed conditions direct preserves flat: Offshore periwinkle service $10 each
+  ---
+  duration_ms: 0.115594
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Offshore periwinkle service $10 each
+ok 271 - listed conditions dispatcher preserves flat: Offshore periwinkle service $10 each
+  ---
+  duration_ms: 20.89049
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Aftercare kit $10 each
+ok 272 - listed conditions direct preserves flat: Aftercare kit $10 each
+  ---
+  duration_ms: 0.1067
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Aftercare kit $10 each
+ok 273 - listed conditions dispatcher preserves flat: Aftercare kit $10 each
+  ---
+  duration_ms: 20.706653
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Tin can $10 each
+ok 274 - listed conditions direct preserves flat: Tin can $10 each
+  ---
+  duration_ms: 0.124617
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Tin can $10 each
+ok 275 - listed conditions dispatcher preserves flat: Tin can $10 each
+  ---
+  duration_ms: 20.280933
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Can of paint $10 each
+ok 276 - listed conditions direct preserves flat: Can of paint $10 each
+  ---
+  duration_ms: 0.138338
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Can of paint $10 each
+ok 277 - listed conditions dispatcher preserves flat: Can of paint $10 each
+  ---
+  duration_ms: 19.986623
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Board-on-board panel $10 each
+ok 278 - listed conditions direct preserves flat: Board-on-board panel $10 each
+  ---
+  duration_ms: 0.079509
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Board-on-board panel $10 each
+ok 279 - listed conditions dispatcher preserves flat: Board-on-board panel $10 each
+  ---
+  duration_ms: 20.793765
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Nail-in anchor $10 each
+ok 280 - listed conditions direct preserves flat: Nail-in anchor $10 each
+  ---
+  duration_ms: 0.114792
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Nail-in anchor $10 each
+ok 281 - listed conditions dispatcher preserves flat: Nail-in anchor $10 each
+  ---
+  duration_ms: 20.122336
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Plug-in adapter $10 each
+ok 282 - listed conditions direct preserves flat: Plug-in adapter $10 each
+  ---
+  duration_ms: 0.104076
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Plug-in adapter $10 each
+ok 283 - listed conditions dispatcher preserves flat: Plug-in adapter $10 each
+  ---
+  duration_ms: 21.101887
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: Custom text engraving $10 each
+ok 284 - listed conditions direct preserves flat: Custom text engraving $10 each
+  ---
+  duration_ms: 0.081082
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: Custom text engraving $10 each
+ok 285 - listed conditions dispatcher preserves flat: Custom text engraving $10 each
+  ---
+  duration_ms: 21.304522
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item CA$10 each. Plus HST.
+ok 286 - listed conditions direct preserves flat: [PLACEHOLDER] Item CA$10 each. Plus HST.
+  ---
+  duration_ms: 0.091547
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item CA$10 each. Plus HST.
+ok 287 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item CA$10 each. Plus HST.
+  ---
+  duration_ms: 20.55824
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item US$10 each\\nTaxes extra.
+ok 288 - listed conditions direct preserves flat: [PLACEHOLDER] Item US$10 each\\nTaxes extra.
+  ---
+  duration_ms: 0.093952
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item US$10 each\\nTaxes extra.
+ok 289 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item US$10 each\\nTaxes extra.
+  ---
+  duration_ms: 21.209529
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item £10 each
+ok 290 - listed conditions direct preserves flat: [PLACEHOLDER] Item £10 each
+  ---
+  duration_ms: 0.080782
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item £10 each
+ok 291 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item £10 each
+  ---
+  duration_ms: 20.195055
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves flat: [PLACEHOLDER] Item €10 each
+ok 292 - listed conditions direct preserves flat: [PLACEHOLDER] Item €10 each
+  ---
+  duration_ms: 1.004379
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher preserves flat: [PLACEHOLDER] Item €10 each
+ok 293 - listed conditions dispatcher preserves flat: [PLACEHOLDER] Item €10 each
+  ---
+  duration_ms: 20.404591
+  type: 'test'
+  ...
+# Subtest: listed conditions direct preserves draft, identity, duplicate, confirmation and decimal controls
+ok 294 - listed conditions direct preserves draft, identity, duplicate, confirmation and decimal controls
+  ---
+  duration_ms: 0.41925
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher uses saved tenant knowledge, never caller-supplied listing identity
+ok 295 - listed conditions dispatcher uses saved tenant knowledge, never caller-supplied listing identity
+  ---
+  duration_ms: 22.723663
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher refuses draft and duplicate saved listings
+ok 296 - listed conditions dispatcher refuses draft and duplicate saved listings
+  ---
+  duration_ms: 42.326449
+  type: 'test'
+  ...
+# Subtest: listed conditions conditional financial text remains unchanged by knowledge rewriting
+ok 297 - listed conditions conditional financial text remains unchanged by knowledge rewriting
+  ---
+  duration_ms: 0.176245
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation direct: Widgets:on collection $10 each
+ok 298 - listed conditions reconciliation direct: Widgets:on collection $10 each
+  ---
+  duration_ms: 0.109574
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation dispatcher: Widgets:on collection $10 each
+ok 299 - listed conditions reconciliation dispatcher: Widgets:on collection $10 each
+  ---
+  duration_ms: 19.742796
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation direct: Widgets:in store $10 each
+ok 300 - listed conditions reconciliation direct: Widgets:in store $10 each
+  ---
+  duration_ms: 0.098247
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation dispatcher: Widgets:in store $10 each
+ok 301 - listed conditions reconciliation dispatcher: Widgets:in store $10 each
+  ---
+  duration_ms: 20.364099
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation direct: Widgets:by arrangement $10 each
+ok 302 - listed conditions reconciliation direct: Widgets:by arrangement $10 each
+  ---
+  duration_ms: 0.148152
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation dispatcher: Widgets:by arrangement $10 each
+ok 303 - listed conditions reconciliation dispatcher: Widgets:by arrangement $10 each
+  ---
+  duration_ms: 20.254524
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation direct: Widgets:ＩＮ store $10 each
+ok 304 - listed conditions reconciliation direct: Widgets:ＩＮ store $10 each
+  ---
+  duration_ms: 0.131678
+  type: 'test'
+  ...
+# Subtest: listed conditions reconciliation dispatcher: Widgets:ＩＮ store $10 each
+ok 305 - listed conditions reconciliation dispatcher: Widgets:ＩＮ store $10 each
+  ---
+  duration_ms: 20.74368
+  type: 'test'
+  ...
+1..305
+# tests 305
+# suites 0
+# pass 305
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6303.04466

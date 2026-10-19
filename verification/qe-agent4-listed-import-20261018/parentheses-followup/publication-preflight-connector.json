@@ -1,0 +1,26 @@
+{
+  "repository": "sportaholic000-hue/off-the-clock",
+  "branch": "codex/qe-agent4-listed-import-20261018",
+  "parent": "101f0ae01b7d47fbc74782aec1c49b66088b9b13",
+  "parentLookup": {
+    "error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/git/commits#get-a-commit-object\",\"status\":\"404\"}",
+    "error_code": "NOT_FOUND",
+    "error_data": {
+      "message": "Not Found",
+      "documentation_url": "https://docs.github.com/rest/git/commits#get-a-commit-object",
+      "status": "404"
+    }
+  },
+  "branchSearch": {
+    "branches": [],
+    "cursor": null
+  },
+  "connectionPermissions": {
+    "admin": true,
+    "maintain": true,
+    "pull": true,
+    "push": true,
+    "triage": true
+  },
+  "exactCommitLimitation": "The available GitHub create_commit tool accepts message, tree and ordered parents but no original author/committer metadata or raw commit bytes. It cannot restore the missing exact ancestral commits without changing their SHAs."
+}

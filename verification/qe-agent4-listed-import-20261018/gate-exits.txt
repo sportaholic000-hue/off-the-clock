@@ -1,0 +1,2 @@
+full_exit=1
+strict_interrupted_exit=130

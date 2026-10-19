@@ -1,0 +1,542 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: listed conditions direct: If prepaid $10 per item
+ok 1 - listed conditions direct: If prepaid $10 per item
+  ---
+  duration_ms: 4.325068
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: If prepaid $10 per item
+ok 2 - listed conditions dispatcher: If prepaid $10 per item
+  ---
+  duration_ms: 35.690622
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: Unless delivered $10 per item
+ok 3 - listed conditions direct: Unless delivered $10 per item
+  ---
+  duration_ms: 0.151408
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: Unless delivered $10 per item
+ok 4 - listed conditions dispatcher: Unless delivered $10 per item
+  ---
+  duration_ms: 34.902745
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: When booked online $10 per item
+ok 5 - listed conditions direct: When booked online $10 per item
+  ---
+  duration_ms: 3.553747
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: When booked online $10 per item
+ok 6 - listed conditions dispatcher: When booked online $10 per item
+  ---
+  duration_ms: 40.309141
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: After inspection $10 per item
+ok 7 - listed conditions direct: After inspection $10 per item
+  ---
+  duration_ms: 0.460763
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: After inspection $10 per item
+ok 8 - listed conditions dispatcher: After inspection $10 per item
+  ---
+  duration_ms: 31.344641
+  type: 'test'
+  ...
+# Subtest: listed conditions direct: Subject to approval $10 per item
+ok 9 - listed conditions direct: Subject to approval $10 per item
+  ---
+  duration_ms: 0.17992
+  type: 'test'
+  ...
+# Subtest: listed conditions dispatcher: Subject to approval $10 per item
+ok 10 - listed conditions dispatcher: Subject to approval $10 per item
+  ---
+  duration_ms: 33.913369
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: IF PREPAID: $10 per item
+ok 11 - listed conditions qualifier: IF PREPAID: $10 per item
+  ---
+  duration_ms: 34.195702
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets unless delivered: $10 per item
+ok 12 - listed conditions qualifier: Widgets unless delivered: $10 per item
+  ---
+  duration_ms: 48.184034
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets (when booked online): $10 per item
+ok 13 - listed conditions qualifier: Widgets (when booked online): $10 per item
+  ---
+  duration_ms: 22.033162
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets after inspection $10 each
+ok 14 - listed conditions qualifier: Widgets after inspection $10 each
+  ---
+  duration_ms: 26.924616
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets subject to approval $10 each
+ok 15 - listed conditions qualifier: Widgets subject to approval $10 each
+  ---
+  duration_ms: 34.795035
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Provided payment clears $10 each
+ok 16 - listed conditions qualifier: Provided payment clears $10 each
+  ---
+  duration_ms: 35.994098
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Providing access is available $10 each
+ok 17 - listed conditions qualifier: Providing access is available $10 each
+  ---
+  duration_ms: 35.621378
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Assuming pickup $10 each
+ok 18 - listed conditions qualifier: Assuming pickup $10 each
+  ---
+  duration_ms: 29.977996
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Pending inspection $10 each
+ok 19 - listed conditions qualifier: Pending inspection $10 each
+  ---
+  duration_ms: 23.362318
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Conditional upon approval $10 each
+ok 20 - listed conditions qualifier: Conditional upon approval $10 each
+  ---
+  duration_ms: 22.671242
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Before delivery $10 each
+ok 21 - listed conditions qualifier: Before delivery $10 each
+  ---
+  duration_ms: 21.456394
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Until supplies run out $10 each
+ok 22 - listed conditions qualifier: Until supplies run out $10 each
+  ---
+  duration_ms: 24.821949
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: While stock lasts $10 each
+ok 23 - listed conditions qualifier: While stock lasts $10 each
+  ---
+  duration_ms: 22.606785
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Once approved $10 each
+ok 24 - listed conditions qualifier: Once approved $10 each
+  ---
+  duration_ms: 23.736845
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Whenever collected $10 each
+ok 25 - listed conditions qualifier: Whenever collected $10 each
+  ---
+  duration_ms: 22.732856
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Depending on access $10 each
+ok 26 - listed conditions qualifier: Depending on access $10 each
+  ---
+  duration_ms: 26.503538
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Based on availability $10 each
+ok 27 - listed conditions qualifier: Based on availability $10 each
+  ---
+  duration_ms: 21.780152
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: With owner consent $10 each
+ok 28 - listed conditions qualifier: With owner consent $10 each
+  ---
+  duration_ms: 26.231639
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Without delivery $10 each
+ok 29 - listed conditions qualifier: Without delivery $10 each
+  ---
+  duration_ms: 22.9293
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: For members $10 each
+ok 30 - listed conditions qualifier: For members $10 each
+  ---
+  duration_ms: 21.329915
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Upon payment $10 each
+ok 31 - listed conditions qualifier: Upon payment $10 each
+  ---
+  duration_ms: 27.768671
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: On collection $10 each
+ok 32 - listed conditions qualifier: On collection $10 each
+  ---
+  duration_ms: 25.646028
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: At pickup $10 each
+ok 33 - listed conditions qualifier: At pickup $10 each
+  ---
+  duration_ms: 25.004092
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: By appointment $10 each
+ok 34 - listed conditions qualifier: By appointment $10 each
+  ---
+  duration_ms: 23.421811
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Prepaid widgets $10 each
+ok 35 - listed conditions qualifier: Prepaid widgets $10 each
+  ---
+  duration_ms: 24.795779
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Cash price $10 each
+ok 36 - listed conditions qualifier: Cash price $10 each
+  ---
+  duration_ms: 24.031808
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Members price $10 each
+ok 37 - listed conditions qualifier: Members price $10 each
+  ---
+  duration_ms: 23.225545
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Weekday service $10 each
+ok 38 - listed conditions qualifier: Weekday service $10 each
+  ---
+  duration_ms: 23.784648
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Monday service $10 each
+ok 39 - listed conditions qualifier: Monday service $10 each
+  ---
+  duration_ms: 26.255836
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Advance booking $10 each
+ok 40 - listed conditions qualifier: Advance booking $10 each
+  ---
+  duration_ms: 22.729601
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Approved orders $10 each
+ok 41 - listed conditions qualifier: Approved orders $10 each
+  ---
+  duration_ms: 24.153742
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Eligible orders $10 each
+ok 42 - listed conditions qualifier: Eligible orders $10 each
+  ---
+  duration_ms: 26.778762
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Deposit required $10 each
+ok 43 - listed conditions qualifier: Deposit required $10 each
+  ---
+  duration_ms: 22.735329
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Delivery excluded $10 each
+ok 44 - listed conditions qualifier: Delivery excluded $10 each
+  ---
+  duration_ms: 24.253272
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Materials billed separately $10 each
+ok 45 - listed conditions qualifier: Materials billed separately $10 each
+  ---
+  duration_ms: 31.917625
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Prices may vary $10 each
+ok 46 - listed conditions qualifier: Prices may vary $10 each
+  ---
+  duration_ms: 36.171634
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Payment terms apply $10 each
+ok 47 - listed conditions qualifier: Payment terms apply $10 each
+  ---
+  duration_ms: 37.995871
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Price negotiable $10 each
+ok 48 - listed conditions qualifier: Price negotiable $10 each
+  ---
+  duration_ms: 34.6538
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Approximate price $10 each
+ok 49 - listed conditions qualifier: Approximate price $10 each
+  ---
+  duration_ms: 25.623725
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Estimated price $10 each
+ok 50 - listed conditions qualifier: Estimated price $10 each
+  ---
+  duration_ms: 20.539033
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Grade 2 lumber if prepaid $10 each
+ok 51 - listed conditions qualifier: Grade 2 lumber if prepaid $10 each
+  ---
+  duration_ms: 20.439849
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: 2x4 stud when collected $10 each
+ok 52 - listed conditions qualifier: 2x4 stud when collected $10 each
+  ---
+  duration_ms: 20.248057
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: 3/4 inch plywood subject to inspection $10 each
+ok 53 - listed conditions qualifier: 3/4 inch plywood subject to inspection $10 each
+  ---
+  duration_ms: 20.347986
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: \#2 lumber after approval $10 each
+ok 54 - listed conditions qualifier: \#2 lumber after approval $10 each
+  ---
+  duration_ms: 19.946572
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets IF\\tprepaid $10 each
+ok 55 - listed conditions qualifier: Widgets IF\\tprepaid $10 each
+  ---
+  duration_ms: 21.012467
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets when booked online $10 each
+ok 56 - listed conditions qualifier: Widgets when booked online $10 each
+  ---
+  duration_ms: 20.809761
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets if-prepaid $10 each
+ok 57 - listed conditions qualifier: Widgets if-prepaid $10 each
+  ---
+  duration_ms: 22.040653
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets (subject-to-approval) $10 each
+ok 58 - listed conditions qualifier: Widgets (subject-to-approval) $10 each
+  ---
+  duration_ms: 20.128647
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each if prepaid
+ok 59 - listed conditions qualifier: Widgets $10 each if prepaid
+  ---
+  duration_ms: 22.017418
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each. Unclassified access restriction.
+ok 60 - listed conditions qualifier: Widgets $10 each. Unclassified access restriction.
+  ---
+  duration_ms: 22.95962
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: If prepaid $10 per item. Taxes extra.
+ok 61 - listed conditions qualifier: If prepaid $10 per item. Taxes extra.
+  ---
+  duration_ms: 21.425919
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each. If prepaid.
+ok 62 - listed conditions qualifier: Widgets $10 each. If prepaid.
+  ---
+  duration_ms: 20.356038
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each; subject to approval
+ok 63 - listed conditions qualifier: Widgets $10 each; subject to approval
+  ---
+  duration_ms: 22.207644
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Bricks $2 each
+ok 64 - listed conditions control: Bricks $2 each
+  ---
+  duration_ms: 22.397922
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Gutter cleaning: $2.50 per linear foot\\nAll prices plus HST.
+ok 65 - listed conditions control: Gutter cleaning: $2.50 per linear foot\\nAll prices plus HST.
+  ---
+  duration_ms: 21.80579
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Pressure-treated 2x4 $3.50 each.
+ok 66 - listed conditions control: Pressure-treated 2x4 $3.50 each.
+  ---
+  duration_ms: 21.207139
+  type: 'test'
+  ...
+# Subtest: listed conditions control: 2×4 stud $3.50 each
+ok 67 - listed conditions control: 2×4 stud $3.50 each
+  ---
+  duration_ms: 22.165146
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Grade 2 lumber $5 each
+ok 68 - listed conditions control: Grade 2 lumber $5 each
+  ---
+  duration_ms: 26.649949
+  type: 'test'
+  ...
+# Subtest: listed conditions control: 3/4 inch plywood $5 each
+ok 69 - listed conditions control: 3/4 inch plywood $5 each
+  ---
+  duration_ms: 26.288384
+  type: 'test'
+  ...
+# Subtest: listed conditions control: \#2 lumber $5 each
+ok 70 - listed conditions control: \#2 lumber $5 each
+  ---
+  duration_ms: 26.322707
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Custom text engraving: $25 each
+ok 71 - listed conditions control: Custom text engraving: $25 each
+  ---
+  duration_ms: 23.143071
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Furnace tune-up: $129 each.
+ok 72 - listed conditions control: Furnace tune-up: $129 each.
+  ---
+  duration_ms: 27.558589
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Synthetic offshore periwinkle service: $10 each
+ok 73 - listed conditions control: Synthetic offshore periwinkle service: $10 each
+  ---
+  duration_ms: 27.956174
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Gift wrapping: $1.25 each
+ok 74 - listed conditions control: Gift wrapping: $1.25 each
+  ---
+  duration_ms: 33.757483
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Window washing $0.035 each
+ok 75 - listed conditions control: Window washing $0.035 each
+  ---
+  duration_ms: 23.980924
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget $0.005 each
+ok 76 - listed conditions control: Widget $0.005 each
+  ---
+  duration_ms: 20.618944
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget $0.10 each
+ok 77 - listed conditions control: Widget $0.10 each
+  ---
+  duration_ms: 20.697052
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget CAD 19.99 each. Taxes extra.
+ok 78 - listed conditions control: Widget CAD 19.99 each. Taxes extra.
+  ---
+  duration_ms: 22.216779
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget US$1,234.50 each
+ok 79 - listed conditions control: Widget US$1,234.50 each
+  ---
+  duration_ms: 21.069362
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget €2.50 each
+ok 80 - listed conditions control: Widget €2.50 each
+  ---
+  duration_ms: 25.207178
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget £10 each
+ok 81 - listed conditions control: Widget £10 each
+  ---
+  duration_ms: 21.480121
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget (blue): $10 each
+ok 82 - listed conditions control: Widget (blue): $10 each
+  ---
+  duration_ms: 21.780954
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Inspection $10 each
+ok 83 - listed conditions control: Inspection $10 each
+  ---
+  duration_ms: 26.149486
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Delivery $10 each
+ok 84 - listed conditions control: Delivery $10 each
+  ---
+  duration_ms: 22.946712
+  type: 'test'
+  ...
+# Subtest: listed conditions saved identity: edits, draft, foreign owner, duplicate and partial listings refuse
+ok 85 - listed conditions saved identity: edits, draft, foreign owner, duplicate and partial listings refuse
+  ---
+  duration_ms: 29.735542
+  type: 'test'
+  ...
+# Subtest: listed conditions confirmation and numeric domain are not relaxed
+ok 86 - listed conditions confirmation and numeric domain are not relaxed
+  ---
+  duration_ms: 24.129708
+  type: 'test'
+  ...
+# Subtest: listed conditions compiled fallback retains verbatim condition and ordinary contact rewrite
+ok 87 - listed conditions compiled fallback retains verbatim condition and ordinary contact rewrite
+  ---
+  duration_ms: 36.050884
+  type: 'test'
+  ...
+# Subtest: listed conditions selectors include this file only in the full suite
+ok 88 - listed conditions selectors include this file only in the full suite
+  ---
+  duration_ms: 1848.803046
+  type: 'test'
+  ...
+1..88
+# tests 88
+# suites 0
+# pass 88
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4346.458975

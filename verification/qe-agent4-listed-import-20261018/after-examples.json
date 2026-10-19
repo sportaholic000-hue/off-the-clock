@@ -1,0 +1,181 @@
+{
+  "F7": [
+    {
+      "listedItem": "Widgets/on collection $10 each",
+      "direct": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      },
+      "dispatcher": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      }
+    },
+    {
+      "listedItem": "Widgets.by arrangement $10 each",
+      "direct": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      },
+      "dispatcher": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      }
+    },
+    {
+      "listedItem": "Widgets-on collection $10 each",
+      "direct": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      },
+      "dispatcher": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      }
+    },
+    {
+      "listedItem": "Weather permitting $10 each",
+      "direct": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      },
+      "dispatcher": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      }
+    },
+    {
+      "listedItem": "Online orders $10 each",
+      "direct": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      },
+      "dispatcher": {
+        "status": "needs_review",
+        "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+      }
+    }
+  ],
+  "F8": [
+    {
+      "qualification": "Available exclusively to members",
+      "html": "<html><body><p>Available exclusively to members</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ],
+            "conditions": [
+              "Available exclusively to members"
+            ]
+          }
+        ],
+        "conditions": [
+          "Available exclusively to members"
+        ],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    },
+    {
+      "qualification": "Available to account holders",
+      "html": "<html><body><p>Available to account holders</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ],
+            "conditions": [
+              "Available to account holders"
+            ]
+          }
+        ],
+        "conditions": [
+          "Available to account holders"
+        ],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    },
+    {
+      "qualification": "Payment by cash",
+      "html": "<html><body><p>Payment by cash</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ],
+            "conditions": [
+              "Payment by cash"
+            ]
+          }
+        ],
+        "conditions": [
+          "Payment by cash"
+        ],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    },
+    {
+      "qualification": "Eligible customers: account holders",
+      "html": "<html><body><p>Eligible customers: account holders</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ],
+            "conditions": [
+              "Eligible customers: account holders"
+            ]
+          }
+        ],
+        "conditions": [
+          "Eligible customers: account holders"
+        ],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    },
+    {
+      "qualification": "Prices apply to cash payments",
+      "html": "<html><body><p>Prices apply to cash payments</p><div><h2>Widget</h2><p>$10 each</p></div></body></html>",
+      "result": {
+        "entries": [
+          {
+            "excerpt": "Widget\n$10 each",
+            "amounts": [
+              "$10"
+            ],
+            "conditions": [
+              "Prices apply to cash payments"
+            ]
+          }
+        ],
+        "conditions": [
+          "Prices apply to cash payments"
+        ],
+        "conditionsUnverified": false,
+        "limited": false,
+        "links": [],
+        "linksLimited": false
+      }
+    }
+  ]
+}

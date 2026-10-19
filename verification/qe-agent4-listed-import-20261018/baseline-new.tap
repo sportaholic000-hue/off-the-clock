@@ -1,0 +1,3192 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 F7 direct refuses: Widgets/on collection $10 each
+not ok 1 - Agent4 F7 direct refuses: Widgets/on collection $10 each
+  ---
+  duration_ms: 9.845978
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets/on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets/on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets/on collection $10 each
+not ok 2 - Agent4 F7 real dispatcher refuses: Widgets/on collection $10 each
+  ---
+  duration_ms: 32.577397
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets/on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets/on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets.by arrangement $10 each
+not ok 3 - Agent4 F7 direct refuses: Widgets.by arrangement $10 each
+  ---
+  duration_ms: 0.368003
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets.by arrangement $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets.by arrangement $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets.by arrangement $10 each
+not ok 4 - Agent4 F7 real dispatcher refuses: Widgets.by arrangement $10 each
+  ---
+  duration_ms: 23.154014
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets.by arrangement $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets.by arrangement $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets-on collection $10 each
+not ok 5 - Agent4 F7 direct refuses: Widgets-on collection $10 each
+  ---
+  duration_ms: 0.358619
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets-on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets-on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets-on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets-on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets-on collection $10 each
+not ok 6 - Agent4 F7 real dispatcher refuses: Widgets-on collection $10 each
+  ---
+  duration_ms: 22.465831
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets-on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets-on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets-on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets-on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Weather permitting $10 each
+not ok 7 - Agent4 F7 direct refuses: Weather permitting $10 each
+  ---
+  duration_ms: 0.442615
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather permitting $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather permitting $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Weather permitting $10 each
+not ok 8 - Agent4 F7 real dispatcher refuses: Weather permitting $10 each
+  ---
+  duration_ms: 28.93345
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather permitting $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather permitting $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Online orders $10 each
+not ok 9 - Agent4 F7 direct refuses: Online orders $10 each
+  ---
+  duration_ms: 0.496075
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Online orders $10 each
+not ok 10 - Agent4 F7 real dispatcher refuses: Online orders $10 each
+  ---
+  duration_ms: 25.80765
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets:by arrangement $10 each
+ok 11 - Agent4 F7 direct refuses: Widgets:by arrangement $10 each
+  ---
+  duration_ms: 0.298459
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets:by arrangement $10 each
+ok 12 - Agent4 F7 real dispatcher refuses: Widgets:by arrangement $10 each
+  ---
+  duration_ms: 24.699791
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets[on collection] $10 each
+ok 13 - Agent4 F7 direct refuses: Widgets[on collection] $10 each
+  ---
+  duration_ms: 0.13288
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets[on collection] $10 each
+ok 14 - Agent4 F7 real dispatcher refuses: Widgets[on collection] $10 each
+  ---
+  duration_ms: 22.935216
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets(on collection) $10 each
+ok 15 - Agent4 F7 direct refuses: Widgets(on collection) $10 each
+  ---
+  duration_ms: 0.138208
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets(on collection) $10 each
+ok 16 - Agent4 F7 real dispatcher refuses: Widgets(on collection) $10 each
+  ---
+  duration_ms: 20.759498
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets'on collection $10 each
+not ok 17 - Agent4 F7 direct refuses: Widgets'on collection $10 each
+  ---
+  duration_ms: 0.46629
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: "Widgets'on collection $10 each",
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: "Widgets'on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: "Widgets'on collection $10 each"
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: "Widgets'on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets'on collection $10 each
+not ok 18 - Agent4 F7 real dispatcher refuses: Widgets'on collection $10 each
+  ---
+  duration_ms: 23.009218
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: "Widgets'on collection $10 each",
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: "Widgets'on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: "Widgets'on collection $10 each"
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: "Widgets'on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets’by arrangement $10 each
+not ok 19 - Agent4 F7 direct refuses: Widgets’by arrangement $10 each
+  ---
+  duration_ms: 3.732987
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets’by arrangement $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets’by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets’by arrangement $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets’by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets’by arrangement $10 each
+not ok 20 - Agent4 F7 real dispatcher refuses: Widgets’by arrangement $10 each
+  ---
+  duration_ms: 21.351427
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets’by arrangement $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets’by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets’by arrangement $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets’by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets/on collection $10 each
+not ok 21 - Agent4 F7 direct refuses: Widgets/on collection $10 each
+  ---
+  duration_ms: 0.342564
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets/on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets/on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets/on collection $10 each
+not ok 22 - Agent4 F7 real dispatcher refuses: Widgets/on collection $10 each
+  ---
+  duration_ms: 21.855364
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets/on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets/on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets.ＩＮ store $10 each
+not ok 23 - Agent4 F7 direct refuses: Widgets.ＩＮ store $10 each
+  ---
+  duration_ms: 0.355665
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets.ＩＮ store $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets.ＩＮ store $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets.ＩＮ store $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets.ＩＮ store $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets.ＩＮ store $10 each
+not ok 24 - Agent4 F7 real dispatcher refuses: Widgets.ＩＮ store $10 each
+  ---
+  duration_ms: 21.008803
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets.ＩＮ store $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets.ＩＮ store $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets.ＩＮ store $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets.ＩＮ store $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets—on collection $10 each
+ok 25 - Agent4 F7 direct refuses: Widgets—on collection $10 each
+  ---
+  duration_ms: 0.637817
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets—on collection $10 each
+ok 26 - Agent4 F7 real dispatcher refuses: Widgets—on collection $10 each
+  ---
+  duration_ms: 21.818844
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets／on collection $10 each
+ok 27 - Agent4 F7 direct refuses: Widgets／on collection $10 each
+  ---
+  duration_ms: 0.16029
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets／on collection $10 each
+ok 28 - Agent4 F7 real dispatcher refuses: Widgets／on collection $10 each
+  ---
+  duration_ms: 20.339157
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets-on-collection $10 each
+not ok 29 - Agent4 F7 direct refuses: Widgets-on-collection $10 each
+  ---
+  duration_ms: 0.317416
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets-on-collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets-on-collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets-on-collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets-on-collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets-on-collection $10 each
+not ok 30 - Agent4 F7 real dispatcher refuses: Widgets-on-collection $10 each
+  ---
+  duration_ms: 23.593274
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets-on-collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets-on-collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets-on-collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets-on-collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets-by-arrangement $10 each
+not ok 31 - Agent4 F7 direct refuses: Widgets-by-arrangement $10 each
+  ---
+  duration_ms: 0.282395
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets-by-arrangement $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets-by-arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets-by-arrangement $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets-by-arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets-by-arrangement $10 each
+not ok 32 - Agent4 F7 real dispatcher refuses: Widgets-by-arrangement $10 each
+  ---
+  duration_ms: 21.954052
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets-by-arrangement $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets-by-arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets-by-arrangement $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets-by-arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Weather-permitting $10 each
+not ok 33 - Agent4 F7 direct refuses: Weather-permitting $10 each
+  ---
+  duration_ms: 0.339961
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather-permitting $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather-permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather-permitting $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather-permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Weather-permitting $10 each
+not ok 34 - Agent4 F7 real dispatcher refuses: Weather-permitting $10 each
+  ---
+  duration_ms: 21.602274
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weather-permitting $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weather-permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weather-permitting $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weather-permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets/weather permitting $10 each
+not ok 35 - Agent4 F7 direct refuses: Widgets/weather permitting $10 each
+  ---
+  duration_ms: 0.212499
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets/weather permitting $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets/weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets/weather permitting $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets/weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets/weather permitting $10 each
+not ok 36 - Agent4 F7 real dispatcher refuses: Widgets/weather permitting $10 each
+  ---
+  duration_ms: 21.058037
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets/weather permitting $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets/weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets/weather permitting $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets/weather permitting $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Online-orders $10 each
+not ok 37 - Agent4 F7 direct refuses: Online-orders $10 each
+  ---
+  duration_ms: 0.227061
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online-orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online-orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online-orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online-orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Online-orders $10 each
+not ok 38 - Agent4 F7 real dispatcher refuses: Online-orders $10 each
+  ---
+  duration_ms: 21.244547
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Online-orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Online-orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Online-orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Online-orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Widgets.online orders $10 each
+not ok 39 - Agent4 F7 direct refuses: Widgets.online orders $10 each
+  ---
+  duration_ms: 0.2993
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets.online orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets.online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets.online orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets.online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Widgets.online orders $10 each
+not ok 40 - Agent4 F7 real dispatcher refuses: Widgets.online orders $10 each
+  ---
+  duration_ms: 22.497709
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets.online orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets.online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets.online orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets.online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Board-on-board panel/on collection $10 each
+not ok 41 - Agent4 F7 direct refuses: Board-on-board panel/on collection $10 each
+  ---
+  duration_ms: 0.200181
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Board-on-board panel/on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Board-on-board panel/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Board-on-board panel/on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Board-on-board panel/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Board-on-board panel/on collection $10 each
+not ok 42 - Agent4 F7 real dispatcher refuses: Board-on-board panel/on collection $10 each
+  ---
+  duration_ms: 20.502072
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Board-on-board panel/on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Board-on-board panel/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Board-on-board panel/on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Board-on-board panel/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Nail-in anchor.by arrangement $10 each
+not ok 43 - Agent4 F7 direct refuses: Nail-in anchor.by arrangement $10 each
+  ---
+  duration_ms: 0.1925
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Nail-in anchor.by arrangement $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Nail-in anchor.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Nail-in anchor.by arrangement $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Nail-in anchor.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Nail-in anchor.by arrangement $10 each
+not ok 44 - Agent4 F7 real dispatcher refuses: Nail-in anchor.by arrangement $10 each
+  ---
+  duration_ms: 20.711255
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Nail-in anchor.by arrangement $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Nail-in anchor.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Nail-in anchor.by arrangement $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Nail-in anchor.by arrangement $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 direct refuses: Plug-in adapter-online orders $10 each
+not ok 45 - Agent4 F7 direct refuses: Plug-in adapter-online orders $10 each
+  ---
+  duration_ms: 0.216104
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Plug-in adapter-online orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Plug-in adapter-online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Plug-in adapter-online orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Plug-in adapter-online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:30:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 real dispatcher refuses: Plug-in adapter-online orders $10 each
+not ok 46 - Agent4 F7 real dispatcher refuses: Plug-in adapter-online orders $10 each
+  ---
+  duration_ms: 20.182091
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:31:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Plug-in adapter-online orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Plug-in adapter-online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Plug-in adapter-online orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Plug-in adapter-online orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Board-on-board panel $10 each
+ok 47 - Agent4 F7 genuine name/arithmetic control: Board-on-board panel $10 each
+  ---
+  duration_ms: 20.830735
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Nail-in anchor $10 each
+ok 48 - Agent4 F7 genuine name/arithmetic control: Nail-in anchor $10 each
+  ---
+  duration_ms: 21.482854
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Plug-in adapter $10 each
+ok 49 - Agent4 F7 genuine name/arithmetic control: Plug-in adapter $10 each
+  ---
+  duration_ms: 21.428854
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Weather station $10 each
+ok 50 - Agent4 F7 genuine name/arithmetic control: Weather station $10 each
+  ---
+  duration_ms: 20.488511
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Online training manual $10 each
+ok 51 - Agent4 F7 genuine name/arithmetic control: Online training manual $10 each
+  ---
+  duration_ms: 20.502151
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Onyx tile $10 each
+ok 52 - Agent4 F7 genuine name/arithmetic control: Onyx tile $10 each
+  ---
+  duration_ms: 20.798838
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Inline filter $10 each
+ok 53 - Agent4 F7 genuine name/arithmetic control: Inline filter $10 each
+  ---
+  duration_ms: 21.657037
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Standby lamp $10 each
+ok 54 - Agent4 F7 genuine name/arithmetic control: Standby lamp $10 each
+  ---
+  duration_ms: 20.60089
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Porcelain basin $10 each
+ok 55 - Agent4 F7 genuine name/arithmetic control: Porcelain basin $10 each
+  ---
+  duration_ms: 21.111978
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Weatherproof plug-in adapter $10 each
+ok 56 - Agent4 F7 genuine name/arithmetic control: Weatherproof plug-in adapter $10 each
+  ---
+  duration_ms: 20.289863
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Trim CAD 0.035 per linear foot
+ok 57 - Agent4 F7 genuine name/arithmetic control: Trim CAD 0.035 per linear foot
+  ---
+  duration_ms: 20.655682
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Widget US$1,234.50 each
+ok 58 - Agent4 F7 genuine name/arithmetic control: Widget US$1,234.50 each
+  ---
+  duration_ms: 20.955283
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 genuine name/arithmetic control: Widget EUR 2.50 each
+ok 59 - Agent4 F7 genuine name/arithmetic control: Widget EUR 2.50 each
+  ---
+  duration_ms: 21.630716
+  type: 'test'
+  ...
+# Subtest: Agent4 F7 fallback keeps all five exact saved listings in compiled facts
+not ok 60 - Agent4 F7 fallback keeps all five exact saved listings in compiled facts
+  ---
+  duration_ms: 1.681886
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets/on collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets/on collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets/on collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4ListedImport20261018.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 new voice files execute in full and stay outside strict through unchanged conventions
+ok 61 - Agent4 new voice files execute in full and stay outside strict through unchanged conventions
+  ---
+  duration_ms: 3282.798035
+  type: 'test'
+  ...
+# (node:20) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 F8 exact HTML separate card: Available exclusively to members
+not ok 62 - Agent4 F8 exact HTML separate card: Available exclusively to members
+  ---
+  duration_ms: 6.227093
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:26:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:28:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Available exclusively to members
+not ok 63 - Agent4 F8 leading plain note and blank boundary: Available exclusively to members
+  ---
+  duration_ms: 323.079125
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:32:3'
+  failureType: 'testCodeFailure'
+  error: 'Widget $10 each'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:33:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Available exclusively to members
+not ok 64 - Agent4 F8 HTML note applies to both cards: Available exclusively to members
+  ---
+  duration_ms: 2.63042
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:35:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:36:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Available exclusively to members
+not ok 65 - Agent4 F8 plain note applies to both prices: Available exclusively to members
+  ---
+  duration_ms: 2.96267
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:38:3'
+  failureType: 'testCodeFailure'
+  error: 'Widget $10 each'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:39:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Available exclusively to members
+not ok 66 - Agent4 F8 trailing detached plain note is ambiguous: Available exclusively to members
+  ---
+  duration_ms: 2.219664
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:42:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Available exclusively to members
+not ok 67 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Available exclusively to members
+  ---
+  duration_ms: 0.741594
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nAvailable exclusively to members'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Available exclusively to members
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:45:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 exact HTML separate card: Available to account holders
+not ok 68 - Agent4 F8 exact HTML separate card: Available to account holders
+  ---
+  duration_ms: 0.781424
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:26:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:28:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Available to account holders
+not ok 69 - Agent4 F8 leading plain note and blank boundary: Available to account holders
+  ---
+  duration_ms: 0.873943
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:32:3'
+  failureType: 'testCodeFailure'
+  error: 'Widget $10 each'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:33:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Available to account holders
+not ok 70 - Agent4 F8 HTML note applies to both cards: Available to account holders
+  ---
+  duration_ms: 1.153162
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:35:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:36:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Available to account holders
+not ok 71 - Agent4 F8 plain note applies to both prices: Available to account holders
+  ---
+  duration_ms: 0.759701
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:38:3'
+  failureType: 'testCodeFailure'
+  error: 'Widget $10 each'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:39:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Available to account holders
+not ok 72 - Agent4 F8 trailing detached plain note is ambiguous: Available to account holders
+  ---
+  duration_ms: 1.996448
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:42:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Available to account holders
+not ok 73 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Available to account holders
+  ---
+  duration_ms: 2.751843
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nAvailable to account holders'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Available to account holders
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:45:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 exact HTML separate card: Payment by cash
+not ok 74 - Agent4 F8 exact HTML separate card: Payment by cash
+  ---
+  duration_ms: 0.275314
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:26:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:28:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Payment by cash
+not ok 75 - Agent4 F8 leading plain note and blank boundary: Payment by cash
+  ---
+  duration_ms: 0.161112
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:32:3'
+  failureType: 'testCodeFailure'
+  error: 'Widget $10 each'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:33:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Payment by cash
+not ok 76 - Agent4 F8 HTML note applies to both cards: Payment by cash
+  ---
+  duration_ms: 0.329094
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:35:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:36:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Payment by cash
+not ok 77 - Agent4 F8 plain note applies to both prices: Payment by cash
+  ---
+  duration_ms: 0.122945
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:38:3'
+  failureType: 'testCodeFailure'
+  error: 'Widget $10 each'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:39:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Payment by cash
+not ok 78 - Agent4 F8 trailing detached plain note is ambiguous: Payment by cash
+  ---
+  duration_ms: 0.183235
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:42:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Payment by cash
+not ok 79 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Payment by cash
+  ---
+  duration_ms: 0.195834
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nPayment by cash'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Payment by cash
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:45:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 exact HTML separate card: Eligible customers: account holders
+not ok 80 - Agent4 F8 exact HTML separate card: Eligible customers: account holders
+  ---
+  duration_ms: 0.742194
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:26:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:28:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Eligible customers: account holders
+not ok 81 - Agent4 F8 leading plain note and blank boundary: Eligible customers: account holders
+  ---
+  duration_ms: 0.243095
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:32:3'
+  failureType: 'testCodeFailure'
+  error: 'Widget $10 each'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:33:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Eligible customers: account holders
+not ok 82 - Agent4 F8 HTML note applies to both cards: Eligible customers: account holders
+  ---
+  duration_ms: 0.45288
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:35:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:36:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Eligible customers: account holders
+not ok 83 - Agent4 F8 plain note applies to both prices: Eligible customers: account holders
+  ---
+  duration_ms: 0.362164
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:38:3'
+  failureType: 'testCodeFailure'
+  error: 'Widget $10 each'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:39:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Eligible customers: account holders
+not ok 84 - Agent4 F8 trailing detached plain note is ambiguous: Eligible customers: account holders
+  ---
+  duration_ms: 0.187501
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:42:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Eligible customers: account holders
+not ok 85 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Eligible customers: account holders
+  ---
+  duration_ms: 3.227849
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:44:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nEligible customers: account holders'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Eligible customers: account holders
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:45:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 exact HTML separate card: Prices apply to cash payments
+ok 86 - Agent4 F8 exact HTML separate card: Prices apply to cash payments
+  ---
+  duration_ms: 1.099351
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 leading plain note and blank boundary: Prices apply to cash payments
+ok 87 - Agent4 F8 leading plain note and blank boundary: Prices apply to cash payments
+  ---
+  duration_ms: 0.420682
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML note applies to both cards: Prices apply to cash payments
+ok 88 - Agent4 F8 HTML note applies to both cards: Prices apply to cash payments
+  ---
+  duration_ms: 0.989476
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain note applies to both prices: Prices apply to cash payments
+ok 89 - Agent4 F8 plain note applies to both prices: Prices apply to cash payments
+  ---
+  duration_ms: 0.236005
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 trailing detached plain note is ambiguous: Prices apply to cash payments
+ok 90 - Agent4 F8 trailing detached plain note is ambiguous: Prices apply to cash payments
+  ---
+  duration_ms: 0.129174
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 interleaved plain note cannot lose the second price qualification: Prices apply to cash payments
+ok 91 - Agent4 F8 interleaved plain note cannot lose the second price qualification: Prices apply to cash payments
+  ---
+  duration_ms: 0.089244
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML section binding: Available exclusively to members
+not ok 92 - Agent4 F8 HTML section binding: Available exclusively to members
+  ---
+  duration_ms: 0.575184
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:48:34'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Available exclusively to members'
+    -   ],
+    -   [
+    -     'Available exclusively to members'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Available exclusively to members'
+    1:
+      0: 'Available exclusively to members'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:51:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML section binding: Available to account holders
+not ok 93 - Agent4 F8 HTML section binding: Available to account holders
+  ---
+  duration_ms: 3.298885
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:48:34'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Available to account holders'
+    -   ],
+    -   [
+    -     'Available to account holders'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Available to account holders'
+    1:
+      0: 'Available to account holders'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:51:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML section binding: Payment by cash
+not ok 94 - Agent4 F8 HTML section binding: Payment by cash
+  ---
+  duration_ms: 0.459991
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:48:34'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Payment by cash'
+    -   ],
+    -   [
+    -     'Payment by cash'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Payment by cash'
+    1:
+      0: 'Payment by cash'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:51:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML section binding: Eligible customers: account holders
+not ok 95 - Agent4 F8 HTML section binding: Eligible customers: account holders
+  ---
+  duration_ms: 0.784899
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:48:34'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Eligible customers: account holders'
+    -   ],
+    -   [
+    -     'Eligible customers: account holders'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Eligible customers: account holders'
+    1:
+      0: 'Eligible customers: account holders'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:51:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML headings delimit qualifications
+not ok 96 - Agent4 F8 HTML headings delimit qualifications
+  ---
+  duration_ms: 0.423686
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - [
+    -   'Available exclusively to members'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Available exclusively to members'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:56:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 separate named condition section cannot be silently discarded
+not ok 97 - Agent4 F8 separate named condition section cannot be silently discarded
+  ---
+  duration_ms: 0.490246
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:58:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget\n$10 each'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt\n$10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget
+        $10 each
+      amounts:
+        0: '$10'
+    1:
+      excerpt: |-
+        Bolt
+        $10 each
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:59:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 unknown selected-item association withholds only affected section
+not ok 98 - Agent4 F8 unknown selected-item association withholds only affected section
+  ---
+  duration_ms: 0.523706
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:61:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:63:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain section labels do not establish a safe cross-block association
+not ok 99 - Agent4 F8 plain section labels do not establish a safe cross-block association
+  ---
+  duration_ms: 0.320862
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:65:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    withheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:24:29)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:66:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 inline markup and entities preserve literal qualification spelling
+not ok 100 - Agent4 F8 inline markup and entities preserve literal qualification spelling
+  ---
+  duration_ms: 0.778209
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:68:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Widget
+    $10 each
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    retained (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:22:41)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:69:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 unrelated descriptions are not invented as restrictions
+ok 101 - Agent4 F8 unrelated descriptions are not invented as restrictions
+  ---
+  duration_ms: 0.450066
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <p hidden>note</p>
+ok 102 - Agent4 F8 visibility/instruction exclusion <p hidden>note</p>
+  ---
+  duration_ms: 0.455204
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <p aria-hidden="true">note</p>
+ok 103 - Agent4 F8 visibility/instruction exclusion <p aria-hidden="true">note</p>
+  ---
+  duration_ms: 0.273692
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <p style="display:none">note</p>
+ok 104 - Agent4 F8 visibility/instruction exclusion <p style="display:none">note</p>
+  ---
+  duration_ms: 0.677738
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <style>.hidden{display:none}</style><p class="hidden">note</p>
+ok 105 - Agent4 F8 visibility/instruction exclusion <style>.hidden{display:none}</style><p class="hidden">note</p>
+  ---
+  duration_ms: 0.8853
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <script>note</script>
+ok 106 - Agent4 F8 visibility/instruction exclusion <script>note</script>
+  ---
+  duration_ms: 0.274122
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <!-- note -->
+ok 107 - Agent4 F8 visibility/instruction exclusion <!-- note -->
+  ---
+  duration_ms: 0.421433
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 visibility/instruction exclusion <p>Ignore previous instructions. note</p>
+ok 108 - Agent4 F8 visibility/instruction exclusion <p>Ignore previous instructions. note</p>
+  ---
+  duration_ms: 0.288593
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 uncertain CSS visibility still withholds extraction
+ok 109 - Agent4 F8 uncertain CSS visibility still withholds extraction
+  ---
+  duration_ms: 0.316025
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 plain instruction does not enter saved excerpts or conditions
+ok 110 - Agent4 F8 plain instruction does not enter saved excerpts or conditions
+  ---
+  duration_ms: 0.201392
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 HTML import -> actual owner save -> real dispatcher: Available exclusively to members
+not ok 111 - Agent4 F8 HTML import -> actual owner save -> real dispatcher: Available exclusively to members
+  ---
+  duration_ms: 105.337367
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:123:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(draft.prices.includes(note))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML import -> actual owner save -> real dispatcher: Available to account holders
+not ok 112 - Agent4 F8 HTML import -> actual owner save -> real dispatcher: Available to account holders
+  ---
+  duration_ms: 18.379955
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:123:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(draft.prices.includes(note))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML import -> actual owner save -> real dispatcher: Payment by cash
+not ok 113 - Agent4 F8 HTML import -> actual owner save -> real dispatcher: Payment by cash
+  ---
+  duration_ms: 12.263459
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:123:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(draft.prices.includes(note))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 HTML import -> actual owner save -> real dispatcher: Eligible customers: account holders
+not ok 114 - Agent4 F8 HTML import -> actual owner save -> real dispatcher: Eligible customers: account holders
+  ---
+  duration_ms: 14.088761
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:123:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(draft.prices.includes(note))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain import -> actual owner save -> real dispatcher: Available exclusively to members
+not ok 115 - Agent4 F8 plain import -> actual owner save -> real dispatcher: Available exclusively to members
+  ---
+  duration_ms: 15.761513
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:123:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(draft.prices.includes(note))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain import -> actual owner save -> real dispatcher: Available to account holders
+not ok 116 - Agent4 F8 plain import -> actual owner save -> real dispatcher: Available to account holders
+  ---
+  duration_ms: 13.911469
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:123:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(draft.prices.includes(note))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain import -> actual owner save -> real dispatcher: Payment by cash
+not ok 117 - Agent4 F8 plain import -> actual owner save -> real dispatcher: Payment by cash
+  ---
+  duration_ms: 18.930082
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:123:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(draft.prices.includes(note))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 plain import -> actual owner save -> real dispatcher: Eligible customers: account holders
+not ok 118 - Agent4 F8 plain import -> actual owner save -> real dispatcher: Eligible customers: account holders
+  ---
+  duration_ms: 24.034293
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:123:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(draft.prices.includes(note))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:129:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 F8 unconditional import still calculates after actual owner save
+ok 119 - Agent4 F8 unconditional import still calculates after actual owner save
+  ---
+  duration_ms: 22.665683
+  type: 'test'
+  ...
+# Subtest: Agent4 F8 ambiguous import warns and does not mutate existing saved prices
+not ok 120 - Agent4 F8 ambiguous import warns and does not mutate existing saved prices
+  ---
+  duration_ms: 12.569418
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:145:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Widget\n$10 each'
+    - ''
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: |-
+    Widget
+    $10 each
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock/test/voiceAgent4WebsiteQualifications20261018.spec.mjs:148:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..120
+# tests 120
+# suites 0
+# pass 41
+# fail 79
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5184.311623

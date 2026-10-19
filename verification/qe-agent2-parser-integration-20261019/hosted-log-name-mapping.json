@@ -1,0 +1,8 @@
+{
+  "source_name": "website rejects URL before DNS https://user:password@business.example",
+  "hosted_name": "website rejects URL before DNS ***business.example",
+  "source_file": "test/websitePriceImport.spec.mjs",
+  "previous_name": "website rejects URL before DNS ftp://business.example",
+  "next_name": "website rejects URL before DNS https://business.example:8080",
+  "reason": "The hosted log masks the credential-bearing synthetic URL in this one test name. The unchanged source registration order and adjacent passing names identify its passing record. No test assertion or source name is changed."
+}

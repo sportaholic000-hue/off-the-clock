@@ -1,0 +1,28 @@
+{
+  "full": {
+    "outcome": "incomplete",
+    "processExitCode": 1,
+    "finalSummaryPresent": false,
+    "lastTopLevelResult": 4230,
+    "lastOutput": "Text AI unavailable: configure GEMINI_API_KEY, GEMINI_TEXT_MODEL; Off The Clock AI server listening on 0",
+    "causeOfEarlyExit": "Not established by the captured output",
+    "checkerExitCode": 1,
+    "checkerResult": "Rejected missing final summary counts"
+  },
+  "strict": {
+    "outcome": "incomplete",
+    "sessionInterruptedExitCode": 130,
+    "finalSummaryPresent": false,
+    "lastTopLevelResult": 2933,
+    "reasonStopped": "Stopped advancing for several minutes; interrupted and preserved without any passing-gate claim"
+  },
+  "hosted": {
+    "outcome": "not_run",
+    "completedExactFinalGates": [],
+    "reason": "Missing authenticated Git transport; connector rejects unpublished exact commit objects"
+  },
+  "docker": {
+    "available": false,
+    "exitCode": 127
+  }
+}

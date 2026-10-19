@@ -1,0 +1,62 @@
+{
+  "geometry_boundaries": {
+    "required": 492,
+    "passing_exactly_once": 492,
+    "problems": [],
+    "log": "geometry.tap.gz"
+  },
+  "geometry_delivery": {
+    "required": 25,
+    "passing_exactly_once": 25,
+    "problems": [],
+    "log": "geometry.tap.gz"
+  },
+  "geometry_historical": {
+    "required": 8,
+    "passing_exactly_once": 8,
+    "problems": [],
+    "log": "geometry.tap.gz"
+  },
+  "f16": {
+    "required": 14,
+    "passing_exactly_once": 14,
+    "problems": [],
+    "log": "f16-entry.tap.gz"
+  },
+  "f18": {
+    "required": 41,
+    "passing_exactly_once": 41,
+    "problems": [],
+    "log": "f18.tap.gz"
+  },
+  "a3_rendered": {
+    "required": 4,
+    "passing_exactly_once": 4,
+    "problems": [],
+    "log": "rendered.tap.gz"
+  },
+  "a2_editor": {
+    "required": 1,
+    "passing_exactly_once": 1,
+    "problems": [],
+    "log": "rendered.tap.gz"
+  },
+  "separate_line_controls": {
+    "required": 3,
+    "passing_exactly_once": 3,
+    "problems": [],
+    "log": "compatibility.tap.gz"
+  },
+  "parser_import_full": {
+    "required": 874,
+    "passing_exactly_once": 874,
+    "problems": [],
+    "log": "parser.tap.gz"
+  },
+  "incoming_voice_full_only": {
+    "required": 577,
+    "passing_exactly_once": 577,
+    "problems": [],
+    "log": "parser.tap.gz"
+  }
+}

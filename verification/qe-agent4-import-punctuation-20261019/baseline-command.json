@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/voiceAgent4ImportPunctuation20261019.spec.mjs"
+  ],
+  "TMPDIR": "/workspace/scratch/5ed2408ba85b/agent4-import-punctuation-tmp",
+  "startedAt": "2026-10-19T04:45:08.038661+00:00",
+  "productionSha256": "17481959fa4f66bceb49093ea874270a83e6c20cd3f2bc0f49a5f2da62f4ae51"
+}

@@ -1,0 +1,45 @@
+[
+  {
+    "name": "incoming_all",
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit_code": 2,
+    "bytes": 87241,
+    "diagnostic_lines": 1615,
+    "log": "incoming_all-diff-check.txt.gz",
+    "sha256": "f217d529bfabda5323f14351b06a9f14b5bc5ce4174d18b7ed41abbe27635fa7",
+    "warnings": 808,
+    "affected_paths": 18,
+    "kinds": {
+      "trailing whitespace.": 807,
+      "new blank line at EOF.": 1
+    },
+    "scope": "Incoming historical verification evidence only; preserved byte-for-byte as requested."
+  },
+  {
+    "name": "production_and_tests",
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      "server/",
+      "test/",
+      ".github/",
+      "scripts/"
+    ],
+    "exit_code": 0,
+    "bytes": 0,
+    "diagnostic_lines": 0
+  },
+  {
+    "name": "production_tests_and_new_evidence",
+    "exit_code": 0,
+    "diagnostic_lines": 0
+  }
+]

@@ -1,0 +1,2952 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: listed conditions direct: If prepaid $10 per item
+not ok 1 - listed conditions direct: If prepaid $10 per item
+  ---
+  duration_ms: 4.673593
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'If prepaid $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'If prepaid $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'If prepaid $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'If prepaid $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:49)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: listed conditions dispatcher: If prepaid $10 per item
+not ok 2 - listed conditions dispatcher: If prepaid $10 per item
+  ---
+  duration_ms: 28.140688
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'If prepaid $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'If prepaid $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'If prepaid $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'If prepaid $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:33:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions direct: Unless delivered $10 per item
+not ok 3 - listed conditions direct: Unless delivered $10 per item
+  ---
+  duration_ms: 0.314673
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Unless delivered $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Unless delivered $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Unless delivered $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Unless delivered $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:49)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions dispatcher: Unless delivered $10 per item
+not ok 4 - listed conditions dispatcher: Unless delivered $10 per item
+  ---
+  duration_ms: 20.889086
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Unless delivered $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Unless delivered $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Unless delivered $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Unless delivered $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:33:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions direct: When booked online $10 per item
+not ok 5 - listed conditions direct: When booked online $10 per item
+  ---
+  duration_ms: 2.856398
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'When booked online $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'When booked online $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'When booked online $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'When booked online $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:49)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions dispatcher: When booked online $10 per item
+not ok 6 - listed conditions dispatcher: When booked online $10 per item
+  ---
+  duration_ms: 22.148701
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'When booked online $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'When booked online $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'When booked online $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'When booked online $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:33:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions direct: After inspection $10 per item
+not ok 7 - listed conditions direct: After inspection $10 per item
+  ---
+  duration_ms: 0.474784
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'After inspection $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'After inspection $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'After inspection $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'After inspection $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:49)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions dispatcher: After inspection $10 per item
+not ok 8 - listed conditions dispatcher: After inspection $10 per item
+  ---
+  duration_ms: 20.777878
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'After inspection $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'After inspection $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'After inspection $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'After inspection $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:33:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions direct: Subject to approval $10 per item
+not ok 9 - listed conditions direct: Subject to approval $10 per item
+  ---
+  duration_ms: 0.485701
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Subject to approval $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Subject to approval $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Subject to approval $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Subject to approval $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:28:49)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions dispatcher: Subject to approval $10 per item
+not ok 10 - listed conditions dispatcher: Subject to approval $10 per item
+  ---
+  duration_ms: 21.526836
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:29:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Subject to approval $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Subject to approval $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Subject to approval $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Subject to approval $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:33:5)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: IF PREPAID: $10 per item
+not ok 11 - listed conditions qualifier: IF PREPAID: $10 per item
+  ---
+  duration_ms: 0.39871
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'IF PREPAID: $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'IF PREPAID: $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'IF PREPAID: $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'IF PREPAID: $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets unless delivered: $10 per item
+not ok 12 - listed conditions qualifier: Widgets unless delivered: $10 per item
+  ---
+  duration_ms: 0.213451
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets unless delivered: $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets unless delivered: $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets unless delivered: $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets unless delivered: $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets (when booked online): $10 per item
+not ok 13 - listed conditions qualifier: Widgets (when booked online): $10 per item
+  ---
+  duration_ms: 0.227613
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets (when booked online): $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets (when booked online): $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets (when booked online): $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets (when booked online): $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets after inspection $10 each
+not ok 14 - listed conditions qualifier: Widgets after inspection $10 each
+  ---
+  duration_ms: 0.203656
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets after inspection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets after inspection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets after inspection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets after inspection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets subject to approval $10 each
+not ok 15 - listed conditions qualifier: Widgets subject to approval $10 each
+  ---
+  duration_ms: 0.271619
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets subject to approval $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets subject to approval $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets subject to approval $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets subject to approval $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Provided payment clears $10 each
+not ok 16 - listed conditions qualifier: Provided payment clears $10 each
+  ---
+  duration_ms: 0.227342
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Provided payment clears $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Provided payment clears $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Provided payment clears $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Provided payment clears $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Providing access is available $10 each
+not ok 17 - listed conditions qualifier: Providing access is available $10 each
+  ---
+  duration_ms: 0.298559
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Providing access is available $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Providing access is available $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Providing access is available $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Providing access is available $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Assuming pickup $10 each
+not ok 18 - listed conditions qualifier: Assuming pickup $10 each
+  ---
+  duration_ms: 0.202956
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Assuming pickup $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Assuming pickup $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Assuming pickup $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Assuming pickup $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Pending inspection $10 each
+not ok 19 - listed conditions qualifier: Pending inspection $10 each
+  ---
+  duration_ms: 0.198278
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Pending inspection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Pending inspection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Pending inspection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Pending inspection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Conditional upon approval $10 each
+not ok 20 - listed conditions qualifier: Conditional upon approval $10 each
+  ---
+  duration_ms: 0.193221
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Conditional upon approval $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Conditional upon approval $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Conditional upon approval $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Conditional upon approval $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Before delivery $10 each
+not ok 21 - listed conditions qualifier: Before delivery $10 each
+  ---
+  duration_ms: 0.210376
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Before delivery $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Before delivery $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Before delivery $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Before delivery $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Until supplies run out $10 each
+not ok 22 - listed conditions qualifier: Until supplies run out $10 each
+  ---
+  duration_ms: 0.196967
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Until supplies run out $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Until supplies run out $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Until supplies run out $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Until supplies run out $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: While stock lasts $10 each
+not ok 23 - listed conditions qualifier: While stock lasts $10 each
+  ---
+  duration_ms: 0.17902
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'While stock lasts $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'While stock lasts $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'While stock lasts $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'While stock lasts $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Once approved $10 each
+not ok 24 - listed conditions qualifier: Once approved $10 each
+  ---
+  duration_ms: 0.177136
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Once approved $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Once approved $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Once approved $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Once approved $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Whenever collected $10 each
+not ok 25 - listed conditions qualifier: Whenever collected $10 each
+  ---
+  duration_ms: 0.266191
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Whenever collected $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Whenever collected $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Whenever collected $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Whenever collected $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Depending on access $10 each
+not ok 26 - listed conditions qualifier: Depending on access $10 each
+  ---
+  duration_ms: 0.24615
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Depending on access $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Depending on access $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Depending on access $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Depending on access $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Based on availability $10 each
+not ok 27 - listed conditions qualifier: Based on availability $10 each
+  ---
+  duration_ms: 0.189505
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Based on availability $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Based on availability $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Based on availability $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Based on availability $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: With owner consent $10 each
+not ok 28 - listed conditions qualifier: With owner consent $10 each
+  ---
+  duration_ms: 0.23931
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'With owner consent $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'With owner consent $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'With owner consent $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'With owner consent $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Without delivery $10 each
+not ok 29 - listed conditions qualifier: Without delivery $10 each
+  ---
+  duration_ms: 0.18662
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Without delivery $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Without delivery $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Without delivery $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Without delivery $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: For members $10 each
+not ok 30 - listed conditions qualifier: For members $10 each
+  ---
+  duration_ms: 0.207512
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'For members $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'For members $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'For members $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'For members $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Upon payment $10 each
+not ok 31 - listed conditions qualifier: Upon payment $10 each
+  ---
+  duration_ms: 0.19901
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Upon payment $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Upon payment $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Upon payment $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Upon payment $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: On collection $10 each
+not ok 32 - listed conditions qualifier: On collection $10 each
+  ---
+  duration_ms: 0.181313
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'On collection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'On collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'On collection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'On collection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: At pickup $10 each
+not ok 33 - listed conditions qualifier: At pickup $10 each
+  ---
+  duration_ms: 0.174112
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'At pickup $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'At pickup $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'At pickup $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'At pickup $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: By appointment $10 each
+not ok 34 - listed conditions qualifier: By appointment $10 each
+  ---
+  duration_ms: 0.226931
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'By appointment $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'By appointment $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'By appointment $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'By appointment $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Prepaid widgets $10 each
+not ok 35 - listed conditions qualifier: Prepaid widgets $10 each
+  ---
+  duration_ms: 0.215975
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Prepaid widgets $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Prepaid widgets $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Prepaid widgets $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Prepaid widgets $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Cash price $10 each
+not ok 36 - listed conditions qualifier: Cash price $10 each
+  ---
+  duration_ms: 0.180141
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Cash price $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Cash price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Cash price $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Cash price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Members price $10 each
+not ok 37 - listed conditions qualifier: Members price $10 each
+  ---
+  duration_ms: 0.188614
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Members price $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Members price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Members price $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Members price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Weekday service $10 each
+not ok 38 - listed conditions qualifier: Weekday service $10 each
+  ---
+  duration_ms: 0.267402
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Weekday service $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Weekday service $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Weekday service $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Weekday service $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Monday service $10 each
+not ok 39 - listed conditions qualifier: Monday service $10 each
+  ---
+  duration_ms: 0.211939
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Monday service $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Monday service $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Monday service $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Monday service $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Advance booking $10 each
+not ok 40 - listed conditions qualifier: Advance booking $10 each
+  ---
+  duration_ms: 0.18606
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Advance booking $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Advance booking $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Advance booking $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Advance booking $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Approved orders $10 each
+not ok 41 - listed conditions qualifier: Approved orders $10 each
+  ---
+  duration_ms: 0.171047
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Approved orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Approved orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Approved orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Approved orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Eligible orders $10 each
+not ok 42 - listed conditions qualifier: Eligible orders $10 each
+  ---
+  duration_ms: 0.171358
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Eligible orders $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Eligible orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Eligible orders $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Eligible orders $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Deposit required $10 each
+not ok 43 - listed conditions qualifier: Deposit required $10 each
+  ---
+  duration_ms: 0.208574
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Deposit required $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Deposit required $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Deposit required $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Deposit required $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Delivery excluded $10 each
+not ok 44 - listed conditions qualifier: Delivery excluded $10 each
+  ---
+  duration_ms: 0.223506
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Delivery excluded $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Delivery excluded $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Delivery excluded $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Delivery excluded $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Materials billed separately $10 each
+not ok 45 - listed conditions qualifier: Materials billed separately $10 each
+  ---
+  duration_ms: 0.178108
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Materials billed separately $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Materials billed separately $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Materials billed separately $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Materials billed separately $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Prices may vary $10 each
+not ok 46 - listed conditions qualifier: Prices may vary $10 each
+  ---
+  duration_ms: 0.171297
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Prices may vary $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Prices may vary $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Prices may vary $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Prices may vary $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Payment terms apply $10 each
+not ok 47 - listed conditions qualifier: Payment terms apply $10 each
+  ---
+  duration_ms: 0.168012
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Payment terms apply $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Payment terms apply $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Payment terms apply $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Payment terms apply $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Price negotiable $10 each
+not ok 48 - listed conditions qualifier: Price negotiable $10 each
+  ---
+  duration_ms: 0.168554
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Price negotiable $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Price negotiable $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Price negotiable $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Price negotiable $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Approximate price $10 each
+not ok 49 - listed conditions qualifier: Approximate price $10 each
+  ---
+  duration_ms: 0.252811
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Approximate price $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Approximate price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Approximate price $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Approximate price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Estimated price $10 each
+not ok 50 - listed conditions qualifier: Estimated price $10 each
+  ---
+  duration_ms: 0.176816
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Estimated price $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Estimated price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Estimated price $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Estimated price $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Grade 2 lumber if prepaid $10 each
+not ok 51 - listed conditions qualifier: Grade 2 lumber if prepaid $10 each
+  ---
+  duration_ms: 0.166941
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Grade 2 lumber if prepaid $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Grade 2 lumber if prepaid $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Grade 2 lumber if prepaid $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Grade 2 lumber if prepaid $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: 2x4 stud when collected $10 each
+not ok 52 - listed conditions qualifier: 2x4 stud when collected $10 each
+  ---
+  duration_ms: 0.168263
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: '2x4 stud when collected $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: '2x4 stud when collected $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: '2x4 stud when collected $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: '2x4 stud when collected $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: 3/4 inch plywood subject to inspection $10 each
+not ok 53 - listed conditions qualifier: 3/4 inch plywood subject to inspection $10 each
+  ---
+  duration_ms: 0.171358
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: '3/4 inch plywood subject to inspection $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: '3/4 inch plywood subject to inspection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: '3/4 inch plywood subject to inspection $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: '3/4 inch plywood subject to inspection $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: \#2 lumber after approval $10 each
+not ok 54 - listed conditions qualifier: \#2 lumber after approval $10 each
+  ---
+  duration_ms: 0.289616
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: '#2 lumber after approval $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: '#2 lumber after approval $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: '#2 lumber after approval $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: '#2 lumber after approval $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets IF\\tprepaid $10 each
+not ok 55 - listed conditions qualifier: Widgets IF\\tprepaid $10 each
+  ---
+  duration_ms: 0.240492
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets IF\tprepaid $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets IF\tprepaid $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets IF\tprepaid $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets IF\tprepaid $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets when booked online $10 each
+not ok 56 - listed conditions qualifier: Widgets when booked online $10 each
+  ---
+  duration_ms: 0.201393
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets when booked online $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets when booked online $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets when booked online $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets when booked online $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets if-prepaid $10 each
+not ok 57 - listed conditions qualifier: Widgets if-prepaid $10 each
+  ---
+  duration_ms: 0.168424
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets if-prepaid $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets if-prepaid $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets if-prepaid $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets if-prepaid $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets (subject-to-approval) $10 each
+not ok 58 - listed conditions qualifier: Widgets (subject-to-approval) $10 each
+  ---
+  duration_ms: 0.202255
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'Widgets (subject-to-approval) $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'Widgets (subject-to-approval) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'Widgets (subject-to-approval) $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'Widgets (subject-to-approval) $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each if prepaid
+ok 59 - listed conditions qualifier: Widgets $10 each if prepaid
+  ---
+  duration_ms: 22.094553
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each. Unclassified access restriction.
+ok 60 - listed conditions qualifier: Widgets $10 each. Unclassified access restriction.
+  ---
+  duration_ms: 25.293814
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: If prepaid $10 per item. Taxes extra.
+not ok 61 - listed conditions qualifier: If prepaid $10 per item. Taxes extra.
+  ---
+  duration_ms: 0.303527
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:71:32'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'If prepaid $10 per item. Taxes extra.',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'If prepaid $10 per item. Taxes extra. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'If prepaid $10 per item. Taxes extra.'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'If prepaid $10 per item. Taxes extra. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:72:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each. If prepaid.
+ok 62 - listed conditions qualifier: Widgets $10 each. If prepaid.
+  ---
+  duration_ms: 21.151062
+  type: 'test'
+  ...
+# Subtest: listed conditions qualifier: Widgets $10 each; subject to approval
+ok 63 - listed conditions qualifier: Widgets $10 each; subject to approval
+  ---
+  duration_ms: 22.437457
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Bricks $2 each
+ok 64 - listed conditions control: Bricks $2 each
+  ---
+  duration_ms: 21.925376
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Gutter cleaning: $2.50 per linear foot\\nAll prices plus HST.
+ok 65 - listed conditions control: Gutter cleaning: $2.50 per linear foot\\nAll prices plus HST.
+  ---
+  duration_ms: 22.052037
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Pressure-treated 2x4 $3.50 each.
+ok 66 - listed conditions control: Pressure-treated 2x4 $3.50 each.
+  ---
+  duration_ms: 21.738225
+  type: 'test'
+  ...
+# Subtest: listed conditions control: 2×4 stud $3.50 each
+ok 67 - listed conditions control: 2×4 stud $3.50 each
+  ---
+  duration_ms: 20.742537
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Grade 2 lumber $5 each
+ok 68 - listed conditions control: Grade 2 lumber $5 each
+  ---
+  duration_ms: 20.344548
+  type: 'test'
+  ...
+# Subtest: listed conditions control: 3/4 inch plywood $5 each
+ok 69 - listed conditions control: 3/4 inch plywood $5 each
+  ---
+  duration_ms: 20.739412
+  type: 'test'
+  ...
+# Subtest: listed conditions control: \#2 lumber $5 each
+ok 70 - listed conditions control: \#2 lumber $5 each
+  ---
+  duration_ms: 20.434353
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Custom text engraving: $25 each
+ok 71 - listed conditions control: Custom text engraving: $25 each
+  ---
+  duration_ms: 20.706533
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Furnace tune-up: $129 each.
+ok 72 - listed conditions control: Furnace tune-up: $129 each.
+  ---
+  duration_ms: 21.015919
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Synthetic offshore periwinkle service: $10 each
+ok 73 - listed conditions control: Synthetic offshore periwinkle service: $10 each
+  ---
+  duration_ms: 20.331428
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Gift wrapping: $1.25 each
+ok 74 - listed conditions control: Gift wrapping: $1.25 each
+  ---
+  duration_ms: 20.935948
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Window washing $0.035 each
+ok 75 - listed conditions control: Window washing $0.035 each
+  ---
+  duration_ms: 20.54548
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget $0.005 each
+ok 76 - listed conditions control: Widget $0.005 each
+  ---
+  duration_ms: 20.925332
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget $0.10 each
+ok 77 - listed conditions control: Widget $0.10 each
+  ---
+  duration_ms: 21.722131
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget CAD 19.99 each. Taxes extra.
+ok 78 - listed conditions control: Widget CAD 19.99 each. Taxes extra.
+  ---
+  duration_ms: 20.701625
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget US$1,234.50 each
+ok 79 - listed conditions control: Widget US$1,234.50 each
+  ---
+  duration_ms: 21.746457
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget €2.50 each
+ok 80 - listed conditions control: Widget €2.50 each
+  ---
+  duration_ms: 25.390379
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget £10 each
+ok 81 - listed conditions control: Widget £10 each
+  ---
+  duration_ms: 24.373219
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Widget (blue): $10 each
+ok 82 - listed conditions control: Widget (blue): $10 each
+  ---
+  duration_ms: 24.481122
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Inspection $10 each
+ok 83 - listed conditions control: Inspection $10 each
+  ---
+  duration_ms: 23.845896
+  type: 'test'
+  ...
+# Subtest: listed conditions control: Delivery $10 each
+ok 84 - listed conditions control: Delivery $10 each
+  ---
+  duration_ms: 25.440785
+  type: 'test'
+  ...
+# Subtest: listed conditions saved identity: edits, draft, foreign owner, duplicate and partial listings refuse
+not ok 85 - listed conditions saved identity: edits, draft, foreign owner, duplicate and partial listings refuse
+  ---
+  duration_ms: 27.280608
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:113:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: '[SYNTHETIC] Widget if prepaid $10 each',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: '[SYNTHETIC] Widget if prepaid $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: '[SYNTHETIC] Widget if prepaid $10 each'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: '[SYNTHETIC] Widget if prepaid $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:120:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions confirmation and numeric domain are not relaxed
+ok 86 - listed conditions confirmation and numeric domain are not relaxed
+  ---
+  duration_ms: 21.617774
+  type: 'test'
+  ...
+# Subtest: listed conditions compiled fallback retains verbatim condition and ordinary contact rewrite
+not ok 87 - listed conditions compiled fallback retains verbatim condition and ordinary contact rewrite
+  ---
+  duration_ms: 29.210166
+  type: 'test'
+  location: '/workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:140:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   currency: '$',
+    +   extendedAmount: '30.00',
+    +   listedItem: 'If prepaid $10 per item',
+    +   quantity: '3',
+    +   status: 'calculated',
+    +   voiceSummary: 'If prepaid $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+    -   message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.',
+    -   status: 'needs_review'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'needs_review'
+    message: 'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'
+  actual:
+    status: 'calculated'
+    listedItem: 'If prepaid $10 per item'
+    quantity: '3'
+    extendedAmount: '30.00'
+    currency: '$'
+    voiceSummary: 'If prepaid $10 per item. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    review (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:18:29)
+    TestContext.<anonymous> (file:///workspace/scratch/8c21149eb366/listed-price-conditions/test/voiceListedPriceConditions20261018.spec.mjs:148:32)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: listed conditions selectors include this file only in the full suite
+ok 88 - listed conditions selectors include this file only in the full suite
+  ---
+  duration_ms: 1574.572779
+  type: 'test'
+  ...
+1..88
+# tests 88
+# suites 0
+# pass 27
+# fail 61
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2564.112898

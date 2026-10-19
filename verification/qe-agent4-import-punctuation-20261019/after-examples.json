@@ -1,0 +1,687 @@
+[
+  {
+    "kind": "extraction-direct",
+    "note": "Available (exclusively) to members",
+    "plain": true,
+    "input": "Available (exclusively) to members\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Available (exclusively) to members"
+          ]
+        }
+      ],
+      "conditions": [
+        "Available (exclusively) to members"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Available: to account holders",
+    "plain": true,
+    "input": "Available: to account holders\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Available: to account holders"
+          ]
+        }
+      ],
+      "conditions": [
+        "Available: to account holders"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Payment (by cash)",
+    "plain": true,
+    "input": "Payment (by cash)\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Payment (by cash)"
+          ]
+        }
+      ],
+      "conditions": [
+        "Payment (by cash)"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Payment: by cash",
+    "plain": true,
+    "input": "Payment: by cash\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Payment: by cash"
+          ]
+        }
+      ],
+      "conditions": [
+        "Payment: by cash"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Eligible (customers): account holders",
+    "plain": true,
+    "input": "Eligible (customers): account holders\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Eligible (customers): account holders"
+          ]
+        }
+      ],
+      "conditions": [
+        "Eligible (customers): account holders"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Available (exclusively) to members",
+    "plain": false,
+    "input": "<html><body><p>Available (exclusively) to members</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Available (exclusively) to members"
+          ]
+        }
+      ],
+      "conditions": [
+        "Available (exclusively) to members"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Available: to account holders",
+    "plain": false,
+    "input": "<html><body><p>Available: to account holders</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Available: to account holders"
+          ]
+        }
+      ],
+      "conditions": [
+        "Available: to account holders"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Payment (by cash)",
+    "plain": false,
+    "input": "<html><body><p>Payment (by cash)</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Payment (by cash)"
+          ]
+        }
+      ],
+      "conditions": [
+        "Payment (by cash)"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Payment: by cash",
+    "plain": false,
+    "input": "<html><body><p>Payment: by cash</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Payment: by cash"
+          ]
+        }
+      ],
+      "conditions": [
+        "Payment: by cash"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Eligible (customers): account holders",
+    "plain": false,
+    "input": "<html><body><p>Eligible (customers): account holders</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Eligible (customers): account holders"
+          ]
+        }
+      ],
+      "conditions": [
+        "Eligible (customers): account holders"
+      ],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Available (exclusively) to members",
+    "plain": true,
+    "draftPrices": "Widget $10 each\\nAvailable (exclusively) to members",
+    "savedPrices": "Widget $10 each\\nAvailable (exclusively) to members",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nAvailable (exclusively) to members",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Available (exclusively) to members"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Available: to account holders",
+    "plain": true,
+    "draftPrices": "Widget $10 each\\nAvailable: to account holders",
+    "savedPrices": "Widget $10 each\\nAvailable: to account holders",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nAvailable: to account holders",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Available: to account holders"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Payment (by cash)",
+    "plain": true,
+    "draftPrices": "Widget $10 each\\nPayment (by cash)",
+    "savedPrices": "Widget $10 each\\nPayment (by cash)",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nPayment (by cash)",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Payment (by cash)"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Payment: by cash",
+    "plain": true,
+    "draftPrices": "Widget $10 each\\nPayment: by cash",
+    "savedPrices": "Widget $10 each\\nPayment: by cash",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nPayment: by cash",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Payment: by cash"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Eligible (customers): account holders",
+    "plain": true,
+    "draftPrices": "Widget $10 each\\nEligible (customers): account holders",
+    "savedPrices": "Widget $10 each\\nEligible (customers): account holders",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nEligible (customers): account holders",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Eligible (customers): account holders"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Available (exclusively) to members",
+    "plain": false,
+    "draftPrices": "Widget $10 each\\nAvailable (exclusively) to members",
+    "savedPrices": "Widget $10 each\\nAvailable (exclusively) to members",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nAvailable (exclusively) to members",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Available (exclusively) to members"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Available: to account holders",
+    "plain": false,
+    "draftPrices": "Widget $10 each\\nAvailable: to account holders",
+    "savedPrices": "Widget $10 each\\nAvailable: to account holders",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nAvailable: to account holders",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Available: to account holders"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Payment (by cash)",
+    "plain": false,
+    "draftPrices": "Widget $10 each\\nPayment (by cash)",
+    "savedPrices": "Widget $10 each\\nPayment (by cash)",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nPayment (by cash)",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Payment (by cash)"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Payment: by cash",
+    "plain": false,
+    "draftPrices": "Widget $10 each\\nPayment: by cash",
+    "savedPrices": "Widget $10 each\\nPayment: by cash",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nPayment: by cash",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Payment: by cash"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Eligible (customers): account holders",
+    "plain": false,
+    "draftPrices": "Widget $10 each\\nEligible (customers): account holders",
+    "savedPrices": "Widget $10 each\\nEligible (customers): account holders",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each\\nEligible (customers): account holders",
+          "amounts": [
+            "$10"
+          ],
+          "conditions": [
+            "Eligible (customers): account holders"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "stripped": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    }
+  },
+  {
+    "kind": "ambiguous-draft",
+    "plain": true,
+    "draftPrices": "",
+    "import": {
+      "entries": [],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": true,
+      "visibilityUnverified": false,
+      "conditionsUnverified": true,
+      "message": "No literal prices were found in the pages read. Your saved prices have not changed. Only part of the website could be read within the import limits. Manual review required: prices were omitted where their conditions could not be associated safely. Review the website and enter each price with all applicable conditions."
+    }
+  },
+  {
+    "kind": "ambiguous-draft",
+    "plain": false,
+    "draftPrices": "",
+    "import": {
+      "entries": [],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": true,
+      "visibilityUnverified": false,
+      "conditionsUnverified": true,
+      "message": "No literal prices were found in the pages read. Your saved prices have not changed. Only part of the website could be read within the import limits. Manual review required: prices were omitted where their conditions could not be associated safely. Review the website and enter each price with all applicable conditions."
+    }
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "run_id": 39201472963,
+  "head": "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+  "result": "literal_name_comparison_incomplete",
+  "missing_literal_names": [
+    "website rejects URL before DNS https://user:password@business.example"
+  ],
+  "observed_hosted_name": "website rejects URL before DNS ***business.example",
+  "application_test_failure": false,
+  "resolution_file": "hosted-log-name-mapping.json"
+}

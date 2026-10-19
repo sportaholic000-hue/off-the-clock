@@ -1,0 +1,94 @@
+{
+  "baseline-retained.tap": {
+    "sha256": "3451083d60d873bb958355b3cbcf715c55f4cac9f79cb01d6eee75218c4af80b",
+    "tests": 305,
+    "suites": 0,
+    "pass": 305,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 6303.04466,
+    "summaryPresent": true,
+    "topLevelResults": 305,
+    "failureCategories": {
+      "browser_launch": 0,
+      "parent_subtests": 0,
+      "other": 0
+    }
+  },
+  "baseline-new.tap": {
+    "sha256": "52ec95e6af962b7174c1f8cb8de078aa09e5c44e542ed72de626ce4ea752fbb6",
+    "tests": 120,
+    "suites": 0,
+    "pass": 41,
+    "fail": 79,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 5184.311623,
+    "summaryPresent": true,
+    "topLevelResults": 120,
+    "failureCategories": {
+      "browser_launch": 0,
+      "parent_subtests": 0,
+      "other": 79
+    }
+  },
+  "after-focused.tap": {
+    "sha256": "6ec7e59cf4b606645abe6d7d40f79641602c5eb94480779cd0cc6112ddff4a69",
+    "tests": 425,
+    "suites": 0,
+    "pass": 425,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 11807.725085,
+    "summaryPresent": true,
+    "topLevelResults": 425,
+    "failureCategories": {
+      "browser_launch": 0,
+      "parent_subtests": 0,
+      "other": 0
+    }
+  },
+  "neighbors.tap": {
+    "sha256": "ee1a916904a61e30b56576b214e46ca82d07e71921f5652e401fc355f48f72a6",
+    "tests": 722,
+    "suites": 0,
+    "pass": 722,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 19652.604675,
+    "summaryPresent": true,
+    "topLevelResults": 722,
+    "failureCategories": {
+      "browser_launch": 0,
+      "parent_subtests": 0,
+      "other": 0
+    }
+  },
+  "strict.tap": {
+    "sha256": "dddd8079704dcfa363675064af8cf7f981c80368765b8596ae47938eaada240e",
+    "summaryPresent": false,
+    "topLevelResults": 2933,
+    "failureCategories": {
+      "browser_launch": 65,
+      "parent_subtests": 1,
+      "other": 0
+    }
+  },
+  "full.tap": {
+    "sha256": "279daae58eefe7fced118491ef046dd2e37847deb87a7b9cea1a0d80967f2069",
+    "summaryPresent": false,
+    "topLevelResults": 4230,
+    "failureCategories": {
+      "browser_launch": 93,
+      "parent_subtests": 1,
+      "other": 0
+    }
+  }
+}

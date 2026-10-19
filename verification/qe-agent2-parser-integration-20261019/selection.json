@@ -1,0 +1,32 @@
+{
+  "strict_files": 283,
+  "full_files": 353,
+  "incoming": [
+    {
+      "file": "test/voiceAgent4ImportPunctuation20261019.spec.mjs",
+      "strict": 0,
+      "full": 1
+    },
+    {
+      "file": "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "strict": 0,
+      "full": 1
+    },
+    {
+      "file": "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "strict": 0,
+      "full": 1
+    },
+    {
+      "file": "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "strict": 0,
+      "full": 1
+    },
+    {
+      "file": "test/voiceListedPriceConditions20261018.spec.mjs",
+      "strict": 0,
+      "full": 1
+    }
+  ],
+  "selectors_changed": false
+}
