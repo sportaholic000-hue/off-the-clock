@@ -16,7 +16,7 @@ const line=(q,path)=>q.lineItems.find(l=>l.calculation.ratePath===path);
 const total=q=>q.options[0].calculationRecord.scenarios.mid.finalTotalCents;
 const review=f=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW',JSON.stringify(q));assert.equal(q.midEstimate,undefined);return q;};
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|installedLaborPercent|installedMaterialsPercent|priceMetadata)"/);
-test('Agent1 v11 literals agree and remain distinct from v10',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v11');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+test('Agent1 current version literals agree and remain distinct from v10',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-geometry-20261019-v12');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
 test('Agent1 F1 exact 1.4 delta rounds 5000.5 up to 5001',()=>{
  const f=roof({roofSizeInput:100,pitchBand:'up_to_six',stories:2},{laborPerSquare:{asphalt_shingle:12501.25},storyMultiplier:{1:1,2:1.4,3:1.2}});
  const q=ready(f);assert.equal(q.lineItems.find(l=>l.name==='Story labor adjustment').amountCents,5001);

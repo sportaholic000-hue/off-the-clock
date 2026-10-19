@@ -1,0 +1,11 @@
+{
+  "all_217_bound_paths_match": true,
+  "incoming_paths_verified": 90,
+  "integration_paths_verified": 127,
+  "tracked_worktree_after_generated_html_restore": "clean relative to merge index",
+  "workflow_identical_to_both_parents": true,
+  "excluded_parser_sha": "9af52ddc13c78beec84e7f090506da8c9b5fd691",
+  "parser_in_either_parent_history": false,
+  "manual_production_edits": [],
+  "manual_test_reconciliations": []
+}

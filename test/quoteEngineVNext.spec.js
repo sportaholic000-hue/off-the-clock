@@ -442,7 +442,8 @@ test('area and perimeter shortcuts are inspection-first, never customer-ready', 
 
 test('itemized roofing uses square-root geometry only for the approved footprint conversion and keeps measured accessory lengths independent', () => {
   const source = readFileSync('server/quote-engine-vnext/templates.js', 'utf8');
-  assert.match(source,/roofSizeInput\*Math\.sqrt\(1\+\(c\.pitchRisePer12\/12\)\*\*2\)/);
+  assert.match(source,/roofSurfaceAreaSqft\(c\.roofSizeInput,c\.pitchRisePer12\)/);
+  assert.doesNotMatch(source,/Math\.sqrt/,'roof conversion must use the shared exact boundary calculation');
   const entry = happyCases[0];
   const changed = quote({ ...entry, customerInputs: { ...entry.customerInputs, dripEdgeLengthLF: 125 } });
   assert.equal(lineMap(changed)['Drip edge'], 27500);

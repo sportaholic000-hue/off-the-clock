@@ -1,0 +1,215 @@
+(node:6) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "source": "abc2becff9cd252a63ff30258e9950a07af2c020",
+  "expectedSha256": "ef71bd8c92025f32cb0161baed4256dd0fd98aa09607c12b0442d27461f1f90b",
+  "cases": 272,
+  "passed": 208,
+  "failed": 64,
+  "registeredTrades": [
+    "ROOFING_REPLACEMENT",
+    "ROOFING_REPAIR",
+    "FLAT_ROOF_REPLACEMENT",
+    "FLAT_ROOF_REPAIR",
+    "INTERIOR_PAINTING",
+    "EXTERIOR_PAINTING",
+    "FLOORING_INSTALL",
+    "FLOORING_REPLACEMENT",
+    "FENCING_INSTALL",
+    "FENCING_REPLACEMENT",
+    "SIDING_REPLACEMENT",
+    "SIDING_REPAIR",
+    "CONCRETE_DRIVEWAY",
+    "CONCRETE_PATIO_SLAB",
+    "LANDSCAPING_CLEANUP",
+    "LANDSCAPING_MULCH",
+    "LANDSCAPING_SOD",
+    "LANDSCAPING_PLANTING",
+    "LANDSCAPING_MOWING",
+    "CUSTOM"
+  ],
+  "testedTrades": [
+    "FLOORING_INSTALL",
+    "FLOORING_REPLACEMENT",
+    "CONCRETE_PATIO_SLAB",
+    "CONCRETE_DRIVEWAY",
+    "LANDSCAPING_SOD",
+    "LANDSCAPING_MULCH",
+    "LANDSCAPING_CLEANUP",
+    "FENCING_INSTALL",
+    "FENCING_REPLACEMENT",
+    "INTERIOR_PAINTING",
+    "EXTERIOR_PAINTING",
+    "SIDING_REPLACEMENT",
+    "ROOFING_REPAIR",
+    "FLAT_ROOF_REPAIR",
+    "SIDING_REPAIR",
+    "FLAT_ROOF_REPLACEMENT",
+    "ROOFING_REPLACEMENT",
+    "LANDSCAPING_PLANTING",
+    "LANDSCAPING_MOWING",
+    "CUSTOM"
+  ],
+  "families": {
+    "floor-half": {
+      "cases": 6,
+      "failed": 0
+    },
+    "floor-carton": {
+      "cases": 6,
+      "failed": 0
+    },
+    "floor-room": {
+      "cases": 22,
+      "failed": 0
+    },
+    "concrete-line": {
+      "cases": 6,
+      "failed": 0
+    },
+    "concrete-increment": {
+      "cases": 6,
+      "failed": 0
+    },
+    "concrete-joint": {
+      "cases": 6,
+      "failed": 0
+    },
+    "concrete-square-joint": {
+      "cases": 16,
+      "failed": 4
+    },
+    "sod-depth": {
+      "cases": 3,
+      "failed": 0
+    },
+    "mulch-increment": {
+      "cases": 3,
+      "failed": 0
+    },
+    "mulch-stated": {
+      "cases": 3,
+      "failed": 3
+    },
+    "cleanup-load": {
+      "cases": 3,
+      "failed": 0
+    },
+    "fence-span": {
+      "cases": 6,
+      "failed": 3
+    },
+    "carpet-cut": {
+      "cases": 3,
+      "failed": 0
+    },
+    "paint-coats": {
+      "cases": 3,
+      "failed": 3
+    },
+    "paint-package": {
+      "cases": 6,
+      "failed": 6
+    },
+    "siding-half": {
+      "cases": 3,
+      "failed": 0
+    },
+    "repair-area": {
+      "cases": 27,
+      "failed": 3
+    },
+    "repair-hour": {
+      "cases": 9,
+      "failed": 0
+    },
+    "flat-partial": {
+      "cases": 3,
+      "failed": 0
+    },
+    "roof-footprint": {
+      "cases": 24,
+      "failed": 9
+    },
+    "plant-count": {
+      "cases": 3,
+      "failed": 3
+    },
+    "mow-pipeline": {
+      "cases": 90,
+      "failed": 30
+    },
+    "custom-split": {
+      "cases": 12,
+      "failed": 0
+    },
+    "custom-measured": {
+      "cases": 3,
+      "failed": 0
+    }
+  }
+}
+{"id":"concrete-square-joint-0047","params":{"type":"CONCRETE_PATIO_SLAB","area":"100.00000000000001"},"expected":12500,"actual":10500,"differences":[{"name":"Saw-cut control joints","expected":2000,"actual":null}]}
+{"id":"concrete-square-joint-0051","params":{"type":"CONCRETE_PATIO_SLAB","area":"400.00000000000006"},"expected":20000,"actual":16000,"differences":[{"name":"Saw-cut control joints","expected":8000,"actual":4000}]}
+{"id":"concrete-square-joint-0064","params":{"type":"CONCRETE_DRIVEWAY","area":"100.00000000000001"},"expected":12500,"actual":10500,"differences":[{"name":"Saw-cut control joints","expected":2000,"actual":null}]}
+{"id":"concrete-square-joint-0068","params":{"type":"CONCRETE_DRIVEWAY","area":"400.00000000000006"},"expected":20000,"actual":16000,"differences":[{"name":"Saw-cut control joints","expected":8000,"actual":4000}]}
+{"id":"mulch-stated-0075","params":{"qty":".9999"},"expected":8000,"actual":null,"differences":[{"name":"Mulch material","expected":5000,"actual":null},{"name":"Mulch installation labor","expected":3000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["inputMethod"]}
+{"id":"mulch-stated-0076","params":{"qty":"1"},"expected":8000,"actual":null,"differences":[{"name":"Mulch material","expected":5000,"actual":null},{"name":"Mulch installation labor","expected":3000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["inputMethod"]}
+{"id":"mulch-stated-0077","params":{"qty":"1.0001"},"expected":9250,"actual":null,"differences":[{"name":"Mulch material","expected":6250,"actual":null},{"name":"Mulch installation labor","expected":3000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["inputMethod"]}
+{"id":"fence-span-0081","params":{"type":"FENCING_INSTALL","length":"7.9999"},"expected":30000,"actual":null,"differences":[{"name":"Fence infill installation labor","expected":8000,"actual":null},{"name":"Fence infill materials","expected":16000,"actual":null},{"name":"Separately priced post materials","expected":4000,"actual":null},{"name":"Post-hole and footing labor","expected":800,"actual":null},{"name":"Footing materials","expected":1200,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["oldFenceRemoval"]}
+{"id":"fence-span-0082","params":{"type":"FENCING_INSTALL","length":"8"},"expected":30000,"actual":null,"differences":[{"name":"Fence infill installation labor","expected":8000,"actual":null},{"name":"Fence infill materials","expected":16000,"actual":null},{"name":"Separately priced post materials","expected":4000,"actual":null},{"name":"Post-hole and footing labor","expected":800,"actual":null},{"name":"Footing materials","expected":1200,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["oldFenceRemoval"]}
+{"id":"fence-span-0083","params":{"type":"FENCING_INSTALL","length":"8.0001"},"expected":33000,"actual":null,"differences":[{"name":"Fence infill installation labor","expected":8000,"actual":null},{"name":"Fence infill materials","expected":16000,"actual":null},{"name":"Separately priced post materials","expected":6000,"actual":null},{"name":"Post-hole and footing labor","expected":1200,"actual":null},{"name":"Footing materials","expected":1800,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["oldFenceRemoval"]}
+{"id":"paint-coats-0090","params":{"rate":"1.1249"},"expected":22,"actual":22,"differences":[{"name":"Wall materials","expected":20,"actual":null}]}
+{"id":"paint-coats-0091","params":{"rate":"1.125"},"expected":23,"actual":23,"differences":[{"name":"Wall materials","expected":20,"actual":null}]}
+{"id":"paint-coats-0092","params":{"rate":"1.1251"},"expected":23,"actual":23,"differences":[{"name":"Wall materials","expected":20,"actual":null}]}
+{"id":"paint-package-0093","params":{"type":"INTERIOR_PAINTING","area":"99.9999"},"expected":42000,"actual":null,"differences":[],"reason":"Required measured project details were not provided.","missing":["paintProductsConfirmed"],"invalid":["stories","paintProductScopeConfirmed","paintWallScopeConfirmed","paintPrimerScopeConfirmed","paintPrepScopeConfirmed"]}
+{"id":"paint-package-0094","params":{"type":"INTERIOR_PAINTING","area":"100"},"expected":42000,"actual":null,"differences":[],"reason":"Required measured project details were not provided.","missing":["paintProductsConfirmed"],"invalid":["stories","paintProductScopeConfirmed","paintWallScopeConfirmed","paintPrimerScopeConfirmed","paintPrepScopeConfirmed"]}
+{"id":"paint-package-0095","params":{"type":"INTERIOR_PAINTING","area":"100.0001"},"expected":46000,"actual":null,"differences":[],"reason":"Required measured project details were not provided.","missing":["paintProductsConfirmed"],"invalid":["stories","paintProductScopeConfirmed","paintWallScopeConfirmed","paintPrimerScopeConfirmed","paintPrepScopeConfirmed"]}
+{"id":"paint-package-0096","params":{"type":"EXTERIOR_PAINTING","area":"99.9999"},"expected":42000,"actual":null,"differences":[],"reason":"Required measured project details were not provided.","missing":["paintProductsConfirmed"],"invalid":["ceilingsIncluded","trimIncluded","paintProductScopeConfirmed","paintWallScopeConfirmed","paintPrimerScopeConfirmed","paintPrepScopeConfirmed"]}
+{"id":"paint-package-0097","params":{"type":"EXTERIOR_PAINTING","area":"100"},"expected":42000,"actual":null,"differences":[],"reason":"Required measured project details were not provided.","missing":["paintProductsConfirmed"],"invalid":["ceilingsIncluded","trimIncluded","paintProductScopeConfirmed","paintWallScopeConfirmed","paintPrimerScopeConfirmed","paintPrepScopeConfirmed"]}
+{"id":"paint-package-0098","params":{"type":"EXTERIOR_PAINTING","area":"100.0001"},"expected":46000,"actual":null,"differences":[],"reason":"Required measured project details were not provided.","missing":["paintProductsConfirmed"],"invalid":["ceilingsIncluded","trimIncluded","paintProductScopeConfirmed","paintWallScopeConfirmed","paintPrimerScopeConfirmed","paintPrepScopeConfirmed"]}
+{"id":"repair-area-0106","params":{"type":"ROOFING_REPAIR","area":"10.004975124378109"},"expected":25000,"actual":25001,"differences":[]}
+{"id":"repair-area-0118","params":{"type":"FLAT_ROOF_REPAIR","area":"10.004975124378109"},"expected":25000,"actual":25001,"differences":[]}
+{"id":"repair-area-0130","params":{"type":"SIDING_REPAIR","area":"10.004975124378109"},"expected":25000,"actual":25001,"differences":[]}
+{"id":"roof-footprint-0141","params":{"footprint":"12.059999","rise":5},"expected":1358,"actual":null,"differences":[{"name":"Roofing labor","expected":1306,"actual":null},{"name":"Field materials","expected":13,"actual":null},{"name":"Tear-off","expected":13,"actual":null},{"name":"Underlayment","expected":13,"actual":null},{"name":"Roofing disposal","expected":13,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["roofSizeInput"]}
+{"id":"roof-footprint-0142","params":{"footprint":"12.06","rise":5},"expected":1359,"actual":null,"differences":[{"name":"Roofing labor","expected":1307,"actual":null},{"name":"Field materials","expected":13,"actual":null},{"name":"Tear-off","expected":13,"actual":null},{"name":"Underlayment","expected":13,"actual":null},{"name":"Roofing disposal","expected":13,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["roofSizeInput"]}
+{"id":"roof-footprint-0143","params":{"footprint":"12.060001","rise":5},"expected":1359,"actual":null,"differences":[{"name":"Roofing labor","expected":1307,"actual":null},{"name":"Field materials","expected":13,"actual":null},{"name":"Tear-off","expected":13,"actual":null},{"name":"Underlayment","expected":13,"actual":null},{"name":"Roofing disposal","expected":13,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["roofSizeInput"]}
+{"id":"roof-footprint-0144","params":{"footprint":"24.059999","rise":5},"expected":2710,"actual":null,"differences":[{"name":"Roofing labor","expected":2606,"actual":null},{"name":"Field materials","expected":26,"actual":null},{"name":"Tear-off","expected":26,"actual":null},{"name":"Underlayment","expected":26,"actual":null},{"name":"Roofing disposal","expected":26,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["roofSizeInput"]}
+{"id":"roof-footprint-0145","params":{"footprint":"24.06","rise":5},"expected":2711,"actual":null,"differences":[{"name":"Roofing labor","expected":2607,"actual":null},{"name":"Field materials","expected":26,"actual":null},{"name":"Tear-off","expected":26,"actual":null},{"name":"Underlayment","expected":26,"actual":null},{"name":"Roofing disposal","expected":26,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["roofSizeInput"]}
+{"id":"roof-footprint-0146","params":{"footprint":"24.060001","rise":5},"expected":2711,"actual":null,"differences":[{"name":"Roofing labor","expected":2607,"actual":null},{"name":"Field materials","expected":26,"actual":null},{"name":"Tear-off","expected":26,"actual":null},{"name":"Underlayment","expected":26,"actual":null},{"name":"Roofing disposal","expected":26,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["roofSizeInput"]}
+{"id":"roof-footprint-0154","params":{"footprint":"600.06","rise":5},"expected":67607,"actual":67606,"differences":[{"name":"Roofing labor","expected":65007,"actual":65006}]}
+{"id":"roof-footprint-0157","params":{"footprint":"1200.06","rise":5},"expected":135207,"actual":135206,"differences":[{"name":"Roofing labor","expected":130007,"actual":130006}]}
+{"id":"roof-footprint-0163","params":{"footprint":"12000.06","rise":5},"expected":1352007,"actual":1352006,"differences":[{"name":"Roofing labor","expected":1300007,"actual":1300006}]}
+{"id":"plant-count-0165","params":{"count":1},"expected":7500,"actual":null,"differences":[{"name":"Small plant installation labor","expected":4500,"actual":null},{"name":"Small plant material allowance","expected":3000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["plantsBySize"]}
+{"id":"plant-count-0166","params":{"count":2},"expected":15000,"actual":null,"differences":[{"name":"Small plant installation labor","expected":9000,"actual":null},{"name":"Small plant material allowance","expected":6000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["plantsBySize"]}
+{"id":"plant-count-0167","params":{"count":3},"expected":22500,"actual":null,"differences":[{"name":"Small plant installation labor","expected":13500,"actual":null},{"name":"Small plant material allowance","expected":9000,"actual":null}],"reason":"Project details were invalid or internally inconsistent.","missing":[],"invalid":["plantsBySize"]}
+{"id":"mow-pipeline-0168","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"markup","minimum":0},"expected":144,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0169","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"markup","minimum":144},"expected":144,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0170","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"markup","minimum":145},"expected":145,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0171","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"markup","minimum":146},"expected":146,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0172","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"markup","minimum":200},"expected":200,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0173","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"margin","minimum":0},"expected":150,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0174","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"margin","minimum":144},"expected":150,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0175","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"margin","minimum":145},"expected":150,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0176","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"margin","minimum":146},"expected":150,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0177","params":{"rate":"100.49","taxMode":"TAX_NONE","markupMode":"margin","minimum":200},"expected":200,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0198","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"markup","minimum":0},"expected":145,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0199","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"markup","minimum":144},"expected":145,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0200","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"markup","minimum":145},"expected":145,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0201","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"markup","minimum":146},"expected":146,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0202","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"markup","minimum":200},"expected":200,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0203","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"margin","minimum":0},"expected":151,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0204","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"margin","minimum":144},"expected":151,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0205","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"margin","minimum":145},"expected":151,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0206","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"margin","minimum":146},"expected":151,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0207","params":{"rate":"100.5","taxMode":"TAX_NONE","markupMode":"margin","minimum":200},"expected":200,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0228","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"markup","minimum":0},"expected":145,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0229","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"markup","minimum":144},"expected":145,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0230","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"markup","minimum":145},"expected":145,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0231","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"markup","minimum":146},"expected":146,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0232","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"markup","minimum":200},"expected":200,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0233","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"margin","minimum":0},"expected":151,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0234","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"margin","minimum":144},"expected":151,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0235","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"margin","minimum":145},"expected":151,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0236","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"margin","minimum":146},"expected":151,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}
+{"id":"mow-pipeline-0237","params":{"rate":"100.51","taxMode":"TAX_NONE","markupMode":"margin","minimum":200},"expected":200,"actual":null,"differences":[],"reason":"Business-wide pricing settings are incomplete or invalid.","missing":[],"invalid":[]}

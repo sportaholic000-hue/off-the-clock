@@ -9,7 +9,7 @@ export function integratedBaselineExpectation(row) {
   const result=structuredClone(row.result),type=row.input.serviceType;
   // The frozen v7 evidence stays intact. Only these known live-result metadata
   // paths advance; every price, scope and other assertion still compares fully.
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261018-v11');
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-geometry-20261019-v12');
   const advanceVersion=record=>{
     assert.equal(record.engineVersion,'quote-engine-vnext-date-context-20261006-v7');
     record.engineVersion=ENGINE_VERSION;

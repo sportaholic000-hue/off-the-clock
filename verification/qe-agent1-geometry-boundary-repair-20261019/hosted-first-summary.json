@@ -1,0 +1,29 @@
+{
+  "runId": 39189734502,
+  "head": "cfa6ac4bd5ee0aa71aafba983cb1230730cbf4bb",
+  "testJob": 117859689953,
+  "dockerJob": 117859690202,
+  "strict": {
+    "tests": 5794,
+    "passed": 5784,
+    "failed": 10,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "browser": {
+    "tests": 12,
+    "passed": 12,
+    "failed": 0
+  },
+  "build": "success",
+  "docker": "success",
+  "full": "skipped",
+  "checker": "skipped",
+  "dependencyAudit": "skipped",
+  "failures": {
+    "F16 historical-version preconditions": 8,
+    "native square-root source guards": 2
+  },
+  "productionChangesInFollowup": false
+}

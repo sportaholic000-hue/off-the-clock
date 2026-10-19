@@ -1,0 +1,10 @@
+(node:6) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"id":"concrete-square-joint-0047","engineVersion":"quote-engine-vnext-accuracy-20261018-v11","widgetCents":10500,"voiceCents":10500,"independentCents":12500,"submissions":2,"providerCalls":0}
+{"id":"concrete-square-joint-0051","engineVersion":"quote-engine-vnext-accuracy-20261018-v11","widgetCents":16000,"voiceCents":16000,"independentCents":20000,"submissions":2,"providerCalls":0}
+{"id":"concrete-square-joint-0064","engineVersion":"quote-engine-vnext-accuracy-20261018-v11","widgetCents":10500,"voiceCents":10500,"independentCents":12500,"submissions":2,"providerCalls":0}
+{"id":"concrete-square-joint-0068","engineVersion":"quote-engine-vnext-accuracy-20261018-v11","widgetCents":16000,"voiceCents":16000,"independentCents":20000,"submissions":2,"providerCalls":0}
+{"id":"roof-footprint-0154","engineVersion":"quote-engine-vnext-accuracy-20261018-v11","widgetCents":67606,"voiceCents":67606,"independentCents":67607,"submissions":2,"providerCalls":0}
+{"id":"roof-footprint-0157","engineVersion":"quote-engine-vnext-accuracy-20261018-v11","widgetCents":135206,"voiceCents":135206,"independentCents":135207,"submissions":2,"providerCalls":0}
+{"id":"roof-footprint-0163","engineVersion":"quote-engine-vnext-accuracy-20261018-v11","widgetCents":1352006,"voiceCents":1352006,"independentCents":1352007,"submissions":2,"providerCalls":0}
+{"id":"roof-package-0280","engineVersion":"quote-engine-vnext-accuracy-20261018-v11","widgetCents":393400,"voiceCents":393400,"independentCents":408401,"submissions":2,"providerCalls":0}

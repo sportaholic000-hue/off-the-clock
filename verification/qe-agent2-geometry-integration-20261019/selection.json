@@ -1,0 +1,15 @@
+{
+  "strict_files": 283,
+  "full_files": 348,
+  "geometry": [
+    "test/qeAgent1GeometryBoundaries20261019.spec.mjs",
+    "test/qeAgent1GeometryDelivery20261019.spec.mjs",
+    "test/qeAgent1GeometryHistorical20261019.spec.mjs"
+  ],
+  "f16": "test/qeAgent2IntegrationF16PricePrecision20261019.spec.mjs",
+  "f18_full_only": [
+    "test/voiceAgent4F18Integration20261018.spec.mjs",
+    "test/voiceAgent4F18Repair20261018.spec.mjs"
+  ],
+  "selectors_changed": false
+}

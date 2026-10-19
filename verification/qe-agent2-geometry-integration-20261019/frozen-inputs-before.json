@@ -1,0 +1,7 @@
+{
+  "verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases-final.json": "021eba33c54a2d0f5b4f3427008e0c16ec2353fb187006e94fb399259765eabc",
+  "verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json": "257116e6baa93c3e380b190cf4e50e6de0186d1f57c5963d49863e5554e99a4f",
+  "verification/qe-agent1-geometry-boundary-repair-20261019/historical-v11.json.gz": "8d081ef337750fc8ea2c50e650ea427093ae56e399644a202ca27df0cf798012",
+  "verification/qe-agent1-core-accuracy-20261018/f16-legacy-approvals.json": "8a6d018e48d8b32745e6a1547f219c660020cc4fddb47107a7040dbe50ee6c4c",
+  "historical_v11_uncompressed_sha256": "3acd933e18c65b3e75249d6f0229955eb4fc2d36fc6c4a505c358c6e37453a30"
+}

@@ -8,11 +8,11 @@ import {bridge,date,db,fixture,quoteEmailFixture} from './quoteDeliveryBatch2026
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
-const OLD='quote-engine-vnext-accuracy-20261018-v10',CURRENT='quote-engine-vnext-accuracy-20261018-v11';
+const OLD='quote-engine-vnext-accuracy-20261018-v10',CURRENT='quote-engine-vnext-geometry-20261019-v12';
 const historical=JSON.parse(readFileSync(new URL('../verification/qe-agent1-core-accuracy-20261018/historical-v10.json',import.meta.url)));
 assert.equal(historical.base,'d0b44531c77a2eb4e55ecb58405c9975167164b1');assert.equal(historical.engineVersion,OLD);assert.equal(ENGINE_VERSION,CURRENT);
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|priceMetadata|storyMultiplier|complexityLaborMultiplier|exactValue)"/);
-for(const saved of historical.records)test('Agent1 genuine v10 immutable widget/voice replay and explicit v11 reapproval '+saved.id,async t=>{
+for(const saved of historical.records)test('Agent1 genuine v10 immutable widget/voice replay and explicit current-version reapproval '+saved.id,async t=>{
  migrate();
  for(const [table,rows] of Object.entries(saved.tables))for(const row of rows){
   const keys=Object.keys(row);db.prepare(`INSERT INTO ${table} (${keys.join(',')}) VALUES (${keys.map(()=>'?').join(',')})`).run(...keys.map(k=>row[k]));

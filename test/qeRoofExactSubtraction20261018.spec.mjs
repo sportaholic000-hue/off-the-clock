@@ -26,7 +26,7 @@ import {bridge,date,db,fixture,quoteEmailFixture} from './quoteDeliveryBatch2026
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
-const CURRENT='quote-engine-vnext-accuracy-20261018-v11';
+const CURRENT='quote-engine-vnext-geometry-20261019-v12';
 assert.equal(REPAIR_VERSION,'quote-engine-vnext-accuracy-20261018-v10');
 const historical=JSON.parse(readFileSync(new URL('../verification/qe-roof-exact-subtraction-20261018/historical-v9.json',import.meta.url)));
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|priceMetadata|storyMultiplier|complexityLaborMultiplier|exactValue)"/);

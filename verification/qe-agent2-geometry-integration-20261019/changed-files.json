@@ -1,0 +1,580 @@
+{
+  "base": "28c1c331e841878cce8edb1f235523e001ca0b25",
+  "incoming": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+  "conflicts": [],
+  "manual_production_edits": [],
+  "manual_test_reconciliations": [],
+  "counts": {
+    "incoming_production": 8,
+    "incoming_tests": 17,
+    "incoming_evidence": 64,
+    "new_integration_evidence": 24
+  },
+  "files": [
+    {
+      "status": "M",
+      "path": "server/quote-engine-vnext/concreteLandscapePricing.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "M",
+      "path": "server/quote-engine-vnext/contracts.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "M",
+      "path": "server/quote-engine-vnext/engine.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "M",
+      "path": "server/quote-engine-vnext/exactMath.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "A",
+      "path": "server/quote-engine-vnext/roofGeometry.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "M",
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "M",
+      "path": "server/quote-engine-vnext/templates.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "M",
+      "path": "server/src/runtimeConfig.js",
+      "category": "incoming_production"
+    },
+    {
+      "status": "M",
+      "path": "test/backupRestoreRehearsal.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/finalIntegrationMetadata20261017Fixture.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/qeAccuracyIntegration20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/qeAgent1CoreAccuracy20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "test/qeAgent1GeometryBoundaries20261019.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "test/qeAgent1GeometryDelivery20261019.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "test/qeAgent1GeometryHistorical20261019.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/qeAgent1Historical20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/qeRoofExactSubtraction20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/qeRoofUnderlaymentAccuracy20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/qeRoofZeroAdjustments20261018.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/quoteEngineVNext.spec.js",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/quoteReviewFixes.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/quoteStartingValues20261017.browser.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/quoteStartingValues20261017.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "M",
+      "path": "test/releaseProductionEngineGuard.spec.mjs",
+      "category": "incoming_tests"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/COMMANDS.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/EXPECTED.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/FIRST_RUN_TRIAGE.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/INVENTORY.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/REPORT.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/SHA256SUMS",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/adjacent-regressions.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/compare.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-compressed-repeat.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-final.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-first-results.json.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-first-source.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-first.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-results.json.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery.spec.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-final.json.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-final.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-first.json.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-first.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-second.json.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-second.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/existing-regressions.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expectations-before.sha256",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expectations-generation.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases-final.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases-first.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/fixtures-first.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/fixtures-second.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/fixtures.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/followup-expectations.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/npm-ci.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/prepare-expectations.py",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/prepare-followup.py",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/push-attempt.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/reproductions.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/runtime-install.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/runtime.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/scope-check.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/underlayment-repeat.tap",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "M",
+      "path": "verification/qe-agent1-core-accuracy-20261018/f16-approval-cases.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/COMMANDS.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/EXPECTED.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/FIRST_RUN_TRIAGE.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/REPORT.md",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/SHA256SUMS",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/build.log.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/capture-proof.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/capture-v11.log",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/capture-v11.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/compatibility-final.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/delivery-final.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/first-boundaries.spec.mjs.txt",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/first-extended-expectations.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/first-prepare-expectations.py",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/fixtures.mjs",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/focused-final.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/geometry-first.tap.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/historical-v11.json.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/hosted-39189734502-failure-excerpt.log.gz",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/hosted-first-summary.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/prepare-expectations.py",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/version-inventory.json",
+      "category": "incoming_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/EXPECTED.md",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/REPORT.md",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/build.log.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/changed-files.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/compatibility.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/diff-check.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/evidence-archives.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/f16-direct.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/f16-entry.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/f18-matrix.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/f18-original-matrix.spec.mjs",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/f18.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/frozen-inputs-before.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/geometry.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/local-execution.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/local-required-names.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/merge-identity.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/observations.json.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/preservation-after-tests.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/receipts.sqlite.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/rendered.tap.gz",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/required-test-names.json",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/run-local.py",
+      "category": "new_integration_evidence"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-geometry-integration-20261019/selection.json",
+      "category": "new_integration_evidence"
+    }
+  ]
+}

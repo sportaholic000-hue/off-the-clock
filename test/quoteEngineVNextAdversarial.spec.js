@@ -645,8 +645,9 @@ test('customer sanitizer never exposes calculation records, rates, or owner rule
 
 test('candidate formulas contain none of the removed geometry and hidden-factor shortcuts except the approved roof-footprint conversion', () => {
   const source = readFileSync('server/quote-engine-vnext/templates.js', 'utf8');
-  assert.equal((source.match(/Math\.sqrt/g)||[]).length,1,'only the approved roof-footprint conversion may use a square root');
-  assert.match(source,/roofSizeInput\*Math\.sqrt\(1\+\(c\.pitchRisePer12\/12\)\*\*2\)/);
+  assert.equal((source.match(/roofSurfaceAreaSqft\(/g)||[]).length,1,'only the approved roof-footprint conversion may use the shared square-root helper');
+  assert.match(source,/roofSurfaceAreaSqft\(c\.roofSizeInput,c\.pitchRisePer12\)/);
+  assert.doesNotMatch(source,/Math\.sqrt/,'native square-root shortcuts may not decide priced geometry');
   for (const forbidden of ['postSpacing', 'trimRatio', 'paintableAreaMap', 'sidingAreaMap', 'assumedDrivewayWidthFt']) {
     assert.equal(source.includes(forbidden), false, forbidden);
   }

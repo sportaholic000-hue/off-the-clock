@@ -1,0 +1,1095 @@
+{
+  "first_parent": "28c1c331e841878cce8edb1f235523e001ca0b25",
+  "second_parent": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+  "common_base": "abc2becff9cd252a63ff30258e9950a07af2c020",
+  "conflicts": [],
+  "incoming_paths_verified": 90,
+  "integration_paths_preserved": 127,
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "cd064413f371aa4f5ff4980fad03404098c2d46d"
+    },
+    {
+      "path": "server/quote-engine-vnext/concreteLandscapePricing.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "ab9a0b02e6a6b93d5aa430c8a6bd3d0a2c3a40e6"
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "1fc19385bd5194793760cf27a95f0e148e2d66f9"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "907431c53c7657ed78d7ebf737a07a65328364d3"
+    },
+    {
+      "path": "server/quote-engine-vnext/exactMath.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "0c1b21526e64f22fc3b23d7d3a3e3a85ece13387"
+    },
+    {
+      "path": "server/quote-engine-vnext/roofGeometry.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "6a10fee766203a76d8f3564d9aac748cf17b6d27"
+    },
+    {
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "97db0938852fbfa5b39c5ecdd6267cbea367a2fa"
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "d2a2fa98bc8566c239dee5a0310a44fa43edc6ee"
+    },
+    {
+      "path": "server/src/runtimeConfig.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "3363aab393fdeffa885a00819f47eeb377967303"
+    },
+    {
+      "path": "test/backupRestoreRehearsal.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "80ef19bde2ec445ed37f1b2d4874bf8b0297cdfe"
+    },
+    {
+      "path": "test/finalIntegrationMetadata20261017Fixture.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "b1cb5082e7fbd065b09d95e2ff0f8514e1bec51c"
+    },
+    {
+      "path": "test/qeAccuracyIntegration20261018.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "b3904affef112ca12014bf7ff0af332290b4046b"
+    },
+    {
+      "path": "test/qeAgent1CoreAccuracy20261018.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "3c240617c70a455608c50f2b2ba208b54a09e137"
+    },
+    {
+      "path": "test/qeAgent1GeometryBoundaries20261019.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "6c6d1a195006f13ae364338bc9901c709bcaddc1"
+    },
+    {
+      "path": "test/qeAgent1GeometryDelivery20261019.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "90ce135da2e035adcbec4bf10d9b4e91afec15d9"
+    },
+    {
+      "path": "test/qeAgent1GeometryHistorical20261019.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "81127f8e192572a63eaadb0a1606e4578d7b73cb"
+    },
+    {
+      "path": "test/qeAgent1Historical20261018.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "8a3eef49ef12ca3c72fce2dd77e1bcf30ef01a8c"
+    },
+    {
+      "path": "test/qeRoofExactSubtraction20261018.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "ba5ddad1e4242eeb16ce2417ad66b763e90c6799"
+    },
+    {
+      "path": "test/qeRoofUnderlaymentAccuracy20261018.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "9fe4dc159c1b408f22d76c7d654881557623512b"
+    },
+    {
+      "path": "test/qeRoofZeroAdjustments20261018.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "6cb9da47479786af12350a5da5b8666ee7a06f13"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "54b296be63efb005e4515af0070e227522058c59"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "9873a65aa7ce1af47ce4f423395722c6163cb86b"
+    },
+    {
+      "path": "test/quoteReviewFixes.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "668ad5a80e9681b618e0d68b67a6bba13cde5669"
+    },
+    {
+      "path": "test/quoteStartingValues20261017.browser.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "f0f6dcd04563bf5abdf48b13a12f1a0e9aeeb275"
+    },
+    {
+      "path": "test/quoteStartingValues20261017.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "2d93b0602932037c3fa666f086c550f2cdda807a"
+    },
+    {
+      "path": "test/releaseProductionEngineGuard.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "7e861ca32f74b7a957d7854f87a296220f827d85"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/COMMANDS.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "1f7387112963ba446cc5f3758cb5279474c13e2c"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/EXPECTED.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "fb316d451b327f084a900da354b2700b3025179c"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/FIRST_RUN_TRIAGE.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "cdfc94bedcbcf870c5e59ff5de607b745e6ed5ed"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/INVENTORY.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "38ff28332e0bc482e26a6d1ffd33291835a1d1be"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/REPORT.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "3b9946e1b3c7cb441efa100d89f2dc8814abef04"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/SHA256SUMS",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "28a1d43cd7742a2559830c692fdd2022e38a0626"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/adjacent-regressions.tap",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "e06040872345f919d870367a80985646e65c1f0d"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/compare.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "db111826824c868e401dd93989b54616895579b0"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-compressed-repeat.tap",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "b31d790b3cb5d289c4d8aa5fe7e2afa3dfd57089"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-final.tap",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "e0297034d2433dac09e2d1e8c5ce54650422bb03"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-first-results.json.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "123565bb2a489e9b60135d3d1cb2b54e3b213900"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-first-source.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "17ee2b4b31022267c4646e002e2b4521834f9495"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-first.tap",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "2ff263802ea86a41b16075f1eb4ea8b6a086b100"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery-results.json.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "695ecb46913feef6f53427f5f8a6b87ee8334b0c"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/delivery.spec.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "19857de02521531403d42478a2f7c66f4ad764e4"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-final.json.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "ec0b63a7fbe29933f52826f923506f5b08ba41c0"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-final.log",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "3debe8d29e515730a5043bc824ebd201e08585b2"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-first.json.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "7e4bb144c3b69ffbee922d18f63af57860c22325"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-first.log",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "ee26ab200f912e08730fcd5f58fb9625617842c4"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-second.json.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "3b1624666921df75650c431cc8f47699de17f15d"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/direct-second.log",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "c0a1fa5c9757287994e3085f43bd69db8aa29414"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/existing-regressions.tap",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "dd9692f270e9e3bcdfbc73a355db7f4c89c3137a"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expectations-before.sha256",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "b008db28aab180f94b8a0a259999aa1fa3c05bfb"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expectations-generation.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "0db28c25776bd6e47317be704a62d5a167d48af2"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases-final.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "b082bb9fd90791ae16ebaa39d41c7960c887bbaa"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases-first.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "b76697cdbf6bf1e26c6c08c4b675c4fdc29fa31e"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "b76697cdbf6bf1e26c6c08c4b675c4fdc29fa31e"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/fixtures-first.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "29e4490102665141820988d91d8f81d1d49ab56d"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/fixtures-second.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "40bc19386121504a419a73875c1bc431aad4af41"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/fixtures.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "e0d29359215d3471978294b38e1a7307cb346769"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/followup-expectations.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "fc9f419043484fb515d6b8f1b293985bed7efeea"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/npm-ci.log",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "a0bdf06af061bfd63b576a39f64d667eefa02c66"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/prepare-expectations.py",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "0760f21c3df44a1acd2d02cb7cc6bd339efa2175"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/prepare-followup.py",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "f6156637964b5f3fc7db76664ee46e3f86a70c36"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/push-attempt.log",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "084537ea4be405f9127c80da098bd5f4b342db1e"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/reproductions.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "437bd819e0269c1cd69917f00de69a43da89cf21"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/runtime-install.log",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "849c54a38d03692ba1b90d760034325e99bfd903"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/runtime.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "09d7cc914439a6021b8d6db46cc067fd38786b44"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/scope-check.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "a080bcbfb236c9dfc73e3c84640b6fa2b1b36cf1"
+    },
+    {
+      "path": "verification/qe-agent1-arithmetic-boundaries-20261019/underlayment-repeat.tap",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "c94205dbf4811cf8af89c679c01fd02f4d386605"
+    },
+    {
+      "path": "verification/qe-agent1-core-accuracy-20261018/f16-approval-cases.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "8189a34b4217e0daed48dd29df5a40186571496a"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/COMMANDS.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "fd83c3a38111a1e58b3a67805019bca35481d1ed"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/EXPECTED.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "4dc0699237f4b1e0e278162a37b90923c8fb9dc4"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/FIRST_RUN_TRIAGE.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "7c3d33b1b4c227eeed38f8a4ba9a0171510a3719"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/REPORT.md",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "5bb222dab3d826aad22af1459fa5c1a00b7b6e20"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/SHA256SUMS",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "0c86f24480213855d415b18d2ad106e6d1842cf5"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/build.log.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "ca700158c435d97bfdd884ae1a3060360edc7317"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/capture-proof.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "b92e31e907628bb6f73305758c4a1df41d03495b"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/capture-v11.log",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "2f586deed0b7145e311c9407390d751c1853094e"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/capture-v11.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "55fa30ac83ee201736cac5e227c2b19fd2c00182"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/compatibility-final.tap.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "30e4a65b8440e9674e41009806f4c1d7910aaa38"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/delivery-final.tap.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "985efbd0330bdc893c9ef626e5648a2c256402f0"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "34bf0f15ff027e75ba6756f71cb2822605738188"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/first-boundaries.spec.mjs.txt",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "dc41d96f7da95e4777aaf06d21c1e563e6de431b"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/first-extended-expectations.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "ea821274ee7e0a623504408581b40b90df2418b9"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/first-prepare-expectations.py",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "322fe8e3184bc18db6dc1494c09d7d4e1de3ec3e"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/fixtures.mjs",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "9689fad12daaa0015fd50f477e8d3d735a2401d1"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/focused-final.tap.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "1919a41bed60a2bf369ca1fa14e985ce0a4ce82a"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/geometry-first.tap.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "0786a0435d9a11493a41fda38722670878c935d4"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/historical-v11.json.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "bf3011a0a10dba92768f08835a8005e37264f126"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/hosted-39189734502-failure-excerpt.log.gz",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "4bc54f97f52d4e0320bd7e29111fd14b75634350"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/hosted-first-summary.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "1168c9046f2ea3ba2dbef9037a598e676191f02d"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/prepare-expectations.py",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "41f7596e0515803603d74a49ab41f6c35dc1eb13"
+    },
+    {
+      "path": "verification/qe-agent1-geometry-boundary-repair-20261019/version-inventory.json",
+      "source_commit": "4b369be7dc9d27eb467243280070ec8bc5f6513d",
+      "blob": "f7959cf8c81a1cb27246caadc5000e3ff028b8b1"
+    },
+    {
+      "path": "README.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "f21081808a4b9d5ee84b7dbf402a34d2102c0881"
+    },
+    {
+      "path": "client/src/interviewStructuredValue.js",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "d56f4d6ecd9496464b025150865e04e4bc1b5abb"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "4a7189ed932b99f63bf7f7b773c2fa1e8df649e1"
+    },
+    {
+      "path": "client/src/pricebookConflict.js",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "eae5601388c0112a4dee88d5ec178b959b12f99f"
+    },
+    {
+      "path": "client/src/pricebookReview.js",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "2347140d32a1e115ed6fee3641233bc16240a7dd"
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "6020724ea2f693be76e249c5c0ea3a883d60e11a"
+    },
+    {
+      "path": "client/src/styles.css",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "2f9484ef19dcf8c7646cf416e183bef44482e4fa"
+    },
+    {
+      "path": "docs/QUOTE_ENGINE_AUDIT.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "1fbd8194ddf7fbb72dc0497942313e63c3bc56e0"
+    },
+    {
+      "path": "server/priceBookCopy.js",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "d0cf75e3210f94d9e8ba01046495a554ab4eb51d"
+    },
+    {
+      "path": "server/priceBookMoney.js",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "ce3626a2c4c951588af96c55bab2ba279234240e"
+    },
+    {
+      "path": "server/pricePrecision.js",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "a2db9e834ba2de8c9e0f900a5f1b109384c9b3dd"
+    },
+    {
+      "path": "server/src/quoteScopeDisclosure.js",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "5ab9d84833897594ce51d620bfe750192714d8d6"
+    },
+    {
+      "path": "server/src/voice/voiceQuotePresentation.js",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "29bcbe0ef43fd665d3dae969f2868f893086651b"
+    },
+    {
+      "path": "test/qeAgent2IntegrationF16PricePrecision20261019.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "c04374f2838f261198a8884d610068cc8e4cdc76"
+    },
+    {
+      "path": "test/qeAgent2PriceEditor.browser.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "81d66535ac342419e49019155a9b4d717780b68a"
+    },
+    {
+      "path": "test/qeAgent2PriceMetadata.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "20baa52e251ad60a39f16fe94e74711d9fa4a40b"
+    },
+    {
+      "path": "test/qeAgent2PricePrecision.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "9a77d541ff0a45a4a0ebfbd7fa35bf887b6b6db2"
+    },
+    {
+      "path": "test/qeAgent3ScopePresentation20261018.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "47fb8210db7da25fc1aaa8f99e1ef2a84f0084e6"
+    },
+    {
+      "path": "test/qeRestoredServiceReceipts20261018.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "9c3eb5e7eff49e86632b97665f501d3f693a2179"
+    },
+    {
+      "path": "test/voiceAgent4F18Integration20261018.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "a5ca0958f7d6ab0c9e7120533851f6461237455b"
+    },
+    {
+      "path": "test/voiceAgent4F18Repair20261018.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "4191034b46bc8716be70df11669c07f663c30326"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/EXPECTED.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "b6154a899ff17fd3e6d661e0e5c136e5dc416041"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/F18-MATRIX-EXPECTED-original.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "1bb5ef51516d2ad52ba9f80c39e36e783001f05b"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/REPORT.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "3fd2df949f5f3d55dbc7b8ad91543bd73846c955"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/build.log.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "f01c946ff5771369b4bca8f92d9213619c838c37"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/changed-files.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "65f8cf4e7fa1fa365a609e40289aeb17bceea660"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/chromium-install.log.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "737fad174d89c839f8c3d047557f04299427e3f7"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/diff-check.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "a49d0964f6acfe3db85da35b4ebbc6b1d3d75581"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/evidence-archives.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "5d364aef3e54e994528adaadf2dd360d09edab0e"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/f16-direct-combined.tap.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "de1cc228150502c92b72123f2158bf73c22c2568"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/f16-normal-entry.tap.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "a08a6a885afb705f0d8f6fa29915efef45d15581"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/f18-original-matrix.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "4acfd27e94b5dd9f504fe82e35fb2d50c9dea1fd"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/f18-original-matrix.tap.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "476e5ff06e350c322cc84c94993543793a2f680e"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/f18-regressions.tap.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "f9fffbd89e8a643ecf6b6ac84f4b81ed3e5cd57b"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/incoming-identity.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "371e03b1250c1947154eeaeed115323fc9f58aaf"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/local-execution.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "214b1ef60f277c849cdebacf8ef6c2e611ea790a"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/local-required-names.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "57f00ba0150f75306f98bcb3ba2668c76fb65d68"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/name-manifest-correction.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "70682b40a862edef3723338030868475bcd01a17"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/neighboring-a1-roofing-adoption.tap.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "870aacfbf39e91007d8780e631c02b39319cfeb0"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/npm-ci.log.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "e2e224ec6c811a2cc1eb021c3bf1b09482ae5083"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/observations.json.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "377d188072041b57899b4d0e2f9520050e1d0ebb"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/playwright-install.log.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "3be0b8b627fcfe4964e3ef5b778c6b675544d897"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/receipts.sqlite.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "354e10b5ce1cb0d669ad94f98c61636398ba67ea"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/rendered-a3-a2.tap.gz",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "39a0165572278d388f6317d9fa7b5c7426f1c25f"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/required-test-names-first.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "093767009b107cc65c34c00976ac7eb187d5a8b5"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/required-test-names.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "8fbd6923ca4db29cc89d54ffe06da4a933c3e52c"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/selection.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "8658bac20569b0c51831ebe33a53c8e84668e7b5"
+    },
+    {
+      "path": "verification/qe-agent2-integration-checkpoint-20261019/setup-execution.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "d9ff0a69230cff999475bdb4ad168f0e26f505c0"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/EXPECTED.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "88ef919b4b5ca259e96928d959f6beb7ccc0551b"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/REPORT.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "fb726c09656fd358edb7366e449b4a09d560a80c"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/after-first.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "748759ad1aeab6c2b8e1601927273492aef058d6"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/before-final-tests.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "6cb6cbe64379d09c38089ad03e0cc2bfecfd11cd"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/before-first-native.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "5da0cfce521067acb3fdacf7fbd204213b8ae8d6"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/before-metadata-direct.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "c5412549657bbde1c868dc7a90278c9c9d85311f"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/before-precision-direct.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "2e9e243249eb5a7e9ec6d2a6164d3f45a2a87e02"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/before-restricted-runner.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "cef0103919140f10b18fa17965d97c0cd7373f37"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/build-native.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "5ef4b9cf9e6a785511ae96d9bb75ffcba37a0e42"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/build-outputs.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "043443a8c65e28d3c1883d4f3451dc85b1f62755"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/build.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "492f463a6642978a83bfee92162d98902147b4f0"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/chromium-install.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "db271693be1e5303e5ecf83b3b7b353746c0bc66"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/cross-owner-approval.patch",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "6048b661a1e471cd3da5e0c49ffabe2e40f8dfcc"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/expectations-first.sha256",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "4f7d07c17ea530de4d20e2c98f6c9605b2f5d74c"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/final-tests.sha256",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "37980584554c0b6a1e7aae7962e139998d1d87ba"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/fixtures.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "b75583e35527939043b2760cb999a52599ff042e"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/focused.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "683693ee75bd7a83906c5d2303b05affcc71ef4e"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/legacy-approval-gap.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "d75cabc8f32718ad479f073b59f69452ffb108cf"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/legacy-approval-gap.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "5f30fbbdbd2a07f0dbc2fa9afe02f11ebea71fab"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/neighboring.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "c96811d37c187da436839fc214ae744e2c9ec566"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/npm-ci.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "d0d963fcc4a7bc94ed9e6912979f8bc7bc6e607f"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/playwright-install.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "71091748fac5a6ddc4e1c9dd11b81716625616dd"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/source-identity.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "0dce377791ad7a8a32fc7358ab5b0fb816e515b2"
+    },
+    {
+      "path": "verification/qe-agent2-price-metadata-20261018/strict-selection.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "a18b322bdda5d18bdd005d3aa7c43db6321f30f5"
+    },
+    {
+      "path": "verification/qe-agent3-scope-presentation-20261018/EXPECTED.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "b167450c4d5c607906bea9cf7a23cd52441ea867"
+    },
+    {
+      "path": "verification/qe-agent3-scope-presentation-20261018/REPORT.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "c59e255f6ea48573d3b3c7ce9a0de114eabd7a71"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/EXPECTED.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "36211ba892b8e91559295b287a295330c51e6d40"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/MATRIX-EXPECTED-original.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "1bb5ef51516d2ad52ba9f80c39e36e783001f05b"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/REPORT.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "743ab05ef6fb30439c1ccfddb327ee606c61155e"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/baseline-execution.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "e560d3253f5ffef1a14ace06109305ef476139c2"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/baseline-integration.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "916856b224306f68ee02a837965f3267e4123316"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/baseline-matrix.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "d82b4699636089e046959c5ea9bf62034a83992e"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/baseline-observations.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "99cd4a2c884f81938784d36dc75580d2bf331a02"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/baseline-regressions.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "0db6a36159d76a7976032dfa3ef45e05f434c069"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/baseline.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "247a6d525c242a6e0e3e503b3f04fe6d0a1f97b7"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/build.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "f5e023f69972000de666efd5ed5707cf603acede"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/final-local-execution.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "6bd75a48bd79946eee6b322ef61f518a538dbc74"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/final-matrix-regressions.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "ea9df52b73e7fe7f68cf0fb8b2cf8af3d83a1027"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/neighbors.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "bbd709239bab56d1fcc5a5c903ec8a4eec6e6b86"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/observations.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "570763ed5af69e95027842c81eb886b48d2732f6"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/original-review-sha256.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "1a145a9a64c74c89d0ea7ae5a3e67df490312a00"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/receipts.sqlite",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "10c30575cb7adab4d967c8399b31f6391a6ed01d"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/repaired-matrix-regressions.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "c0dadbd855192d1021148be24ca48546b076aa4e"
+    },
+    {
+      "path": "verification/qe-agent4-f18-repair-20261018/review.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "4acfd27e94b5dd9f504fe82e35fb2d50c9dea1fd"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/.helpers/library_file_transfer.py",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "1918ce44a117db31813d385f749aeb7ec91d1f06"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/EXPECTED-fixture-alignment.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "df14a89c7e1db96032a0574bc82f863cacf6c1e2"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/EXPECTED-followup.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "45c3b597aaec740e521160f062e4ba7cb87d7954"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/EXPECTED.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "1bb5ef51516d2ad52ba9f80c39e36e783001f05b"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/REPORT.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "b8cc395fd645d549e4eb38216eb991f14cbb21c2"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/baseline.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "7efffe1d9702ef9dc0628d7c5715eb4d059caed0"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/execution.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "0fd0e050c1b1646dc03ce31625641cd71a8a746d"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/initial-fixtures/execution.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "1605f38cca033697fe109db9e9a8253e15715f2d"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/initial-fixtures/observations.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "f8c1a11217b200291a0bff802ab2c070e1736910"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/initial-fixtures/receipts.sqlite",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "a9596e32ed3ca02dbc986b1ce79f5afd37f10412"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/initial-fixtures/review.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "13f4885b2379004a2f00073cd3d22708a519e3b0"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/initial-fixtures/review.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "59c013094b18bd1070f024a32d64f7a18a7e93e4"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/initial-fixtures/summary.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "f65844be13ee9a7a2fb70b067cccd921c720d86e"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/minimal-execution.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "aed17f0db1cc608c8825e7608443b30c52427a69"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/minimal-reproductions.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "5913a359671180aa200f7aa67650c82792b61c20"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/minimal-reproductions.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "69fbf696c4fae6077950c830710500558606a554"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/minimal-results.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "9a8d494f7b48c2b0b085975fe3152ae8c4e42096"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/observations.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "d736a918614f167aae542efda7cafebc0287b307"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/prior-source-comparison.diff",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "c0df1e2eba5ccc0c46c9053e95ae45f3bec22ee0"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/qe-agent4-f18-review-20261018.zip",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "fc6281235f24a51923f19cf21aceaa5f25e1aa04"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/receipts.sqlite",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "df0bb3d1219ecdbfc1de25fbf39795660de9c827"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/retention.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "a5bafcb36eb1ab3846458b155e6786f37b89bbb9"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/review.spec.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "4acfd27e94b5dd9f504fe82e35fb2d50c9dea1fd"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/review.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "78763819ed1aa2805046e74a9ec4c98c8dddaf91"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/summarize.py",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "e34ff482ce64d8c5b3c85794fc7ce24f7c855d6b"
+    },
+    {
+      "path": "verification/qe-agent4-f18-review-20261018/summary.json",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "1c847d214161ee8bc2f7f2461c870aadf8ba7c14"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/EXPECTED.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "e7bb61162092897d867f39db575f31a57f6e80cf"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/REPORT.md",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "4e8a5556a84e53f97dfa8118663ebc25b7fdbaf1"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/before.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "98cdc9340409894adb77757d504fd9d32f92babb"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/build.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "ca104fee61a0a7ad9a70d249feac4444ffbdf837"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/chromium-local.log",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "e87fada5f80e4d43e5f7705c7a2a255311a16ad2"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/fixture.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "fcec33a2a194af24e47e6327a128027a96991638"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/focused.tap",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "e2cbe5b0a468db398b269df3709a4d183200f79f"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/rendered.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "0627321c9dd02ce4d4da97c9a1be0c7b63c4482f"
+    },
+    {
+      "path": "verification/qe-restored-service-receipts-20261018/reproduce-before.mjs",
+      "source_commit": "28c1c331e841878cce8edb1f235523e001ca0b25",
+      "blob": "9199a3b8bd100e647ce3cc8c3907bdfc1dd429a1"
+    }
+  ]
+}

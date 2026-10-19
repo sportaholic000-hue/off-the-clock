@@ -1,0 +1,146 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: v9 comparison metadata advances only explicit paths on a clone, including results without options
+ok 1 - v9 comparison metadata advances only explicit paths on a clone, including results without options
+  ---
+  duration_ms: 3.477909
+  type: 'test'
+  ...
+# Subtest: roof underlayment new full: footprint uses rounded surface
+ok 2 - roof underlayment new full: footprint uses rounded surface
+  ---
+  duration_ms: 29.856609
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: footprint uses rounded surface
+ok 3 - roof underlayment new partial: footprint uses rounded surface
+  ---
+  duration_ms: 13.36154
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: footprint uses rounded surface
+ok 4 - roof underlayment adopted full: footprint uses rounded surface
+  ---
+  duration_ms: 5.76029
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: footprint uses rounded surface
+ok 5 - roof underlayment adopted partial: footprint uses rounded surface
+  ---
+  duration_ms: 5.309774
+  type: 'test'
+  ...
+# Subtest: roof underlayment new full: measured surface equivalence
+ok 6 - roof underlayment new full: measured surface equivalence
+  ---
+  duration_ms: 11.782806
+  type: 'test'
+  ...
+# Subtest: roof underlayment new partial: measured surface equivalence
+ok 7 - roof underlayment new partial: measured surface equivalence
+  ---
+  duration_ms: 7.26281
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted full: measured surface equivalence
+ok 8 - roof underlayment adopted full: measured surface equivalence
+  ---
+  duration_ms: 8.015011
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted partial: measured surface equivalence
+ok 9 - roof underlayment adopted partial: measured surface equivalence
+  ---
+  duration_ms: 7.121106
+  type: 'test'
+  ...
+# Subtest: roof underlayment new: explicit partial surface takes precedence
+ok 10 - roof underlayment new: explicit partial surface takes precedence
+  ---
+  duration_ms: 5.462963
+  type: 'test'
+  ...
+# Subtest: roof underlayment adopted: explicit partial surface takes precedence
+ok 11 - roof underlayment adopted: explicit partial surface takes precedence
+  ---
+  duration_ms: 6.689558
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.105
+ok 12 - roof underlayment surface rounding before package boundary 707.105
+  ---
+  duration_ms: 3.509367
+  type: 'test'
+  ...
+# Subtest: roof underlayment surface rounding before package boundary 707.111
+ok 13 - roof underlayment surface rounding before package boundary 707.111
+  ---
+  duration_ms: 3.098438
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy full remains unchanged
+ok 14 - roof underlayment legacy full remains unchanged
+  ---
+  duration_ms: 3.462666
+  type: 'test'
+  ...
+# Subtest: roof underlayment legacy partial remains unchanged
+ok 15 - roof underlayment legacy partial remains unchanged
+  ---
+  duration_ms: 4.050169
+  type: 'test'
+  ...
+# Subtest: roof underlayment package cost receives existing markup and materials tax once
+ok 16 - roof underlayment package cost receives existing markup and materials tax once
+  ---
+  duration_ms: 3.799562
+  type: 'test'
+  ...
+# Subtest: roof underlayment installed-area full remains surface-based without package waste
+ok 17 - roof underlayment installed-area full remains surface-based without package waste
+  ---
+  duration_ms: 4.066694
+  type: 'test'
+  ...
+# Subtest: roof underlayment installed-area partial remains surface-based without package waste
+ok 18 - roof underlayment installed-area partial remains surface-based without package waste
+  ---
+  duration_ms: 3.365891
+  type: 'test'
+  ...
+# Subtest: roof underlayment retains included-zero semantics and unrelated measured scope controls
+ok 19 - roof underlayment retains included-zero semantics and unrelated measured scope controls
+  ---
+  duration_ms: 104.100568
+  type: 'test'
+  ...
+# Subtest: roof underlayment corrected full saved widget-route and voice-tool parity
+ok 20 - roof underlayment corrected full saved widget-route and voice-tool parity
+  ---
+  duration_ms: 1281.202578
+  type: 'test'
+  ...
+# Subtest: roof underlayment corrected partial saved widget-route and voice-tool parity
+ok 21 - roof underlayment corrected partial saved widget-route and voice-tool parity
+  ---
+  duration_ms: 695.768021
+  type: 'test'
+  ...
+# Subtest: roof underlayment v7 approval reviews new requests; explicit v9 reapproval preserves historical retries
+ok 22 - roof underlayment v7 approval reviews new requests; explicit v9 reapproval preserves historical retries
+  ---
+  duration_ms: 465.288264
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2953.214995

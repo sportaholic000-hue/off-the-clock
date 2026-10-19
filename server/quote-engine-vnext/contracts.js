@@ -9,6 +9,7 @@ import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
+import {roofSurfaceAreaSqft} from './roofGeometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringMoneyKind, offeringBaselineConfirmation} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
@@ -1345,7 +1346,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
     if(c.serviceScope==='full'&&(c.partialPercent!==undefined||c.partialAreaSqft!==undefined))errors.push({field:c.partialAreaSqft!==undefined?'partialAreaSqft':'partialPercent',message:'Partial measurements apply only to a partial roof replacement.'});
     if(c.serviceScope==='partial'){
       const totalArea=c.roofSizeMethod==='footprint'&&Number.isFinite(c.roofSizeInput)&&Number.isFinite(c.pitchRisePer12)
-        ? Math.round(c.roofSizeInput*Math.sqrt(1+(c.pitchRisePer12/12)**2)*100)/100:c.roofSizeInput;
+        ? roofSurfaceAreaSqft(c.roofSizeInput,c.pitchRisePer12):c.roofSizeInput;
       if([totalArea,c.partialPercent,c.partialAreaSqft].every(Number.isFinite)&&exactCompare(exactMultiply(totalArea,c.partialPercent),exactMultiply(c.partialAreaSqft,100))!==0)errors.push({field:'partialAreaSqft',message:'Measured partial area and affected percentage do not agree.'});
       for(const name of ['partialAreaSqft','partialPercent'])if(Number.isFinite(c[name])&&Number.isFinite(totalArea)){
         const area=name==='partialPercent'?exactDivide(exactMultiply(totalArea,c[name]),100):c[name];

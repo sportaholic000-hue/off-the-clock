@@ -1,0 +1,1078 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: launch 1: basic painting stays live with an explicit owner limitation; good walls cost $1792
+ok 1 - launch 1: basic painting stays live with an explicit owner limitation; good walls cost $1792
+  ---
+  duration_ms: 250.228543
+  type: 'test'
+  ...
+# Subtest: launch 1: basic fair walls explain itemized preparation
+ok 2 - launch 1: basic fair walls explain itemized preparation
+  ---
+  duration_ms: 2.591406
+  type: 'test'
+  ...
+# Subtest: launch 1: basic poor walls explain itemized preparation
+ok 3 - launch 1: basic poor walls explain itemized preparation
+  ---
+  duration_ms: 1.595048
+  type: 'test'
+  ...
+# Subtest: launch 1: preparation product hidden in basic scope editor and visible in itemized mode
+ok 4 - launch 1: preparation product hidden in basic scope editor and visible in itemized mode
+  ---
+  duration_ms: 16.23546
+  type: 'test'
+  ...
+# Subtest: launch 2: flat roof $14700 with building type undefined
+ok 5 - launch 2: flat roof $14700 with building type undefined
+  ---
+  duration_ms: 8.75839
+  type: 'test'
+  ...
+# Subtest: launch 2: flat roof $14700 with building type residential
+ok 6 - launch 2: flat roof $14700 with building type residential
+  ---
+  duration_ms: 4.054395
+  type: 'test'
+  ...
+# Subtest: launch 2: flat roof $14700 with building type commercial
+ok 7 - launch 2: flat roof $14700 with building type commercial
+  ---
+  duration_ms: 3.788977
+  type: 'test'
+  ...
+# Subtest: launch 3: interview and editor agree on vinyl plank
+ok 8 - launch 3: interview and editor agree on vinyl plank
+  ---
+  duration_ms: 60.606556
+  type: 'test'
+  ...
+# Subtest: launch 3: interview and editor agree on Ceramic tile
+ok 9 - launch 3: interview and editor agree on Ceramic tile
+  ---
+  duration_ms: 32.438314
+  type: 'test'
+  ...
+# Subtest: launch 3: interview and editor agree on Cedar privacy
+ok 10 - launch 3: interview and editor agree on Cedar privacy
+  ---
+  duration_ms: 25.422595
+  type: 'test'
+  ...
+# Subtest: launch 3: reject normalized collision vinyl plank/vinyl_plank
+ok 11 - launch 3: reject normalized collision vinyl plank/vinyl_plank
+  ---
+  duration_ms: 25.511869
+  type: 'test'
+  ...
+# Subtest: launch 3: reject normalized collision Ceramic tile/ceramic-tile
+ok 12 - launch 3: reject normalized collision Ceramic tile/ceramic-tile
+  ---
+  duration_ms: 27.299341
+  type: 'test'
+  ...
+# Subtest: launch 3: reject normalized collision Cédar privacy/Cedar privacy
+ok 13 - launch 3: reject normalized collision Cédar privacy/Cedar privacy
+  ---
+  duration_ms: 20.678862
+  type: 'test'
+  ...
+# Subtest: launch 3: gate names normalize, canonical scope aliases stay unchanged, and collisions never overwrite
+ok 14 - launch 3: gate names normalize, canonical scope aliases stay unchanged, and collisions never overwrite
+  ---
+  duration_ms: 0.672551
+  type: 'test'
+  ...
+# Subtest: launch 4: real peak controls show optional/off explanation and month names at both levels
+ok 15 - launch 4: real peak controls show optional/off explanation and month names at both levels
+  ---
+  duration_ms: 27.179357
+  type: 'test'
+  ...
+# Subtest: launch 5: never-approved quote names missing approval
+ok 16 - launch 5: never-approved quote names missing approval
+  ---
+  duration_ms: 0.75803
+  type: 'test'
+  ...
+# Subtest: launch 5: never-approved owner preview names missing approval
+ok 17 - launch 5: never-approved owner preview names missing approval
+  ---
+  duration_ms: 0.23317
+  type: 'test'
+  ...
+# Subtest: launch 5: an active service with a conflicting creation receipt still fails identity checks
+ok 18 - launch 5: an active service with a conflicting creation receipt still fails identity checks
+  ---
+  duration_ms: 0.316305
+  type: 'test'
+  ...
+# Subtest: launch 6: slab below the only demolition band has only a thickness error
+ok 19 - launch 6: slab below the only demolition band has only a thickness error
+  ---
+  duration_ms: 6.180763
+  type: 'test'
+  ...
+# Subtest: launch 6: genuinely mismatching demolition access is still reported
+ok 20 - launch 6: genuinely mismatching demolition access is still reported
+  ---
+  duration_ms: 2.23469
+  type: 'test'
+  ...
+# Subtest: launch 7: capitalized layer disclosures keep the $16900 total installed
+ok 21 - launch 7: capitalized layer disclosures keep the $16900 total installed
+  ---
+  duration_ms: 15.674277
+  type: 'test'
+  ...
+# Subtest: launch 7: capitalized layer disclosures keep the $16900 total itemized
+ok 22 - launch 7: capitalized layer disclosures keep the $16900 total itemized
+  ---
+  duration_ms: 12.475048
+  type: 'test'
+  ...
+# Subtest: launch 8: production has no retired calculators or legacy status API; shared metadata remains usable
+ok 23 - launch 8: production has no retired calculators or legacy status API; shared metadata remains usable
+  ---
+  duration_ms: 14.216345
+  type: 'test'
+  ...
+# Subtest: launch rounding: 10005/10005 labor yields 22123 cents
+ok 24 - launch rounding: 10005/10005 labor yields 22123 cents
+  ---
+  duration_ms: 22.838379
+  type: 'test'
+  ...
+# Subtest: launch rounding: 10006/10005 labor yields 22124 cents
+ok 25 - launch rounding: 10006/10005 labor yields 22124 cents
+  ---
+  duration_ms: 14.70463
+  type: 'test'
+  ...
+# Subtest: launch rounding: 10005/10006 labor yields 22124 cents
+ok 26 - launch rounding: 10005/10006 labor yields 22124 cents
+  ---
+  duration_ms: 16.445266
+  type: 'test'
+  ...
+# Subtest: launch rounding: 10004/10004 labor yields 22121 cents
+ok 27 - launch rounding: 10004/10004 labor yields 22121 cents
+  ---
+  duration_ms: 16.054039
+  type: 'test'
+  ...
+# Subtest: launch rounding: 10009/10009 labor yields 22132 cents
+ok 28 - launch rounding: 10009/10009 labor yields 22132 cents
+  ---
+  duration_ms: 14.237898
+  type: 'test'
+  ...
+# Subtest: launch rounding: allocated installed-price surcharge receives no additional markup ($232.24)
+ok 29 - launch rounding: allocated installed-price surcharge receives no additional markup ($232.24)
+  ---
+  duration_ms: 8.979131
+  type: 'test'
+  ...
+# Subtest: launch peak off zero leaves $201.22
+ok 30 - launch peak off zero leaves $201.22
+  ---
+  duration_ms: 4.320616
+  type: 'test'
+  ...
+# Subtest: launch peak off month leaves $201.22
+ok 31 - launch peak off month leaves $201.22
+  ---
+  duration_ms: 3.500914
+  type: 'test'
+  ...
+# Subtest: launch room maximum inclusive: 450/3 -> small
+ok 32 - launch room maximum inclusive: 450/3 -> small
+  ---
+  duration_ms: 2.224365
+  type: 'test'
+  ...
+# Subtest: launch room maximum inclusive: 900/3 -> medium
+ok 33 - launch room maximum inclusive: 900/3 -> medium
+  ---
+  duration_ms: 2.054429
+  type: 'test'
+  ...
+# Subtest: launch arithmetic version invalidates v5 approvals; reapproval restores the $221.23 quote
+ok 34 - launch arithmetic version invalidates v5 approvals; reapproval restores the $221.23 quote
+  ---
+  duration_ms: 372.425291
+  type: 'test'
+  ...
+# Subtest: launch labels equal the owner-approved wording
+ok 35 - launch labels equal the owner-approved wording
+  ---
+  duration_ms: 0.241573
+  type: 'test'
+  ...
+# Subtest: follow-up interview normalizes FLAT_ROOF_REPLACEMENT.laborPerSqft without changing values
+ok 36 - follow-up interview normalizes FLAT_ROOF_REPLACEMENT.laborPerSqft without changing values
+  ---
+  duration_ms: 19.275162
+  type: 'test'
+  ...
+# Subtest: follow-up interview normalizes FLOORING_INSTALL.laborPerSqft without changing values
+ok 37 - follow-up interview normalizes FLOORING_INSTALL.laborPerSqft without changing values
+  ---
+  duration_ms: 17.465019
+  type: 'test'
+  ...
+# Subtest: follow-up interview normalizes FLOORING_INSTALL.removalPerSqft without changing values
+ok 38 - follow-up interview normalizes FLOORING_INSTALL.removalPerSqft without changing values
+  ---
+  duration_ms: 16.893901
+  type: 'test'
+  ...
+# Subtest: follow-up interview normalizes FLOORING_INSTALL.removalPerSqft without changing values
+ok 39 - follow-up interview normalizes FLOORING_INSTALL.removalPerSqft without changing values
+  ---
+  duration_ms: 17.037827
+  type: 'test'
+  ...
+# Subtest: follow-up interview normalizes ROOFING_REPLACEMENT.underlaymentPriceBasis without changing values
+ok 40 - follow-up interview normalizes ROOFING_REPLACEMENT.underlaymentPriceBasis without changing values
+  ---
+  duration_ms: 16.54023
+  type: 'test'
+  ...
+# Subtest: follow-up interview normalizes FLAT_ROOF_REPLACEMENT.laborPerSqft without changing values
+ok 41 - follow-up interview normalizes FLAT_ROOF_REPLACEMENT.laborPerSqft without changing values
+  ---
+  duration_ms: 18.825334
+  type: 'test'
+  ...
+# Subtest: follow-up interview normalizes ROOFING_REPAIR.repairMaterialAllowance without changing values
+ok 42 - follow-up interview normalizes ROOFING_REPAIR.repairMaterialAllowance without changing values
+  ---
+  duration_ms: 16.307149
+  type: 'test'
+  ...
+# Subtest: follow-up rate map rejects colliding names EPDM rubber/epdm_rubber
+ok 43 - follow-up rate map rejects colliding names EPDM rubber/epdm_rubber
+  ---
+  duration_ms: 17.504339
+  type: 'test'
+  ...
+# Subtest: follow-up rate map rejects colliding names Cédar privacy/Cedar privacy
+ok 44 - follow-up rate map rejects colliding names Cédar privacy/Cedar privacy
+  ---
+  duration_ms: 16.756505
+  type: 'test'
+  ...
+# Subtest: follow-up nested product collisions are rejected before overwriting prices
+ok 45 - follow-up nested product collisions are rejected before overwriting prices
+  ---
+  duration_ms: 17.216402
+  type: 'test'
+  ...
+# Subtest: follow-up normalization retains closed domains, exact structural keys and money precision
+ok 46 - follow-up normalization retains closed domains, exact structural keys and money precision
+  ---
+  duration_ms: 115.752782
+  type: 'test'
+  ...
+# Subtest: follow-up actual AI response returns the normalized $5 rate and registry-compatible key
+ok 47 - follow-up actual AI response returns the normalized $5 rate and registry-compatible key
+  ---
+  duration_ms: 63.229801
+  type: 'test'
+  ...
+# Subtest: follow-up starter returns normalized supported prices without changing its input
+ok 48 - follow-up starter returns normalized supported prices without changing its input
+  ---
+  duration_ms: 22.154
+  type: 'test'
+  ...
+# Subtest: follow-up tier-only itemized fair walls quote $2250 without a basic-mode notice
+ok 49 - follow-up tier-only itemized fair walls quote $2250 without a basic-mode notice
+  ---
+  duration_ms: 21.419166
+  type: 'test'
+  ...
+# Subtest: follow-up all-basic tiers retain the approved notice and $1792 good-wall quote
+ok 50 - follow-up all-basic tiers retain the approved notice and $1792 good-wall quote
+  ---
+  duration_ms: 5.295141
+  type: 'test'
+  ...
+# Subtest: follow-up mixed pricing limits the warning to the basic tier; fair walls still quote $2250
+ok 51 - follow-up mixed pricing limits the warning to the basic tier; fair walls still quote $2250
+  ---
+  duration_ms: 17.673834
+  type: 'test'
+  ...
+# Subtest: follow-up a failed itemized tier cannot hide the remaining basic limitation
+ok 52 - follow-up a failed itemized tier cannot hide the remaining basic limitation
+  ---
+  duration_ms: 12.535578
+  type: 'test'
+  ...
+# Subtest: follow-up an invalid basic tier cannot add a warning to a complete itemized option
+ok 53 - follow-up an invalid basic tier cannot add a warning to a complete itemized option
+  ---
+  duration_ms: 16.55397
+  type: 'test'
+  ...
+# Subtest: follow-up saved and approved tier-only itemized pricing has no warning and quotes $2250
+ok 54 - follow-up saved and approved tier-only itemized pricing has no warning and quotes $2250
+  ---
+  duration_ms: 156.858059
+  type: 'test'
+  ...
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Oct16 layout refuses missing closure with no released price
+ok 55 - Oct16 layout refuses missing closure with no released price
+  ---
+  duration_ms: 12.497821
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses zero section with no released price
+ok 56 - Oct16 layout refuses zero section with no released price
+  ---
+  duration_ms: 2.4411
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses negative section with no released price
+ok 57 - Oct16 layout refuses negative section with no released price
+  ---
+  duration_ms: 2.318857
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses unknown gate with no released price
+ok 58 - Oct16 layout refuses unknown gate with no released price
+  ---
+  duration_ms: 3.221844
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses gate at open end with no released price
+ok 59 - Oct16 layout refuses gate at open end with no released price
+  ---
+  duration_ms: 3.090226
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses empty runs with no released price
+ok 60 - Oct16 layout refuses empty runs with no released price
+  ---
+  duration_ms: 1.625504
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses fractional run count with no released price
+ok 61 - Oct16 layout refuses fractional run count with no released price
+  ---
+  duration_ms: 2.76682
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses contradictory run count with no released price
+ok 62 - Oct16 layout refuses contradictory run count with no released price
+  ---
+  duration_ms: 1.739495
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses contradictory total with no released price
+ok 63 - Oct16 layout refuses contradictory total with no released price
+  ---
+  duration_ms: 2.834592
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses contradictory corners with no released price
+ok 64 - Oct16 layout refuses contradictory corners with no released price
+  ---
+  duration_ms: 2.732098
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses text total with no released price
+ok 65 - Oct16 layout refuses text total with no released price
+  ---
+  duration_ms: 1.789711
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses unmeasured method with no released price
+ok 66 - Oct16 layout refuses unmeasured method with no released price
+  ---
+  duration_ms: 1.497562
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses unknown zero gate with no released price
+ok 67 - Oct16 layout refuses unknown zero gate with no released price
+  ---
+  duration_ms: 1.751413
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses contradictory gates with no released price
+ok 68 - Oct16 layout refuses contradictory gates with no released price
+  ---
+  duration_ms: 1.287857
+  type: 'test'
+  ...
+# Subtest: Oct16 layout refuses extra section input with no released price
+ok 69 - Oct16 layout refuses extra section input with no released price
+  ---
+  duration_ms: 1.918034
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 4 ft: review
+ok 70 - Oct16 exclusive/inclusive row boundary 4 ft: review
+  ---
+  duration_ms: 4.473075
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 6 ft: 400000
+ok 71 - Oct16 exclusive/inclusive row boundary 6 ft: 400000
+  ---
+  duration_ms: 15.998234
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 6.01 ft: 600000
+ok 72 - Oct16 exclusive/inclusive row boundary 6.01 ft: 600000
+  ---
+  duration_ms: 6.034684
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 7 ft: 600000
+ok 73 - Oct16 exclusive/inclusive row boundary 7 ft: 600000
+  ---
+  duration_ms: 5.031626
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 8 ft: 600000
+ok 74 - Oct16 exclusive/inclusive row boundary 8 ft: 600000
+  ---
+  duration_ms: 6.036791
+  type: 'test'
+  ...
+# Subtest: Oct16 exclusive/inclusive row boundary 9 ft: review
+ok 75 - Oct16 exclusive/inclusive row boundary 9 ft: review
+  ---
+  duration_ms: 1.63593
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed catalog null remains review-only without throwing
+ok 76 - Oct16 malformed catalog null remains review-only without throwing
+  ---
+  duration_ms: 8.023164
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed catalog [] remains review-only without throwing
+ok 77 - Oct16 malformed catalog [] remains review-only without throwing
+  ---
+  duration_ms: 1.959907
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed catalog 42 remains review-only without throwing
+ok 78 - Oct16 malformed catalog 42 remains review-only without throwing
+  ---
+  duration_ms: 2.464335
+  type: 'test'
+  ...
+# Subtest: Oct16 malformed catalog "bad" remains review-only without throwing
+ok 79 - Oct16 malformed catalog "bad" remains review-only without throwing
+  ---
+  duration_ms: 2.029992
+  type: 'test'
+  ...
+# Subtest: Oct16 row validation rejects exact/range overlaps and unsupported inch precision; adjacent rows do not overlap
+ok 80 - Oct16 row validation rejects exact/range overlaps and unsupported inch precision; adjacent rows do not overlap
+  ---
+  duration_ms: 1.492123
+  type: 'test'
+  ...
+# Subtest: Oct16 installed gates cannot exclude their own posts, even when the base row would not need extra posts
+ok 81 - Oct16 installed gates cannot exclude their own posts, even when the base row would not need extra posts
+  ---
+  duration_ms: 3.56491
+  type: 'test'
+  ...
+# Subtest: Oct16 explicit zero classification is local to its height row: 16 LF straight totals 56200 cents and records included terminal materials
+ok 82 - Oct16 explicit zero classification is local to its height row: 16 LF straight totals 56200 cents and records included terminal materials
+  ---
+  duration_ms: 31.920154
+  type: 'test'
+  ...
+# Subtest: Oct16 free tiers are scoped to a fence type: aluminum Good can be zero; wood Good remains its positive 100000-cent offering
+ok 83 - Oct16 free tiers are scoped to a fence type: aluminum Good can be zero; wood Good remains its positive 100000-cent offering
+  ---
+  duration_ms: 144.24258
+  type: 'test'
+  ...
+# Subtest: Oct16 exact spans do not add a post on binary decimal boundaries: 0.3 ft / 0.1 ft has 4 posts, not 5
+ok 84 - Oct16 exact spans do not add a post on binary decimal boundaries: 0.3 ft / 0.1 ft has 4 posts, not 5
+  ---
+  duration_ms: 0.37248
+  type: 'test'
+  ...
+# Subtest: Oct16 new total-only rows require the run count instead of assuming one run
+ok 85 - Oct16 new total-only rows require the run count instead of assuming one run
+  ---
+  duration_ms: 2.036482
+  type: 'test'
+  ...
+# Subtest: Oct16 quarter-foot sections preserve the 1 ft project minimum: 0.25 ft reviews; 0.25+0.75 ft quotes 3 terminal posts / 12200 cents
+ok 86 - Oct16 quarter-foot sections preserve the 1 ft project minimum: 0.25 ft reviews; 0.25+0.75 ft quotes 3 terminal posts / 12200 cents
+  ---
+  duration_ms: 9.484211
+  type: 'test'
+  ...
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Oct16 follow-up blank/null/zero mowing visit charges retain5000/7500 cents without a fabricated owner rate
+ok 87 - Oct16 follow-up blank/null/zero mowing visit charges retain5000/7500 cents without a fabricated owner rate
+  ---
+  duration_ms: 60.73556
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up first/recurring minima and fixed service charge are evaluated independently, with all fixed common fees charged once per visit
+ok 88 - Oct16 follow-up first/recurring minima and fixed service charge are evaluated independently, with all fixed common fees charged once per visit
+  ---
+  duration_ms: 7.447428
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up first visits retain each tier own prices and exclusions without changing the first valid option mirror
+ok 89 - Oct16 follow-up first visits retain each tier own prices and exclusions without changing the first valid option mirror
+  ---
+  duration_ms: 43.74868
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up explicitly stated fractional loads price exactly before the flat minimum; count-zero still pays the minimum
+ok 90 - Oct16 follow-up explicitly stated fractional loads price exactly before the flat minimum; count-zero still pays the minimum
+  ---
+  duration_ms: 10.622061
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up zero supplemental disposal prices preserve a positive flat minimum, without declaring the cleanup itself free
+ok 91 - Oct16 follow-up zero supplemental disposal prices preserve a positive flat minimum, without declaring the cleanup itself free
+  ---
+  duration_ms: 8.247141
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup exact ceiling honors every debris level; disposal and additional haul-away each replace common disposal only once
+ok 92 - Oct16 follow-up cleanup exact ceiling honors every debris level; disposal and additional haul-away each replace common disposal only once
+  ---
+  duration_ms: 9.104539
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up recurring weekly: 5000 cents maintained, separate first visit 7500 cents
+ok 93 - Oct16 follow-up recurring weekly: 5000 cents maintained, separate first visit 7500 cents
+  ---
+  duration_ms: 13.032997
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up recurring biweekly: 5000 cents maintained, separate first visit 7500 cents
+ok 94 - Oct16 follow-up recurring biweekly: 5000 cents maintained, separate first visit 7500 cents
+  ---
+  duration_ms: 13.58061
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up recurring monthly: 5000 cents maintained, separate first visit 7500 cents
+ok 95 - Oct16 follow-up recurring monthly: 5000 cents maintained, separate first visit 7500 cents
+  ---
+  duration_ms: 13.067708
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up mowing: one-time overgrown remains 7500 cents; recurring maintained 5000 with no separate first visit
+ok 96 - Oct16 follow-up mowing: one-time overgrown remains 7500 cents; recurring maintained 5000 with no separate first visit
+  ---
+  duration_ms: 6.045019
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up bagging follows its own visit: 1000 recurring and 1500 first, totals 6000/9000 cents
+ok 97 - Oct16 follow-up bagging follows its own visit: 1000 recurring and 1500 first, totals 6000/9000 cents
+  ---
+  duration_ms: 4.596601
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up per-visit charge: 4000 plus 5000 recurring, 4000 plus 7500 first; blank preserves cents
+ok 98 - Oct16 follow-up per-visit charge: 4000 plus 5000 recurring, 4000 plus 7500 first; blank preserves cents
+  ---
+  duration_ms: 9.438472
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up frequency and condition do not multiply the per-visit charge or its bagging basis
+ok 99 - Oct16 follow-up frequency and condition do not multiply the per-visit charge or its bagging basis
+  ---
+  duration_ms: 4.568309
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up edging is optional labor: 5000 mowing + 5000 edging earns 2000 seasonal surcharge and no materials-only tax
+ok 100 - Oct16 follow-up edging is optional labor: 5000 mowing + 5000 edging earns 2000 seasonal surcharge and no materials-only tax
+  ---
+  duration_ms: 5.996095
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup small estimated load
+ok 101 - Oct16 follow-up cleanup small estimated load
+  ---
+  duration_ms: 2.877997
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup large estimated load
+ok 102 - Oct16 follow-up cleanup large estimated load
+  ---
+  duration_ms: 3.153972
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup 12 stated bags
+ok 103 - Oct16 follow-up cleanup 12 stated bags
+  ---
+  duration_ms: 2.62052
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup 3 stated loads
+ok 104 - Oct16 follow-up cleanup 3 stated loads
+  ---
+  duration_ms: 3.312912
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup unknown bag and load counts
+ok 105 - Oct16 follow-up cleanup unknown bag and load counts
+  ---
+  duration_ms: 2.529373
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup legacy flat minimum at 1000 sq ft = 10000 disposal cents
+ok 106 - Oct16 follow-up cleanup legacy flat minimum at 1000 sq ft = 10000 disposal cents
+  ---
+  duration_ms: 2.353459
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup legacy flat minimum at 10000 sq ft = 10000 disposal cents
+ok 107 - Oct16 follow-up cleanup legacy flat minimum at 10000 sq ft = 10000 disposal cents
+  ---
+  duration_ms: 2.527961
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up cleanup count conflicts and invalid quantities require review; incomplete active load pricing cannot silently use the minimum
+ok 108 - Oct16 follow-up cleanup count conflicts and invalid quantities require review; incomplete active load pricing cannot silently use the minimum
+  ---
+  duration_ms: 15.356029
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up first-visit evidence cannot be changed or removed while a recurring estimate is released
+ok 109 - Oct16 follow-up first-visit evidence cannot be changed or removed while a recurring estimate is released
+  ---
+  duration_ms: 23.30405
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up uncovered fence height copy 6 ft needs no numeric article
+ok 110 - Oct16 follow-up uncovered fence height copy 6 ft needs no numeric article
+  ---
+  duration_ms: 5.138086
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up uncovered fence height copy 8 ft needs no numeric article
+ok 111 - Oct16 follow-up uncovered fence height copy 8 ft needs no numeric article
+  ---
+  duration_ms: 2.251334
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up uncovered fence height copy 11 ft needs no numeric article
+ok 112 - Oct16 follow-up uncovered fence height copy 11 ft needs no numeric article
+  ---
+  duration_ms: 2.04822
+  type: 'test'
+  ...
+# Subtest: Oct16 follow-up uncovered fence height copy 18 ft needs no numeric article
+ok 113 - Oct16 follow-up uncovered fence height copy 18 ft needs no numeric article
+  ---
+  duration_ms: 2.097184
+  type: 'test'
+  ...
+# (node:19) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: surface Oct16: exact wall coat split 1
+ok 114 - surface Oct16: exact wall coat split 1
+  ---
+  duration_ms: 28.810399
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 2
+ok 115 - surface Oct16: exact wall coat split 2
+  ---
+  duration_ms: 5.776946
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact wall coat split 3
+ok 116 - surface Oct16: exact wall coat split 3
+  ---
+  duration_ms: 6.365711
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 1
+ok 117 - surface Oct16: blank ratio retains linear coats 1
+  ---
+  duration_ms: 5.378438
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 2
+ok 118 - surface Oct16: blank ratio retains linear coats 2
+  ---
+  duration_ms: 4.440377
+  type: 'test'
+  ...
+# Subtest: surface Oct16: blank ratio retains linear coats 3
+ok 119 - surface Oct16: blank ratio retains linear coats 3
+  ---
+  duration_ms: 7.212595
+  type: 'test'
+  ...
+# Subtest: surface Oct16: converted rates retain exact fractional cents and approved independent rounding
+ok 120 - surface Oct16: converted rates retain exact fractional cents and approved independent rounding
+  ---
+  duration_ms: 7.77544
+  type: 'test'
+  ...
+# Subtest: surface Oct16: poor wall preparation and good ceiling coats are independent
+ok 121 - surface Oct16: poor wall preparation and good ceiling coats are independent
+  ---
+  duration_ms: 12.258913
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic painting still sends fair and poor walls to review
+ok 122 - surface Oct16: basic painting still sends fair and poor walls to review
+  ---
+  duration_ms: 3.523317
+  type: 'test'
+  ...
+# Subtest: surface Oct16: room dimensions separate labor from net paint without blocking a best guess
+ok 123 - surface Oct16: room dimensions separate labor from net paint without blocking a best guess
+  ---
+  duration_ms: 32.94855
+  type: 'test'
+  ...
+# Subtest: surface Oct16: siding openings_left_in convention and gables
+ok 124 - surface Oct16: siding openings_left_in convention and gables
+  ---
+  duration_ms: 5.904247
+  type: 'test'
+  ...
+# Subtest: surface Oct16: siding openings_subtracted convention and gables
+ok 125 - surface Oct16: siding openings_subtracted convention and gables
+  ---
+  duration_ms: 4.045834
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exterior labor leaves ordinary openings in and paint subtracts all openings
+ok 126 - surface Oct16: exterior labor leaves ordinary openings in and paint subtracts all openings
+  ---
+  duration_ms: 5.937298
+  type: 'test'
+  ...
+# Subtest: surface Oct16: priced door sides and fascia extend once; unpriced requested doors are excluded
+ok 127 - surface Oct16: priced door sides and fascia extend once; unpriced requested doors are excluded
+  ---
+  duration_ms: 24.962633
+  type: 'test'
+  ...
+# Subtest: surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim
+ok 128 - surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim
+  ---
+  duration_ms: 6.207323
+  type: 'test'
+  ...
+# Subtest: surface Oct16: legacy no-new-input prices keep baseline cents
+ok 129 - surface Oct16: legacy no-new-input prices keep baseline cents
+  ---
+  duration_ms: 16.698027
+  type: 'test'
+  ...
+# Subtest: surface Oct16: missing siding convention names owner pricing rather than guessing a basis
+ok 130 - surface Oct16: missing siding convention names owner pricing rather than guessing a basis
+  ---
+  duration_ms: 1.29675
+  type: 'test'
+  ...
+# Subtest: surface Oct16: malformed new fields and inconsistent measurements cannot quote
+ok 131 - surface Oct16: malformed new fields and inconsistent measurements cannot quote
+  ---
+  duration_ms: 6.309908
+  type: 'test'
+  ...
+# Subtest: surface Oct16: widget and voice expose the same room and per-surface names without private rates
+ok 132 - surface Oct16: widget and voice expose the same room and per-surface names without private rates
+  ---
+  duration_ms: 1.601668
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic ceiling has its own exact coat split
+ok 133 - surface Oct16: basic ceiling has its own exact coat split
+  ---
+  duration_ms: 2.556224
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic trim has its own exact coat split
+ok 134 - surface Oct16: basic trim has its own exact coat split
+  ---
+  duration_ms: 2.312517
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic primer has its own exact coat split
+ok 135 - surface Oct16: basic primer has its own exact coat split
+  ---
+  duration_ms: 2.585909
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic ceilingPrimer has its own exact coat split
+ok 136 - surface Oct16: basic ceilingPrimer has its own exact coat split
+  ---
+  duration_ms: 2.71356
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic trimPrimer has its own exact coat split
+ok 137 - surface Oct16: basic trimPrimer has its own exact coat split
+  ---
+  duration_ms: 2.392197
+  type: 'test'
+  ...
+# Subtest: surface Oct16: itemized trim has independent coats and no height adjustment
+ok 138 - surface Oct16: itemized trim has independent coats and no height adjustment
+  ---
+  duration_ms: 3.936629
+  type: 'test'
+  ...
+# Subtest: surface Oct16: mixed-height installed room prices adjust only their labor shares
+ok 139 - surface Oct16: mixed-height installed room prices adjust only their labor shares
+  ---
+  duration_ms: 3.334023
+  type: 'test'
+  ...
+# Subtest: surface Oct16: optional siding soffit unit square_feet
+ok 140 - surface Oct16: optional siding soffit unit square_feet
+  ---
+  duration_ms: 2.769815
+  type: 'test'
+  ...
+# Subtest: surface Oct16: optional siding soffit unit linear_feet
+ok 141 - surface Oct16: optional siding soffit unit linear_feet
+  ---
+  duration_ms: 1.957443
+  type: 'test'
+  ...
+# Subtest: surface Oct16: differing garage openings subtract qualifying openings from painting labor
+ok 142 - surface Oct16: differing garage openings subtract qualifying openings from painting labor
+  ---
+  duration_ms: 3.590728
+  type: 'test'
+  ...
+# Subtest: surface Oct16: new settings persist, can be approved, and changed content invalidates approval
+ok 143 - surface Oct16: new settings persist, can be approved, and changed content invalidates approval
+  ---
+  duration_ms: 552.613336
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic wall and ceiling primer labor follow each room height
+ok 144 - surface Oct16: basic wall and ceiling primer labor follow each room height
+  ---
+  duration_ms: 4.518764
+  type: 'test'
+  ...
+# Subtest: surface Oct16: net room paint and trim primer package costs replace component materials
+ok 145 - surface Oct16: net room paint and trim primer package costs replace component materials
+  ---
+  duration_ms: 5.611627
+  type: 'test'
+  ...
+# Subtest: surface Oct16: large room openings use their own room height instead of an allocation
+ok 146 - surface Oct16: large room openings use their own room height instead of an allocation
+  ---
+  duration_ms: 4.448148
+  type: 'test'
+  ...
+# Subtest: surface Oct16: direct wall area can retain labor openings and subtract net paint
+ok 147 - surface Oct16: direct wall area can retain labor openings and subtract net paint
+  ---
+  duration_ms: 2.515142
+  type: 'test'
+  ...
+# Subtest: surface Oct16: explicitly priced good trim preparation is charged without height adjustment
+ok 148 - surface Oct16: explicitly priced good trim preparation is charged without height adjustment
+  ---
+  duration_ms: 2.975464
+  type: 'test'
+  ...
+# Subtest: surface Oct16: cost-based trim preparation uses its package instead of area-rate material
+ok 149 - surface Oct16: cost-based trim preparation uses its package instead of area-rate material
+  ---
+  duration_ms: 4.006534
+  type: 'test'
+  ...
+# Subtest: surface Oct16: basic explicit trim components replace retained prices and split coats
+ok 150 - surface Oct16: basic explicit trim components replace retained prices and split coats
+  ---
+  duration_ms: 3.771161
+  type: 'test'
+  ...
+# Subtest: surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs
+ok 151 - surface Oct16: nested room confirmation text uses labels and numbers without mutating signed inputs
+  ---
+  duration_ms: 0.862287
+  type: 'test'
+  ...
+# Subtest: surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding
+ok 152 - surface Oct16: unpriced siding soffit does not invent a unit or block the priced siding
+  ---
+  duration_ms: 5.107239
+  type: 'test'
+  ...
+# Subtest: surface Oct16: zero net paint uses zero packages while labor still quotes
+ok 153 - surface Oct16: zero net paint uses zero packages while labor still quotes
+  ---
+  duration_ms: 2.86671
+  type: 'test'
+  ...
+# Subtest: surface Oct16: exact derived wall area survives preparation extension to a safe-integer boundary
+ok 154 - surface Oct16: exact derived wall area survives preparation extension to a safe-integer boundary
+  ---
+  duration_ms: 5.027299
+  type: 'test'
+  ...
+# (node:20) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lane C fixes: room opening {"widthFeet":12.5,"heightFeet":8,"runsFloorToCeiling":false}
+ok 155 - lane C fixes: room opening {"widthFeet":12.5,"heightFeet":8,"runsFloorToCeiling":false}
+  ---
+  duration_ms: 30.649865
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":true}
+ok 156 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":true}
+  ---
+  duration_ms: 7.822222
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":false}
+ok 157 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9,"runsFloorToCeiling":false}
+  ---
+  duration_ms: 11.089273
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":6,"heightFeet":9}
+ok 158 - lane C fixes: room opening {"widthFeet":6,"heightFeet":9}
+  ---
+  duration_ms: 6.435106
+  type: 'test'
+  ...
+# Subtest: lane C fixes: room opening {"widthFeet":5,"heightFeet":9,"runsFloorToCeiling":true}
+ok 159 - lane C fixes: room opening {"widthFeet":5,"heightFeet":9,"runsFloorToCeiling":true}
+  ---
+  duration_ms: 8.924107
+  type: 'test'
+  ...
+# Subtest: lane C fixes: interior direct-area openings use the same dimensions and floor-to-ceiling rule
+ok 160 - lane C fixes: interior direct-area openings use the same dimensions and floor-to-ceiling rule
+  ---
+  duration_ms: 4.285624
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"largeOpenings":[{"areaSqft":100}],"garageDoorCount":0}
+ok 161 - lane C fixes: exterior100-sqft threshold {"largeOpenings":[{"areaSqft":100}],"garageDoorCount":0}
+  ---
+  duration_ms: 9.792073
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageDoorWidthFeet":12.5,"garageDoorHeightFeet":8}
+ok 162 - lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageDoorWidthFeet":12.5,"garageDoorHeightFeet":8}
+  ---
+  duration_ms: 9.202146
+  type: 'test'
+  ...
+# Subtest: lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageOpenings":[{"widthFeet":12.5,"heightFeet":8}]}
+ok 163 - lane C fixes: exterior100-sqft threshold {"garageDoorCount":1,"garageOpenings":[{"widthFeet":12.5,"heightFeet":8}]}
+  ---
+  duration_ms: 7.064702
+  type: 'test'
+  ...
+# Subtest: lane C fixes:9x7 garage openings_left_in
+ok 164 - lane C fixes:9x7 garage openings_left_in
+  ---
+  duration_ms: 6.448516
+  type: 'test'
+  ...
+# Subtest: lane C fixes:9x7 garage openings_subtracted
+ok 165 - lane C fixes:9x7 garage openings_subtracted
+  ---
+  duration_ms: 3.763209
+  type: 'test'
+  ...
+# Subtest: lane C fixes: siding halves every other opening and every individual garage opening
+ok 166 - lane C fixes: siding halves every other opening and every individual garage opening
+  ---
+  duration_ms: 3.832883
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING basic
+ok 167 - lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING basic
+  ---
+  duration_ms: 2.425857
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING itemized
+ok 168 - lane C fixes: one optional selector and no unpriced quantities INTERIOR_PAINTING itemized
+  ---
+  duration_ms: 0.540804
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities EXTERIOR_PAINTING itemized
+ok 169 - lane C fixes: one optional selector and no unpriced quantities EXTERIOR_PAINTING itemized
+  ---
+  duration_ms: 0.699652
+  type: 'test'
+  ...
+# Subtest: lane C fixes: one optional selector and no unpriced quantities SIDING_REPLACEMENT basic
+ok 170 - lane C fixes: one optional selector and no unpriced quantities SIDING_REPLACEMENT basic
+  ---
+  duration_ms: 0.44558
+  type: 'test'
+  ...
+# Subtest: lane C fixes: unpriced selection excludes door sides without asking a quantity
+ok 171 - lane C fixes: unpriced selection excludes door sides without asking a quantity
+  ---
+  duration_ms: 11.421794
+  type: 'test'
+  ...
+# Subtest: lane C fixes: only selected priced quantities are asked, required and charged
+ok 172 - lane C fixes: only selected priced quantities are asked, required and charged
+  ---
+  duration_ms: 12.107805
+  type: 'test'
+  ...
+# Subtest: lane C fixes: selected soffit uses saved square_feet
+ok 173 - lane C fixes: selected soffit uses saved square_feet
+  ---
+  duration_ms: 2.428742
+  type: 'test'
+  ...
+# Subtest: lane C fixes: selected soffit uses saved linear_feet
+ok 174 - lane C fixes: selected soffit uses saved linear_feet
+  ---
+  duration_ms: 2.343253
+  type: 'test'
+  ...
+# Subtest: lane C fixes: unpriced siding soffit needs no unit or quantity
+ok 175 - lane C fixes: unpriced siding soffit needs no unit or quantity
+  ---
+  duration_ms: 4.065153
+  type: 'test'
+  ...
+# Subtest: lane C fixes: invalid optional selections and floor-to-ceiling flags do not quote
+ok 176 - lane C fixes: invalid optional selections and floor-to-ceiling flags do not quote
+  ---
+  duration_ms: 0.916338
+  type: 'test'
+  ...
+1..176
+# tests 176
+# suites 0
+# pass 176
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1949.666498

@@ -4,7 +4,7 @@ import {geminiTextModel,textAIConfiguration} from './geminiTextModel.js';
 
 // Release pin: an older engine must never start serving production quotes.
 // Advance deliberately with an approved engine release, not through an env override.
-export const EXPECTED_QUOTE_ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261018-v11';
+export const EXPECTED_QUOTE_ENGINE_VERSION = 'quote-engine-vnext-geometry-20261019-v12';
 export function requireProductionQuoteEngineVersion(engineVersion, env = process.env) {
   if (env.NODE_ENV !== 'production') return;
   if (engineVersion !== EXPECTED_QUOTE_ENGINE_VERSION) {
