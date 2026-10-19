@@ -128,6 +128,41 @@ export function exactRound(value) {
   return Number(rounded);
 }
 
+// Integer Newton iteration starts above the root and stops at its floor.
+// floor(sqrt(n / d)) = floor(sqrt(floor(n / d))) for nonnegative n / d.
+function squareRootFloor(value) {
+  const exact = exactDecimal(value);
+  if (exact.numerator < 0n) throw new RangeError('Exact square roots require a non-negative value.');
+  const whole = exact.numerator / exact.denominator;
+  let root = whole < 2n ? whole : 1n << BigInt(Math.ceil(whole.toString(2).length / 2));
+  if (whole >= 2n) {
+    for (;;) {
+      const next = (root + whole / root) / 2n;
+      if (next >= root) break;
+      root = next;
+    }
+  }
+  return {exact, root};
+}
+
+function safeRootInteger(value) {
+  if (value > BigInt(Number.MAX_SAFE_INTEGER)) throw new RangeError('Rounded exact square root exceeds safe integer range.');
+  return Number(value);
+}
+
+export function exactSqrtCeil(value) {
+  const {exact, root} = squareRootFloor(value);
+  return safeRootInteger(root * root * exact.denominator < exact.numerator ? root + 1n : root);
+}
+
+// Compare the exact square against (floor(root) + 1/2)^2. No floating
+// approximation of the irrational root participates in the half-up decision.
+export function exactSqrtRound(value) {
+  const {exact, root} = squareRootFloor(value);
+  const twiceMidpoint = 2n * root + 1n;
+  return safeRootInteger(4n * exact.numerator >= twiceMidpoint * twiceMidpoint * exact.denominator ? root + 1n : root);
+}
+
 export function exactIsSafeInteger(value) {
   const exact = exactDecimal(value);
   if (exact.denominator !== 1n) return false;

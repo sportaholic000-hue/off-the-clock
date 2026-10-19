@@ -1,0 +1,46 @@
+{
+  "'quote-engine-vnext-accuracy-20261018-v8'": [
+    "refs/remotes/origin/codex/qe-accuracy-integration-20261018",
+    "refs/remotes/origin/codex/qe-concrete-base-scope-20261018",
+    "refs/remotes/origin/codex/qe-factor-provenance-20261018",
+    "refs/remotes/origin/codex/qe-listed-price-conditions-20261018",
+    "refs/remotes/origin/codex/qe-painting-geometry-guidance-20261018",
+    "refs/remotes/origin/codex/qe-restored-service-receipts-20261018",
+    "refs/remotes/origin/codex/qe-roof-factor-bounds-review-20261018",
+    "refs/remotes/origin/codex/qe-roof-underlayment-20261018",
+    "refs/remotes/origin/codex/qe-voice-catalog-access-20261018",
+    "refs/remotes/origin/codex/qe-voice-correction-sequences-20261018"
+  ],
+  "'quote-engine-vnext-accuracy-20261018-v9'": [
+    "refs/remotes/origin/codex/qe-accuracy-next-integration-20261018",
+    "refs/remotes/origin/codex/qe-agent2-price-metadata-20261018",
+    "refs/remotes/origin/codex/qe-agent4-f18-repair-20261018",
+    "refs/remotes/origin/codex/qe-roof-zero-adjustments-20261018"
+  ],
+  "'quote-engine-vnext-accuracy-20261018-v11'": [
+    "refs/remotes/origin/codex/qe-agent1-arithmetic-boundaries-20261019",
+    "refs/remotes/origin/codex/qe-agent1-core-accuracy-20261018",
+    "refs/remotes/origin/codex/qe-agent2-integration-checkpoint-20261019",
+    "refs/remotes/origin/codex/qe-agent3-scope-presentation-20261018",
+    "refs/remotes/origin/codex/qe-agent3-scope-transition-review-20261019"
+  ],
+  "'quote-engine-vnext-date-context-20261006-v7'": [
+    "refs/remotes/origin/codex/qe-combined-20261016",
+    "refs/remotes/origin/codex/qe-concrete-landscape-20261016",
+    "refs/remotes/origin/codex/qe-everytrade-20261017",
+    "refs/remotes/origin/codex/qe-final-integration-20261017",
+    "refs/remotes/origin/codex/qe-flatroof-repairs-20261016",
+    "refs/remotes/origin/codex/qe-flooring-20261016",
+    "refs/remotes/origin/codex/qe-int-20261016",
+    "refs/remotes/origin/codex/qe-int2-20261017",
+    "refs/remotes/origin/codex/qe-lane-a-20261016",
+    "refs/remotes/origin/codex/qe-lane-b-20261016",
+    "refs/remotes/origin/codex/qe-lane-c-20261016",
+    "refs/remotes/origin/codex/qe-metrics-scaling-20261017",
+    "refs/remotes/origin/codex/qe-roofing-20261016",
+    "refs/remotes/origin/codex/qe-sod-scope-disclosure-20261018"
+  ],
+  "'quote-engine-vnext-accuracy-20261018-v10'": [
+    "refs/remotes/origin/codex/qe-roof-exact-subtraction-20261018"
+  ]
+}

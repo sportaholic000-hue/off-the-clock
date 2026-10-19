@@ -51,6 +51,6 @@ for(const version of ['quote-engine-vnext-launch-fixes-20261005-v6','quote-engin
     assert.equal(result.listening,false,result.output);
     assert.notEqual(result.child.exitCode,0,result.output);
     assert.match(result.output,/QUOTE_ENGINE_VERSION_MISMATCH/);
-    assert.match(result.output,/quote-engine-vnext-accuracy-20261018-v11/);
+    assert.match(result.output,/quote-engine-vnext-geometry-20261019-v12/);
   });
 }

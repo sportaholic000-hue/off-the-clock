@@ -1,0 +1,5427 @@
+[
+  {
+    "id": "extended-roof-001",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 600.06,
+      "squares": 6.0006,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 60006,
+        "Field materials": 600,
+        "Tear-off": 600,
+        "Roofing disposal": 600,
+        "Underlayment": 600
+      },
+      "totalCents": 62406
+    }
+  },
+  {
+    "id": "extended-roof-002",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 300.03,
+      "squares": 3.0003,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30003,
+        "Field materials": 300,
+        "Tear-off": 300,
+        "Roofing disposal": 300,
+        "Underlayment": 300
+      },
+      "totalCents": 31203
+    }
+  },
+  {
+    "id": "extended-roof-003",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 0.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 199.81998,
+      "squares": 1.9981998,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 19982,
+        "Field materials": 200,
+        "Tear-off": 200,
+        "Roofing disposal": 200,
+        "Underlayment": 200
+      },
+      "totalCents": 20782
+    }
+  },
+  {
+    "id": "extended-roof-004",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 600.06,
+      "squares": 6.0006,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 60006,
+        "Field materials": 600,
+        "Tear-off": 600,
+        "Roofing disposal": 600,
+        "Underlayment": 600
+      },
+      "totalCents": 62406
+    }
+  },
+  {
+    "id": "extended-roof-005",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 300.03,
+      "squares": 3.0003,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30003,
+        "Field materials": 300,
+        "Tear-off": 300,
+        "Roofing disposal": 300,
+        "Underlayment": 300
+      },
+      "totalCents": 31203
+    }
+  },
+  {
+    "id": "extended-roof-006",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 0.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 199.81998,
+      "squares": 1.9981998,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 19982,
+        "Field materials": 200,
+        "Tear-off": 200,
+        "Roofing disposal": 200,
+        "Underlayment": 200
+      },
+      "totalCents": 20782
+    }
+  },
+  {
+    "id": "extended-roof-007",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 600.06,
+      "squares": 6.0006,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 60006,
+        "Field materials": 600,
+        "Tear-off": 600,
+        "Roofing disposal": 600,
+        "Underlayment": 600
+      },
+      "totalCents": 62406
+    }
+  },
+  {
+    "id": "extended-roof-008",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 300.03,
+      "squares": 3.0003,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30003,
+        "Field materials": 300,
+        "Tear-off": 300,
+        "Roofing disposal": 300,
+        "Underlayment": 300
+      },
+      "totalCents": 31203
+    }
+  },
+  {
+    "id": "extended-roof-009",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 0.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 600.06,
+      "area": 199.81998,
+      "squares": 1.9981998,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 19982,
+        "Field materials": 200,
+        "Tear-off": 200,
+        "Roofing disposal": 200,
+        "Underlayment": 200
+      },
+      "totalCents": 20782
+    }
+  },
+  {
+    "id": "extended-roof-010",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 1.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 602.14,
+      "squares": 6.0214,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 60214,
+        "Field materials": 602,
+        "Tear-off": 602,
+        "Roofing disposal": 602,
+        "Underlayment": 602
+      },
+      "totalCents": 62622
+    }
+  },
+  {
+    "id": "extended-roof-011",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 1.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 301.07,
+      "squares": 3.0107,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30107,
+        "Field materials": 301,
+        "Tear-off": 301,
+        "Roofing disposal": 301,
+        "Underlayment": 301
+      },
+      "totalCents": 31311
+    }
+  },
+  {
+    "id": "extended-roof-012",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 1.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 200.51262,
+      "squares": 2.0051262,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20051,
+        "Field materials": 201,
+        "Tear-off": 201,
+        "Roofing disposal": 201,
+        "Underlayment": 201
+      },
+      "totalCents": 20855
+    }
+  },
+  {
+    "id": "extended-roof-013",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 1.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 602.14,
+      "squares": 6.0214,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 60214,
+        "Field materials": 602,
+        "Tear-off": 602,
+        "Roofing disposal": 602,
+        "Underlayment": 602
+      },
+      "totalCents": 62622
+    }
+  },
+  {
+    "id": "extended-roof-014",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 1.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 301.07,
+      "squares": 3.0107,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30107,
+        "Field materials": 301,
+        "Tear-off": 301,
+        "Roofing disposal": 301,
+        "Underlayment": 301
+      },
+      "totalCents": 31311
+    }
+  },
+  {
+    "id": "extended-roof-015",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 1.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 200.51262,
+      "squares": 2.0051262,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20051,
+        "Field materials": 201,
+        "Tear-off": 201,
+        "Roofing disposal": 201,
+        "Underlayment": 201
+      },
+      "totalCents": 20855
+    }
+  },
+  {
+    "id": "extended-roof-016",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 1.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 602.14,
+      "squares": 6.0214,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 60214,
+        "Field materials": 602,
+        "Tear-off": 602,
+        "Roofing disposal": 602,
+        "Underlayment": 602
+      },
+      "totalCents": 62622
+    }
+  },
+  {
+    "id": "extended-roof-017",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 1.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 301.07,
+      "squares": 3.0107,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30107,
+        "Field materials": 301,
+        "Tear-off": 301,
+        "Roofing disposal": 301,
+        "Underlayment": 301
+      },
+      "totalCents": 31311
+    }
+  },
+  {
+    "id": "extended-roof-018",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 1.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 602.14,
+      "area": 200.51262,
+      "squares": 2.0051262,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20051,
+        "Field materials": 201,
+        "Tear-off": 201,
+        "Roofing disposal": 201,
+        "Underlayment": 201
+      },
+      "totalCents": 20855
+    }
+  },
+  {
+    "id": "extended-roof-019",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 2.5,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 612.94,
+      "squares": 6.1294,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61294,
+        "Field materials": 613,
+        "Tear-off": 613,
+        "Roofing disposal": 613,
+        "Underlayment": 613
+      },
+      "totalCents": 63746
+    }
+  },
+  {
+    "id": "extended-roof-020",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 2.5,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 306.47,
+      "squares": 3.0647,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30647,
+        "Field materials": 306,
+        "Tear-off": 306,
+        "Roofing disposal": 306,
+        "Underlayment": 306
+      },
+      "totalCents": 31871
+    }
+  },
+  {
+    "id": "extended-roof-021",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 2.5,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 204.10902,
+      "squares": 2.0410902,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20411,
+        "Field materials": 204,
+        "Tear-off": 204,
+        "Roofing disposal": 204,
+        "Underlayment": 204
+      },
+      "totalCents": 21227
+    }
+  },
+  {
+    "id": "extended-roof-022",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 2.5,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 612.94,
+      "squares": 6.1294,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61294,
+        "Field materials": 613,
+        "Tear-off": 613,
+        "Roofing disposal": 613,
+        "Underlayment": 613
+      },
+      "totalCents": 63746
+    }
+  },
+  {
+    "id": "extended-roof-023",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 2.5,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 306.47,
+      "squares": 3.0647,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30647,
+        "Field materials": 306,
+        "Tear-off": 306,
+        "Roofing disposal": 306,
+        "Underlayment": 306
+      },
+      "totalCents": 31871
+    }
+  },
+  {
+    "id": "extended-roof-024",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 2.5,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 204.10902,
+      "squares": 2.0410902,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20411,
+        "Field materials": 204,
+        "Tear-off": 204,
+        "Roofing disposal": 204,
+        "Underlayment": 204
+      },
+      "totalCents": 21227
+    }
+  },
+  {
+    "id": "extended-roof-025",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 2.5,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 612.94,
+      "squares": 6.1294,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61294,
+        "Field materials": 613,
+        "Tear-off": 613,
+        "Roofing disposal": 613,
+        "Underlayment": 613
+      },
+      "totalCents": 63746
+    }
+  },
+  {
+    "id": "extended-roof-026",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 2.5,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 306.47,
+      "squares": 3.0647,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30647,
+        "Field materials": 306,
+        "Tear-off": 306,
+        "Roofing disposal": 306,
+        "Underlayment": 306
+      },
+      "totalCents": 31871
+    }
+  },
+  {
+    "id": "extended-roof-027",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 2.5,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 612.94,
+      "area": 204.10902,
+      "squares": 2.0410902,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20411,
+        "Field materials": 204,
+        "Tear-off": 204,
+        "Roofing disposal": 204,
+        "Underlayment": 204
+      },
+      "totalCents": 21227
+    }
+  },
+  {
+    "id": "extended-roof-028",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 3.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 618.53,
+      "squares": 6.1853,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61853,
+        "Field materials": 619,
+        "Tear-off": 619,
+        "Roofing disposal": 619,
+        "Underlayment": 619
+      },
+      "totalCents": 64329
+    }
+  },
+  {
+    "id": "extended-roof-029",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 3.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 309.265,
+      "squares": 3.09265,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30927,
+        "Field materials": 309,
+        "Tear-off": 309,
+        "Roofing disposal": 309,
+        "Underlayment": 309
+      },
+      "totalCents": 32163
+    }
+  },
+  {
+    "id": "extended-roof-030",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 3.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 205.97049,
+      "squares": 2.0597049,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20597,
+        "Field materials": 206,
+        "Tear-off": 206,
+        "Roofing disposal": 206,
+        "Underlayment": 206
+      },
+      "totalCents": 21421
+    }
+  },
+  {
+    "id": "extended-roof-031",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 3.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 618.53,
+      "squares": 6.1853,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61853,
+        "Field materials": 619,
+        "Tear-off": 619,
+        "Roofing disposal": 619,
+        "Underlayment": 619
+      },
+      "totalCents": 64329
+    }
+  },
+  {
+    "id": "extended-roof-032",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 3.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 309.265,
+      "squares": 3.09265,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30927,
+        "Field materials": 309,
+        "Tear-off": 309,
+        "Roofing disposal": 309,
+        "Underlayment": 309
+      },
+      "totalCents": 32163
+    }
+  },
+  {
+    "id": "extended-roof-033",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 3.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 205.97049,
+      "squares": 2.0597049,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20597,
+        "Field materials": 206,
+        "Tear-off": 206,
+        "Roofing disposal": 206,
+        "Underlayment": 206
+      },
+      "totalCents": 21421
+    }
+  },
+  {
+    "id": "extended-roof-034",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 3.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 618.53,
+      "squares": 6.1853,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61853,
+        "Field materials": 619,
+        "Tear-off": 619,
+        "Roofing disposal": 619,
+        "Underlayment": 619
+      },
+      "totalCents": 64329
+    }
+  },
+  {
+    "id": "extended-roof-035",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 3.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 309.265,
+      "squares": 3.09265,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 30927,
+        "Field materials": 309,
+        "Tear-off": 309,
+        "Roofing disposal": 309,
+        "Underlayment": 309
+      },
+      "totalCents": 32163
+    }
+  },
+  {
+    "id": "extended-roof-036",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 3.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 618.53,
+      "area": 205.97049,
+      "squares": 2.0597049,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 20597,
+        "Field materials": 206,
+        "Tear-off": 206,
+        "Roofing disposal": 206,
+        "Underlayment": 206
+      },
+      "totalCents": 21421
+    }
+  },
+  {
+    "id": "extended-roof-037",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 6.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 670.89,
+      "squares": 6.7089,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 67089,
+        "Field materials": 671,
+        "Tear-off": 671,
+        "Roofing disposal": 671,
+        "Underlayment": 671
+      },
+      "totalCents": 69773
+    }
+  },
+  {
+    "id": "extended-roof-038",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 6.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 335.445,
+      "squares": 3.35445,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 33545,
+        "Field materials": 335,
+        "Tear-off": 335,
+        "Roofing disposal": 335,
+        "Underlayment": 335
+      },
+      "totalCents": 34885
+    }
+  },
+  {
+    "id": "extended-roof-039",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 6.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 223.40637,
+      "squares": 2.2340637,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 22341,
+        "Field materials": 223,
+        "Tear-off": 223,
+        "Roofing disposal": 223,
+        "Underlayment": 223
+      },
+      "totalCents": 23233
+    }
+  },
+  {
+    "id": "extended-roof-040",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 6.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 670.89,
+      "squares": 6.7089,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 67089,
+        "Field materials": 671,
+        "Tear-off": 671,
+        "Roofing disposal": 671,
+        "Underlayment": 671
+      },
+      "totalCents": 69773
+    }
+  },
+  {
+    "id": "extended-roof-041",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 6.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 335.445,
+      "squares": 3.35445,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 33545,
+        "Field materials": 335,
+        "Tear-off": 335,
+        "Roofing disposal": 335,
+        "Underlayment": 335
+      },
+      "totalCents": 34885
+    }
+  },
+  {
+    "id": "extended-roof-042",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 6.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 223.40637,
+      "squares": 2.2340637,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 22341,
+        "Field materials": 223,
+        "Tear-off": 223,
+        "Roofing disposal": 223,
+        "Underlayment": 223
+      },
+      "totalCents": 23233
+    }
+  },
+  {
+    "id": "extended-roof-043",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 6.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 670.89,
+      "squares": 6.7089,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 67089,
+        "Field materials": 671,
+        "Tear-off": 671,
+        "Roofing disposal": 671,
+        "Underlayment": 671
+      },
+      "totalCents": 69773
+    }
+  },
+  {
+    "id": "extended-roof-044",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 6.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 335.445,
+      "squares": 3.35445,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 33545,
+        "Field materials": 335,
+        "Tear-off": 335,
+        "Roofing disposal": 335,
+        "Underlayment": 335
+      },
+      "totalCents": 34885
+    }
+  },
+  {
+    "id": "extended-roof-045",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 6.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 670.89,
+      "area": 223.40637,
+      "squares": 2.2340637,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 22341,
+        "Field materials": 223,
+        "Tear-off": 223,
+        "Roofing disposal": 223,
+        "Underlayment": 223
+      },
+      "totalCents": 23233
+    }
+  },
+  {
+    "id": "extended-roof-046",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 7.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 694.69,
+      "squares": 6.9469,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 69469,
+        "Field materials": 695,
+        "Tear-off": 695,
+        "Roofing disposal": 695,
+        "Steep-pitch installation": 17367,
+        "Steep-pitch removal": 695,
+        "Underlayment": 695
+      },
+      "totalCents": 90311
+    }
+  },
+  {
+    "id": "extended-roof-047",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 7.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 347.345,
+      "squares": 3.47345,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 34735,
+        "Field materials": 347,
+        "Tear-off": 347,
+        "Roofing disposal": 347,
+        "Steep-pitch installation": 8684,
+        "Steep-pitch removal": 347,
+        "Underlayment": 347
+      },
+      "totalCents": 45154
+    }
+  },
+  {
+    "id": "extended-roof-048",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 7.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 231.33177,
+      "squares": 2.3133177,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 23133,
+        "Field materials": 231,
+        "Tear-off": 231,
+        "Roofing disposal": 231,
+        "Steep-pitch installation": 5783,
+        "Steep-pitch removal": 231,
+        "Underlayment": 231
+      },
+      "totalCents": 30071
+    }
+  },
+  {
+    "id": "extended-roof-049",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 7.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 694.69,
+      "squares": 6.9469,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 69469,
+        "Field materials": 695,
+        "Tear-off": 695,
+        "Roofing disposal": 695,
+        "Steep-pitch installation": 17367,
+        "Steep-pitch removal": 695,
+        "Underlayment": 695
+      },
+      "totalCents": 90311
+    }
+  },
+  {
+    "id": "extended-roof-050",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 7.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 347.345,
+      "squares": 3.47345,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 34735,
+        "Field materials": 347,
+        "Tear-off": 347,
+        "Roofing disposal": 347,
+        "Steep-pitch installation": 8684,
+        "Steep-pitch removal": 347,
+        "Underlayment": 347
+      },
+      "totalCents": 45154
+    }
+  },
+  {
+    "id": "extended-roof-051",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 7.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 231.33177,
+      "squares": 2.3133177,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 23133,
+        "Field materials": 231,
+        "Tear-off": 231,
+        "Roofing disposal": 231,
+        "Steep-pitch installation": 5783,
+        "Steep-pitch removal": 231,
+        "Underlayment": 231
+      },
+      "totalCents": 30071
+    }
+  },
+  {
+    "id": "extended-roof-052",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 7.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 694.69,
+      "squares": 6.9469,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 69469,
+        "Field materials": 695,
+        "Tear-off": 695,
+        "Roofing disposal": 695,
+        "Steep-pitch installation": 17367,
+        "Steep-pitch removal": 695,
+        "Underlayment": 695
+      },
+      "totalCents": 90311
+    }
+  },
+  {
+    "id": "extended-roof-053",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 7.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 347.345,
+      "squares": 3.47345,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 34735,
+        "Field materials": 347,
+        "Tear-off": 347,
+        "Roofing disposal": 347,
+        "Steep-pitch installation": 8684,
+        "Steep-pitch removal": 347,
+        "Underlayment": 347
+      },
+      "totalCents": 45154
+    }
+  },
+  {
+    "id": "extended-roof-054",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 7.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 694.69,
+      "area": 231.33177,
+      "squares": 2.3133177,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 23133,
+        "Field materials": 231,
+        "Tear-off": 231,
+        "Roofing disposal": 231,
+        "Steep-pitch installation": 5783,
+        "Steep-pitch removal": 231,
+        "Underlayment": 231
+      },
+      "totalCents": 30071
+    }
+  },
+  {
+    "id": "extended-roof-055",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.07,
+      "area": 750.07,
+      "squares": 7.5007,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 75007,
+        "Field materials": 750,
+        "Tear-off": 750,
+        "Roofing disposal": 750,
+        "Steep-pitch installation": 18752,
+        "Steep-pitch removal": 750,
+        "Underlayment": 750
+      },
+      "totalCents": 97509
+    }
+  },
+  {
+    "id": "extended-roof-056",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.07,
+      "area": 375.035,
+      "squares": 3.75035,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 37504,
+        "Field materials": 375,
+        "Tear-off": 375,
+        "Roofing disposal": 375,
+        "Steep-pitch installation": 9376,
+        "Steep-pitch removal": 375,
+        "Underlayment": 375
+      },
+      "totalCents": 48755
+    }
+  },
+  {
+    "id": "extended-roof-057",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 9.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.07,
+      "area": 249.77331,
+      "squares": 2.4977331,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 24977,
+        "Field materials": 250,
+        "Tear-off": 250,
+        "Roofing disposal": 250,
+        "Steep-pitch installation": 6244,
+        "Steep-pitch removal": 250,
+        "Underlayment": 250
+      },
+      "totalCents": 32471
+    }
+  },
+  {
+    "id": "extended-roof-058",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.08,
+      "area": 750.08,
+      "squares": 7.5008,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 75008,
+        "Field materials": 750,
+        "Tear-off": 750,
+        "Roofing disposal": 750,
+        "Steep-pitch installation": 18752,
+        "Steep-pitch removal": 750,
+        "Underlayment": 750
+      },
+      "totalCents": 97510
+    }
+  },
+  {
+    "id": "extended-roof-059",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.08,
+      "area": 375.04,
+      "squares": 3.7504,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 37504,
+        "Field materials": 375,
+        "Tear-off": 375,
+        "Roofing disposal": 375,
+        "Steep-pitch installation": 9376,
+        "Steep-pitch removal": 375,
+        "Underlayment": 375
+      },
+      "totalCents": 48755
+    }
+  },
+  {
+    "id": "extended-roof-060",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 9.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.08,
+      "area": 249.77664,
+      "squares": 2.4977664,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 24978,
+        "Field materials": 250,
+        "Tear-off": 250,
+        "Roofing disposal": 250,
+        "Steep-pitch installation": 6244,
+        "Steep-pitch removal": 250,
+        "Underlayment": 250
+      },
+      "totalCents": 32472
+    }
+  },
+  {
+    "id": "extended-roof-061",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.08,
+      "area": 750.08,
+      "squares": 7.5008,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 75008,
+        "Field materials": 750,
+        "Tear-off": 750,
+        "Roofing disposal": 750,
+        "Steep-pitch installation": 18752,
+        "Steep-pitch removal": 750,
+        "Underlayment": 750
+      },
+      "totalCents": 97510
+    }
+  },
+  {
+    "id": "extended-roof-062",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.08,
+      "area": 375.04,
+      "squares": 3.7504,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 37504,
+        "Field materials": 375,
+        "Tear-off": 375,
+        "Roofing disposal": 375,
+        "Steep-pitch installation": 9376,
+        "Steep-pitch removal": 375,
+        "Underlayment": 375
+      },
+      "totalCents": 48755
+    }
+  },
+  {
+    "id": "extended-roof-063",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 9.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 750.08,
+      "area": 249.77664,
+      "squares": 2.4977664,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 24978,
+        "Field materials": 250,
+        "Tear-off": 250,
+        "Roofing disposal": 250,
+        "Steep-pitch installation": 6244,
+        "Steep-pitch removal": 250,
+        "Underlayment": 250
+      },
+      "totalCents": 32472
+    }
+  },
+  {
+    "id": "extended-roof-064",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 12.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 848.61,
+      "squares": 8.4861,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 84861,
+        "Field materials": 849,
+        "Tear-off": 849,
+        "Roofing disposal": 849,
+        "Steep-pitch installation": 21215,
+        "Steep-pitch removal": 849,
+        "Underlayment": 849
+      },
+      "totalCents": 110321
+    }
+  },
+  {
+    "id": "extended-roof-065",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 12.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 424.305,
+      "squares": 4.24305,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 42431,
+        "Field materials": 424,
+        "Tear-off": 424,
+        "Roofing disposal": 424,
+        "Steep-pitch installation": 10608,
+        "Steep-pitch removal": 424,
+        "Underlayment": 424
+      },
+      "totalCents": 55159
+    }
+  },
+  {
+    "id": "extended-roof-066",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 12.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 282.58713,
+      "squares": 2.8258713,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 28259,
+        "Field materials": 283,
+        "Tear-off": 283,
+        "Roofing disposal": 283,
+        "Steep-pitch installation": 7065,
+        "Steep-pitch removal": 283,
+        "Underlayment": 283
+      },
+      "totalCents": 36739
+    }
+  },
+  {
+    "id": "extended-roof-067",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 12.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 848.61,
+      "squares": 8.4861,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 84861,
+        "Field materials": 849,
+        "Tear-off": 849,
+        "Roofing disposal": 849,
+        "Steep-pitch installation": 21215,
+        "Steep-pitch removal": 849,
+        "Underlayment": 849
+      },
+      "totalCents": 110321
+    }
+  },
+  {
+    "id": "extended-roof-068",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 12.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 424.305,
+      "squares": 4.24305,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 42431,
+        "Field materials": 424,
+        "Tear-off": 424,
+        "Roofing disposal": 424,
+        "Steep-pitch installation": 10608,
+        "Steep-pitch removal": 424,
+        "Underlayment": 424
+      },
+      "totalCents": 55159
+    }
+  },
+  {
+    "id": "extended-roof-069",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 12.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 282.58713,
+      "squares": 2.8258713,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 28259,
+        "Field materials": 283,
+        "Tear-off": 283,
+        "Roofing disposal": 283,
+        "Steep-pitch installation": 7065,
+        "Steep-pitch removal": 283,
+        "Underlayment": 283
+      },
+      "totalCents": 36739
+    }
+  },
+  {
+    "id": "extended-roof-070",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 12.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 848.61,
+      "squares": 8.4861,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 84861,
+        "Field materials": 849,
+        "Tear-off": 849,
+        "Roofing disposal": 849,
+        "Steep-pitch installation": 21215,
+        "Steep-pitch removal": 849,
+        "Underlayment": 849
+      },
+      "totalCents": 110321
+    }
+  },
+  {
+    "id": "extended-roof-071",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 12.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 424.305,
+      "squares": 4.24305,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 42431,
+        "Field materials": 424,
+        "Tear-off": 424,
+        "Roofing disposal": 424,
+        "Steep-pitch installation": 10608,
+        "Steep-pitch removal": 424,
+        "Underlayment": 424
+      },
+      "totalCents": 55159
+    }
+  },
+  {
+    "id": "extended-roof-072",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 12.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 848.61,
+      "area": 282.58713,
+      "squares": 2.8258713,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 28259,
+        "Field materials": 283,
+        "Tear-off": 283,
+        "Roofing disposal": 283,
+        "Steep-pitch installation": 7065,
+        "Steep-pitch removal": 283,
+        "Underlayment": 283
+      },
+      "totalCents": 36739
+    }
+  },
+  {
+    "id": "extended-roof-073",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 1000.1,
+      "squares": 10.001,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 100010,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25003,
+        "Steep-pitch removal": 1000,
+        "Underlayment": 1000
+      },
+      "totalCents": 130013
+    }
+  },
+  {
+    "id": "extended-roof-074",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 500.05,
+      "squares": 5.0005,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 50005,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12501,
+        "Steep-pitch removal": 500,
+        "Underlayment": 500
+      },
+      "totalCents": 65006
+    }
+  },
+  {
+    "id": "extended-roof-075",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 16.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 333.0333,
+      "squares": 3.330333,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 33303,
+        "Field materials": 333,
+        "Tear-off": 333,
+        "Roofing disposal": 333,
+        "Steep-pitch installation": 8326,
+        "Steep-pitch removal": 333,
+        "Underlayment": 333
+      },
+      "totalCents": 43294
+    }
+  },
+  {
+    "id": "extended-roof-076",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 1000.1,
+      "squares": 10.001,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 100010,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25003,
+        "Steep-pitch removal": 1000,
+        "Underlayment": 1000
+      },
+      "totalCents": 130013
+    }
+  },
+  {
+    "id": "extended-roof-077",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 500.05,
+      "squares": 5.0005,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 50005,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12501,
+        "Steep-pitch removal": 500,
+        "Underlayment": 500
+      },
+      "totalCents": 65006
+    }
+  },
+  {
+    "id": "extended-roof-078",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 16.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 333.0333,
+      "squares": 3.330333,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 33303,
+        "Field materials": 333,
+        "Tear-off": 333,
+        "Roofing disposal": 333,
+        "Steep-pitch installation": 8326,
+        "Steep-pitch removal": 333,
+        "Underlayment": 333
+      },
+      "totalCents": 43294
+    }
+  },
+  {
+    "id": "extended-roof-079",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 1000.1,
+      "squares": 10.001,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 100010,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25003,
+        "Steep-pitch removal": 1000,
+        "Underlayment": 1000
+      },
+      "totalCents": 130013
+    }
+  },
+  {
+    "id": "extended-roof-080",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 500.05,
+      "squares": 5.0005,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 50005,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12501,
+        "Steep-pitch removal": 500,
+        "Underlayment": 500
+      },
+      "totalCents": 65006
+    }
+  },
+  {
+    "id": "extended-roof-081",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 16.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.1,
+      "area": 333.0333,
+      "squares": 3.330333,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 33303,
+        "Field materials": 333,
+        "Tear-off": 333,
+        "Roofing disposal": 333,
+        "Steep-pitch installation": 8326,
+        "Steep-pitch removal": 333,
+        "Underlayment": 333
+      },
+      "totalCents": 43294
+    }
+  },
+  {
+    "id": "extended-roof-082",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 35.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.18,
+      "area": 1850.18,
+      "squares": 18.5018,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 185018,
+        "Field materials": 1850,
+        "Tear-off": 1850,
+        "Roofing disposal": 1850,
+        "Steep-pitch installation": 46255,
+        "Steep-pitch removal": 1850,
+        "Underlayment": 1850
+      },
+      "totalCents": 240523
+    }
+  },
+  {
+    "id": "extended-roof-083",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 35.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.18,
+      "area": 925.09,
+      "squares": 9.2509,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 92509,
+        "Field materials": 925,
+        "Tear-off": 925,
+        "Roofing disposal": 925,
+        "Steep-pitch installation": 23127,
+        "Steep-pitch removal": 925,
+        "Underlayment": 925
+      },
+      "totalCents": 120261
+    }
+  },
+  {
+    "id": "extended-roof-084",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 35.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.18,
+      "area": 616.10994,
+      "squares": 6.1610994,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61611,
+        "Field materials": 616,
+        "Tear-off": 616,
+        "Roofing disposal": 616,
+        "Steep-pitch installation": 15403,
+        "Steep-pitch removal": 616,
+        "Underlayment": 616
+      },
+      "totalCents": 80094
+    }
+  },
+  {
+    "id": "extended-roof-085",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 35.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.19,
+      "area": 1850.19,
+      "squares": 18.5019,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 185019,
+        "Field materials": 1850,
+        "Tear-off": 1850,
+        "Roofing disposal": 1850,
+        "Steep-pitch installation": 46255,
+        "Steep-pitch removal": 1850,
+        "Underlayment": 1850
+      },
+      "totalCents": 240524
+    }
+  },
+  {
+    "id": "extended-roof-086",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 35.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.19,
+      "area": 925.095,
+      "squares": 9.25095,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 92510,
+        "Field materials": 925,
+        "Tear-off": 925,
+        "Roofing disposal": 925,
+        "Steep-pitch installation": 23127,
+        "Steep-pitch removal": 925,
+        "Underlayment": 925
+      },
+      "totalCents": 120262
+    }
+  },
+  {
+    "id": "extended-roof-087",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 35.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.19,
+      "area": 616.11327,
+      "squares": 6.1611327,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61611,
+        "Field materials": 616,
+        "Tear-off": 616,
+        "Roofing disposal": 616,
+        "Steep-pitch installation": 15403,
+        "Steep-pitch removal": 616,
+        "Underlayment": 616
+      },
+      "totalCents": 80094
+    }
+  },
+  {
+    "id": "extended-roof-088",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 35.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.19,
+      "area": 1850.19,
+      "squares": 18.5019,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 185019,
+        "Field materials": 1850,
+        "Tear-off": 1850,
+        "Roofing disposal": 1850,
+        "Steep-pitch installation": 46255,
+        "Steep-pitch removal": 1850,
+        "Underlayment": 1850
+      },
+      "totalCents": 240524
+    }
+  },
+  {
+    "id": "extended-roof-089",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 35.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.19,
+      "area": 925.095,
+      "squares": 9.25095,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 92510,
+        "Field materials": 925,
+        "Tear-off": 925,
+        "Roofing disposal": 925,
+        "Steep-pitch installation": 23127,
+        "Steep-pitch removal": 925,
+        "Underlayment": 925
+      },
+      "totalCents": 120262
+    }
+  },
+  {
+    "id": "extended-roof-090",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 35.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1850.19,
+      "area": 616.11327,
+      "squares": 6.1611327,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 61611,
+        "Field materials": 616,
+        "Tear-off": 616,
+        "Roofing disposal": 616,
+        "Steep-pitch installation": 15403,
+        "Steep-pitch removal": 616,
+        "Underlayment": 616
+      },
+      "totalCents": 80094
+    }
+  },
+  {
+    "id": "extended-roof-091",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 100.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 5036.37,
+      "squares": 50.3637,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 503637,
+        "Field materials": 5036,
+        "Tear-off": 5036,
+        "Roofing disposal": 5036,
+        "Steep-pitch installation": 125909,
+        "Steep-pitch removal": 5036,
+        "Underlayment": 5036
+      },
+      "totalCents": 654726
+    }
+  },
+  {
+    "id": "extended-roof-092",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 100.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 2518.185,
+      "squares": 25.18185,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 251819,
+        "Field materials": 2518,
+        "Tear-off": 2518,
+        "Roofing disposal": 2518,
+        "Steep-pitch installation": 62955,
+        "Steep-pitch removal": 2518,
+        "Underlayment": 2518
+      },
+      "totalCents": 327364
+    }
+  },
+  {
+    "id": "extended-roof-093",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 100.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 1677.11121,
+      "squares": 16.7711121,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 167711,
+        "Field materials": 1677,
+        "Tear-off": 1677,
+        "Roofing disposal": 1677,
+        "Steep-pitch installation": 41928,
+        "Steep-pitch removal": 1677,
+        "Underlayment": 1677
+      },
+      "totalCents": 218024
+    }
+  },
+  {
+    "id": "extended-roof-094",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 100.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 5036.37,
+      "squares": 50.3637,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 503637,
+        "Field materials": 5036,
+        "Tear-off": 5036,
+        "Roofing disposal": 5036,
+        "Steep-pitch installation": 125909,
+        "Steep-pitch removal": 5036,
+        "Underlayment": 5036
+      },
+      "totalCents": 654726
+    }
+  },
+  {
+    "id": "extended-roof-095",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 100.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 2518.185,
+      "squares": 25.18185,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 251819,
+        "Field materials": 2518,
+        "Tear-off": 2518,
+        "Roofing disposal": 2518,
+        "Steep-pitch installation": 62955,
+        "Steep-pitch removal": 2518,
+        "Underlayment": 2518
+      },
+      "totalCents": 327364
+    }
+  },
+  {
+    "id": "extended-roof-096",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 100.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 1677.11121,
+      "squares": 16.7711121,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 167711,
+        "Field materials": 1677,
+        "Tear-off": 1677,
+        "Roofing disposal": 1677,
+        "Steep-pitch installation": 41928,
+        "Steep-pitch removal": 1677,
+        "Underlayment": 1677
+      },
+      "totalCents": 218024
+    }
+  },
+  {
+    "id": "extended-roof-097",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 100.0,
+      "pct": 100.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 5036.37,
+      "squares": 50.3637,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 503637,
+        "Field materials": 5036,
+        "Tear-off": 5036,
+        "Roofing disposal": 5036,
+        "Steep-pitch installation": 125909,
+        "Steep-pitch removal": 5036,
+        "Underlayment": 5036
+      },
+      "totalCents": 654726
+    }
+  },
+  {
+    "id": "extended-roof-098",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 100.0,
+      "pct": 50.0,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 2518.185,
+      "squares": 25.18185,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 251819,
+        "Field materials": 2518,
+        "Tear-off": 2518,
+        "Roofing disposal": 2518,
+        "Steep-pitch installation": 62955,
+        "Steep-pitch removal": 2518,
+        "Underlayment": 2518
+      },
+      "totalCents": 327364
+    }
+  },
+  {
+    "id": "extended-roof-099",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 100.0,
+      "pct": 33.3,
+      "coverage": null,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 5036.37,
+      "area": 1677.11121,
+      "squares": 16.7711121,
+      "rolls": null,
+      "lines": {
+        "Roofing labor": 167711,
+        "Field materials": 1677,
+        "Tear-off": 1677,
+        "Roofing disposal": 1677,
+        "Steep-pitch installation": 41928,
+        "Steep-pitch removal": 1677,
+        "Underlayment": 1677
+      },
+      "totalCents": 218024
+    }
+  },
+  {
+    "id": "extended-roof-100",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.004999,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 1000.0,
+      "squares": 10.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 100000,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 133000
+    }
+  },
+  {
+    "id": "extended-roof-101",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.004999,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 1000.0,
+      "squares": 10.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 100000,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 133100
+    }
+  },
+  {
+    "id": "extended-roof-102",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.004999,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 500.0,
+      "squares": 5.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 50000,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 81500
+    }
+  },
+  {
+    "id": "extended-roof-103",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.004999,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 500.0,
+      "squares": 5.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 50000,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 81550
+    }
+  },
+  {
+    "id": "extended-roof-104",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.005,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 148001
+    }
+  },
+  {
+    "id": "extended-roof-105",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.005,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 148101
+    }
+  },
+  {
+    "id": "extended-roof-106",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.005,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 96501
+    }
+  },
+  {
+    "id": "extended-roof-107",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.005,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 96551
+    }
+  },
+  {
+    "id": "extended-roof-108",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.005001,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 148001
+    }
+  },
+  {
+    "id": "extended-roof-109",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.005001,
+      "rise": 0.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 148101
+    }
+  },
+  {
+    "id": "extended-roof-110",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.005001,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 96501
+    }
+  },
+  {
+    "id": "extended-roof-111",
+    "kind": "roof",
+    "params": {
+      "footprint": 1000.005001,
+      "rise": 0.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 96551
+    }
+  },
+  {
+    "id": "extended-roof-112",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.619999,
+      "rise": 5.0,
+      "pct": 100.0,
+      "coverage": 1400.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.0,
+      "area": 2800.0,
+      "squares": 28.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 280000,
+        "Field materials": 2800,
+        "Tear-off": 2800,
+        "Roofing disposal": 2800,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 318400
+    }
+  },
+  {
+    "id": "extended-roof-113",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.619999,
+      "rise": 5.0,
+      "pct": 100.0,
+      "coverage": 1540.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.0,
+      "area": 2800.0,
+      "squares": 28.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 280000,
+        "Field materials": 3080,
+        "Tear-off": 2800,
+        "Roofing disposal": 2800,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 318680
+    }
+  },
+  {
+    "id": "extended-roof-114",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.619999,
+      "rise": 5.0,
+      "pct": 50.0,
+      "coverage": 700.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.0,
+      "area": 1400.0,
+      "squares": 14.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 140000,
+        "Field materials": 1400,
+        "Tear-off": 1400,
+        "Roofing disposal": 1400,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 174200
+    }
+  },
+  {
+    "id": "extended-roof-115",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.619999,
+      "rise": 5.0,
+      "pct": 50.0,
+      "coverage": 770.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.0,
+      "area": 1400.0,
+      "squares": 14.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 140000,
+        "Field materials": 1540,
+        "Tear-off": 1400,
+        "Roofing disposal": 1400,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 174340
+    }
+  },
+  {
+    "id": "extended-roof-116",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.62,
+      "rise": 5.0,
+      "pct": 100.0,
+      "coverage": 1400.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.01,
+      "area": 2800.01,
+      "squares": 28.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 280001,
+        "Field materials": 2800,
+        "Tear-off": 2800,
+        "Roofing disposal": 2800,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 333401
+    }
+  },
+  {
+    "id": "extended-roof-117",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.62,
+      "rise": 5.0,
+      "pct": 100.0,
+      "coverage": 1540.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.01,
+      "area": 2800.01,
+      "squares": 28.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 280001,
+        "Field materials": 3080,
+        "Tear-off": 2800,
+        "Roofing disposal": 2800,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 333681
+    }
+  },
+  {
+    "id": "extended-roof-118",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.62,
+      "rise": 5.0,
+      "pct": 50.0,
+      "coverage": 700.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.01,
+      "area": 1400.005,
+      "squares": 14.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 140001,
+        "Field materials": 1400,
+        "Tear-off": 1400,
+        "Roofing disposal": 1400,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 189201
+    }
+  },
+  {
+    "id": "extended-roof-119",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.62,
+      "rise": 5.0,
+      "pct": 50.0,
+      "coverage": 770.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.01,
+      "area": 1400.005,
+      "squares": 14.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 140001,
+        "Field materials": 1540,
+        "Tear-off": 1400,
+        "Roofing disposal": 1400,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 189341
+    }
+  },
+  {
+    "id": "extended-roof-120",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.620001,
+      "rise": 5.0,
+      "pct": 100.0,
+      "coverage": 1400.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.01,
+      "area": 2800.01,
+      "squares": 28.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 280001,
+        "Field materials": 2800,
+        "Tear-off": 2800,
+        "Roofing disposal": 2800,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 333401
+    }
+  },
+  {
+    "id": "extended-roof-121",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.620001,
+      "rise": 5.0,
+      "pct": 100.0,
+      "coverage": 1540.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.01,
+      "area": 2800.01,
+      "squares": 28.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 280001,
+        "Field materials": 3080,
+        "Tear-off": 2800,
+        "Roofing disposal": 2800,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 333681
+    }
+  },
+  {
+    "id": "extended-roof-122",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.620001,
+      "rise": 5.0,
+      "pct": 50.0,
+      "coverage": 700.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.01,
+      "area": 1400.005,
+      "squares": 14.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 140001,
+        "Field materials": 1400,
+        "Tear-off": 1400,
+        "Roofing disposal": 1400,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 189201
+    }
+  },
+  {
+    "id": "extended-roof-123",
+    "kind": "roof",
+    "params": {
+      "footprint": 2584.620001,
+      "rise": 5.0,
+      "pct": 50.0,
+      "coverage": 770.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 2800.01,
+      "area": 1400.005,
+      "squares": 14.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 140001,
+        "Field materials": 1540,
+        "Tear-off": 1400,
+        "Roofing disposal": 1400,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 189341
+    }
+  },
+  {
+    "id": "extended-roof-124",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.003999,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 1000.0,
+      "squares": 10.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 100000,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 159000
+    }
+  },
+  {
+    "id": "extended-roof-125",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.003999,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 1000.0,
+      "squares": 10.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 100000,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 159100
+    }
+  },
+  {
+    "id": "extended-roof-126",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.003999,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 500.0,
+      "squares": 5.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 50000,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 94500
+    }
+  },
+  {
+    "id": "extended-roof-127",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.003999,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 500.0,
+      "squares": 5.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 50000,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 94550
+    }
+  },
+  {
+    "id": "extended-roof-128",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 174001
+    }
+  },
+  {
+    "id": "extended-roof-129",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 174101
+    }
+  },
+  {
+    "id": "extended-roof-130",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109501
+    }
+  },
+  {
+    "id": "extended-roof-131",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109551
+    }
+  },
+  {
+    "id": "extended-roof-132",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004001,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 174001
+    }
+  },
+  {
+    "id": "extended-roof-133",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004001,
+      "rise": 9.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 174101
+    }
+  },
+  {
+    "id": "extended-roof-134",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004001,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109501
+    }
+  },
+  {
+    "id": "extended-roof-135",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004001,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109551
+    }
+  },
+  {
+    "id": "extended-roof-136",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.002999,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 1000.0,
+      "squares": 10.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 100000,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 159000
+    }
+  },
+  {
+    "id": "extended-roof-137",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.002999,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 1000.0,
+      "squares": 10.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 100000,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 159100
+    }
+  },
+  {
+    "id": "extended-roof-138",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.002999,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 500.0,
+      "squares": 5.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 50000,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 94500
+    }
+  },
+  {
+    "id": "extended-roof-139",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.002999,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.0,
+      "area": 500.0,
+      "squares": 5.0,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 50000,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 94550
+    }
+  },
+  {
+    "id": "extended-roof-140",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 174001
+    }
+  },
+  {
+    "id": "extended-roof-141",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 174101
+    }
+  },
+  {
+    "id": "extended-roof-142",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109501
+    }
+  },
+  {
+    "id": "extended-roof-143",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109551
+    }
+  },
+  {
+    "id": "extended-roof-144",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003001,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": 500.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1000,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 174001
+    }
+  },
+  {
+    "id": "extended-roof-145",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003001,
+      "rise": 16.0,
+      "pct": 100.0,
+      "coverage": 550.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 1000.01,
+      "squares": 10.0001,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 100001,
+        "Field materials": 1100,
+        "Tear-off": 1000,
+        "Roofing disposal": 1000,
+        "Steep-pitch installation": 25000,
+        "Steep-pitch removal": 1000,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 174101
+    }
+  },
+  {
+    "id": "extended-roof-146",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003001,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": 250.0,
+      "waste": 0.0,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 500,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109501
+    }
+  },
+  {
+    "id": "extended-roof-147",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003001,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": 275.0,
+      "waste": 0.1,
+      "bundles": null,
+      "both": false
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109551
+    }
+  },
+  {
+    "id": "extended-roof-148",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 5.0,
+      "pct": 50.0,
+      "coverage": 250,
+      "waste": 0.1,
+      "bundles": null,
+      "both": true
+    },
+    "expected": {
+      "surface": 650.07,
+      "area": 325.035,
+      "squares": 3.25035,
+      "rolls": 2,
+      "lines": {
+        "Roofing labor": 32504,
+        "Field materials": 358,
+        "Tear-off": 325,
+        "Roofing disposal": 325,
+        "Purchased materials: roof_roll": 30000
+      },
+      "totalCents": 63512
+    }
+  },
+  {
+    "id": "extended-roof-149",
+    "kind": "roof",
+    "params": {
+      "footprint": 800.004,
+      "rise": 9.0,
+      "pct": 50.0,
+      "coverage": 250,
+      "waste": 0.1,
+      "bundles": null,
+      "both": true
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109551
+    }
+  },
+  {
+    "id": "extended-roof-150",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.003,
+      "rise": 16.0,
+      "pct": 50.0,
+      "coverage": 250,
+      "waste": 0.1,
+      "bundles": null,
+      "both": true
+    },
+    "expected": {
+      "surface": 1000.01,
+      "area": 500.005,
+      "squares": 5.00005,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 50001,
+        "Field materials": 550,
+        "Tear-off": 500,
+        "Roofing disposal": 500,
+        "Steep-pitch installation": 12500,
+        "Steep-pitch removal": 500,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 109551
+    }
+  },
+  {
+    "id": "extended-roof-151",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.059999,
+      "rise": 5.0,
+      "pct": 33.3,
+      "coverage": 100,
+      "waste": 0.1,
+      "bundles": 3,
+      "both": false
+    },
+    "expected": {
+      "surface": 650.06,
+      "area": 216.46998,
+      "squares": 2.1646998,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 21647,
+        "Field materials": 267,
+        "Tear-off": 216,
+        "Roofing disposal": 216,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 67346
+    }
+  },
+  {
+    "id": "extended-roof-152",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.06,
+      "rise": 5.0,
+      "pct": 33.3,
+      "coverage": 100,
+      "waste": 0.1,
+      "bundles": 3,
+      "both": false
+    },
+    "expected": {
+      "surface": 650.07,
+      "area": 216.47331,
+      "squares": 2.1647331,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 21647,
+        "Field materials": 267,
+        "Tear-off": 216,
+        "Roofing disposal": 216,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 67346
+    }
+  },
+  {
+    "id": "extended-roof-153",
+    "kind": "roof",
+    "params": {
+      "footprint": 600.060001,
+      "rise": 5.0,
+      "pct": 33.3,
+      "coverage": 100,
+      "waste": 0.1,
+      "bundles": 3,
+      "both": false
+    },
+    "expected": {
+      "surface": 650.07,
+      "area": 216.47331,
+      "squares": 2.1647331,
+      "rolls": 3,
+      "lines": {
+        "Roofing labor": 21647,
+        "Field materials": 267,
+        "Tear-off": 216,
+        "Roofing disposal": 216,
+        "Purchased materials: roof_roll": 45000
+      },
+      "totalCents": 67346
+    }
+  },
+  {
+    "id": "extended-concrete-154",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 99.99999999999999,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 99.99999999999999,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000
+      },
+      "totalCents": 10500
+    }
+  },
+  {
+    "id": "extended-concrete-155",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 100.0,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 100.0,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000
+      },
+      "totalCents": 10500
+    }
+  },
+  {
+    "id": "extended-concrete-156",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 100.00000000000001,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.0,
+      "area": 100.00000000000001,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2000
+      },
+      "totalCents": 12500
+    }
+  },
+  {
+    "id": "extended-concrete-157",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 399.99999999999994,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 40.0,
+      "area": 399.99999999999994,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 4000
+      },
+      "totalCents": 16000
+    }
+  },
+  {
+    "id": "extended-concrete-158",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 400.0,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 40.0,
+      "area": 400.0,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 4000
+      },
+      "totalCents": 16000
+    }
+  },
+  {
+    "id": "extended-concrete-159",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 400.00000000000006,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 80.0,
+      "area": 400.00000000000006,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 8000
+      },
+      "totalCents": 20000
+    }
+  },
+  {
+    "id": "extended-concrete-160",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 100.05000624999998,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.0,
+      "area": 100.05000624999998,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2000
+      },
+      "totalCents": 12500
+    }
+  },
+  {
+    "id": "extended-concrete-161",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 100.05000625,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.01,
+      "area": 100.05000625,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2001
+      },
+      "totalCents": 12501
+    }
+  },
+  {
+    "id": "extended-concrete-162",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 100.05000625000002,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.01,
+      "area": 100.05000625000002,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2001
+      },
+      "totalCents": 12501
+    }
+  },
+  {
+    "id": "extended-concrete-163",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 400.0500015625,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 80.0,
+      "area": 400.0500015625,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 8000
+      },
+      "totalCents": 20000
+    }
+  },
+  {
+    "id": "extended-concrete-164",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 400.0500015625,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 80.01,
+      "area": 400.0500015625,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 8001
+      },
+      "totalCents": 20001
+    }
+  },
+  {
+    "id": "extended-concrete-165",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 400.0500015625001,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 80.01,
+      "area": 400.0500015625001,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 8001
+      },
+      "totalCents": 20001
+    }
+  },
+  {
+    "id": "extended-concrete-166",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 600.0,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 97.98,
+      "area": 600.0,
+      "lines": {
+        "Concrete labor": 600,
+        "Ready-mix concrete": 2400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 9798
+      },
+      "totalCents": 22798
+    }
+  },
+  {
+    "id": "extended-concrete-167",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 156.24999999999997,
+      "spacing": 12.5,
+      "thickness": 5.5,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 156.24999999999997,
+      "lines": {
+        "Concrete labor": 156,
+        "Ready-mix concrete": 859,
+        "Formwork": 10000
+      },
+      "totalCents": 11015
+    }
+  },
+  {
+    "id": "extended-concrete-168",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 156.25,
+      "spacing": 12.5,
+      "thickness": 5.5,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 156.25,
+      "lines": {
+        "Concrete labor": 156,
+        "Ready-mix concrete": 859,
+        "Formwork": 10000
+      },
+      "totalCents": 11015
+    }
+  },
+  {
+    "id": "extended-concrete-169",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 156.25000000000003,
+      "spacing": 12.5,
+      "thickness": 5.5,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 25.0,
+      "area": 156.25000000000003,
+      "lines": {
+        "Concrete labor": 156,
+        "Ready-mix concrete": 859,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2500
+      },
+      "totalCents": 13515
+    }
+  },
+  {
+    "id": "extended-concrete-170",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 224.99999999999997,
+      "spacing": 15,
+      "thickness": 6,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 224.99999999999997,
+      "lines": {
+        "Concrete labor": 225,
+        "Ready-mix concrete": 1350,
+        "Formwork": 10000
+      },
+      "totalCents": 11575
+    }
+  },
+  {
+    "id": "extended-concrete-171",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 225.0,
+      "spacing": 15,
+      "thickness": 6,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 225.0,
+      "lines": {
+        "Concrete labor": 225,
+        "Ready-mix concrete": 1350,
+        "Formwork": 10000
+      },
+      "totalCents": 11575
+    }
+  },
+  {
+    "id": "extended-concrete-172",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": 225.00000000000003,
+      "spacing": 15,
+      "thickness": 6,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 30.0,
+      "area": 225.00000000000003,
+      "lines": {
+        "Concrete labor": 225,
+        "Ready-mix concrete": 1350,
+        "Formwork": 10000,
+        "Saw-cut control joints": 3000
+      },
+      "totalCents": 14575
+    }
+  },
+  {
+    "id": "extended-concrete-173",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 9.999999999999998,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 99.99999999999999,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 4000
+      },
+      "totalCents": 4500
+    }
+  },
+  {
+    "id": "extended-concrete-174",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 10,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 100.0,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 4000
+      },
+      "totalCents": 4500
+    }
+  },
+  {
+    "id": "extended-concrete-175",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 10.000000000000002,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 10.0,
+      "area": 100.00000000000001,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 4000,
+        "Saw-cut control joints": 1000
+      },
+      "totalCents": 5500
+    }
+  },
+  {
+    "id": "extended-concrete-176",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 19.999999999999996,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 10.0,
+      "area": 199.99999999999997,
+      "lines": {
+        "Concrete labor": 200,
+        "Ready-mix concrete": 800,
+        "Formwork": 6000,
+        "Saw-cut control joints": 1000
+      },
+      "totalCents": 8000
+    }
+  },
+  {
+    "id": "extended-concrete-177",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 20,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 10.0,
+      "area": 200.0,
+      "lines": {
+        "Concrete labor": 200,
+        "Ready-mix concrete": 800,
+        "Formwork": 6000,
+        "Saw-cut control joints": 1000
+      },
+      "totalCents": 8000
+    }
+  },
+  {
+    "id": "extended-concrete-178",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_PATIO_SLAB",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 20.000000000000004,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.0,
+      "area": 200.00000000000003,
+      "lines": {
+        "Concrete labor": 200,
+        "Ready-mix concrete": 800,
+        "Formwork": 6000,
+        "Saw-cut control joints": 2000
+      },
+      "totalCents": 9000
+    }
+  },
+  {
+    "id": "extended-concrete-179",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 99.99999999999999,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 99.99999999999999,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000
+      },
+      "totalCents": 10500
+    }
+  },
+  {
+    "id": "extended-concrete-180",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 100.0,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 100.0,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000
+      },
+      "totalCents": 10500
+    }
+  },
+  {
+    "id": "extended-concrete-181",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 100.00000000000001,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.0,
+      "area": 100.00000000000001,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2000
+      },
+      "totalCents": 12500
+    }
+  },
+  {
+    "id": "extended-concrete-182",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 399.99999999999994,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 40.0,
+      "area": 399.99999999999994,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 4000
+      },
+      "totalCents": 16000
+    }
+  },
+  {
+    "id": "extended-concrete-183",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 400.0,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 40.0,
+      "area": 400.0,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 4000
+      },
+      "totalCents": 16000
+    }
+  },
+  {
+    "id": "extended-concrete-184",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 400.00000000000006,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 80.0,
+      "area": 400.00000000000006,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 8000
+      },
+      "totalCents": 20000
+    }
+  },
+  {
+    "id": "extended-concrete-185",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 100.05000624999998,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.0,
+      "area": 100.05000624999998,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2000
+      },
+      "totalCents": 12500
+    }
+  },
+  {
+    "id": "extended-concrete-186",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 100.05000625,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.01,
+      "area": 100.05000625,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2001
+      },
+      "totalCents": 12501
+    }
+  },
+  {
+    "id": "extended-concrete-187",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 100.05000625000002,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.01,
+      "area": 100.05000625000002,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2001
+      },
+      "totalCents": 12501
+    }
+  },
+  {
+    "id": "extended-concrete-188",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 400.0500015625,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 80.0,
+      "area": 400.0500015625,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 8000
+      },
+      "totalCents": 20000
+    }
+  },
+  {
+    "id": "extended-concrete-189",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 400.0500015625,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 80.01,
+      "area": 400.0500015625,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 8001
+      },
+      "totalCents": 20001
+    }
+  },
+  {
+    "id": "extended-concrete-190",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 400.0500015625001,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 80.01,
+      "area": 400.0500015625001,
+      "lines": {
+        "Concrete labor": 400,
+        "Ready-mix concrete": 1600,
+        "Formwork": 10000,
+        "Saw-cut control joints": 8001
+      },
+      "totalCents": 20001
+    }
+  },
+  {
+    "id": "extended-concrete-191",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 600.0,
+      "spacing": 10,
+      "thickness": 4,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 97.98,
+      "area": 600.0,
+      "lines": {
+        "Concrete labor": 600,
+        "Ready-mix concrete": 2400,
+        "Formwork": 10000,
+        "Saw-cut control joints": 9798
+      },
+      "totalCents": 22798
+    }
+  },
+  {
+    "id": "extended-concrete-192",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 156.24999999999997,
+      "spacing": 12.5,
+      "thickness": 5.5,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 156.24999999999997,
+      "lines": {
+        "Concrete labor": 156,
+        "Ready-mix concrete": 859,
+        "Formwork": 10000
+      },
+      "totalCents": 11015
+    }
+  },
+  {
+    "id": "extended-concrete-193",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 156.25,
+      "spacing": 12.5,
+      "thickness": 5.5,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 156.25,
+      "lines": {
+        "Concrete labor": 156,
+        "Ready-mix concrete": 859,
+        "Formwork": 10000
+      },
+      "totalCents": 11015
+    }
+  },
+  {
+    "id": "extended-concrete-194",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 156.25000000000003,
+      "spacing": 12.5,
+      "thickness": 5.5,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 25.0,
+      "area": 156.25000000000003,
+      "lines": {
+        "Concrete labor": 156,
+        "Ready-mix concrete": 859,
+        "Formwork": 10000,
+        "Saw-cut control joints": 2500
+      },
+      "totalCents": 13515
+    }
+  },
+  {
+    "id": "extended-concrete-195",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 224.99999999999997,
+      "spacing": 15,
+      "thickness": 6,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 224.99999999999997,
+      "lines": {
+        "Concrete labor": 225,
+        "Ready-mix concrete": 1350,
+        "Formwork": 10000
+      },
+      "totalCents": 11575
+    }
+  },
+  {
+    "id": "extended-concrete-196",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 225.0,
+      "spacing": 15,
+      "thickness": 6,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 225.0,
+      "lines": {
+        "Concrete labor": 225,
+        "Ready-mix concrete": 1350,
+        "Formwork": 10000
+      },
+      "totalCents": 11575
+    }
+  },
+  {
+    "id": "extended-concrete-197",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": 225.00000000000003,
+      "spacing": 15,
+      "thickness": 6,
+      "length": null,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 30.0,
+      "area": 225.00000000000003,
+      "lines": {
+        "Concrete labor": 225,
+        "Ready-mix concrete": 1350,
+        "Formwork": 10000,
+        "Saw-cut control joints": 3000
+      },
+      "totalCents": 14575
+    }
+  },
+  {
+    "id": "extended-concrete-198",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 9.999999999999998,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 99.99999999999999,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 4000
+      },
+      "totalCents": 4500
+    }
+  },
+  {
+    "id": "extended-concrete-199",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 10,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 0.0,
+      "area": 100.0,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 4000
+      },
+      "totalCents": 4500
+    }
+  },
+  {
+    "id": "extended-concrete-200",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 10.000000000000002,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 10.0,
+      "area": 100.00000000000001,
+      "lines": {
+        "Concrete labor": 100,
+        "Ready-mix concrete": 400,
+        "Formwork": 4000,
+        "Saw-cut control joints": 1000
+      },
+      "totalCents": 5500
+    }
+  },
+  {
+    "id": "extended-concrete-201",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 19.999999999999996,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 10.0,
+      "area": 199.99999999999997,
+      "lines": {
+        "Concrete labor": 200,
+        "Ready-mix concrete": 800,
+        "Formwork": 6000,
+        "Saw-cut control joints": 1000
+      },
+      "totalCents": 8000
+    }
+  },
+  {
+    "id": "extended-concrete-202",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 20,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 10.0,
+      "area": 200.0,
+      "lines": {
+        "Concrete labor": 200,
+        "Ready-mix concrete": 800,
+        "Formwork": 6000,
+        "Saw-cut control joints": 1000
+      },
+      "totalCents": 8000
+    }
+  },
+  {
+    "id": "extended-concrete-203",
+    "kind": "concrete",
+    "params": {
+      "type": "CONCRETE_DRIVEWAY",
+      "area": null,
+      "spacing": 10,
+      "thickness": 4,
+      "length": 20.000000000000004,
+      "width": 10
+    },
+    "expected": {
+      "jointLF": 20.0,
+      "area": 200.00000000000003,
+      "lines": {
+        "Concrete labor": 200,
+        "Ready-mix concrete": 800,
+        "Formwork": 6000,
+        "Saw-cut control joints": 2000
+      },
+      "totalCents": 9000
+    }
+  }
+]

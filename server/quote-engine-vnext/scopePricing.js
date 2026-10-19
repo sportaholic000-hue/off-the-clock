@@ -1,5 +1,6 @@
 import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
 import {measuredOutlineVNext} from './geometry.js';
+import {roofSurfaceAreaSqft} from './roofGeometry.js';
 
 // Owner-defined measured scope. Prices never live in descriptions. Existing
 // prices retain their meaning; an explicitly configured scope replaces only
@@ -123,11 +124,10 @@ export function scopeLines(type,c,p={},rules={}){
   key=scopeBaseKey(key);
   if(key.startsWith('floor_underlayment')||key==='floor_overlay')return c.sqft;
   if(key.startsWith('roof_underlayment')){
-   // Match the approved roof replacement conversion without importing its
-   // contracts (which depend on this module). Round surface before scope/waste.
+   // Shared with calculation and validation; round surface before scope/waste.
    const adopted=['new','adopted'].includes(rules.startingValueAdoptions?.roofing_replacement_20261016?.mode);
    const surface=adopted&&c.roofSizeMethod==='footprint'
-    ? Math.round(c.roofSizeInput*Math.sqrt(1+(c.pitchRisePer12/12)**2)*100)/100
+    ? roofSurfaceAreaSqft(c.roofSizeInput,c.pitchRisePer12)
     : c.roofSizeInput;
    return c.serviceScope==='partial'?(c.partialAreaSqft??exactDivide(exactMultiply(surface,c.partialPercent),100)):surface;
   }

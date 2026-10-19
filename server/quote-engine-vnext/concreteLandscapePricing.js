@@ -1,4 +1,4 @@
-import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactRound,exactSubtract,exactToNumber} from './exactMath.js';
+import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactSqrtCeil,exactSqrtRound,exactSubtract,exactToNumber} from './exactMath.js';
 
 export const present = value => value !== undefined && value !== null && value !== '';
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -59,9 +59,17 @@ export const jointSpacingCap = thickness => thickness<=5?10:thickness<6?12.5:15;
 function ceiling(value){const r=exactDecimal(value);return Number((r.numerator+r.denominator-1n)/r.denominator);}
 export function controlJointLength(c,area,spacing){
   const rectangle=c.dimensionMethod==='exact';
+  // The approximate side is display evidence only. Decide spans from exact
+  // area / spacing^2, retaining which side of a perfect square the area is on.
   const length=rectangle?c.length:Math.sqrt(exactToNumber(area)),width=rectangle?c.width:length;
+  if(!rectangle){
+    const cuts=Math.max(0,exactSqrtCeil(exactDivide(area,exactMultiply(spacing,spacing)))-1);
+    // 2 * cuts * sqrt(area), rounded once to 0.01 LF, without rounding the side.
+    const quantity=exactDivide(exactSqrtRound(exactMultiply(area,200,200,cuts,cuts)),100);
+    return {quantity,length,width,rectangle};
+  }
   const joints=exactAdd(exactMultiply(Math.max(0,ceiling(exactDivide(length,spacing))-1),width),exactMultiply(Math.max(0,ceiling(exactDivide(width,spacing))-1),length));
-  return {quantity:rectangle?joints:exactDivide(exactRound(exactMultiply(joints,100)),100),length,width,rectangle};
+  return {quantity:joints,length,width,rectangle};
 }
 export function topsoilQuantity(c,p){
   const unknown=c.usableTopsoilDepthInches==='unknown';

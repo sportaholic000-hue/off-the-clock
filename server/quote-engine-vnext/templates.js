@@ -9,6 +9,7 @@ import {tradeAdjustment} from './tradeAdjustments.js';
 import {trimComponentPricing,trimPreparationNeeded,surfaceType,surfaceCalculationInputs,coatLaborParts,requestedSurfaceExtras} from './surfacePricing.js';
 import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
+import {roofSurfaceAreaSqft} from './roofGeometry.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
 import {fenceType,fenceHasRows,resolvedFencePricing,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {
@@ -539,7 +540,7 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const out=baseOutput('ROOFING_REPLACEMENT');
   let totalArea;
   if(c.roofSizeMethod==='footprint'){
-    const surface=Math.round(c.roofSizeInput*Math.sqrt(1+(c.pitchRisePer12/12)**2)*100)/100;
+    const surface=roofSurfaceAreaSqft(c.roofSizeInput,c.pitchRisePer12);
     totalArea=exactDecimal(surface);
     recordQuantityDerivation(out,{name:'roofSurfaceAreaSqft',formula:'round(footprintSqft * sqrt(1 + (risePer12 / 12)^2), 0.01)',inputs:{footprintSqft:c.roofSizeInput,risePer12:c.pitchRisePer12},result:totalArea,unit:'square feet',usedBy:['roofSquares']});
   }else totalArea=exactDecimal(c.roofSizeInput);

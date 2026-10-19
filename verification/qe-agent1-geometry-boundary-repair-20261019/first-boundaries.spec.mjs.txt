@@ -1,0 +1,62 @@
+import './pricebookTestEnv.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {generateQuoteVNext,ENGINE_VERSION} from '../server/quote-engine-vnext/index.js';
+import {EXPECTED_QUOTE_ENGINE_VERSION} from '../server/src/runtimeConfig.js';
+import {exactDivide,exactMultiply,exactSubtract,exactSqrtCeil,exactSqrtRound,exactToNumber} from '../server/quote-engine-vnext/exactMath.js';
+import {roofSurfaceAreaSqft} from '../server/quote-engine-vnext/roofGeometry.js';
+import {controlJointLength} from '../server/quote-engine-vnext/concreteLandscapePricing.js';
+import {scopeLines} from '../server/quote-engine-vnext/scopePricing.js';
+import {build} from '../verification/qe-agent1-geometry-boundary-repair-20261019/fixtures.mjs';
+const audit=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases-final.json',import.meta.url)));
+const extendedBytes=readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url));
+assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'63a22e57e1f3d830b816118db4bb6f27710a8f567344726ebbca50313885d9e3');
+const extended=JSON.parse(extendedBytes);
+test('geometry v12 literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-geometry-20261019-v12');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+for(const row of [...audit,...extended])test('geometry correctness '+row.id,()=>{
+ const f=build(row),q=generateQuoteVNext(f);
+ if(row.expected.review){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.midEstimate,undefined);return;}
+ assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));
+ const lines=Object.fromEntries(q.lineItems.map(l=>[l.name,l.amountCents]));
+ for(const [name,value] of Object.entries(row.expected.lines))if(name!=='__total')assert.equal(lines[name],value,name);
+ assert.equal(q.lineItems.reduce((s,l)=>s+l.amountCents,0),row.expected.totalCents,'separately rounded line total');
+ if(row.kind==='roof'){
+  assert.equal(roofSurfaceAreaSqft(row.params.footprint,row.params.rise),row.expected.surface);
+  assert.equal(q.lineItems.find(l=>l.name==='Roofing labor').calculation.quantity,row.expected.squares);
+  if(row.params.coverage){
+   const under=q.lineItems.find(l=>l.name==='Purchased materials: roof_roll');assert.equal(under.calculation.quantity,row.expected.rolls);
+   assert.equal(scopeLines(f.serviceType,f.customerInputs,f.ownerPricing.pricing,f.ownerPricing).lines.find(l=>l.key.startsWith('roof_underlayment')).quantity,row.expected.rolls);
+  }
+  if(row.params.both){
+   for(const partialAreaSqft of [row.expected.area-.001,row.expected.area+.001]){
+    const bad=generateQuoteVNext({...f,customerInputs:{...f.customerInputs,partialAreaSqft}});
+    assert.equal(bad.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(bad.invalidCustomerFields.some(x=>x.field==='partialAreaSqft'),JSON.stringify(bad));
+   }
+  }
+ }
+ if(row.kind==='concrete'){
+  const joint=q.lineItems.find(l=>l.name==='Saw-cut control joints');assert.equal(joint?.calculation.quantity??0,row.expected.jointLF);
+ }
+});
+
+test('exact square-root rounding and ceilings retain rational boundaries beyond binary resolution',()=>{
+ for(const k of [0,1,10,20,1000,Number.MAX_SAFE_INTEGER-1]){
+  const square=exactMultiply(k,k);
+  // For very large k build 2*k+1 without a native integer precision loss.
+  const exactMidpoint=exactMultiply(exactDivide({numerator:2n*BigInt(k)+1n,denominator:1n},2),exactDivide({numerator:2n*BigInt(k)+1n,denominator:1n},2));
+  const tiny={numerator:1n,denominator:10n**100n};
+  assert.equal(exactSqrtCeil(square),k);assert.equal(exactSqrtCeil(exactSubtract(square,{numerator:-1n,denominator:10n**100n})),k+1);
+  if(k>0)assert.equal(exactSqrtCeil(exactSubtract(square,tiny)),k);
+  assert.equal(exactSqrtRound(exactSubtract(exactMidpoint,tiny)),k);
+  assert.equal(exactSqrtRound(exactMidpoint),k+1);
+  assert.equal(exactSqrtRound(exactSubtract(exactMidpoint,{numerator:-1n,denominator:10n**100n})),k+1);
+ }
+ assert.throws(()=>exactSqrtRound(-1),RangeError);assert.throws(()=>exactSqrtCeil(-1),RangeError);
+ assert.throws(()=>exactSqrtRound(1e100),RangeError);assert.throws(()=>exactSqrtCeil(Infinity),TypeError);
+ // Measured-outline area can be more precise than any Number. No display
+ // conversion may decide its span count: side exceeds ten by far less than ULP.
+ const area={numerator:100n*10n**100n+1n,denominator:10n**100n};
+ assert.equal(exactToNumber(controlJointLength({dimensionMethod:'measured_outline'},area,10).quantity),20);
+});
