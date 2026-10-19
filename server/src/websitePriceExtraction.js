@@ -32,15 +32,21 @@ const pageWide=/\b(?:all (?:prices|rates|services|bookings|visits|items)|every (
 // Only an explicit scope label crosses page boundaries. "All prices" alone
 // remains page-local; descriptive mentions of a site-wide search are not labels.
 const websiteWide=/^(?:site|website)[-\s]wide\s*:\s*\S/iu;
-// Recognize complete, explicitly scoped obligation/weather clauses, including
-// their supported payment and applicability modifiers. Keep descriptive tails
-// ("online orders guide", "Weather Permitting is our newsletter") outside this
-// bounded grammar. Separators may contain punctuation; saved text is unchanged.
+// Recognize explicitly scoped obligation/weather clauses with timing or
+// applicability continuations. A continuation starts with a relation word,
+// rather than a closed list of objects such as "delivery" or "Friday". Once
+// recognized, the complete visible note (including all trailing qualifications)
+// goes through the existing association/length checks; no prefix is extracted.
+// Descriptive tails ("online orders guide", "Weather Permitting is our
+// newsletter") are not continuations. Bare "online orders" remains supported,
+// but a continuation there requires the explicit "must be prepaid" predicate.
+// This is bounded clause recognition, not general language interpretation.
+const scopedContinuation=String.raw`(?: (?:before|after|by|in|on|for|of|until|during) [^\r\n]+)?`;
 const scopedClauses=[
-  'customers? must prepay(?: (?:before delivery|in full))?',
-  'weather permitting(?: for (?:every|each) job| for all jobs)?',
-  'online orders(?: must be prepaid)?',
-  'payments? must be (?:made )?in advance'
+  'customers? must prepay'+scopedContinuation,
+  'weather permitting'+scopedContinuation,
+  'online orders(?: must be prepaid'+scopedContinuation+')?',
+  'payments? must be (?:made )?in advance'+scopedContinuation
 ].map(clause=>clause.replaceAll(' ',String.raw`[\s\p{P}]+`)).join('|');
 const scopedClause=new RegExp(String.raw`^(?:site|website)[-\s]wide\s*:\s*(?:${scopedClauses})[\s\p{P}]*$`,'iu');
 const unclearReference=/\b(?:some|selected|certain|specific|applicable)\s+(?:services?|items?|prices?|offers?|bookings?)\b|\b(?:above|below|following|marked|asterisk)\b|[*†‡]/i;

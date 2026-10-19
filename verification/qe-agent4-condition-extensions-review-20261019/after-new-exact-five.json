@@ -1,0 +1,432 @@
+[
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 1 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: customers must prepay before work starts</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each\nSite-wide: customers must prepay before work starts",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each\nSite-wide: customers must prepay before work starts",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices",
+            "conditions": [
+              "Site-wide: customers must prepay before work starts"
+            ]
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each\nSite-wide: customers must prepay before work starts",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      },
+      {
+        "listedItem": "Widget $10 each\nSite-wide: customers must prepay before work starts",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      }
+    ]
+  },
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 2 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: customers must prepay by Friday</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each\nSite-wide: customers must prepay by Friday",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each\nSite-wide: customers must prepay by Friday",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices",
+            "conditions": [
+              "Site-wide: customers must prepay by Friday"
+            ]
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each\nSite-wide: customers must prepay by Friday",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      },
+      {
+        "listedItem": "Widget $10 each\nSite-wide: customers must prepay by Friday",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      }
+    ]
+  },
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 3 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: weather permitting on the day</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each\nSite-wide: weather permitting on the day",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each\nSite-wide: weather permitting on the day",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices",
+            "conditions": [
+              "Site-wide: weather permitting on the day"
+            ]
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each\nSite-wide: weather permitting on the day",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      },
+      {
+        "listedItem": "Widget $10 each\nSite-wide: weather permitting on the day",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      }
+    ]
+  },
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 4 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: online orders must be prepaid in full</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each\nSite-wide: online orders must be prepaid in full",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each\nSite-wide: online orders must be prepaid in full",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices",
+            "conditions": [
+              "Site-wide: online orders must be prepaid in full"
+            ]
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each\nSite-wide: online orders must be prepaid in full",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      },
+      {
+        "listedItem": "Widget $10 each\nSite-wide: online orders must be prepaid in full",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      }
+    ]
+  },
+  {
+    "kind": "agent4-extension-actual",
+    "name": "Agent4 Extensions exact 5 draft save provider dispatcher",
+    "pages": {
+      "/": {
+        "body": "<html><body><p>Site-wide: payment must be made in advance of delivery</p><a href=\"/prices\">Prices</a></body></html>",
+        "type": "text/html"
+      },
+      "/prices": {
+        "body": "<html><body><p>Widget $10 each</p></body></html>",
+        "type": "text/html"
+      }
+    },
+    "limits": {},
+    "seen": [
+      "/",
+      "/prices"
+    ],
+    "draft": {
+      "prices": "Widget $10 each\nSite-wide: payment must be made in advance of delivery",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each\nSite-wide: payment must be made in advance of delivery",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/prices",
+            "conditions": [
+              "Site-wide: payment must be made in advance of delivery"
+            ]
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/",
+          "https://synthetic.example/prices"
+        ],
+        "limited": false,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+      }
+    },
+    "visible": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each\nSite-wide: payment must be made in advance of delivery",
+        "neverSay": []
+      }
+    },
+    "results": [
+      {
+        "listedItem": "Widget $10 each",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      },
+      {
+        "listedItem": "Widget $10 each\nSite-wide: payment must be made in advance of delivery",
+        "direct": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        },
+        "dispatched": {
+          "status": "needs_review",
+          "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+        }
+      }
+    ]
+  }
+]

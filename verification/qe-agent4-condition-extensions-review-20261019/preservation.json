@@ -1,0 +1,28 @@
+{
+  "base": "db1dcb4cb4dedebb59811c390c8fe2ac9a608846",
+  "baseFiles": 3326,
+  "unchangedBaseFiles": 3325,
+  "changedExistingFiles": [
+    "server/src/websitePriceExtraction.js"
+  ],
+  "unchangedExistingTestFiles": 392,
+  "unchangedHistoricalEvidenceFiles": 2224,
+  "workflowSHA256": "e605720e60127b59711494d75a99f38c9410177d90c15b0fb22cc8b1c59e1c48",
+  "originalMergeParents": [
+    "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "4f6152413a650085a7fe6002dfd077a542f9c0c2"
+  ],
+  "verifiedAncestors": [
+    "235eb5c978f847c2d47379ae3cf03b52c1f9104c",
+    "4f6152413a650085a7fe6002dfd077a542f9c0c2",
+    "c58ca997e9cf63739d399939bcdade83e97874d2",
+    "9af52ddc13c78beec84e7f090506da8c9b5fd691",
+    "4a90f73695611bb42bb9fb50d40a16f9e01c3740",
+    "620431bbf3036ed8141665e26ab68c684415f2e1",
+    "d71f8e506293714e2630ceb07ae4f947c1e1bb97",
+    "db1dcb4cb4dedebb59811c390c8fe2ac9a608846"
+  ],
+  "retainedPassingNames": 1135,
+  "combinedPassingNames": 1208,
+  "newTestsUnchangedSinceBaseline": true
+}
