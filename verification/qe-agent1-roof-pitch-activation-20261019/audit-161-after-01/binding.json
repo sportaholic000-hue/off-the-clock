@@ -1,0 +1,9 @@
+{
+  "source": "2b452feeb1af7c288c19b12bea5b95e48b81920e",
+  "productionBase": "2b452feeb1af7c288c19b12bea5b95e48b81920e",
+  "node": "v22.23.3",
+  "started": "2026-10-19T06:43:14.263Z",
+  "expectationsSha256": "ba69af91e2f22ef949f493188c469585364ea0ef1bb385262b0d42c5ed1e4db4",
+  "providers": "synthetic only",
+  "selected": 161
+}

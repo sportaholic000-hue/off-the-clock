@@ -1,0 +1,24 @@
+diff --git a/server/quote-engine-vnext/priceBook.js b/server/quote-engine-vnext/priceBook.js
+index ed3fd6db..8697893a 100644
+--- a/server/quote-engine-vnext/priceBook.js
++++ b/server/quote-engine-vnext/priceBook.js
+@@ -293,13 +293,17 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
+       return replacements.flatMap(replacement=>existingTypes.map(existing=>({...common(replacement,existing),pitch})));
+     }
+     const bands=['up_to_six','seven_to_nine','ten_to_twelve'];
+-    if(p.pitchInstallationAdderOverTwelve!==undefined||p.pitchRemovalAdderOverTwelve!==undefined)bands.push('over_twelve');
++    // These optional settings cover selected pitch work, not every roof.
++    // Probe every supported band at the existing arithmetic boundaries; an
++    // incomplete over-12 pair still goes to review when that work is selected.
++    // Structural validation separately rejects malformed settings, including null.
++    if(p.pitchInstallationAdderOverTwelve!==undefined&&p.pitchRemovalAdderOverTwelve!==undefined)bands.push('over_twelve');
+     return replacements.flatMap(replacement=>existingTypes.flatMap(existing=>{
+       const base=common(replacement,existing);
+       return [
+         ...bands.map(pitchBand=>({...base,pitchMethod:'whole_roof',pitchBand})),
+         {...base,pitchMethod:'area_by_pitch',pitchAreaUpTo6Sqft:500_000,pitchArea7To9Sqft:500_000},
+-        {...base,pitchMethod:'not_sure'},
++        ...(bands.includes(p.unknownPitchBand)?[{...base,pitchMethod:'not_sure'}]:[]),
+         {...base,roofSizeMethod:'footprint',roofSizeInput:500_000,pitchRisePer12:8,pitchMethod:'whole_roof',pitchBand:'seven_to_nine'}
+       ];
+     }));

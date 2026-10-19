@@ -1,0 +1,2685 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 actual HTTP and voice matrix completes all independent cases
+not ok 1 - AP01/AP02 actual HTTP and voice matrix completes all independent cases
+  ---
+  duration_ms: 13.080218
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:17:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-unknown--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--over12","faults":["catalog","direct: readiness","direct: cents/options [] != [539000]","widget: readiness","widget: cents/options [] != [539000]","voice: readiness","voice: cents/options [] != [539000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-unknown--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--mixed-zero","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-unknown--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--mixed-positive","faults":["catalog","direct: readiness","direct: cents/options [] != [465000]","widget: readiness","widget: cents/options [] != [465000]","voice: readiness","voice: cents/options [] != [465000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-unknown--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--unknown","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--over12","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--mixed-zero","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--mixed-positive","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-install--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--unknown","faults":["catalog","direct: readiness","direct: cents/options [] != [451800]","widget: readiness","widget: cents/options [] != [451800]","voice: readiness","voice: cents/options [] != [451800]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--over12","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--mixed-zero","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--mixed-positive","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-removal--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--unknown","faults":["catalog","direct: readiness","direct: cents/options [] != [451800]","widget: readiness","widget: cents/options [] != [451800]","voice: readiness","voice: cents/options [] != [451800]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-both--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--low","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"missing-both--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--over12","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","voice":"needs_details","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-both--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--mixed-zero","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"missing-both--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--mixed-positive","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","voice":"needs_details","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"missing-both--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-both--unknown","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[451800],"widget":[451800],"voice":[451800]}}
+    {"id":"complete-positive--low","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--low","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"complete-positive--over12","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--over12","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[539000],"widget":[539000],"voice":[539000]}}
+    {"id":"complete-positive--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--mixed-zero","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"complete-positive--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--mixed-positive","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[465000],"widget":[465000],"voice":[465000]}}
+    {"id":"complete-positive--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"complete-positive--unknown","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[451800],"widget":[451800],"voice":[451800]}}
+    {"id":"explicit-zero--low","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--low","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"explicit-zero--over12","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--over12","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"explicit-zero--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--mixed-zero","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"explicit-zero--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--mixed-positive","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"explicit-zero--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"explicit-zero--unknown","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[451800],"widget":[451800],"voice":[451800]}}
+    {"id":"unknown-complete-over12--low","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--low","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"unknown-complete-over12--over12","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--over12","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[539000],"widget":[539000],"voice":[539000]}}
+    {"id":"unknown-complete-over12--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--mixed-zero","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"unknown-complete-over12--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--mixed-positive","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[465000],"widget":[465000],"voice":[465000]}}
+    {"id":"unknown-complete-over12--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-complete-over12--unknown","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[539000],"widget":[539000],"voice":[539000]}}
+    {"id":"unknown-incomplete-over12--low","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--over12","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--over12","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--mixed-zero","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--mixed-positive","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-incomplete-over12--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--unknown","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"unknown-band-up_to_six","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-up_to_six","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000],"widget":[391000],"voice":[391000]}}
+    {"id":"unknown-band-seven_to_nine","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-seven_to_nine","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[451800],"widget":[451800],"voice":[451800]}}
+    {"id":"unknown-band-ten_to_twelve","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-band-ten_to_twelve","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[485800],"widget":[485800],"voice":[485800]}}
+    {"id":"tier-completion--low","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--low","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[391000,391000],"widget":[391000,391000],"voice":[391000,391000]}}
+    {"id":"tier-completion--over12","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--over12","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[539000],"widget":[539000],"voice":[539000]}}
+    {"id":"tier-completion--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"tier-completion--unknown","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"INSTANT_ESTIMATE_READY","widget":"INSTANT_ESTIMATE_READY","voice":"quoted","amounts":{"direct":[539000],"widget":[539000],"voice":[539000]}}
+    {"id":"tier-explicit-zero--low","serviceType":"ROOFING_REPLACEMENT","variant":"tier-explicit-zero--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000,391000]","widget: readiness","widget: cents/options [] != [391000,391000]","voice: readiness","voice: cents/options [] != [391000,391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"tier-explicit-zero--over12","serviceType":"ROOFING_REPLACEMENT","variant":"tier-explicit-zero--over12","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-missing-unknown--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-unknown--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-missing-unknown--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-unknown--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-missing-removal--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-removal--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-missing-removal--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-removal--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-unknown-incomplete-over12--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-unknown-incomplete-over12--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-2-unknown-incomplete-over12--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-unknown-incomplete-over12--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-missing-unknown--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-unknown--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-missing-unknown--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-unknown--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-missing-removal--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-removal--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-missing-removal--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-removal--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-unknown-incomplete-over12--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-unknown-incomplete-over12--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"catalog-11-unknown-incomplete-over12--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-unknown-incomplete-over12--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    {"id":"historical-missing-measurement","serviceType":"ROOFING_REPLACEMENT","variant":"historical-missing-measurement","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","voice":"needs_details","amounts":{"direct":[],"widget":[],"voice":[]}}
+    
+    (node:28) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:18:87)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--low
+not ok 2 - AP01/AP02 saved widget + actual voice: missing-unknown--low
+  ---
+  duration_ms: 0.99061
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--over12
+not ok 3 - AP01/AP02 saved widget + actual voice: missing-unknown--over12
+  ---
+  duration_ms: 0.308224
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--over12","faults":["catalog","direct: readiness","direct: cents/options [] != [539000]","widget: readiness","widget: cents/options [] != [539000]","voice: readiness","voice: cents/options [] != [539000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [539000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [539000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [539000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [539000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [539000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [539000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--mixed-zero
+not ok 4 - AP01/AP02 saved widget + actual voice: missing-unknown--mixed-zero
+  ---
+  duration_ms: 0.254623
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--mixed-zero","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--mixed-positive
+not ok 5 - AP01/AP02 saved widget + actual voice: missing-unknown--mixed-positive
+  ---
+  duration_ms: 0.193361
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--mixed-positive","faults":["catalog","direct: readiness","direct: cents/options [] != [465000]","widget: readiness","widget: cents/options [] != [465000]","voice: readiness","voice: cents/options [] != [465000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [465000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [465000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [465000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [465000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [465000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [465000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-unknown--unknown
+not ok 6 - AP01/AP02 saved widget + actual voice: missing-unknown--unknown
+  ---
+  duration_ms: 0.165569
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-unknown--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-unknown--unknown","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--low
+not ok 7 - AP01/AP02 saved widget + actual voice: missing-install--low
+  ---
+  duration_ms: 1.199926
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--over12
+not ok 8 - AP01/AP02 saved widget + actual voice: missing-install--over12
+  ---
+  duration_ms: 0.178408
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--over12","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--mixed-zero
+not ok 9 - AP01/AP02 saved widget + actual voice: missing-install--mixed-zero
+  ---
+  duration_ms: 0.535926
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--mixed-zero","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--mixed-positive
+not ok 10 - AP01/AP02 saved widget + actual voice: missing-install--mixed-positive
+  ---
+  duration_ms: 0.388555
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--mixed-positive","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-install--unknown
+not ok 11 - AP01/AP02 saved widget + actual voice: missing-install--unknown
+  ---
+  duration_ms: 0.248975
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-install--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-install--unknown","faults":["catalog","direct: readiness","direct: cents/options [] != [451800]","widget: readiness","widget: cents/options [] != [451800]","voice: readiness","voice: cents/options [] != [451800]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [451800]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [451800]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [451800]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [451800]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [451800]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [451800]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--low
+not ok 12 - AP01/AP02 saved widget + actual voice: missing-removal--low
+  ---
+  duration_ms: 0.13266
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--low","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--over12
+not ok 13 - AP01/AP02 saved widget + actual voice: missing-removal--over12
+  ---
+  duration_ms: 0.104427
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--over12","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--over12","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--mixed-zero
+not ok 14 - AP01/AP02 saved widget + actual voice: missing-removal--mixed-zero
+  ---
+  duration_ms: 0.107742
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--mixed-zero","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--mixed-positive
+not ok 15 - AP01/AP02 saved widget + actual voice: missing-removal--mixed-positive
+  ---
+  duration_ms: 0.394754
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--mixed-positive","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-removal--unknown
+not ok 16 - AP01/AP02 saved widget + actual voice: missing-removal--unknown
+  ---
+  duration_ms: 0.12647
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"missing-removal--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"missing-removal--unknown","faults":["catalog","direct: readiness","direct: cents/options [] != [451800]","widget: readiness","widget: cents/options [] != [451800]","voice: readiness","voice: cents/options [] != [451800]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [451800]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [451800]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [451800]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [451800]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [451800]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [451800]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--low
+ok 17 - AP01/AP02 saved widget + actual voice: missing-both--low
+  ---
+  duration_ms: 0.194072
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--over12
+ok 18 - AP01/AP02 saved widget + actual voice: missing-both--over12
+  ---
+  duration_ms: 0.063606
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--mixed-zero
+ok 19 - AP01/AP02 saved widget + actual voice: missing-both--mixed-zero
+  ---
+  duration_ms: 0.046029
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--mixed-positive
+ok 20 - AP01/AP02 saved widget + actual voice: missing-both--mixed-positive
+  ---
+  duration_ms: 0.040101
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: missing-both--unknown
+ok 21 - AP01/AP02 saved widget + actual voice: missing-both--unknown
+  ---
+  duration_ms: 0.039009
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--low
+ok 22 - AP01/AP02 saved widget + actual voice: complete-positive--low
+  ---
+  duration_ms: 0.047311
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--over12
+ok 23 - AP01/AP02 saved widget + actual voice: complete-positive--over12
+  ---
+  duration_ms: 0.037065
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--mixed-zero
+ok 24 - AP01/AP02 saved widget + actual voice: complete-positive--mixed-zero
+  ---
+  duration_ms: 0.038629
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--mixed-positive
+ok 25 - AP01/AP02 saved widget + actual voice: complete-positive--mixed-positive
+  ---
+  duration_ms: 0.423157
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: complete-positive--unknown
+ok 26 - AP01/AP02 saved widget + actual voice: complete-positive--unknown
+  ---
+  duration_ms: 0.106611
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--low
+ok 27 - AP01/AP02 saved widget + actual voice: explicit-zero--low
+  ---
+  duration_ms: 0.04656
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--over12
+ok 28 - AP01/AP02 saved widget + actual voice: explicit-zero--over12
+  ---
+  duration_ms: 0.045388
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--mixed-zero
+ok 29 - AP01/AP02 saved widget + actual voice: explicit-zero--mixed-zero
+  ---
+  duration_ms: 0.032468
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--mixed-positive
+ok 30 - AP01/AP02 saved widget + actual voice: explicit-zero--mixed-positive
+  ---
+  duration_ms: 0.032739
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: explicit-zero--unknown
+ok 31 - AP01/AP02 saved widget + actual voice: explicit-zero--unknown
+  ---
+  duration_ms: 0.029615
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--low
+ok 32 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--low
+  ---
+  duration_ms: 0.030175
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--over12
+ok 33 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--over12
+  ---
+  duration_ms: 0.031217
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-zero
+ok 34 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-zero
+  ---
+  duration_ms: 0.029394
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-positive
+ok 35 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--mixed-positive
+  ---
+  duration_ms: 0.030737
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-complete-over12--unknown
+ok 36 - AP01/AP02 saved widget + actual voice: unknown-complete-over12--unknown
+  ---
+  duration_ms: 0.03293
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--low
+not ok 37 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--low
+  ---
+  duration_ms: 0.210898
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--low","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--over12
+not ok 38 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--over12
+  ---
+  duration_ms: 0.110616
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--over12","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--over12","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-zero
+not ok 39 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-zero
+  ---
+  duration_ms: 0.104347
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--mixed-zero","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--mixed-zero","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-positive
+not ok 40 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--mixed-positive
+  ---
+  duration_ms: 0.085839
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--mixed-positive","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--mixed-positive","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--unknown
+not ok 41 - AP01/AP02 saved widget + actual voice: unknown-incomplete-over12--unknown
+  ---
+  duration_ms: 0.085398
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"unknown-incomplete-over12--unknown","serviceType":"ROOFING_REPLACEMENT","variant":"unknown-incomplete-over12--unknown","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-up_to_six
+ok 42 - AP01/AP02 saved widget + actual voice: unknown-band-up_to_six
+  ---
+  duration_ms: 0.042433
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-seven_to_nine
+ok 43 - AP01/AP02 saved widget + actual voice: unknown-band-seven_to_nine
+  ---
+  duration_ms: 0.034872
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: unknown-band-ten_to_twelve
+ok 44 - AP01/AP02 saved widget + actual voice: unknown-band-ten_to_twelve
+  ---
+  duration_ms: 0.034522
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--low
+ok 45 - AP01/AP02 saved widget + actual voice: tier-completion--low
+  ---
+  duration_ms: 0.031156
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--over12
+ok 46 - AP01/AP02 saved widget + actual voice: tier-completion--over12
+  ---
+  duration_ms: 0.030035
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-completion--unknown
+ok 47 - AP01/AP02 saved widget + actual voice: tier-completion--unknown
+  ---
+  duration_ms: 0.029304
+  type: 'test'
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-explicit-zero--low
+not ok 48 - AP01/AP02 saved widget + actual voice: tier-explicit-zero--low
+  ---
+  duration_ms: 0.132039
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"tier-explicit-zero--low","serviceType":"ROOFING_REPLACEMENT","variant":"tier-explicit-zero--low","faults":["catalog","direct: readiness","direct: cents/options [] != [391000,391000]","widget: readiness","widget: cents/options [] != [391000,391000]","voice: readiness","voice: cents/options [] != [391000,391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000,391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000,391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000,391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000,391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000,391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000,391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: tier-explicit-zero--over12
+not ok 49 - AP01/AP02 saved widget + actual voice: tier-explicit-zero--over12
+  ---
+  duration_ms: 0.107652
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"tier-explicit-zero--over12","serviceType":"ROOFING_REPLACEMENT","variant":"tier-explicit-zero--over12","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--complete
+not ok 50 - AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--complete
+  ---
+  duration_ms: 0.095875
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-missing-unknown--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-unknown--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--incomplete
+not ok 51 - AP01/AP02 saved widget + actual voice: catalog-2-missing-unknown--incomplete
+  ---
+  duration_ms: 0.081262
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-missing-unknown--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-unknown--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--complete
+not ok 52 - AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--complete
+  ---
+  duration_ms: 0.165379
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-missing-removal--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-removal--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--incomplete
+not ok 53 - AP01/AP02 saved widget + actual voice: catalog-2-missing-removal--incomplete
+  ---
+  duration_ms: 0.12593
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-missing-removal--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-missing-removal--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--complete
+not ok 54 - AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--complete
+  ---
+  duration_ms: 0.139389
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-unknown-incomplete-over12--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-unknown-incomplete-over12--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--incomplete
+not ok 55 - AP01/AP02 saved widget + actual voice: catalog-2-unknown-incomplete-over12--incomplete
+  ---
+  duration_ms: 0.094663
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-2-unknown-incomplete-over12--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-2-unknown-incomplete-over12--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--complete
+not ok 56 - AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--complete
+  ---
+  duration_ms: 0.130386
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-missing-unknown--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-unknown--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--incomplete
+not ok 57 - AP01/AP02 saved widget + actual voice: catalog-11-missing-unknown--incomplete
+  ---
+  duration_ms: 0.086189
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-missing-unknown--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-unknown--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--complete
+not ok 58 - AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--complete
+  ---
+  duration_ms: 0.091949
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-missing-removal--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-removal--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--incomplete
+not ok 59 - AP01/AP02 saved widget + actual voice: catalog-11-missing-removal--incomplete
+  ---
+  duration_ms: 0.078468
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-missing-removal--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-missing-removal--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--complete
+not ok 60 - AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--complete
+  ---
+  duration_ms: 0.162475
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-unknown-incomplete-over12--complete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-unknown-incomplete-over12--complete","faults":["catalog","direct: readiness","direct: cents/options [] != [391000]","widget: readiness","widget: cents/options [] != [391000]","voice: readiness","voice: cents/options [] != [391000]"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog',
+    +   'direct: readiness',
+    +   'direct: cents/options [] != [391000]',
+    +   'widget: readiness',
+    +   'widget: cents/options [] != [391000]',
+    +   'voice: readiness',
+    +   'voice: cents/options [] != [391000]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+    1: 'direct: readiness'
+    2: 'direct: cents/options [] != [391000]'
+    3: 'widget: readiness'
+    4: 'widget: cents/options [] != [391000]'
+    5: 'voice: readiness'
+    6: 'voice: cents/options [] != [391000]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--incomplete
+not ok 61 - AP01/AP02 saved widget + actual voice: catalog-11-unknown-incomplete-over12--incomplete
+  ---
+  duration_ms: 0.095644
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:20:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"id":"catalog-11-unknown-incomplete-over12--incomplete","serviceType":"ROOFING_REPLACEMENT","variant":"catalog-11-unknown-incomplete-over12--incomplete","faults":["catalog"],"approval":true,"ownerStatus":"NEEDS PRICING","catalog":0,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","amounts":{"direct":[],"widget":[],"voice":[]}}
+    + actual - expected
+    
+    + [
+    +   'catalog'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'catalog'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationChannels20261019.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 saved widget + actual voice: historical-missing-measurement
+ok 62 - AP01/AP02 saved widget + actual voice: historical-missing-measurement
+  ---
+  duration_ms: 0.049094
+  type: 'test'
+  ...
+# (node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-known-request
+not ok 63 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-known-request
+  ---
+  duration_ms: 155.984669
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request
+not ok 64 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request
+  ---
+  duration_ms: 70.406282
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request
+not ok 65 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request
+  ---
+  duration_ms: 54.555321
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request
+not ok 66 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request
+  ---
+  duration_ms: 48.241354
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--base
+not ok 67 - AP01/AP02 authentic v12 immutable priced/review receipts: ROOFING_REPLACEMENT--base
+  ---
+  duration_ms: 67.533636
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      {
+        defaults: {
+          currency: 'CAD',
+          disposalFee: 0,
+          markupApplies: {
+    ...
+              'laborPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:41:06.184Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'materialCostPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:41:06.184Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'tearOffPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:41:06.184Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'underlaymentPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:41:06.184Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              disposalPerSquare: {
+    +           changedAt: '2026-10-19T06:41:06.184Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              minimumJob: {
+    +           changedAt: '2026-10-19T06:41:06.184Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              }
+            },
+            pricing: {
+              accessoryPricingMode: 'per_square_allin',
+              accessoryWasteFactor: {
+    ...
+        ],
+    +   updatedAt: '2026-10-19T06:41:06.184Z'
+    -   updatedAt: '2026-10-06T12:00:00.000Z'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    ownerId: 'audit-before-01-0'
+    services:
+      0:
+        id: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+        source: 'MANUAL'
+        knownOfferings:
+          existingRoofType:
+            asphalt_shingle: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            metal: '95287887-6ab3-470c-86a4-2860be4901f3'
+            standing_seam: 'ef0cfba0-4262-423d-81db-9e4bc13ea81f'
+            cedar_shake: '00cd67b0-fc7d-4cb9-8a48-a22c08d883c4'
+          replacementRoofType:
+            asphalt_shingle: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+            metal: '6acea723-58b6-4140-8005-43e31caa0414'
+            standing_seam: 'b36b4695-4384-491e-8b0c-5ecf897f7b5c'
+            cedar_shake: '5eb27e69-d64e-46e2-8b41-59064724363e'
+        active: true
+        serviceType: 'ROOFING_REPLACEMENT'
+        service: '[SYNTHETIC ACTIVATION AUDIT] ROOFING_REPLACEMENT'
+        pricing:
+          laborPerSquare:
+            asphalt_shingle: 20000
+          materialCostPerSquare:
+            asphalt_shingle: 10000
+          tearOffPerSquare:
+            asphalt_shingle: 6000
+          underlaymentPerSquare:
+            asphalt_shingle: 100
+          underlaymentPriceBasis:
+            asphalt_shingle: 'installed_area_sell_price'
+          installedLaborPercent:
+            underlaymentPerSquare.asphalt_shingle: 0
+          installedMaterialsPercent:
+            underlaymentPerSquare.asphalt_shingle: 100
+          disposalPerSquare: 2000
+          accessoryPricingMode: 'per_square_allin'
+          minimumJob: 0
+          pitchInstallationAdderOverTwelve: 0.5
+          pitchRemovalAdderOverTwelve: 0.6
+          unknownPitchBand: 'seven_to_nine'
+          wasteFactorByComplexity:
+            simple: 0.1
+            moderate: 0.13
+            complex: 0.18
+          pitchMultiplier:
+            low: 1
+            medium: 1.15
+            steep: 1.25
+            very_steep: 1.4
+          storyMultiplier:
+            1: 1
+            2: 1.1
+            3: 1.2
+          pitchInstallationAdder:
+            seven_to_nine: 0.2
+            ten_to_twelve: 0.31
+          pitchRemovalAdder:
+            seven_to_nine: 0.26
+            ten_to_twelve: 0.41
+          complexityLaborMultiplier:
+            simple: 1
+            moderate: 1.2
+            complex: 1.4
+          additionalLayerRemovalFactor: 0.7
+          accessoryWasteFactor:
+            starterPerLF: 0.1
+            dripEdgePerLF: 0.1
+            ridgeCapPerLF: 0.1
+        feeRules:
+          travel: 'not_applicable'
+          disposal: 'not_applicable'
+          permit: 'not_applicable'
+          overhead: 'not_applicable'
+        priceBasisByCategory:
+          labor: 'cost'
+          material: 'sell_price'
+          removal: 'cost'
+          prep: 'cost'
+          addon: 'cost'
+          equipment: 'cost'
+          travel: 'cost'
+          disposal: 'cost'
+          permit: 'cost'
+          overhead: 'cost'
+          surcharge: 'cost'
+        taxabilityByCategory:
+          labor: false
+          material: false
+          removal: false
+          prep: false
+          addon: false
+          equipment: false
+          travel: false
+          disposal: false
+          permit: false
+          overhead: false
+          surcharge: false
+        peakMonths:
+        peakSurchargePercent: 0
+        validationInputs:
+          roofSizeMethod: 'roof_measured'
+          roofSizeInput: 1000
+          existingRoofType: 'asphalt_shingle'
+          replacementRoofType: 'asphalt_shingle'
+          pitchMethod: 'whole_roof'
+          pitchBand: 'up_to_six'
+          stories: 1
+          existingLayers: 1
+          roofComplexity: 'simple'
+          serviceScope: 'full'
+          confirmedFacts:
+            existingRoofType:
+              status: 'identified'
+              field: 'existingRoofType'
+              value: 'asphalt_shingle'
+              offeringId: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            replacementRoofType:
+              status: 'identified'
+              field: 'replacementRoofType'
+              value: 'asphalt_shingle'
+              offeringId: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+        confirmedFields:
+        origin:
+          serviceId: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+          serviceType: 'ROOFING_REPLACEMENT'
+          source: 'MANUAL'
+          ownerId: 'audit-before-01-0'
+          operationId: 'c053d031-3a68-4f4d-a0f5-52f10e4bb4a8'
+          createdAt: '2026-10-06T12:00:00.000Z'
+        startingValueAdoptions:
+          roofing_replacement_20261016:
+            mode: 'new'
+            introducedAt: '2026-10-06T12:00:00.000Z'
+        dependentLineState:
+          roofing_flashing_vents.asphalt_shingle:
+            definitionSignature: '{"basePriceNewWording":"Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.","basePricePath":"materialCostPerSquare.asphalt_shingle","id":"roofing_flashing_vents.asphalt_shingle"}'
+            basePricePath: 'materialCostPerSquare.asphalt_shingle'
+            basePriceNewWording: 'Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.'
+            baseValue: 10000
+            reentered: true
+            confirmed: true
+            introducedAt: '2026-10-06T12:00:00.000Z'
+            reenteredAt: '2026-10-06T12:00:00.000Z'
+            confirmedAt: '2026-10-06T12:00:00.000Z'
+            ownerId: 'audit-before-01-0'
+        priceMetadata:
+          laborPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          materialCostPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          tearOffPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          underlaymentPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          disposalPerSquare:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          minimumJob:
+            changedAt: '2026-10-06T12:00:00.000Z'
+        quoteDoneApproval:
+          ownerId: 'audit-before-01-0'
+          serviceId: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+          operationId: '6fb11e8a-8d51-4c7b-8c91-9c414f6eec27'
+          approvedAt: '2026-10-06T12:00:00.000Z'
+          engineVersion: 'quote-engine-vnext-geometry-20261019-v12'
+          moneyUnitVersion: 'roof-minimum-cents-v1'
+          contentDigest: '16b7de78d97dcfbb2f03fe226c87f99db7edd78eb6cac5d45a2bb38308236ae0'
+          sectionDigests:
+            service.feeRules: '54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4'
+            service.id: '1cff58a3e9dd4e3a3699e341b9106e23628aad8b9481ebfaa1a3ff1af4e6fa84'
+            service.knownOfferings: '6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672'
+            service.origin: '8ab0f4ebc2623b5aba38c098bde8fd39ece049c7dd97c44019042af7676fb61e'
+            service.peakMonths: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            service.peakSurchargePercent: '5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9'
+            service.priceBasisByCategory: '5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d'
+            service.pricing: 'ac475e7110cb637b2f9bad7dcbc60b6573c75ce2a26b9bfd373bd5b0aea0aae4'
+            service.service: 'f457060cb1c89bc2144e70a08b04aa980a525304810dfd9b4b433ad3867924da'
+            service.serviceType: '82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94'
+            service.source: 'bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65'
+            service.startingValueAdoptions: '4de99fe8d145df66054112b8698ab9baf23a1501f84aa591ffcbb8bf7226a0dc'
+            service.taxabilityByCategory: '3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540'
+            service.tiers: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            businessDefaults: '0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e'
+            legacySettings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            feeSelections: '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
+          operation: 'owner_confirmed_quotedone_registration'
+    defaults:
+      markupPercent: 0
+      markupMode: 'markup'
+      overheadFixed: 0
+      minimumJobPrice: 0
+      travelFee: 0
+      disposalFee: 0
+      permitFee: 0
+      taxMode: 'TAX_NONE'
+      taxPercent: 0
+      rangeBufferPercent: 0
+      markupApplies:
+        labor: true
+        material: true
+        removal: true
+        prep: true
+        addon: true
+        equipment: true
+        travel: true
+        disposal: true
+        permit: true
+        overhead: true
+        surcharge: true
+      peakMonths:
+      peakSurchargePercent: 0
+      currency: 'CAD'
+      quoteTimeZone: 'UTC'
+    updatedAt: '2026-10-06T12:00:00.000Z'
+  actual:
+    ownerId: 'audit-before-01-0'
+    services:
+      0:
+        id: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+        source: 'MANUAL'
+        knownOfferings:
+          existingRoofType:
+            asphalt_shingle: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            metal: '95287887-6ab3-470c-86a4-2860be4901f3'
+            standing_seam: 'ef0cfba0-4262-423d-81db-9e4bc13ea81f'
+            cedar_shake: '00cd67b0-fc7d-4cb9-8a48-a22c08d883c4'
+          replacementRoofType:
+            asphalt_shingle: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+            metal: '6acea723-58b6-4140-8005-43e31caa0414'
+            standing_seam: 'b36b4695-4384-491e-8b0c-5ecf897f7b5c'
+            cedar_shake: '5eb27e69-d64e-46e2-8b41-59064724363e'
+        active: true
+        serviceType: 'ROOFING_REPLACEMENT'
+        service: '[SYNTHETIC ACTIVATION AUDIT] ROOFING_REPLACEMENT'
+        pricing:
+          laborPerSquare:
+            asphalt_shingle: 20000
+          materialCostPerSquare:
+            asphalt_shingle: 10000
+          tearOffPerSquare:
+            asphalt_shingle: 6000
+          underlaymentPerSquare:
+            asphalt_shingle: 100
+          underlaymentPriceBasis:
+            asphalt_shingle: 'installed_area_sell_price'
+          installedLaborPercent:
+            underlaymentPerSquare.asphalt_shingle: 0
+          installedMaterialsPercent:
+            underlaymentPerSquare.asphalt_shingle: 100
+          disposalPerSquare: 2000
+          accessoryPricingMode: 'per_square_allin'
+          minimumJob: 0
+          pitchInstallationAdderOverTwelve: 0.5
+          pitchRemovalAdderOverTwelve: 0.6
+          unknownPitchBand: 'seven_to_nine'
+          wasteFactorByComplexity:
+            simple: 0.1
+            moderate: 0.13
+            complex: 0.18
+          pitchMultiplier:
+            low: 1
+            medium: 1.15
+            steep: 1.25
+            very_steep: 1.4
+          storyMultiplier:
+            1: 1
+            2: 1.1
+            3: 1.2
+          pitchInstallationAdder:
+            seven_to_nine: 0.2
+            ten_to_twelve: 0.31
+          pitchRemovalAdder:
+            seven_to_nine: 0.26
+            ten_to_twelve: 0.41
+          complexityLaborMultiplier:
+            simple: 1
+            moderate: 1.2
+            complex: 1.4
+          additionalLayerRemovalFactor: 0.7
+          accessoryWasteFactor:
+            starterPerLF: 0.1
+            dripEdgePerLF: 0.1
+            ridgeCapPerLF: 0.1
+        feeRules:
+          travel: 'not_applicable'
+          disposal: 'not_applicable'
+          permit: 'not_applicable'
+          overhead: 'not_applicable'
+        priceBasisByCategory:
+          labor: 'cost'
+          material: 'sell_price'
+          removal: 'cost'
+          prep: 'cost'
+          addon: 'cost'
+          equipment: 'cost'
+          travel: 'cost'
+          disposal: 'cost'
+          permit: 'cost'
+          overhead: 'cost'
+          surcharge: 'cost'
+        taxabilityByCategory:
+          labor: false
+          material: false
+          removal: false
+          prep: false
+          addon: false
+          equipment: false
+          travel: false
+          disposal: false
+          permit: false
+          overhead: false
+          surcharge: false
+        peakMonths:
+        peakSurchargePercent: 0
+        validationInputs:
+          roofSizeMethod: 'roof_measured'
+          roofSizeInput: 1000
+          existingRoofType: 'asphalt_shingle'
+          replacementRoofType: 'asphalt_shingle'
+          pitchMethod: 'whole_roof'
+          pitchBand: 'up_to_six'
+          stories: 1
+          existingLayers: 1
+          roofComplexity: 'simple'
+          serviceScope: 'full'
+          confirmedFacts:
+            existingRoofType:
+              status: 'identified'
+              field: 'existingRoofType'
+              value: 'asphalt_shingle'
+              offeringId: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            replacementRoofType:
+              status: 'identified'
+              field: 'replacementRoofType'
+              value: 'asphalt_shingle'
+              offeringId: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+        confirmedFields:
+        origin:
+          serviceId: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+          serviceType: 'ROOFING_REPLACEMENT'
+          source: 'MANUAL'
+          ownerId: 'audit-before-01-0'
+          operationId: 'c053d031-3a68-4f4d-a0f5-52f10e4bb4a8'
+          createdAt: '2026-10-06T12:00:00.000Z'
+        startingValueAdoptions:
+          roofing_replacement_20261016:
+            mode: 'new'
+            introducedAt: '2026-10-06T12:00:00.000Z'
+        dependentLineState:
+          roofing_flashing_vents.asphalt_shingle:
+            definitionSignature: '{"basePriceNewWording":"Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.","basePricePath":"materialCostPerSquare.asphalt_shingle","id":"roofing_flashing_vents.asphalt_shingle"}'
+            basePricePath: 'materialCostPerSquare.asphalt_shingle'
+            basePriceNewWording: 'Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.'
+            baseValue: 10000
+            reentered: true
+            confirmed: true
+            introducedAt: '2026-10-06T12:00:00.000Z'
+            reenteredAt: '2026-10-06T12:00:00.000Z'
+            confirmedAt: '2026-10-06T12:00:00.000Z'
+            ownerId: 'audit-before-01-0'
+        priceMetadata:
+          laborPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:41:06.184Z'
+          materialCostPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:41:06.184Z'
+          tearOffPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:41:06.184Z'
+          underlaymentPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:41:06.184Z'
+          disposalPerSquare:
+            changedAt: '2026-10-19T06:41:06.184Z'
+          minimumJob:
+            changedAt: '2026-10-19T06:41:06.184Z'
+        quoteDoneApproval:
+          ownerId: 'audit-before-01-0'
+          serviceId: '90edf91c-09f2-498e-84b7-7f82c90463ca'
+          operationId: '6fb11e8a-8d51-4c7b-8c91-9c414f6eec27'
+          approvedAt: '2026-10-06T12:00:00.000Z'
+          engineVersion: 'quote-engine-vnext-geometry-20261019-v12'
+          moneyUnitVersion: 'roof-minimum-cents-v1'
+          contentDigest: '16b7de78d97dcfbb2f03fe226c87f99db7edd78eb6cac5d45a2bb38308236ae0'
+          sectionDigests:
+            service.feeRules: '54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4'
+            service.id: '1cff58a3e9dd4e3a3699e341b9106e23628aad8b9481ebfaa1a3ff1af4e6fa84'
+            service.knownOfferings: '6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672'
+            service.origin: '8ab0f4ebc2623b5aba38c098bde8fd39ece049c7dd97c44019042af7676fb61e'
+            service.peakMonths: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            service.peakSurchargePercent: '5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9'
+            service.priceBasisByCategory: '5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d'
+            service.pricing: 'ac475e7110cb637b2f9bad7dcbc60b6573c75ce2a26b9bfd373bd5b0aea0aae4'
+            service.service: 'f457060cb1c89bc2144e70a08b04aa980a525304810dfd9b4b433ad3867924da'
+            service.serviceType: '82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94'
+            service.source: 'bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65'
+            service.startingValueAdoptions: '4de99fe8d145df66054112b8698ab9baf23a1501f84aa591ffcbb8bf7226a0dc'
+            service.taxabilityByCategory: '3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540'
+            service.tiers: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            businessDefaults: '0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e'
+            legacySettings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            feeSelections: '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
+          operation: 'owner_confirmed_quotedone_registration'
+    defaults:
+      markupPercent: 0
+      markupMode: 'markup'
+      overheadFixed: 0
+      minimumJobPrice: 0
+      travelFee: 0
+      disposalFee: 0
+      permitFee: 0
+      taxMode: 'TAX_NONE'
+      taxPercent: 0
+      rangeBufferPercent: 0
+      markupApplies:
+        labor: true
+        material: true
+        removal: true
+        prep: true
+        addon: true
+        equipment: true
+        travel: true
+        disposal: true
+        permit: true
+        overhead: true
+        surcharge: true
+      peakMonths:
+      peakSurchargePercent: 0
+      currency: 'CAD'
+      quoteTimeZone: 'UTC'
+    updatedAt: '2026-10-19T06:41:06.184Z'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:36:24)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: AP01/AP02 authentic v12 immutable priced/review receipts: historical-missing-measurement
+not ok 68 - AP01/AP02 authentic v12 immutable priced/review receipts: historical-missing-measurement
+  ---
+  duration_ms: 56.419336
+  type: 'test'
+  location: '/workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:17:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      {
+        defaults: {
+          currency: 'CAD',
+          disposalFee: 0,
+          markupApplies: {
+    ...
+              'laborPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:41:06.248Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'materialCostPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:41:06.248Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'tearOffPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:41:06.248Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              'underlaymentPerSquare.asphalt_shingle': {
+    +           changedAt: '2026-10-19T06:41:06.248Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              disposalPerSquare: {
+    +           changedAt: '2026-10-19T06:41:06.248Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              },
+              minimumJob: {
+    +           changedAt: '2026-10-19T06:41:06.248Z'
+    -           changedAt: '2026-10-06T12:00:00.000Z'
+              }
+            },
+            pricing: {
+              accessoryPricingMode: 'per_square_allin',
+              accessoryWasteFactor: {
+    ...
+        ],
+    +   updatedAt: '2026-10-19T06:41:06.248Z'
+    -   updatedAt: '2026-10-06T12:00:00.000Z'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    ownerId: 'audit-before-03-0'
+    services:
+      0:
+        id: 'f8c3afdf-fd78-4076-9029-7b6a0b189bce'
+        source: 'MANUAL'
+        knownOfferings:
+          existingRoofType:
+            asphalt_shingle: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            metal: '95287887-6ab3-470c-86a4-2860be4901f3'
+            standing_seam: 'ef0cfba0-4262-423d-81db-9e4bc13ea81f'
+            cedar_shake: '00cd67b0-fc7d-4cb9-8a48-a22c08d883c4'
+          replacementRoofType:
+            asphalt_shingle: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+            metal: '6acea723-58b6-4140-8005-43e31caa0414'
+            standing_seam: 'b36b4695-4384-491e-8b0c-5ecf897f7b5c'
+            cedar_shake: '5eb27e69-d64e-46e2-8b41-59064724363e'
+        active: true
+        serviceType: 'ROOFING_REPLACEMENT'
+        service: '[SYNTHETIC ACTIVATION AUDIT] ROOFING_REPLACEMENT'
+        pricing:
+          laborPerSquare:
+            asphalt_shingle: 20000
+          materialCostPerSquare:
+            asphalt_shingle: 10000
+          tearOffPerSquare:
+            asphalt_shingle: 6000
+          underlaymentPerSquare:
+            asphalt_shingle: 100
+          underlaymentPriceBasis:
+            asphalt_shingle: 'installed_area_sell_price'
+          installedLaborPercent:
+            underlaymentPerSquare.asphalt_shingle: 0
+          installedMaterialsPercent:
+            underlaymentPerSquare.asphalt_shingle: 100
+          disposalPerSquare: 2000
+          accessoryPricingMode: 'per_square_allin'
+          minimumJob: 0
+          pitchInstallationAdderOverTwelve: 0.5
+          pitchRemovalAdderOverTwelve: 0.6
+          unknownPitchBand: 'seven_to_nine'
+          wasteFactorByComplexity:
+            simple: 0.1
+            moderate: 0.13
+            complex: 0.18
+          pitchMultiplier:
+            low: 1
+            medium: 1.15
+            steep: 1.25
+            very_steep: 1.4
+          storyMultiplier:
+            1: 1
+            2: 1.1
+            3: 1.2
+          pitchInstallationAdder:
+            seven_to_nine: 0.2
+            ten_to_twelve: 0.31
+          pitchRemovalAdder:
+            seven_to_nine: 0.26
+            ten_to_twelve: 0.41
+          complexityLaborMultiplier:
+            simple: 1
+            moderate: 1.2
+            complex: 1.4
+          additionalLayerRemovalFactor: 0.7
+          accessoryWasteFactor:
+            starterPerLF: 0.1
+            dripEdgePerLF: 0.1
+            ridgeCapPerLF: 0.1
+        feeRules:
+          travel: 'not_applicable'
+          disposal: 'not_applicable'
+          permit: 'not_applicable'
+          overhead: 'not_applicable'
+        priceBasisByCategory:
+          labor: 'cost'
+          material: 'sell_price'
+          removal: 'cost'
+          prep: 'cost'
+          addon: 'cost'
+          equipment: 'cost'
+          travel: 'cost'
+          disposal: 'cost'
+          permit: 'cost'
+          overhead: 'cost'
+          surcharge: 'cost'
+        taxabilityByCategory:
+          labor: false
+          material: false
+          removal: false
+          prep: false
+          addon: false
+          equipment: false
+          travel: false
+          disposal: false
+          permit: false
+          overhead: false
+          surcharge: false
+        peakMonths:
+        peakSurchargePercent: 0
+        validationInputs:
+          roofSizeMethod: 'roof_measured'
+          existingRoofType: 'asphalt_shingle'
+          replacementRoofType: 'asphalt_shingle'
+          pitchMethod: 'whole_roof'
+          pitchBand: 'up_to_six'
+          stories: 1
+          existingLayers: 1
+          roofComplexity: 'simple'
+          serviceScope: 'full'
+          confirmedFacts:
+            existingRoofType:
+              status: 'identified'
+              field: 'existingRoofType'
+              value: 'asphalt_shingle'
+              offeringId: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            replacementRoofType:
+              status: 'identified'
+              field: 'replacementRoofType'
+              value: 'asphalt_shingle'
+              offeringId: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+        confirmedFields:
+        origin:
+          serviceId: 'f8c3afdf-fd78-4076-9029-7b6a0b189bce'
+          serviceType: 'ROOFING_REPLACEMENT'
+          source: 'MANUAL'
+          ownerId: 'audit-before-03-0'
+          operationId: '9a9f04a9-4407-4318-8999-b4722c54caa1'
+          createdAt: '2026-10-06T12:00:00.000Z'
+        startingValueAdoptions:
+          roofing_replacement_20261016:
+            mode: 'new'
+            introducedAt: '2026-10-06T12:00:00.000Z'
+        dependentLineState:
+          roofing_flashing_vents.asphalt_shingle:
+            definitionSignature: '{"basePriceNewWording":"Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.","basePricePath":"materialCostPerSquare.asphalt_shingle","id":"roofing_flashing_vents.asphalt_shingle"}'
+            basePricePath: 'materialCostPerSquare.asphalt_shingle'
+            basePriceNewWording: 'Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.'
+            baseValue: 10000
+            reentered: true
+            confirmed: true
+            introducedAt: '2026-10-06T12:00:00.000Z'
+            reenteredAt: '2026-10-06T12:00:00.000Z'
+            confirmedAt: '2026-10-06T12:00:00.000Z'
+            ownerId: 'audit-before-03-0'
+        priceMetadata:
+          laborPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          materialCostPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          tearOffPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          underlaymentPerSquare.asphalt_shingle:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          disposalPerSquare:
+            changedAt: '2026-10-06T12:00:00.000Z'
+          minimumJob:
+            changedAt: '2026-10-06T12:00:00.000Z'
+        quoteDoneApproval:
+          ownerId: 'audit-before-03-0'
+          serviceId: 'f8c3afdf-fd78-4076-9029-7b6a0b189bce'
+          operationId: 'eb3a0341-9188-4f2b-a2aa-40887d535c06'
+          approvedAt: '2026-10-06T12:00:00.000Z'
+          engineVersion: 'quote-engine-vnext-geometry-20261019-v12'
+          moneyUnitVersion: 'roof-minimum-cents-v1'
+          contentDigest: 'd8546cec2655cd6c9aeba859e2b582e2128caf87c9d79fc8399c0023b8419821'
+          sectionDigests:
+            service.feeRules: '54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4'
+            service.id: 'b0c50afb7329b05ba0e7208235eecc7516854ff1865a9ce40d11ebedac853b23'
+            service.knownOfferings: '6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672'
+            service.origin: '7b20d47a4cc80d8595c6e01784e911608ba690ec1d5f5b8d723517f023eaa26d'
+            service.peakMonths: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            service.peakSurchargePercent: '5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9'
+            service.priceBasisByCategory: '5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d'
+            service.pricing: 'ac475e7110cb637b2f9bad7dcbc60b6573c75ce2a26b9bfd373bd5b0aea0aae4'
+            service.service: 'f457060cb1c89bc2144e70a08b04aa980a525304810dfd9b4b433ad3867924da'
+            service.serviceType: '82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94'
+            service.source: 'bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65'
+            service.startingValueAdoptions: '4de99fe8d145df66054112b8698ab9baf23a1501f84aa591ffcbb8bf7226a0dc'
+            service.taxabilityByCategory: '3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540'
+            service.tiers: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            businessDefaults: '0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e'
+            legacySettings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            feeSelections: '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
+          operation: 'owner_confirmed_quotedone_registration'
+    defaults:
+      markupPercent: 0
+      markupMode: 'markup'
+      overheadFixed: 0
+      minimumJobPrice: 0
+      travelFee: 0
+      disposalFee: 0
+      permitFee: 0
+      taxMode: 'TAX_NONE'
+      taxPercent: 0
+      rangeBufferPercent: 0
+      markupApplies:
+        labor: true
+        material: true
+        removal: true
+        prep: true
+        addon: true
+        equipment: true
+        travel: true
+        disposal: true
+        permit: true
+        overhead: true
+        surcharge: true
+      peakMonths:
+      peakSurchargePercent: 0
+      currency: 'CAD'
+      quoteTimeZone: 'UTC'
+    updatedAt: '2026-10-06T12:00:00.000Z'
+  actual:
+    ownerId: 'audit-before-03-0'
+    services:
+      0:
+        id: 'f8c3afdf-fd78-4076-9029-7b6a0b189bce'
+        source: 'MANUAL'
+        knownOfferings:
+          existingRoofType:
+            asphalt_shingle: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            metal: '95287887-6ab3-470c-86a4-2860be4901f3'
+            standing_seam: 'ef0cfba0-4262-423d-81db-9e4bc13ea81f'
+            cedar_shake: '00cd67b0-fc7d-4cb9-8a48-a22c08d883c4'
+          replacementRoofType:
+            asphalt_shingle: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+            metal: '6acea723-58b6-4140-8005-43e31caa0414'
+            standing_seam: 'b36b4695-4384-491e-8b0c-5ecf897f7b5c'
+            cedar_shake: '5eb27e69-d64e-46e2-8b41-59064724363e'
+        active: true
+        serviceType: 'ROOFING_REPLACEMENT'
+        service: '[SYNTHETIC ACTIVATION AUDIT] ROOFING_REPLACEMENT'
+        pricing:
+          laborPerSquare:
+            asphalt_shingle: 20000
+          materialCostPerSquare:
+            asphalt_shingle: 10000
+          tearOffPerSquare:
+            asphalt_shingle: 6000
+          underlaymentPerSquare:
+            asphalt_shingle: 100
+          underlaymentPriceBasis:
+            asphalt_shingle: 'installed_area_sell_price'
+          installedLaborPercent:
+            underlaymentPerSquare.asphalt_shingle: 0
+          installedMaterialsPercent:
+            underlaymentPerSquare.asphalt_shingle: 100
+          disposalPerSquare: 2000
+          accessoryPricingMode: 'per_square_allin'
+          minimumJob: 0
+          pitchInstallationAdderOverTwelve: 0.5
+          pitchRemovalAdderOverTwelve: 0.6
+          unknownPitchBand: 'seven_to_nine'
+          wasteFactorByComplexity:
+            simple: 0.1
+            moderate: 0.13
+            complex: 0.18
+          pitchMultiplier:
+            low: 1
+            medium: 1.15
+            steep: 1.25
+            very_steep: 1.4
+          storyMultiplier:
+            1: 1
+            2: 1.1
+            3: 1.2
+          pitchInstallationAdder:
+            seven_to_nine: 0.2
+            ten_to_twelve: 0.31
+          pitchRemovalAdder:
+            seven_to_nine: 0.26
+            ten_to_twelve: 0.41
+          complexityLaborMultiplier:
+            simple: 1
+            moderate: 1.2
+            complex: 1.4
+          additionalLayerRemovalFactor: 0.7
+          accessoryWasteFactor:
+            starterPerLF: 0.1
+            dripEdgePerLF: 0.1
+            ridgeCapPerLF: 0.1
+        feeRules:
+          travel: 'not_applicable'
+          disposal: 'not_applicable'
+          permit: 'not_applicable'
+          overhead: 'not_applicable'
+        priceBasisByCategory:
+          labor: 'cost'
+          material: 'sell_price'
+          removal: 'cost'
+          prep: 'cost'
+          addon: 'cost'
+          equipment: 'cost'
+          travel: 'cost'
+          disposal: 'cost'
+          permit: 'cost'
+          overhead: 'cost'
+          surcharge: 'cost'
+        taxabilityByCategory:
+          labor: false
+          material: false
+          removal: false
+          prep: false
+          addon: false
+          equipment: false
+          travel: false
+          disposal: false
+          permit: false
+          overhead: false
+          surcharge: false
+        peakMonths:
+        peakSurchargePercent: 0
+        validationInputs:
+          roofSizeMethod: 'roof_measured'
+          existingRoofType: 'asphalt_shingle'
+          replacementRoofType: 'asphalt_shingle'
+          pitchMethod: 'whole_roof'
+          pitchBand: 'up_to_six'
+          stories: 1
+          existingLayers: 1
+          roofComplexity: 'simple'
+          serviceScope: 'full'
+          confirmedFacts:
+            existingRoofType:
+              status: 'identified'
+              field: 'existingRoofType'
+              value: 'asphalt_shingle'
+              offeringId: '5238c07d-d288-4ed7-8991-eb5bd8ffed4b'
+            replacementRoofType:
+              status: 'identified'
+              field: 'replacementRoofType'
+              value: 'asphalt_shingle'
+              offeringId: 'a4c9ae75-5efb-40f5-8b7f-0e07222f2445'
+        confirmedFields:
+        origin:
+          serviceId: 'f8c3afdf-fd78-4076-9029-7b6a0b189bce'
+          serviceType: 'ROOFING_REPLACEMENT'
+          source: 'MANUAL'
+          ownerId: 'audit-before-03-0'
+          operationId: '9a9f04a9-4407-4318-8999-b4722c54caa1'
+          createdAt: '2026-10-06T12:00:00.000Z'
+        startingValueAdoptions:
+          roofing_replacement_20261016:
+            mode: 'new'
+            introducedAt: '2026-10-06T12:00:00.000Z'
+        dependentLineState:
+          roofing_flashing_vents.asphalt_shingle:
+            definitionSignature: '{"basePriceNewWording":"Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.","basePricePath":"materialCostPerSquare.asphalt_shingle","id":"roofing_flashing_vents.asphalt_shingle"}'
+            basePricePath: 'materialCostPerSquare.asphalt_shingle'
+            basePriceNewWording: 'Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.'
+            baseValue: 10000
+            reentered: true
+            confirmed: true
+            introducedAt: '2026-10-06T12:00:00.000Z'
+            reenteredAt: '2026-10-06T12:00:00.000Z'
+            confirmedAt: '2026-10-06T12:00:00.000Z'
+            ownerId: 'audit-before-03-0'
+        priceMetadata:
+          laborPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:41:06.248Z'
+          materialCostPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:41:06.248Z'
+          tearOffPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:41:06.248Z'
+          underlaymentPerSquare.asphalt_shingle:
+            changedAt: '2026-10-19T06:41:06.248Z'
+          disposalPerSquare:
+            changedAt: '2026-10-19T06:41:06.248Z'
+          minimumJob:
+            changedAt: '2026-10-19T06:41:06.248Z'
+        quoteDoneApproval:
+          ownerId: 'audit-before-03-0'
+          serviceId: 'f8c3afdf-fd78-4076-9029-7b6a0b189bce'
+          operationId: 'eb3a0341-9188-4f2b-a2aa-40887d535c06'
+          approvedAt: '2026-10-06T12:00:00.000Z'
+          engineVersion: 'quote-engine-vnext-geometry-20261019-v12'
+          moneyUnitVersion: 'roof-minimum-cents-v1'
+          contentDigest: 'd8546cec2655cd6c9aeba859e2b582e2128caf87c9d79fc8399c0023b8419821'
+          sectionDigests:
+            service.feeRules: '54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4'
+            service.id: 'b0c50afb7329b05ba0e7208235eecc7516854ff1865a9ce40d11ebedac853b23'
+            service.knownOfferings: '6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672'
+            service.origin: '7b20d47a4cc80d8595c6e01784e911608ba690ec1d5f5b8d723517f023eaa26d'
+            service.peakMonths: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            service.peakSurchargePercent: '5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9'
+            service.priceBasisByCategory: '5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d'
+            service.pricing: 'ac475e7110cb637b2f9bad7dcbc60b6573c75ce2a26b9bfd373bd5b0aea0aae4'
+            service.service: 'f457060cb1c89bc2144e70a08b04aa980a525304810dfd9b4b433ad3867924da'
+            service.serviceType: '82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94'
+            service.source: 'bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65'
+            service.startingValueAdoptions: '4de99fe8d145df66054112b8698ab9baf23a1501f84aa591ffcbb8bf7226a0dc'
+            service.taxabilityByCategory: '3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540'
+            service.tiers: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            businessDefaults: '0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e'
+            legacySettings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'
+            feeSelections: '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
+          operation: 'owner_confirmed_quotedone_registration'
+    defaults:
+      markupPercent: 0
+      markupMode: 'markup'
+      overheadFixed: 0
+      minimumJobPrice: 0
+      travelFee: 0
+      disposalFee: 0
+      permitFee: 0
+      taxMode: 'TAX_NONE'
+      taxPercent: 0
+      rangeBufferPercent: 0
+      markupApplies:
+        labor: true
+        material: true
+        removal: true
+        prep: true
+        addon: true
+        equipment: true
+        travel: true
+        disposal: true
+        permit: true
+        overhead: true
+        surcharge: true
+      peakMonths:
+      peakSurchargePercent: 0
+      currency: 'CAD'
+      quoteTimeZone: 'UTC'
+    updatedAt: '2026-10-19T06:41:06.248Z'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db2901c56e80/off-the-clock/test/qeAgent1RoofPitchActivationHistorical20261019.spec.mjs:36:24)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..68
+# tests 68
+# suites 0
+# pass 27
+# fail 41
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40451.04577

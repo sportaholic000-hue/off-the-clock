@@ -1,0 +1,3 @@
+(node:6) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"id":"historical-missing-measurement","serviceType":"ROOFING_REPLACEMENT","variant":"historical-missing-measurement","faults":[],"approval":true,"ownerStatus":"QUOTING LIVE","catalog":1,"direct":"ESTIMATE_REQUIRES_REVIEW","widget":"ESTIMATE_REQUIRES_REVIEW","voice":"needs_details","amounts":{"direct":[],"widget":[],"voice":[]}}

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "historical-missing-measurement",
+    "serviceType": "ROOFING_REPLACEMENT",
+    "variant": "historical-missing-measurement",
+    "expected": {
+      "catalog": true,
+      "approval": true,
+      "ready": false
+    },
+    "note": "Handwritten EXPECTED.md; no calculator oracle"
+  }
+]

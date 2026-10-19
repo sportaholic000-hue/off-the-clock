@@ -1,0 +1,26 @@
+{
+  "ROOFING_REPLACEMENT--absent-over12-adjustment-known-request.json": {
+    "bytes": 301987,
+    "sha256": "bdf0ede9efaad577d801f5f49ebfa05cbec192ecec1a76f3446efc31977c5284"
+  },
+  "ROOFING_REPLACEMENT--absent-over12-adjustment-over12-request.json": {
+    "bytes": 239435,
+    "sha256": "d00bf15f6e8da98dd7fab87f2d19cfbf2b77fb328b257b9a23a5020e6e425801"
+  },
+  "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-known-request.json": {
+    "bytes": 303546,
+    "sha256": "c8ade82c160da8243d03b20bec508e88ed80dfcaaff431946d0e95e9f40fc77e"
+  },
+  "ROOFING_REPLACEMENT--absent-unknown-pitch-policy-unknown-request.json": {
+    "bytes": 239488,
+    "sha256": "a7c0662c3991718932ba39b2124c081b690f97a98539e9a14782e437a9581f44"
+  },
+  "ROOFING_REPLACEMENT--base.json": {
+    "bytes": 788531,
+    "sha256": "a01978e6c43625383866b9c7e9f28a70bb7520e2b9585b6cd7c4d8e87310b2ea"
+  },
+  "server-log.json": {
+    "bytes": 289,
+    "sha256": "3ab1d09f9ddf29aee043bb22fdc9ffabf7491c9a1371d0221195f64730698ef0"
+  }
+}
