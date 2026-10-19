@@ -123,8 +123,8 @@ try{
     const submission=restoredSubmission(type,inputs,extra);
     await page.evaluate(({key,submission})=>sessionStorage.setItem(key,JSON.stringify({kind:'editable',submission})),{key:cacheKey,submission});
     await page.reload({waitUntil:'networkidle'});
-    await page.getByLabel('Service').waitFor();
-    assert.equal(await page.getByLabel('Service').inputValue(),submission.serviceId);
+    await page.getByLabel('Service',{exact:true}).waitFor();
+    assert.equal(await page.getByLabel('Service',{exact:true}).inputValue(),submission.serviceId);
     browserCovered.add(type);
     return submission;
   }

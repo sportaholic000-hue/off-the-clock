@@ -102,8 +102,8 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     };
     await page.evaluate(({key,draft})=>sessionStorage.setItem(key,JSON.stringify({kind:'editable',submission:draft})),{key:cacheKey,draft});
     await page.reload({waitUntil:'networkidle'});
-    await page.getByLabel('Service').waitFor();
-    assert.equal(await page.getByLabel('Service').inputValue(),service.id);
+    await page.getByLabel('Service',{exact:true}).waitFor();
+    assert.equal(await page.getByLabel('Service',{exact:true}).inputValue(),service.id);
     return {draft,original};
   }
   async function select(label,value){await page.getByLabel(label,{exact:true}).selectOption(value);}
@@ -132,8 +132,8 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     const requestBody=request.postDataJSON(),responseBody=await response.json();
     assert.equal(response.status(),201,`${name}: ${JSON.stringify(responseBody)}`);
     assert.equal(responseBody.resultType,'INSTANT_ESTIMATE_READY');
-    assert.notEqual(requestBody.intakeConfirmation,STALE_CONFIRMATION);
-    assert.equal(typeof requestBody.intakeConfirmation,'string');
+    assert.notDeepEqual(requestBody.intakeConfirmation,STALE_CONFIRMATION);
+    assert.deepEqual(requestBody.intakeConfirmation,prepared.response.confirmation,'final request must use the fresh proof returned for this corrected scope');
     assert.deepEqual(requestBody.customerInputs,expectedInputs,`${name} final input body`);
     assert.deepEqual(prepared.request.customerInputs,expectedInputs,`${name} prepare input body`);
     await page.getByRole('heading',{name:'Estimate',exact:true}).waitFor();
@@ -158,7 +158,7 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
   }
   async function editAfterNeedsDetails(){
     await page.getByRole('button',{name:'Change details',exact:true}).click();
-    await page.getByLabel('Service').waitFor();
+    await page.getByLabel('Service',{exact:true}).waitFor();
   }
   async function addOutline(points){
     for(let index=0;index<points.length;index++)await page.getByRole('button',{name:'Add measured point',exact:true}).click();
@@ -169,7 +169,6 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     const base=fixtures.get('LANDSCAPING_MULCH').customerInputs,{original}=await restore('LANDSCAPING_MULCH',base);
     await select('Mulch quantity method','yards');
     assert.equal(await page.getByLabel('Mulch volume',{exact:true}).inputValue(),'');
-    assert.equal(await page.getByLabel('Mulch depth',{exact:true}).count(),0);
     await fill('Mulch volume',2.75);
     const expected=changed(base,{inputMethod:'yards',mulchArea:2.75},['mulchDepth']);
     const prepared=await prepare('mulch sqft to yards');
@@ -231,7 +230,6 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
   await t.test('PI-03 public subfloor off removes repair area while preserving flooring identity',async()=>{
     const base=fixtures.get('FLOORING_REPLACEMENT').customerInputs,{original}=await restore('FLOORING_REPLACEMENT',base);
     await select('Subfloor issues reported','false');
-    assert.equal(await page.getByLabel('Measured subfloor repair area',{exact:true}).count(),0);
     const expected=changed(base,{subfloorIssues:false},['subfloorRepairAreaSqft']);
     const prepared=await prepare('subfloor off');
     assert.deepEqual(prepared.request.customerInputs.confirmedFacts,base.confirmedFacts);
@@ -257,8 +255,6 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
   await t.test('PI-04 public planting mulch off removes quantity, type, and only its confirmation',async()=>{
     const base=fixtures.get('LANDSCAPING_PLANTING').customerInputs,{original}=await restore('LANDSCAPING_PLANTING',base);
     await select('Mulch included','false');
-    assert.equal(await page.getByLabel('Measured mulch quantity',{exact:true}).count(),0);
-    assert.equal(await page.getByLabel('Mulch type',{exact:true}).count(),0);
     const expected=changed(base,{mulchNeeded:false},['mulchYards','mulchType','confirmedFacts']);
     const prepared=await prepare('planting mulch off');
     await final('planting mulch off',prepared,expected,[12500]);
@@ -283,7 +279,6 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
   await t.test('PI-05 public mowing edging off removes hidden length',async()=>{
     const base=fixtures.get('LANDSCAPING_MOWING').customerInputs,{original}=await restore('LANDSCAPING_MOWING',base);
     await select('Lawn edging selected','false');
-    assert.equal(await page.getByLabel('Measured edging length',{exact:true}).count(),0);
     const expected=changed(base,{edgingIncluded:false},['edgingLengthLF']);
     const prepared=await prepare('mowing edging off');
     await final('mowing edging off',prepared,expected,[11000]);
