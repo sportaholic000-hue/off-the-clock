@@ -1,0 +1,743 @@
+[
+  {
+    "kind": "extraction-direct",
+    "note": "Available (exclusively) to members",
+    "plain": true,
+    "input": "Available (exclusively) to members\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Available: to account holders",
+    "plain": true,
+    "input": "Available: to account holders\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Payment (by cash)",
+    "plain": true,
+    "input": "Payment (by cash)\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Payment: by cash",
+    "plain": true,
+    "input": "Payment: by cash\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Eligible (customers): account holders",
+    "plain": true,
+    "input": "Eligible (customers): account holders\\n\\nWidget $10 each",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": []
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Available (exclusively) to members",
+    "plain": false,
+    "input": "<html><body><p>Available (exclusively) to members</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Available: to account holders",
+    "plain": false,
+    "input": "<html><body><p>Available: to account holders</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Payment (by cash)",
+    "plain": false,
+    "input": "<html><body><p>Payment (by cash)</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Payment: by cash",
+    "plain": false,
+    "input": "<html><body><p>Payment: by cash</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "extraction-direct",
+    "note": "Eligible (customers): account holders",
+    "plain": false,
+    "input": "<html><body><p>Eligible (customers): account holders</p><div><p>Widget $10 each</p></div></body></html>",
+    "extraction": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ]
+        }
+      ],
+      "conditions": [],
+      "conditionsUnverified": false,
+      "limited": false,
+      "links": [],
+      "linksLimited": false
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Available (exclusively) to members",
+    "plain": true,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Available: to account holders",
+    "plain": true,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Payment (by cash)",
+    "plain": true,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Payment: by cash",
+    "plain": true,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Eligible (customers): account holders",
+    "plain": true,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Available (exclusively) to members",
+    "plain": false,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Available: to account holders",
+    "plain": false,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Payment (by cash)",
+    "plain": false,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Payment: by cash",
+    "plain": false,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "draft-save-dispatcher",
+    "note": "Eligible (customers): account holders",
+    "plain": false,
+    "draftPrices": "Widget $10 each",
+    "savedPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "stripped": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "kind": "ambiguous-draft",
+    "plain": true,
+    "draftPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    }
+  },
+  {
+    "kind": "ambiguous-draft",
+    "plain": false,
+    "draftPrices": "Widget $10 each",
+    "import": {
+      "entries": [
+        {
+          "excerpt": "Widget $10 each",
+          "amounts": [
+            "$10"
+          ],
+          "sourceUrl": "https://synthetic.example/"
+        }
+      ],
+      "pages": [
+        "https://synthetic.example/"
+      ],
+      "limited": false,
+      "visibilityUnverified": false,
+      "conditionsUnverified": false,
+      "message": "Website prices are a draft. Review the item names, amounts and conditions before saving."
+    }
+  }
+]

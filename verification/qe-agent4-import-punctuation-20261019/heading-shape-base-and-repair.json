@@ -1,0 +1,64 @@
+{
+  "base": {
+    "entries": [
+      {
+        "excerpt": "Widget $10 each",
+        "amounts": [
+          "$10"
+        ]
+      },
+      {
+        "excerpt": "Bolt $10 each",
+        "amounts": [
+          "$10"
+        ]
+      },
+      {
+        "excerpt": "General catalog\nWasher $10 each",
+        "amounts": [
+          "$10"
+        ]
+      }
+    ],
+    "conditions": [],
+    "conditionsUnverified": false,
+    "limited": false,
+    "links": [],
+    "linksLimited": false
+  },
+  "repaired": {
+    "entries": [
+      {
+        "excerpt": "Widget $10 each",
+        "amounts": [
+          "$10"
+        ],
+        "conditions": [
+          "Payment (by cash)"
+        ]
+      },
+      {
+        "excerpt": "Bolt $10 each",
+        "amounts": [
+          "$10"
+        ],
+        "conditions": [
+          "Payment (by cash)"
+        ]
+      },
+      {
+        "excerpt": "General catalog\nWasher $10 each",
+        "amounts": [
+          "$10"
+        ]
+      }
+    ],
+    "conditions": [
+      "Payment (by cash)"
+    ],
+    "conditionsUnverified": false,
+    "limited": false,
+    "links": [],
+    "linksLimited": false
+  }
+}

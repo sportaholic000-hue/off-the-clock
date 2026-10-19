@@ -1,0 +1,7 @@
+# Pre-production route-shape correction
+
+The first new-test run produced 48 passes / 68 failures. Six unconditional route controls incorrectly expected a top-level `websiteImport.conditions` array. Inspection of the existing importer confirms that conditions are per-entry, and imported entries also have `sourceUrl` and a combined excerpt. The new tests now assert those actual public route shapes, while retaining all intended condition, literal-text, arithmetic and dispatcher requirements.
+
+The initial test source, command, exit and TAP are retained as `initial-route-shape-*`. No production edit occurred before either baseline run. The corrected baseline is the behavioral baseline; this setup run must not inflate the defect count. No pre-existing test or assertion was modified.
+
+The first after-repair run had 111 passes / five failures, all from a later assertion in the new semantic-section controls. They incorrectly expected the unaffected general section's excerpt to omit its visible heading. `heading-shape-base-and-repair.json` confirms that both the exact base and repair preserve `General catalog\nWasher $10 each`. The expected literal was corrected to that existing behavior; the exact three-entry count, section conditions, absence of added restrictions and amount assertions remain. The prior test source, after log and expanded log are retained as `before-heading-shape-*`. This is a test expectation correction, not a production change or a weakened assertion. The original failing cases and pre-existing 758 assertions remain unchanged.

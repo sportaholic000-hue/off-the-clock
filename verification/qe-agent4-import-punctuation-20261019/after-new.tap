@@ -1,0 +1,732 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Available (exclusively) to members
+ok 1 - Agent4 import punctuation plain extraction and direct calculation: Available (exclusively) to members
+  ---
+  duration_ms: 390.612214
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Available (exclusively) to members","plain":true,"input":"Available (exclusively) to members\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Available (exclusively) to members"]}],"conditions":["Available (exclusively) to members"],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Available: to account holders
+ok 2 - Agent4 import punctuation plain extraction and direct calculation: Available: to account holders
+  ---
+  duration_ms: 7.509458
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Available: to account holders","plain":true,"input":"Available: to account holders\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Available: to account holders"]}],"conditions":["Available: to account holders"],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Payment (by cash)
+ok 3 - Agent4 import punctuation plain extraction and direct calculation: Payment (by cash)
+  ---
+  duration_ms: 1.877976
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Payment (by cash)","plain":true,"input":"Payment (by cash)\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Payment (by cash)"]}],"conditions":["Payment (by cash)"],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Payment: by cash
+ok 4 - Agent4 import punctuation plain extraction and direct calculation: Payment: by cash
+  ---
+  duration_ms: 0.623699
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Payment: by cash","plain":true,"input":"Payment: by cash\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Payment: by cash"]}],"conditions":["Payment: by cash"],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Eligible (customers): account holders
+ok 5 - Agent4 import punctuation plain extraction and direct calculation: Eligible (customers): account holders
+  ---
+  duration_ms: 0.34594
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Eligible (customers): account holders","plain":true,"input":"Eligible (customers): account holders\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Eligible (customers): account holders"]}],"conditions":["Eligible (customers): account holders"],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Available (exclusively) to members
+ok 6 - Agent4 import punctuation HTML extraction and direct calculation: Available (exclusively) to members
+  ---
+  duration_ms: 2.037936
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Available (exclusively) to members","plain":false,"input":"<html><body><p>Available (exclusively) to members</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Available (exclusively) to members"]}],"conditions":["Available (exclusively) to members"],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Available: to account holders
+ok 7 - Agent4 import punctuation HTML extraction and direct calculation: Available: to account holders
+  ---
+  duration_ms: 1.10365
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Available: to account holders","plain":false,"input":"<html><body><p>Available: to account holders</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Available: to account holders"]}],"conditions":["Available: to account holders"],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Payment (by cash)
+ok 8 - Agent4 import punctuation HTML extraction and direct calculation: Payment (by cash)
+  ---
+  duration_ms: 3.221778
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Payment (by cash)","plain":false,"input":"<html><body><p>Payment (by cash)</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Payment (by cash)"]}],"conditions":["Payment (by cash)"],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Payment: by cash
+ok 9 - Agent4 import punctuation HTML extraction and direct calculation: Payment: by cash
+  ---
+  duration_ms: 0.855487
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Payment: by cash","plain":false,"input":"<html><body><p>Payment: by cash</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Payment: by cash"]}],"conditions":["Payment: by cash"],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Eligible (customers): account holders
+ok 10 - Agent4 import punctuation HTML extraction and direct calculation: Eligible (customers): account holders
+  ---
+  duration_ms: 0.715106
+  type: 'test'
+  ...
+# {"kind":"extraction-direct","note":"Eligible (customers): account holders","plain":false,"input":"<html><body><p>Eligible (customers): account holders</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"conditions":["Eligible (customers): account holders"]}],"conditions":["Eligible (customers): account holders"],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation retains original plain qualification: Available exclusively to members
+ok 11 - Agent4 import punctuation retains original plain qualification: Available exclusively to members
+  ---
+  duration_ms: 0.345931
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original plain qualification: Available to account holders
+ok 12 - Agent4 import punctuation retains original plain qualification: Available to account holders
+  ---
+  duration_ms: 0.137487
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original plain qualification: Payment by cash
+ok 13 - Agent4 import punctuation retains original plain qualification: Payment by cash
+  ---
+  duration_ms: 0.104878
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original plain qualification: Eligible customers: account holders
+ok 14 - Agent4 import punctuation retains original plain qualification: Eligible customers: account holders
+  ---
+  duration_ms: 0.187852
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original plain qualification: Prices apply to cash payments
+ok 15 - Agent4 import punctuation retains original plain qualification: Prices apply to cash payments
+  ---
+  duration_ms: 0.160451
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Available exclusively to members
+ok 16 - Agent4 import punctuation retains original HTML qualification: Available exclusively to members
+  ---
+  duration_ms: 0.346992
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Available to account holders
+ok 17 - Agent4 import punctuation retains original HTML qualification: Available to account holders
+  ---
+  duration_ms: 0.292079
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Payment by cash
+ok 18 - Agent4 import punctuation retains original HTML qualification: Payment by cash
+  ---
+  duration_ms: 0.281804
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Eligible customers: account holders
+ok 19 - Agent4 import punctuation retains original HTML qualification: Eligible customers: account holders
+  ---
+  duration_ms: 0.476316
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Prices apply to cash payments
+ok 20 - Agent4 import punctuation retains original HTML qualification: Prices apply to cash payments
+  ---
+  duration_ms: 0.345881
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Available (positions): carpenter
+ok 21 - Agent4 import punctuation unrelated plain description: Available (positions): carpenter
+  ---
+  duration_ms: 0.49829
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Available: photographs of our team
+ok 22 - Agent4 import punctuation unrelated plain description: Available: photographs of our team
+  ---
+  duration_ms: 0.180933
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Available online (for browsing)
+ok 23 - Agent4 import punctuation unrelated plain description: Available online (for browsing)
+  ---
+  duration_ms: 0.11906
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Availability (calendar)
+ok 24 - Agent4 import punctuation unrelated plain description: Availability (calendar)
+  ---
+  duration_ms: 0.123185
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Payment (terminal) display
+ok 25 - Agent4 import punctuation unrelated plain description: Payment (terminal) display
+  ---
+  duration_ms: 0.188584
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Payment: terminal setup guide
+ok 26 - Agent4 import punctuation unrelated plain description: Payment: terminal setup guide
+  ---
+  duration_ms: 0.110977
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Payments (portal) help
+ok 27 - Agent4 import punctuation unrelated plain description: Payments (portal) help
+  ---
+  duration_ms: 0.090446
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Payment options (by appointment)
+ok 28 - Agent4 import punctuation unrelated plain description: Payment options (by appointment)
+  ---
+  duration_ms: 0.083756
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Eligible (applicants): contact our hiring team
+ok 29 - Agent4 import punctuation unrelated plain description: Eligible (applicants): contact our hiring team
+  ---
+  duration_ms: 0.085849
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Eligible rewards (members area)
+ok 30 - Agent4 import punctuation unrelated plain description: Eligible rewards (members area)
+  ---
+  duration_ms: 0.167913
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Available (positions): carpenter
+ok 31 - Agent4 import punctuation unrelated HTML description: Available (positions): carpenter
+  ---
+  duration_ms: 0.198999
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Available: photographs of our team
+ok 32 - Agent4 import punctuation unrelated HTML description: Available: photographs of our team
+  ---
+  duration_ms: 0.322285
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Available online (for browsing)
+ok 33 - Agent4 import punctuation unrelated HTML description: Available online (for browsing)
+  ---
+  duration_ms: 0.210327
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Availability (calendar)
+ok 34 - Agent4 import punctuation unrelated HTML description: Availability (calendar)
+  ---
+  duration_ms: 0.167553
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Payment (terminal) display
+ok 35 - Agent4 import punctuation unrelated HTML description: Payment (terminal) display
+  ---
+  duration_ms: 0.281764
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Payment: terminal setup guide
+ok 36 - Agent4 import punctuation unrelated HTML description: Payment: terminal setup guide
+  ---
+  duration_ms: 0.182054
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Payments (portal) help
+ok 37 - Agent4 import punctuation unrelated HTML description: Payments (portal) help
+  ---
+  duration_ms: 0.258339
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Payment options (by appointment)
+ok 38 - Agent4 import punctuation unrelated HTML description: Payment options (by appointment)
+  ---
+  duration_ms: 0.336866
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Eligible (applicants): contact our hiring team
+ok 39 - Agent4 import punctuation unrelated HTML description: Eligible (applicants): contact our hiring team
+  ---
+  duration_ms: 0.175675
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Eligible rewards (members area)
+ok 40 - Agent4 import punctuation unrelated HTML description: Eligible rewards (members area)
+  ---
+  duration_ms: 0.248143
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Available (exclusively) to members
+ok 41 - Agent4 import punctuation plain multiple cards: Available (exclusively) to members
+  ---
+  duration_ms: 0.225629
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Available (exclusively) to members
+ok 42 - Agent4 import punctuation HTML multiple cards: Available (exclusively) to members
+  ---
+  duration_ms: 0.30572
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Available (exclusively) to members
+ok 43 - Agent4 import punctuation semantic section binding: Available (exclusively) to members
+  ---
+  duration_ms: 0.442366
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Available (exclusively) to members
+ok 44 - Agent4 import punctuation heading boundary: Available (exclusively) to members
+  ---
+  duration_ms: 0.243176
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Available (exclusively) to members
+ok 45 - Agent4 import punctuation detached semantic note withholds: Available (exclusively) to members
+  ---
+  duration_ms: 0.475034
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Available (exclusively) to members
+ok 46 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Available (exclusively) to members
+  ---
+  duration_ms: 0.268644
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Available (exclusively) to members
+ok 47 - Agent4 import punctuation detached plain note withholds: Available (exclusively) to members
+  ---
+  duration_ms: 0.108373
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Available (exclusively) to members
+ok 48 - Agent4 import punctuation interleaved plain note withholds: Available (exclusively) to members
+  ---
+  duration_ms: 0.095223
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Available (exclusively) to members
+ok 49 - Agent4 import punctuation plain instruction stays excluded: Available (exclusively) to members
+  ---
+  duration_ms: 0.1001
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Available (exclusively) to members
+ok 50 - Agent4 import punctuation unknown stylesheet withholds: Available (exclusively) to members
+  ---
+  duration_ms: 0.57135
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Available: to account holders
+ok 51 - Agent4 import punctuation plain multiple cards: Available: to account holders
+  ---
+  duration_ms: 0.1535
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Available: to account holders
+ok 52 - Agent4 import punctuation HTML multiple cards: Available: to account holders
+  ---
+  duration_ms: 0.416396
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Available: to account holders
+ok 53 - Agent4 import punctuation semantic section binding: Available: to account holders
+  ---
+  duration_ms: 0.282305
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Available: to account holders
+ok 54 - Agent4 import punctuation heading boundary: Available: to account holders
+  ---
+  duration_ms: 0.236506
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Available: to account holders
+ok 55 - Agent4 import punctuation detached semantic note withholds: Available: to account holders
+  ---
+  duration_ms: 0.23933
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Available: to account holders
+ok 56 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Available: to account holders
+  ---
+  duration_ms: 0.378209
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Available: to account holders
+ok 57 - Agent4 import punctuation detached plain note withholds: Available: to account holders
+  ---
+  duration_ms: 0.085048
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Available: to account holders
+ok 58 - Agent4 import punctuation interleaved plain note withholds: Available: to account holders
+  ---
+  duration_ms: 0.072209
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Available: to account holders
+ok 59 - Agent4 import punctuation plain instruction stays excluded: Available: to account holders
+  ---
+  duration_ms: 0.06669
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Available: to account holders
+ok 60 - Agent4 import punctuation unknown stylesheet withholds: Available: to account holders
+  ---
+  duration_ms: 0.139399
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Payment (by cash)
+ok 61 - Agent4 import punctuation plain multiple cards: Payment (by cash)
+  ---
+  duration_ms: 0.215174
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Payment (by cash)
+ok 62 - Agent4 import punctuation HTML multiple cards: Payment (by cash)
+  ---
+  duration_ms: 0.488125
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Payment (by cash)
+ok 63 - Agent4 import punctuation semantic section binding: Payment (by cash)
+  ---
+  duration_ms: 0.625131
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Payment (by cash)
+ok 64 - Agent4 import punctuation heading boundary: Payment (by cash)
+  ---
+  duration_ms: 0.340612
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Payment (by cash)
+ok 65 - Agent4 import punctuation detached semantic note withholds: Payment (by cash)
+  ---
+  duration_ms: 0.290447
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Payment (by cash)
+ok 66 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Payment (by cash)
+  ---
+  duration_ms: 0.371148
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Payment (by cash)
+ok 67 - Agent4 import punctuation detached plain note withholds: Payment (by cash)
+  ---
+  duration_ms: 0.100962
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Payment (by cash)
+ok 68 - Agent4 import punctuation interleaved plain note withholds: Payment (by cash)
+  ---
+  duration_ms: 0.105068
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Payment (by cash)
+ok 69 - Agent4 import punctuation plain instruction stays excluded: Payment (by cash)
+  ---
+  duration_ms: 0.108053
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Payment (by cash)
+ok 70 - Agent4 import punctuation unknown stylesheet withholds: Payment (by cash)
+  ---
+  duration_ms: 0.33842
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Payment: by cash
+ok 71 - Agent4 import punctuation plain multiple cards: Payment: by cash
+  ---
+  duration_ms: 0.218218
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Payment: by cash
+ok 72 - Agent4 import punctuation HTML multiple cards: Payment: by cash
+  ---
+  duration_ms: 0.311939
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Payment: by cash
+ok 73 - Agent4 import punctuation semantic section binding: Payment: by cash
+  ---
+  duration_ms: 0.395696
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Payment: by cash
+ok 74 - Agent4 import punctuation heading boundary: Payment: by cash
+  ---
+  duration_ms: 0.349656
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Payment: by cash
+ok 75 - Agent4 import punctuation detached semantic note withholds: Payment: by cash
+  ---
+  duration_ms: 0.220892
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Payment: by cash
+ok 76 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Payment: by cash
+  ---
+  duration_ms: 0.34519
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Payment: by cash
+ok 77 - Agent4 import punctuation detached plain note withholds: Payment: by cash
+  ---
+  duration_ms: 0.107802
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Payment: by cash
+ok 78 - Agent4 import punctuation interleaved plain note withholds: Payment: by cash
+  ---
+  duration_ms: 0.102234
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Payment: by cash
+ok 79 - Agent4 import punctuation plain instruction stays excluded: Payment: by cash
+  ---
+  duration_ms: 0.100301
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Payment: by cash
+ok 80 - Agent4 import punctuation unknown stylesheet withholds: Payment: by cash
+  ---
+  duration_ms: 0.14624
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Eligible (customers): account holders
+ok 81 - Agent4 import punctuation plain multiple cards: Eligible (customers): account holders
+  ---
+  duration_ms: 0.238889
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Eligible (customers): account holders
+ok 82 - Agent4 import punctuation HTML multiple cards: Eligible (customers): account holders
+  ---
+  duration_ms: 0.33855
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Eligible (customers): account holders
+ok 83 - Agent4 import punctuation semantic section binding: Eligible (customers): account holders
+  ---
+  duration_ms: 0.366922
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Eligible (customers): account holders
+ok 84 - Agent4 import punctuation heading boundary: Eligible (customers): account holders
+  ---
+  duration_ms: 0.300502
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Eligible (customers): account holders
+ok 85 - Agent4 import punctuation detached semantic note withholds: Eligible (customers): account holders
+  ---
+  duration_ms: 0.216776
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Eligible (customers): account holders
+ok 86 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Eligible (customers): account holders
+  ---
+  duration_ms: 0.241623
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Eligible (customers): account holders
+ok 87 - Agent4 import punctuation detached plain note withholds: Eligible (customers): account holders
+  ---
+  duration_ms: 0.072338
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Eligible (customers): account holders
+ok 88 - Agent4 import punctuation interleaved plain note withholds: Eligible (customers): account holders
+  ---
+  duration_ms: 0.062975
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Eligible (customers): account holders
+ok 89 - Agent4 import punctuation plain instruction stays excluded: Eligible (customers): account holders
+  ---
+  duration_ms: 0.063726
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Eligible (customers): account holders
+ok 90 - Agent4 import punctuation unknown stylesheet withholds: Eligible (customers): account holders
+  ---
+  duration_ms: 0.2592
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: hidden
+ok 91 - Agent4 import punctuation excluded visibility/instructions: hidden
+  ---
+  duration_ms: 0.221563
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: aria-hidden
+ok 92 - Agent4 import punctuation excluded visibility/instructions: aria-hidden
+  ---
+  duration_ms: 0.202344
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: inline CSS
+ok 93 - Agent4 import punctuation excluded visibility/instructions: inline CSS
+  ---
+  duration_ms: 0.495545
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: stylesheet
+ok 94 - Agent4 import punctuation excluded visibility/instructions: stylesheet
+  ---
+  duration_ms: 0.890239
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: script
+ok 95 - Agent4 import punctuation excluded visibility/instructions: script
+  ---
+  duration_ms: 0.287283
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: comment
+ok 96 - Agent4 import punctuation excluded visibility/instructions: comment
+  ---
+  duration_ms: 0.293201
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: instruction
+ok 97 - Agent4 import punctuation excluded visibility/instructions: instruction
+  ---
+  duration_ms: 0.510999
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Available (exclusively) to members
+ok 98 - Agent4 import punctuation plain actual draft/save/dispatcher: Available (exclusively) to members
+  ---
+  duration_ms: 99.271035
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Available (exclusively) to members","plain":true,"draftPrices":"Widget $10 each\\nAvailable (exclusively) to members","savedPrices":"Widget $10 each\\nAvailable (exclusively) to members","import":{"entries":[{"excerpt":"Widget $10 each\\nAvailable (exclusively) to members","amounts":["$10"],"conditions":["Available (exclusively) to members"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Available: to account holders
+ok 99 - Agent4 import punctuation plain actual draft/save/dispatcher: Available: to account holders
+  ---
+  duration_ms: 24.452509
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Available: to account holders","plain":true,"draftPrices":"Widget $10 each\\nAvailable: to account holders","savedPrices":"Widget $10 each\\nAvailable: to account holders","import":{"entries":[{"excerpt":"Widget $10 each\\nAvailable: to account holders","amounts":["$10"],"conditions":["Available: to account holders"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Payment (by cash)
+ok 100 - Agent4 import punctuation plain actual draft/save/dispatcher: Payment (by cash)
+  ---
+  duration_ms: 24.012126
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Payment (by cash)","plain":true,"draftPrices":"Widget $10 each\\nPayment (by cash)","savedPrices":"Widget $10 each\\nPayment (by cash)","import":{"entries":[{"excerpt":"Widget $10 each\\nPayment (by cash)","amounts":["$10"],"conditions":["Payment (by cash)"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Payment: by cash
+ok 101 - Agent4 import punctuation plain actual draft/save/dispatcher: Payment: by cash
+  ---
+  duration_ms: 26.312632
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Payment: by cash","plain":true,"draftPrices":"Widget $10 each\\nPayment: by cash","savedPrices":"Widget $10 each\\nPayment: by cash","import":{"entries":[{"excerpt":"Widget $10 each\\nPayment: by cash","amounts":["$10"],"conditions":["Payment: by cash"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Eligible (customers): account holders
+ok 102 - Agent4 import punctuation plain actual draft/save/dispatcher: Eligible (customers): account holders
+  ---
+  duration_ms: 36.136514
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Eligible (customers): account holders","plain":true,"draftPrices":"Widget $10 each\\nEligible (customers): account holders","savedPrices":"Widget $10 each\\nEligible (customers): account holders","import":{"entries":[{"excerpt":"Widget $10 each\\nEligible (customers): account holders","amounts":["$10"],"conditions":["Eligible (customers): account holders"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Available (exclusively) to members
+ok 103 - Agent4 import punctuation HTML actual draft/save/dispatcher: Available (exclusively) to members
+  ---
+  duration_ms: 28.330454
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Available (exclusively) to members","plain":false,"draftPrices":"Widget $10 each\\nAvailable (exclusively) to members","savedPrices":"Widget $10 each\\nAvailable (exclusively) to members","import":{"entries":[{"excerpt":"Widget $10 each\\nAvailable (exclusively) to members","amounts":["$10"],"conditions":["Available (exclusively) to members"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Available: to account holders
+ok 104 - Agent4 import punctuation HTML actual draft/save/dispatcher: Available: to account holders
+  ---
+  duration_ms: 17.405628
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Available: to account holders","plain":false,"draftPrices":"Widget $10 each\\nAvailable: to account holders","savedPrices":"Widget $10 each\\nAvailable: to account holders","import":{"entries":[{"excerpt":"Widget $10 each\\nAvailable: to account holders","amounts":["$10"],"conditions":["Available: to account holders"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Payment (by cash)
+ok 105 - Agent4 import punctuation HTML actual draft/save/dispatcher: Payment (by cash)
+  ---
+  duration_ms: 17.441631
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Payment (by cash)","plain":false,"draftPrices":"Widget $10 each\\nPayment (by cash)","savedPrices":"Widget $10 each\\nPayment (by cash)","import":{"entries":[{"excerpt":"Widget $10 each\\nPayment (by cash)","amounts":["$10"],"conditions":["Payment (by cash)"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Payment: by cash
+ok 106 - Agent4 import punctuation HTML actual draft/save/dispatcher: Payment: by cash
+  ---
+  duration_ms: 24.666011
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Payment: by cash","plain":false,"draftPrices":"Widget $10 each\\nPayment: by cash","savedPrices":"Widget $10 each\\nPayment: by cash","import":{"entries":[{"excerpt":"Widget $10 each\\nPayment: by cash","amounts":["$10"],"conditions":["Payment: by cash"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Eligible (customers): account holders
+ok 107 - Agent4 import punctuation HTML actual draft/save/dispatcher: Eligible (customers): account holders
+  ---
+  duration_ms: 22.899082
+  type: 'test'
+  ...
+# {"kind":"draft-save-dispatcher","note":"Eligible (customers): account holders","plain":false,"draftPrices":"Widget $10 each\\nEligible (customers): account holders","savedPrices":"Widget $10 each\\nEligible (customers): account holders","import":{"entries":[{"excerpt":"Widget $10 each\\nEligible (customers): account holders","amounts":["$10"],"conditions":["Eligible (customers): account holders"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stripped":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}}
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget $10 each
+ok 108 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget $10 each
+  ---
+  duration_ms: 24.950208
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget $0.10 each
+ok 109 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget $0.10 each
+  ---
+  duration_ms: 19.379786
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget CAD 0.335 each
+ok 110 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget CAD 0.335 each
+  ---
+  duration_ms: 15.404156
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Board-on-board $10 each
+ok 111 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Board-on-board $10 each
+  ---
+  duration_ms: 18.390709
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Nail-in $10 each
+ok 112 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Nail-in $10 each
+  ---
+  duration_ms: 15.255021
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Plug-in $10 each
+ok 113 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Plug-in $10 each
+  ---
+  duration_ms: 14.252444
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation ambiguous plain actual draft preserves existing prices
+ok 114 - Agent4 import punctuation ambiguous plain actual draft preserves existing prices
+  ---
+  duration_ms: 16.654046
+  type: 'test'
+  ...
+# {"kind":"ambiguous-draft","plain":true,"draftPrices":"","import":{"entries":[],"pages":["https://synthetic.example/"],"limited":true,"visibilityUnverified":false,"conditionsUnverified":true,"message":"No literal prices were found in the pages read. Your saved prices have not changed. Only part of the website could be read within the import limits. Manual review required: prices were omitted where their conditions could not be associated safely. Review the website and enter each price with all applicable conditions."}}
+# Subtest: Agent4 import punctuation ambiguous HTML actual draft preserves existing prices
+ok 115 - Agent4 import punctuation ambiguous HTML actual draft preserves existing prices
+  ---
+  duration_ms: 15.805925
+  type: 'test'
+  ...
+# {"kind":"ambiguous-draft","plain":false,"draftPrices":"","import":{"entries":[],"pages":["https://synthetic.example/"],"limited":true,"visibilityUnverified":false,"conditionsUnverified":true,"message":"No literal prices were found in the pages read. Your saved prices have not changed. Only part of the website could be read within the import limits. Manual review required: prices were omitted where their conditions could not be associated safely. Review the website and enter each price with all applicable conditions."}}
+# Subtest: Agent4 import punctuation keeps existing voice selection conventions
+ok 116 - Agent4 import punctuation keeps existing voice selection conventions
+  ---
+  duration_ms: 1685.752318
+  type: 'test'
+  ...
+1..116
+# tests 116
+# suites 0
+# pass 116
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2869.593826

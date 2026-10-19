@@ -1,0 +1,3044 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Available (exclusively) to members
+not ok 1 - Agent4 import punctuation plain extraction and direct calculation: Available (exclusively) to members
+  ---
+  duration_ms: 15.659909
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Available (exclusively) to members'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Available (exclusively) to members'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# {"kind":"extraction-direct","note":"Available (exclusively) to members","plain":true,"input":"Available (exclusively) to members\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Available: to account holders
+not ok 2 - Agent4 import punctuation plain extraction and direct calculation: Available: to account holders
+  ---
+  duration_ms: 399.100895
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Available: to account holders'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Available: to account holders'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# {"kind":"extraction-direct","note":"Available: to account holders","plain":true,"input":"Available: to account holders\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Payment (by cash)
+not ok 3 - Agent4 import punctuation plain extraction and direct calculation: Payment (by cash)
+  ---
+  duration_ms: 2.5655
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Payment (by cash)'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Payment (by cash)'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"extraction-direct","note":"Payment (by cash)","plain":true,"input":"Payment (by cash)\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Payment: by cash
+not ok 4 - Agent4 import punctuation plain extraction and direct calculation: Payment: by cash
+  ---
+  duration_ms: 3.022818
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Payment: by cash'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Payment: by cash'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"extraction-direct","note":"Payment: by cash","plain":true,"input":"Payment: by cash\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation plain extraction and direct calculation: Eligible (customers): account holders
+not ok 5 - Agent4 import punctuation plain extraction and direct calculation: Eligible (customers): account holders
+  ---
+  duration_ms: 0.905312
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Eligible (customers): account holders'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Eligible (customers): account holders'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"extraction-direct","note":"Eligible (customers): account holders","plain":true,"input":"Eligible (customers): account holders\\n\\nWidget $10 each","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[]},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Available (exclusively) to members
+not ok 6 - Agent4 import punctuation HTML extraction and direct calculation: Available (exclusively) to members
+  ---
+  duration_ms: 2.297307
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Available (exclusively) to members'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Available (exclusively) to members'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"extraction-direct","note":"Available (exclusively) to members","plain":false,"input":"<html><body><p>Available (exclusively) to members</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Available: to account holders
+not ok 7 - Agent4 import punctuation HTML extraction and direct calculation: Available: to account holders
+  ---
+  duration_ms: 1.365274
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Available: to account holders'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Available: to account holders'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"extraction-direct","note":"Available: to account holders","plain":false,"input":"<html><body><p>Available: to account holders</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Payment (by cash)
+not ok 8 - Agent4 import punctuation HTML extraction and direct calculation: Payment (by cash)
+  ---
+  duration_ms: 1.23643
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Payment (by cash)'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Payment (by cash)'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"extraction-direct","note":"Payment (by cash)","plain":false,"input":"<html><body><p>Payment (by cash)</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Payment: by cash
+not ok 9 - Agent4 import punctuation HTML extraction and direct calculation: Payment: by cash
+  ---
+  duration_ms: 1.227477
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Payment: by cash'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Payment: by cash'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"extraction-direct","note":"Payment: by cash","plain":false,"input":"<html><body><p>Payment: by cash</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML extraction and direct calculation: Eligible (customers): account holders
+not ok 10 - Agent4 import punctuation HTML extraction and direct calculation: Eligible (customers): account holders
+  ---
+  duration_ms: 2.79151
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:41:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Eligible (customers): account holders'
+    -     ],
+          excerpt: 'Widget $10 each'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Eligible (customers): account holders'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:45:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"extraction-direct","note":"Eligible (customers): account holders","plain":false,"input":"<html><body><p>Eligible (customers): account holders</p><div><p>Widget $10 each</p></div></body></html>","extraction":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"]}],"conditions":[],"conditionsUnverified":false,"limited":false,"links":[],"linksLimited":false},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation retains original plain qualification: Available exclusively to members
+ok 11 - Agent4 import punctuation retains original plain qualification: Available exclusively to members
+  ---
+  duration_ms: 2.837079
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original plain qualification: Available to account holders
+ok 12 - Agent4 import punctuation retains original plain qualification: Available to account holders
+  ---
+  duration_ms: 1.419335
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original plain qualification: Payment by cash
+ok 13 - Agent4 import punctuation retains original plain qualification: Payment by cash
+  ---
+  duration_ms: 0.243556
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original plain qualification: Eligible customers: account holders
+ok 14 - Agent4 import punctuation retains original plain qualification: Eligible customers: account holders
+  ---
+  duration_ms: 0.544519
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original plain qualification: Prices apply to cash payments
+ok 15 - Agent4 import punctuation retains original plain qualification: Prices apply to cash payments
+  ---
+  duration_ms: 0.72418
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Available exclusively to members
+ok 16 - Agent4 import punctuation retains original HTML qualification: Available exclusively to members
+  ---
+  duration_ms: 0.435075
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Available to account holders
+ok 17 - Agent4 import punctuation retains original HTML qualification: Available to account holders
+  ---
+  duration_ms: 0.268604
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Payment by cash
+ok 18 - Agent4 import punctuation retains original HTML qualification: Payment by cash
+  ---
+  duration_ms: 0.200532
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Eligible customers: account holders
+ok 19 - Agent4 import punctuation retains original HTML qualification: Eligible customers: account holders
+  ---
+  duration_ms: 0.348735
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation retains original HTML qualification: Prices apply to cash payments
+ok 20 - Agent4 import punctuation retains original HTML qualification: Prices apply to cash payments
+  ---
+  duration_ms: 0.45205
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Available (positions): carpenter
+ok 21 - Agent4 import punctuation unrelated plain description: Available (positions): carpenter
+  ---
+  duration_ms: 0.188233
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Available: photographs of our team
+ok 22 - Agent4 import punctuation unrelated plain description: Available: photographs of our team
+  ---
+  duration_ms: 0.100391
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Available online (for browsing)
+ok 23 - Agent4 import punctuation unrelated plain description: Available online (for browsing)
+  ---
+  duration_ms: 0.114603
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Availability (calendar)
+ok 24 - Agent4 import punctuation unrelated plain description: Availability (calendar)
+  ---
+  duration_ms: 0.097096
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Payment (terminal) display
+ok 25 - Agent4 import punctuation unrelated plain description: Payment (terminal) display
+  ---
+  duration_ms: 0.124417
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Payment: terminal setup guide
+ok 26 - Agent4 import punctuation unrelated plain description: Payment: terminal setup guide
+  ---
+  duration_ms: 0.151488
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Payments (portal) help
+ok 27 - Agent4 import punctuation unrelated plain description: Payments (portal) help
+  ---
+  duration_ms: 0.155474
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Payment options (by appointment)
+ok 28 - Agent4 import punctuation unrelated plain description: Payment options (by appointment)
+  ---
+  duration_ms: 0.146951
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Eligible (applicants): contact our hiring team
+ok 29 - Agent4 import punctuation unrelated plain description: Eligible (applicants): contact our hiring team
+  ---
+  duration_ms: 0.140742
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated plain description: Eligible rewards (members area)
+ok 30 - Agent4 import punctuation unrelated plain description: Eligible rewards (members area)
+  ---
+  duration_ms: 0.141262
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Available (positions): carpenter
+ok 31 - Agent4 import punctuation unrelated HTML description: Available (positions): carpenter
+  ---
+  duration_ms: 0.315355
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Available: photographs of our team
+ok 32 - Agent4 import punctuation unrelated HTML description: Available: photographs of our team
+  ---
+  duration_ms: 0.263316
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Available online (for browsing)
+ok 33 - Agent4 import punctuation unrelated HTML description: Available online (for browsing)
+  ---
+  duration_ms: 0.318899
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Availability (calendar)
+ok 34 - Agent4 import punctuation unrelated HTML description: Availability (calendar)
+  ---
+  duration_ms: 0.293932
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Payment (terminal) display
+ok 35 - Agent4 import punctuation unrelated HTML description: Payment (terminal) display
+  ---
+  duration_ms: 0.349015
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Payment: terminal setup guide
+ok 36 - Agent4 import punctuation unrelated HTML description: Payment: terminal setup guide
+  ---
+  duration_ms: 0.196696
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Payments (portal) help
+ok 37 - Agent4 import punctuation unrelated HTML description: Payments (portal) help
+  ---
+  duration_ms: 0.163816
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Payment options (by appointment)
+ok 38 - Agent4 import punctuation unrelated HTML description: Payment options (by appointment)
+  ---
+  duration_ms: 0.169966
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Eligible (applicants): contact our hiring team
+ok 39 - Agent4 import punctuation unrelated HTML description: Eligible (applicants): contact our hiring team
+  ---
+  duration_ms: 0.160081
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unrelated HTML description: Eligible rewards (members area)
+ok 40 - Agent4 import punctuation unrelated HTML description: Eligible rewards (members area)
+  ---
+  duration_ms: 0.158618
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Available (exclusively) to members
+not ok 41 - Agent4 import punctuation plain multiple cards: Available (exclusively) to members
+  ---
+  duration_ms: 0.340282
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Available (exclusively) to members'
+    -   ],
+    -   [
+    -     'Available (exclusively) to members'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Available (exclusively) to members'
+    1:
+      0: 'Available (exclusively) to members'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Available (exclusively) to members
+not ok 42 - Agent4 import punctuation HTML multiple cards: Available (exclusively) to members
+  ---
+  duration_ms: 0.298039
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Available (exclusively) to members'
+    -   ],
+    -   [
+    -     'Available (exclusively) to members'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Available (exclusively) to members'
+    1:
+      0: 'Available (exclusively) to members'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Available (exclusively) to members
+not ok 43 - Agent4 import punctuation semantic section binding: Available (exclusively) to members
+  ---
+  duration_ms: 0.483167
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Available (exclusively) to members'
+    -   ],
+    -   [
+    -     'Available (exclusively) to members'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Available (exclusively) to members'
+    1:
+      0: 'Available (exclusively) to members'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:68:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Available (exclusively) to members
+not ok 44 - Agent4 import punctuation heading boundary: Available (exclusively) to members
+  ---
+  duration_ms: 0.32606
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - [
+    -   'Available (exclusively) to members'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Available (exclusively) to members'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:73:47)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Available (exclusively) to members
+not ok 45 - Agent4 import punctuation detached semantic note withholds: Available (exclusively) to members
+  ---
+  duration_ms: 0.301624
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:75:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:76:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Available (exclusively) to members
+not ok 46 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Available (exclusively) to members
+  ---
+  duration_ms: 0.461625
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:78:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:80:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Available (exclusively) to members
+not ok 47 - Agent4 import punctuation detached plain note withholds: Available (exclusively) to members
+  ---
+  duration_ms: 0.250276
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:77)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Available (exclusively) to members
+not ok 48 - Agent4 import punctuation interleaved plain note withholds: Available (exclusively) to members
+  ---
+  duration_ms: 0.221333
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nAvailable (exclusively) to members'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Available (exclusively) to members
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:80)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Available (exclusively) to members
+ok 49 - Agent4 import punctuation plain instruction stays excluded: Available (exclusively) to members
+  ---
+  duration_ms: 0.124778
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Available (exclusively) to members
+ok 50 - Agent4 import punctuation unknown stylesheet withholds: Available (exclusively) to members
+  ---
+  duration_ms: 0.360362
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Available: to account holders
+not ok 51 - Agent4 import punctuation plain multiple cards: Available: to account holders
+  ---
+  duration_ms: 0.209735
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Available: to account holders'
+    -   ],
+    -   [
+    -     'Available: to account holders'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Available: to account holders'
+    1:
+      0: 'Available: to account holders'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Available: to account holders
+not ok 52 - Agent4 import punctuation HTML multiple cards: Available: to account holders
+  ---
+  duration_ms: 0.323517
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Available: to account holders'
+    -   ],
+    -   [
+    -     'Available: to account holders'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Available: to account holders'
+    1:
+      0: 'Available: to account holders'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Available: to account holders
+not ok 53 - Agent4 import punctuation semantic section binding: Available: to account holders
+  ---
+  duration_ms: 0.4052
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Available: to account holders'
+    -   ],
+    -   [
+    -     'Available: to account holders'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Available: to account holders'
+    1:
+      0: 'Available: to account holders'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:68:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Available: to account holders
+not ok 54 - Agent4 import punctuation heading boundary: Available: to account holders
+  ---
+  duration_ms: 0.299941
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - [
+    -   'Available: to account holders'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Available: to account holders'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:73:47)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Available: to account holders
+not ok 55 - Agent4 import punctuation detached semantic note withholds: Available: to account holders
+  ---
+  duration_ms: 0.293341
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:75:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:76:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Available: to account holders
+not ok 56 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Available: to account holders
+  ---
+  duration_ms: 0.282074
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:78:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:80:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Available: to account holders
+not ok 57 - Agent4 import punctuation detached plain note withholds: Available: to account holders
+  ---
+  duration_ms: 0.177507
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:77)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Available: to account holders
+not ok 58 - Agent4 import punctuation interleaved plain note withholds: Available: to account holders
+  ---
+  duration_ms: 0.182395
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nAvailable: to account holders'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Available: to account holders
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:80)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Available: to account holders
+ok 59 - Agent4 import punctuation plain instruction stays excluded: Available: to account holders
+  ---
+  duration_ms: 0.083325
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Available: to account holders
+ok 60 - Agent4 import punctuation unknown stylesheet withholds: Available: to account holders
+  ---
+  duration_ms: 0.149135
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Payment (by cash)
+not ok 61 - Agent4 import punctuation plain multiple cards: Payment (by cash)
+  ---
+  duration_ms: 0.170637
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Payment (by cash)'
+    -   ],
+    -   [
+    -     'Payment (by cash)'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Payment (by cash)'
+    1:
+      0: 'Payment (by cash)'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Payment (by cash)
+not ok 62 - Agent4 import punctuation HTML multiple cards: Payment (by cash)
+  ---
+  duration_ms: 0.293421
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Payment (by cash)'
+    -   ],
+    -   [
+    -     'Payment (by cash)'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Payment (by cash)'
+    1:
+      0: 'Payment (by cash)'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Payment (by cash)
+not ok 63 - Agent4 import punctuation semantic section binding: Payment (by cash)
+  ---
+  duration_ms: 0.327623
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Payment (by cash)'
+    -   ],
+    -   [
+    -     'Payment (by cash)'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Payment (by cash)'
+    1:
+      0: 'Payment (by cash)'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:68:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Payment (by cash)
+not ok 64 - Agent4 import punctuation heading boundary: Payment (by cash)
+  ---
+  duration_ms: 0.251989
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - [
+    -   'Payment (by cash)'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Payment (by cash)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:73:47)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Payment (by cash)
+not ok 65 - Agent4 import punctuation detached semantic note withholds: Payment (by cash)
+  ---
+  duration_ms: 0.229646
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:75:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:76:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Payment (by cash)
+not ok 66 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Payment (by cash)
+  ---
+  duration_ms: 0.293311
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:78:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:80:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Payment (by cash)
+not ok 67 - Agent4 import punctuation detached plain note withholds: Payment (by cash)
+  ---
+  duration_ms: 0.146591
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:77)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Payment (by cash)
+not ok 68 - Agent4 import punctuation interleaved plain note withholds: Payment (by cash)
+  ---
+  duration_ms: 0.166621
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nPayment (by cash)'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Payment (by cash)
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:80)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Payment (by cash)
+ok 69 - Agent4 import punctuation plain instruction stays excluded: Payment (by cash)
+  ---
+  duration_ms: 0.080571
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Payment (by cash)
+ok 70 - Agent4 import punctuation unknown stylesheet withholds: Payment (by cash)
+  ---
+  duration_ms: 0.123706
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Payment: by cash
+not ok 71 - Agent4 import punctuation plain multiple cards: Payment: by cash
+  ---
+  duration_ms: 0.159651
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Payment: by cash'
+    -   ],
+    -   [
+    -     'Payment: by cash'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Payment: by cash'
+    1:
+      0: 'Payment: by cash'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Payment: by cash
+not ok 72 - Agent4 import punctuation HTML multiple cards: Payment: by cash
+  ---
+  duration_ms: 0.253832
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Payment: by cash'
+    -   ],
+    -   [
+    -     'Payment: by cash'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Payment: by cash'
+    1:
+      0: 'Payment: by cash'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Payment: by cash
+not ok 73 - Agent4 import punctuation semantic section binding: Payment: by cash
+  ---
+  duration_ms: 0.318379
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Payment: by cash'
+    -   ],
+    -   [
+    -     'Payment: by cash'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Payment: by cash'
+    1:
+      0: 'Payment: by cash'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:68:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Payment: by cash
+not ok 74 - Agent4 import punctuation heading boundary: Payment: by cash
+  ---
+  duration_ms: 0.241223
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - [
+    -   'Payment: by cash'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Payment: by cash'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:73:47)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Payment: by cash
+not ok 75 - Agent4 import punctuation detached semantic note withholds: Payment: by cash
+  ---
+  duration_ms: 0.405991
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:75:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:76:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Payment: by cash
+not ok 76 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Payment: by cash
+  ---
+  duration_ms: 0.247673
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:78:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:80:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Payment: by cash
+not ok 77 - Agent4 import punctuation detached plain note withholds: Payment: by cash
+  ---
+  duration_ms: 0.146661
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:77)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Payment: by cash
+not ok 78 - Agent4 import punctuation interleaved plain note withholds: Payment: by cash
+  ---
+  duration_ms: 0.206671
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nPayment: by cash'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Payment: by cash
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:80)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Payment: by cash
+ok 79 - Agent4 import punctuation plain instruction stays excluded: Payment: by cash
+  ---
+  duration_ms: 0.114542
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Payment: by cash
+ok 80 - Agent4 import punctuation unknown stylesheet withholds: Payment: by cash
+  ---
+  duration_ms: 0.116916
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain multiple cards: Eligible (customers): account holders
+not ok 81 - Agent4 import punctuation plain multiple cards: Eligible (customers): account holders
+  ---
+  duration_ms: 0.162564
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Eligible (customers): account holders'
+    -   ],
+    -   [
+    -     'Eligible (customers): account holders'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Eligible (customers): account holders'
+    1:
+      0: 'Eligible (customers): account holders'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation HTML multiple cards: Eligible (customers): account holders
+not ok 82 - Agent4 import punctuation HTML multiple cards: Eligible (customers): account holders
+  ---
+  duration_ms: 0.241934
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:59:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Eligible (customers): account holders'
+    -   ],
+    -   [
+    -     'Eligible (customers): account holders'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Eligible (customers): account holders'
+    1:
+      0: 'Eligible (customers): account holders'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation semantic section binding: Eligible (customers): account holders
+not ok 83 - Agent4 import punctuation semantic section binding: Eligible (customers): account holders
+  ---
+  duration_ms: 0.313823
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   undefined,
+    +   undefined
+    -   [
+    -     'Eligible (customers): account holders'
+    -   ],
+    -   [
+    -     'Eligible (customers): account holders'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'Eligible (customers): account holders'
+    1:
+      0: 'Eligible (customers): account holders'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:68:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation heading boundary: Eligible (customers): account holders
+not ok 84 - Agent4 import punctuation heading boundary: Eligible (customers): account holders
+  ---
+  duration_ms: 0.227392
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - [
+    -   'Eligible (customers): account holders'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Eligible (customers): account holders'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:73:47)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached semantic note withholds: Eligible (customers): account holders
+not ok 85 - Agent4 import punctuation detached semantic note withholds: Eligible (customers): account holders
+  ---
+  duration_ms: 0.21978
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:75:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:76:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation selected-item ambiguity preserves unrelated section: Eligible (customers): account holders
+not ok 86 - Agent4 import punctuation selected-item ambiguity preserves unrelated section: Eligible (customers): account holders
+  ---
+  duration_ms: 0.248444
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:78:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:80:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation detached plain note withholds: Eligible (customers): account holders
+not ok 87 - Agent4 import punctuation detached plain note withholds: Eligible (customers): account holders
+  ---
+  duration_ms: 0.143677
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:83:77)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation interleaved plain note withholds: Eligible (customers): account holders
+not ok 88 - Agent4 import punctuation interleaved plain note withholds: Eligible (customers): account holders
+  ---
+  duration_ms: 0.2326
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Widget $10 each\nEligible (customers): account holders'
+    +   },
+    +   {
+    +     amounts: [
+    +       '$10'
+    +     ],
+    +     excerpt: 'Bolt $10 each'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      excerpt: |-
+        Widget $10 each
+        Eligible (customers): account holders
+      amounts:
+        0: '$10'
+    1:
+      excerpt: 'Bolt $10 each'
+      amounts:
+        0: '$10'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertWithheld (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:38:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:84:80)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation plain instruction stays excluded: Eligible (customers): account holders
+ok 89 - Agent4 import punctuation plain instruction stays excluded: Eligible (customers): account holders
+  ---
+  duration_ms: 0.084187
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation unknown stylesheet withholds: Eligible (customers): account holders
+ok 90 - Agent4 import punctuation unknown stylesheet withholds: Eligible (customers): account holders
+  ---
+  duration_ms: 0.181262
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: hidden
+ok 91 - Agent4 import punctuation excluded visibility/instructions: hidden
+  ---
+  duration_ms: 0.384899
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: aria-hidden
+ok 92 - Agent4 import punctuation excluded visibility/instructions: aria-hidden
+  ---
+  duration_ms: 0.308584
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: inline CSS
+ok 93 - Agent4 import punctuation excluded visibility/instructions: inline CSS
+  ---
+  duration_ms: 0.661795
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: stylesheet
+ok 94 - Agent4 import punctuation excluded visibility/instructions: stylesheet
+  ---
+  duration_ms: 1.17013
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: script
+ok 95 - Agent4 import punctuation excluded visibility/instructions: script
+  ---
+  duration_ms: 0.298459
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: comment
+ok 96 - Agent4 import punctuation excluded visibility/instructions: comment
+  ---
+  duration_ms: 0.355816
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation excluded visibility/instructions: instruction
+ok 97 - Agent4 import punctuation excluded visibility/instructions: instruction
+  ---
+  duration_ms: 0.261203
+  type: 'test'
+  ...
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Available (exclusively) to members
+not ok 98 - Agent4 import punctuation plain actual draft/save/dispatcher: Available (exclusively) to members
+  ---
+  duration_ms: 101.066742
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Available (exclusively) to members'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Available (exclusively) to members'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Available (exclusively) to members","plain":true,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Available: to account holders
+not ok 99 - Agent4 import punctuation plain actual draft/save/dispatcher: Available: to account holders
+  ---
+  duration_ms: 28.349805
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Available: to account holders'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Available: to account holders'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Available: to account holders","plain":true,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Payment (by cash)
+not ok 100 - Agent4 import punctuation plain actual draft/save/dispatcher: Payment (by cash)
+  ---
+  duration_ms: 30.075837
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Payment (by cash)'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Payment (by cash)'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Payment (by cash)","plain":true,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Payment: by cash
+not ok 101 - Agent4 import punctuation plain actual draft/save/dispatcher: Payment: by cash
+  ---
+  duration_ms: 24.800355
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Payment: by cash'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Payment: by cash'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Payment: by cash","plain":true,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation plain actual draft/save/dispatcher: Eligible (customers): account holders
+not ok 102 - Agent4 import punctuation plain actual draft/save/dispatcher: Eligible (customers): account holders
+  ---
+  duration_ms: 24.172206
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Eligible (customers): account holders'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Eligible (customers): account holders'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Eligible (customers): account holders","plain":true,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Available (exclusively) to members
+not ok 103 - Agent4 import punctuation HTML actual draft/save/dispatcher: Available (exclusively) to members
+  ---
+  duration_ms: 18.646662
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Available (exclusively) to members'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Available (exclusively) to members'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Available (exclusively) to members","plain":false,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Available: to account holders
+not ok 104 - Agent4 import punctuation HTML actual draft/save/dispatcher: Available: to account holders
+  ---
+  duration_ms: 17.994572
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Available: to account holders'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Available: to account holders'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Available: to account holders","plain":false,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Payment (by cash)
+not ok 105 - Agent4 import punctuation HTML actual draft/save/dispatcher: Payment (by cash)
+  ---
+  duration_ms: 21.095296
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Payment (by cash)'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Payment (by cash)'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Payment (by cash)","plain":false,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Payment: by cash
+not ok 106 - Agent4 import punctuation HTML actual draft/save/dispatcher: Payment: by cash
+  ---
+  duration_ms: 18.60546
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Payment: by cash'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Payment: by cash'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Payment: by cash","plain":false,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation HTML actual draft/save/dispatcher: Eligible (customers): account holders
+not ok 107 - Agent4 import punctuation HTML actual draft/save/dispatcher: Eligible (customers): account holders
+  ---
+  duration_ms: 16.445782
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:135:57'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          amounts: [
+            '$10'
+          ],
+    -     conditions: [
+    -       'Eligible (customers): account holders'
+    -     ],
+          excerpt: 'Widget $10 each',
+    +     sourceUrl: 'https://synthetic.example/'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      conditions:
+        0: 'Eligible (customers): account holders'
+  actual:
+    0:
+      excerpt: 'Widget $10 each'
+      amounts:
+        0: '$10'
+      sourceUrl: 'https://synthetic.example/'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertRetained (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:32:10)
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:151:3)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"draft-save-dispatcher","note":"Eligible (customers): account holders","plain":false,"draftPrices":"Widget $10 each","savedPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stripped":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget $10 each
+not ok 108 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget $10 each
+  ---
+  duration_ms: 10.54232
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:155:250'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    
+    undefined !== []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:157:71)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget $0.10 each
+not ok 109 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget $0.10 each
+  ---
+  duration_ms: 10.194837
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:155:250'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    
+    undefined !== []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:157:71)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget CAD 0.335 each
+not ok 110 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Widget CAD 0.335 each
+  ---
+  duration_ms: 10.057171
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:155:250'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    
+    undefined !== []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:157:71)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Board-on-board $10 each
+not ok 111 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Board-on-board $10 each
+  ---
+  duration_ms: 8.941472
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:155:250'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    
+    undefined !== []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:157:71)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Nail-in $10 each
+not ok 112 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Nail-in $10 each
+  ---
+  duration_ms: 10.578134
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:155:250'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    
+    undefined !== []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:157:71)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation unconditional actual routes and exact arithmetic: Plug-in $10 each
+not ok 113 - Agent4 import punctuation unconditional actual routes and exact arithmetic: Plug-in $10 each
+  ---
+  duration_ms: 10.049078
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:155:250'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    
+    undefined !== []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:157:71)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Agent4 import punctuation ambiguous plain actual draft preserves existing prices
+not ok 114 - Agent4 import punctuation ambiguous plain actual draft preserves existing prices
+  ---
+  duration_ms: 11.456745
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:164:33'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Widget $10 each'
+    - ''
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: 'Widget $10 each'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:168:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"ambiguous-draft","plain":true,"draftPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."}}
+# Subtest: Agent4 import punctuation ambiguous HTML actual draft preserves existing prices
+not ok 115 - Agent4 import punctuation ambiguous HTML actual draft preserves existing prices
+  ---
+  duration_ms: 10.804545
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:164:33'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Widget $10 each'
+    - ''
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: 'Widget $10 each'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-punctuation/test/voiceAgent4ImportPunctuation20261019.spec.mjs:168:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"ambiguous-draft","plain":false,"draftPrices":"Widget $10 each","import":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":false,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving."}}
+# Subtest: Agent4 import punctuation keeps existing voice selection conventions
+ok 116 - Agent4 import punctuation keeps existing voice selection conventions
+  ---
+  duration_ms: 1618.398038
+  type: 'test'
+  ...
+1..116
+# tests 116
+# suites 0
+# pass 48
+# fail 68
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2721.818136

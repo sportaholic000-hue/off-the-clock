@@ -18,7 +18,10 @@ const conditions=/%|\b(?:prices?|pricing|costs?|rates?|minimums?|min|max|maximum
 // as a restriction (for example, "Available positions: carpenter"). The existing
 // structural association below either copies the literal note or withholds the
 // affected listing; it never decides whether the caller meets the condition.
-const accessOrPaymentCondition=/\b(?:available\s+(?:exclusively\s+)?(?:to|for)\b|payments?\s+(?:by|in)\b|eligible\s+(?:customers?|accounts?|members?)\b)/iu;
+// Punctuation can separate these same clause words: "Payment (by cash)" and
+// "Available: to account holders". Match separators only; never erase an
+// intervening word ("Payment terminal"), or rewrite the literal saved note.
+const accessOrPaymentCondition=/\b(?:available[\s\p{P}]+(?:exclusively[\s\p{P}]+)?(?:to|for)\b|payments?[\s\p{P}]+(?:by|in)\b|eligible[\s\p{P}]+(?:customers?|accounts?|members?)\b)/iu;
 const standaloneCharge=/^(?:an?\s+)?(?:all prices\b|prices\b|rates\b|minimum\b|min\b|maximum\b|max\b|booking\b|tax\b|taxes\b|HST\b|GST\b|VAT\b|surcharge\b|surcharges\b|fees?\b|discount\b|deposit\b|extra\b|additional\b)|\b(?:minimum|maximum|surcharges?|fees?|tax(?:es)?|deposits?|discounts?)\b|\b(?:a|an|we)\s+charge\b/i;
 const pageWide=/\b(?:all (?:prices|rates|services|bookings|visits|items)|every (?:visit|booking|service|order)|site[- ]wide)\b/i;
 const unclearReference=/\b(?:some|selected|certain|specific|applicable)\s+(?:services?|items?|prices?|offers?|bookings?)\b|\b(?:above|below|following|marked|asterisk)\b|[*†‡]/i;
