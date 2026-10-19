@@ -1,0 +1,12 @@
+{
+  "ordered_parents": [
+    "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+    "c743f6febdf9b758fea87545d2b930731cfb9b70"
+  ],
+  "common_ancestor": "e50c9f58459a4362537eb5da5dc1cf082fbc3ca8",
+  "conflicts": 0,
+  "manual_production_edits": 0,
+  "manual_test_reconciliations": 0,
+  "parser_checkpoint_qualified_before_publication": true,
+  "incoming_pi00_qualified_before_publication": true
+}

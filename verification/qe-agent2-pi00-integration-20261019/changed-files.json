@@ -1,0 +1,271 @@
+{
+  "base": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+  "incoming": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+  "conflicts": 0,
+  "manual_production_edits": 0,
+  "manual_test_reconciliations": 0,
+  "counts": {
+    "incoming_production": 1,
+    "incoming_tests": 3,
+    "incoming_verification": 23,
+    "new_integration_evidence": 37
+  },
+  "files": [
+    {
+      "status": "M",
+      "path": "server/quote-engine-vnext/configuredOfferings.js"
+    },
+    {
+      "status": "A",
+      "path": "test/qeAgent1InteriorActivation20261019.spec.mjs"
+    },
+    {
+      "status": "A",
+      "path": "test/qeAgent1InteriorDelivery20261019.spec.mjs"
+    },
+    {
+      "status": "A",
+      "path": "test/qeAgent1InteriorHistorical20261019.spec.mjs"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/EXPECTED.md"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/REPORT.md"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before-durable/approved-book.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before-durable/finding.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before-durable/result.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before-durable/source-binding.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before-durable/wire.json.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before/finding.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before/result.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before/source-binding.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/before/wire.json.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/build.log"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/capture-v12.log"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/capture-v12.mjs"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/focused-final.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/focused-initial.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/focused-regressions.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/focused-second.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/historical-v12.json.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/historical-v12.sha256"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/reproduce-before-durable.log"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/reproduce-before.log"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent1-interior-activation-20261019/reproduce-before.mjs"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/EXPECTED.md"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/REPORT.md"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/activation-neighbors.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/additional-test-names.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/audit-hosted.mjs"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/build.log.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/changed-files.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/compatibility.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/diff-check.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/evidence-archives.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/f16-direct.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/f16-entry.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/f18-matrix-observations.json.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/f18-matrix-receipts.sqlite.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/f18-matrix.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/f18.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/frozen-controls.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/geometry.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/incoming-pi00-qualification.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/local-execution.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/local-required-names.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/merge-identity.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/merge-preparation-initial.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/merge-preparation.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/parser-checkpoint-name-audit.json.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/parser-checkpoint-qualification.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/parser.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/pi00.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/preservation-after-merge.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/preservation-after-tests.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/preservation-before.json.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/preservation-final.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/preservation-manifest.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/rendered.tap.gz"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/required-test-names.json"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/run-local.py"
+    },
+    {
+      "status": "A",
+      "path": "verification/qe-agent2-pi00-integration-20261019/selection.json"
+    }
+  ]
+}

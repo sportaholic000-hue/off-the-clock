@@ -1,0 +1,43 @@
+[
+  {
+    "name": "incoming_all",
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit_code": 0,
+    "warnings": 0,
+    "affected_paths": []
+  },
+  {
+    "name": "production_tests_workflow_scripts",
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      "server/",
+      "test/",
+      ".github/",
+      "scripts/"
+    ],
+    "exit_code": 0,
+    "warnings": 0,
+    "affected_paths": []
+  },
+  {
+    "name": "entire_final_candidate_delta",
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit_code": 0,
+    "warnings": 0,
+    "affected_paths": []
+  }
+]

@@ -1,0 +1,1097 @@
+{
+  "head": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+  "run_id": 39203161251,
+  "run_attempt": 1,
+  "run_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39203161251",
+  "status": "completed",
+  "conclusion": "success",
+  "updated_at": "2026-10-19T05:45:13Z",
+  "gates": {
+    "strict": {
+      "summary": {
+        "tests": 5927,
+        "suites": 0,
+        "pass": 5927,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 962334.405064
+      },
+      "passing_records": 5927,
+      "errors": [],
+      "receipt": [
+        "PASS: quote engine and price book gate (286 files, 5927/5927 tests, zero skips)."
+      ]
+    },
+    "full": {
+      "summary": {
+        "tests": 6981,
+        "suites": 0,
+        "pass": 6981,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 1071739.919832
+      },
+      "passing_records": 6981,
+      "errors": [],
+      "receipt": []
+    },
+    "browser": {
+      "summary": {
+        "tests": 12,
+        "suites": 0,
+        "pass": 12,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 7021.868082
+      },
+      "passing_records": 12,
+      "errors": [],
+      "receipt": []
+    }
+  },
+  "required_steps_passed": [
+    "Install from lockfile (ignores committed node_modules)",
+    "Build owner app and widget",
+    "Owner alerts and dashboard browser regressions",
+    "Strict quote engine and price book gate",
+    "Full test suite",
+    "No failures beyond the known list",
+    "Production dependency audit"
+  ],
+  "pi00_names": {
+    "required": 45,
+    "expectations": {
+      "strict": 1,
+      "full": 1
+    },
+    "rows": [
+      {
+        "source_name": "PI00 direct installed walls has independent total and no inferred settings",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 direct installed walls has independent total and no inferred settings",
+            "numbers": [
+              3069
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 direct installed walls has independent total and no inferred settings",
+            "numbers": [
+              3646
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 direct installed walls-ceilings has independent total and no inferred settings",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 direct installed walls-ceilings has independent total and no inferred settings",
+            "numbers": [
+              3070
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 direct installed walls-ceilings has independent total and no inferred settings",
+            "numbers": [
+              3647
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 direct installed walls-trim has independent total and no inferred settings",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 direct installed walls-trim has independent total and no inferred settings",
+            "numbers": [
+              3071
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 direct installed walls-trim has independent total and no inferred settings",
+            "numbers": [
+              3648
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 direct installed full has independent total and no inferred settings",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 direct installed full has independent total and no inferred settings",
+            "numbers": [
+              3072
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 direct installed full has independent total and no inferred settings",
+            "numbers": [
+              3649
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 1/good",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 1/good",
+            "numbers": [
+              3073
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 1/good",
+            "numbers": [
+              3650
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 1/fair",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 1/fair",
+            "numbers": [
+              3074
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 1/fair",
+            "numbers": [
+              3651
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 1/poor",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 1/poor",
+            "numbers": [
+              3075
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 1/poor",
+            "numbers": [
+              3652
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 2/good",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 2/good",
+            "numbers": [
+              3076
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 2/good",
+            "numbers": [
+              3653
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 2/fair",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 2/fair",
+            "numbers": [
+              3077
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 2/fair",
+            "numbers": [
+              3654
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 2/poor",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 2/poor",
+            "numbers": [
+              3078
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 2/poor",
+            "numbers": [
+              3655
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 3/good",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 3/good",
+            "numbers": [
+              3079
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 3/good",
+            "numbers": [
+              3656
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 3/fair",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 3/fair",
+            "numbers": [
+              3080
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 3/fair",
+            "numbers": [
+              3657
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 absent owner trim settings accept validated customer facts 3/poor",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 3/poor",
+            "numbers": [
+              3081
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 absent owner trim settings accept validated customer facts 3/poor",
+            "numbers": [
+              3658
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 explicit trim constraints remain independent {\"trimFinishCoats\":2}",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 explicit trim constraints remain independent {\"trimFinishCoats\":2}",
+            "numbers": [
+              3082
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 explicit trim constraints remain independent {\"trimFinishCoats\":2}",
+            "numbers": [
+              3659
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 explicit trim constraints remain independent {\"trimSurfaceCondition\":\"fair\"}",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 explicit trim constraints remain independent {\"trimSurfaceCondition\":\"fair\"}",
+            "numbers": [
+              3083
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 explicit trim constraints remain independent {\"trimSurfaceCondition\":\"fair\"}",
+            "numbers": [
+              3660
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 explicit trim constraints remain independent {\"trimFinishCoats\":2,\"trimSurfaceCondition\":\"fair\"}",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 explicit trim constraints remain independent {\"trimFinishCoats\":2,\"trimSurfaceCondition\":\"fair\"}",
+            "numbers": [
+              3084
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 explicit trim constraints remain independent {\"trimFinishCoats\":2,\"trimSurfaceCondition\":\"fair\"}",
+            "numbers": [
+              3661
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid trim input still rejects trimCoats/0",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimCoats/0",
+            "numbers": [
+              3085
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimCoats/0",
+            "numbers": [
+              3662
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid trim input still rejects trimCoats/4",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimCoats/4",
+            "numbers": [
+              3086
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimCoats/4",
+            "numbers": [
+              3663
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid trim input still rejects trimCoats/1.5",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimCoats/1.5",
+            "numbers": [
+              3087
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimCoats/1.5",
+            "numbers": [
+              3664
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid trim input still rejects trimCoats/2",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimCoats/2",
+            "numbers": [
+              3088
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimCoats/2",
+            "numbers": [
+              3665
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid trim input still rejects trimSurfaceCondition/unknown",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimSurfaceCondition/unknown",
+            "numbers": [
+              3089
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimSurfaceCondition/unknown",
+            "numbers": [
+              3666
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid trim input still rejects trimSurfaceCondition/null",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimSurfaceCondition/null",
+            "numbers": [
+              3090
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid trim input still rejects trimSurfaceCondition/null",
+            "numbers": [
+              3667
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 modern required trim answer remains required trimCoats",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 modern required trim answer remains required trimCoats",
+            "numbers": [
+              3091
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 modern required trim answer remains required trimCoats",
+            "numbers": [
+              3668
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 modern required trim answer remains required trimSurfaceCondition",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 modern required trim answer remains required trimSurfaceCondition",
+            "numbers": [
+              3092
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 modern required trim answer remains required trimSurfaceCondition",
+            "numbers": [
+              3669
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid owner trim constraint still rejects trimFinishCoats/0",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid owner trim constraint still rejects trimFinishCoats/0",
+            "numbers": [
+              3093
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid owner trim constraint still rejects trimFinishCoats/0",
+            "numbers": [
+              3670
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid owner trim constraint still rejects trimFinishCoats/1.5",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid owner trim constraint still rejects trimFinishCoats/1.5",
+            "numbers": [
+              3094
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid owner trim constraint still rejects trimFinishCoats/1.5",
+            "numbers": [
+              3671
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid owner trim constraint still rejects trimSurfaceCondition/unknown",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid owner trim constraint still rejects trimSurfaceCondition/unknown",
+            "numbers": [
+              3095
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid owner trim constraint still rejects trimSurfaceCondition/unknown",
+            "numbers": [
+              3672
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 invalid owner trim constraint still rejects trimSurfaceCondition/null",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 invalid owner trim constraint still rejects trimSurfaceCondition/null",
+            "numbers": [
+              3096
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 invalid owner trim constraint still rejects trimSurfaceCondition/null",
+            "numbers": [
+              3673
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 missing optional installedCeilingPerSqft blocks selected scope only",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 missing optional installedCeilingPerSqft blocks selected scope only",
+            "numbers": [
+              3097
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 missing optional installedCeilingPerSqft blocks selected scope only",
+            "numbers": [
+              3674
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 missing optional installedTrimPerLF blocks selected scope only",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 missing optional installedTrimPerLF blocks selected scope only",
+            "numbers": [
+              3098
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 missing optional installedTrimPerLF blocks selected scope only",
+            "numbers": [
+              3675
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 missing required wall price cannot quote",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 missing required wall price cannot quote",
+            "numbers": [
+              3099
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 missing required wall price cannot quote",
+            "numbers": [
+              3676
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 complete option survives contradictory trim tier",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 complete option survives contradictory trim tier",
+            "numbers": [
+              3100
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 complete option survives contradictory trim tier",
+            "numbers": [
+              3677
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 original genuinely approved blocked book activates without rewriting approval or settings",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 original genuinely approved blocked book activates without rewriting approval or settings",
+            "numbers": [
+              3101
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 original genuinely approved blocked book activates without rewriting approval or settings",
+            "numbers": [
+              3678
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 actual HTTP save, starting-value confirmation, approval and public catalog full offering",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 actual HTTP save, starting-value confirmation, approval and public catalog full offering",
+            "numbers": [
+              3102
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 actual HTTP save, starting-value confirmation, approval and public catalog full offering",
+            "numbers": [
+              3679
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 newly saved widget and actual voice walls",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice walls",
+            "numbers": [
+              3103
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice walls",
+            "numbers": [
+              3680
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 newly saved widget and actual voice walls-ceilings",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice walls-ceilings",
+            "numbers": [
+              3104
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice walls-ceilings",
+            "numbers": [
+              3681
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 newly saved widget and actual voice walls-trim",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice walls-trim",
+            "numbers": [
+              3105
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice walls-trim",
+            "numbers": [
+              3682
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 newly saved widget and actual voice full-original",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice full-original",
+            "numbers": [
+              3106
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice full-original",
+            "numbers": [
+              3683
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 newly saved widget and actual voice explicit-matching-trim",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice explicit-matching-trim",
+            "numbers": [
+              3107
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 newly saved widget and actual voice explicit-matching-trim",
+            "numbers": [
+              3684
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 saved widget and actual voice reject trim-coats-contradiction",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 saved widget and actual voice reject trim-coats-contradiction",
+            "numbers": [
+              3108
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 saved widget and actual voice reject trim-coats-contradiction",
+            "numbers": [
+              3685
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 saved widget and actual voice reject trim-condition-contradiction",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 saved widget and actual voice reject trim-condition-contradiction",
+            "numbers": [
+              3109
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 saved widget and actual voice reject trim-condition-contradiction",
+            "numbers": [
+              3686
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 saved widget and actual voice reject missing-trim-price",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 saved widget and actual voice reject missing-trim-price",
+            "numbers": [
+              3110
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 saved widget and actual voice reject missing-trim-price",
+            "numbers": [
+              3687
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 saved widget and actual voice reject missing-ceiling-price",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 saved widget and actual voice reject missing-ceiling-price",
+            "numbers": [
+              3111
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 saved widget and actual voice reject missing-ceiling-price",
+            "numbers": [
+              3688
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 genuine v12 immutable saved widget/voice legacy-full-interior",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 genuine v12 immutable saved widget/voice legacy-full-interior",
+            "numbers": [
+              3112
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 genuine v12 immutable saved widget/voice legacy-full-interior",
+            "numbers": [
+              3689
+            ],
+            "literal": true
+          }
+        }
+      },
+      {
+        "source_name": "PI00 genuine v12 immutable saved widget/voice legacy-wall-only",
+        "gates": {
+          "strict": {
+            "expected": 1,
+            "observed_name": "PI00 genuine v12 immutable saved widget/voice legacy-wall-only",
+            "numbers": [
+              3113
+            ],
+            "literal": true
+          },
+          "full": {
+            "expected": 1,
+            "observed_name": "PI00 genuine v12 immutable saved widget/voice legacy-wall-only",
+            "numbers": [
+              3690
+            ],
+            "literal": true
+          }
+        }
+      }
+    ],
+    "passed": true
+  },
+  "checker": [
+    "Known failures still failing: 0/0",
+    "Known failures still failing: 0/0"
+  ],
+  "dependency_audit": [
+    "found 0 vulnerabilities"
+  ],
+  "docker": "2026-10-19T05:11:05.9128066Z PASS: production Docker image, no specs, voice enabled, synthetic credentials, network disabled, /api/health 200",
+  "checkout_head_present": true,
+  "jobs": [
+    {
+      "id": 117900244398,
+      "name": "voice-docker-startup",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117900244570,
+      "name": "test",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117909365141,
+      "name": "tag-candidate-n",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117909365212,
+      "name": "tag-candidate-h",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117909365297,
+      "name": "tag-candidate-m",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117909365476,
+      "name": "tag-candidate-i",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117909365696,
+      "name": "tag-candidate-j",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117909365926,
+      "name": "tag-candidate-l",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117909365959,
+      "name": "tag-candidate-k",
+      "head_sha": "c743f6febdf9b758fea87545d2b930731cfb9b70",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "qualified": true
+}

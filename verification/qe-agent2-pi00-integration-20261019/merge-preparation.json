@@ -1,0 +1,16 @@
+{
+  "command": [
+    "git",
+    "-c",
+    "user.name=Codex QE Agent 2",
+    "-c",
+    "user.email=qe-agent2@local.invalid",
+    "merge",
+    "--no-ff",
+    "--no-commit",
+    "c743f6febdf9b758fea87545d2b930731cfb9b70"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "Automatic merge went well; stopped before committing as requested\n"
+}

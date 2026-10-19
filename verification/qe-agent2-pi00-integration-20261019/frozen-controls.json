@@ -1,0 +1,19 @@
+{
+  "engine_literals": [
+    {
+      "path": "server/src/runtimeConfig.js",
+      "occurrences": 1,
+      "sha": "3363aab393fdeffa885a00819f47eeb377967303"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "occurrences": 1,
+      "sha": "907431c53c7657ed78d7ebf737a07a65328364d3"
+    }
+  ],
+  "workflow_timeout_minutes": 45,
+  "workflow_blob": "cd064413f371aa4f5ff4980fad03404098c2d46d",
+  "pricing_and_existing_approval_and_receipt_blobs_verified_by": "preservation-after-tests.json",
+  "f2_policy_unchanged": true,
+  "additional_a3_history_integrated": false
+}

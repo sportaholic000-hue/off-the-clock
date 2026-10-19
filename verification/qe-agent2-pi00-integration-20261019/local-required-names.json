@@ -1,0 +1,89 @@
+{
+  "groups": {
+    "geometry_boundaries": {
+      "log": "geometry",
+      "required": 492,
+      "passing_once": 492,
+      "mismatches": []
+    },
+    "geometry_delivery": {
+      "log": "geometry",
+      "required": 25,
+      "passing_once": 25,
+      "mismatches": []
+    },
+    "geometry_historical": {
+      "log": "geometry",
+      "required": 8,
+      "passing_once": 8,
+      "mismatches": []
+    },
+    "f16": {
+      "log": "f16-entry",
+      "required": 14,
+      "passing_once": 14,
+      "mismatches": []
+    },
+    "f18": {
+      "log": "f18",
+      "required": 41,
+      "passing_once": 41,
+      "mismatches": []
+    },
+    "a3_rendered": {
+      "log": "rendered",
+      "required": 4,
+      "passing_once": 4,
+      "mismatches": []
+    },
+    "a2_editor": {
+      "log": "rendered",
+      "required": 1,
+      "passing_once": 1,
+      "mismatches": []
+    },
+    "separate_line_controls": {
+      "log": "compatibility",
+      "required": 3,
+      "passing_once": 3,
+      "mismatches": []
+    },
+    "parser_import_full": {
+      "log": "parser",
+      "required": 874,
+      "passing_once": 874,
+      "mismatches": []
+    },
+    "incoming_voice_full_only": {
+      "log": "parser",
+      "required": 577,
+      "passing_once": 577,
+      "mismatches": []
+    },
+    "pi00": {
+      "log": "pi00",
+      "required": 45,
+      "passing_once": 45,
+      "mismatches": []
+    },
+    "combined_f16": {
+      "log": "f16-direct",
+      "required": 94,
+      "passing_once": 94,
+      "mismatches": []
+    },
+    "compatibility": {
+      "log": "compatibility",
+      "required": 491,
+      "passing_once": 491,
+      "mismatches": []
+    },
+    "zero_controls": {
+      "log": "compatibility",
+      "required": 135,
+      "passing_once": 135,
+      "mismatches": []
+    }
+  },
+  "passed": true
+}

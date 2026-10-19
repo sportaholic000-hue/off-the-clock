@@ -1,0 +1,281 @@
+{
+  "head": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+  "run_id": 39205527293,
+  "run_attempt": 1,
+  "run_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39205527293",
+  "status": "completed",
+  "conclusion": "success",
+  "completed_at": "2026-10-19T06:11:50Z",
+  "gates": {
+    "strict": {
+      "summary": {
+        "tests": 5882,
+        "suites": 0,
+        "pass": 5882,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 944214.858297
+      },
+      "passing_records": 5882,
+      "errors": [],
+      "receipt": [
+        "PASS: quote engine and price book gate (283 files, 5882/5882 tests, zero skips)."
+      ]
+    },
+    "full": {
+      "summary": {
+        "tests": 7513,
+        "suites": 0,
+        "pass": 7513,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 1059804.444299
+      },
+      "passing_records": 7513,
+      "errors": [],
+      "receipt": []
+    },
+    "browser": {
+      "summary": {
+        "tests": 12,
+        "suites": 0,
+        "pass": 12,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 6879.409472
+      },
+      "passing_records": 12,
+      "errors": [],
+      "receipt": []
+    }
+  },
+  "groups": {
+    "geometry_boundaries": {
+      "required": 492,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    },
+    "geometry_delivery": {
+      "required": 25,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    },
+    "geometry_historical": {
+      "required": 8,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    },
+    "f16": {
+      "required": 14,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    },
+    "a3_rendered": {
+      "required": 4,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    },
+    "a2_editor": {
+      "required": 1,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    },
+    "separate_line_controls": {
+      "required": 3,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    },
+    "f18": {
+      "required": 41,
+      "expectations": {
+        "strict": 0,
+        "full": 1
+      },
+      "passed": true
+    },
+    "parser_import_full": {
+      "required": 874,
+      "expectations": {
+        "full": 1
+      },
+      "passed": true
+    },
+    "incoming_voice_full_only": {
+      "required": 577,
+      "expectations": {
+        "strict": 0,
+        "full": 1
+      },
+      "passed": true
+    },
+    "punctuation_116": {
+      "required": 116,
+      "expectations": {
+        "strict": 0,
+        "full": 1
+      },
+      "passed": true
+    },
+    "retained_parser_import_758": {
+      "required": 758,
+      "expectations": {
+        "full": 1
+      },
+      "passed": true
+    },
+    "combined_f16": {
+      "required": 94,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    },
+    "compatibility": {
+      "required": 491,
+      "expectations": {
+        "full": 1
+      },
+      "passed": true
+    },
+    "zero_controls": {
+      "required": 135,
+      "expectations": {
+        "strict": 1,
+        "full": 1
+      },
+      "passed": true
+    }
+  },
+  "hosted_name_mappings": [
+    {
+      "gate": "full",
+      "source_name": "website rejects URL before DNS https://user:password@business.example",
+      "observed_name": "website rejects URL before DNS ***business.example",
+      "passing_records": [
+        {
+          "number": 7040,
+          "name": "website rejects URL before DNS ftp://business.example"
+        },
+        {
+          "number": 7041,
+          "name": "website rejects URL before DNS ***business.example"
+        },
+        {
+          "number": 7042,
+          "name": "website rejects URL before DNS https://business.example:8080"
+        }
+      ]
+    }
+  ],
+  "required_steps_passed": [
+    "Install from lockfile (ignores committed node_modules)",
+    "Build owner app and widget",
+    "Owner alerts and dashboard browser regressions",
+    "Strict quote engine and price book gate",
+    "Full test suite",
+    "No failures beyond the known list",
+    "Production dependency audit"
+  ],
+  "checker": [
+    "Known failures still failing: 0/0",
+    "Known failures still failing: 0/0"
+  ],
+  "dependency_audit": [
+    "found 0 vulnerabilities"
+  ],
+  "docker": "2026-10-19T05:38:11.3606554Z PASS: production Docker image, no specs, voice enabled, synthetic credentials, network disabled, /api/health 200",
+  "jobs": [
+    {
+      "id": 117907404926,
+      "name": "test",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117907405172,
+      "name": "voice-docker-startup",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117916504380,
+      "name": "tag-candidate-h",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117916504433,
+      "name": "tag-candidate-i",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117916504564,
+      "name": "tag-candidate-m",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117916504607,
+      "name": "tag-candidate-k",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117916504632,
+      "name": "tag-candidate-j",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117916504858,
+      "name": "tag-candidate-n",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 117916505577,
+      "name": "tag-candidate-l",
+      "head_sha": "df7e4dada3e88d7ea7b7947b6692858e4a8f5886",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "qualified": true
+}

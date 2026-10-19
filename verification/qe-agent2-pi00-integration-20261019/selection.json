@@ -1,0 +1,22 @@
+{
+  "strict_files": 286,
+  "full_files": 356,
+  "incoming": [
+    {
+      "file": "test/qeAgent1InteriorActivation20261019.spec.mjs",
+      "strict": 1,
+      "full": 1
+    },
+    {
+      "file": "test/qeAgent1InteriorDelivery20261019.spec.mjs",
+      "strict": 1,
+      "full": 1
+    },
+    {
+      "file": "test/qeAgent1InteriorHistorical20261019.spec.mjs",
+      "strict": 1,
+      "full": 1
+    }
+  ],
+  "selectors_changed": false
+}

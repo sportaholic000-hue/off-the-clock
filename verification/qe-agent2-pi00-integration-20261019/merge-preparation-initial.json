@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "merge",
+    "--no-ff",
+    "--no-commit",
+    "c743f6febdf9b758fea87545d2b930731cfb9b70"
+  ],
+  "exit_code": 128,
+  "failure": "Committer identity unknown; git refused to prepare the merge before changing the index.",
+  "resolution": "Use command-scoped synthetic local identity for --no-commit merge preparation only. No git configuration or author history is changed."
+}
