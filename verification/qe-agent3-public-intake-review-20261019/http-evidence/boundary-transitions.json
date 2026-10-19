@@ -1,0 +1,44 @@
+[
+  {
+    "id": "H01",
+    "serviceType": "LANDSCAPING_MOWING",
+    "transition": "edging yes to no",
+    "invalidRetainedField": "edgingLengthLF",
+    "invalidPrepareStatus": "needs_details",
+    "correctedRequestId": "03c3259c-690c-4948-9310-d27d425d7273",
+    "expectedCents": 11000,
+    "actualMid": [
+      110
+    ]
+  },
+  {
+    "id": "H02",
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "transition": "additional work add/change/remove",
+    "added": {
+      "requestId": "4d26e804-e063-43e5-abe2-ceecc46071f4",
+      "resultType": "PARTIAL_ESTIMATE_READY",
+      "description": "Synthetic detached shed inspection"
+    },
+    "changedStaleProofStatus": 409,
+    "removedStaleProofStatus": 409,
+    "removed": {
+      "requestId": "23cf80da-ca09-49d5-a51a-23223c0b0467",
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "expectedCents": 36000,
+      "actualMid": [
+        360
+      ]
+    }
+  },
+  {
+    "id": "H03",
+    "serviceType": "CUSTOM",
+    "transition": "approved saved-book revision changed",
+    "priorRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+    "newRevision": "9d5c5e92de1c2be1b7293448493017794a7c46c48469e47e612c7bc783e4712a",
+    "staleProofStatus": 409,
+    "historicalOptionalRetryStatus": 200,
+    "historicalOptionalRequestId": "4d26e804-e063-43e5-abe2-ceecc46071f4"
+  }
+]

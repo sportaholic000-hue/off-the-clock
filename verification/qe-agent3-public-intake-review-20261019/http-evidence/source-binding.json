@@ -1,0 +1,31 @@
+{
+  "head": "8c06c260d746b6c9dd1012f813d6edd0efd87f32",
+  "branch": "codex/qe-agent3-public-intake-review-20261019",
+  "node": "v22.23.0",
+  "abi": "127",
+  "platform": "linux",
+  "arch": "x64",
+  "expectedFile": "EXPECTED.md",
+  "registeredServices": [
+    "ROOFING_REPLACEMENT",
+    "ROOFING_REPAIR",
+    "FLAT_ROOF_REPLACEMENT",
+    "FLAT_ROOF_REPAIR",
+    "INTERIOR_PAINTING",
+    "EXTERIOR_PAINTING",
+    "FLOORING_INSTALL",
+    "FLOORING_REPLACEMENT",
+    "FENCING_INSTALL",
+    "FENCING_REPLACEMENT",
+    "SIDING_REPLACEMENT",
+    "SIDING_REPAIR",
+    "CONCRETE_DRIVEWAY",
+    "CONCRETE_PATIO_SLAB",
+    "LANDSCAPING_CLEANUP",
+    "LANDSCAPING_MULCH",
+    "LANDSCAPING_SOD",
+    "LANDSCAPING_PLANTING",
+    "LANDSCAPING_MOWING",
+    "CUSTOM"
+  ]
+}

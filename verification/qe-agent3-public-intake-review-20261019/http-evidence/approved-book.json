@@ -1,0 +1,3451 @@
+{
+  "ownerId": "synthetic-a",
+  "services": [
+    {
+      "id": "89a4259f-c9c1-43d2-970a-026d3644d6e2",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "existingRoofType": {
+          "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+          "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+          "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+          "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+        },
+        "replacementRoofType": {
+          "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+          "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+          "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+          "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+        }
+      },
+      "active": true,
+      "serviceType": "ROOFING_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPLACEMENT",
+      "pricing": {
+        "laborPerSquare": {
+          "asphalt_shingle": 50
+        },
+        "materialCostPerSquare": {
+          "asphalt_shingle": 100
+        },
+        "tearOffPerSquare": {
+          "asphalt_shingle": 20
+        },
+        "underlaymentPerSquare": {
+          "asphalt_shingle": 15
+        },
+        "accessoryPricingMode": "itemized",
+        "materialAccessoryBasis": "excludes_itemized_accessories",
+        "starterPerLF": 1,
+        "dripEdgePerLF": 2,
+        "ridgeCapPerLF": 3,
+        "deckingPerSheet": 50,
+        "minimumJob": 0,
+        "wasteFactorByComplexity": {
+          "simple": 0.1,
+          "moderate": 0.13,
+          "complex": 0.18
+        },
+        "pitchMultiplier": {
+          "low": 1,
+          "medium": 1.15,
+          "steep": 1.25,
+          "very_steep": 1.4
+        },
+        "storyMultiplier": {
+          "1": 1,
+          "2": 1.1,
+          "3": 1.2
+        },
+        "underlaymentPriceBasis": {
+          "asphalt_shingle": "installed_area_sell_price"
+        },
+        "pitchInstallationAdder": {
+          "seven_to_nine": 0.2,
+          "ten_to_twelve": 0.31
+        },
+        "pitchRemovalAdder": {
+          "seven_to_nine": 0.26,
+          "ten_to_twelve": 0.41
+        },
+        "complexityLaborMultiplier": {
+          "simple": 1,
+          "moderate": 1.2,
+          "complex": 1.4
+        },
+        "additionalLayerRemovalFactor": 0.7,
+        "accessoryWasteFactor": {
+          "starterPerLF": 0.1,
+          "dripEdgePerLF": 0.1,
+          "ridgeCapPerLF": 0.1
+        },
+        "unknownPitchBand": "up_to_six"
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "sell_price",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "roofSizeMethod": "roof_measured",
+        "roofSizeInput": 1000,
+        "existingRoofType": "asphalt_shingle",
+        "replacementRoofType": "asphalt_shingle",
+        "stories": 1,
+        "existingLayers": 1,
+        "roofComplexity": "simple",
+        "serviceScope": "full",
+        "starterLengthLF": 100,
+        "dripEdgeLengthLF": 100,
+        "ridgeCapLengthLF": 20,
+        "deckingSheets": 2,
+        "confirmedFacts": {
+          "existingRoofType": {
+            "status": "identified",
+            "field": "existingRoofType",
+            "value": "asphalt_shingle",
+            "offeringId": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b"
+          },
+          "replacementRoofType": {
+            "status": "identified",
+            "field": "replacementRoofType",
+            "value": "asphalt_shingle",
+            "offeringId": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445"
+          }
+        },
+        "pitchMethod": "whole_roof",
+        "pitchBand": "up_to_six"
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "89a4259f-c9c1-43d2-970a-026d3644d6e2",
+        "serviceType": "ROOFING_REPLACEMENT",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "5dd8fa40-d7aa-4bbb-8424-1d21737982ea",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "startingValueAdoptions": {
+        "roofing_replacement_20261016": {
+          "mode": "new",
+          "introducedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "dependentLineState": {
+        "roofing_flashing_vents.asphalt_shingle": {
+          "definitionSignature": "{\"basePriceNewWording\":\"Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.\",\"basePricePath\":\"materialCostPerSquare.asphalt_shingle\",\"id\":\"roofing_flashing_vents.asphalt_shingle\"}",
+          "basePricePath": "materialCostPerSquare.asphalt_shingle",
+          "basePriceNewWording": "Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.",
+          "baseValue": 10000,
+          "reentered": true,
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "reenteredAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        }
+      },
+      "priceMetadata": {
+        "laborPerSquare.asphalt_shingle": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "materialCostPerSquare.asphalt_shingle": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "tearOffPerSquare.asphalt_shingle": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "underlaymentPerSquare.asphalt_shingle": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "starterPerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "dripEdgePerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "ridgeCapPerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "deckingPerSheet": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "89a4259f-c9c1-43d2-970a-026d3644d6e2",
+        "operationId": "090d946d-f53a-4bd5-86ec-6f53ec069d8d",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "3e45499ee00f4da48b36eec67df39e83b96bad63303f6798d40765dc0c2bc102",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "576b34525c5a29c029cfa08edcb3593566f6291cacc0ae8b5e798e4b1ad73cdc",
+          "service.knownOfferings": "6742ee7dd14608561872c1e244ca6e84b309d0049d1fc0062b68294970daf672",
+          "service.origin": "0c96a0fd706a3c2cfe90f53d2fed369c587071966eee231d713e90f8ad0deb08",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "5b82343275be6db481a43675c1261d63db7c05c3c41ad295961dd843b0619a1d",
+          "service.pricing": "bc2da2f64864045b9aec022efaee160140b3ae20ec85305ff7280f2355506e69",
+          "service.service": "9fc8480187040edae8bdac507a42b00fe5bb62663bb0f7cb01f1069319151b7a",
+          "service.serviceType": "82eb3f271fbebe813a6238e4fa727450e63df042ff8a5118ac15f603382c8a94",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.startingValueAdoptions": "8ef98170f6e6bdad2ca0b994bf02b5a971f70d9c555caa9a7ec2e9b6c38ca75a",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "4bb3ab31-6f5c-476e-96fa-a728d167a370",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "repairType": {
+          "shingle_patch": "9bffec17-54f8-4b64-8937-31eb3efd3074",
+          "seam_patch": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85",
+          "patch": "cc229077-30ba-4935-89a1-8543f16892ae",
+          "named_patch": "f527eda1-fb84-48ce-8e80-0f7e466bf3a9"
+        },
+        "roofType": {
+          "asphalt_shingle": "ac9274cf-c482-4c2b-896f-96243baf41fc",
+          "epdm": "efae4673-7379-4452-8fd6-407d64358cf4"
+        }
+      },
+      "active": true,
+      "serviceType": "ROOFING_REPAIR",
+      "service": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPAIR",
+      "pricing": {
+        "laborHourlyRate": 100,
+        "repairMinimum": 0,
+        "repairHours": {
+          "asphalt_shingle": {
+            "shingle_patch": {
+              "small": 2,
+              "medium": 4,
+              "large": 8
+            }
+          }
+        },
+        "repairMaterialAllowance": {
+          "asphalt_shingle": {
+            "shingle_patch": {
+              "small": 40,
+              "medium": 80,
+              "large": 160
+            }
+          }
+        },
+        "pitchMultiplier": {
+          "low": 1,
+          "medium": 1.15,
+          "steep": 1.25,
+          "very_steep": 1.4
+        },
+        "storyMultiplier": {
+          "1": 1,
+          "2": 1.1,
+          "3": 1.2
+        },
+        "largeRepairMaxSqft": 1000000
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "repairType": "shingle_patch",
+        "affectedArea": 100,
+        "roofType": "asphalt_shingle",
+        "pitch": "medium",
+        "stories": 2,
+        "leakPresent": false,
+        "confirmedFacts": {
+          "repairType": {
+            "status": "identified",
+            "field": "repairType",
+            "value": "shingle_patch",
+            "offeringId": "9bffec17-54f8-4b64-8937-31eb3efd3074"
+          },
+          "roofType": {
+            "status": "identified",
+            "field": "roofType",
+            "value": "asphalt_shingle",
+            "offeringId": "ac9274cf-c482-4c2b-896f-96243baf41fc"
+          }
+        }
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "4bb3ab31-6f5c-476e-96fa-a728d167a370",
+        "serviceType": "ROOFING_REPAIR",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "0911e843-b22d-4856-b0d5-775d303f8280",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "laborHourlyRate": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "repairMinimum": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "repairMaterialAllowance.asphalt_shingle.shingle_patch.small": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "repairMaterialAllowance.asphalt_shingle.shingle_patch.medium": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "repairMaterialAllowance.asphalt_shingle.shingle_patch.large": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "4bb3ab31-6f5c-476e-96fa-a728d167a370",
+        "operationId": "f9338e08-2c7c-4427-a8eb-954bf7b13917",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "9a51894c07c60da289d86fa888fc03365c2b7353b85c16cb8926425e884bf486",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "ac9af0707221b8862fe866ede7a6102200b8f98280df47ec5601248b9168ca23",
+          "service.knownOfferings": "584b85b8d98a0e32d519f74baf6bf5a48b9f132e4ef003a57c8fe937dc183251",
+          "service.origin": "4ad679ca576d67db36928c5bd12d1ea5c35b857def9192a6d9e186a1065b3ba8",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "0b3454ee4fd4fb385455fbddf88314a31e3f7bf0cc3daa4802d950d4b36df1eb",
+          "service.service": "f0a0d9ae27f0cf22c0c4944762cb084073bde207931eedd70c7b5a442244a65c",
+          "service.serviceType": "ae337251fabf54254b005e2210f835459493692e618981b2b94278c4d5f99b06",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "b82b6284-8ad0-418d-b26e-8518b06146e0",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "membraneType": {
+          "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+          "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+          "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+          "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+        },
+        "replacementMembraneType": {
+          "epdm": "13282f23-a404-4615-8a9e-c4f259c2e3fa",
+          "tpo": "02ed7b7d-214d-4a58-8867-e4ae970ddead",
+          "pvc": "ee3fff6f-54d0-4a51-828d-91052277acd8",
+          "modified_bitumen": "23e2d7ac-73ec-4c5b-876f-982ad5576019"
+        }
+      },
+      "active": true,
+      "serviceType": "FLAT_ROOF_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPLACEMENT",
+      "pricing": {
+        "laborPerSqft": {
+          "epdm": 5,
+          "average": 5
+        },
+        "membraneCostPerSqft": {
+          "epdm": 7,
+          "average": 7
+        },
+        "tearOffPerSqft": {
+          "epdm": 2,
+          "average": 2
+        },
+        "minimumJob": 0,
+        "insulationPerSqft": 2.5,
+        "accessMultiplier": {
+          "easy": 1,
+          "moderate": 1.15,
+          "difficult": 1.3
+        },
+        "membraneWasteFactor": 0.1
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "roofSqft": 1000,
+        "sqftMethod": "exact",
+        "membraneType": "epdm",
+        "replacementMembraneType": "epdm",
+        "existingLayers": 2,
+        "accessDifficulty": "moderate",
+        "serviceScope": "full",
+        "buildingType": "residential",
+        "confirmedFacts": {
+          "membraneType": {
+            "status": "identified",
+            "field": "membraneType",
+            "value": "epdm",
+            "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+          },
+          "replacementMembraneType": {
+            "status": "identified",
+            "field": "replacementMembraneType",
+            "value": "epdm",
+            "offeringId": "13282f23-a404-4615-8a9e-c4f259c2e3fa"
+          }
+        },
+        "insulationNeeded": false,
+        "coverboardNeeded": false
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "b82b6284-8ad0-418d-b26e-8518b06146e0",
+        "serviceType": "FLAT_ROOF_REPLACEMENT",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "ae39ef67-8b00-4e74-8ae5-eb84b5e536d0",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "laborPerSqft.epdm": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "laborPerSqft.average": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "membraneCostPerSqft.epdm": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "membraneCostPerSqft.average": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "tearOffPerSqft.epdm": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "tearOffPerSqft.average": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "insulationPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "b82b6284-8ad0-418d-b26e-8518b06146e0",
+        "operationId": "1dae10ba-0cb8-4dc7-82b7-3f4107652f9c",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "ff06933a6859dfcdc172b9fc1d218a0ef9c39f27e6a678900088d13da451197f",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "01986e5d8d3c574ced937ae58734ac78805f3b074ab0ed4bdd30c49f454426e2",
+          "service.knownOfferings": "668b66e4050c4e160114371aa1ca95bb712f720f2429be9c7e2f0e5960840bd9",
+          "service.origin": "54953c9807edcbb501a288aa971cfde1e87eb560f9776bdabdf51c0ae28e535c",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "b2c46aee671b491231f02526cc9d12f6c4c7d47248dd37b8fb2990ee03eb2ffb",
+          "service.service": "833198604471255eb02073b791c6e46142e5e4a7d110bb92be761d5c88f034fd",
+          "service.serviceType": "aad9fd09b81923ace0c1960e4e8c75c4df4c4dbeb2e0511437f4975bfb98df6a",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "f70e5292-a8a0-4127-ac34-a2f7e5ae2b8f",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "repairType": {
+          "shingle_patch": "9bffec17-54f8-4b64-8937-31eb3efd3074",
+          "seam_patch": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85",
+          "patch": "cc229077-30ba-4935-89a1-8543f16892ae",
+          "named_patch": "f527eda1-fb84-48ce-8e80-0f7e466bf3a9"
+        },
+        "membraneType": {
+          "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+          "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+          "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+          "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+        }
+      },
+      "active": true,
+      "serviceType": "FLAT_ROOF_REPAIR",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPAIR",
+      "pricing": {
+        "laborHourlyRate": 100,
+        "repairMinimum": 0,
+        "patchRepairHours": {
+          "epdm": {
+            "seam_patch": {
+              "small": 3,
+              "medium": 5,
+              "large": 8
+            }
+          }
+        },
+        "patchMaterialAllowance": {
+          "epdm": {
+            "seam_patch": {
+              "small": 60,
+              "medium": 90,
+              "large": 140
+            }
+          }
+        },
+        "accessMultiplier": {
+          "easy": 1,
+          "moderate": 1.15,
+          "difficult": 1.3
+        },
+        "largeRepairMaxSqft": 1000000
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "repairType": "seam_patch",
+        "affectedArea": 10,
+        "membraneType": "epdm",
+        "leakPresent": false,
+        "pondingWater": false,
+        "confirmedFacts": {
+          "repairType": {
+            "status": "identified",
+            "field": "repairType",
+            "value": "seam_patch",
+            "offeringId": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85"
+          },
+          "membraneType": {
+            "status": "identified",
+            "field": "membraneType",
+            "value": "epdm",
+            "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+          }
+        },
+        "accessDifficulty": "easy"
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "f70e5292-a8a0-4127-ac34-a2f7e5ae2b8f",
+        "serviceType": "FLAT_ROOF_REPAIR",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "18f7c77e-82b4-4d57-94ce-9bb385559342",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "laborHourlyRate": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "repairMinimum": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "patchMaterialAllowance.epdm.seam_patch.small": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "patchMaterialAllowance.epdm.seam_patch.medium": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "patchMaterialAllowance.epdm.seam_patch.large": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "f70e5292-a8a0-4127-ac34-a2f7e5ae2b8f",
+        "operationId": "0f85b18b-9779-4203-8808-0f80688319b5",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "2f16d805d80b6c89d6e4275053aa77655296e66bf35616c5190ff463ba1fec68",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "4df71e89bb603af4f77ca5f17062573ff905efa8921b4020b9dfddd6b0b09df3",
+          "service.knownOfferings": "e05a07f0701663d66b5b4fa255dee1536e5da5ad6bf659d6d765e86fc1f6a11d",
+          "service.origin": "aa8039e8c251362e5b35e4e71a13fda57fa85b270c67d9e93d131bea3bda4b23",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "095fa9c3551bf973aea99c89ab6cc274d4730e7adcb6625295db2091f78ccd8d",
+          "service.service": "d0ce19c0555f7f60005aa43def141ad6be95c9993a9591c3cf2231aedaf606e5",
+          "service.serviceType": "223a58c26a80b4dee61202652ff4e4a9c08199a816c49c3aad75396c0c185166",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "9218a8fe-fbb4-402e-b0e3-e731d8c6ed20",
+      "source": "MANUAL",
+      "serviceType": "INTERIOR_PAINTING",
+      "service": "[SYNTHETIC PUBLIC INTAKE] INTERIOR_PAINTING",
+      "active": true,
+      "knownOfferings": {},
+      "pricing": {
+        "minimumJob": 0,
+        "offeringMode": "installed",
+        "offeringDetails": {
+          "description": "[SYNTHETIC] Defined painting offering",
+          "substrate": "[SYNTHETIC] Drywall",
+          "coating": "[SYNTHETIC] Owner-specified coating",
+          "finishCoats": 2,
+          "surfaceCondition": "fair",
+          "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+          "primerCoats": 1,
+          "wallHeight": "standard",
+          "ceilingsOffered": false,
+          "trimOffered": false,
+          "ceilingCoats": 2,
+          "ceilingPrimerCoats": 1,
+          "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+        },
+        "offeringRates": {
+          "installedWallPerSqft": 6,
+          "installedCeilingPerSqft": 3,
+          "installedTrimPerLF": 2
+        },
+        "installedLaborPercent": {
+          "offeringRates.installedWallPerSqft": 60,
+          "offeringRates.installedCeilingPerSqft": 60,
+          "offeringRates.installedTrimPerLF": 60
+        },
+        "installedMaterialsPercent": {
+          "offeringRates.installedWallPerSqft": 40,
+          "offeringRates.installedCeilingPerSqft": 40,
+          "offeringRates.installedTrimPerLF": 40
+        },
+        "wallHeightLaborMultiplier": {
+          "standard": 1,
+          "high": 1.1,
+          "vaulted": 1.25
+        },
+        "paintWasteFactor": 0.1,
+        "primerWasteFactor": 0.1,
+        "prepMaterialWasteFactor": 0.1,
+        "paintingSettings": {
+          "wallAdditionalCoatRatio": 0.8,
+          "ceilingAdditionalCoatRatio": 0.8,
+          "trimAdditionalCoatRatio": 0.33
+        }
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "sell_price",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "sell_price",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 500,
+        "coats": 2,
+        "surfaceCondition": "fair",
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "9218a8fe-fbb4-402e-b0e3-e731d8c6ed20",
+        "serviceType": "INTERIOR_PAINTING",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "7821b20c-c632-439d-afe4-42e1807e05e7",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "startingValueState": {
+        "paintingSettings.wallAdditionalCoatRatio": {
+          "path": "paintingSettings.wallAdditionalCoatRatio",
+          "value": 0.8,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.wallAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.8}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "paintingSettings.ceilingAdditionalCoatRatio": {
+          "path": "paintingSettings.ceilingAdditionalCoatRatio",
+          "value": 0.8,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.ceilingAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.8}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "paintingSettings.trimAdditionalCoatRatio": {
+          "path": "paintingSettings.trimAdditionalCoatRatio",
+          "value": 0.33,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.trimAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.33}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        }
+      },
+      "startingValueAdoptions": {
+        "painting_coats_20261017": {
+          "mode": "new",
+          "introducedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "priceMetadata": {
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedWallPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedCeilingPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedTrimPerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "9218a8fe-fbb4-402e-b0e3-e731d8c6ed20",
+        "operationId": "22de71ec-4e7e-44be-bfbd-71e6c2e0265b",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "5efe6b3ef540b63dbddcc7dec0cf8f9d3e8a773f114406e6dd1bb99b12f1b6fb",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "837aa4107db982e374682f4fd58f93e45cea3286774c5d162f6ab7b846085331",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "7ebdb537efeb143880c94f1221aeebf414ea656fd4d33a70ca36bfc424e8a065",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "27781169552b7b9c6cd0cb6fb6a7865d15baeeda9756b9889802d7b4eb099225",
+          "service.pricing": "0fb1ace80ea50d3cbf3d90dd099696a075656f7e2097d21dc23915c844aad32b",
+          "service.service": "ffd6a7d30e9a01bfdff4fdccfa627d3adb6ab81eee424aea943d83eaccf9f6b0",
+          "service.serviceType": "1e41b95b9e3485a1e1ef06dc4f00fac11e2d5aa937e84a589d32b99813238a5d",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.startingValueAdoptions": "52e6dbc2aa328a4fbba5c6cd2180d847d7b1e83249ece0b9bd133ffad3aea9e3",
+          "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "10c1504a-6862-4cad-8127-23ac7e25ffcd",
+      "source": "MANUAL",
+      "serviceType": "EXTERIOR_PAINTING",
+      "service": "[SYNTHETIC PUBLIC INTAKE] EXTERIOR_PAINTING",
+      "active": true,
+      "knownOfferings": {},
+      "pricing": {
+        "minimumJob": 0,
+        "offeringMode": "installed",
+        "offeringDetails": {
+          "description": "[SYNTHETIC] Defined painting offering",
+          "substrate": "[SYNTHETIC] Wood siding",
+          "coating": "[SYNTHETIC] Owner-specified coating",
+          "finishCoats": 2,
+          "surfaceCondition": "fair",
+          "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+          "primerCoats": 1,
+          "stories": 2,
+          "baselinePricesConfirmed": true
+        },
+        "offeringRates": {
+          "installedWallPerSqft": 6
+        },
+        "installedLaborPercent": {
+          "offeringRates.installedWallPerSqft": 60
+        },
+        "installedMaterialsPercent": {
+          "offeringRates.installedWallPerSqft": 40
+        },
+        "storyMultiplier": {
+          "1": 1,
+          "2": 1.1,
+          "3": 1.2
+        },
+        "prepHoursPerSqft": {
+          "fair": 0.008
+        },
+        "paintWasteFactor": 0.1,
+        "primerWasteFactor": 0.1,
+        "prepMaterialWasteFactor": 0.1,
+        "paintingSettings": {
+          "wallAdditionalCoatRatio": 0.8,
+          "ceilingAdditionalCoatRatio": 0.8,
+          "trimAdditionalCoatRatio": 0.33
+        }
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "sell_price",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "sell_price",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "areaInputMethod": "wall_sqft",
+        "exteriorAreaSqft": 500,
+        "coats": 2,
+        "surfaceCondition": "fair",
+        "stories": 2
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "10c1504a-6862-4cad-8127-23ac7e25ffcd",
+        "serviceType": "EXTERIOR_PAINTING",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "0661bcb4-5d78-4f7e-9d8d-3ec8ecca0a73",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "startingValueState": {
+        "paintingSettings.wallAdditionalCoatRatio": {
+          "path": "paintingSettings.wallAdditionalCoatRatio",
+          "value": 0.8,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.wallAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.8}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "paintingSettings.ceilingAdditionalCoatRatio": {
+          "path": "paintingSettings.ceilingAdditionalCoatRatio",
+          "value": 0.8,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.ceilingAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.8}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "paintingSettings.trimAdditionalCoatRatio": {
+          "path": "paintingSettings.trimAdditionalCoatRatio",
+          "value": 0.33,
+          "label": "Painting additional-coat labor ratios",
+          "source": "Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/",
+          "assumption": "Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.",
+          "group": "painting_coats_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.\",\"label\":\"Painting additional-coat labor ratios\",\"path\":\"paintingSettings.trimAdditionalCoatRatio\",\"source\":\"Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/\",\"value\":0.33}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        }
+      },
+      "startingValueAdoptions": {
+        "painting_coats_20261017": {
+          "mode": "new",
+          "introducedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "priceMetadata": {
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedWallPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "10c1504a-6862-4cad-8127-23ac7e25ffcd",
+        "operationId": "1c8622cf-14d7-443d-9abf-b2c1ff5d7f3d",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "c388f41cc50e0103edbe777d64b01fd06920af2129379827fce459f079a83ba3",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "e5418fef98be3e8fa8d16d106c2c5bcc8aad22c56f9308bd2a6963a645f170b1",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "d53bb780bb8e58c591ef945c1dd4d26024b18db1818392089cf723460e7a3d91",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "27781169552b7b9c6cd0cb6fb6a7865d15baeeda9756b9889802d7b4eb099225",
+          "service.pricing": "b103b4efde626d7ba4a30c82e2cb557638989af4fb8ae6ba2487a1a6a5465efa",
+          "service.service": "17624765eef914a552a607677705179de63b54d1e2be126a2e0a1b1f67386d67",
+          "service.serviceType": "acea0169e83176dabcdd654a4523a8759b7ecef5f0e19d55bc892ab45543ea6d",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.startingValueAdoptions": "52e6dbc2aa328a4fbba5c6cd2180d847d7b1e83249ece0b9bd133ffad3aea9e3",
+          "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "f43f35d6-4d19-44f7-bdc3-2f6e7512a09d",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "existingFloorType": {
+          "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+          "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+          "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+          "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+          "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+          "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+        }
+      },
+      "active": true,
+      "serviceType": "FLOORING_INSTALL",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FLOORING_INSTALL",
+      "pricing": {
+        "laborPerSqft": {
+          "vinyl_plank": 3
+        },
+        "materialPerSqft": {
+          "vinyl_plank": 5
+        },
+        "minimumJob": 0,
+        "vinylPlankUnderlaymentRule": "never_included",
+        "wasteFactorByType": {
+          "hardwood": 0.1,
+          "laminate": 0.08,
+          "vinyl_plank": 0.08,
+          "carpet": 0.1,
+          "tile": 0.12
+        },
+        "patternWasteAdder": {
+          "straight": 0,
+          "diagonal_or_pattern": 0.07
+        },
+        "roomComplexityMultiplier": {
+          "large": 1,
+          "medium": 1.1,
+          "small": 1.2
+        },
+        "roomSizeThresholds": {
+          "smallMaxSqft": 149,
+          "mediumMaxSqft": 299
+        },
+        "layoutLaborMultiplier": {
+          "straight": 1,
+          "diagonal_or_pattern": 1.2
+        },
+        "diagonalWasteAdderByType": {
+          "laminate": 0.06,
+          "vinyl_plank": 0.04,
+          "hardwood": 0.07,
+          "tile": 0.03
+        },
+        "herringboneWasteAdderByType": {
+          "laminate": 0.06,
+          "vinyl_plank": 0.04,
+          "hardwood": 0.07,
+          "tile": 0.03
+        },
+        "herringboneLaborMultiplierByType": {
+          "hardwood": 1.75,
+          "laminate": 1.75,
+          "vinyl_plank": 1.75
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "sqft": 300,
+        "sqftMethod": "exact",
+        "newFlooringType": "vinyl_plank",
+        "existingFloorType": "none",
+        "removalNeeded": false,
+        "roomCount": 1,
+        "layoutPattern": "straight",
+        "stairSteps": 0
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "f43f35d6-4d19-44f7-bdc3-2f6e7512a09d",
+        "serviceType": "FLOORING_INSTALL",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "79a7d3c6-7e10-440e-afd8-3378584f6e29",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "startingValueState": {
+        "diagonalWasteAdderByType.laminate": {
+          "path": "diagonalWasteAdderByType.laminate",
+          "value": 0.06,
+          "label": "Diagonal additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Diagonal additional waste by flooring type\",\"path\":\"diagonalWasteAdderByType.laminate\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.06}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "diagonalWasteAdderByType.vinyl_plank": {
+          "path": "diagonalWasteAdderByType.vinyl_plank",
+          "value": 0.04,
+          "label": "Diagonal additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Diagonal additional waste by flooring type\",\"path\":\"diagonalWasteAdderByType.vinyl_plank\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.04}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "diagonalWasteAdderByType.hardwood": {
+          "path": "diagonalWasteAdderByType.hardwood",
+          "value": 0.07,
+          "label": "Diagonal additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Diagonal additional waste by flooring type\",\"path\":\"diagonalWasteAdderByType.hardwood\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.07}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "diagonalWasteAdderByType.tile": {
+          "path": "diagonalWasteAdderByType.tile",
+          "value": 0.03,
+          "label": "Diagonal additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Diagonal additional waste by flooring type\",\"path\":\"diagonalWasteAdderByType.tile\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.03}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneWasteAdderByType.laminate": {
+          "path": "herringboneWasteAdderByType.laminate",
+          "value": 0.06,
+          "label": "Herringbone or chevron additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Herringbone or chevron additional waste by flooring type\",\"path\":\"herringboneWasteAdderByType.laminate\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.06}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneWasteAdderByType.vinyl_plank": {
+          "path": "herringboneWasteAdderByType.vinyl_plank",
+          "value": 0.04,
+          "label": "Herringbone or chevron additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Herringbone or chevron additional waste by flooring type\",\"path\":\"herringboneWasteAdderByType.vinyl_plank\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.04}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneWasteAdderByType.hardwood": {
+          "path": "herringboneWasteAdderByType.hardwood",
+          "value": 0.07,
+          "label": "Herringbone or chevron additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Herringbone or chevron additional waste by flooring type\",\"path\":\"herringboneWasteAdderByType.hardwood\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.07}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneWasteAdderByType.tile": {
+          "path": "herringboneWasteAdderByType.tile",
+          "value": 0.03,
+          "label": "Herringbone or chevron additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Herringbone or chevron additional waste by flooring type\",\"path\":\"herringboneWasteAdderByType.tile\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.03}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneLaborMultiplierByType.hardwood": {
+          "path": "herringboneLaborMultiplierByType.hardwood",
+          "value": 1.75,
+          "label": "Herringbone or chevron labor adjustment by flooring type",
+          "source": "DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/",
+          "assumption": "Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.\",\"label\":\"Herringbone or chevron labor adjustment by flooring type\",\"path\":\"herringboneLaborMultiplierByType.hardwood\",\"source\":\"DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/\",\"value\":1.75}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneLaborMultiplierByType.laminate": {
+          "path": "herringboneLaborMultiplierByType.laminate",
+          "value": 1.75,
+          "label": "Herringbone or chevron labor adjustment by flooring type",
+          "source": "DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/",
+          "assumption": "Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.\",\"label\":\"Herringbone or chevron labor adjustment by flooring type\",\"path\":\"herringboneLaborMultiplierByType.laminate\",\"source\":\"DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/\",\"value\":1.75}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneLaborMultiplierByType.vinyl_plank": {
+          "path": "herringboneLaborMultiplierByType.vinyl_plank",
+          "value": 1.75,
+          "label": "Herringbone or chevron labor adjustment by flooring type",
+          "source": "DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/",
+          "assumption": "Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.\",\"label\":\"Herringbone or chevron labor adjustment by flooring type\",\"path\":\"herringboneLaborMultiplierByType.vinyl_plank\",\"source\":\"DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/\",\"value\":1.75}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        }
+      },
+      "startingValueAdoptions": {
+        "flooring_patterns_20261017": {
+          "mode": "new",
+          "introducedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "priceMetadata": {
+        "laborPerSqft.vinyl_plank": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "materialPerSqft.vinyl_plank": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "f43f35d6-4d19-44f7-bdc3-2f6e7512a09d",
+        "operationId": "636b6f44-0e0d-49ad-860a-eb4979d3afb8",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "21a10662999d5ebef4c74dde69edf3384f3fb11c985fc1cd995a92ee5c423669",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "e08408350c8fd67d9f9e9569a3796a7531649677c19cc30962a1c802bf83a17e",
+          "service.knownOfferings": "b875ba8ca5e7ccb7c2411ac8900bee8ae2b1b3edac3c34b62e7169c591f80765",
+          "service.origin": "6bdbce8ad3dff9b9344dd619cbbe219845e12dd783f961a5ce6730865fab9f05",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "ad89a5af06bc8e1c18dd8b8a2383c00ba2fc2e5f8158c6c6dae6b2c16bbd3013",
+          "service.service": "a9757d7e771cbd3f9bb33ebf547300df38af97022a44c7ec5567668d1c0d3687",
+          "service.serviceType": "47e7634615b36ea4056899b0819942fd023206cbaf11a1aa995c1bacf379574a",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.startingValueAdoptions": "adf7b7ff6437eb41fc4e8037341b6942ce21cb54c7c8bf214ffbf35ffe8e5e7d",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "972fc5d1-a43b-4503-aeaf-01c9f12c7999",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "existingFloorType": {
+          "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+          "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+          "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+          "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+          "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+          "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+        }
+      },
+      "active": true,
+      "serviceType": "FLOORING_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FLOORING_REPLACEMENT",
+      "pricing": {
+        "laborPerSqft": {
+          "tile": 3
+        },
+        "materialPerSqft": {
+          "tile": 5
+        },
+        "minimumJob": 0,
+        "removalPerSqft": {
+          "vinyl": 1
+        },
+        "perStepPrice": 100,
+        "subfloorAllowancePerSqft": 2,
+        "vinylPlankUnderlaymentRule": "never_included",
+        "wasteFactorByType": {
+          "hardwood": 0.1,
+          "laminate": 0.08,
+          "vinyl_plank": 0.08,
+          "carpet": 0.1,
+          "tile": 0.12
+        },
+        "patternWasteAdder": {
+          "straight": 0,
+          "diagonal_or_pattern": 0.07
+        },
+        "roomComplexityMultiplier": {
+          "large": 1,
+          "medium": 1.1,
+          "small": 1.2
+        },
+        "roomSizeThresholds": {
+          "smallMaxSqft": 149,
+          "mediumMaxSqft": 299
+        },
+        "layoutLaborMultiplier": {
+          "straight": 1,
+          "diagonal_or_pattern": 1.2
+        },
+        "diagonalWasteAdderByType": {
+          "laminate": 0.06,
+          "vinyl_plank": 0.04,
+          "hardwood": 0.07,
+          "tile": 0.03
+        },
+        "herringboneWasteAdderByType": {
+          "laminate": 0.06,
+          "vinyl_plank": 0.04,
+          "hardwood": 0.07,
+          "tile": 0.03
+        },
+        "herringboneLaborMultiplierByType": {
+          "hardwood": 1.75,
+          "laminate": 1.75,
+          "vinyl_plank": 1.75
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "sqft": 300,
+        "sqftMethod": "exact",
+        "newFlooringType": "tile",
+        "existingFloorType": "vinyl",
+        "removalNeeded": true,
+        "removalAreaSqft": 300,
+        "roomCount": 2,
+        "layoutPattern": "straight",
+        "stairSteps": 0,
+        "subfloorIssues": true,
+        "subfloorRepairAreaSqft": 30,
+        "confirmedFacts": {
+          "existingFloorType": {
+            "status": "identified",
+            "field": "existingFloorType",
+            "value": "vinyl",
+            "offeringId": "abbf1922-55c6-4b4a-8407-d29217687935"
+          }
+        }
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "972fc5d1-a43b-4503-aeaf-01c9f12c7999",
+        "serviceType": "FLOORING_REPLACEMENT",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "18f37de2-fd19-4b6c-9c31-7f3740a3eaaa",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "startingValueState": {
+        "diagonalWasteAdderByType.laminate": {
+          "path": "diagonalWasteAdderByType.laminate",
+          "value": 0.06,
+          "label": "Diagonal additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Diagonal additional waste by flooring type\",\"path\":\"diagonalWasteAdderByType.laminate\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.06}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "diagonalWasteAdderByType.vinyl_plank": {
+          "path": "diagonalWasteAdderByType.vinyl_plank",
+          "value": 0.04,
+          "label": "Diagonal additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Diagonal additional waste by flooring type\",\"path\":\"diagonalWasteAdderByType.vinyl_plank\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.04}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "diagonalWasteAdderByType.hardwood": {
+          "path": "diagonalWasteAdderByType.hardwood",
+          "value": 0.07,
+          "label": "Diagonal additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Diagonal additional waste by flooring type\",\"path\":\"diagonalWasteAdderByType.hardwood\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.07}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "diagonalWasteAdderByType.tile": {
+          "path": "diagonalWasteAdderByType.tile",
+          "value": 0.03,
+          "label": "Diagonal additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Diagonal additional waste by flooring type\",\"path\":\"diagonalWasteAdderByType.tile\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.03}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneWasteAdderByType.laminate": {
+          "path": "herringboneWasteAdderByType.laminate",
+          "value": 0.06,
+          "label": "Herringbone or chevron additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Herringbone or chevron additional waste by flooring type\",\"path\":\"herringboneWasteAdderByType.laminate\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.06}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneWasteAdderByType.vinyl_plank": {
+          "path": "herringboneWasteAdderByType.vinyl_plank",
+          "value": 0.04,
+          "label": "Herringbone or chevron additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Herringbone or chevron additional waste by flooring type\",\"path\":\"herringboneWasteAdderByType.vinyl_plank\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.04}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneWasteAdderByType.hardwood": {
+          "path": "herringboneWasteAdderByType.hardwood",
+          "value": 0.07,
+          "label": "Herringbone or chevron additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Herringbone or chevron additional waste by flooring type\",\"path\":\"herringboneWasteAdderByType.hardwood\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.07}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneWasteAdderByType.tile": {
+          "path": "herringboneWasteAdderByType.tile",
+          "value": 0.03,
+          "label": "Herringbone or chevron additional waste by flooring type",
+          "source": "Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor",
+          "assumption": "Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.\",\"label\":\"Herringbone or chevron additional waste by flooring type\",\"path\":\"herringboneWasteAdderByType.tile\",\"source\":\"Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor\",\"value\":0.03}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneLaborMultiplierByType.hardwood": {
+          "path": "herringboneLaborMultiplierByType.hardwood",
+          "value": 1.75,
+          "label": "Herringbone or chevron labor adjustment by flooring type",
+          "source": "DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/",
+          "assumption": "Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.\",\"label\":\"Herringbone or chevron labor adjustment by flooring type\",\"path\":\"herringboneLaborMultiplierByType.hardwood\",\"source\":\"DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/\",\"value\":1.75}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneLaborMultiplierByType.laminate": {
+          "path": "herringboneLaborMultiplierByType.laminate",
+          "value": 1.75,
+          "label": "Herringbone or chevron labor adjustment by flooring type",
+          "source": "DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/",
+          "assumption": "Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.\",\"label\":\"Herringbone or chevron labor adjustment by flooring type\",\"path\":\"herringboneLaborMultiplierByType.laminate\",\"source\":\"DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/\",\"value\":1.75}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        },
+        "herringboneLaborMultiplierByType.vinyl_plank": {
+          "path": "herringboneLaborMultiplierByType.vinyl_plank",
+          "value": 1.75,
+          "label": "Herringbone or chevron labor adjustment by flooring type",
+          "source": "DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/",
+          "assumption": "Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.",
+          "group": "flooring_patterns_20261017",
+          "deferUntilAdoption": true,
+          "definitionSignature": "{\"assumption\":\"Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.\",\"label\":\"Herringbone or chevron labor adjustment by flooring type\",\"path\":\"herringboneLaborMultiplierByType.vinyl_plank\",\"source\":\"DG Floors lists chevron labor at 50–100% above straight lay and herringbone at 50–80% above straight lay. Source: https://dgfloors.com/chevron-pattern-flooring/\",\"value\":1.75}",
+          "confirmed": true,
+          "introducedAt": "2026-10-31T12:00:00.000Z",
+          "confirmedAt": "2026-10-31T12:00:00.000Z",
+          "ownerId": "synthetic-a"
+        }
+      },
+      "startingValueAdoptions": {
+        "flooring_patterns_20261017": {
+          "mode": "new",
+          "introducedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "priceMetadata": {
+        "laborPerSqft.tile": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "materialPerSqft.tile": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "removalPerSqft.vinyl": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "perStepPrice": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "subfloorAllowancePerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "972fc5d1-a43b-4503-aeaf-01c9f12c7999",
+        "operationId": "c5a514d2-8794-4671-bdea-f92f472e310b",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "d5ea0e9c377e54eb9a75a709b60f58768a0dff60b759d3da81a54528fff93a2f",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "faf5a37cfacf44a10831b9c8874f48721d71b3feaacfbac420d6e39db648842f",
+          "service.knownOfferings": "b875ba8ca5e7ccb7c2411ac8900bee8ae2b1b3edac3c34b62e7169c591f80765",
+          "service.origin": "763726c413fd388b045b4e66960d25c3ed010be01b539fd2e17cd8af4fc14651",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "8ead4a810e1b68984716b311e4507ffca421c5c2b0b0960f13d992e46e727549",
+          "service.service": "15016f3137335569aec54dc168d4224ef0718021f9233afee95ef60380647d4a",
+          "service.serviceType": "bb67a92ff07b987cfe6dd850a56f8e12a3ce067f929d4f0f5bd4384f6e04020b",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.startingValueAdoptions": "adf7b7ff6437eb41fc4e8037341b6942ce21cb54c7c8bf214ffbf35ffe8e5e7d",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "0759a9f6-2a44-4748-8b0e-29ce7a3a424d",
+      "source": "MANUAL",
+      "serviceType": "FENCING_INSTALL",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FENCING_INSTALL",
+      "active": true,
+      "knownOfferings": {
+        "fenceType": {
+          "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      },
+      "pricing": {
+        "minimumJob": 0,
+        "offeringMode": "installed",
+        "offeringDetails": {
+          "description": "[SYNTHETIC] Defined six-foot wood fence",
+          "fenceType": "wood",
+          "fenceHeight": 6,
+          "terrainSlope": "flat",
+          "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+          "gates": {
+            "walk": {
+              "widthLF": 4,
+              "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+              "postsAndFootingsIncluded": true
+            }
+          }
+        },
+        "offeringRates": {
+          "installedFencePerLF": 40,
+          "gate_walk": 250
+        },
+        "installedLaborPercent": {
+          "offeringRates.installedFencePerLF": 60,
+          "offeringRates.gate_walk": 60
+        },
+        "installedMaterialsPercent": {
+          "offeringRates.installedFencePerLF": 40,
+          "offeringRates.gate_walk": 40
+        },
+        "postSpacingLF": 8,
+        "fenceWasteFactor": 0.1,
+        "terrainLaborMultiplier": {
+          "flat": 1,
+          "moderate": 1.15,
+          "steep": 1.3
+        }
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "sell_price",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "linearFeet": 100,
+        "lfMethod": "exact",
+        "fenceType": "wood",
+        "fenceHeight": 6,
+        "terrainSlope": "flat",
+        "gates": {
+          "walk": 2
+        },
+        "cornerCount": 0,
+        "confirmedFacts": {
+          "fenceType": {
+            "status": "identified",
+            "field": "fenceType",
+            "value": "wood",
+            "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        }
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "0759a9f6-2a44-4748-8b0e-29ce7a3a424d",
+        "serviceType": "FENCING_INSTALL",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "5b219356-6f7a-4370-b8cf-f378a8db93a6",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedFencePerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.gate_walk": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "0759a9f6-2a44-4748-8b0e-29ce7a3a424d",
+        "operationId": "46d0c4f0-e3ad-4fa3-adbd-cd6bf6441802",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "46444ab49fa00e1f24e86a5b03e49e9cb8c446a722f3e1220d4b9efbc408160e",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "e4dcb9d5247974850e7843991fd402614eaea8c9e0f7a97648efa6016eb7f91a",
+          "service.knownOfferings": "cf0cadc4f4c81f65c4bb563b26022edced4f3868fdace089a81642e41deba538",
+          "service.origin": "41f89845862bdd64c357256ab4f0c0ef051719d532f58df4cd3ab7ab30d3b77a",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "41b431786d6526a3718d6097ba20d3cdb6d6794f2e924339da69d2bac943c3c0",
+          "service.pricing": "43e155c839726ae67a7ac70503ed44aca180cd7a86e951cb4e3c167d1bce434f",
+          "service.service": "41560ad136cbf7a189688be686f96b211b5a855f8fb5413179645582999fed98",
+          "service.serviceType": "bdfbc17d3dcd4037260496c9c464bb7c19d07da27dc288cf70d2a4fc53dd0ffa",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "aef708ff-cb0e-4b80-9217-d9d60c93418c",
+      "source": "MANUAL",
+      "serviceType": "FENCING_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FENCING_REPLACEMENT",
+      "active": true,
+      "knownOfferings": {
+        "fenceType": {
+          "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      },
+      "pricing": {
+        "minimumJob": 0,
+        "offeringMode": "installed",
+        "offeringDetails": {
+          "description": "[SYNTHETIC] Defined six-foot wood fence",
+          "fenceType": "wood",
+          "fenceHeight": 6,
+          "terrainSlope": "flat",
+          "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+          "gates": {
+            "walk": {
+              "widthLF": 4,
+              "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+              "postsAndFootingsIncluded": true
+            }
+          },
+          "removalOffered": true,
+          "removalDescription": "[SYNTHETIC] Remove the measured old fence and haul it away.",
+          "removalIncludesDisposal": true
+        },
+        "offeringRates": {
+          "installedFencePerLF": 40,
+          "gate_walk": 250,
+          "removalPerLF": 8
+        },
+        "installedLaborPercent": {
+          "offeringRates.installedFencePerLF": 60,
+          "offeringRates.gate_walk": 60,
+          "offeringRates.removalPerLF": 60
+        },
+        "installedMaterialsPercent": {
+          "offeringRates.installedFencePerLF": 40,
+          "offeringRates.gate_walk": 40,
+          "offeringRates.removalPerLF": 40
+        },
+        "postSpacingLF": 8,
+        "fenceWasteFactor": 0.1,
+        "terrainLaborMultiplier": {
+          "flat": 1,
+          "moderate": 1.15,
+          "steep": 1.3
+        }
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "sell_price",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "linearFeet": 100,
+        "lfMethod": "exact",
+        "fenceType": "wood",
+        "fenceHeight": 6,
+        "terrainSlope": "flat",
+        "gates": {
+          "walk": 2
+        },
+        "cornerCount": 0,
+        "oldFenceRemoval": true,
+        "removalLengthLF": 50,
+        "confirmedFacts": {
+          "fenceType": {
+            "status": "identified",
+            "field": "fenceType",
+            "value": "wood",
+            "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        }
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "aef708ff-cb0e-4b80-9217-d9d60c93418c",
+        "serviceType": "FENCING_REPLACEMENT",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "9f3cac18-43f0-4d9e-afd0-525c87446735",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.installedFencePerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.gate_walk": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "offeringRates.removalPerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "aef708ff-cb0e-4b80-9217-d9d60c93418c",
+        "operationId": "5537d139-36d4-474d-b01a-3f169a86b9e2",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "fe6aa9b15f83ccbeaf69285be9d8f5a0425102fff3b0524eec5e25958d3eab64",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "c50113486a122b06832a481335d2230c2a0243b5ac73911c036e1e0795f5579c",
+          "service.knownOfferings": "cf0cadc4f4c81f65c4bb563b26022edced4f3868fdace089a81642e41deba538",
+          "service.origin": "6b2674c38debcf29d53d5a8224b9770be8d6d996d66bf1514c8c45da58269a30",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "41b431786d6526a3718d6097ba20d3cdb6d6794f2e924339da69d2bac943c3c0",
+          "service.pricing": "161e2b353706bca89625d9602563f62c5231aa5bfa48ddfba81cac465a20bb66",
+          "service.service": "b55cb6d89e2b06a4ef8a8285abd3e802021d010ef03f981f4ec79496f35ced55",
+          "service.serviceType": "2f3582236003a6ad05177ec8ee7dd0470f82563ba2b44b4d4ca4b748da421c36",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "a8cdd0e1-9a5e-4008-bd66-40edd7e92d7c",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "SIDING_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPLACEMENT",
+      "pricing": {
+        "laborPerSqft": {
+          "vinyl": 4
+        },
+        "materialPerSqft": {
+          "vinyl": 7
+        },
+        "minimumJob": 0,
+        "removalPerSqft": 1,
+        "trimPerLinearFoot": 1,
+        "wasteFactorByType": {
+          "vinyl": 0.1,
+          "fiber_cement": 0.12,
+          "wood": 0.12,
+          "metal": 0.1
+        },
+        "storyMultiplier": {
+          "1": 1,
+          "2": 1.1,
+          "3": 1.2
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "areaInputMethod": "sqft",
+        "sidingAreaSqft": 1000,
+        "sidingType": "vinyl",
+        "stories": 1,
+        "oldSidingRemoval": false,
+        "trimIncluded": false
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "a8cdd0e1-9a5e-4008-bd66-40edd7e92d7c",
+        "serviceType": "SIDING_REPLACEMENT",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "bb9b7f15-dc3b-4ba4-b51a-8c7c27a10d6f",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "laborPerSqft.vinyl": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "materialPerSqft.vinyl": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "removalPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "trimPerLinearFoot": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "a8cdd0e1-9a5e-4008-bd66-40edd7e92d7c",
+        "operationId": "86856361-6ab9-449c-8e94-375fec97cef4",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "59e418d3ee9ee54f68c311ab5abb85f96007eb0b8caa99bb37365068af52db95",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "0dfd95c1212db6ca88eaf9891c02e5eb4ec2296f22a8e70f638ec58e5dc27d08",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "a09538fbef20fa26bc12a2c9024bec496b70b2d6db896a84e4067e2fba4bc827",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "c6d2f828ff30c90c652ba39ad6a768a3e76753399d1089dfbcbd06cc6d674b91",
+          "service.service": "9dc3ea16144a322ce4f681a4bbbfecda0597c98061467f4eadf1a2756ab5fbab",
+          "service.serviceType": "bbd3408124658d7cc9a1714ede3fd64e6b42c0527dfbcdc29bdfbe03e1845948",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "3fdee3d0-4c97-4118-a1e9-4061e22c92ad",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "damageLevel": {
+          "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+        }
+      },
+      "active": true,
+      "serviceType": "SIDING_REPAIR",
+      "service": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPAIR",
+      "pricing": {
+        "laborHourlyRate": 100,
+        "repairMinimum": 0,
+        "repairHours": {
+          "vinyl": {
+            "minor": {
+              "small": 2,
+              "medium": 4,
+              "large": 8
+            }
+          }
+        },
+        "materialAllowance": {
+          "vinyl": {
+            "minor": {
+              "small": 50,
+              "medium": 100,
+              "large": 200
+            }
+          }
+        },
+        "storyMultiplier": {
+          "1": 1,
+          "2": 1.1,
+          "3": 1.2
+        },
+        "largeRepairMaxSqft": 1000000
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "sidingType": "vinyl",
+        "damageLevel": "minor",
+        "affectedArea": 50,
+        "stories": 2,
+        "confirmedFacts": {
+          "damageLevel": {
+            "status": "identified",
+            "field": "damageLevel",
+            "value": "minor",
+            "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+          }
+        }
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "3fdee3d0-4c97-4118-a1e9-4061e22c92ad",
+        "serviceType": "SIDING_REPAIR",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "985f76e3-b771-4e59-947d-23ad243ddda1",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "laborHourlyRate": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "repairMinimum": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "materialAllowance.vinyl.minor.small": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "materialAllowance.vinyl.minor.medium": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "materialAllowance.vinyl.minor.large": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "3fdee3d0-4c97-4118-a1e9-4061e22c92ad",
+        "operationId": "e3a8bda3-8e64-415c-b01b-498c67c58a23",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "b8c9e5ba3636076d30628676ee573307fca9d6e55a8303422604a272c2a70596",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "984652237bccbf61ac1a2a9156604bd1cb9b4847f7dd176829ed30a1ce2cea84",
+          "service.knownOfferings": "c1974356925670503bc9c73372b96774f0f96e7028f11aa6b220b62645a9c463",
+          "service.origin": "490ef57a46d957dab2846f932da7260b5ca8031df16cabaff4324f1ae2cd0dc2",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "2694b6e3beba384fa21bef7b0e53df15f3ca32556498c7739f95897becb82898",
+          "service.service": "27dedba913b059a11fc0bf3403238f0165d22160a9f8a98aebb6c7e618b03598",
+          "service.serviceType": "0d0304093bb7d68d849def8d9d61e71957fd9181b99e2a127f59247ac5e318d9",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "94b7077c-db52-49ec-a047-09d6c4d03cc6",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "CONCRETE_DRIVEWAY",
+      "service": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_DRIVEWAY",
+      "pricing": {
+        "laborPerSqft": 6,
+        "concreteCostPerCubicYard": 180,
+        "formworkPerLF": 25,
+        "minimumJob": 0,
+        "basePrepPerSqft": 1.75,
+        "wireReinforcementPerSqft": 1.5,
+        "concreteWasteFactor": 0.1,
+        "finishMultiplier": {
+          "broom": 1,
+          "smooth": 1.05,
+          "stamped": 1.5
+        },
+        "accessMultiplier": {
+          "easy": 1,
+          "moderate": 1.1,
+          "difficult": 1.25
+        },
+        "reinforcementWasteFactor": {
+          "wire_mesh": 0.1,
+          "rebar": 0.1
+        },
+        "stampedMaterialWasteFactor": 0.1
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "dimensionMethod": "exact",
+        "length": 50,
+        "width": 10,
+        "thickness": 4,
+        "finishType": "broom",
+        "demolitionNeeded": false,
+        "reinforcement": "wire_mesh",
+        "accessDifficulty": "easy",
+        "baseNeeded": true,
+        "adjoinsExistingConcrete": false
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "94b7077c-db52-49ec-a047-09d6c4d03cc6",
+        "serviceType": "CONCRETE_DRIVEWAY",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "a39e7fe7-a70d-420c-b5c1-18f7a73b5f01",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "laborPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "concreteCostPerCubicYard": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "formworkPerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "basePrepPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "wireReinforcementPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "94b7077c-db52-49ec-a047-09d6c4d03cc6",
+        "operationId": "806580d5-e099-42c2-a624-072ff8dffd75",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "e2b8ab19ecaed2e56a84135d99320f43b25bdf36aa53eceb5985e7fee183ac17",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "d8963a114d6f23f605cda91213b895bffa6a00b964abfce8693a93affcfbf038",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "2e77c67446a63a59ddece0a8b8536d5ced054d7fdf6d2652a7015b9af2c8d838",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "b091e2abb4b7c03cb1da4e7b4b9c6ec9bc9f16147aa7bb1cfbc6853176e8e152",
+          "service.service": "d7bfad044ca52b7c260c850f6dedcb185bb26d3aaf6d63c58007dda58f1d6626",
+          "service.serviceType": "381f6543e0eaa1967390ec1734baaf2781707a6c47348f880b24983e93017eb4",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "e9ae5937-6094-4461-9d69-813f52941449",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "CONCRETE_PATIO_SLAB",
+      "service": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_PATIO_SLAB",
+      "pricing": {
+        "laborPerSqft": 6,
+        "concreteCostPerCubicYard": 180,
+        "formworkPerLF": 25,
+        "minimumJob": 0,
+        "basePrepPerSqft": 1.75,
+        "concreteWasteFactor": 0.1,
+        "finishMultiplier": {
+          "broom": 1,
+          "smooth": 1.05,
+          "stamped": 1.5
+        },
+        "accessMultiplier": {
+          "easy": 1,
+          "moderate": 1.1,
+          "difficult": 1.25
+        },
+        "reinforcementWasteFactor": {
+          "wire_mesh": 0.1,
+          "rebar": 0.1
+        },
+        "stampedMaterialWasteFactor": 0.1
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "dimensionMethod": "exact",
+        "length": 20,
+        "width": 10,
+        "thickness": 4,
+        "finishType": "broom",
+        "demolitionNeeded": false,
+        "reinforcement": "none",
+        "accessDifficulty": "easy",
+        "baseNeeded": true,
+        "adjoinsExistingConcrete": false
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "e9ae5937-6094-4461-9d69-813f52941449",
+        "serviceType": "CONCRETE_PATIO_SLAB",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "73856011-93a9-4932-8991-d138bd73644f",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "laborPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "concreteCostPerCubicYard": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "formworkPerLF": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "basePrepPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "e9ae5937-6094-4461-9d69-813f52941449",
+        "operationId": "8d381425-15c1-45e4-87db-ac0d6858d153",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "2c4f8ea52a0d00b3b324e5722d6526f3fb0f4b8ee41210f2033e38232d430a7d",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "0148b8710a118d1ca2517542f710e7cad6abcee7353073de6e60b5a8706def37",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "68e0ba5fec6761cc7dadaeb68a4f87f8351e3ff3da4a10e9aa0f4d000004e009",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "8bf6170f3bc8c0535dd790b0f2d4c9900f91d0f3b9c46774b40566d95fabf95e",
+          "service.service": "e46df58c0537f38625ced1c9f38cfbe790eb7c093d5a15c76828134d911c23b6",
+          "service.serviceType": "21495abe27df9a4ff47b3f45deb0877a7f3b12add6b3a9208a0ae087c6829f62",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "3a7f8517-5335-4e43-9ec5-9cff1a20f297",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "LANDSCAPING_CLEANUP",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_CLEANUP",
+      "pricing": {
+        "cleanupBaseRatePerSqft": 0.1,
+        "debrisPricing": {
+          "light": {
+            "laborMultiplier": 1,
+            "disposalFlat": 50
+          },
+          "moderate": {
+            "laborMultiplier": 1.5,
+            "disposalFlat": 100
+          },
+          "heavy": {
+            "laborMultiplier": 2,
+            "disposalFlat": 150
+          }
+        },
+        "minimumServiceCharge": 0,
+        "haulAwayFee": 50,
+        "slopeMultiplier": {
+          "flat": 1,
+          "moderate": 1.15,
+          "steep": 1.35
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "yardSqft": 1000,
+        "sqftMethod": "exact",
+        "debrisLevel": "heavy",
+        "slope": "flat",
+        "haulAway": true
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "3a7f8517-5335-4e43-9ec5-9cff1a20f297",
+        "serviceType": "LANDSCAPING_CLEANUP",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "e126ac41-edfe-40af-a991-973c5f4cfec8",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "cleanupBaseRatePerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "debrisPricing.light.disposalFlat": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "debrisPricing.moderate.disposalFlat": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "debrisPricing.heavy.disposalFlat": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumServiceCharge": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "haulAwayFee": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "3a7f8517-5335-4e43-9ec5-9cff1a20f297",
+        "operationId": "f569db3d-1cb0-4f38-b272-a40e7a4e143c",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "387ca6b23ef1fe995fe743fecebf35d75e737f40e710f54516d736f3fa46e8cd",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "36163b6872071f094ee00f56abae55964d8288142bebb2a04b57bb77068f427c",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "96685f0a60d101ce38fb60d0b3b73f63131f79df84eb6585c9870fea31e82344",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "11e1943ea3fd5d1c7bf23597a91d4e277483423df9cbb5cee3b470d22af8454a",
+          "service.service": "e65684cf83c2c7c71100a27e3355b43f9306e2afd8a0f79e4338cb3fb9ddc41f",
+          "service.serviceType": "99b7d0d0e5207987b06dde7bc21e26ee5dd79abd84a6b424eef78dafdabce192",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "86680c1b-b5a3-44b5-ba71-657b4fabcc9c",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "mulchType": {
+          "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+          "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+          "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+        }
+      },
+      "active": true,
+      "serviceType": "LANDSCAPING_MULCH",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MULCH",
+      "pricing": {
+        "mulchMaterialPerYard": {
+          "brown": 50
+        },
+        "mulchInstallLaborPerYard": 30,
+        "minimumServiceCharge": 0,
+        "bedPrepLaborPerSqft": {
+          "needs_weeding": 0.2,
+          "overgrown": 0.4
+        },
+        "edgingPerLinearFoot": 0.5,
+        "mulchOverageFactor": 1.15,
+        "accessMultiplier": {
+          "easy": 1,
+          "moderate": 1.1,
+          "difficult": 1.25
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "inputMethod": "sqft",
+        "mulchArea": 270,
+        "mulchDepth": 3,
+        "mulchType": "brown",
+        "bedCondition": "needs_weeding",
+        "bedSqft": 270,
+        "edgingNeeded": true,
+        "edgeLF": 100,
+        "confirmedFacts": {
+          "mulchType": {
+            "status": "identified",
+            "field": "mulchType",
+            "value": "brown",
+            "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+          }
+        },
+        "accessDifficulty": "easy"
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "86680c1b-b5a3-44b5-ba71-657b4fabcc9c",
+        "serviceType": "LANDSCAPING_MULCH",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "32591a5e-65a9-4cc6-a3ea-721ec2053b83",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "mulchMaterialPerYard.brown": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "mulchInstallLaborPerYard": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumServiceCharge": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "bedPrepLaborPerSqft.needs_weeding": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "bedPrepLaborPerSqft.overgrown": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "edgingPerLinearFoot": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "86680c1b-b5a3-44b5-ba71-657b4fabcc9c",
+        "operationId": "b4f85513-9fa3-439c-a109-fbddd7beff3e",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "eae60fc765d45af89823a6f7db52556818484159f490b4660970799f596dc1d6",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "d8bb5f54591193accd1e0c86a19f1c9a1d8f355f2d7b92527d0baaf332ec57d7",
+          "service.knownOfferings": "de9313c65beae442baa114b76a6c9d0225c8b08fef1126bcf4bd18f06c76f031",
+          "service.origin": "d43e0bd8e14d0f8061941a5232397caa6732b10fbf9e517beb7c683c0d4cd9f8",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "43da89579ca212d3f1587d9c882d0c7dafbbab3dd55d0c58d71d19d0651ad0e6",
+          "service.service": "e52f4610b28ce9d53f34ab322dc69f66cf94074642dd6993d2ace9835b5d9733",
+          "service.serviceType": "3e8d78048a512633212b3b17fd01cb0cbcffff6fb1e2d61fcbbc4592021a7014",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "3a0bb39b-8408-4826-b888-4ee72349b67f",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "LANDSCAPING_SOD",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_SOD",
+      "pricing": {
+        "sodMaterialPerSqft": 0.75,
+        "sodInstallLaborPerSqft": 1.25,
+        "minimumServiceCharge": 0,
+        "groundPrepPerSqft": 0.5,
+        "sodWasteFactor": 0.05,
+        "slopeMultiplier": {
+          "flat": 1,
+          "moderate": 1.15,
+          "steep": 1.35
+        },
+        "accessMultiplier": {
+          "easy": 1,
+          "moderate": 1.1,
+          "difficult": 1.25
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "slope": "flat",
+        "accessDifficulty": "easy"
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "3a0bb39b-8408-4826-b888-4ee72349b67f",
+        "serviceType": "LANDSCAPING_SOD",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "0042b538-eb68-4d85-a418-c2ee97716256",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "sodMaterialPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "sodInstallLaborPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumServiceCharge": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "groundPrepPerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "3a0bb39b-8408-4826-b888-4ee72349b67f",
+        "operationId": "bb7ac370-c35d-4cfb-9b29-9a36844602ac",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "60e14bc697b9b3d85c07d6eb7c3dcfc027e5dae53bb871d34727e830a41268cc",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "f8eb14d2f7ae0498ce2fbf698824e3fd087bc275840b1d35fccdeed1d526d627",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "12d5931faf3cb2b4b0048095d9eb25ecc88a5b2e4c85d1d61cc5ff3ae1958245",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "7e2a04830ca002b7c57e4702a7e743ff18524d5f72e05057ead805124ed69725",
+          "service.service": "001fe7e1d05cf25be26fac6a0d1446c561a00fa074622969dcdd754d6f841f60",
+          "service.serviceType": "8f5001ac40f7854470886c7c7eb703e8a76ff4bd3f39782b1461a3c73aa5079f",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "7246b788-25d9-46c4-b4d0-fcda4b077620",
+      "source": "MANUAL",
+      "knownOfferings": {
+        "mulchType": {
+          "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+          "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+          "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+        }
+      },
+      "active": true,
+      "serviceType": "LANDSCAPING_PLANTING",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_PLANTING",
+      "pricing": {
+        "plantingLaborPerPlant": {
+          "small": 10,
+          "medium": 20,
+          "large": 30
+        },
+        "plantMaterialAllowance": {
+          "small": 5,
+          "medium": 10,
+          "large": 15
+        },
+        "minimumServiceCharge": 0,
+        "bedPrepLaborPerSqft": {
+          "needs_weeding": 0.2,
+          "overgrown": 0.4
+        },
+        "mulchMaterialPerYard": {
+          "brown": 50
+        },
+        "mulchInstallLaborPerYard": 30,
+        "mulchOverageFactor": 1.15,
+        "accessMultiplier": {
+          "easy": 1,
+          "moderate": 1.1,
+          "difficult": 1.25
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "plantsBySize": {
+          "small": 2,
+          "medium": 1,
+          "large": 1
+        },
+        "bedCondition": "needs_weeding",
+        "bedSqft": 100,
+        "mulchNeeded": true,
+        "mulchYards": 2,
+        "mulchType": "brown",
+        "confirmedFacts": {
+          "mulchType": {
+            "status": "identified",
+            "field": "mulchType",
+            "value": "brown",
+            "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+          }
+        },
+        "accessDifficulty": "easy"
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "7246b788-25d9-46c4-b4d0-fcda4b077620",
+        "serviceType": "LANDSCAPING_PLANTING",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "7987bf45-9968-4a23-9bc9-429648bc5e2e",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "plantingLaborPerPlant.small": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "plantingLaborPerPlant.medium": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "plantingLaborPerPlant.large": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "plantMaterialAllowance.small": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "plantMaterialAllowance.medium": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "plantMaterialAllowance.large": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumServiceCharge": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "bedPrepLaborPerSqft.needs_weeding": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "bedPrepLaborPerSqft.overgrown": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "mulchMaterialPerYard.brown": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "mulchInstallLaborPerYard": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "7246b788-25d9-46c4-b4d0-fcda4b077620",
+        "operationId": "3e1ef02a-1ec2-45cf-8550-2eee6bcb6fc7",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "8f6670cdd5fb451785b6090e5c2e6b2c07f38c166f4ccb49dc300bfaa0817108",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "488de802810f8a4505c2e8bb651c8f4b159c0b026ddb799c76bd413b435aa705",
+          "service.knownOfferings": "de9313c65beae442baa114b76a6c9d0225c8b08fef1126bcf4bd18f06c76f031",
+          "service.origin": "6d84da39d6dafd7ab22747f6f4d844d0dbd66611359bf999b301a325f3f7ed67",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "f061551e899a72cd2eed8b4962f9cd09f1fa1526eebb31ec83b9ecbc876677f1",
+          "service.service": "cd823871e80c9b1925aab03511b69837d9e0fb27d630228e259733350b391a42",
+          "service.serviceType": "b4f53c26090b4393bfb1d03d65c6922d3972b322fabb0335454c4ddadd894917",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "b3db4b95-f685-4f6c-884e-a20bf17675db",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "LANDSCAPING_MOWING",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MOWING",
+      "pricing": {
+        "mowingBaseRatePerSqft": 0.02,
+        "minimumServiceCharge": 0,
+        "frequencyMultipliers": {
+          "weekly": 1,
+          "biweekly": 1.2,
+          "monthly": 1.5,
+          "one_time": 1.8
+        },
+        "overgrowthMultipliers": {
+          "maintained": 1,
+          "overgrown": 1.5,
+          "severe": 2
+        },
+        "baggingSurchargePercent": 10,
+        "edgingPerLinearFoot": 0.5
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "cost",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": true,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "yardSqft": 5000,
+        "sqftMethod": "exact",
+        "serviceFrequency": "weekly",
+        "grassCondition": "maintained",
+        "bagClippings": true,
+        "edgingIncluded": true,
+        "edgingLengthLF": 100
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "b3db4b95-f685-4f6c-884e-a20bf17675db",
+        "serviceType": "LANDSCAPING_MOWING",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "38c95e67-f0e4-43f1-b62a-758e155222a4",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "mowingBaseRatePerSqft": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumServiceCharge": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "edgingPerLinearFoot": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "b3db4b95-f685-4f6c-884e-a20bf17675db",
+        "operationId": "f9a51180-c2ab-450c-a725-db49fe9771d6",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "3c526bcea36cb29f714bf812f6c519e46c7eb2deb19c48d89855e1b514069e9b",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "f4ac5e4b372ad527a9dbef0a4534fff2616edaf217b90ba2244d031b1fe8b1b5",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "91ae9ca37d5c352db23d510d343f335796599188cd2c7c12eb9094f81da8cba1",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "222cdbc92d264979587c4e5a5405df83a066b7231477b1a4a5d820d140e59b10",
+          "service.pricing": "d3540f22ce5cafc4c18b7d882a6f7d61c20d89822a8224bc54aebc3ead681c95",
+          "service.service": "5e7b0e475563062c0121d77895b3f7bf08e6bb019437e2937dd753d7355de290",
+          "service.serviceType": "b81003ee0a3fbf40d1f71aa3a7484cbda29ad2038def4779e4f7d967f77b8626",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "c786e4a5f07e34e93f2b639026366d14a7c6e8cee67e431ead8a100d4b39293e",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "2fc354c4-2206-4918-b6e5-d41d8189428b",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "CUSTOM",
+      "service": "[SYNTHETIC PUBLIC INTAKE] CUSTOM",
+      "pricing": {
+        "customPricingMode": "fixed",
+        "customChargeClassification": "labor",
+        "price": 125,
+        "unit": "flat",
+        "minimumJob": 0
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "sell_price",
+        "material": "sell_price",
+        "removal": "sell_price",
+        "prep": "sell_price",
+        "addon": "sell_price",
+        "equipment": "sell_price",
+        "travel": "sell_price",
+        "disposal": "sell_price",
+        "permit": "sell_price",
+        "overhead": "sell_price",
+        "surcharge": "sell_price"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "service": "[SYNTHETIC PUBLIC INTAKE] CUSTOM",
+        "serviceConfirmed": true,
+        "unit": "flat"
+      },
+      "tiers": [],
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "2fc354c4-2206-4918-b6e5-d41d8189428b",
+        "serviceType": "CUSTOM",
+        "source": "MANUAL",
+        "ownerId": "synthetic-a",
+        "operationId": "aeabfce9-1f34-43fe-9fee-4a69d2ff5448",
+        "createdAt": "2026-10-31T12:00:00.000Z"
+      },
+      "priceMetadata": {
+        "price": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-31T12:00:00.000Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-a",
+        "serviceId": "2fc354c4-2206-4918-b6e5-d41d8189428b",
+        "operationId": "5e8f88e5-feef-4d41-ad15-34f58954167a",
+        "approvedAt": "2026-10-31T12:00:00.000Z",
+        "engineVersion": "quote-engine-vnext-accuracy-20261018-v11",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "61b837fc467fa59f30650c26dfce494c47b52f35cb25580ff4b9927e8c2df827",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "0c0623fe0f8ea93b31aa1b0d14c762e6dc7277bbc1b5f7fce131a328791f8c95",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "6ddf6cde56ee9d9f1757323340517aeb417d0362ca0ad5ba7be8ec452e1509bb",
+          "service.peakMonths": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "service.peakSurchargePercent": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+          "service.priceBasisByCategory": "62d7595cb8aabebe47c5bdcb06bfb0dbd8540955c65c6b9ff5885d9d2c9ef37b",
+          "service.pricing": "1cf541b0e444e8c5139a231466be3237a4f7361e1b9b50347ba54cee73fa5989",
+          "service.service": "5cb96cdad684f26d127142ac0fba15f6995cf647841082beab45d705a2e48f7d",
+          "service.serviceType": "4fd1d1325b47f5c42cf722479e32927e8ca4ceca606759261ee6917b7931a25f",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "3ae87e6196572d0812b0e9dc2896bfa67e55f7a65e5e9bac3d6d2eb458474540",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "0c82d6b1d8ca914b8845199467f32f0f3aebc3c2b71d67ebaee1658a74dd1a7e",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    }
+  ],
+  "defaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+      "labor": true,
+      "material": true,
+      "removal": true,
+      "prep": true,
+      "addon": true,
+      "equipment": true,
+      "travel": true,
+      "disposal": true,
+      "permit": true,
+      "overhead": true,
+      "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "currency": "CAD",
+    "quoteTimeZone": "UTC"
+  },
+  "updatedAt": "2026-10-31T12:00:00.000Z",
+  "revision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+  "quoteDoneVersion": "quote-engine-vnext-accuracy-20261018-v11"
+}

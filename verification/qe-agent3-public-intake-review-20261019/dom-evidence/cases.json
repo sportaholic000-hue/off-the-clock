@@ -1,0 +1,397 @@
+[
+  {
+    "id": "D01",
+    "serviceType": "FENCING_INSTALL",
+    "pattern": "decimal inches to decimal feet",
+    "before": {
+      "linearFeet": 100,
+      "lfMethod": "exact",
+      "fenceType": "wood",
+      "fenceHeight": 6,
+      "terrainSlope": "flat",
+      "gates": {
+        "walk": 2
+      },
+      "cornerCount": 0,
+      "confirmedFacts": {
+        "fenceType": {
+          "status": "identified",
+          "field": "fenceType",
+          "value": "wood",
+          "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      }
+    },
+    "after": {
+      "linearFeet": 100,
+      "lfMethod": "exact",
+      "fenceType": "wood",
+      "fenceHeight": 5.304166666666666,
+      "terrainSlope": "flat",
+      "gates": {
+        "walk": 2
+      },
+      "cornerCount": 0,
+      "confirmedFacts": {
+        "fenceType": {
+          "status": "identified",
+          "field": "fenceType",
+          "value": "wood",
+          "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      }
+    },
+    "expected": {
+      "fenceHeight": 5.304166666666666
+    }
+  },
+  {
+    "id": "D02",
+    "serviceType": "FENCING_INSTALL",
+    "pattern": "total-to-section hidden fields cleared",
+    "before": {
+      "linearFeet": 100,
+      "lfMethod": "exact",
+      "fenceType": "wood",
+      "fenceHeight": 6,
+      "terrainSlope": "flat",
+      "gates": {
+        "walk": 2
+      },
+      "cornerCount": 0,
+      "confirmedFacts": {
+        "fenceType": {
+          "status": "identified",
+          "field": "fenceType",
+          "value": "wood",
+          "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      }
+    },
+    "after": {
+      "fenceType": "wood",
+      "fenceHeight": 6,
+      "terrainSlope": "flat",
+      "confirmedFacts": {
+        "fenceType": {
+          "status": "identified",
+          "field": "fenceType",
+          "value": "wood",
+          "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      }
+    },
+    "expected": {
+      "omitted": [
+        "linearFeet",
+        "gates",
+        "cornerCount",
+        "lfMethod",
+        "fenceRuns"
+      ]
+    }
+  },
+  {
+    "id": "D03",
+    "serviceType": "ROOFING_REPAIR",
+    "pattern": "edited product clears only its receipt",
+    "before": {
+      "repairType": "shingle_patch",
+      "affectedArea": 100,
+      "roofType": "asphalt_shingle",
+      "pitch": "medium",
+      "stories": 2,
+      "leakPresent": false,
+      "confirmedFacts": {
+        "repairType": {
+          "status": "identified",
+          "field": "repairType",
+          "value": "shingle_patch",
+          "offeringId": "9bffec17-54f8-4b64-8937-31eb3efd3074"
+        },
+        "roofType": {
+          "status": "identified",
+          "field": "roofType",
+          "value": "asphalt_shingle",
+          "offeringId": "ac9274cf-c482-4c2b-896f-96243baf41fc"
+        }
+      }
+    },
+    "after": {
+      "repairType": "Shingle patch revised",
+      "affectedArea": 100,
+      "roofType": "asphalt_shingle",
+      "pitch": "medium",
+      "stories": 2,
+      "leakPresent": false,
+      "confirmedFacts": {
+        "roofType": {
+          "status": "identified",
+          "field": "roofType",
+          "value": "asphalt_shingle",
+          "offeringId": "ac9274cf-c482-4c2b-896f-96243baf41fc"
+        }
+      }
+    },
+    "expected": {
+      "repairTypeConfirmation": "omitted",
+      "roofTypeConfirmation": "retained"
+    }
+  },
+  {
+    "id": "D04",
+    "serviceType": "LANDSCAPING_MULCH",
+    "pattern": "area-to-volume hidden dependency",
+    "before": {
+      "inputMethod": "sqft",
+      "mulchArea": 270,
+      "mulchDepth": 3,
+      "mulchType": "brown",
+      "bedCondition": "needs_weeding",
+      "bedSqft": 270,
+      "edgingNeeded": true,
+      "edgeLF": 100,
+      "confirmedFacts": {
+        "mulchType": {
+          "status": "identified",
+          "field": "mulchType",
+          "value": "brown",
+          "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+        }
+      },
+      "accessDifficulty": "easy"
+    },
+    "after": {
+      "inputMethod": "yards",
+      "mulchDepth": 3,
+      "mulchType": "brown",
+      "bedCondition": "needs_weeding",
+      "bedSqft": 270,
+      "edgingNeeded": true,
+      "edgeLF": 100,
+      "confirmedFacts": {
+        "mulchType": {
+          "status": "identified",
+          "field": "mulchType",
+          "value": "brown",
+          "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+        }
+      },
+      "accessDifficulty": "easy",
+      "mulchArea": 2.75
+    },
+    "expected": {
+      "omitted": [
+        "mulchDepth"
+      ]
+    }
+  },
+  {
+    "id": "D05",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "pattern": "dimension-method hidden dependency",
+    "before": {
+      "dimensionMethod": "exact",
+      "length": 50,
+      "width": 10,
+      "thickness": 4,
+      "finishType": "broom",
+      "demolitionNeeded": false,
+      "reinforcement": "wire_mesh",
+      "accessDifficulty": "easy",
+      "baseNeeded": true,
+      "adjoinsExistingConcrete": false
+    },
+    "after": {
+      "dimensionMethod": "measured_area_perimeter",
+      "length": 50,
+      "width": 10,
+      "thickness": 4,
+      "finishType": "broom",
+      "demolitionNeeded": false,
+      "reinforcement": "wire_mesh",
+      "accessDifficulty": "easy",
+      "baseNeeded": true,
+      "adjoinsExistingConcrete": false,
+      "areaSqft": 500,
+      "perimeterLF": 120
+    },
+    "expected": {
+      "omitted": [
+        "length",
+        "width"
+      ]
+    }
+  },
+  {
+    "id": "D06",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "pattern": "subfloor-no hidden dependency",
+    "before": {
+      "sqft": 300,
+      "sqftMethod": "exact",
+      "newFlooringType": "tile",
+      "existingFloorType": "vinyl",
+      "removalNeeded": true,
+      "removalAreaSqft": 300,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "stairSteps": 0,
+      "subfloorIssues": true,
+      "subfloorRepairAreaSqft": 30,
+      "confirmedFacts": {
+        "existingFloorType": {
+          "status": "identified",
+          "field": "existingFloorType",
+          "value": "vinyl",
+          "offeringId": "abbf1922-55c6-4b4a-8407-d29217687935"
+        }
+      }
+    },
+    "after": {
+      "sqft": 300,
+      "sqftMethod": "exact",
+      "newFlooringType": "tile",
+      "existingFloorType": "vinyl",
+      "removalNeeded": true,
+      "removalAreaSqft": 300,
+      "roomCount": 2,
+      "layoutPattern": "straight",
+      "stairSteps": 0,
+      "subfloorIssues": false,
+      "subfloorRepairAreaSqft": 30,
+      "confirmedFacts": {
+        "existingFloorType": {
+          "status": "identified",
+          "field": "existingFloorType",
+          "value": "vinyl",
+          "offeringId": "abbf1922-55c6-4b4a-8407-d29217687935"
+        }
+      }
+    },
+    "expected": {
+      "omitted": [
+        "subfloorRepairAreaSqft"
+      ]
+    }
+  },
+  {
+    "id": "D07",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "pattern": "mulch removal hidden dependency",
+    "before": {
+      "plantsBySize": {
+        "small": 2,
+        "medium": 1,
+        "large": 1
+      },
+      "bedCondition": "needs_weeding",
+      "bedSqft": 100,
+      "mulchNeeded": true,
+      "mulchYards": 2,
+      "mulchType": "brown",
+      "confirmedFacts": {
+        "mulchType": {
+          "status": "identified",
+          "field": "mulchType",
+          "value": "brown",
+          "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+        }
+      },
+      "accessDifficulty": "easy"
+    },
+    "after": {
+      "plantsBySize": {
+        "small": 2,
+        "medium": 1,
+        "large": 1
+      },
+      "bedCondition": "needs_weeding",
+      "bedSqft": 100,
+      "mulchNeeded": false,
+      "mulchYards": 2,
+      "mulchType": "brown",
+      "confirmedFacts": {
+        "mulchType": {
+          "status": "identified",
+          "field": "mulchType",
+          "value": "brown",
+          "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+        }
+      },
+      "accessDifficulty": "easy"
+    },
+    "expected": {
+      "omitted": [
+        "mulchYards",
+        "mulchType"
+      ],
+      "confirmation": "mulchType omitted"
+    }
+  },
+  {
+    "id": "D08",
+    "serviceType": "LANDSCAPING_MOWING",
+    "pattern": "edging-no hidden dependency",
+    "before": {
+      "yardSqft": 5000,
+      "sqftMethod": "exact",
+      "serviceFrequency": "weekly",
+      "grassCondition": "maintained",
+      "bagClippings": true,
+      "edgingIncluded": true,
+      "edgingLengthLF": 100
+    },
+    "after": {
+      "yardSqft": 5000,
+      "sqftMethod": "exact",
+      "serviceFrequency": "weekly",
+      "grassCondition": "maintained",
+      "bagClippings": true,
+      "edgingIncluded": false,
+      "edgingLengthLF": 100
+    },
+    "expected": {
+      "omitted": [
+        "edgingLengthLF"
+      ]
+    }
+  },
+  {
+    "id": "D09",
+    "serviceType": "LANDSCAPING_MOWING",
+    "pattern": "omitted versus explicit zero",
+    "before": {
+      "yardSqft": 5000,
+      "sqftMethod": "exact",
+      "serviceFrequency": "weekly",
+      "grassCondition": "maintained",
+      "bagClippings": true,
+      "edgingIncluded": true,
+      "edgingLengthLF": 100
+    },
+    "after": {
+      "omitted": {
+        "sqftMethod": "exact",
+        "serviceFrequency": "weekly",
+        "grassCondition": "maintained",
+        "bagClippings": true,
+        "edgingIncluded": true,
+        "edgingLengthLF": 100
+      },
+      "zero": {
+        "yardSqft": 0,
+        "sqftMethod": "exact",
+        "serviceFrequency": "weekly",
+        "grassCondition": "maintained",
+        "bagClippings": true,
+        "edgingIncluded": true,
+        "edgingLengthLF": 100
+      }
+    },
+    "expected": {
+      "omitted": "property absent",
+      "zero": 0
+    }
+  }
+]

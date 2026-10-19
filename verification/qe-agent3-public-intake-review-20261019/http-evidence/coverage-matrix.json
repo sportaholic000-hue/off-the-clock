@@ -1,0 +1,1955 @@
+[
+  {
+    "serviceType": "ROOFING_REPLACEMENT",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "0fbe2f24-a0c7-4e03-af39-8cf6092ac2f4",
+      "expectedCents": 244600,
+      "actualMid": [
+        2446
+      ],
+      "normalized": {
+        "roofSizeMethod": "roof_measured",
+        "roofSizeInput": 1000,
+        "existingRoofType": "asphalt_shingle",
+        "replacementRoofType": "asphalt_shingle",
+        "stories": 1,
+        "existingLayers": 1,
+        "roofComplexity": "simple",
+        "serviceScope": "full",
+        "starterLengthLF": 100,
+        "dripEdgeLengthLF": 100,
+        "ridgeCapLengthLF": 20,
+        "deckingSheets": 2,
+        "confirmedFacts": {
+          "existingRoofType": {
+            "status": "identified",
+            "field": "existingRoofType",
+            "value": "asphalt_shingle",
+            "offeringId": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b"
+          },
+          "replacementRoofType": {
+            "status": "identified",
+            "field": "replacementRoofType",
+            "value": "asphalt_shingle",
+            "offeringId": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445"
+          }
+        },
+        "pitchMethod": "whole_roof",
+        "pitchBand": "up_to_six"
+      }
+    },
+    "correction": {
+      "kind": "stale_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "ready",
+      "prepare": {
+        "status": "ready",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPLACEMENT",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPLACEMENT",
+          "facts": [
+            {
+              "label": "Roof area method",
+              "value": "Measured roof area"
+            },
+            {
+              "label": "Measured roof surface area or footprint including overhangs",
+              "value": "1000.5 square feet"
+            },
+            {
+              "label": "Existing roofing material",
+              "value": "Asphalt shingle"
+            },
+            {
+              "label": "Replacement roofing material",
+              "value": "Asphalt shingle"
+            },
+            {
+              "label": "Building stories",
+              "value": "1"
+            },
+            {
+              "label": "Measured existing roof layers",
+              "value": "1 layers"
+            },
+            {
+              "label": "Roof shape",
+              "value": "Simple — a gable roof"
+            },
+            {
+              "label": "Replacement scope",
+              "value": "Full"
+            },
+            {
+              "label": "Starter along all eaves and rakes",
+              "value": "100 linear feet"
+            },
+            {
+              "label": "Drip edge along all eaves and rakes",
+              "value": "100 linear feet"
+            },
+            {
+              "label": "Hip-and-ridge cap along all ridges and hips",
+              "value": "20 linear feet"
+            },
+            {
+              "label": "Confirmed decking sheets to replace",
+              "value": "2 sheets"
+            },
+            {
+              "label": "How the roof pitch is supplied",
+              "value": "Whole roof"
+            },
+            {
+              "label": "Rise per 12 for the whole roof",
+              "value": "Up to 6/12 — walkable roof"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-roofing-replacement@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "2f431ce43be696def76dd7e5e45b56dfda57e025b5fbe6812e04d01cd44e5da1"
+        },
+        "confirmation": {
+          "version": "job-details-v1",
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "4b2e1d92e08262baf1a2bce4525fc45d10dd3758e58adcb69d236a536465311b"
+        }
+      },
+      "correctedRequestId": "1cf2746b-a4e4-4e86-becd-de74aee7fa58",
+      "correctedMid": [
+        2446.98
+      ]
+    }
+  },
+  {
+    "serviceType": "ROOFING_REPAIR",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "02e78b28-9bdc-487a-be89-d21110b18e2d",
+      "expectedCents": 58600,
+      "actualMid": [
+        586
+      ],
+      "normalized": {
+        "repairType": "shingle_patch",
+        "affectedArea": 100,
+        "roofType": "asphalt_shingle",
+        "pitch": "medium",
+        "stories": 2,
+        "leakPresent": false,
+        "confirmedFacts": {
+          "repairType": {
+            "status": "identified",
+            "field": "repairType",
+            "value": "shingle_patch",
+            "offeringId": "9bffec17-54f8-4b64-8937-31eb3efd3074"
+          },
+          "roofType": {
+            "status": "identified",
+            "field": "roofType",
+            "value": "asphalt_shingle",
+            "offeringId": "ac9274cf-c482-4c2b-896f-96243baf41fc"
+          }
+        }
+      }
+    },
+    "correction": {
+      "kind": "stale_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "ready",
+      "prepare": {
+        "status": "ready",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPAIR",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPAIR",
+          "facts": [
+            {
+              "label": "Roof repair type",
+              "value": "Shingle patch"
+            },
+            {
+              "label": "Measured affected roof area",
+              "value": "100.5 square feet"
+            },
+            {
+              "label": "Roofing material",
+              "value": "Asphalt shingle"
+            },
+            {
+              "label": "Roof pitch",
+              "value": "Medium"
+            },
+            {
+              "label": "Building stories",
+              "value": "2"
+            },
+            {
+              "label": "Active leak reported",
+              "value": "No"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-roofing-repair@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "1b89ddf155fcf492ff660fabfbea6fe864916330fbe7594ff0e85b26ef98cf0c"
+        },
+        "confirmation": {
+          "version": "job-details-v1",
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "96f7cd0d743d236c04fde251c9c4931592db6e35947f9a8b421f7fae871c1ecc"
+        }
+      },
+      "correctedRequestId": "7a45ed29-949d-4990-8b54-04c7a97e600a",
+      "correctedMid": [
+        586
+      ]
+    }
+  },
+  {
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "35ba46f0-6bb0-4dea-a5a5-c880720c48a7",
+      "expectedCents": 1805000,
+      "actualMid": [
+        18050
+      ],
+      "normalized": {
+        "roofSqft": 1000,
+        "sqftMethod": "exact",
+        "membraneType": "epdm",
+        "replacementMembraneType": "epdm",
+        "existingLayers": 2,
+        "accessDifficulty": "moderate",
+        "serviceScope": "full",
+        "buildingType": "residential",
+        "confirmedFacts": {
+          "membraneType": {
+            "status": "identified",
+            "field": "membraneType",
+            "value": "epdm",
+            "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+          },
+          "replacementMembraneType": {
+            "status": "identified",
+            "field": "replacementMembraneType",
+            "value": "epdm",
+            "offeringId": "13282f23-a404-4615-8a9e-c4f259c2e3fa"
+          }
+        },
+        "insulationNeeded": false,
+        "coverboardNeeded": false
+      }
+    },
+    "correction": {
+      "kind": "invalid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPLACEMENT",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPLACEMENT",
+          "facts": [
+            {
+              "label": "Measured flat-roof area",
+              "value": "1000 square feet"
+            },
+            {
+              "label": "Roof measurement method",
+              "value": "Measured area"
+            },
+            {
+              "label": "Existing membrane type",
+              "value": "Epdm"
+            },
+            {
+              "label": "Replacement membrane type",
+              "value": "Epdm"
+            },
+            {
+              "label": "Measured existing membrane layers",
+              "value": "2 layers"
+            },
+            {
+              "label": "Roof access",
+              "value": "Moderate"
+            },
+            {
+              "label": "Replacement scope",
+              "value": "Partial"
+            },
+            {
+              "label": "buildingType",
+              "value": "residential"
+            },
+            {
+              "label": "New insulation needed",
+              "value": "No"
+            },
+            {
+              "label": "New coverboard needed",
+              "value": "No"
+            },
+            {
+              "label": "Measured affected roof area",
+              "value": "0 square feet"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-flat-roof-replacement@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured affected roof area."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "99a2557734aea152be67ac895f8def58da2c7f67a3339cbd00cb386d43a94559"
+        }
+      }
+    }
+  },
+  {
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "025a0a6f-c07a-4c17-b8ab-29c95854c6fb",
+      "expectedCents": 36000,
+      "actualMid": [
+        360
+      ],
+      "normalized": {
+        "repairType": "seam_patch",
+        "affectedArea": 10,
+        "membraneType": "epdm",
+        "leakPresent": false,
+        "pondingWater": false,
+        "confirmedFacts": {
+          "repairType": {
+            "status": "identified",
+            "field": "repairType",
+            "value": "seam_patch",
+            "offeringId": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85"
+          },
+          "membraneType": {
+            "status": "identified",
+            "field": "membraneType",
+            "value": "epdm",
+            "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+          }
+        },
+        "accessDifficulty": "easy"
+      }
+    },
+    "correction": {
+      "kind": "stale_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "ready",
+      "prepare": {
+        "status": "ready",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPAIR",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPAIR",
+          "facts": [
+            {
+              "label": "Flat-roof repair type",
+              "value": "Seam patch"
+            },
+            {
+              "label": "Measured affected flat-roof area",
+              "value": "10 square feet"
+            },
+            {
+              "label": "Membrane type",
+              "value": "Epdm"
+            },
+            {
+              "label": "Active leak reported",
+              "value": "No"
+            },
+            {
+              "label": "Ponding water reported",
+              "value": "Yes"
+            },
+            {
+              "label": "Project access",
+              "value": "Easy"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-flat-roof-repair@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "c73f2969799ebba60e0bc9441dc0f138f1ab40950551e181b120064f20217d9b"
+        },
+        "confirmation": {
+          "version": "job-details-v1",
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "656cc862dd971a4cec61889331105f6811275afb8bb03d4cb6031510d2506ac6"
+        }
+      },
+      "correctedRequestId": "5593d6a9-6c84-403d-8ccc-91eeeca888b2",
+      "correctedMid": [
+        360
+      ]
+    }
+  },
+  {
+    "serviceType": "INTERIOR_PAINTING",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "d9a6e4c7-0191-4a63-a3cc-b8c676170354",
+      "expectedCents": 300000,
+      "actualMid": [
+        3000
+      ],
+      "normalized": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 500,
+        "coats": 2,
+        "surfaceCondition": "fair",
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      }
+    },
+    "correction": {
+      "kind": "invalid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] INTERIOR_PAINTING",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] INTERIOR_PAINTING",
+          "facts": [
+            {
+              "label": "Wall area measurement method",
+              "value": "Enter wall area directly",
+              "details": [
+                "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area.",
+                "Room dimensions assume a rectangular room, one wall height and a flat ceiling. For sloped ceilings, irregular rooms or walls with different heights, enter the measured wall and ceiling surface areas directly."
+              ]
+            },
+            {
+              "label": "Measured paintable wall area",
+              "value": "500 square feet",
+              "details": [
+                "If you supply opening counts or areas, enter wall area before subtracting those openings. Without opening inputs, your existing directly entered area is used unchanged."
+              ]
+            },
+            {
+              "label": "Wall finish coats",
+              "value": "2 coats"
+            },
+            {
+              "label": "Wall surface condition",
+              "value": "Fair"
+            },
+            {
+              "label": "Wall height",
+              "value": "Standard"
+            },
+            {
+              "label": "All wall area shares the confirmed height, access, and finish-coat count",
+              "value": "Yes"
+            },
+            {
+              "label": "Ceiling painting included",
+              "value": "No"
+            },
+            {
+              "label": "Trim painting included",
+              "value": "No"
+            },
+            {
+              "label": "Measured ceiling area",
+              "value": "200 square feet"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-interior-painting@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured ceiling area."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "6982932925ffb0c38c0b7abe56507481329e6fe8072b4c395e0d4dc4ca580c5b"
+        }
+      }
+    }
+  },
+  {
+    "serviceType": "EXTERIOR_PAINTING",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "c9c652cc-681a-4660-a3d1-b1a3225f7858",
+      "expectedCents": 318000,
+      "actualMid": [
+        3180
+      ],
+      "normalized": {
+        "areaInputMethod": "wall_sqft",
+        "exteriorAreaSqft": 500,
+        "coats": 2,
+        "surfaceCondition": "fair",
+        "stories": 2
+      }
+    },
+    "correction": {
+      "kind": "stale_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "ready",
+      "prepare": {
+        "status": "ready",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] EXTERIOR_PAINTING",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] EXTERIOR_PAINTING",
+          "facts": [
+            {
+              "label": "Wall area measurement method",
+              "value": "Enter wall area directly",
+              "details": [
+                "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area."
+              ]
+            },
+            {
+              "label": "Measured paintable wall area",
+              "value": "500.5 square feet",
+              "details": [
+                "If you supply opening counts or areas, enter wall area before subtracting those openings. Without opening inputs, your existing directly entered area is used unchanged."
+              ]
+            },
+            {
+              "label": "Wall finish coats",
+              "value": "2 coats"
+            },
+            {
+              "label": "Wall surface condition",
+              "value": "Fair"
+            },
+            {
+              "label": "Building stories",
+              "value": "2"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-exterior-painting@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "4705622168be8d9f62a930883c7760785d046ff8a99d43a5394a71491477c3a2"
+        },
+        "confirmation": {
+          "version": "job-details-v1",
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "a312629bf88813dbfab5650c08bf9c9a8a1546540001f1207091c88971f16500"
+        }
+      },
+      "correctedRequestId": "1b1fa4a6-a8ff-4c2b-8ab0-f3a17c81001f",
+      "correctedMid": [
+        3183.18
+      ]
+    }
+  },
+  {
+    "serviceType": "FLOORING_INSTALL",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "7bece93d-9cbd-40bf-ad02-d2e0103f967b",
+      "expectedCents": 260670,
+      "actualMid": [
+        2606.7
+      ],
+      "normalized": {
+        "sqft": 300,
+        "sqftMethod": "exact",
+        "newFlooringType": "vinyl_plank",
+        "existingFloorType": "none",
+        "removalNeeded": false,
+        "roomCount": 1,
+        "layoutPattern": "straight",
+        "stairSteps": 0
+      }
+    },
+    "correction": {
+      "kind": "invalid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] FLOORING_INSTALL",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] FLOORING_INSTALL",
+          "facts": [
+            {
+              "label": "Measured flooring area",
+              "value": "300 square feet"
+            },
+            {
+              "label": "Floor measurement method",
+              "value": "Measured area"
+            },
+            {
+              "label": "New flooring type",
+              "value": "Vinyl plank"
+            },
+            {
+              "label": "Existing floor type",
+              "value": "None"
+            },
+            {
+              "label": "Existing floor removal included",
+              "value": "No"
+            },
+            {
+              "label": "Rooms in scope",
+              "value": "1 rooms"
+            },
+            {
+              "label": "Flooring layout",
+              "value": "Straight"
+            },
+            {
+              "label": "Stair steps in scope",
+              "value": "0 steps"
+            },
+            {
+              "label": "Measured existing flooring removal area",
+              "value": "25 square feet"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-flooring-install@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured existing flooring removal area."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "b920790bc7d8f9cd65e030b9773a79f2fefe6fcbf8ecc2c05bb62703e8248370"
+        }
+      }
+    }
+  },
+  {
+    "serviceType": "FLOORING_REPLACEMENT",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "5a86f987-c083-4ce2-b011-5690cc43e5b2",
+      "expectedCents": 311280,
+      "actualMid": [
+        3112.8
+      ],
+      "normalized": {
+        "sqft": 300,
+        "sqftMethod": "exact",
+        "newFlooringType": "tile",
+        "existingFloorType": "vinyl",
+        "removalNeeded": true,
+        "removalAreaSqft": 300,
+        "roomCount": 2,
+        "layoutPattern": "straight",
+        "stairSteps": 0,
+        "subfloorIssues": true,
+        "subfloorRepairAreaSqft": 30,
+        "confirmedFacts": {
+          "existingFloorType": {
+            "status": "identified",
+            "field": "existingFloorType",
+            "value": "vinyl",
+            "offeringId": "abbf1922-55c6-4b4a-8407-d29217687935"
+          }
+        }
+      }
+    },
+    "correction": {
+      "kind": "invalid_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] FLOORING_REPLACEMENT",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] FLOORING_REPLACEMENT",
+          "facts": [
+            {
+              "label": "Measured flooring area",
+              "value": "300 square feet"
+            },
+            {
+              "label": "Floor measurement method",
+              "value": "Measured area"
+            },
+            {
+              "label": "New flooring type",
+              "value": "Tile"
+            },
+            {
+              "label": "Existing floor type",
+              "value": "Vinyl"
+            },
+            {
+              "label": "Existing floor removal included",
+              "value": "Yes"
+            },
+            {
+              "label": "Measured existing flooring removal area",
+              "value": "300 square feet"
+            },
+            {
+              "label": "Rooms in scope",
+              "value": "2 rooms"
+            },
+            {
+              "label": "Flooring layout",
+              "value": "Straight"
+            },
+            {
+              "label": "Stair steps in scope",
+              "value": "0 steps"
+            },
+            {
+              "label": "Subfloor issues reported",
+              "value": "No"
+            },
+            {
+              "label": "Measured subfloor repair area",
+              "value": "30 square feet"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-flooring-replacement@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured subfloor repair area."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "5c7a29b9459e88be3614a15cdcdb3c4671a06a33784ab027197a699a44c1fab5"
+        }
+      },
+      "correctedRequestId": "c2e75f33-aef3-4628-8f2f-8e6b7d07085b",
+      "correctedMid": [
+        3052.8
+      ]
+    }
+  },
+  {
+    "serviceType": "FENCING_INSTALL",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "4a4f0352-ef99-4cc7-8dd7-2c921312f865",
+      "expectedCents": 450000,
+      "actualMid": [
+        4500
+      ],
+      "normalized": {
+        "linearFeet": 100,
+        "lfMethod": "exact",
+        "fenceType": "wood",
+        "fenceHeight": 6,
+        "terrainSlope": "flat",
+        "gates": {
+          "walk": 2
+        },
+        "cornerCount": 0,
+        "confirmedFacts": {
+          "fenceType": {
+            "status": "identified",
+            "field": "fenceType",
+            "value": "wood",
+            "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        }
+      }
+    },
+    "correction": {
+      "kind": "invalid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] FENCING_INSTALL",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] FENCING_INSTALL",
+          "facts": [
+            {
+              "label": "Measured fence length excluding gate openings",
+              "value": "100 linear feet"
+            },
+            {
+              "label": "Fence type",
+              "value": "Wood"
+            },
+            {
+              "label": "Fence height",
+              "value": "5 ft 3.65 in"
+            },
+            {
+              "label": "Terrain slope",
+              "value": "Flat"
+            },
+            {
+              "label": "Gates by measured opening width",
+              "value": "2 × walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+            },
+            {
+              "label": "Fence corners",
+              "value": "0 corners"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-fencing-install@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Fence height."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "7a88c3809fef8f53b0df07357a702ba35941c8293c94ade1b2de94ba0f57297f"
+        }
+      }
+    }
+  },
+  {
+    "serviceType": "FENCING_REPLACEMENT",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "4630a203-f318-4f01-bdcd-375baeb87306",
+      "expectedCents": 490000,
+      "actualMid": [
+        4900
+      ],
+      "normalized": {
+        "linearFeet": 100,
+        "lfMethod": "exact",
+        "fenceType": "wood",
+        "fenceHeight": 6,
+        "terrainSlope": "flat",
+        "gates": {
+          "walk": 2
+        },
+        "cornerCount": 0,
+        "oldFenceRemoval": true,
+        "removalLengthLF": 50,
+        "confirmedFacts": {
+          "fenceType": {
+            "status": "identified",
+            "field": "fenceType",
+            "value": "wood",
+            "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        }
+      }
+    },
+    "correction": {
+      "kind": "invalid_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] FENCING_REPLACEMENT",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] FENCING_REPLACEMENT",
+          "facts": [
+            {
+              "label": "Measured fence length excluding gate openings",
+              "value": "100 linear feet"
+            },
+            {
+              "label": "Fence type",
+              "value": "Wood"
+            },
+            {
+              "label": "Fence height",
+              "value": "6 ft"
+            },
+            {
+              "label": "Terrain slope",
+              "value": "Flat"
+            },
+            {
+              "label": "Gates by measured opening width",
+              "value": "2 × walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+            },
+            {
+              "label": "Fence corners",
+              "value": "0 corners"
+            },
+            {
+              "label": "Old fence removal included",
+              "value": "No"
+            },
+            {
+              "label": "Measured old fence length to remove",
+              "value": "50 linear feet"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-fencing-replacement@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured old fence length to remove."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "0eb3a76daec947c60ef48372e4331760880ea41a358611c05e8fbd292505823d"
+        }
+      },
+      "correctedRequestId": "978b3c73-8e08-4890-8393-1f1af9e8b633",
+      "correctedMid": [
+        4500
+      ]
+    }
+  },
+  {
+    "serviceType": "SIDING_REPLACEMENT",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "cfd15800-d786-45a7-9009-02f8e2c10c81",
+      "expectedCents": 1170000,
+      "actualMid": [
+        11700
+      ],
+      "normalized": {
+        "areaInputMethod": "sqft",
+        "sidingAreaSqft": 1000,
+        "sidingType": "vinyl",
+        "stories": 1,
+        "oldSidingRemoval": false,
+        "trimIncluded": false
+      }
+    },
+    "correction": {
+      "kind": "invalid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPLACEMENT",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPLACEMENT",
+          "facts": [
+            {
+              "label": "Siding area measurement method",
+              "value": "Enter siding wall area directly",
+              "details": [
+                "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area."
+              ]
+            },
+            {
+              "label": "Measured siding wall area",
+              "value": "1000 square feet",
+              "details": [
+                "Use the convention saved for the selected siding rate. Gable triangles entered separately are added once."
+              ]
+            },
+            {
+              "label": "Siding type",
+              "value": "Vinyl"
+            },
+            {
+              "label": "Building stories",
+              "value": "1"
+            },
+            {
+              "label": "Old siding removal included",
+              "value": "No"
+            },
+            {
+              "label": "Siding trim included",
+              "value": "No"
+            },
+            {
+              "label": "Measured siding trim length",
+              "value": "20 linear feet"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-siding-replacement@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured siding trim length."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "27ff3cb80c9f7c97fcc921bb8b1166b283bbab890c71a5a7d9652847a2d77c74"
+        }
+      }
+    }
+  },
+  {
+    "serviceType": "SIDING_REPAIR",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "2fe9227a-effa-4da0-8d92-136893d78697",
+      "expectedCents": 54000,
+      "actualMid": [
+        540
+      ],
+      "normalized": {
+        "sidingType": "vinyl",
+        "damageLevel": "minor",
+        "affectedArea": 50,
+        "stories": 2,
+        "confirmedFacts": {
+          "damageLevel": {
+            "status": "identified",
+            "field": "damageLevel",
+            "value": "minor",
+            "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+          }
+        }
+      }
+    },
+    "correction": {
+      "kind": "stale_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "ready",
+      "prepare": {
+        "status": "ready",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPAIR",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPAIR",
+          "facts": [
+            {
+              "label": "Siding type",
+              "value": "Vinyl"
+            },
+            {
+              "label": "Siding damage type",
+              "value": "Minor"
+            },
+            {
+              "label": "Measured affected siding area",
+              "value": "50.25 square feet"
+            },
+            {
+              "label": "Building stories",
+              "value": "2"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-siding-repair@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "19bf5cdf93b7a1a1e4740dbce473be17b0cb9ad88709a9ca8f097d1bb6ed077e"
+        },
+        "confirmation": {
+          "version": "job-details-v1",
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "34200f984f5bcecb32bfb8dc91a0e08af4b6bb0ea889106c0cff68849941bb4d"
+        }
+      },
+      "correctedRequestId": "b06f1eca-8b70-467b-8299-09d96a0c4fdb",
+      "correctedMid": [
+        540
+      ]
+    }
+  },
+  {
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "15fc6aad-cb9b-49ff-bb64-7d063687371c",
+      "expectedCents": 892222,
+      "actualMid": [
+        8922.22
+      ],
+      "normalized": {
+        "dimensionMethod": "exact",
+        "length": 50,
+        "width": 10,
+        "thickness": 4,
+        "finishType": "broom",
+        "demolitionNeeded": false,
+        "reinforcement": "wire_mesh",
+        "accessDifficulty": "easy",
+        "baseNeeded": true,
+        "adjoinsExistingConcrete": false
+      }
+    },
+    "correction": {
+      "kind": "invalid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_DRIVEWAY",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_DRIVEWAY",
+          "facts": [
+            {
+              "label": "Slab measurement method",
+              "value": "Measured outline"
+            },
+            {
+              "label": "Measured slab length",
+              "value": "50 feet"
+            },
+            {
+              "label": "Measured slab width",
+              "value": "10 feet"
+            },
+            {
+              "label": "Concrete thickness",
+              "value": "4 inches"
+            },
+            {
+              "label": "Concrete finish",
+              "value": "Broom"
+            },
+            {
+              "label": "Existing concrete demolition included",
+              "value": "No"
+            },
+            {
+              "label": "Reinforcement",
+              "value": "Wire mesh"
+            },
+            {
+              "label": "Project access",
+              "value": "Easy"
+            },
+            {
+              "label": "Base preparation requested",
+              "value": "Yes"
+            },
+            {
+              "label": "Edges against foundation or existing concrete",
+              "value": "No"
+            },
+            {
+              "label": "Closed measured orthogonal outline coordinates",
+              "value": "[{\"x\":0,\"y\":0},{\"x\":50,\"y\":0},{\"x\":50,\"y\":10},{\"x\":0,\"y\":10}]"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-concrete-driveway@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Closed measured orthogonal outline coordinates.",
+          "Check Measured slab length.",
+          "Check Measured slab width."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "26a697e66d87a7d21c61b0c687489eaba0f7446cf5c6b9ba267b8e676e9d0cb2"
+        }
+      }
+    }
+  },
+  {
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "2dbb0535-8292-4db3-85f5-674eaf9ae281",
+      "expectedCents": 353889,
+      "actualMid": [
+        3538.89
+      ],
+      "normalized": {
+        "dimensionMethod": "exact",
+        "length": 20,
+        "width": 10,
+        "thickness": 4,
+        "finishType": "broom",
+        "demolitionNeeded": false,
+        "reinforcement": "none",
+        "accessDifficulty": "easy",
+        "baseNeeded": true,
+        "adjoinsExistingConcrete": false
+      }
+    },
+    "correction": {
+      "kind": "invalid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_PATIO_SLAB",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_PATIO_SLAB",
+          "facts": [
+            {
+              "label": "Slab measurement method",
+              "value": "Measured area perimeter"
+            },
+            {
+              "label": "Concrete thickness",
+              "value": "4 inches"
+            },
+            {
+              "label": "Concrete finish",
+              "value": "Broom"
+            },
+            {
+              "label": "Existing concrete demolition included",
+              "value": "No"
+            },
+            {
+              "label": "Reinforcement",
+              "value": "None"
+            },
+            {
+              "label": "Project access",
+              "value": "Easy"
+            },
+            {
+              "label": "Base preparation requested",
+              "value": "Yes"
+            },
+            {
+              "label": "Edges against foundation or existing concrete",
+              "value": "No"
+            },
+            {
+              "label": "Measured slab area",
+              "value": "200 square feet"
+            },
+            {
+              "label": "Measured slab perimeter",
+              "value": "10 linear feet"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-concrete-patio-slab@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured slab perimeter."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "8ed2a444268cacd57c967bda15316b02c8ec380df8f9721873b09268f70a5656"
+        }
+      }
+    }
+  },
+  {
+    "serviceType": "LANDSCAPING_CLEANUP",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "7998b83a-eae7-4b73-9596-e237460b8231",
+      "expectedCents": 40000,
+      "actualMid": [
+        400
+      ],
+      "normalized": {
+        "yardSqft": 1000,
+        "sqftMethod": "exact",
+        "debrisLevel": "heavy",
+        "slope": "flat",
+        "haulAway": true
+      }
+    },
+    "correction": {
+      "kind": "stale_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "ready",
+      "prepare": {
+        "status": "ready",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_CLEANUP",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_CLEANUP",
+          "facts": [
+            {
+              "label": "Measured cleanup area",
+              "value": "1000 square feet"
+            },
+            {
+              "label": "Cleanup area method",
+              "value": "Measured area"
+            },
+            {
+              "label": "Debris level",
+              "value": "Heavy"
+            },
+            {
+              "label": "Terrain slope",
+              "value": "Flat"
+            },
+            {
+              "label": "Additional haul-away selected",
+              "value": "No"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-landscaping-cleanup@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "40283574b6911173eed8c19d8961006f63a12029a62272d75f561cc1c009be58"
+        },
+        "confirmation": {
+          "version": "job-details-v1",
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "daec0a15eee5dd02319a1ae0e0290ea8832c7e9c8bd358e907c8c1e624cd2d25"
+        }
+      },
+      "correctedRequestId": "9b15f529-bd31-4dc5-9a60-33d05da93a07",
+      "correctedMid": [
+        350
+      ]
+    }
+  },
+  {
+    "serviceType": "LANDSCAPING_MULCH",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "2b251f69-5432-458b-a886-acb6b0af1020",
+      "expectedCents": 32275,
+      "actualMid": [
+        322.75
+      ],
+      "normalized": {
+        "inputMethod": "sqft",
+        "mulchArea": 270,
+        "mulchDepth": 3,
+        "mulchType": "brown",
+        "bedCondition": "needs_weeding",
+        "bedSqft": 270,
+        "edgingNeeded": true,
+        "edgeLF": 100,
+        "confirmedFacts": {
+          "mulchType": {
+            "status": "identified",
+            "field": "mulchType",
+            "value": "brown",
+            "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+          }
+        },
+        "accessDifficulty": "easy"
+      }
+    },
+    "correction": {
+      "kind": "invalid_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MULCH",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MULCH",
+          "facts": [
+            {
+              "label": "Mulch quantity method",
+              "value": "Cubic yards of mulch"
+            },
+            {
+              "label": "Mulch volume",
+              "value": "2.75 cubic yards"
+            },
+            {
+              "label": "Mulch depth",
+              "value": "3 inches"
+            },
+            {
+              "label": "Mulch type",
+              "value": "Brown"
+            },
+            {
+              "label": "Planting-bed condition",
+              "value": "Needs weeding"
+            },
+            {
+              "label": "Measured preparation area",
+              "value": "270 square feet"
+            },
+            {
+              "label": "Bed edging included",
+              "value": "Yes"
+            },
+            {
+              "label": "Measured bed-edge length",
+              "value": "100 linear feet"
+            },
+            {
+              "label": "Project access",
+              "value": "Easy"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-landscaping-mulch@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Mulch depth."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "caa1919127145e3baef8c2200a0402c4e783ec2a1d862cdc1a7d0424aee867fe"
+        }
+      },
+      "correctedRequestId": "81ff46df-937d-4362-b438-e321794e1644",
+      "correctedMid": [
+        324
+      ]
+    }
+  },
+  {
+    "serviceType": "LANDSCAPING_SOD",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "0c79a14e-e05f-46a9-83c9-a2542ff8b3fa",
+      "expectedCents": 253750,
+      "actualMid": [
+        2537.5
+      ],
+      "normalized": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "slope": "flat",
+        "accessDifficulty": "easy"
+      }
+    },
+    "correction": {
+      "kind": "invalid_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_SOD",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_SOD",
+          "facts": [
+            {
+              "label": "Measured sod area",
+              "value": "1000 square feet"
+            },
+            {
+              "label": "Sod area method",
+              "value": "Measured area"
+            },
+            {
+              "label": "Ground preparation requested",
+              "value": "No"
+            },
+            {
+              "label": "Terrain slope",
+              "value": "Flat"
+            },
+            {
+              "label": "Project access",
+              "value": "Easy"
+            },
+            {
+              "label": "usableTopsoilDepthInches",
+              "value": "0"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-landscaping-sod@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "The business needs to check the selected work or pricing before an estimate can be provided."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "a76d2faf162f2043f9225668d581731f9ab576dafc19c6286974678236370b9b"
+        }
+      },
+      "correctedRequestId": "76cbd95a-144e-4242-b2fc-cd16e39b5f48",
+      "correctedMid": [
+        2037.5
+      ]
+    }
+  },
+  {
+    "serviceType": "LANDSCAPING_PLANTING",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "37138f51-cafb-490e-baec-aa8c32b98288",
+      "expectedCents": 28500,
+      "actualMid": [
+        285
+      ],
+      "normalized": {
+        "plantsBySize": {
+          "small": 2,
+          "medium": 1,
+          "large": 1
+        },
+        "bedCondition": "needs_weeding",
+        "bedSqft": 100,
+        "mulchNeeded": true,
+        "mulchYards": 2,
+        "mulchType": "brown",
+        "confirmedFacts": {
+          "mulchType": {
+            "status": "identified",
+            "field": "mulchType",
+            "value": "brown",
+            "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+          }
+        },
+        "accessDifficulty": "easy"
+      }
+    },
+    "correction": {
+      "kind": "invalid_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_PLANTING",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_PLANTING",
+          "facts": [
+            {
+              "label": "Measured plant count by size",
+              "value": "{\"small\":2,\"medium\":1,\"large\":1}"
+            },
+            {
+              "label": "Planting-bed condition",
+              "value": "Needs weeding"
+            },
+            {
+              "label": "Measured preparation area",
+              "value": "100 square feet"
+            },
+            {
+              "label": "Mulch included",
+              "value": "No"
+            },
+            {
+              "label": "Measured mulch quantity",
+              "value": "2 cubic yards"
+            },
+            {
+              "label": "Mulch type",
+              "value": "Brown"
+            },
+            {
+              "label": "Project access",
+              "value": "Easy"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-landscaping-planting@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured mulch quantity.",
+          "Check Mulch type."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "310ac1eea1d898c42383ab9bd6dd6834ce8aa6206cec7d6328aab11f7f7150ba"
+        }
+      },
+      "correctedRequestId": "f5a01617-c160-41bf-8e9a-142948847a13",
+      "correctedMid": [
+        125
+      ]
+    }
+  },
+  {
+    "serviceType": "LANDSCAPING_MOWING",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "1f271086-83e7-4d90-8d99-51aee2074581",
+      "expectedCents": 16000,
+      "actualMid": [
+        160
+      ],
+      "normalized": {
+        "yardSqft": 5000,
+        "sqftMethod": "exact",
+        "serviceFrequency": "weekly",
+        "grassCondition": "maintained",
+        "bagClippings": true,
+        "edgingIncluded": true,
+        "edgingLengthLF": 100
+      }
+    },
+    "correction": {
+      "kind": "stale_then_valid",
+      "staleStatus": 409,
+      "prepareStatus": "ready",
+      "prepare": {
+        "status": "ready",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MOWING",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MOWING",
+          "facts": [
+            {
+              "label": "Measured mowable lawn area",
+              "value": "5000 square feet"
+            },
+            {
+              "label": "Lawn area method",
+              "value": "Measured area"
+            },
+            {
+              "label": "Service frequency",
+              "value": "One time"
+            },
+            {
+              "label": "Grass condition",
+              "value": "Regularly maintained"
+            },
+            {
+              "label": "Clipping bagging selected",
+              "value": "Yes"
+            },
+            {
+              "label": "Lawn edging selected",
+              "value": "Yes"
+            },
+            {
+              "label": "Measured edging length",
+              "value": "100 linear feet"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-landscaping-mowing@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "c7464d03a52a77d667375d43148da6a2f3c7e75535d4dbb412d07057bd878e14"
+        },
+        "confirmation": {
+          "version": "job-details-v1",
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "b54c1bdca92410da3ca988da40cdd4bf33080648225aa534e0a857e2b03c4cc1"
+        }
+      },
+      "correctedRequestId": "c4b16edc-bc40-4a53-b408-f14de6dead48",
+      "correctedMid": [
+        248
+      ]
+    }
+  },
+  {
+    "serviceType": "CUSTOM",
+    "http": {
+      "valid": true,
+      "correction": true
+    },
+    "browser": false,
+    "valid": {
+      "requestId": "b389f762-ff8f-4135-b79b-ac2474e8b685",
+      "expectedCents": 12500,
+      "actualMid": [
+        125
+      ],
+      "normalized": {
+        "service": "[SYNTHETIC PUBLIC INTAKE] CUSTOM",
+        "serviceConfirmed": true,
+        "unit": "flat"
+      }
+    },
+    "correction": {
+      "kind": "invalid",
+      "staleStatus": 409,
+      "prepareStatus": "needs_details",
+      "prepare": {
+        "status": "needs_details",
+        "summary": {
+          "service": "[SYNTHETIC PUBLIC INTAKE] CUSTOM",
+          "requestedWork": "[SYNTHETIC PUBLIC INTAKE] CUSTOM",
+          "facts": [
+            {
+              "label": "Confirmed custom service",
+              "value": "[SYNTHETIC PUBLIC INTAKE] CUSTOM"
+            },
+            {
+              "label": "Customer confirmed the matched service",
+              "value": "Yes"
+            },
+            {
+              "label": "Customer quantity unit",
+              "value": "Flat"
+            },
+            {
+              "label": "Measured labor time",
+              "value": "2 hours"
+            }
+          ],
+          "fees": [],
+          "contact": {
+            "email": "synthetic-custom@example.invalid"
+          },
+          "location": {},
+          "timing": "Not supplied",
+          "additionalDetails": "",
+          "unknowns": [],
+          "additionalWork": [],
+          "clarifications": [],
+          "separateAdditionalWork": []
+        },
+        "followUps": [
+          "Check Measured labor time."
+        ],
+        "historyReceipt": {
+          "bookRevision": "4f711f889e3c9a63385ce2ebf5ff55875213a13234245672de9a53ca2fb02127",
+          "signature": "d855ec2cad8ac3291af5511a99aa79092d923815145940b9c97e6f0e65fbcaa3"
+        }
+      }
+    }
+  }
+]

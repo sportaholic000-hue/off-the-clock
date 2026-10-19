@@ -1,0 +1,6011 @@
+{
+  "contractVersion": "2026-09-29.1",
+  "capabilities": {
+    "quoteEnvelope": "pricing-only-v2",
+    "booking": "booking-v1",
+    "postQuoteIdentity": true,
+    "serverPricingOnly": true
+  },
+  "branding": {
+    "businessName": "[SYNTHETIC]",
+    "accentColor": "#16A34A",
+    "launcherLabel": "Get an estimate",
+    "clickToCallNumber": null
+  },
+  "services": [
+    {
+      "id": "89a4259f-c9c1-43d2-970a-026d3644d6e2",
+      "serviceType": "ROOFING_REPLACEMENT",
+      "name": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPLACEMENT",
+      "customerFields": [
+        {
+          "name": "roofSizeMethod",
+          "label": "Roof area method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "roof_measured",
+            "footprint"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Roof area method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "roofSizeInput",
+          "label": "Measured roof surface area or footprint including overhangs",
+          "unit": "square feet",
+          "type": "number",
+          "min": 50,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured roof surface area or footprint including overhangs",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "existingRoofType",
+          "label": "Existing roofing material",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Existing roofing material",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "replacementRoofType",
+          "label": "Replacement roofing material",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Replacement roofing material",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "stories",
+          "label": "Building stories",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            1,
+            2,
+            3
+          ],
+          "presentationVariants": [
+            {
+              "label": "Building stories",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "existingLayers",
+          "label": "Measured existing roof layers",
+          "unit": "layers",
+          "type": "number",
+          "min": 1,
+          "max": 10,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Measured existing roof layers",
+              "unit": "layers"
+            }
+          ]
+        },
+        {
+          "name": "roofComplexity",
+          "label": "Roof shape",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "simple",
+            "moderate",
+            "complex"
+          ],
+          "optionLabels": {
+            "simple": "Simple — a gable roof",
+            "moderate": "Moderate — a hip roof or several valleys",
+            "complex": "Complex — dormers or turrets"
+          },
+          "presentationVariants": [
+            {
+              "label": "Roof shape",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "serviceScope",
+          "label": "Replacement scope",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "full",
+            "partial"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Replacement scope",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "partialPercent",
+          "label": "Confirmed affected portion",
+          "unit": "percent",
+          "type": "number",
+          "min": 0.1,
+          "max": 100,
+          "presentationVariants": [
+            {
+              "label": "Confirmed affected portion",
+              "unit": "percent"
+            }
+          ]
+        },
+        {
+          "name": "partialAreaSqft",
+          "label": "Measured affected roof area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured affected roof area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "starterLengthLF",
+          "label": "Starter along all eaves and rakes",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Starter along all eaves and rakes",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "dripEdgeLengthLF",
+          "label": "Drip edge along all eaves and rakes",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Drip edge along all eaves and rakes",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "ridgeCapLengthLF",
+          "label": "Hip-and-ridge cap along all ridges and hips",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Hip-and-ridge cap along all ridges and hips",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "deckingSheets",
+          "label": "Confirmed decking sheets to replace",
+          "unit": "sheets",
+          "type": "number",
+          "min": 0,
+          "max": 100000,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Confirmed decking sheets to replace",
+              "unit": "sheets"
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "pitchMethod",
+          "label": "How the roof pitch is supplied",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "whole_roof",
+            "area_by_pitch",
+            "not_sure"
+          ],
+          "presentationVariants": [
+            {
+              "label": "How the roof pitch is supplied",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "pitchBand",
+          "label": "Rise per 12 for the whole roof",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "up_to_six",
+            "seven_to_nine",
+            "ten_to_twelve",
+            "over_twelve"
+          ],
+          "optionLabels": {
+            "up_to_six": "Up to 6/12 — walkable roof",
+            "seven_to_nine": "7/12-9/12 — steep roof",
+            "ten_to_twelve": "10/12-12/12 — very steep roof",
+            "over_twelve": "Over 12/12 — special steep work"
+          },
+          "presentationVariants": [
+            {
+              "label": "Rise per 12 for the whole roof",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "pitchRisePer12",
+          "label": "Roof rise per 12 inches of run",
+          "unit": "inches",
+          "type": "number",
+          "min": 0,
+          "max": 100,
+          "presentationVariants": [
+            {
+              "label": "Roof rise per 12 inches of run",
+              "unit": "inches"
+            }
+          ]
+        },
+        {
+          "name": "pitchAreaUpTo6Sqft",
+          "label": "Roof surface area up to 6/12 — walkable",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Roof surface area up to 6/12 — walkable",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "pitchArea7To9Sqft",
+          "label": "Roof surface area at 7/12-9/12 — steep",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Roof surface area at 7/12-9/12 — steep",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "pitchArea10To12Sqft",
+          "label": "Roof surface area at 10/12-12/12 — very steep",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Roof surface area at 10/12-12/12 — very steep",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "pitchAreaOver12Sqft",
+          "label": "Roof surface area over 12/12 — special steep work",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Roof surface area over 12/12 — special steep work",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "valleyLengthLF",
+          "label": "Valley length",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "replacementRoofType",
+                "eq",
+                "asphalt_shingle"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Valley length",
+              "unit": "linear feet",
+              "visibleWhen": [
+                [
+                  [
+                    "replacementRoofType",
+                    "eq",
+                    "asphalt_shingle"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "stepFlashingLengthLF",
+          "label": "Step flashing length",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "replacementRoofType",
+                "eq",
+                "asphalt_shingle"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Step flashing length",
+              "unit": "linear feet",
+              "visibleWhen": [
+                [
+                  [
+                    "replacementRoofType",
+                    "eq",
+                    "asphalt_shingle"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "pipeJackCount",
+          "label": "Pipe jacks",
+          "unit": "each",
+          "type": "number",
+          "min": 0,
+          "max": 100000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "replacementRoofType",
+                "eq",
+                "asphalt_shingle"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Pipe jacks",
+              "unit": "each",
+              "visibleWhen": [
+                [
+                  [
+                    "replacementRoofType",
+                    "eq",
+                    "asphalt_shingle"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ridgeVentLengthLF",
+          "label": "Ridge vent length",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "replacementRoofType",
+                "eq",
+                "asphalt_shingle"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Ridge vent length",
+              "unit": "linear feet",
+              "visibleWhen": [
+                [
+                  [
+                    "replacementRoofType",
+                    "eq",
+                    "asphalt_shingle"
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "existingRoofType": {
+          "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+          "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+          "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+          "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+        },
+        "replacementRoofType": {
+          "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+          "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+          "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+          "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "4bb3ab31-6f5c-476e-96fa-a728d167a370",
+      "serviceType": "ROOFING_REPAIR",
+      "name": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPAIR",
+      "customerFields": [
+        {
+          "name": "repairType",
+          "label": "Roof repair type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Roof repair type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "affectedArea",
+          "label": "Measured affected roof area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "area"
+              ]
+            ],
+            [
+              [
+                "repairAreaMethod",
+                "absent",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured affected roof area",
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "area"
+                  ]
+                ],
+                [
+                  [
+                    "repairAreaMethod",
+                    "absent",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "roofType",
+          "label": "Roofing material",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Roofing material",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "pitch",
+          "label": "Roof pitch",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "low",
+            "medium",
+            "steep",
+            "very_steep"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Roof pitch",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "stories",
+          "label": "Building stories",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            1,
+            2,
+            3
+          ],
+          "presentationVariants": [
+            {
+              "label": "Building stories",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "leakPresent",
+          "label": "Active leak reported",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Active leak reported",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "leakSourceIdentified",
+          "label": "Leak source specifically identified",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Leak source specifically identified",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "repairAreaMethod",
+          "label": "Affected area measurement",
+          "type": "enum",
+          "values": [
+            "area",
+            "dimensions"
+          ],
+          "optionLabels": {
+            "area": "Square feet",
+            "dimensions": "Length and width"
+          },
+          "details": [
+            "Use the affected area or its length and width. Your best estimate is fine."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area measurement",
+              "details": [
+                "Use the affected area or its length and width. Your best estimate is fine."
+              ]
+            }
+          ]
+        },
+        {
+          "name": "repairLengthFt",
+          "label": "Affected area length",
+          "type": "number",
+          "unit": "feet",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area length",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "repairWidthFt",
+          "label": "Affected area width",
+          "type": "number",
+          "unit": "feet",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area width",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "repairType": {
+          "shingle_patch": "9bffec17-54f8-4b64-8937-31eb3efd3074",
+          "seam_patch": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85",
+          "patch": "cc229077-30ba-4935-89a1-8543f16892ae",
+          "named_patch": "f527eda1-fb84-48ce-8e80-0f7e466bf3a9"
+        },
+        "roofType": {
+          "asphalt_shingle": "ac9274cf-c482-4c2b-896f-96243baf41fc",
+          "epdm": "efae4673-7379-4452-8fd6-407d64358cf4"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "b82b6284-8ad0-418d-b26e-8518b06146e0",
+      "serviceType": "FLAT_ROOF_REPLACEMENT",
+      "name": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPLACEMENT",
+      "customerFields": [
+        {
+          "name": "roofSqft",
+          "label": "Measured flat-roof area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 25,
+          "max": 2000000,
+          "presentationVariants": [
+            {
+              "label": "Measured flat-roof area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "sqftMethod",
+          "label": "Roof measurement method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Roof measurement method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "membraneType",
+          "label": "Existing membrane type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Existing membrane type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "existingLayers",
+          "label": "Measured existing membrane layers",
+          "unit": "layers",
+          "type": "integer_or_unknown",
+          "min": 1,
+          "max": 10,
+          "presentationVariants": [
+            {
+              "label": "Measured existing membrane layers",
+              "unit": "layers"
+            }
+          ]
+        },
+        {
+          "name": "accessDifficulty",
+          "label": "Roof access",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Roof access",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "serviceScope",
+          "label": "Replacement scope",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "full",
+            "partial"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Replacement scope",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "insulationNeeded",
+          "label": "New insulation needed",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "New insulation needed",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "coverboardNeeded",
+          "label": "New coverboard needed",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "New coverboard needed",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "partialPercent",
+          "label": "Confirmed affected portion",
+          "unit": "percent",
+          "type": "number",
+          "min": 0.1,
+          "max": 100,
+          "presentationVariants": [
+            {
+              "label": "Confirmed affected portion",
+              "unit": "percent"
+            }
+          ]
+        },
+        {
+          "name": "partialAreaSqft",
+          "label": "Measured affected roof area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 2000000,
+          "presentationVariants": [
+            {
+              "label": "Measured affected roof area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "replacementMembraneType",
+          "label": "Replacement membrane type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Replacement membrane type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "insulationAreaSqft",
+          "type": "number",
+          "label": "Measured insulation area",
+          "unit": "square feet",
+          "min": 0.1,
+          "max": 10000000,
+          "visibleWhen": [
+            [
+              [
+                "insulationNeeded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured insulation area",
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "insulationNeeded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "coverboardAreaSqft",
+          "type": "number",
+          "label": "Measured coverboard area",
+          "unit": "square feet",
+          "min": 0.1,
+          "max": 10000000,
+          "visibleWhen": [
+            [
+              [
+                "coverboardNeeded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured coverboard area",
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "coverboardNeeded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "membraneType": {
+          "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+          "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+          "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+          "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+        },
+        "replacementMembraneType": {
+          "epdm": "13282f23-a404-4615-8a9e-c4f259c2e3fa",
+          "tpo": "02ed7b7d-214d-4a58-8867-e4ae970ddead",
+          "pvc": "ee3fff6f-54d0-4a51-828d-91052277acd8",
+          "modified_bitumen": "23e2d7ac-73ec-4c5b-876f-982ad5576019"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "f70e5292-a8a0-4127-ac34-a2f7e5ae2b8f",
+      "serviceType": "FLAT_ROOF_REPAIR",
+      "name": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPAIR",
+      "customerFields": [
+        {
+          "name": "repairType",
+          "label": "Flat-roof repair type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Flat-roof repair type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "affectedArea",
+          "label": "Measured affected flat-roof area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "area"
+              ]
+            ],
+            [
+              [
+                "repairAreaMethod",
+                "absent",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured affected flat-roof area",
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "area"
+                  ]
+                ],
+                [
+                  [
+                    "repairAreaMethod",
+                    "absent",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "membraneType",
+          "label": "Membrane type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Membrane type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "leakPresent",
+          "label": "Active leak reported",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Active leak reported",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "pondingWater",
+          "label": "Ponding water reported",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Ponding water reported",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "accessDifficulty",
+          "label": "Project access",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Project access",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "leakSourceIdentified",
+          "label": "Leak source specifically identified",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Leak source specifically identified",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "repairAreaMethod",
+          "label": "Affected area measurement",
+          "type": "enum",
+          "values": [
+            "area",
+            "dimensions"
+          ],
+          "optionLabels": {
+            "area": "Square feet",
+            "dimensions": "Length and width"
+          },
+          "details": [
+            "Use the affected area or its length and width. Your best estimate is fine."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area measurement",
+              "details": [
+                "Use the affected area or its length and width. Your best estimate is fine."
+              ]
+            }
+          ]
+        },
+        {
+          "name": "repairLengthFt",
+          "label": "Affected area length",
+          "type": "number",
+          "unit": "feet",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area length",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "repairWidthFt",
+          "label": "Affected area width",
+          "type": "number",
+          "unit": "feet",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area width",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "repairType": {
+          "shingle_patch": "9bffec17-54f8-4b64-8937-31eb3efd3074",
+          "seam_patch": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85",
+          "patch": "cc229077-30ba-4935-89a1-8543f16892ae",
+          "named_patch": "f527eda1-fb84-48ce-8e80-0f7e466bf3a9"
+        },
+        "membraneType": {
+          "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+          "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+          "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+          "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "9218a8fe-fbb4-402e-b0e3-e731d8c6ed20",
+      "serviceType": "INTERIOR_PAINTING",
+      "name": "[SYNTHETIC PUBLIC INTAKE] INTERIOR_PAINTING",
+      "customerFields": [
+        {
+          "name": "areaInputMethod",
+          "label": "Wall area measurement method",
+          "type": "enum",
+          "unit": null,
+          "values": [
+            "wall_sqft",
+            "room_dimensions"
+          ],
+          "optionLabels": {
+            "sqft": "Enter siding wall area directly",
+            "wall_sqft": "Enter wall area directly",
+            "room_dimensions": "Room length, width and height",
+            "building_dimensions": "House perimeter and wall height"
+          },
+          "details": [
+            "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area.",
+            "Room dimensions assume a rectangular room, one wall height and a flat ceiling. For sloped ceilings, irregular rooms or walls with different heights, enter the measured wall and ceiling surface areas directly."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Wall area measurement method",
+              "details": [
+                "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area.",
+                "Room dimensions assume a rectangular room, one wall height and a flat ceiling. For sloped ceilings, irregular rooms or walls with different heights, enter the measured wall and ceiling surface areas directly."
+              ],
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "wallAreaSqft",
+          "label": "Measured paintable wall area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 2000000,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "details": [
+            "If you supply opening counts or areas, enter wall area before subtracting those openings. Without opening inputs, your existing directly entered area is used unchanged."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured paintable wall area",
+              "details": [
+                "If you supply opening counts or areas, enter wall area before subtracting those openings. Without opening inputs, your existing directly entered area is used unchanged."
+              ],
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "coats",
+          "label": "Wall finish coats",
+          "unit": "coats",
+          "type": "number",
+          "min": 1,
+          "max": 3,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Wall finish coats",
+              "unit": "coats"
+            }
+          ]
+        },
+        {
+          "name": "surfaceCondition",
+          "label": "Wall surface condition",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "good",
+            "fair",
+            "poor"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Wall surface condition",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "wallHeight",
+          "label": "Wall height",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "standard",
+            "high",
+            "vaulted"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Wall height",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "wallScopeUniform",
+          "label": "All wall area shares the confirmed height, access, and finish-coat count",
+          "unit": null,
+          "type": "boolean",
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "All wall area shares the confirmed height, access, and finish-coat count",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ceilingsIncluded",
+          "label": "Ceiling painting included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Ceiling painting included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "ceilingAreaSqft",
+          "label": "Measured ceiling area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 2000000,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ],
+              [
+                "ceilingsIncluded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured ceiling area",
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ],
+                  [
+                    "ceilingsIncluded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "trimIncluded",
+          "label": "Trim painting included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Trim painting included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "trimLengthLF",
+          "label": "Measured trim length",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured trim length",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "rooms",
+          "label": "Room measurements",
+          "type": "surface_rows",
+          "unit": null,
+          "rowFields": {
+            "lengthFeet": {
+              "label": "Room length",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 10000
+            },
+            "widthFeet": {
+              "label": "Room width",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 10000
+            },
+            "heightFeet": {
+              "label": "Ceiling height",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 1000
+            },
+            "doorCount": {
+              "label": "Door openings",
+              "unit": "doors",
+              "type": "number",
+              "min": 0,
+              "max": 10000,
+              "integer": true
+            },
+            "windowCount": {
+              "label": "Window openings",
+              "unit": "windows",
+              "type": "number",
+              "min": 0,
+              "max": 10000,
+              "integer": true
+            },
+            "largeOpenings": {
+              "label": "Large room openings",
+              "type": "surface_rows",
+              "unit": null,
+              "rowFields": {
+                "widthFeet": {
+                  "label": "Opening width",
+                  "unit": "feet",
+                  "type": "number",
+                  "min": 0.01,
+                  "max": 10000
+                },
+                "heightFeet": {
+                  "label": "Opening height",
+                  "unit": "feet",
+                  "type": "number",
+                  "min": 0.01,
+                  "max": 1000
+                },
+                "runsFloorToCeiling": {
+                  "label": "Runs floor to ceiling?",
+                  "type": "boolean",
+                  "unit": null,
+                  "optional": true
+                }
+              },
+              "minRows": 0,
+              "maxRows": 100,
+              "optional": true,
+              "details": [
+                "Only openings not counted as doors or windows. Openings 100 square feet or larger, or openings that run floor to ceiling and are wider than 5 feet, are removed from labor. All listed openings are removed from paint quantity."
+              ]
+            }
+          },
+          "minRows": 1,
+          "maxRows": 100,
+          "details": [
+            "Room dimensions assume a rectangular room, one wall height and a flat ceiling. For sloped ceilings, irregular rooms or walls with different heights, enter the measured wall and ceiling surface areas directly."
+          ],
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "room_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Room measurements",
+              "details": [
+                "Room dimensions assume a rectangular room, one wall height and a flat ceiling. For sloped ceilings, irregular rooms or walls with different heights, enter the measured wall and ceiling surface areas directly."
+              ],
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "room_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "largeOpenings",
+          "label": "Other openings",
+          "type": "surface_rows",
+          "unit": null,
+          "rowFields": {
+            "widthFeet": {
+              "label": "Opening width",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 10000
+            },
+            "heightFeet": {
+              "label": "Opening height",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 1000
+            },
+            "runsFloorToCeiling": {
+              "label": "Runs floor to ceiling?",
+              "type": "boolean",
+              "unit": null,
+              "optional": true
+            }
+          },
+          "minRows": 0,
+          "maxRows": 100,
+          "details": [
+            "Only openings not counted as doors or windows. Openings 100 square feet or larger, or openings that run floor to ceiling and are wider than 5 feet, are removed from labor. All listed openings are removed from paint quantity."
+          ],
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "room_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Other openings",
+              "details": [
+                "Only openings not counted as doors or windows. Openings 100 square feet or larger, or openings that run floor to ceiling and are wider than 5 feet, are removed from labor. All listed openings are removed from paint quantity."
+              ],
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "room_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "doorCount",
+          "label": "Door openings",
+          "unit": "openings",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Door openings",
+              "unit": "openings",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "windowCount",
+          "label": "Window openings",
+          "unit": "openings",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Window openings",
+              "unit": "openings",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ceilingCoats",
+          "label": "Ceiling finish coats",
+          "unit": "coats",
+          "type": "number",
+          "min": 1,
+          "max": 3,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "ceilingsIncluded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Ceiling finish coats",
+              "unit": "coats",
+              "visibleWhen": [
+                [
+                  [
+                    "ceilingsIncluded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ceilingSurfaceCondition",
+          "label": "Ceiling surface condition",
+          "type": "enum",
+          "unit": null,
+          "values": [
+            "good",
+            "fair",
+            "poor"
+          ],
+          "visibleWhen": [
+            [
+              [
+                "ceilingsIncluded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Ceiling surface condition",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "ceilingsIncluded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "trimCoats",
+          "label": "Trim finish coats",
+          "unit": "coats",
+          "type": "number",
+          "min": 1,
+          "max": 3,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "trimIncluded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Trim finish coats",
+              "unit": "coats",
+              "visibleWhen": [
+                [
+                  [
+                    "trimIncluded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "trimSurfaceCondition",
+          "label": "Trim surface condition",
+          "type": "enum",
+          "unit": null,
+          "values": [
+            "good",
+            "fair",
+            "poor"
+          ],
+          "visibleWhen": [
+            [
+              [
+                "trimIncluded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Trim surface condition",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "trimIncluded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "surfaceOptionalItems",
+          "label": "Which optional painting items would you like?",
+          "type": "multi_enum",
+          "unit": null,
+          "values": [
+            "doorSides",
+            "doorFrames",
+            "windows",
+            "cabinetFaces"
+          ],
+          "optionLabels": {
+            "doorSides": "Door sides",
+            "doorFrames": "Door frames",
+            "windows": "Windows",
+            "cabinetFaces": "Cabinet doors or drawer faces"
+          },
+          "details": [
+            "Select all that apply, or leave all unchecked for none. We ask for quantities only for selected items with a saved price. Unpriced items are excluded from this quote and need a separate estimate."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Which optional painting items would you like?",
+              "details": [
+                "Select all that apply, or leave all unchecked for none. We ask for quantities only for selected items with a saved price. Unpriced items are excluded from this quote and need a separate estimate."
+              ],
+              "unit": null
+            }
+          ]
+        }
+      ],
+      "offeringSummary": [
+        "[SYNTHETIC] Defined painting offering",
+        "Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating",
+        "2 finish coat(s); 1 primer coat(s).",
+        "Preparation: [SYNTHETIC] Defined preparation of the measured affected area."
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "10c1504a-6862-4cad-8127-23ac7e25ffcd",
+      "serviceType": "EXTERIOR_PAINTING",
+      "name": "[SYNTHETIC PUBLIC INTAKE] EXTERIOR_PAINTING",
+      "customerFields": [
+        {
+          "name": "areaInputMethod",
+          "label": "Wall area measurement method",
+          "type": "enum",
+          "unit": null,
+          "values": [
+            "wall_sqft",
+            "building_dimensions"
+          ],
+          "optionLabels": {
+            "sqft": "Enter siding wall area directly",
+            "wall_sqft": "Enter wall area directly",
+            "room_dimensions": "Room length, width and height",
+            "building_dimensions": "House perimeter and wall height"
+          },
+          "details": [
+            "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Wall area measurement method",
+              "details": [
+                "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area."
+              ],
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "exteriorAreaSqft",
+          "label": "Measured paintable wall area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 2000000,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "details": [
+            "If you supply opening counts or areas, enter wall area before subtracting those openings. Without opening inputs, your existing directly entered area is used unchanged."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured paintable wall area",
+              "details": [
+                "If you supply opening counts or areas, enter wall area before subtracting those openings. Without opening inputs, your existing directly entered area is used unchanged."
+              ],
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "coats",
+          "label": "Wall finish coats",
+          "unit": "coats",
+          "type": "number",
+          "min": 1,
+          "max": 3,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Wall finish coats",
+              "unit": "coats"
+            }
+          ]
+        },
+        {
+          "name": "surfaceCondition",
+          "label": "Wall surface condition",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "good",
+            "fair",
+            "poor"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Wall surface condition",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "stories",
+          "label": "Building stories",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            1,
+            2,
+            3
+          ],
+          "presentationVariants": [
+            {
+              "label": "Building stories",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "buildingPerimeterFeet",
+          "label": "House perimeter",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "House perimeter",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "gables",
+          "label": "Gable triangles",
+          "type": "surface_rows",
+          "unit": null,
+          "rowFields": {
+            "widthFeet": {
+              "label": "Gable width",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 10000
+            },
+            "heightFeet": {
+              "label": "Gable height",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 1000
+            }
+          },
+          "minRows": 0,
+          "maxRows": 100,
+          "details": [
+            "Enter each gable separately. Its width × height ÷ 2 is added once; leave these triangles out of any direct area entered above."
+          ],
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Gable triangles",
+              "details": [
+                "Enter each gable separately. Its width × height ÷ 2 is added once; leave these triangles out of any direct area entered above."
+              ],
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "doorCount",
+          "label": "Door openings",
+          "unit": "openings",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Door openings",
+              "unit": "openings",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "windowCount",
+          "label": "Window openings",
+          "unit": "openings",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Window openings",
+              "unit": "openings",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "garageDoorCount",
+          "label": "Garage-door openings",
+          "unit": "openings",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Garage-door openings",
+              "unit": "openings",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "garageDoorWidthFeet",
+          "label": "Width of each garage-door opening",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "garageDoorCount",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Width of each garage-door opening",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "garageDoorCount",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "garageDoorHeightFeet",
+          "label": "Height of each garage-door opening",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "garageDoorCount",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Height of each garage-door opening",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "garageDoorCount",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "garageOpenings",
+          "label": "Individual garage-door openings",
+          "type": "surface_rows",
+          "unit": null,
+          "rowFields": {
+            "widthFeet": {
+              "label": "Garage opening width",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 10000
+            },
+            "heightFeet": {
+              "label": "Garage opening height",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 1000
+            }
+          },
+          "minRows": 1,
+          "maxRows": 100,
+          "details": [
+            "Use this list when opening sizes differ; otherwise enter the shared width and height above. Do not use both."
+          ],
+          "visibleWhen": [
+            [
+              [
+                "garageDoorCount",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Individual garage-door openings",
+              "details": [
+                "Use this list when opening sizes differ; otherwise enter the shared width and height above. Do not use both."
+              ],
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "garageDoorCount",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "largeOpenings",
+          "label": "Other openings",
+          "type": "surface_rows",
+          "unit": null,
+          "rowFields": {
+            "areaSqft": {
+              "label": "Other opening area not counted above",
+              "unit": "square feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 2000000
+            }
+          },
+          "minRows": 0,
+          "maxRows": 100,
+          "details": [
+            "Only openings not already counted as doors, windows or garage doors. Openings 100 square feet or larger are removed from painting labor; all listed openings are removed from paint quantity."
+          ],
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "room_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "wall_sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Other openings",
+              "details": [
+                "Only openings not already counted as doors, windows or garage doors. Openings 100 square feet or larger are removed from painting labor; all listed openings are removed from paint quantity."
+              ],
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "room_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "wall_sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "wallHeightFeet",
+          "label": "Wall height to the eaves",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Wall height to the eaves",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "surfaceOptionalItems",
+          "label": "Which optional painting items would you like?",
+          "type": "multi_enum",
+          "unit": null,
+          "values": [
+            "windows",
+            "doors",
+            "shutters",
+            "garageDoors",
+            "exteriorTrim",
+            "soffit",
+            "fascia",
+            "powerWashing"
+          ],
+          "optionLabels": {
+            "windows": "Windows",
+            "doors": "Doors",
+            "shutters": "Shutters",
+            "garageDoors": "Garage doors",
+            "exteriorTrim": "Exterior trim",
+            "soffit": "Soffit",
+            "fascia": "Fascia",
+            "powerWashing": "Power washing"
+          },
+          "details": [
+            "Select all that apply, or leave all unchecked for none. We ask for quantities only for selected items with a saved price. Unpriced items are excluded from this quote and need a separate estimate."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Which optional painting items would you like?",
+              "details": [
+                "Select all that apply, or leave all unchecked for none. We ask for quantities only for selected items with a saved price. Unpriced items are excluded from this quote and need a separate estimate."
+              ],
+              "unit": null
+            }
+          ]
+        }
+      ],
+      "offeringSummary": [
+        "[SYNTHETIC] Defined painting offering",
+        "Surface and coating: [SYNTHETIC] Wood siding; [SYNTHETIC] Owner-specified coating",
+        "2 finish coat(s); 1 primer coat(s).",
+        "Preparation: [SYNTHETIC] Defined preparation of the measured affected area."
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "f43f35d6-4d19-44f7-bdc3-2f6e7512a09d",
+      "serviceType": "FLOORING_INSTALL",
+      "name": "[SYNTHETIC PUBLIC INTAKE] FLOORING_INSTALL",
+      "customerFields": [
+        {
+          "name": "sqft",
+          "label": "Measured flooring area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured flooring area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "sqftMethod",
+          "label": "Floor measurement method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Floor measurement method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "newFlooringType",
+          "label": "New flooring type",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "hardwood",
+            "laminate",
+            "vinyl_plank",
+            "carpet",
+            "tile"
+          ],
+          "presentationVariants": [
+            {
+              "label": "New flooring type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "existingFloorType",
+          "label": "Existing floor type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Existing floor type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "removalNeeded",
+          "label": "Existing floor removal included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Existing floor removal included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "roomCount",
+          "label": "Rooms in scope",
+          "unit": "rooms",
+          "type": "number",
+          "min": 1,
+          "max": 10000,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Rooms in scope",
+              "unit": "rooms"
+            }
+          ]
+        },
+        {
+          "name": "layoutPattern",
+          "label": "Flooring layout",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "straight",
+            "diagonal",
+            "herringbone_or_chevron"
+          ],
+          "aliases": {
+            "diagonal_or_pattern": "diagonal"
+          },
+          "optionLabels": {
+            "straight": "Straight",
+            "diagonal": "Diagonal",
+            "herringbone_or_chevron": "Herringbone or chevron",
+            "diagonal_or_pattern": "Diagonal"
+          },
+          "presentationVariants": [
+            {
+              "label": "Flooring layout",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "stairSteps",
+          "label": "Stair steps in scope",
+          "unit": "steps",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Stair steps in scope",
+              "unit": "steps"
+            }
+          ]
+        },
+        {
+          "name": "underlaymentSelected",
+          "label": "Vinyl-plank underlayment selected",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Vinyl-plank underlayment selected",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "subfloorCondition",
+          "label": "Subfloor underlayment condition",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "requires_underlayment",
+            "does_not_require_underlayment",
+            "unknown"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Subfloor underlayment condition",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "removalAreaSqft",
+          "label": "Measured existing flooring removal area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured existing flooring removal area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "stairWidthLF",
+          "type": "number",
+          "label": "Measured stair tread width",
+          "unit": "feet",
+          "min": 0.1,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "stairSteps",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured stair tread width",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "stairSteps",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "stairRemovalNeeded",
+          "type": "boolean",
+          "label": "Existing stair covering removal requested",
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "stairSteps",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Existing stair covering removal requested",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "stairSteps",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "stairDisposalNeeded",
+          "type": "boolean",
+          "label": "Stair debris disposal requested",
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "stairSteps",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Stair debris disposal requested",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "stairSteps",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "floorAreaExcludesStairs",
+          "type": "boolean",
+          "label": "The measured flooring area excludes the separately priced stairs",
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "stairSteps",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "The measured flooring area excludes the separately priced stairs",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "stairSteps",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "existingFloorType": {
+          "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+          "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+          "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+          "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+          "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+          "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "972fc5d1-a43b-4503-aeaf-01c9f12c7999",
+      "serviceType": "FLOORING_REPLACEMENT",
+      "name": "[SYNTHETIC PUBLIC INTAKE] FLOORING_REPLACEMENT",
+      "customerFields": [
+        {
+          "name": "sqft",
+          "label": "Measured flooring area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured flooring area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "sqftMethod",
+          "label": "Floor measurement method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Floor measurement method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "newFlooringType",
+          "label": "New flooring type",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "hardwood",
+            "laminate",
+            "vinyl_plank",
+            "carpet",
+            "tile"
+          ],
+          "presentationVariants": [
+            {
+              "label": "New flooring type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "existingFloorType",
+          "label": "Existing floor type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Existing floor type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "removalNeeded",
+          "label": "Existing floor removal included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Existing floor removal included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "roomCount",
+          "label": "Rooms in scope",
+          "unit": "rooms",
+          "type": "number",
+          "min": 1,
+          "max": 10000,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Rooms in scope",
+              "unit": "rooms"
+            }
+          ]
+        },
+        {
+          "name": "layoutPattern",
+          "label": "Flooring layout",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "straight",
+            "diagonal",
+            "herringbone_or_chevron"
+          ],
+          "aliases": {
+            "diagonal_or_pattern": "diagonal"
+          },
+          "optionLabels": {
+            "straight": "Straight",
+            "diagonal": "Diagonal",
+            "herringbone_or_chevron": "Herringbone or chevron",
+            "diagonal_or_pattern": "Diagonal"
+          },
+          "presentationVariants": [
+            {
+              "label": "Flooring layout",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "stairSteps",
+          "label": "Stair steps in scope",
+          "unit": "steps",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Stair steps in scope",
+              "unit": "steps"
+            }
+          ]
+        },
+        {
+          "name": "underlaymentSelected",
+          "label": "Vinyl-plank underlayment selected",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Vinyl-plank underlayment selected",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "subfloorCondition",
+          "label": "Subfloor underlayment condition",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "requires_underlayment",
+            "does_not_require_underlayment",
+            "unknown"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Subfloor underlayment condition",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "subfloorIssues",
+          "label": "Subfloor issues reported",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Subfloor issues reported",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "subfloorRepairAreaSqft",
+          "label": "Measured subfloor repair area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured subfloor repair area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "removalAreaSqft",
+          "label": "Measured existing flooring removal area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured existing flooring removal area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "stairWidthLF",
+          "type": "number",
+          "label": "Measured stair tread width",
+          "unit": "feet",
+          "min": 0.1,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "stairSteps",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured stair tread width",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "stairSteps",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "stairRemovalNeeded",
+          "type": "boolean",
+          "label": "Existing stair covering removal requested",
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "stairSteps",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Existing stair covering removal requested",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "stairSteps",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "stairDisposalNeeded",
+          "type": "boolean",
+          "label": "Stair debris disposal requested",
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "stairSteps",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Stair debris disposal requested",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "stairSteps",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "floorAreaExcludesStairs",
+          "type": "boolean",
+          "label": "The measured flooring area excludes the separately priced stairs",
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "stairSteps",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "The measured flooring area excludes the separately priced stairs",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "stairSteps",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "existingFloorType": {
+          "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+          "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+          "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+          "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+          "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+          "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "0759a9f6-2a44-4748-8b0e-29ce7a3a424d",
+      "serviceType": "FENCING_INSTALL",
+      "name": "[SYNTHETIC PUBLIC INTAKE] FENCING_INSTALL",
+      "customerFields": [
+        {
+          "name": "linearFeet",
+          "label": "Measured fence length excluding gate openings",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured fence length excluding gate openings",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "lfMethod",
+          "label": "Fence measurement method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Fence measurement method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "fenceType",
+          "label": "Fence type",
+          "type": "slug",
+          "unit": null,
+          "presentationVariants": [
+            {
+              "label": "Fence type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "fenceHeight",
+          "label": "Fence height",
+          "unit": "feet",
+          "type": "number",
+          "min": 5e-324,
+          "max": 1.7976931348623157e+308,
+          "presentationVariants": [
+            {
+              "label": "Fence height",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "terrainSlope",
+          "label": "Terrain slope",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "flat",
+            "moderate",
+            "steep"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Terrain slope",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "gates",
+          "label": "Gates by measured opening width",
+          "type": "offering_counts",
+          "unit": "gates",
+          "values": [
+            "walk"
+          ],
+          "options": {
+            "walk": "walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+          },
+          "presentationVariants": [
+            {
+              "label": "Gates by measured opening width",
+              "unit": "gates"
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "type": "confirmed_facts",
+          "unit": null,
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "fenceRunCount",
+          "label": "How many separate fence runs?",
+          "unit": "runs",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "integer": true,
+          "required": true,
+          "summaryLabel": "Fence runs",
+          "presentationVariants": [
+            {
+              "label": "How many separate fence runs?",
+              "unit": "runs"
+            }
+          ]
+        },
+        {
+          "name": "fenceRuns",
+          "label": "Length of each straight section, in feet, between ends, corners and gates",
+          "summaryLabel": "Fence layout",
+          "type": "fence_runs",
+          "unit": "feet",
+          "closedQuestion": "Does this run connect back to where it starts?",
+          "sectionQuestion": "Length of each straight section, in feet, between ends, corners and gates",
+          "gateChoices": [
+            {
+              "value": "walk",
+              "label": "walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+            }
+          ],
+          "presentationVariants": [
+            {
+              "label": "Length of each straight section, in feet, between ends, corners and gates",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "cornerCount",
+          "label": "Fence corners",
+          "unit": "corners",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Fence corners",
+              "unit": "corners"
+            }
+          ]
+        }
+      ],
+      "offeringSummary": [
+        "[SYNTHETIC] Defined six-foot wood fence",
+        "Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging.",
+        "Fence length excludes gate openings."
+      ],
+      "knownOfferings": {
+        "fenceType": {
+          "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "aef708ff-cb0e-4b80-9217-d9d60c93418c",
+      "serviceType": "FENCING_REPLACEMENT",
+      "name": "[SYNTHETIC PUBLIC INTAKE] FENCING_REPLACEMENT",
+      "customerFields": [
+        {
+          "name": "linearFeet",
+          "label": "Measured fence length excluding gate openings",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured fence length excluding gate openings",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "lfMethod",
+          "label": "Fence measurement method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Fence measurement method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "fenceType",
+          "label": "Fence type",
+          "type": "slug",
+          "unit": null,
+          "presentationVariants": [
+            {
+              "label": "Fence type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "fenceHeight",
+          "label": "Fence height",
+          "unit": "feet",
+          "type": "number",
+          "min": 5e-324,
+          "max": 1.7976931348623157e+308,
+          "presentationVariants": [
+            {
+              "label": "Fence height",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "terrainSlope",
+          "label": "Terrain slope",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "flat",
+            "moderate",
+            "steep"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Terrain slope",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "gates",
+          "label": "Gates by measured opening width",
+          "type": "offering_counts",
+          "unit": "gates",
+          "values": [
+            "walk"
+          ],
+          "options": {
+            "walk": "walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+          },
+          "presentationVariants": [
+            {
+              "label": "Gates by measured opening width",
+              "unit": "gates"
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "type": "confirmed_facts",
+          "unit": null,
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "fenceRunCount",
+          "label": "How many separate fence runs?",
+          "unit": "runs",
+          "type": "number",
+          "min": 1,
+          "max": 1000000,
+          "integer": true,
+          "required": true,
+          "summaryLabel": "Fence runs",
+          "presentationVariants": [
+            {
+              "label": "How many separate fence runs?",
+              "unit": "runs"
+            }
+          ]
+        },
+        {
+          "name": "fenceRuns",
+          "label": "Length of each straight section, in feet, between ends, corners and gates",
+          "summaryLabel": "Fence layout",
+          "type": "fence_runs",
+          "unit": "feet",
+          "closedQuestion": "Does this run connect back to where it starts?",
+          "sectionQuestion": "Length of each straight section, in feet, between ends, corners and gates",
+          "gateChoices": [
+            {
+              "value": "walk",
+              "label": "walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+            }
+          ],
+          "presentationVariants": [
+            {
+              "label": "Length of each straight section, in feet, between ends, corners and gates",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "cornerCount",
+          "label": "Fence corners",
+          "unit": "corners",
+          "type": "number",
+          "min": 0,
+          "max": 1000000,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Fence corners",
+              "unit": "corners"
+            }
+          ]
+        },
+        {
+          "name": "oldFenceRemoval",
+          "label": "Old fence removal included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Old fence removal included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "removalLengthLF",
+          "label": "Measured old fence length to remove",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured old fence length to remove",
+              "unit": "linear feet"
+            }
+          ]
+        }
+      ],
+      "offeringSummary": [
+        "[SYNTHETIC] Defined six-foot wood fence",
+        "Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging.",
+        "Fence length excludes gate openings."
+      ],
+      "knownOfferings": {
+        "fenceType": {
+          "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "a8cdd0e1-9a5e-4008-bd66-40edd7e92d7c",
+      "serviceType": "SIDING_REPLACEMENT",
+      "name": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPLACEMENT",
+      "customerFields": [
+        {
+          "name": "areaInputMethod",
+          "label": "Siding area measurement method",
+          "type": "enum",
+          "unit": null,
+          "values": [
+            "sqft",
+            "building_dimensions"
+          ],
+          "optionLabels": {
+            "sqft": "Enter siding wall area directly",
+            "wall_sqft": "Enter wall area directly",
+            "room_dimensions": "Room length, width and height",
+            "building_dimensions": "House perimeter and wall height"
+          },
+          "details": [
+            "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Siding area measurement method",
+              "details": [
+                "Changing measurement methods clears the other method's measurements. Enter gables separately only when they are not included in the direct area."
+              ],
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "sidingAreaSqft",
+          "label": "Measured siding wall area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 2000000,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "sqft"
+              ]
+            ]
+          ],
+          "details": [
+            "Use the convention saved for the selected siding rate. Gable triangles entered separately are added once."
+          ],
+          "presentationVariants": []
+        },
+        {
+          "name": "sidingType",
+          "label": "Siding type",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "vinyl",
+            "fiber_cement",
+            "wood",
+            "metal"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Siding type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "stories",
+          "label": "Building stories",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            1,
+            2,
+            3
+          ],
+          "presentationVariants": [
+            {
+              "label": "Building stories",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "oldSidingRemoval",
+          "label": "Old siding removal included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Old siding removal included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "trimIncluded",
+          "label": "Siding trim included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Siding trim included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "trimLengthLF",
+          "label": "Measured siding trim length",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured siding trim length",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "buildingPerimeterFeet",
+          "label": "House perimeter",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "House perimeter",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "gables",
+          "label": "Gable triangles",
+          "type": "surface_rows",
+          "unit": null,
+          "rowFields": {
+            "widthFeet": {
+              "label": "Gable width",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 10000
+            },
+            "heightFeet": {
+              "label": "Gable height",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 1000
+            }
+          },
+          "minRows": 0,
+          "maxRows": 100,
+          "details": [
+            "Enter each gable separately. Its width × height ÷ 2 is added once; leave these triangles out of any direct area entered above."
+          ],
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "sqft"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Gable triangles",
+              "details": [
+                "Enter each gable separately. Its width × height ÷ 2 is added once; leave these triangles out of any direct area entered above."
+              ],
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "sqft"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "doorCount",
+          "label": "Door openings",
+          "unit": "openings",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Door openings",
+              "unit": "openings",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "windowCount",
+          "label": "Window openings",
+          "unit": "openings",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Window openings",
+              "unit": "openings",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "garageDoorCount",
+          "label": "Garage-door openings",
+          "unit": "openings",
+          "type": "number",
+          "min": 0,
+          "max": 10000,
+          "integer": true,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Garage-door openings",
+              "unit": "openings",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "garageDoorWidthFeet",
+          "label": "Width of each garage-door opening",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "garageDoorCount",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Width of each garage-door opening",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "garageDoorCount",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "garageDoorHeightFeet",
+          "label": "Height of each garage-door opening",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "garageDoorCount",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Height of each garage-door opening",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "garageDoorCount",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "garageOpenings",
+          "label": "Individual garage-door openings",
+          "type": "surface_rows",
+          "unit": null,
+          "rowFields": {
+            "widthFeet": {
+              "label": "Garage opening width",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 10000
+            },
+            "heightFeet": {
+              "label": "Garage opening height",
+              "unit": "feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 1000
+            }
+          },
+          "minRows": 1,
+          "maxRows": 100,
+          "details": [
+            "Use this list when opening sizes differ; otherwise enter the shared width and height above. Do not use both."
+          ],
+          "visibleWhen": [
+            [
+              [
+                "garageDoorCount",
+                "gt",
+                0
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Individual garage-door openings",
+              "details": [
+                "Use this list when opening sizes differ; otherwise enter the shared width and height above. Do not use both."
+              ],
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "garageDoorCount",
+                    "gt",
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "largeOpenings",
+          "label": "Other openings",
+          "type": "surface_rows",
+          "unit": null,
+          "rowFields": {
+            "areaSqft": {
+              "label": "Other opening area not counted above",
+              "unit": "square feet",
+              "type": "number",
+              "min": 0.01,
+              "max": 2000000
+            }
+          },
+          "minRows": 0,
+          "maxRows": 100,
+          "details": [
+            "Only openings not already counted as doors, windows or garage doors. Openings left in subtracts half the area of every garage door and every listed other opening, whatever its size; ordinary windows and doors stay in. Openings subtracted removes their full area."
+          ],
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "room_dimensions"
+              ]
+            ],
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Other openings",
+              "details": [
+                "Only openings not already counted as doors, windows or garage doors. Openings left in subtracts half the area of every garage door and every listed other opening, whatever its size; ordinary windows and doors stay in. Openings subtracted removes their full area."
+              ],
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "room_dimensions"
+                  ]
+                ],
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "wallHeightFeet",
+          "label": "Wall height to the eaves",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000,
+          "visibleWhen": [
+            [
+              [
+                "areaInputMethod",
+                "eq",
+                "building_dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Wall height to the eaves",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "areaInputMethod",
+                    "eq",
+                    "building_dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "surfaceOptionalItems",
+          "label": "Which optional siding items would you like?",
+          "type": "multi_enum",
+          "unit": null,
+          "values": [
+            "soffit",
+            "fascia"
+          ],
+          "optionLabels": {
+            "soffit": "Soffit",
+            "fascia": "Fascia"
+          },
+          "details": [
+            "Select all that apply, or leave all unchecked for none. We ask for quantities only for selected items with a saved price. Unpriced items are excluded from this quote and need a separate estimate."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Which optional siding items would you like?",
+              "details": [
+                "Select all that apply, or leave all unchecked for none. We ask for quantities only for selected items with a saved price. Unpriced items are excluded from this quote and need a separate estimate."
+              ],
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "existingSidingType",
+          "type": "slug",
+          "label": "Existing siding type to remove",
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "oldSidingRemoval",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Existing siding type to remove",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "oldSidingRemoval",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "sidingRemovalAreaSqft",
+          "type": "number",
+          "label": "Measured existing siding removal area",
+          "unit": "square feet",
+          "min": 0.1,
+          "max": 10000000,
+          "visibleWhen": [
+            [
+              [
+                "oldSidingRemoval",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured existing siding removal area",
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "oldSidingRemoval",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "sidingRemovalStories",
+          "type": "enum",
+          "label": "Stories of the existing siding removal",
+          "values": [
+            1,
+            2,
+            3
+          ],
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "oldSidingRemoval",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Stories of the existing siding removal",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "oldSidingRemoval",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "3fdee3d0-4c97-4118-a1e9-4061e22c92ad",
+      "serviceType": "SIDING_REPAIR",
+      "name": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPAIR",
+      "customerFields": [
+        {
+          "name": "sidingType",
+          "label": "Siding type",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "vinyl",
+            "fiber_cement",
+            "wood",
+            "metal"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Siding type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "damageLevel",
+          "label": "Siding damage type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Siding damage type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "affectedArea",
+          "label": "Measured affected siding area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "area"
+              ]
+            ],
+            [
+              [
+                "repairAreaMethod",
+                "absent",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured affected siding area",
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "area"
+                  ]
+                ],
+                [
+                  [
+                    "repairAreaMethod",
+                    "absent",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "stories",
+          "label": "Building stories",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            1,
+            2,
+            3
+          ],
+          "presentationVariants": [
+            {
+              "label": "Building stories",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "repairAreaMethod",
+          "label": "Affected area measurement",
+          "type": "enum",
+          "values": [
+            "area",
+            "dimensions"
+          ],
+          "optionLabels": {
+            "area": "Square feet",
+            "dimensions": "Length and width"
+          },
+          "details": [
+            "Use the affected area or its length and width. Your best estimate is fine."
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area measurement",
+              "details": [
+                "Use the affected area or its length and width. Your best estimate is fine."
+              ]
+            }
+          ]
+        },
+        {
+          "name": "repairLengthFt",
+          "label": "Affected area length",
+          "type": "number",
+          "unit": "feet",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area length",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "repairWidthFt",
+          "label": "Affected area width",
+          "type": "number",
+          "unit": "feet",
+          "min": 0.01,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "repairAreaMethod",
+                "eq",
+                "dimensions"
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Affected area width",
+              "unit": "feet",
+              "visibleWhen": [
+                [
+                  [
+                    "repairAreaMethod",
+                    "eq",
+                    "dimensions"
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "damageLevel": {
+          "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "94b7077c-db52-49ec-a047-09d6c4d03cc6",
+      "serviceType": "CONCRETE_DRIVEWAY",
+      "name": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_DRIVEWAY",
+      "customerFields": [
+        {
+          "name": "dimensionMethod",
+          "label": "Slab measurement method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact",
+            "measured_area_perimeter",
+            "measured_outline"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Slab measurement method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "length",
+          "label": "Measured slab length",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 100000,
+          "presentationVariants": [
+            {
+              "label": "Measured slab length",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "width",
+          "label": "Measured slab width",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 100000,
+          "presentationVariants": [
+            {
+              "label": "Measured slab width",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "areaSqft",
+          "label": "Measured slab area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured slab area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "perimeterLF",
+          "label": "Measured slab perimeter",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured slab perimeter",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "thickness",
+          "label": "Concrete thickness",
+          "unit": "inches",
+          "type": "number",
+          "min": 2,
+          "max": 24,
+          "presentationVariants": [
+            {
+              "label": "Concrete thickness",
+              "unit": "inches"
+            }
+          ]
+        },
+        {
+          "name": "finishType",
+          "label": "Concrete finish",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "broom",
+            "smooth",
+            "exposed_aggregate",
+            "stamped"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Concrete finish",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "demolitionNeeded",
+          "label": "Existing concrete demolition included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Existing concrete demolition included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "demolitionAreaSqft",
+          "label": "Measured demolition area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured demolition area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "reinforcement",
+          "label": "Reinforcement",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "none",
+            "wire_mesh",
+            "rebar"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Reinforcement",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "accessDifficulty",
+          "label": "Project access",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Project access",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "baseNeeded",
+          "label": "Base preparation requested",
+          "unit": null,
+          "type": "boolean",
+          "summaryLabel": "Base preparation requested",
+          "presentationVariants": [
+            {
+              "label": "Base preparation requested",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "chuteAccess",
+          "label": "Can the concrete truck get its chute to the pour?",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "yes",
+            "no",
+            "unknown"
+          ],
+          "optionLabels": {
+            "yes": "Yes",
+            "no": "No",
+            "unknown": "Not sure"
+          },
+          "required": false,
+          "presentationVariants": [
+            {
+              "label": "Can the concrete truck get its chute to the pour?",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "adjoinsExistingConcrete",
+          "label": "Does any edge touch a house foundation, garage foundation, or existing concrete?",
+          "unit": null,
+          "type": "boolean",
+          "summaryLabel": "Edges against foundation or existing concrete",
+          "presentationVariants": [
+            {
+              "label": "Does any edge touch a house foundation, garage foundation, or existing concrete?",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "adjoiningEdgeLF",
+          "label": "Total measured length of those adjoining edges",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "adjoinsExistingConcrete",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Total measured length of those adjoining edges",
+              "unit": "linear feet",
+              "visibleWhen": [
+                [
+                  [
+                    "adjoinsExistingConcrete",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "outlinePoints",
+          "label": "Closed measured orthogonal outline coordinates",
+          "unit": "feet",
+          "type": "orthogonal_outline",
+          "presentationVariants": [
+            {
+              "label": "Closed measured orthogonal outline coordinates",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "demolitionThickness",
+          "type": "number",
+          "label": "Measured existing slab thickness",
+          "unit": "inches",
+          "min": 0.1,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "demolitionNeeded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured existing slab thickness",
+              "unit": "inches",
+              "visibleWhen": [
+                [
+                  [
+                    "demolitionNeeded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "demolitionReinforcement",
+          "type": "enum",
+          "label": "Existing slab reinforcement",
+          "values": [
+            "none",
+            "wire_mesh",
+            "rebar"
+          ],
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "demolitionNeeded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Existing slab reinforcement",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "demolitionNeeded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "demolitionAccessDifficulty",
+          "type": "enum",
+          "label": "Existing slab demolition access",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "demolitionNeeded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Existing slab demolition access",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "demolitionNeeded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "e9ae5937-6094-4461-9d69-813f52941449",
+      "serviceType": "CONCRETE_PATIO_SLAB",
+      "name": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_PATIO_SLAB",
+      "customerFields": [
+        {
+          "name": "dimensionMethod",
+          "label": "Slab measurement method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact",
+            "measured_area_perimeter",
+            "measured_outline"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Slab measurement method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "length",
+          "label": "Measured slab length",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 100000,
+          "presentationVariants": [
+            {
+              "label": "Measured slab length",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "width",
+          "label": "Measured slab width",
+          "unit": "feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 100000,
+          "presentationVariants": [
+            {
+              "label": "Measured slab width",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "areaSqft",
+          "label": "Measured slab area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured slab area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "perimeterLF",
+          "label": "Measured slab perimeter",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured slab perimeter",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "thickness",
+          "label": "Concrete thickness",
+          "unit": "inches",
+          "type": "number",
+          "min": 2,
+          "max": 24,
+          "presentationVariants": [
+            {
+              "label": "Concrete thickness",
+              "unit": "inches"
+            }
+          ]
+        },
+        {
+          "name": "finishType",
+          "label": "Concrete finish",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "broom",
+            "smooth",
+            "exposed_aggregate",
+            "stamped"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Concrete finish",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "demolitionNeeded",
+          "label": "Existing concrete demolition included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Existing concrete demolition included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "demolitionAreaSqft",
+          "label": "Measured demolition area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured demolition area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "reinforcement",
+          "label": "Reinforcement",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "none",
+            "wire_mesh",
+            "rebar"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Reinforcement",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "accessDifficulty",
+          "label": "Project access",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Project access",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "baseNeeded",
+          "label": "Base preparation requested",
+          "unit": null,
+          "type": "boolean",
+          "summaryLabel": "Base preparation requested",
+          "presentationVariants": [
+            {
+              "label": "Base preparation requested",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "chuteAccess",
+          "label": "Can the concrete truck get its chute to the pour?",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "yes",
+            "no",
+            "unknown"
+          ],
+          "optionLabels": {
+            "yes": "Yes",
+            "no": "No",
+            "unknown": "Not sure"
+          },
+          "required": false,
+          "presentationVariants": [
+            {
+              "label": "Can the concrete truck get its chute to the pour?",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "adjoinsExistingConcrete",
+          "label": "Does any edge touch a house foundation, garage foundation, or existing concrete?",
+          "unit": null,
+          "type": "boolean",
+          "summaryLabel": "Edges against foundation or existing concrete",
+          "presentationVariants": [
+            {
+              "label": "Does any edge touch a house foundation, garage foundation, or existing concrete?",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "adjoiningEdgeLF",
+          "label": "Total measured length of those adjoining edges",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "adjoinsExistingConcrete",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Total measured length of those adjoining edges",
+              "unit": "linear feet",
+              "visibleWhen": [
+                [
+                  [
+                    "adjoinsExistingConcrete",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "outlinePoints",
+          "label": "Closed measured orthogonal outline coordinates",
+          "unit": "feet",
+          "type": "orthogonal_outline",
+          "presentationVariants": [
+            {
+              "label": "Closed measured orthogonal outline coordinates",
+              "unit": "feet"
+            }
+          ]
+        },
+        {
+          "name": "demolitionThickness",
+          "type": "number",
+          "label": "Measured existing slab thickness",
+          "unit": "inches",
+          "min": 0.1,
+          "max": 1000000,
+          "visibleWhen": [
+            [
+              [
+                "demolitionNeeded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured existing slab thickness",
+              "unit": "inches",
+              "visibleWhen": [
+                [
+                  [
+                    "demolitionNeeded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "demolitionReinforcement",
+          "type": "enum",
+          "label": "Existing slab reinforcement",
+          "values": [
+            "none",
+            "wire_mesh",
+            "rebar"
+          ],
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "demolitionNeeded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Existing slab reinforcement",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "demolitionNeeded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "demolitionAccessDifficulty",
+          "type": "enum",
+          "label": "Existing slab demolition access",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "unit": null,
+          "visibleWhen": [
+            [
+              [
+                "demolitionNeeded",
+                "eq",
+                true
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Existing slab demolition access",
+              "unit": null,
+              "visibleWhen": [
+                [
+                  [
+                    "demolitionNeeded",
+                    "eq",
+                    true
+                  ]
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "3a7f8517-5335-4e43-9ec5-9cff1a20f297",
+      "serviceType": "LANDSCAPING_CLEANUP",
+      "name": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_CLEANUP",
+      "customerFields": [
+        {
+          "name": "yardSqft",
+          "label": "Measured cleanup area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured cleanup area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "sqftMethod",
+          "label": "Cleanup area method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Cleanup area method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "debrisLevel",
+          "label": "Debris level",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "light",
+            "moderate",
+            "heavy"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Debris level",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "slope",
+          "label": "Terrain slope",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "flat",
+            "moderate",
+            "steep"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Terrain slope",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "haulAway",
+          "label": "Additional haul-away selected",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Additional haul-away selected",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "wasteBags",
+          "label": "About how many bags of yard waste?",
+          "unit": "bags",
+          "type": "number_or_unknown",
+          "min": 0,
+          "max": 1000000,
+          "integer": true,
+          "required": false,
+          "presentationVariants": [
+            {
+              "label": "About how many bags of yard waste?",
+              "unit": "bags"
+            }
+          ]
+        },
+        {
+          "name": "wasteLoads",
+          "label": "About how many pickup-truck loads?",
+          "unit": "pickup-truck loads",
+          "type": "number_or_unknown",
+          "min": 0,
+          "max": 1000000,
+          "required": false,
+          "presentationVariants": [
+            {
+              "label": "About how many pickup-truck loads?",
+              "unit": "pickup-truck loads"
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "86680c1b-b5a3-44b5-ba71-657b4fabcc9c",
+      "serviceType": "LANDSCAPING_MULCH",
+      "name": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MULCH",
+      "customerFields": [
+        {
+          "name": "inputMethod",
+          "label": "Mulch quantity method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "sqft",
+            "yards"
+          ],
+          "optionLabels": {
+            "sqft": "Bed area and depth",
+            "yards": "Cubic yards of mulch"
+          },
+          "presentationVariants": [
+            {
+              "label": "Mulch quantity method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "mulchArea",
+          "label": "Mulch quantity",
+          "unit": "square feet for bed area; cubic yards for mulch volume",
+          "type": "number",
+          "min": 0.01,
+          "max": 10000000,
+          "visibleWhen": [
+            [
+              [
+                "inputMethod",
+                "in",
+                [
+                  "sqft",
+                  "yards"
+                ]
+              ]
+            ]
+          ],
+          "presentationVariants": [
+            {
+              "label": "Measured bed area",
+              "unit": "square feet",
+              "visibleWhen": [
+                [
+                  [
+                    "inputMethod",
+                    "eq",
+                    "sqft"
+                  ]
+                ]
+              ]
+            },
+            {
+              "label": "Mulch volume",
+              "unit": "cubic yards",
+              "visibleWhen": [
+                [
+                  [
+                    "inputMethod",
+                    "eq",
+                    "yards"
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "mulchDepth",
+          "label": "Mulch depth",
+          "unit": "inches",
+          "type": "number",
+          "min": 0.5,
+          "max": 24,
+          "presentationVariants": [
+            {
+              "label": "Mulch depth",
+              "unit": "inches"
+            }
+          ]
+        },
+        {
+          "name": "mulchType",
+          "label": "Mulch type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Mulch type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "bedCondition",
+          "label": "Planting-bed condition",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "clean",
+            "needs_weeding",
+            "overgrown"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Planting-bed condition",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "bedSqft",
+          "label": "Measured preparation area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured preparation area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "edgingNeeded",
+          "label": "Bed edging included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Bed edging included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "edgeLF",
+          "label": "Measured bed-edge length",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured bed-edge length",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "accessDifficulty",
+          "label": "Project access",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Project access",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "mulchType": {
+          "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+          "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+          "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "3a0bb39b-8408-4826-b888-4ee72349b67f",
+      "serviceType": "LANDSCAPING_SOD",
+      "name": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_SOD",
+      "customerFields": [
+        {
+          "name": "sodSqft",
+          "label": "Measured sod area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured sod area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "sqftMethod",
+          "label": "Sod area method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Sod area method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "groundPrepNeeded",
+          "label": "Ground preparation requested",
+          "unit": null,
+          "type": "boolean",
+          "summaryLabel": "Ground preparation requested",
+          "presentationVariants": [
+            {
+              "label": "Ground preparation requested",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "slope",
+          "label": "Terrain slope",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "flat",
+            "moderate",
+            "steep"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Terrain slope",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "accessDifficulty",
+          "label": "Project access",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Project access",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "separateDisposalSelected",
+          "label": "Separate project debris disposal selected",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Separate project debris disposal selected",
+              "unit": null
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "7246b788-25d9-46c4-b4d0-fcda4b077620",
+      "serviceType": "LANDSCAPING_PLANTING",
+      "name": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_PLANTING",
+      "customerFields": [
+        {
+          "name": "plantsBySize",
+          "label": "Measured plant count by size",
+          "unit": "plants",
+          "type": "plant_counts",
+          "presentationVariants": [
+            {
+              "label": "Measured plant count by size",
+              "unit": "plants"
+            }
+          ]
+        },
+        {
+          "name": "bedCondition",
+          "label": "Planting-bed condition",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "clean",
+            "needs_weeding",
+            "overgrown"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Planting-bed condition",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "bedSqft",
+          "label": "Measured preparation area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured preparation area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "mulchNeeded",
+          "label": "Mulch included",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Mulch included",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "mulchYards",
+          "label": "Measured mulch quantity",
+          "unit": "cubic yards",
+          "type": "number",
+          "min": 0.01,
+          "max": 100000,
+          "presentationVariants": [
+            {
+              "label": "Measured mulch quantity",
+              "unit": "cubic yards"
+            }
+          ]
+        },
+        {
+          "name": "mulchType",
+          "label": "Mulch type",
+          "unit": null,
+          "type": "slug",
+          "presentationVariants": [
+            {
+              "label": "Mulch type",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "accessDifficulty",
+          "label": "Project access",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "easy",
+            "moderate",
+            "difficult"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Project access",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "confirmedFacts",
+          "label": "Affirmatively identified owner offerings",
+          "unit": null,
+          "type": "confirmed_facts",
+          "presentationVariants": [
+            {
+              "label": "Affirmatively identified owner offerings",
+              "unit": null
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {
+        "mulchType": {
+          "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+          "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+          "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+        }
+      },
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "b3db4b95-f685-4f6c-884e-a20bf17675db",
+      "serviceType": "LANDSCAPING_MOWING",
+      "name": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MOWING",
+      "customerFields": [
+        {
+          "name": "yardSqft",
+          "label": "Measured mowable lawn area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 1,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured mowable lawn area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "sqftMethod",
+          "label": "Lawn area method",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "exact"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Lawn area method",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "serviceFrequency",
+          "label": "Service frequency",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "weekly",
+            "biweekly",
+            "monthly",
+            "one_time"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Service frequency",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "grassCondition",
+          "label": "Grass condition",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "maintained",
+            "overgrown",
+            "severe"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Grass condition",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "bagClippings",
+          "label": "Clipping bagging selected",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Clipping bagging selected",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "edgingIncluded",
+          "label": "Lawn edging selected",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Lawn edging selected",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "edgingLengthLF",
+          "label": "Measured edging length",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.1,
+          "max": 1000000,
+          "presentationVariants": [
+            {
+              "label": "Measured edging length",
+              "unit": "linear feet"
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    },
+    {
+      "id": "2fc354c4-2206-4918-b6e5-d41d8189428b",
+      "serviceType": "CUSTOM",
+      "name": "[SYNTHETIC PUBLIC INTAKE] CUSTOM",
+      "customerFields": [
+        {
+          "name": "service",
+          "label": "Confirmed custom service",
+          "unit": null,
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "presentationVariants": [
+            {
+              "label": "Confirmed custom service",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "serviceConfirmed",
+          "label": "Customer confirmed the matched service",
+          "unit": null,
+          "type": "boolean",
+          "presentationVariants": [
+            {
+              "label": "Customer confirmed the matched service",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "unit",
+          "label": "Customer quantity unit",
+          "unit": null,
+          "type": "enum",
+          "values": [
+            "flat",
+            "per_sqft",
+            "per_hour",
+            "per_unit",
+            "per_LF",
+            "per_square"
+          ],
+          "presentationVariants": [
+            {
+              "label": "Customer quantity unit",
+              "unit": null
+            }
+          ]
+        },
+        {
+          "name": "hours",
+          "label": "Measured labor time",
+          "unit": "hours",
+          "type": "number",
+          "min": 0.01,
+          "max": 100000,
+          "presentationVariants": [
+            {
+              "label": "Measured labor time",
+              "unit": "hours"
+            }
+          ]
+        },
+        {
+          "name": "itemCount",
+          "label": "Confirmed item count",
+          "unit": "items",
+          "type": "number",
+          "min": 1,
+          "max": 10000000,
+          "integer": true,
+          "presentationVariants": [
+            {
+              "label": "Confirmed item count",
+              "unit": "items"
+            }
+          ]
+        },
+        {
+          "name": "areaSqft",
+          "label": "Measured service area",
+          "unit": "square feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured service area",
+              "unit": "square feet"
+            }
+          ]
+        },
+        {
+          "name": "linearFeet",
+          "label": "Measured service length",
+          "unit": "linear feet",
+          "type": "number",
+          "min": 0.01,
+          "max": 10000000,
+          "presentationVariants": [
+            {
+              "label": "Measured service length",
+              "unit": "linear feet"
+            }
+          ]
+        },
+        {
+          "name": "roofSquares",
+          "label": "Measured roofing area",
+          "unit": "roofing squares",
+          "type": "number",
+          "min": 0.01,
+          "max": 100000,
+          "presentationVariants": [
+            {
+              "label": "Measured roofing area",
+              "unit": "roofing squares"
+            }
+          ]
+        }
+      ],
+      "knownOfferings": {},
+      "customerFees": [],
+      "quoteCapability": "LIVE_OR_REVIEW",
+      "bookingCapability": "PREFERRED_TIME_ONLY"
+    }
+  ]
+}

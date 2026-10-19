@@ -1,0 +1,65 @@
+[
+  {
+    "id": "PI-01",
+    "severity": "actionable",
+    "serviceType": "LANDSCAPING_MULCH",
+    "boundary": "actual React control in JSDOM (not real-browser coverage)",
+    "title": "Mulch method change retains hidden depth",
+    "retainedFields": [
+      "mulchDepth"
+    ],
+    "expected": "Changing the controlling visible answer removes values that are no longer applicable.",
+    "actual": "The rendered control hides the dependent field(s) but state still contains mulchDepth. The HTTP audit separately shows the public prepare handler rejects the contradictory body without saving a priced receipt."
+  },
+  {
+    "id": "PI-02",
+    "severity": "actionable",
+    "serviceType": "CONCRETE_DRIVEWAY",
+    "boundary": "actual React control in JSDOM (not real-browser coverage)",
+    "title": "Concrete method change retains hidden length and width",
+    "retainedFields": [
+      "length",
+      "width"
+    ],
+    "expected": "Changing the controlling visible answer removes values that are no longer applicable.",
+    "actual": "The rendered control hides the dependent field(s) but state still contains length, width. The HTTP audit separately shows the public prepare handler rejects the contradictory body without saving a priced receipt."
+  },
+  {
+    "id": "PI-03",
+    "severity": "actionable",
+    "serviceType": "FLOORING_REPLACEMENT",
+    "boundary": "actual React control in JSDOM (not real-browser coverage)",
+    "title": "Subfloor correction retains hidden repair area",
+    "retainedFields": [
+      "subfloorRepairAreaSqft"
+    ],
+    "expected": "Changing the controlling visible answer removes values that are no longer applicable.",
+    "actual": "The rendered control hides the dependent field(s) but state still contains subfloorRepairAreaSqft. The HTTP audit separately shows the public prepare handler rejects the contradictory body without saving a priced receipt."
+  },
+  {
+    "id": "PI-04",
+    "severity": "actionable",
+    "serviceType": "LANDSCAPING_PLANTING",
+    "boundary": "actual React control in JSDOM (not real-browser coverage)",
+    "title": "Planting mulch removal retains hidden quantities and product",
+    "retainedFields": [
+      "mulchYards",
+      "mulchType",
+      "confirmedFacts.mulchType"
+    ],
+    "expected": "Changing the controlling visible answer removes values that are no longer applicable.",
+    "actual": "The rendered control hides the mulch fields but state still contains mulchYards, mulchType, confirmedFacts.mulchType. The HTTP audit separately shows the contradictory body is rejected without a priced receipt."
+  },
+  {
+    "id": "PI-05",
+    "severity": "actionable",
+    "serviceType": "LANDSCAPING_MOWING",
+    "boundary": "actual React control in JSDOM (not real-browser coverage)",
+    "title": "Edging removal retains hidden length",
+    "retainedFields": [
+      "edgingLengthLF"
+    ],
+    "expected": "Changing the controlling visible answer removes values that are no longer applicable.",
+    "actual": "The rendered control hides the dependent field(s) but state still contains edgingLengthLF. The HTTP audit separately shows the public prepare handler rejects the contradictory body without saving a priced receipt."
+  }
+]

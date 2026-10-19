@@ -1,0 +1,6 @@
+{
+  "status": "passed",
+  "surface": "JSDOM actual React controls; explicitly not real-browser coverage",
+  "caseCount": 9,
+  "actionableFindings": 5
+}

@@ -1,0 +1,387 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/save",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/save",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/save",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/save",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/89a4259f-c9c1-43d2-970a-026d3644d6e2/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/4bb3ab31-6f5c-476e-96fa-a728d167a370/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/b82b6284-8ad0-418d-b26e-8518b06146e0/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/f70e5292-a8a0-4127-ac34-a2f7e5ae2b8f/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/9218a8fe-fbb4-402e-b0e3-e731d8c6ed20/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/10c1504a-6862-4cad-8127-23ac7e25ffcd/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/f43f35d6-4d19-44f7-bdc3-2f6e7512a09d/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/972fc5d1-a43b-4503-aeaf-01c9f12c7999/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/0759a9f6-2a44-4748-8b0e-29ce7a3a424d/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/aef708ff-cb0e-4b80-9217-d9d60c93418c/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/a8cdd0e1-9a5e-4008-bd66-40edd7e92d7c/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/3fdee3d0-4c97-4118-a1e9-4061e22c92ad/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/94b7077c-db52-49ec-a047-09d6c4d03cc6/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/e9ae5937-6094-4461-9d69-813f52941449/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/3a7f8517-5335-4e43-9ec5-9cff1a20f297/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/86680c1b-b5a3-44b5-ba71-657b4fabcc9c/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/3a0bb39b-8408-4826-b888-4ee72349b67f/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/7246b788-25d9-46c4-b4d0-fcda4b077620/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/b3db4b95-f685-4f6c-884e-a20bf17675db/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/2fc354c4-2206-4918-b6e5-d41d8189428b/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/quotedone/access",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/save",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/validate",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/api/pricebook/services/2fc354c4-2206-4918-b6e5-d41d8189428b/approve",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/pricebook/synthetic-a",
+    "status": 200
+  }
+]

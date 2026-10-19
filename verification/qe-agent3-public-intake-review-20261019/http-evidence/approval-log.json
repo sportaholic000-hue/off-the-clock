@@ -1,0 +1,1810 @@
+[
+  {
+    "type": "ROOFING_REPLACEMENT",
+    "before": {
+      "serviceType": "ROOFING_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPLACEMENT",
+      "statusNotices": [],
+      "scopeCoverage": [],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [
+        {
+          "tierName": null,
+          "selection": {
+            "replacementRoofType": "asphalt_shingle",
+            "existingRoofType": "asphalt_shingle"
+          },
+          "configurationComplete": true,
+          "ownerDiagnostics": [],
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "89a4259f-c9c1-43d2-970a-026d3644d6e2",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborPerSquare",
+        "materialCostPerSquare",
+        "tearOffPerSquare",
+        "underlaymentPerSquare",
+        "accessoryPricingMode",
+        "materialAccessoryBasis",
+        "starterPerLF",
+        "dripEdgePerLF",
+        "ridgeCapPerLF",
+        "deckingPerSheet",
+        "minimumJob",
+        "wasteFactorByComplexity",
+        "pitchMultiplier",
+        "storyMultiplier",
+        "underlaymentPriceBasis",
+        "pitchInstallationAdder",
+        "pitchRemovalAdder",
+        "complexityLaborMultiplier",
+        "additionalLayerRemovalFactor",
+        "accessoryWasteFactor",
+        "unknownPitchBand",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "ROOFING_REPAIR",
+    "before": {
+      "serviceType": "ROOFING_REPAIR",
+      "service": "[SYNTHETIC PUBLIC INTAKE] ROOFING_REPAIR",
+      "statusNotices": [],
+      "scopeCoverage": [],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "4bb3ab31-6f5c-476e-96fa-a728d167a370",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborHourlyRate",
+        "repairMinimum",
+        "repairHours",
+        "repairMaterialAllowance",
+        "pitchMultiplier",
+        "storyMultiplier",
+        "largeRepairMaxSqft",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "FLAT_ROOF_REPLACEMENT",
+    "before": {
+      "serviceType": "FLAT_ROOF_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPLACEMENT",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "insulation",
+          "label": "Roof insulation",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Roof insulation requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "coverboard",
+          "label": "Roof coverboard",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Roof coverboard requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [
+        {
+          "tierName": null,
+          "selection": {
+            "replacementMembraneType": "epdm",
+            "membraneType": "epdm"
+          },
+          "configurationComplete": true,
+          "ownerDiagnostics": [],
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "b82b6284-8ad0-418d-b26e-8518b06146e0",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [
+        {
+          "path": "pricing.insulationPerSqft",
+          "value": 250
+        }
+      ],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborPerSqft",
+        "membraneCostPerSqft",
+        "tearOffPerSqft",
+        "minimumJob",
+        "insulationPerSqft",
+        "accessMultiplier",
+        "membraneWasteFactor",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "FLAT_ROOF_REPAIR",
+    "before": {
+      "serviceType": "FLAT_ROOF_REPAIR",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPAIR",
+      "statusNotices": [],
+      "scopeCoverage": [],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "f70e5292-a8a0-4127-ac34-a2f7e5ae2b8f",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborHourlyRate",
+        "repairMinimum",
+        "patchRepairHours",
+        "patchMaterialAllowance",
+        "accessMultiplier",
+        "largeRepairMaxSqft",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "INTERIOR_PAINTING",
+    "before": {
+      "serviceType": "INTERIOR_PAINTING",
+      "service": "[SYNTHETIC PUBLIC INTAKE] INTERIOR_PAINTING",
+      "statusNotices": [],
+      "scopeCoverage": [],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "9218a8fe-fbb4-402e-b0e3-e731d8c6ed20",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "minimumJob",
+        "offeringMode",
+        "offeringDetails",
+        "offeringRates",
+        "installedLaborPercent",
+        "installedMaterialsPercent",
+        "wallHeightLaborMultiplier",
+        "paintWasteFactor",
+        "primerWasteFactor",
+        "prepMaterialWasteFactor",
+        "paintingSettings",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "EXTERIOR_PAINTING",
+    "before": {
+      "serviceType": "EXTERIOR_PAINTING",
+      "service": "[SYNTHETIC PUBLIC INTAKE] EXTERIOR_PAINTING",
+      "statusNotices": [],
+      "scopeCoverage": [],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "10c1504a-6862-4cad-8127-23ac7e25ffcd",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "minimumJob",
+        "offeringMode",
+        "offeringDetails",
+        "offeringRates",
+        "installedLaborPercent",
+        "installedMaterialsPercent",
+        "storyMultiplier",
+        "prepHoursPerSqft",
+        "paintWasteFactor",
+        "primerWasteFactor",
+        "prepMaterialWasteFactor",
+        "paintingSettings",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "FLOORING_INSTALL",
+    "before": {
+      "serviceType": "FLOORING_INSTALL",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FLOORING_INSTALL",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "floor_underlayment_hardwood",
+          "label": "hardwood underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "hardwood underlayment requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "floor_underlayment_laminate",
+          "label": "laminate underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "laminate underlayment requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "floor_underlayment_carpet",
+          "label": "carpet underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "carpet underlayment requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "stairs",
+          "label": "Complete stair work",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Complete stair work requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "floor_overlay",
+          "label": "Additional preparation for flooring over an existing floor",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Additional preparation for flooring over an existing floor requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [
+        {
+          "tierName": null,
+          "selection": {
+            "newFlooringType": "vinyl_plank",
+            "layoutPattern": "straight"
+          },
+          "configurationComplete": true,
+          "ownerDiagnostics": [],
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "tierName": null,
+          "selection": {
+            "newFlooringType": "vinyl_plank",
+            "layoutPattern": "diagonal_or_pattern"
+          },
+          "configurationComplete": true,
+          "ownerDiagnostics": [],
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "f43f35d6-4d19-44f7-bdc3-2f6e7512a09d",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborPerSqft",
+        "materialPerSqft",
+        "minimumJob",
+        "vinylPlankUnderlaymentRule",
+        "wasteFactorByType",
+        "patternWasteAdder",
+        "roomComplexityMultiplier",
+        "roomSizeThresholds",
+        "layoutLaborMultiplier",
+        "diagonalWasteAdderByType",
+        "herringboneWasteAdderByType",
+        "herringboneLaborMultiplierByType",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "FLOORING_REPLACEMENT",
+    "before": {
+      "serviceType": "FLOORING_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FLOORING_REPLACEMENT",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "floor_underlayment_hardwood",
+          "label": "hardwood underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "hardwood underlayment requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "floor_underlayment_laminate",
+          "label": "laminate underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "laminate underlayment requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "floor_underlayment_carpet",
+          "label": "carpet underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "carpet underlayment requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "stairs",
+          "label": "Complete stair work",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Complete stair work requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "floor_overlay",
+          "label": "Additional preparation for flooring over an existing floor",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Additional preparation for flooring over an existing floor requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "floor_removal_vinyl",
+          "label": "Floor removal: vinyl",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "subfloor_repair_prices",
+          "label": "Subfloor repair allowance",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [
+        {
+          "tierName": null,
+          "selection": {
+            "newFlooringType": "tile",
+            "layoutPattern": "straight"
+          },
+          "configurationComplete": true,
+          "ownerDiagnostics": [],
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "tierName": null,
+          "selection": {
+            "newFlooringType": "tile",
+            "layoutPattern": "diagonal_or_pattern"
+          },
+          "configurationComplete": true,
+          "ownerDiagnostics": [],
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "972fc5d1-a43b-4503-aeaf-01c9f12c7999",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [
+        {
+          "path": "pricing.perStepPrice",
+          "value": 10000
+        }
+      ],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborPerSqft",
+        "materialPerSqft",
+        "minimumJob",
+        "removalPerSqft",
+        "perStepPrice",
+        "subfloorAllowancePerSqft",
+        "vinylPlankUnderlaymentRule",
+        "wasteFactorByType",
+        "patternWasteAdder",
+        "roomComplexityMultiplier",
+        "roomSizeThresholds",
+        "layoutLaborMultiplier",
+        "diagonalWasteAdderByType",
+        "herringboneWasteAdderByType",
+        "herringboneLaborMultiplierByType",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "FENCING_INSTALL",
+    "before": {
+      "serviceType": "FENCING_INSTALL",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FENCING_INSTALL",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "gate_prices_walk",
+          "label": "Installed gate: walk",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "fenceHeightNotice": "Only the saved fence height is priced. Add rows for the other heights you build.",
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "0759a9f6-2a44-4748-8b0e-29ce7a3a424d",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "minimumJob",
+        "offeringMode",
+        "offeringDetails",
+        "offeringRates",
+        "installedLaborPercent",
+        "installedMaterialsPercent",
+        "postSpacingLF",
+        "fenceWasteFactor",
+        "terrainLaborMultiplier",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "FENCING_REPLACEMENT",
+    "before": {
+      "serviceType": "FENCING_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] FENCING_REPLACEMENT",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "gate_prices_walk",
+          "label": "Installed gate: walk",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "removal_prices",
+          "label": "Fence removal",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "fenceHeightNotice": "Only the saved fence height is priced. Add rows for the other heights you build.",
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "aef708ff-cb0e-4b80-9217-d9d60c93418c",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "minimumJob",
+        "offeringMode",
+        "offeringDetails",
+        "offeringRates",
+        "installedLaborPercent",
+        "installedMaterialsPercent",
+        "postSpacingLF",
+        "fenceWasteFactor",
+        "terrainLaborMultiplier",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "SIDING_REPLACEMENT",
+    "before": {
+      "serviceType": "SIDING_REPLACEMENT",
+      "service": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPLACEMENT",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "siding_removal",
+          "label": "Existing siding removal",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Existing siding removal requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "siding_trim",
+          "label": "Siding trim installation",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Siding trim installation requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "a8cdd0e1-9a5e-4008-bd66-40edd7e92d7c",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [
+        {
+          "path": "pricing.removalPerSqft",
+          "value": 100
+        }
+      ],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborPerSqft",
+        "materialPerSqft",
+        "minimumJob",
+        "removalPerSqft",
+        "trimPerLinearFoot",
+        "wasteFactorByType",
+        "storyMultiplier",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "SIDING_REPAIR",
+    "before": {
+      "serviceType": "SIDING_REPAIR",
+      "service": "[SYNTHETIC PUBLIC INTAKE] SIDING_REPAIR",
+      "statusNotices": [],
+      "scopeCoverage": [],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "3fdee3d0-4c97-4118-a1e9-4061e22c92ad",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborHourlyRate",
+        "repairMinimum",
+        "repairHours",
+        "materialAllowance",
+        "storyMultiplier",
+        "largeRepairMaxSqft",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "CONCRETE_DRIVEWAY",
+    "before": {
+      "serviceType": "CONCRETE_DRIVEWAY",
+      "service": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_DRIVEWAY",
+      "statusNotices": [
+        "Set the thickness range covered by this slab labor rate. Until then, the existing 2–24 inch input range remains available.",
+        "State whether saw-cut control joints are included in the slab labor price."
+      ],
+      "scopeCoverage": [
+        {
+          "key": "demolition",
+          "label": "Existing slab demolition",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Existing slab demolition requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "exposed_aggregate",
+          "label": "Additional exposed-aggregate finishing",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Additional exposed-aggregate finishing requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "base_prices",
+          "label": "Concrete base preparation",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "wire_prices",
+          "label": "Wire mesh reinforcement",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "rebar_prices",
+          "label": "Rebar reinforcement",
+          "configurationComplete": false,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": [
+                "rebarReinforcementPerSqft"
+              ]
+            }
+          ],
+          "message": "Rebar reinforcement requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "stamped_prices",
+          "label": "Stamped concrete finish",
+          "configurationComplete": false,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": [
+                "stampedMaterialPerSqft"
+              ]
+            }
+          ],
+          "message": "Stamped concrete finish requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "94b7077c-db52-49ec-a047-09d6c4d03cc6",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborPerSqft",
+        "concreteCostPerCubicYard",
+        "formworkPerLF",
+        "minimumJob",
+        "basePrepPerSqft",
+        "wireReinforcementPerSqft",
+        "concreteWasteFactor",
+        "finishMultiplier",
+        "accessMultiplier",
+        "reinforcementWasteFactor",
+        "stampedMaterialWasteFactor",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "CONCRETE_PATIO_SLAB",
+    "before": {
+      "serviceType": "CONCRETE_PATIO_SLAB",
+      "service": "[SYNTHETIC PUBLIC INTAKE] CONCRETE_PATIO_SLAB",
+      "statusNotices": [
+        "Set the thickness range covered by this slab labor rate. Until then, the existing 2–24 inch input range remains available.",
+        "State whether saw-cut control joints are included in the slab labor price."
+      ],
+      "scopeCoverage": [
+        {
+          "key": "demolition",
+          "label": "Existing slab demolition",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Existing slab demolition requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "exposed_aggregate",
+          "label": "Additional exposed-aggregate finishing",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Additional exposed-aggregate finishing requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "base_prices",
+          "label": "Concrete base preparation",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "wire_prices",
+          "label": "Wire mesh reinforcement",
+          "configurationComplete": false,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": [
+                "wireReinforcementPerSqft"
+              ]
+            }
+          ],
+          "message": "Wire mesh reinforcement requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "rebar_prices",
+          "label": "Rebar reinforcement",
+          "configurationComplete": false,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": [
+                "rebarReinforcementPerSqft"
+              ]
+            }
+          ],
+          "message": "Rebar reinforcement requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "stamped_prices",
+          "label": "Stamped concrete finish",
+          "configurationComplete": false,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": [
+                "stampedMaterialPerSqft"
+              ]
+            }
+          ],
+          "message": "Stamped concrete finish requests arrive as leads until you configure this scope and its prices.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "e9ae5937-6094-4461-9d69-813f52941449",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborPerSqft",
+        "concreteCostPerCubicYard",
+        "formworkPerLF",
+        "minimumJob",
+        "basePrepPerSqft",
+        "concreteWasteFactor",
+        "finishMultiplier",
+        "accessMultiplier",
+        "reinforcementWasteFactor",
+        "stampedMaterialWasteFactor",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "LANDSCAPING_CLEANUP",
+    "before": {
+      "serviceType": "LANDSCAPING_CLEANUP",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_CLEANUP",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "haul_prices",
+          "label": "Additional cleanup haul-away",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "3a7f8517-5335-4e43-9ec5-9cff1a20f297",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "cleanupBaseRatePerSqft",
+        "debrisPricing",
+        "minimumServiceCharge",
+        "haulAwayFee",
+        "slopeMultiplier",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "LANDSCAPING_MULCH",
+    "before": {
+      "serviceType": "LANDSCAPING_MULCH",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MULCH",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "edging_prices",
+          "label": "Mulch bed edging",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "bed_needs_weeding",
+          "label": "Mulch bed weeding",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "bed_overgrown",
+          "label": "Overgrown mulch bed preparation",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "86680c1b-b5a3-44b5-ba71-657b4fabcc9c",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "mulchMaterialPerYard",
+        "mulchInstallLaborPerYard",
+        "minimumServiceCharge",
+        "bedPrepLaborPerSqft",
+        "edgingPerLinearFoot",
+        "mulchOverageFactor",
+        "accessMultiplier",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "LANDSCAPING_SOD",
+    "before": {
+      "serviceType": "LANDSCAPING_SOD",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_SOD",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "ground_prep_prices",
+          "label": "Sod ground preparation",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "3a0bb39b-8408-4826-b888-4ee72349b67f",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "sodMaterialPerSqft",
+        "sodInstallLaborPerSqft",
+        "minimumServiceCharge",
+        "groundPrepPerSqft",
+        "sodWasteFactor",
+        "slopeMultiplier",
+        "accessMultiplier",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "LANDSCAPING_PLANTING",
+    "before": {
+      "serviceType": "LANDSCAPING_PLANTING",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_PLANTING",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "planting_bed_needs_weeding",
+          "label": "Planting bed weeding",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "planting_bed_overgrown",
+          "label": "Overgrown planting bed preparation",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        },
+        {
+          "key": "planting_mulch_brown",
+          "label": "Planting with brown mulch",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.",
+          "missingOwnerFields": [],
+          "missingOwnerLabels": [],
+          "ownerFieldLabels": []
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "7246b788-25d9-46c4-b4d0-fcda4b077620",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "plantingLaborPerPlant",
+        "plantMaterialAllowance",
+        "minimumServiceCharge",
+        "bedPrepLaborPerSqft",
+        "mulchMaterialPerYard",
+        "mulchInstallLaborPerYard",
+        "mulchOverageFactor",
+        "accessMultiplier",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "LANDSCAPING_MOWING",
+    "before": {
+      "serviceType": "LANDSCAPING_MOWING",
+      "service": "[SYNTHETIC PUBLIC INTAKE] LANDSCAPING_MOWING",
+      "statusNotices": [],
+      "scopeCoverage": [],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "b3db4b95-f685-4f6c-884e-a20bf17675db",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "mowingBaseRatePerSqft",
+        "minimumServiceCharge",
+        "frequencyMultipliers",
+        "overgrowthMultipliers",
+        "baggingSurchargePercent",
+        "edgingPerLinearFoot",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  },
+  {
+    "type": "CUSTOM",
+    "before": {
+      "serviceType": "CUSTOM",
+      "service": "[SYNTHETIC PUBLIC INTAKE] CUSTOM",
+      "statusNotices": [],
+      "scopeCoverage": [],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [],
+      "invalidOwnerFields": [],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [],
+      "validationErrors": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [],
+      "validTierNames": [
+        null
+      ],
+      "productCoverage": [],
+      "missingOwnerLabels": [],
+      "ownerFieldLabels": [],
+      "serviceId": "2fc354c4-2206-4918-b6e5-d41d8189428b",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "customPricingMode",
+        "customChargeClassification",
+        "price",
+        "unit",
+        "minimumJob",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings",
+        "service"
+      ],
+      "stalePrices": [],
+      "aiPlaceholderPrices": []
+    }
+  }
+]
