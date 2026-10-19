@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: voice H2 provider receives amount increase before next caller audio
+ok 1 - voice H2 provider receives amount increase before next caller audio
+  ---
+  duration_ms: 4.608526
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives amount decrease before next caller audio
+ok 2 - voice H2 provider receives amount decrease before next caller audio
+  ---
+  duration_ms: 1.479399
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives added qualification before next caller audio
+ok 3 - voice H2 provider receives added qualification before next caller audio
+  ---
+  duration_ms: 0.694544
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives removed qualification before next caller audio
+ok 4 - voice H2 provider receives removed qualification before next caller audio
+  ---
+  duration_ms: 0.772728
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives replaced qualification before next caller audio
+ok 5 - voice H2 provider receives replaced qualification before next caller audio
+  ---
+  duration_ms: 1.143329
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives removed listing before next caller audio
+ok 6 - voice H2 provider receives removed listing before next caller audio
+  ---
+  duration_ms: 0.743325
+  type: 'test'
+  ...
+# Subtest: voice H2 unchanged saved facts avoid provider replacement across repeated input
+ok 7 - voice H2 unchanged saved facts avoid provider replacement across repeated input
+  ---
+  duration_ms: 1.377952
+  type: 'test'
+  ...
+# Subtest: voice H2 connected provider refreshes while caller is idle
+ok 8 - voice H2 connected provider refreshes while caller is idle
+  ---
+  duration_ms: 10.594183
+  type: 'test'
+  ...
+# Subtest: voice H2 stale provider speech is cleared without waiting for caller audio or tools
+ok 9 - voice H2 stale provider speech is cleared without waiting for caller audio or tools
+  ---
+  duration_ms: 6.099362
+  type: 'test'
+  ...
+# Subtest: voice H2 consecutive completed saves replace each provider in order
+ok 10 - voice H2 consecutive completed saves replace each provider in order
+  ---
+  duration_ms: 1.467442
+  type: 'test'
+  ...
+# Subtest: voice H2 later save wins while an earlier provider replacement is connecting
+ok 11 - voice H2 later save wins while an earlier provider replacement is connecting
+  ---
+  duration_ms: 7.398038
+  type: 'test'
+  ...
+# Subtest: voice H2 later save wins while facts compilation is delayed
+ok 12 - voice H2 later save wins while facts compilation is delayed
+  ---
+  duration_ms: 1.709956
+  type: 'test'
+  ...
+# Subtest: voice H2 goAway resumption uses current saved facts and the same handle
+ok 13 - voice H2 goAway resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 6.422463
+  type: 'test'
+  ...
+# Subtest: voice H2 onclose resumption uses current saved facts and the same handle
+ok 14 - voice H2 onclose resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 5.884989
+  type: 'test'
+  ...
+# Subtest: voice H2 onerror resumption uses current saved facts and the same handle
+ok 15 - voice H2 onerror resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 6.513727
+  type: 'test'
+  ...
+# Subtest: voice H2 cold replacement retains received conversation and historical tool context
+ok 16 - voice H2 cold replacement retains received conversation and historical tool context
+  ---
+  duration_ms: 2.433231
+  type: 'test'
+  ...
+# Subtest: voice H2 pending tool reply drains before replacement without deadlocking waiting audio
+ok 17 - voice H2 pending tool reply drains before replacement without deadlocking waiting audio
+  ---
+  duration_ms: 7.169038
+  type: 'test'
+  ...
+# Subtest: voice H2 every tool in an accepted batch drains once before refresh
+ok 18 - voice H2 every tool in an accepted batch drains once before refresh
+  ---
+  duration_ms: 5.485676
+  type: 'test'
+  ...
+# Subtest: voice H2 revision refresh failure closes safely without forwarding stale audio
+ok 19 - voice H2 revision refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 1.347937
+  type: 'test'
+  ...
+# Subtest: voice H2 compile refresh failure closes safely without forwarding stale audio
+ok 20 - voice H2 compile refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.470908
+  type: 'test'
+  ...
+# Subtest: voice H2 connect refresh failure closes safely without forwarding stale audio
+ok 21 - voice H2 connect refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.45193
+  type: 'test'
+  ...
+# Subtest: voice H2 timeout refresh failure closes safely without forwarding stale audio
+ok 22 - voice H2 timeout refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 106.394754
+  type: 'test'
+  ...
+# Subtest: voice H2 continuation refresh failure closes safely without forwarding stale audio
+ok 23 - voice H2 continuation refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.949516
+  type: 'test'
+  ...
+# Subtest: voice H2 missing-continuation-method refresh failure closes safely without forwarding stale audio
+ok 24 - voice H2 missing-continuation-method refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.619685
+  type: 'test'
+  ...
+# Subtest: voice H2 close during replacement retires a late successful provider without resurrection
+ok 25 - voice H2 close during replacement retires a late successful provider without resurrection
+  ---
+  duration_ms: 5.695142
+  type: 'test'
+  ...
+# Subtest: voice H2 refresh polling stops after call close
+ok 26 - voice H2 refresh polling stops after call close
+  ---
+  duration_ms: 40.830862
+  type: 'test'
+  ...
+# Subtest: voice H2 bounded cold continuity preserves newest words and labels omitted context
+ok 27 - voice H2 bounded cold continuity preserves newest words and labels omitted context
+  ---
+  duration_ms: 7.956873
+  type: 'test'
+  ...
+# Subtest: voice H2 independent sessions never share facts, history or resume handles
+ok 28 - voice H2 independent sessions never share facts, history or resume handles
+  ---
+  duration_ms: 1.263654
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 308.971495

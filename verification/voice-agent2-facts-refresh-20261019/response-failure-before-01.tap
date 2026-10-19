@@ -1,0 +1,20 @@
+TAP version 13
+# Subtest: test/voiceAgent2FactsRefreshProduction20261019.spec.mjs
+not ok 1 - test/voiceAgent2FactsRefreshProduction20261019.spec.mjs
+  ---
+  duration_ms: 3003.457085
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:1:1'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 3000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 0
+# cancelled 1
+# skipped 0
+# todo 0
+# duration_ms 3013.148486

@@ -1,0 +1,29 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-timeout=15000",
+    "test/voiceAgent2FactsRefreshHistorical20261019.spec.mjs"
+  ],
+  "started_at": "2026-10-19T18:57:30.128072+00:00",
+  "finished_at": "2026-10-19T18:57:31.467595+00:00",
+  "head": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "changed_paths": [
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "exit_code": 1,
+  "summary": {
+    "tests": 2,
+    "suites": 0,
+    "pass": 0,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 1305.531117
+  },
+  "log": "historical-refresh-01.tap",
+  "log_bytes": 2182,
+  "log_sha256": "53afbd7670409337287e54328040bdaa8954feb7f2353090c3c31c218cb20cc5"
+}

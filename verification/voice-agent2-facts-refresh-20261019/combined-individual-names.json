@@ -1,0 +1,41 @@
+{
+  "geometry_boundaries": {
+    "expected": 492,
+    "passed_once": 492,
+    "discrepancies": []
+  },
+  "geometry_delivery": {
+    "expected": 25,
+    "passed_once": 25,
+    "discrepancies": []
+  },
+  "geometry_historical": {
+    "expected": 8,
+    "passed_once": 8,
+    "discrepancies": []
+  },
+  "f16": {
+    "expected": 14,
+    "passed_once": 14,
+    "discrepancies": []
+  },
+  "f18": {
+    "expected": 41,
+    "passed_once": 41,
+    "discrepancies": []
+  },
+  "parser_import_full": {
+    "expected": 874,
+    "passed_once": 874,
+    "discrepancies": []
+  },
+  "incoming_voice_full_only": {
+    "expected": 577,
+    "passed_once": 577,
+    "discrepancies": []
+  },
+  "h2": {
+    "expected": 60,
+    "passed_once": 60
+  }
+}

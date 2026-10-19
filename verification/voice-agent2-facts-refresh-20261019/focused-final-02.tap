@@ -1,0 +1,382 @@
+TAP version 13
+# Subtest: voice H2 provider receives amount increase before next caller audio
+ok 1 - voice H2 provider receives amount increase before next caller audio
+  ---
+  duration_ms: 6.739728
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives amount decrease before next caller audio
+ok 2 - voice H2 provider receives amount decrease before next caller audio
+  ---
+  duration_ms: 1.202492
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives added qualification before next caller audio
+ok 3 - voice H2 provider receives added qualification before next caller audio
+  ---
+  duration_ms: 0.892608
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives removed qualification before next caller audio
+ok 4 - voice H2 provider receives removed qualification before next caller audio
+  ---
+  duration_ms: 1.751727
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives replaced qualification before next caller audio
+ok 5 - voice H2 provider receives replaced qualification before next caller audio
+  ---
+  duration_ms: 1.239466
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives removed listing before next caller audio
+ok 6 - voice H2 provider receives removed listing before next caller audio
+  ---
+  duration_ms: 1.242851
+  type: 'test'
+  ...
+# Subtest: voice H2 unchanged saved facts avoid provider replacement across repeated input
+ok 7 - voice H2 unchanged saved facts avoid provider replacement across repeated input
+  ---
+  duration_ms: 1.53508
+  type: 'test'
+  ...
+# Subtest: voice H2 connected provider refreshes while caller is idle
+ok 8 - voice H2 connected provider refreshes while caller is idle
+  ---
+  duration_ms: 16.279269
+  type: 'test'
+  ...
+# Subtest: voice H2 stale provider speech is cleared without waiting for caller audio or tools
+ok 9 - voice H2 stale provider speech is cleared without waiting for caller audio or tools
+  ---
+  duration_ms: 6.280134
+  type: 'test'
+  ...
+# Subtest: voice H2 a save during queued separate messages suppresses the remaining old output
+ok 10 - voice H2 a save during queued separate messages suppresses the remaining old output
+  ---
+  duration_ms: 11.56533
+  type: 'test'
+  ...
+# Subtest: voice H2 a save during queued multiple parts suppresses the remaining old output
+ok 11 - voice H2 a save during queued multiple parts suppresses the remaining old output
+  ---
+  duration_ms: 12.153512
+  type: 'test'
+  ...
+# Subtest: voice H2 refreshed speech and caller input wait for queued telephony output to clear
+ok 12 - voice H2 refreshed speech and caller input wait for queued telephony output to clear
+  ---
+  duration_ms: 7.230962
+  type: 'test'
+  ...
+# Subtest: voice H2 rejected telephony clear fails closed instead of accepting stale or refreshed speech
+ok 13 - voice H2 rejected telephony clear fails closed instead of accepting stale or refreshed speech
+  ---
+  duration_ms: 1.914316
+  type: 'test'
+  ...
+# Subtest: voice H2 normal close retains final current caller and provider transcripts
+ok 14 - voice H2 normal close retains final current caller and provider transcripts
+  ---
+  duration_ms: 0.688899
+  type: 'test'
+  ...
+# Subtest: voice H2 normal close drains an already accepted tool response before retiring its provider
+ok 15 - voice H2 normal close drains an already accepted tool response before retiring its provider
+  ---
+  duration_ms: 6.674893
+  type: 'test'
+  ...
+# Subtest: voice H2 cold continuity waits for already received caller words to finish persistence
+ok 16 - voice H2 cold continuity waits for already received caller words to finish persistence
+  ---
+  duration_ms: 11.096082
+  type: 'test'
+  ...
+# Subtest: voice H2 consecutive completed saves replace each provider in order
+ok 17 - voice H2 consecutive completed saves replace each provider in order
+  ---
+  duration_ms: 1.07154
+  type: 'test'
+  ...
+# Subtest: voice H2 later save wins while an earlier provider replacement is connecting
+ok 18 - voice H2 later save wins while an earlier provider replacement is connecting
+  ---
+  duration_ms: 6.85467
+  type: 'test'
+  ...
+# Subtest: voice H2 later save wins while facts compilation is delayed
+ok 19 - voice H2 later save wins while facts compilation is delayed
+  ---
+  duration_ms: 2.089423
+  type: 'test'
+  ...
+# Subtest: voice H2 goAway resumption uses current saved facts and the same handle
+ok 20 - voice H2 goAway resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 5.858367
+  type: 'test'
+  ...
+# Subtest: voice H2 onclose resumption uses current saved facts and the same handle
+ok 21 - voice H2 onclose resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 6.058705
+  type: 'test'
+  ...
+# Subtest: voice H2 onerror resumption uses current saved facts and the same handle
+ok 22 - voice H2 onerror resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 5.973094
+  type: 'test'
+  ...
+# Subtest: voice H2 cold replacement retains received conversation and historical tool context
+ok 23 - voice H2 cold replacement retains received conversation and historical tool context
+  ---
+  duration_ms: 1.03064
+  type: 'test'
+  ...
+# Subtest: voice H2 pending tool reply drains before replacement without deadlocking waiting audio
+ok 24 - voice H2 pending tool reply drains before replacement without deadlocking waiting audio
+  ---
+  duration_ms: 7.193888
+  type: 'test'
+  ...
+# Subtest: voice H2 every tool in an accepted batch drains once before refresh
+ok 25 - voice H2 every tool in an accepted batch drains once before refresh
+  ---
+  duration_ms: 5.910643
+  type: 'test'
+  ...
+# Subtest: voice H2 revision refresh failure closes safely without forwarding stale audio
+ok 26 - voice H2 revision refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 1.046714
+  type: 'test'
+  ...
+# Subtest: voice H2 compile refresh failure closes safely without forwarding stale audio
+ok 27 - voice H2 compile refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.693797
+  type: 'test'
+  ...
+# Subtest: voice H2 connect refresh failure closes safely without forwarding stale audio
+ok 28 - voice H2 connect refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.728067
+  type: 'test'
+  ...
+# Subtest: voice H2 timeout refresh failure closes safely without forwarding stale audio
+ok 29 - voice H2 timeout refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 107.081228
+  type: 'test'
+  ...
+# Subtest: voice H2 continuation refresh failure closes safely without forwarding stale audio
+ok 30 - voice H2 continuation refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.84605
+  type: 'test'
+  ...
+# Subtest: voice H2 missing-continuation-method refresh failure closes safely without forwarding stale audio
+ok 31 - voice H2 missing-continuation-method refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.331176
+  type: 'test'
+  ...
+# Subtest: voice H2 close during replacement retires a late successful provider without resurrection
+ok 32 - voice H2 close during replacement retires a late successful provider without resurrection
+  ---
+  duration_ms: 6.295362
+  type: 'test'
+  ...
+# Subtest: voice H2 refresh polling stops after call close
+ok 33 - voice H2 refresh polling stops after call close
+  ---
+  duration_ms: 40.601698
+  type: 'test'
+  ...
+# Subtest: voice H2 bounded cold continuity preserves newest words and labels omitted context
+ok 34 - voice H2 bounded cold continuity preserves newest words and labels omitted context
+  ---
+  duration_ms: 4.700529
+  type: 'test'
+  ...
+# Subtest: voice H2 independent sessions never share facts, history or resume handles
+ok 35 - voice H2 independent sessions never share facts, history or resume handles
+  ---
+  duration_ms: 0.96217
+  type: 'test'
+  ...
+# Subtest: voice H2 owner facts refresh preserves authentic v12 receipt ROOFING_REPLACEMENT--base
+ok 36 - voice H2 owner facts refresh preserves authentic v12 receipt ROOFING_REPLACEMENT--base
+  ---
+  duration_ms: 497.585655
+  type: 'test'
+  ...
+# Subtest: voice H2 owner facts refresh preserves authentic v12 receipt historical-missing-measurement
+ok 37 - voice H2 owner facts refresh preserves authentic v12 receipt historical-missing-measurement
+  ---
+  duration_ms: 290.937059
+  type: 'test'
+  ...
+# Subtest: voice H2 saved HTTP amount increase reaches fresh provider and real dispatcher
+ok 38 - voice H2 saved HTTP amount increase reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 144.059278
+  type: 'test'
+  ...
+# {"name":"amount increase","resumable":false,"delivered":["Widget $10 each","Widget $12 each"],"current":{"status":"calculated","listedItem":"Widget $12 each","quantity":"3","extendedAmount":"36.00","currency":"$","voiceSummary":"Widget $12 each. At that listed price, 3 comes to $36.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP amount decrease reaches fresh provider and real dispatcher
+ok 39 - voice H2 saved HTTP amount decrease reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 100.026834
+  type: 'test'
+  ...
+# {"name":"amount decrease","resumable":false,"delivered":["Widget $10 each","Widget $8 each"],"current":{"status":"calculated","listedItem":"Widget $8 each","quantity":"3","extendedAmount":"24.00","currency":"$","voiceSummary":"Widget $8 each. At that listed price, 3 comes to $24.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP added membership reaches fresh provider and real dispatcher
+ok 40 - voice H2 saved HTTP added membership reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 84.537435
+  type: 'test'
+  ...
+# {"name":"added membership","resumable":false,"delivered":["Widget $10 each","Widget $10 each\\nAvailable to members"],"current":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP removed membership reaches fresh provider and real dispatcher
+ok 41 - voice H2 saved HTTP removed membership reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 88.213876
+  type: 'test'
+  ...
+# {"name":"removed membership","resumable":false,"delivered":["Widget $10 each\\nAvailable to members","Widget $10 each"],"current":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP replaced qualification reaches fresh provider and real dispatcher
+ok 42 - voice H2 saved HTTP replaced qualification reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 77.278669
+  type: 'test'
+  ...
+# {"name":"replaced qualification","resumable":false,"delivered":["Widget $10 each\\nAvailable to members","Widget $10 each\\nWeekdays only"],"current":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP removed price reaches fresh provider and real dispatcher
+ok 43 - voice H2 saved HTTP removed price reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 93.689626
+  type: 'test'
+  ...
+# {"name":"removed price","resumable":false,"delivered":["Widget $10 each",""],"current":{"status":"needs_details","customerMessage":"That action could not be completed. Check the requested details and caller confirmation; no successful price or booking is being reported."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP amount increase reaches resumed provider and real dispatcher
+ok 44 - voice H2 saved HTTP amount increase reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 84.417119
+  type: 'test'
+  ...
+# {"name":"amount increase","resumable":true,"delivered":["Widget $10 each","Widget $12 each"],"current":{"status":"calculated","listedItem":"Widget $12 each","quantity":"3","extendedAmount":"36.00","currency":"$","voiceSummary":"Widget $12 each. At that listed price, 3 comes to $36.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP amount decrease reaches resumed provider and real dispatcher
+ok 45 - voice H2 saved HTTP amount decrease reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 89.231867
+  type: 'test'
+  ...
+# {"name":"amount decrease","resumable":true,"delivered":["Widget $10 each","Widget $8 each"],"current":{"status":"calculated","listedItem":"Widget $8 each","quantity":"3","extendedAmount":"24.00","currency":"$","voiceSummary":"Widget $8 each. At that listed price, 3 comes to $24.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP added membership reaches resumed provider and real dispatcher
+ok 46 - voice H2 saved HTTP added membership reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 101.437276
+  type: 'test'
+  ...
+# {"name":"added membership","resumable":true,"delivered":["Widget $10 each","Widget $10 each\\nAvailable to members"],"current":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP removed membership reaches resumed provider and real dispatcher
+ok 47 - voice H2 saved HTTP removed membership reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 97.437688
+  type: 'test'
+  ...
+# {"name":"removed membership","resumable":true,"delivered":["Widget $10 each\\nAvailable to members","Widget $10 each"],"current":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP replaced qualification reaches resumed provider and real dispatcher
+ok 48 - voice H2 saved HTTP replaced qualification reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 74.012672
+  type: 'test'
+  ...
+# {"name":"replaced qualification","resumable":true,"delivered":["Widget $10 each\\nAvailable to members","Widget $10 each\\nWeekdays only"],"current":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP removed price reaches resumed provider and real dispatcher
+ok 49 - voice H2 saved HTTP removed price reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 73.194725
+  type: 'test'
+  ...
+# {"name":"removed price","resumable":true,"delivered":["Widget $10 each",""],"current":{"status":"needs_details","customerMessage":"That action could not be completed. Check the requested details and caller confirmation; no successful price or booking is being reported."},"stale":"needs_review"}
+# Subtest: voice H2 actual idle call receives saved qualifications without a tool or media trigger
+ok 50 - voice H2 actual idle call receives saved qualifications without a tool or media trigger
+  ---
+  duration_ms: 1069.603772
+  type: 'test'
+  ...
+# Subtest: voice H2 real media output suppresses stale speech and accepts the refreshed provider
+ok 51 - voice H2 real media output suppresses stale speech and accepts the refreshed provider
+  ---
+  duration_ms: 83.051751
+  type: 'test'
+  ...
+# Subtest: voice H2 actual consecutive owner saves reach the latest provider at a shared timestamp
+ok 52 - voice H2 actual consecutive owner saves reach the latest provider at a shared timestamp
+  ---
+  duration_ms: 91.272384
+  type: 'test'
+  ...
+# Subtest: voice H2 real saved update cannot be overwritten by a delayed earlier connection
+ok 53 - voice H2 real saved update cannot be overwritten by a delayed earlier connection
+  ---
+  duration_ms: 79.708622
+  type: 'test'
+  ...
+# Subtest: voice H2 real GoAway reconnect reads the latest saved facts and keeps the phone stream
+ok 54 - voice H2 real GoAway reconnect reads the latest saved facts and keeps the phone stream
+  ---
+  duration_ms: 74.06531
+  type: 'test'
+  ...
+# Subtest: voice H2 failed refresh ends the real call through existing fallback with zero billed minutes
+ok 55 - voice H2 failed refresh ends the real call through existing fallback with zero billed minutes
+  ---
+  duration_ms: 64.499075
+  type: 'test'
+  ...
+# Subtest: voice H2 refresh failure after a real tool response completes shutdown without a queue cycle
+ok 56 - voice H2 refresh failure after a real tool response completes shutdown without a queue cycle
+  ---
+  duration_ms: 65.947648
+  type: 'test'
+  ...
+# Subtest: voice H2 a failed telephony clear while a real response drains completes fallback
+ok 57 - voice H2 a failed telephony clear while a real response drains completes fallback
+  ---
+  duration_ms: 61.218476
+  type: 'test'
+  ...
+# Subtest: voice H2 a failed refreshed audio write completes shutdown and retains received caller words
+ok 58 - voice H2 a failed refreshed audio write completes shutdown and retains received caller words
+  ---
+  duration_ms: 84.587431
+  type: 'test'
+  ...
+# Subtest: voice H2 simultaneous owners retain separate facts, requests and provider handles
+ok 59 - voice H2 simultaneous owners retain separate facts, requests and provider handles
+  ---
+  duration_ms: 137.280722
+  type: 'test'
+  ...
+# Subtest: voice H2 two calls for one owner refresh independently without exchanging caller context
+ok 60 - voice H2 two calls for one owner refresh independently without exchanging caller context
+  ---
+  duration_ms: 114.855145
+  type: 'test'
+  ...
+1..60
+# tests 60
+# suites 0
+# pass 60
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6143.230874

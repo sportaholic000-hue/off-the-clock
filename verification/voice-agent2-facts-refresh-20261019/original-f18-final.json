@@ -1,0 +1,42 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "verification/voice-agent2-facts-refresh-20261019/voice-f18-original-matrix.spec.mjs"
+  ],
+  "started_at": "2026-10-19T19:22:19.646422+00:00",
+  "finished_at": "2026-10-19T19:22:19.973535+00:00",
+  "head": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "changed_paths": [
+    "client/dist/assets/index-Cwi6Aiz2.css",
+    "client/dist/assets/index-DdcfYsVT.js",
+    "client/dist/index.html",
+    "server/src/voice/geminiMediaBridge.js",
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "source_sha256": {
+    "server/src/voice/googleGenAiLiveAdapter.js": "f5e7383b4b4c84bc520919c12d57562b5586feac6e21586428e749ae53daec82",
+    "server/src/voice/productionVoiceRuntime.js": "5ceb2387f1b9bf6987292991caf6a7de98653f057664fad262e3e0b46f2fa655",
+    "server/src/voice/geminiMediaBridge.js": "a194f11a38768da8d7c38c0d88a4471988d89b64cfa9298940210bc0aa452dcd",
+    "test/voiceAgent2FactsRefresh20261019.spec.mjs": "8cdb0b12ca0b1e945176e36132e341af8290380e33d8f3ef7cd6d2a5509b8fdf",
+    "test/voiceAgent2FactsRefresh20261019Fixture.mjs": "d82cd6658453d41fc99fcddd391b45420423aee946b94f1f4f9e9f4bab27ac10",
+    "test/voiceAgent2FactsRefreshHistorical20261019.spec.mjs": "b0819e9aad3b8a834c65f7390af494c8cc9dba008902a5894c07b316b4992904",
+    "test/voiceAgent2FactsRefreshProduction20261019.spec.mjs": "cb1f585b8d31f18e59da9b007dc1152be52e550cb17e902a9dc0be1716d67577",
+    "test/voiceAgent2FactsRefreshProduction20261019Fixture.mjs": "030395c32e4592742e14e5007bf2cd9b11e3ccc23875ba80608665ef6f16afdc"
+  },
+  "exit_code": 0,
+  "summary": {
+    "tests": 91,
+    "suites": 0,
+    "pass": 91,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 280.174378
+  },
+  "log": "original-f18-final.tap",
+  "log_bytes": 17796,
+  "log_sha256": "fc08adca6591b7115db6f11064042ac338f1dc2460bfa258ae508e341f95d73a"
+}

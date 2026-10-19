@@ -1,0 +1,277 @@
+TAP version 13
+# Subtest: bridge construction requires explicit transcript and tool boundaries
+ok 1 - bridge construction requires explicit transcript and tool boundaries
+  ---
+  duration_ms: 1.267953
+  type: 'test'
+  ...
+# Subtest: valid Twilio media is identity-bound, converted to PCM16 16 kHz, and closes on stop
+ok 2 - valid Twilio media is identity-bound, converted to PCM16 16 kHz, and closes on stop
+  ---
+  duration_ms: 4.032947
+  type: 'test'
+  ...
+# Subtest: Gemini PCM16 24 kHz audio becomes Twilio media plus an acknowledged mark
+ok 3 - Gemini PCM16 24 kHz audio becomes Twilio media plus an acknowledged mark
+  ---
+  duration_ms: 4.138479
+  type: 'test'
+  ...
+# Subtest: Gemini interruption clears Twilio immediately and discards already queued output
+ok 4 - Gemini interruption clears Twilio immediately and discards already queued output
+  ---
+  duration_ms: 1.604762
+  type: 'test'
+  ...
+# Subtest: validated transcripts and tool calls cross only their injected callback interfaces
+ok 5 - validated transcripts and tool calls cross only their injected callback interfaces
+  ---
+  duration_ms: 0.963621
+  type: 'test'
+  ...
+# Subtest: forged call identity in the Twilio start event fails before Gemini opens
+ok 6 - forged call identity in the Twilio start event fails before Gemini opens
+  ---
+  duration_ms: 0.436748
+  type: 'test'
+  ...
+# Subtest: a socket close during Gemini connection cannot leak or resurrect the provider session
+ok 7 - a socket close during Gemini connection cannot leak or resurrect the provider session
+  ---
+  duration_ms: 7.266918
+  type: 'test'
+  ...
+# Subtest: a provider close callback during application shutdown cannot recurse or deadlock
+ok 8 - a provider close callback during application shutdown cannot recurse or deadlock
+  ---
+  duration_ms: 0.412032
+  type: 'test'
+  ...
+# Subtest: out-of-order, unknown-mark, binary, and malformed audio events fail closed
+    # Subtest: sequence gap
+    ok 1 - sequence gap
+      ---
+      duration_ms: 3.193201
+      type: 'test'
+      ...
+    # Subtest: unknown mark
+    ok 2 - unknown mark
+      ---
+      duration_ms: 1.121845
+      type: 'test'
+      ...
+    # Subtest: binary event
+    ok 3 - binary event
+      ---
+      duration_ms: 0.51218
+      type: 'test'
+      ...
+    # Subtest: non-canonical media base64
+    ok 4 - non-canonical media base64
+      ---
+      duration_ms: 0.551378
+      type: 'test'
+      ...
+    1..4
+ok 9 - out-of-order, unknown-mark, binary, and malformed audio events fail closed
+  ---
+  duration_ms: 6.764587
+  type: 'test'
+  ...
+# Subtest: payload rate, queue, and socket backpressure limits terminate instead of buffering unboundedly
+    # Subtest: inbound byte rate
+    ok 1 - inbound byte rate
+      ---
+      duration_ms: 1.677411
+      type: 'test'
+      ...
+    # Subtest: socket buffered amount
+    ok 2 - socket buffered amount
+      ---
+      duration_ms: 3.426772
+      type: 'test'
+      ...
+    # Subtest: queued input audio
+    ok 3 - queued input audio
+      ---
+      duration_ms: 1.154844
+      type: 'test'
+      ...
+    1..3
+ok 10 - payload rate, queue, and socket backpressure limits terminate instead of buffering unboundedly
+  ---
+  duration_ms: 6.662115
+  type: 'test'
+  ...
+# Subtest: invalid provider audio, transcript, or tool data fails closed without echoing details
+    # Subtest: wrong output format
+    ok 1 - wrong output format
+      ---
+      duration_ms: 0.343309
+      type: 'test'
+      ...
+    # Subtest: control character transcript
+    ok 2 - control character transcript
+      ---
+      duration_ms: 0.342769
+      type: 'test'
+      ...
+    # Subtest: prototype-bearing tool arguments
+    ok 3 - prototype-bearing tool arguments
+      ---
+      duration_ms: 0.343159
+      type: 'test'
+      ...
+    # Subtest: accessor-bearing provider objects
+    ok 4 - accessor-bearing provider objects
+      ---
+      duration_ms: 0.405762
+      type: 'test'
+      ...
+    1..4
+ok 11 - invalid provider audio, transcript, or tool data fails closed without echoing details
+  ---
+  duration_ms: 1.842234
+  type: 'test'
+  ...
+# Subtest: connects with audio-only transcription, tools, prompt, and configured voice
+ok 12 - connects with audio-only transcription, tools, prompt, and configured voice
+  ---
+  duration_ms: 5.256984
+  type: 'test'
+  ...
+# Subtest: maps provider audio, finalized transcripts, interruption, and tool calls
+ok 13 - maps provider audio, finalized transcripts, interruption, and tool calls
+  ---
+  duration_ms: 9.556567
+  type: 'test'
+  ...
+# Subtest: flushes interrupted operator transcript as non-final before clearing playback
+ok 14 - flushes interrupted operator transcript as non-final before clearing playback
+  ---
+  duration_ms: 3.764939
+  type: 'test'
+  ...
+# Subtest: provider protocol violations fail closed without exposing provider details
+ok 15 - provider protocol violations fail closed without exposing provider details
+  ---
+  duration_ms: 5.246188
+  type: 'test'
+  ...
+# Subtest: close sends audio-stream-end and closes exactly once
+ok 16 - close sends audio-stream-end and closes exactly once
+  ---
+  duration_ms: 2.14196
+  type: 'test'
+  ...
+# Subtest: construction and connection failures use stable local error codes
+ok 17 - construction and connection failures use stable local error codes
+  ---
+  duration_ms: 4.502384
+  type: 'test'
+  ...
+# Subtest: A goAway resumes one call with compression, one greeting, ordered caller audio and a single tool completion
+ok 18 - A goAway resumes one call with compression, one greeting, ordered caller audio and a single tool completion
+  ---
+  duration_ms: 16.129926
+  type: 'test'
+  ...
+# Subtest: A unexpected close with a valid handle reconnects; failed reconnect reports a real failure once
+ok 19 - A unexpected close with a valid handle reconnects; failed reconnect reports a real failure once
+  ---
+  duration_ms: 6.15045
+  type: 'test'
+  ...
+# Subtest: A signed phone stream stays open across reconnection; a later caller hangup completes and bills normally
+ok 20 - A signed phone stream stays open across reconnection; a later caller hangup completes and bills normally
+  ---
+  duration_ms: 118.74248
+  type: 'test'
+  ...
+# Subtest: A failed resumption runs the genuine backup path and bills zero minutes
+ok 21 - A failed resumption runs the genuine backup path and bills zero minutes
+  ---
+  duration_ms: 78.184788
+  type: 'test'
+  ...
+# Subtest: B same-number dropped call has gated name, then bounded previous transcript and backup message without an old price
+ok 22 - B same-number dropped call has gated name, then bounded previous transcript and backup message without an old price
+  ---
+  duration_ms: 49.385776
+  type: 'test'
+  ...
+# Subtest: B a price at the very start of old speech is redacted before the model sees history
+ok 23 - B a price at the very start of old speech is redacted before the model sees history
+  ---
+  duration_ms: 38.633023
+  type: 'test'
+  ...
+# Subtest: B a dropped Twilio socket is flagged as an unexpected previous call
+ok 24 - B a dropped Twilio socket is flagged as an unexpected previous call
+  ---
+  duration_ms: 32.005915
+  type: 'test'
+  ...
+# Subtest: B all caller history reads use the tenant ownerQuery, including the previous call
+ok 25 - B all caller history reads use the tenant ownerQuery, including the previous call
+  ---
+  duration_ms: 34.883577
+  type: 'test'
+  ...
+# Subtest: B a no or unclear identity answer reveals no history, even if a tool claims confirmation
+ok 26 - B a no or unclear identity answer reveals no history, even if a tool claims confirmation
+  ---
+  duration_ms: 32.655744
+  type: 'test'
+  ...
+# Subtest: B an explicit natural yes with the saved first name confirms, while an unclear answer does not
+ok 27 - B an explicit natural yes with the saved first name confirms, while an unclear answer does not
+  ---
+  duration_ms: 36.762882
+  type: 'test'
+  ...
+# Subtest: B withheld and other-business caller IDs disclose nothing
+ok 28 - B withheld and other-business caller IDs disclose nothing
+  ---
+  duration_ms: 29.683126
+  type: 'test'
+  ...
+# Subtest: B after 24 hours saved requests remain available only after identity confirmation, without old transcript
+ok 29 - B after 24 hours saved requests remain available only after identity confirmation, without old transcript
+  ---
+  duration_ms: 26.538468
+  type: 'test'
+  ...
+# Subtest: B caller words are captured immediately and survive a drop; prompt requires early capture and guarded returning context
+ok 30 - B caller words are captured immediately and survive a drop; prompt requires early capture and guarded returning context
+  ---
+  duration_ms: 70.124443
+  type: 'test'
+  ...
+# Subtest: C backup capture speaks the matching Chirp voice and the exact two new lines
+ok 31 - C backup capture speaks the matching Chirp voice and the exact two new lines
+  ---
+  duration_ms: 0.503727
+  type: 'test'
+  ...
+# Subtest: C signed male fallback repeats the configured voice on capture and thanks without a forwarding loop
+ok 32 - C signed male fallback repeats the configured voice on capture and thanks without a forwarding loop
+  ---
+  duration_ms: 116.838919
+  type: 'test'
+  ...
+# Subtest: C signed female fallback repeats the configured voice on capture and thanks without a forwarding loop
+ok 33 - C signed female fallback repeats the configured voice on capture and thanks without a forwarding loop
+  ---
+  duration_ms: 100.544688
+  type: 'test'
+  ...
+1..33
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1275.196088

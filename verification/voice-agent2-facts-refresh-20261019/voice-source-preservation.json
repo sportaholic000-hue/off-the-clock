@@ -1,0 +1,17 @@
+{
+  "base": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "production_paths": [
+    "server/src/voice/geminiMediaBridge.js",
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "existing_tests_and_all_other_tracked_paths_unchanged": true,
+  "protected_tracked_paths": 3936,
+  "protected_path_and_blob_list_sha256": "3131d77883174acb11f6bfc7b5c9a9b08bcf005027ba3cd069388ca436d969eb",
+  "read_only_A4_reproduction_history_merged": false,
+  "H2_reproduction_copies_byte_identical": true,
+  "final_tested_source_hashes_match": true,
+  "workflow_timeout_minutes": 45,
+  "build_outputs_restored_to_parent": true,
+  "raw_failed_TAP_whitespace_preserved": true
+}

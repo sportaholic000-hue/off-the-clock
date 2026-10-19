@@ -1,0 +1,558 @@
+TAP version 13
+# (node:52436) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: single-excluded / customerReceiptPresentation / scope
+ok 1 - single-excluded / customerReceiptPresentation / scope
+  ---
+  duration_ms: 3.163897
+  type: 'test'
+  ...
+# Subtest: single-excluded / projectVoiceQuote / scope
+ok 2 - single-excluded / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.509447
+  type: 'test'
+  ...
+# Subtest: single-excluded / projectSavedQuoteContext / scope
+ok 3 - single-excluded / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.10386
+  type: 'test'
+  ...
+# Subtest: single-excluded / amounts, options and private fields
+ok 4 - single-excluded / amounts, options and private fields
+  ---
+  duration_ms: 0.970779
+  type: 'test'
+  ...
+# Subtest: single-excluded / stable projections, frozen input and unchanged stored receipt
+ok 5 - single-excluded / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 3.110134
+  type: 'test'
+  ...
+# Subtest: single-included / customerReceiptPresentation / scope
+ok 6 - single-included / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.141631
+  type: 'test'
+  ...
+# Subtest: single-included / projectVoiceQuote / scope
+ok 7 - single-included / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.167747
+  type: 'test'
+  ...
+# Subtest: single-included / projectSavedQuoteContext / scope
+ok 8 - single-included / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.070965
+  type: 'test'
+  ...
+# Subtest: single-included / amounts, options and private fields
+ok 9 - single-included / amounts, options and private fields
+  ---
+  duration_ms: 0.552545
+  type: 'test'
+  ...
+# Subtest: single-included / stable projections, frozen input and unchanged stored receipt
+ok 10 - single-included / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 4.495103
+  type: 'test'
+  ...
+# Subtest: mixed-options / customerReceiptPresentation / scope
+ok 11 - mixed-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.218244
+  type: 'test'
+  ...
+# Subtest: mixed-options / projectVoiceQuote / scope
+ok 12 - mixed-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.141752
+  type: 'test'
+  ...
+# Subtest: mixed-options / projectSavedQuoteContext / scope
+ok 13 - mixed-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.062424
+  type: 'test'
+  ...
+# Subtest: mixed-options / amounts, options and private fields
+ok 14 - mixed-options / amounts, options and private fields
+  ---
+  duration_ms: 0.331026
+  type: 'test'
+  ...
+# Subtest: mixed-options / stable projections, frozen input and unchanged stored receipt
+ok 15 - mixed-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.871806
+  type: 'test'
+  ...
+# Subtest: shared-intersection / customerReceiptPresentation / scope
+ok 16 - shared-intersection / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.093005
+  type: 'test'
+  ...
+# Subtest: shared-intersection / projectVoiceQuote / scope
+ok 17 - shared-intersection / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.072188
+  type: 'test'
+  ...
+# Subtest: shared-intersection / projectSavedQuoteContext / scope
+ok 18 - shared-intersection / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.049166
+  type: 'test'
+  ...
+# Subtest: shared-intersection / amounts, options and private fields
+ok 19 - shared-intersection / amounts, options and private fields
+  ---
+  duration_ms: 0.206298
+  type: 'test'
+  ...
+# Subtest: shared-intersection / stable projections, frozen input and unchanged stored receipt
+ok 20 - shared-intersection / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.673318
+  type: 'test'
+  ...
+# Subtest: shared-every-option / customerReceiptPresentation / scope
+ok 21 - shared-every-option / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.07427
+  type: 'test'
+  ...
+# Subtest: shared-every-option / projectVoiceQuote / scope
+ok 22 - shared-every-option / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.067882
+  type: 'test'
+  ...
+# Subtest: shared-every-option / projectSavedQuoteContext / scope
+ok 23 - shared-every-option / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.044189
+  type: 'test'
+  ...
+# Subtest: shared-every-option / amounts, options and private fields
+ok 24 - shared-every-option / amounts, options and private fields
+  ---
+  duration_ms: 0.283262
+  type: 'test'
+  ...
+# Subtest: shared-every-option / stable projections, frozen input and unchanged stored receipt
+ok 25 - shared-every-option / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.640233
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / customerReceiptPresentation / scope
+ok 26 - genuine-mixed / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.073319
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / projectVoiceQuote / scope
+ok 27 - genuine-mixed / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.058188
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / projectSavedQuoteContext / scope
+ok 28 - genuine-mixed / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 2.236256
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / amounts, options and private fields
+ok 29 - genuine-mixed / amounts, options and private fields
+  ---
+  duration_ms: 0.258118
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / stable projections, frozen input and unchanged stored receipt
+ok 30 - genuine-mixed / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.94926
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / customerReceiptPresentation / scope
+ok 31 - genuine-same-label / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.109848
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / projectVoiceQuote / scope
+ok 32 - genuine-same-label / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.067391
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / projectSavedQuoteContext / scope
+ok 33 - genuine-same-label / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.049386
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / amounts, options and private fields
+ok 34 - genuine-same-label / amounts, options and private fields
+  ---
+  duration_ms: 1.352474
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / stable projections, frozen input and unchanged stored receipt
+ok 35 - genuine-same-label / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.825944
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / customerReceiptPresentation / scope
+ok 36 - genuine-and-shared / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.098522
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / projectVoiceQuote / scope
+ok 37 - genuine-and-shared / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.071497
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / projectSavedQuoteContext / scope
+ok 38 - genuine-and-shared / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.046733
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / amounts, options and private fields
+ok 39 - genuine-and-shared / amounts, options and private fields
+  ---
+  duration_ms: 0.189245
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / stable projections, frozen input and unchanged stored receipt
+ok 40 - genuine-and-shared / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.613888
+  type: 'test'
+  ...
+# Subtest: single-without-options / customerReceiptPresentation / scope
+ok 41 - single-without-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.064176
+  type: 'test'
+  ...
+# Subtest: single-without-options / projectVoiceQuote / scope
+ok 42 - single-without-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.054934
+  type: 'test'
+  ...
+# Subtest: single-without-options / projectSavedQuoteContext / scope
+ok 43 - single-without-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.04478
+  type: 'test'
+  ...
+# Subtest: single-without-options / amounts, options and private fields
+ok 44 - single-without-options / amounts, options and private fields
+  ---
+  duration_ms: 0.122245
+  type: 'test'
+  ...
+# Subtest: single-without-options / stable projections, frozen input and unchanged stored receipt
+ok 45 - single-without-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.423611
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / customerReceiptPresentation / scope
+ok 46 - already-ready-mixed / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.196355
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / projectVoiceQuote / scope
+ok 47 - already-ready-mixed / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.083322
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / projectSavedQuoteContext / scope
+ok 48 - already-ready-mixed / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.060442
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / amounts, options and private fields
+ok 49 - already-ready-mixed / amounts, options and private fields
+  ---
+  duration_ms: 0.261493
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / stable projections, frozen input and unchanged stored receipt
+ok 50 - already-ready-mixed / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.972451
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / customerReceiptPresentation / scope
+ok 51 - malformed-before-single / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.088549
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / projectVoiceQuote / scope
+ok 52 - malformed-before-single / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.084494
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / projectSavedQuoteContext / scope
+ok 53 - malformed-before-single / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.063165
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / amounts, options and private fields
+ok 54 - malformed-before-single / amounts, options and private fields
+  ---
+  duration_ms: 0.13328
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / stable projections, frozen input and unchanged stored receipt
+ok 55 - malformed-before-single / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.390767
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / customerReceiptPresentation / scope
+ok 56 - malformed-after-single / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.079998
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / projectVoiceQuote / scope
+ok 57 - malformed-after-single / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.03753
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / projectSavedQuoteContext / scope
+ok 58 - malformed-after-single / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.04423
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / amounts, options and private fields
+ok 59 - malformed-after-single / amounts, options and private fields
+  ---
+  duration_ms: 0.149802
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / stable projections, frozen input and unchanged stored receipt
+ok 60 - malformed-after-single / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.374635
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / customerReceiptPresentation / scope
+ok 61 - malformed-with-two-shared / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.070064
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / projectVoiceQuote / scope
+ok 62 - malformed-with-two-shared / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.040064
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / projectSavedQuoteContext / scope
+ok 63 - malformed-with-two-shared / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.046363
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / amounts, options and private fields
+ok 64 - malformed-with-two-shared / amounts, options and private fields
+  ---
+  duration_ms: 0.122676
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / stable projections, frozen input and unchanged stored receipt
+ok 65 - malformed-with-two-shared / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.404756
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / customerReceiptPresentation / scope
+ok 66 - malformed-mixed-genuine / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.067742
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / projectVoiceQuote / scope
+ok 67 - malformed-mixed-genuine / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.037961
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / projectSavedQuoteContext / scope
+ok 68 - malformed-mixed-genuine / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.04432
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / amounts, options and private fields
+ok 69 - malformed-mixed-genuine / amounts, options and private fields
+  ---
+  duration_ms: 0.123307
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / stable projections, frozen input and unchanged stored receipt
+ok 70 - malformed-mixed-genuine / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.319811
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / customerReceiptPresentation / scope
+ok 71 - malformed-empty-object / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.070105
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / projectVoiceQuote / scope
+ok 72 - malformed-empty-object / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.113383
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / projectSavedQuoteContext / scope
+ok 73 - malformed-empty-object / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.108816
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / amounts, options and private fields
+ok 74 - malformed-empty-object / amounts, options and private fields
+  ---
+  duration_ms: 0.10409
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / stable projections, frozen input and unchanged stored receipt
+ok 75 - malformed-empty-object / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.424853
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / customerReceiptPresentation / scope
+ok 76 - malformed-reversed-range / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.078286
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / projectVoiceQuote / scope
+ok 77 - malformed-reversed-range / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.047253
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / projectSavedQuoteContext / scope
+ok 78 - malformed-reversed-range / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.127973
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / amounts, options and private fields
+ok 79 - malformed-reversed-range / amounts, options and private fields
+  ---
+  duration_ms: 0.120193
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / stable projections, frozen input and unchanged stored receipt
+ok 80 - malformed-reversed-range / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.321574
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / customerReceiptPresentation / scope
+ok 81 - malformed-all-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.069604
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / projectVoiceQuote / scope
+ok 82 - malformed-all-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.04432
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / projectSavedQuoteContext / scope
+ok 83 - malformed-all-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.051259
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / amounts, options and private fields
+ok 84 - malformed-all-options / amounts, options and private fields
+  ---
+  duration_ms: 0.10362
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / stable projections, frozen input and unchanged stored receipt
+ok 85 - malformed-all-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.318289
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / customerReceiptPresentation / scope
+ok 86 - malformed-options-container / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.083032
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / projectVoiceQuote / scope
+ok 87 - malformed-options-container / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.045582
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / projectSavedQuoteContext / scope
+ok 88 - malformed-options-container / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.040024
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / amounts, options and private fields
+ok 89 - malformed-options-container / amounts, options and private fields
+  ---
+  duration_ms: 0.077435
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / stable projections, frozen input and unchanged stored receipt
+ok 90 - malformed-options-container / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.244901
+  type: 'test'
+  ...
+# Subtest: all stored receipt bytes remain unchanged
+ok 91 - all stored receipt bytes remain unchanged
+  ---
+  duration_ms: 1.63827
+  type: 'test'
+  ...
+1..91
+# tests 91
+# suites 0
+# pass 91
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 280.174378

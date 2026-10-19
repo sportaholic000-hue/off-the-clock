@@ -1,0 +1,305 @@
+TAP version 13
+# Subtest: owner alert repairs: production dashboard, Calls, retry and staff visibility
+    # Subtest: owner alert retry: paused worker renders PENDING, accepts once and never resends
+    ok 1 - owner alert retry: paused worker renders PENDING, accepts once and never resends
+      ---
+      duration_ms: 2965.087434
+      type: 'test'
+      ...
+    # {"syntheticOnly":true,"alertId":"7e657c35718f3e764055259dcad2b4bf","ordering":["refresh-intercepted","refresh-released"],"retry":{"http":200,"status":"PENDING"},"get":{"http":200,"id":"7e657c35718f3e764055259dcad2b4bf","status":"PENDING"},"database":{"id":"7e657c35718f3e764055259dcad2b4bf","status":"PENDING","lastErrorCode":"SYNTHETIC_PROVIDER_OUTAGE","attemptCount":0},"rendered":"PENDING","originalPendingAssertionWouldPass":true,"providerAttempts":0}
+    # {"syntheticOnly":true,"alertId":"7e657c35718f3e764055259dcad2b4bf","finalStatus":"ACCEPTED","attemptCount":1,"fakeProviderCalls":1,"uniqueAcceptances":1,"noResend":true,"staffRetry":403,"foreignRetry":404,"foreignCall":404}
+    # Subtest: owner alert retry: worker before refresh renders BLOCKED, accepts once and never resends
+    ok 2 - owner alert retry: worker before refresh renders BLOCKED, accepts once and never resends
+      ---
+      duration_ms: 2989.622524
+      type: 'test'
+      ...
+    # {"syntheticOnly":true,"alertId":"4c507a0046020375bd55678ab023cc93","ordering":["refresh-intercepted","real-disabled-worker-completed","refresh-released"],"retry":{"http":200,"status":"PENDING"},"get":{"http":200,"id":"4c507a0046020375bd55678ab023cc93","status":"BLOCKED"},"database":{"id":"4c507a0046020375bd55678ab023cc93","status":"BLOCKED","lastErrorCode":"EMAIL_NOT_CONFIGURED","attemptCount":0},"rendered":"BLOCKED","originalPendingAssertionWouldPass":false,"providerAttempts":0}
+    # {"syntheticOnly":true,"alertId":"4c507a0046020375bd55678ab023cc93","finalStatus":"ACCEPTED","attemptCount":1,"fakeProviderCalls":1,"uniqueAcceptances":1,"noResend":true,"staffRetry":403,"foreignRetry":404,"foreignCall":404}
+    1..2
+ok 1 - owner alert repairs: production dashboard, Calls, retry and staff visibility
+  ---
+  duration_ms: 5956.087354
+  type: 'test'
+  ...
+# Subtest: D19/D20: production browser shows saved quote email status and browses/retries older failures
+    # Subtest: owner/staff read DELIVERED accurately on saved inquiry and refreshed Calls; wrong tenant sees no request
+    ok 1 - owner/staff read DELIVERED accurately on saved inquiry and refreshed Calls; wrong tenant sees no request
+      ---
+      duration_ms: 612.906417
+      type: 'test'
+      ...
+    # Subtest: dashboard reaches oldest failure and retry preserves unsaved editor URL
+    ok 2 - dashboard reaches oldest failure and retry preserves unsaved editor URL
+      ---
+      duration_ms: 484.66705
+      type: 'test'
+      ...
+    1..2
+ok 2 - D19/D20: production browser shows saved quote email status and browses/retries older failures
+  ---
+  duration_ms: 2998.807667
+  type: 'test'
+  ...
+# Subtest: owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries
+    # Subtest: search, filters, deep link, stored billing and text transcript download
+    ok 1 - search, filters, deep link, stored billing and text transcript download
+      ---
+      duration_ms: 476.418652
+      type: 'test'
+      ...
+    # Subtest: owner reviews captured lead and retains customer material qualification
+    ok 2 - owner reviews captured lead and retains customer material qualification
+      ---
+      duration_ms: 291.688571
+      type: 'test'
+      ...
+    # Subtest: owner records real progression without caller delivery and saves an exact invoice
+    ok 3 - owner records real progression without caller delivery and saves an exact invoice
+      ---
+      duration_ms: 665.703282
+      type: 'test'
+      ...
+    # Subtest: reports expose period, actual value and funnel with an explicit unknown after-hours count
+    ok 4 - reports expose period, actual value and funnel with an explicit unknown after-hours count
+      ---
+      duration_ms: 242.609712
+      type: 'test'
+      ...
+    # Subtest: staff has safe work-area reads but no owner review or reports
+    ok 5 - staff has safe work-area reads but no owner review or reports
+      ---
+      duration_ms: 138.794997
+      type: 'test'
+      ...
+    1..5
+ok 3 - owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries
+  ---
+  duration_ms: 3554.978596
+  type: 'test'
+  ...
+# Subtest: Agent 2 F16 Chromium: fixed each input rejects fractional cents without rounding; measured input retains them
+ok 4 - Agent 2 F16 Chromium: fixed each input rejects fractional cents without rounding; measured input retains them
+  ---
+  duration_ms: 580.996323
+  type: 'test'
+  ...
+# Subtest: qe-agent3 representative public-intake case suite runs in hosted Chromium and covers its actual 8 of 20 services
+ok 5 - qe-agent3 representative public-intake case suite runs in hosted Chromium and covers its actual 8 of 20 services
+  ---
+  duration_ms: 41726.812127
+  type: 'test'
+  ...
+# Subtest: Agent3 F6: the actual saved-approval table omits starting-value adoption receipts
+ok 6 - Agent3 F6: the actual saved-approval table omits starting-value adoption receipts
+  ---
+  duration_ms: 777.190704
+  type: 'test'
+  ...
+# Subtest: Agent3 F14: rendered roof copy follows base, inherited and independent tier receipts
+ok 7 - Agent3 F14: rendered roof copy follows base, inherited and independent tier receipts
+  ---
+  duration_ms: 402.308145
+  type: 'test'
+  ...
+# Subtest: Agent3 F18: option exclusions stay per option through saved retry, widget, and voice
+ok 8 - Agent3 F18: option exclusions stay per option through saved retry, widget, and voice
+  ---
+  duration_ms: 1304.271004
+  type: 'test'
+  ...
+# Subtest: Agent3 F19: owner preview renders recurring and first-visit ranges for every option
+ok 9 - Agent3 F19: owner preview renders recurring and first-visit ranges for every option
+  ---
+  duration_ms: 302.277292
+  type: 'test'
+  ...
+# Subtest: qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through prepare, final persistence, and correction retries
+    # Subtest: PI-01 public sqft-to-yards does not reinterpret 270 square feet as 270 yards
+    ok 1 - PI-01 public sqft-to-yards does not reinterpret 270 square feet as 270 yards
+      ---
+      duration_ms: 1074.058774
+      type: 'test'
+      ...
+    # Subtest: PI-01 public yards-to-sqft clears the old volume and requires area plus depth
+    ok 2 - PI-01 public yards-to-sqft clears the old volume and requires area plus depth
+      ---
+      duration_ms: 944.205088
+      type: 'test'
+      ...
+    # Subtest: PI-02 public exact-to-area-perimeter clears length and width
+    ok 3 - PI-02 public exact-to-area-perimeter clears length and width
+      ---
+      duration_ms: 979.932894
+      type: 'test'
+      ...
+    # Subtest: PI-02 public area-perimeter-to-outline clears area and perimeter
+    ok 4 - PI-02 public area-perimeter-to-outline clears area and perimeter
+      ---
+      duration_ms: 1140.564171
+      type: 'test'
+      ...
+    # Subtest: PI-02 public outline-to-exact clears coordinates
+    ok 5 - PI-02 public outline-to-exact clears coordinates
+      ---
+      duration_ms: 920.843944
+      type: 'test'
+      ...
+    # Subtest: PI-03 public subfloor off removes repair area while preserving flooring identity
+    ok 6 - PI-03 public subfloor off removes repair area while preserving flooring identity
+      ---
+      duration_ms: 904.486032
+      type: 'test'
+      ...
+    # Subtest: PI-03 public subfloor unknown removes repair area and reverse requires a new area
+    ok 7 - PI-03 public subfloor unknown removes repair area and reverse requires a new area
+      ---
+      duration_ms: 1050.40549
+      type: 'test'
+      ...
+    # Subtest: PI-04 public planting mulch off removes quantity, type, and only its confirmation
+    ok 8 - PI-04 public planting mulch off removes quantity, type, and only its confirmation
+      ---
+      duration_ms: 941.214524
+      type: 'test'
+      ...
+    # Subtest: PI-04 public planting mulch unknown clears receipt and reverse requires new confirmed product
+    ok 9 - PI-04 public planting mulch unknown clears receipt and reverse requires new confirmed product
+      ---
+      duration_ms: 1159.403995
+      type: 'test'
+      ...
+    # Subtest: PI-05 public mowing edging off removes hidden length
+    ok 10 - PI-05 public mowing edging off removes hidden length
+      ---
+      duration_ms: 925.915213
+      type: 'test'
+      ...
+    # Subtest: PI-05 public mowing edging unknown clears length and reverse requires a new length
+    ok 11 - PI-05 public mowing edging unknown clears length and reverse requires a new length
+      ---
+      duration_ms: 1054.225715
+      type: 'test'
+      ...
+    # Subtest: actual public handlers remain fail-closed for all five contradictory bodies and stale proofs
+    ok 12 - actual public handlers remain fail-closed for all five contradictory bodies and stale proofs
+      ---
+      duration_ms: 358.389428
+      type: 'test'
+      ...
+    1..12
+ok 10 - qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through prepare, final persistence, and correction retries
+  ---
+  duration_ms: 17003.267101
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-01 rendered mulch methods clear prior unit quantity and depth in both directions
+    # Subtest: sqft to yards
+    ok 1 - sqft to yards
+      ---
+      duration_ms: 98.765153
+      type: 'test'
+      ...
+    # Subtest: yards to sqft
+    ok 2 - yards to sqft
+      ---
+      duration_ms: 45.490505
+      type: 'test'
+      ...
+    1..2
+ok 11 - qe-agent3 PI-01 rendered mulch methods clear prior unit quantity and depth in both directions
+  ---
+  duration_ms: 294.696653
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-02 rendered concrete methods clear every prior geometry representation forward and reverse
+    # Subtest: exact to measured_area_perimeter
+    ok 1 - exact to measured_area_perimeter
+      ---
+      duration_ms: 21.548383
+      type: 'test'
+      ...
+    # Subtest: measured_area_perimeter to measured_outline
+    ok 2 - measured_area_perimeter to measured_outline
+      ---
+      duration_ms: 22.441036
+      type: 'test'
+      ...
+    # Subtest: measured_outline to exact
+    ok 3 - measured_outline to exact
+      ---
+      duration_ms: 24.627448
+      type: 'test'
+      ...
+    1..3
+ok 12 - qe-agent3 PI-02 rendered concrete methods clear every prior geometry representation forward and reverse
+  ---
+  duration_ms: 69.537002
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-03 rendered subfloor off and unknown clear repair area and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 27.202157
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 23.030831
+      type: 'test'
+      ...
+    1..2
+ok 13 - qe-agent3 PI-03 rendered subfloor off and unknown clear repair area and reverse requires re-entry
+  ---
+  duration_ms: 50.911974
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-04 rendered planting mulch off and unknown clear product receipt only and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 18.677766
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 26.382982
+      type: 'test'
+      ...
+    1..2
+ok 14 - qe-agent3 PI-04 rendered planting mulch off and unknown clear product receipt only and reverse requires re-entry
+  ---
+  duration_ms: 45.596934
+  type: 'test'
+  ...
+# Subtest: qe-agent3 PI-05 rendered mowing edging off and unknown clear length, preserve explicit zero elsewhere, and reverse requires re-entry
+    # Subtest: false
+    ok 1 - false
+      ---
+      duration_ms: 17.011085
+      type: 'test'
+      ...
+    # Subtest: unknown
+    ok 2 - unknown
+      ---
+      duration_ms: 17.089521
+      type: 'test'
+      ...
+    1..2
+ok 15 - qe-agent3 PI-05 rendered mowing edging off and unknown clear length, preserve explicit zero elsewhere, and reverse requires re-entry
+  ---
+  duration_ms: 34.614969
+  type: 'test'
+  ...
+1..15
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 77399.794346

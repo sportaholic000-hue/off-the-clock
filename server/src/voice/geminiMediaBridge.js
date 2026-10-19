@@ -476,7 +476,9 @@ export function createGeminiMediaBridge({
               queuedOutputBytes -= pcm.length;
             }
           });
-          outputTail = task.catch((error) => abort(error));
+          // Shutdown drains provider callback queues. A callback must schedule
+          // shutdown without returning that same shutdown promise to its queue.
+          outputTail = task.catch((error) => { void abort(error); });
           return outputTail;
         },
 
@@ -488,7 +490,7 @@ export function createGeminiMediaBridge({
             await sendSocketMessage({ event: "clear", streamSid });
             if (typeof gemini?.cancelOutput === "function") await gemini.cancelOutput();
           });
-          interruptionTail = task.catch((error) => abort(error));
+          interruptionTail = task.catch((error) => { void abort(error); });
           return interruptionTail;
         },
 
@@ -531,11 +533,9 @@ export function createGeminiMediaBridge({
               response,
             });
           });
-          toolTail = task.catch((error) => abort(
-            error instanceof GeminiMediaBridgeError
-              ? error
-              : bridgeError("TOOL_CALLBACK_FAILED"),
-          ));
+          toolTail = task.catch((error) => {
+            void abort(error instanceof GeminiMediaBridgeError ? error : bridgeError("TOOL_CALLBACK_FAILED"));
+          });
           return toolTail;
         },
 

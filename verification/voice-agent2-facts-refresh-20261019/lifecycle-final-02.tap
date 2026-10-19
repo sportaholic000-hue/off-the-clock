@@ -1,0 +1,541 @@
+TAP version 13
+# Subtest: bridge construction requires explicit transcript and tool boundaries
+ok 1 - bridge construction requires explicit transcript and tool boundaries
+  ---
+  duration_ms: 1.141988
+  type: 'test'
+  ...
+# Subtest: valid Twilio media is identity-bound, converted to PCM16 16 kHz, and closes on stop
+ok 2 - valid Twilio media is identity-bound, converted to PCM16 16 kHz, and closes on stop
+  ---
+  duration_ms: 3.475937
+  type: 'test'
+  ...
+# Subtest: Gemini PCM16 24 kHz audio becomes Twilio media plus an acknowledged mark
+ok 3 - Gemini PCM16 24 kHz audio becomes Twilio media plus an acknowledged mark
+  ---
+  duration_ms: 2.630915
+  type: 'test'
+  ...
+# Subtest: Gemini interruption clears Twilio immediately and discards already queued output
+ok 4 - Gemini interruption clears Twilio immediately and discards already queued output
+  ---
+  duration_ms: 1.255725
+  type: 'test'
+  ...
+# Subtest: validated transcripts and tool calls cross only their injected callback interfaces
+ok 5 - validated transcripts and tool calls cross only their injected callback interfaces
+  ---
+  duration_ms: 1.17733
+  type: 'test'
+  ...
+# Subtest: forged call identity in the Twilio start event fails before Gemini opens
+ok 6 - forged call identity in the Twilio start event fails before Gemini opens
+  ---
+  duration_ms: 0.588084
+  type: 'test'
+  ...
+# Subtest: a socket close during Gemini connection cannot leak or resurrect the provider session
+ok 7 - a socket close during Gemini connection cannot leak or resurrect the provider session
+  ---
+  duration_ms: 8.152297
+  type: 'test'
+  ...
+# Subtest: a provider close callback during application shutdown cannot recurse or deadlock
+ok 8 - a provider close callback during application shutdown cannot recurse or deadlock
+  ---
+  duration_ms: 0.538881
+  type: 'test'
+  ...
+# Subtest: out-of-order, unknown-mark, binary, and malformed audio events fail closed
+    # Subtest: sequence gap
+    ok 1 - sequence gap
+      ---
+      duration_ms: 0.495138
+      type: 'test'
+      ...
+    # Subtest: unknown mark
+    ok 2 - unknown mark
+      ---
+      duration_ms: 0.678356
+      type: 'test'
+      ...
+    # Subtest: binary event
+    ok 3 - binary event
+      ---
+      duration_ms: 0.232742
+      type: 'test'
+      ...
+    # Subtest: non-canonical media base64
+    ok 4 - non-canonical media base64
+      ---
+      duration_ms: 0.337065
+      type: 'test'
+      ...
+    1..4
+ok 9 - out-of-order, unknown-mark, binary, and malformed audio events fail closed
+  ---
+  duration_ms: 2.655542
+  type: 'test'
+  ...
+# Subtest: payload rate, queue, and socket backpressure limits terminate instead of buffering unboundedly
+    # Subtest: inbound byte rate
+    ok 1 - inbound byte rate
+      ---
+      duration_ms: 0.62672
+      type: 'test'
+      ...
+    # Subtest: socket buffered amount
+    ok 2 - socket buffered amount
+      ---
+      duration_ms: 0.344867
+      type: 'test'
+      ...
+    # Subtest: queued input audio
+    ok 3 - queued input audio
+      ---
+      duration_ms: 0.849989
+      type: 'test'
+      ...
+    1..3
+ok 10 - payload rate, queue, and socket backpressure limits terminate instead of buffering unboundedly
+  ---
+  duration_ms: 2.063953
+  type: 'test'
+  ...
+# Subtest: invalid provider audio, transcript, or tool data fails closed without echoing details
+    # Subtest: wrong output format
+    ok 1 - wrong output format
+      ---
+      duration_ms: 0.325808
+      type: 'test'
+      ...
+    # Subtest: control character transcript
+    ok 2 - control character transcript
+      ---
+      duration_ms: 0.288604
+      type: 'test'
+      ...
+    # Subtest: prototype-bearing tool arguments
+    ok 3 - prototype-bearing tool arguments
+      ---
+      duration_ms: 0.500285
+      type: 'test'
+      ...
+    # Subtest: accessor-bearing provider objects
+    ok 4 - accessor-bearing provider objects
+      ---
+      duration_ms: 0.471612
+      type: 'test'
+      ...
+    1..4
+ok 11 - invalid provider audio, transcript, or tool data fails closed without echoing details
+  ---
+  duration_ms: 1.996854
+  type: 'test'
+  ...
+# Subtest: connects with audio-only transcription, tools, prompt, and configured voice
+ok 12 - connects with audio-only transcription, tools, prompt, and configured voice
+  ---
+  duration_ms: 3.326548
+  type: 'test'
+  ...
+# Subtest: maps provider audio, finalized transcripts, interruption, and tool calls
+ok 13 - maps provider audio, finalized transcripts, interruption, and tool calls
+  ---
+  duration_ms: 5.853741
+  type: 'test'
+  ...
+# Subtest: flushes interrupted operator transcript as non-final before clearing playback
+ok 14 - flushes interrupted operator transcript as non-final before clearing playback
+  ---
+  duration_ms: 3.135557
+  type: 'test'
+  ...
+# Subtest: provider protocol violations fail closed without exposing provider details
+ok 15 - provider protocol violations fail closed without exposing provider details
+  ---
+  duration_ms: 2.668351
+  type: 'test'
+  ...
+# Subtest: close sends audio-stream-end and closes exactly once
+ok 16 - close sends audio-stream-end and closes exactly once
+  ---
+  duration_ms: 0.461809
+  type: 'test'
+  ...
+# Subtest: construction and connection failures use stable local error codes
+ok 17 - construction and connection failures use stable local error codes
+  ---
+  duration_ms: 0.57869
+  type: 'test'
+  ...
+# Subtest: Owner ruling: removed SMS tool cannot reach the production provider
+ok 18 - Owner ruling: removed SMS tool cannot reach the production provider
+  ---
+  duration_ms: 383.107868
+  type: 'test'
+  ...
+# Subtest: D04 owner ruling: production refuses caller SMS and never invokes the provider
+ok 19 - D04 owner ruling: production refuses caller SMS and never invokes the provider
+  ---
+  duration_ms: 76.944299
+  type: 'test'
+  ...
+# Subtest: D06 failed transfer persists the promised callback with caller words and replay identity
+ok 20 - D06 failed transfer persists the promised callback with caller words and replay identity
+  ---
+  duration_ms: 74.573135
+  type: 'test'
+  ...
+# Subtest: D04 production transfer adapter initiates one provider handoff without claiming connection
+ok 21 - D04 production transfer adapter initiates one provider handoff without claiming connection
+  ---
+  duration_ms: 81.417751
+  type: 'test'
+  ...
+# Subtest: D04 production appointment-change adapter reaches the booking service
+ok 22 - D04 production appointment-change adapter reaches the booking service
+  ---
+  duration_ms: 101.070025
+  type: 'test'
+  ...
+# Subtest: D07 model startup failure gathers and durably saves before any forwarding
+ok 23 - D07 model startup failure gathers and durably saves before any forwarding
+  ---
+  duration_ms: 81.649421
+  type: 'test'
+  ...
+# Subtest: D08 signed anonymous caller resolves by To and cannot see another anonymous caller history
+ok 24 - D08 signed anonymous caller resolves by To and cannot see another anonymous caller history
+  ---
+  duration_ms: 50.389924
+  type: 'test'
+  ...
+# Subtest: D25 completed call is final in storage and signed fallback
+ok 25 - D25 completed call is final in storage and signed fallback
+  ---
+  duration_ms: 80.025856
+  type: 'test'
+  ...
+# Subtest: D26 caller text and unfinished model transcript survive immediate call cleanup
+ok 26 - D26 caller text and unfinished model transcript survive immediate call cleanup
+  ---
+  duration_ms: 47.246637
+  type: 'test'
+  ...
+# Subtest: D26 final provider text received during close is persisted before cleanup
+ok 27 - D26 final provider text received during close is persisted before cleanup
+  ---
+  duration_ms: 47.231544
+  type: 'test'
+  ...
+# Subtest: D07 transient transcript write failure retries received words before ending the call
+ok 28 - D07 transient transcript write failure retries received words before ending the call
+  ---
+  duration_ms: 80.761928
+  type: 'test'
+  ...
+# Subtest: D27 production startup recovers active call into one durable lead
+ok 29 - D27 production startup recovers active call into one durable lead
+  ---
+  duration_ms: 35.876386
+  type: 'test'
+  ...
+# Subtest: D27 legacy active rows with incomplete provider metadata still become owner leads
+ok 30 - D27 legacy active rows with incomplete provider metadata still become owner leads
+  ---
+  duration_ms: 26.023825
+  type: 'test'
+  ...
+# Subtest: D28 provisioned phone alone never claims eligibility when inbound runtime is disabled
+ok 31 - D28 provisioned phone alone never claims eligibility when inbound runtime is disabled
+  ---
+  duration_ms: 0.479144
+  type: 'test'
+  ...
+# Subtest: D28 receptionist readiness has no dashboard on/off switch
+ok 32 - D28 receptionist readiness has no dashboard on/off switch
+  ---
+  duration_ms: 0.133196
+  type: 'test'
+  ...
+# Subtest: D31 duplicate signed inbound delivery replays one durable session and never reopens final calls
+ok 33 - D31 duplicate signed inbound delivery replays one durable session and never reopens final calls
+  ---
+  duration_ms: 47.667965
+  type: 'test'
+  ...
+# Subtest: D32 default ceiling reserves five sessions atomically; sixth captures its request
+ok 34 - D32 default ceiling reserves five sessions atomically; sixth captures its request
+  ---
+  duration_ms: 73.489873
+  type: 'test'
+  ...
+# Subtest: P01 no default callback or quote deadline; only explicit owner policy authorizes one
+ok 35 - P01 no default callback or quote deadline; only explicit owner policy authorizes one
+  ---
+  duration_ms: 1.057563
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity anonymous is isolated from prior caller history
+ok 36 - D08 anonymous identity anonymous is isolated from prior caller history
+  ---
+  duration_ms: 116.468755
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity unknown is isolated from prior caller history
+ok 37 - D08 anonymous identity unknown is isolated from prior caller history
+  ---
+  duration_ms: 111.216983
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity restricted is isolated from prior caller history
+ok 38 - D08 anonymous identity restricted is isolated from prior caller history
+  ---
+  duration_ms: 110.963105
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity unavailable is isolated from prior caller history
+ok 39 - D08 anonymous identity unavailable is isolated from prior caller history
+  ---
+  duration_ms: 105.930295
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity private is isolated from prior caller history
+ok 40 - D08 anonymous identity private is isolated from prior caller history
+  ---
+  duration_ms: 102.23071
+  type: 'test'
+  ...
+# Subtest: D08 anonymous identity blocked is isolated from prior caller history
+ok 41 - D08 anonymous identity blocked is isolated from prior caller history
+  ---
+  duration_ms: 101.276659
+  type: 'test'
+  ...
+# Subtest: D08 malformed caller and cross-tenant capture callbacks cannot alter a request
+ok 42 - D08 malformed caller and cross-tenant capture callbacks cannot alter a request
+  ---
+  duration_ms: 38.940532
+  type: 'test'
+  ...
+# Subtest: D07 fallback persistence failure returns retryable error and never forwards
+ok 43 - D07 fallback persistence failure returns retryable error and never forwards
+  ---
+  duration_ms: 74.186703
+  type: 'test'
+  ...
+# Subtest: D07 partial fallback speech survives an empty final result and recovery
+ok 44 - D07 partial fallback speech survives an empty final result and recovery
+  ---
+  duration_ms: 59.892546
+  type: 'test'
+  ...
+# Subtest: D25 repeated completed fallback capture neither rewrites request nor forwards again
+ok 45 - D25 repeated completed fallback capture neither rewrites request nor forwards again
+  ---
+  duration_ms: 59.540218
+  type: 'test'
+  ...
+# Subtest: D26 pending text is preserved on error
+ok 46 - D26 pending text is preserved on error
+  ---
+  duration_ms: 59.601708
+  type: 'test'
+  ...
+# Subtest: D26 pending text is preserved on provider_close
+ok 47 - D26 pending text is preserved on provider_close
+  ---
+  duration_ms: 63.994823
+  type: 'test'
+  ...
+# Subtest: D26 pending text is preserved on socket_close
+ok 48 - D26 pending text is preserved on socket_close
+  ---
+  duration_ms: 56.885979
+  type: 'test'
+  ...
+# Subtest: D26 received caller text persists while a provider tool is still waiting
+ok 49 - D26 received caller text persists while a provider tool is still waiting
+  ---
+  duration_ms: 78.888145
+  type: 'test'
+  ...
+# Subtest: D31 duplicated media upgrade cannot start a second provider session
+ok 50 - D31 duplicated media upgrade cannot start a second provider session
+  ---
+  duration_ms: 57.49816
+  type: 'test'
+  ...
+# Subtest: D26 normal cleanup enriches the captured inquiry without duplicating it
+ok 51 - D26 normal cleanup enriches the captured inquiry without duplicating it
+  ---
+  duration_ms: 58.535532
+  type: 'test'
+  ...
+# Subtest: D32 sixth caller request is retained and another tenant has independent capacity
+ok 52 - D32 sixth caller request is retained and another tenant has independent capacity
+  ---
+  duration_ms: 98.803992
+  type: 'test'
+  ...
+# Subtest: P01 owner-set policy is available verbatim; caller urgency and business hours are not deadlines
+ok 53 - P01 owner-set policy is available verbatim; caller urgency and business hours are not deadlines
+  ---
+  duration_ms: 0.830335
+  type: 'test'
+  ...
+# Subtest: D04 warm transfer requires explicit acceptance with signed child-leg binding
+ok 54 - D04 warm transfer requires explicit acceptance with signed child-leg binding
+  ---
+  duration_ms: 72.578045
+  type: 'test'
+  ...
+# Subtest: D04 warm transfer decline saves callback with signed child-leg binding
+ok 55 - D04 warm transfer decline saves callback with signed child-leg binding
+  ---
+  duration_ms: 79.793398
+  type: 'test'
+  ...
+# Subtest: D04 real booking service cancel uses fake calendar and commits only confirmed result
+ok 56 - D04 real booking service cancel uses fake calendar and commits only confirmed result
+  ---
+  duration_ms: 74.206166
+  type: 'test'
+  ...
+# Subtest: D04 real booking service reschedule uses fake calendar and commits only confirmed result
+ok 57 - D04 real booking service reschedule uses fake calendar and commits only confirmed result
+  ---
+  duration_ms: 98.058922
+  type: 'test'
+  ...
+# Subtest: D04 ambiguous calendar change preserves both reservations and request evidence
+ok 58 - D04 ambiguous calendar change preserves both reservations and request evidence
+  ---
+  duration_ms: 136.619696
+  type: 'test'
+  ...
+# Subtest: D04 rescheduling rechecks remote availability before writing a stale offered slot
+ok 59 - D04 rescheduling rechecks remote availability before writing a stale offered slot
+  ---
+  duration_ms: 103.338711
+  type: 'test'
+  ...
+# Subtest: D04 Google calendar cancel adapter uses authenticated PATCH and validates response
+ok 60 - D04 Google calendar cancel adapter uses authenticated PATCH and validates response
+  ---
+  duration_ms: 2.960677
+  type: 'test'
+  ...
+# Subtest: D04 Google calendar reschedule adapter uses authenticated PATCH and validates response
+ok 61 - D04 Google calendar reschedule adapter uses authenticated PATCH and validates response
+  ---
+  duration_ms: 0.956792
+  type: 'test'
+  ...
+# Subtest: A goAway resumes one call with compression, one greeting, ordered caller audio and a single tool completion
+ok 62 - A goAway resumes one call with compression, one greeting, ordered caller audio and a single tool completion
+  ---
+  duration_ms: 14.187769
+  type: 'test'
+  ...
+# Subtest: A unexpected close with a valid handle reconnects; failed reconnect reports a real failure once
+ok 63 - A unexpected close with a valid handle reconnects; failed reconnect reports a real failure once
+  ---
+  duration_ms: 6.730218
+  type: 'test'
+  ...
+# Subtest: A signed phone stream stays open across reconnection; a later caller hangup completes and bills normally
+ok 64 - A signed phone stream stays open across reconnection; a later caller hangup completes and bills normally
+  ---
+  duration_ms: 141.997269
+  type: 'test'
+  ...
+# Subtest: A failed resumption runs the genuine backup path and bills zero minutes
+ok 65 - A failed resumption runs the genuine backup path and bills zero minutes
+  ---
+  duration_ms: 76.138617
+  type: 'test'
+  ...
+# Subtest: B same-number dropped call has gated name, then bounded previous transcript and backup message without an old price
+ok 66 - B same-number dropped call has gated name, then bounded previous transcript and backup message without an old price
+  ---
+  duration_ms: 46.596697
+  type: 'test'
+  ...
+# Subtest: B a price at the very start of old speech is redacted before the model sees history
+ok 67 - B a price at the very start of old speech is redacted before the model sees history
+  ---
+  duration_ms: 32.988995
+  type: 'test'
+  ...
+# Subtest: B a dropped Twilio socket is flagged as an unexpected previous call
+ok 68 - B a dropped Twilio socket is flagged as an unexpected previous call
+  ---
+  duration_ms: 29.685261
+  type: 'test'
+  ...
+# Subtest: B all caller history reads use the tenant ownerQuery, including the previous call
+ok 69 - B all caller history reads use the tenant ownerQuery, including the previous call
+  ---
+  duration_ms: 27.015122
+  type: 'test'
+  ...
+# Subtest: B a no or unclear identity answer reveals no history, even if a tool claims confirmation
+ok 70 - B a no or unclear identity answer reveals no history, even if a tool claims confirmation
+  ---
+  duration_ms: 24.370981
+  type: 'test'
+  ...
+# Subtest: B an explicit natural yes with the saved first name confirms, while an unclear answer does not
+ok 71 - B an explicit natural yes with the saved first name confirms, while an unclear answer does not
+  ---
+  duration_ms: 28.374186
+  type: 'test'
+  ...
+# Subtest: B withheld and other-business caller IDs disclose nothing
+ok 72 - B withheld and other-business caller IDs disclose nothing
+  ---
+  duration_ms: 27.631681
+  type: 'test'
+  ...
+# Subtest: B after 24 hours saved requests remain available only after identity confirmation, without old transcript
+ok 73 - B after 24 hours saved requests remain available only after identity confirmation, without old transcript
+  ---
+  duration_ms: 42.340819
+  type: 'test'
+  ...
+# Subtest: B caller words are captured immediately and survive a drop; prompt requires early capture and guarded returning context
+ok 74 - B caller words are captured immediately and survive a drop; prompt requires early capture and guarded returning context
+  ---
+  duration_ms: 80.556184
+  type: 'test'
+  ...
+# Subtest: C backup capture speaks the matching Chirp voice and the exact two new lines
+ok 75 - C backup capture speaks the matching Chirp voice and the exact two new lines
+  ---
+  duration_ms: 0.302165
+  type: 'test'
+  ...
+# Subtest: C signed male fallback repeats the configured voice on capture and thanks without a forwarding loop
+ok 76 - C signed male fallback repeats the configured voice on capture and thanks without a forwarding loop
+  ---
+  duration_ms: 99.994428
+  type: 'test'
+  ...
+# Subtest: C signed female fallback repeats the configured voice on capture and thanks without a forwarding loop
+ok 77 - C signed female fallback repeats the configured voice on capture and thanks without a forwarding loop
+  ---
+  duration_ms: 89.017034
+  type: 'test'
+  ...
+1..77
+# tests 88
+# suites 0
+# pass 88
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5064.344523

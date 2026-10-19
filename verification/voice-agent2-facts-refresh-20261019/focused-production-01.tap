@@ -1,0 +1,199 @@
+TAP version 13
+# Subtest: voice H2 saved HTTP amount increase reaches fresh provider and real dispatcher
+ok 1 - voice H2 saved HTTP amount increase reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 209.016921
+  type: 'test'
+  ...
+# {"name":"amount increase","resumable":false,"delivered":["Widget $10 each","Widget $12 each"],"current":{"status":"calculated","listedItem":"Widget $12 each","quantity":"3","extendedAmount":"36.00","currency":"$","voiceSummary":"Widget $12 each. At that listed price, 3 comes to $36.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP amount decrease reaches fresh provider and real dispatcher
+ok 2 - voice H2 saved HTTP amount decrease reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 138.446372
+  type: 'test'
+  ...
+# {"name":"amount decrease","resumable":false,"delivered":["Widget $10 each","Widget $8 each"],"current":{"status":"calculated","listedItem":"Widget $8 each","quantity":"3","extendedAmount":"24.00","currency":"$","voiceSummary":"Widget $8 each. At that listed price, 3 comes to $24.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP added membership reaches fresh provider and real dispatcher
+ok 3 - voice H2 saved HTTP added membership reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 93.952858
+  type: 'test'
+  ...
+# {"name":"added membership","resumable":false,"delivered":["Widget $10 each","Widget $10 each\\nAvailable to members"],"current":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP removed membership reaches fresh provider and real dispatcher
+ok 4 - voice H2 saved HTTP removed membership reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 79.299123
+  type: 'test'
+  ...
+# {"name":"removed membership","resumable":false,"delivered":["Widget $10 each\\nAvailable to members","Widget $10 each"],"current":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP replaced qualification reaches fresh provider and real dispatcher
+ok 5 - voice H2 saved HTTP replaced qualification reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 85.327942
+  type: 'test'
+  ...
+# {"name":"replaced qualification","resumable":false,"delivered":["Widget $10 each\\nAvailable to members","Widget $10 each\\nWeekdays only"],"current":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP removed price reaches fresh provider and real dispatcher
+not ok 6 - voice H2 saved HTTP removed price reaches fresh provider and real dispatcher
+  ---
+  duration_ms: 96.821539
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:21:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"status":"needs_details","customerMessage":"That action could not be completed. Check the requested details and caller confirmation; no successful price or booking is being reported."}
+    + actual - expected
+    
+    + 'needs_details'
+    - 'needs_review'
+             ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'needs_details'
+  operator: 'strictEqual'
+  stack: |-
+    review (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:7:30)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:28:100)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: voice H2 saved HTTP amount increase reaches resumed provider and real dispatcher
+ok 7 - voice H2 saved HTTP amount increase reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 94.961831
+  type: 'test'
+  ...
+# {"name":"amount increase","resumable":true,"delivered":["Widget $10 each","Widget $12 each"],"current":{"status":"calculated","listedItem":"Widget $12 each","quantity":"3","extendedAmount":"36.00","currency":"$","voiceSummary":"Widget $12 each. At that listed price, 3 comes to $36.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP amount decrease reaches resumed provider and real dispatcher
+ok 8 - voice H2 saved HTTP amount decrease reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 109.631094
+  type: 'test'
+  ...
+# {"name":"amount decrease","resumable":true,"delivered":["Widget $10 each","Widget $8 each"],"current":{"status":"calculated","listedItem":"Widget $8 each","quantity":"3","extendedAmount":"24.00","currency":"$","voiceSummary":"Widget $8 each. At that listed price, 3 comes to $24.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP added membership reaches resumed provider and real dispatcher
+ok 9 - voice H2 saved HTTP added membership reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 86.225511
+  type: 'test'
+  ...
+# {"name":"added membership","resumable":true,"delivered":["Widget $10 each","Widget $10 each\\nAvailable to members"],"current":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP removed membership reaches resumed provider and real dispatcher
+ok 10 - voice H2 saved HTTP removed membership reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 105.649856
+  type: 'test'
+  ...
+# {"name":"removed membership","resumable":true,"delivered":["Widget $10 each\\nAvailable to members","Widget $10 each"],"current":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP replaced qualification reaches resumed provider and real dispatcher
+ok 11 - voice H2 saved HTTP replaced qualification reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 92.031615
+  type: 'test'
+  ...
+# {"name":"replaced qualification","resumable":true,"delivered":["Widget $10 each\\nAvailable to members","Widget $10 each\\nWeekdays only"],"current":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"stale":"needs_review"}
+# Subtest: voice H2 saved HTTP removed price reaches resumed provider and real dispatcher
+not ok 12 - voice H2 saved HTTP removed price reaches resumed provider and real dispatcher
+  ---
+  duration_ms: 72.127553
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:21:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"status":"needs_details","customerMessage":"That action could not be completed. Check the requested details and caller confirmation; no successful price or booking is being reported."}
+    + actual - expected
+    
+    + 'needs_details'
+    - 'needs_review'
+             ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'needs_details'
+  operator: 'strictEqual'
+  stack: |-
+    review (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:7:30)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:28:100)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: voice H2 actual idle call receives saved qualifications without a tool or media trigger
+ok 13 - voice H2 actual idle call receives saved qualifications without a tool or media trigger
+  ---
+  duration_ms: 1072.269829
+  type: 'test'
+  ...
+# Subtest: voice H2 real media output suppresses stale speech and accepts the refreshed provider
+ok 14 - voice H2 real media output suppresses stale speech and accepts the refreshed provider
+  ---
+  duration_ms: 81.996915
+  type: 'test'
+  ...
+# Subtest: voice H2 actual consecutive owner saves reach the latest provider at a shared timestamp
+ok 15 - voice H2 actual consecutive owner saves reach the latest provider at a shared timestamp
+  ---
+  duration_ms: 98.751155
+  type: 'test'
+  ...
+# Subtest: voice H2 real saved update cannot be overwritten by a delayed earlier connection
+ok 16 - voice H2 real saved update cannot be overwritten by a delayed earlier connection
+  ---
+  duration_ms: 73.662196
+  type: 'test'
+  ...
+# Subtest: voice H2 real GoAway reconnect reads the latest saved facts and keeps the phone stream
+ok 17 - voice H2 real GoAway reconnect reads the latest saved facts and keeps the phone stream
+  ---
+  duration_ms: 63.246406
+  type: 'test'
+  ...
+# Subtest: voice H2 failed refresh ends the real call through existing fallback with zero billed minutes
+ok 18 - voice H2 failed refresh ends the real call through existing fallback with zero billed minutes
+  ---
+  duration_ms: 74.164969
+  type: 'test'
+  ...
+# Subtest: voice H2 simultaneous owners retain separate facts, requests and provider handles
+not ok 19 - voice H2 simultaneous owners retain separate facts, requests and provider handles
+  ---
+  duration_ms: 81.597462
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:98:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."}
+    + actual - expected
+    
+    + 'needs_review'
+    - 'calculated'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'calculated'
+  actual: 'needs_review'
+  operator: 'strictEqual'
+  stack: |-
+    amount (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:8:41)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefreshProduction20261019.spec.mjs:101:65)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: voice H2 two calls for one owner refresh independently without exchanging caller context
+ok 20 - voice H2 two calls for one owner refresh independently without exchanging caller context
+  ---
+  duration_ms: 108.080341
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 17
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3973.704

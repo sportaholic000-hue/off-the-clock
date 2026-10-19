@@ -1,0 +1,29 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-timeout=15000",
+    "test/voiceAgent2FactsRefresh20261019.spec.mjs"
+  ],
+  "started_at": "2026-10-19T18:55:29.664715+00:00",
+  "finished_at": "2026-10-19T18:55:30.047092+00:00",
+  "head": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "changed_paths": [
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "exit_code": 0,
+  "summary": {
+    "tests": 31,
+    "suites": 0,
+    "pass": 31,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 345.729373
+  },
+  "log": "focused-adapter-04.tap",
+  "log_bytes": 6985,
+  "log_sha256": "d97452a25a22f2bc99bad2f4900ff4efcdc62e380998d9595e942663828a7777"
+}

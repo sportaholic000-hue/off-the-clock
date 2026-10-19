@@ -1,0 +1,252 @@
+TAP version 13
+# Subtest: voice H2 provider receives amount increase before next caller audio
+ok 1 - voice H2 provider receives amount increase before next caller audio
+  ---
+  duration_ms: 5.135363
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives amount decrease before next caller audio
+ok 2 - voice H2 provider receives amount decrease before next caller audio
+  ---
+  duration_ms: 1.862946
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives added qualification before next caller audio
+ok 3 - voice H2 provider receives added qualification before next caller audio
+  ---
+  duration_ms: 0.756924
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives removed qualification before next caller audio
+ok 4 - voice H2 provider receives removed qualification before next caller audio
+  ---
+  duration_ms: 0.728091
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives replaced qualification before next caller audio
+ok 5 - voice H2 provider receives replaced qualification before next caller audio
+  ---
+  duration_ms: 1.434109
+  type: 'test'
+  ...
+# Subtest: voice H2 provider receives removed listing before next caller audio
+ok 6 - voice H2 provider receives removed listing before next caller audio
+  ---
+  duration_ms: 1.646794
+  type: 'test'
+  ...
+# Subtest: voice H2 unchanged saved facts avoid provider replacement across repeated input
+ok 7 - voice H2 unchanged saved facts avoid provider replacement across repeated input
+  ---
+  duration_ms: 1.942183
+  type: 'test'
+  ...
+# Subtest: voice H2 connected provider refreshes while caller is idle
+ok 8 - voice H2 connected provider refreshes while caller is idle
+  ---
+  duration_ms: 15.594013
+  type: 'test'
+  ...
+# Subtest: voice H2 stale provider speech is cleared without waiting for caller audio or tools
+ok 9 - voice H2 stale provider speech is cleared without waiting for caller audio or tools
+  ---
+  duration_ms: 7.540269
+  type: 'test'
+  ...
+# Subtest: voice H2 a save during queued separate messages suppresses the remaining old output
+ok 10 - voice H2 a save during queued separate messages suppresses the remaining old output
+  ---
+  duration_ms: 13.025066
+  type: 'test'
+  ...
+# Subtest: voice H2 a save during queued multiple parts suppresses the remaining old output
+ok 11 - voice H2 a save during queued multiple parts suppresses the remaining old output
+  ---
+  duration_ms: 10.95344
+  type: 'test'
+  ...
+# Subtest: voice H2 refreshed speech and caller input wait for queued telephony output to clear
+ok 12 - voice H2 refreshed speech and caller input wait for queued telephony output to clear
+  ---
+  duration_ms: 6.811501
+  type: 'test'
+  ...
+# Subtest: voice H2 rejected telephony clear fails closed instead of accepting stale or refreshed speech
+ok 13 - voice H2 rejected telephony clear fails closed instead of accepting stale or refreshed speech
+  ---
+  duration_ms: 1.026815
+  type: 'test'
+  ...
+# Subtest: voice H2 normal close retains final current caller and provider transcripts
+ok 14 - voice H2 normal close retains final current caller and provider transcripts
+  ---
+  duration_ms: 0.693459
+  type: 'test'
+  ...
+# Subtest: voice H2 normal close drains an already accepted tool response before retiring its provider
+not ok 15 - voice H2 normal close drains an already accepted tool response before retiring its provider
+  ---
+  duration_ms: 8.158201
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefresh20261019.spec.mjs:91:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefresh20261019.spec.mjs:95:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: voice H2 cold continuity waits for already received caller words to finish persistence
+not ok 16 - voice H2 cold continuity waits for already received caller words to finish persistence
+  ---
+  duration_ms: 11.558137
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefresh20261019.spec.mjs:99:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Received caller context must finish before continuation is seeded
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/test/voiceAgent2FactsRefresh20261019.spec.mjs:105:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: voice H2 consecutive completed saves replace each provider in order
+ok 17 - voice H2 consecutive completed saves replace each provider in order
+  ---
+  duration_ms: 1.359588
+  type: 'test'
+  ...
+# Subtest: voice H2 later save wins while an earlier provider replacement is connecting
+ok 18 - voice H2 later save wins while an earlier provider replacement is connecting
+  ---
+  duration_ms: 6.322677
+  type: 'test'
+  ...
+# Subtest: voice H2 later save wins while facts compilation is delayed
+ok 19 - voice H2 later save wins while facts compilation is delayed
+  ---
+  duration_ms: 1.452997
+  type: 'test'
+  ...
+# Subtest: voice H2 goAway resumption uses current saved facts and the same handle
+ok 20 - voice H2 goAway resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 8.139573
+  type: 'test'
+  ...
+# Subtest: voice H2 onclose resumption uses current saved facts and the same handle
+ok 21 - voice H2 onclose resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 6.609421
+  type: 'test'
+  ...
+# Subtest: voice H2 onerror resumption uses current saved facts and the same handle
+ok 22 - voice H2 onerror resumption uses current saved facts and the same handle
+  ---
+  duration_ms: 5.132168
+  type: 'test'
+  ...
+# Subtest: voice H2 cold replacement retains received conversation and historical tool context
+ok 23 - voice H2 cold replacement retains received conversation and historical tool context
+  ---
+  duration_ms: 1.51582
+  type: 'test'
+  ...
+# Subtest: voice H2 pending tool reply drains before replacement without deadlocking waiting audio
+ok 24 - voice H2 pending tool reply drains before replacement without deadlocking waiting audio
+  ---
+  duration_ms: 7.537981
+  type: 'test'
+  ...
+# Subtest: voice H2 every tool in an accepted batch drains once before refresh
+ok 25 - voice H2 every tool in an accepted batch drains once before refresh
+  ---
+  duration_ms: 6.330107
+  type: 'test'
+  ...
+# Subtest: voice H2 revision refresh failure closes safely without forwarding stale audio
+ok 26 - voice H2 revision refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 1.15839
+  type: 'test'
+  ...
+# Subtest: voice H2 compile refresh failure closes safely without forwarding stale audio
+ok 27 - voice H2 compile refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.440614
+  type: 'test'
+  ...
+# Subtest: voice H2 connect refresh failure closes safely without forwarding stale audio
+ok 28 - voice H2 connect refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.560432
+  type: 'test'
+  ...
+# Subtest: voice H2 timeout refresh failure closes safely without forwarding stale audio
+ok 29 - voice H2 timeout refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 106.536713
+  type: 'test'
+  ...
+# Subtest: voice H2 continuation refresh failure closes safely without forwarding stale audio
+ok 30 - voice H2 continuation refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 1.974892
+  type: 'test'
+  ...
+# Subtest: voice H2 missing-continuation-method refresh failure closes safely without forwarding stale audio
+ok 31 - voice H2 missing-continuation-method refresh failure closes safely without forwarding stale audio
+  ---
+  duration_ms: 0.54546
+  type: 'test'
+  ...
+# Subtest: voice H2 close during replacement retires a late successful provider without resurrection
+ok 32 - voice H2 close during replacement retires a late successful provider without resurrection
+  ---
+  duration_ms: 7.997302
+  type: 'test'
+  ...
+# Subtest: voice H2 refresh polling stops after call close
+ok 33 - voice H2 refresh polling stops after call close
+  ---
+  duration_ms: 41.360934
+  type: 'test'
+  ...
+# Subtest: voice H2 bounded cold continuity preserves newest words and labels omitted context
+ok 34 - voice H2 bounded cold continuity preserves newest words and labels omitted context
+  ---
+  duration_ms: 9.068978
+  type: 'test'
+  ...
+# Subtest: voice H2 independent sessions never share facts, history or resume handles
+ok 35 - voice H2 independent sessions never share facts, history or resume handles
+  ---
+  duration_ms: 1.301682
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 33
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 404.520954

@@ -1,0 +1,32 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-concurrency=1",
+    "test/googleGenAiLiveAdapter.spec.mjs",
+    "test/voiceSessionMemory20261008.spec.mjs",
+    "test/geminiMediaBridge.spec.mjs"
+  ],
+  "started_at": "2026-10-19T18:34:46.968201+00:00",
+  "finished_at": "2026-10-19T18:34:48.145687+00:00",
+  "head": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "changed_paths": [
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "exit_code": 0,
+  "summary": {
+    "tests": 44,
+    "suites": 0,
+    "pass": 44,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 1131.727565
+  },
+  "log": "neighboring-session-01.tap",
+  "log_bytes": 9536,
+  "log_sha256": "86caeecd81fa367f122a59e82db24036c8aeb34ccbe821f17a87da238b0b839e"
+}

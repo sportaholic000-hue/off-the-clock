@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "ci"
+  ],
+  "started_at": "2026-10-19T18:59:45.101310+00:00",
+  "finished_at": "2026-10-19T18:59:51.538134+00:00",
+  "head": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "changed_paths": [
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "exit_code": 0,
+  "summary": {},
+  "log": "environment-restore-lockfile.tap",
+  "log_bytes": 447,
+  "log_sha256": "5b8a0ef21f9b5d9c0c2871fa336fcf3d39a54eb718c40f3ba539818c2874c5a7"
+}

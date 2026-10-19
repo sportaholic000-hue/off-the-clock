@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: F16 pipeJackEach base MANUAL rejects approval without a durable write
+ok 1 - F16 pipeJackEach base MANUAL rejects approval without a durable write
+  ---
+  duration_ms: 162.822118
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base MANUAL rejects adoption without a durable write
+ok 2 - F16 pipeJackEach base MANUAL rejects adoption without a durable write
+  ---
+  duration_ms: 32.336935
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED rejects approval without a durable write
+ok 3 - F16 pipeJackEach base AI_SUGGESTED rejects approval without a durable write
+  ---
+  duration_ms: 68.337421
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED rejects adoption without a durable write
+ok 4 - F16 pipeJackEach base AI_SUGGESTED rejects adoption without a durable write
+  ---
+  duration_ms: 48.280499
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL rejects approval without a durable write
+ok 5 - F16 pipeJackEach tier MANUAL rejects approval without a durable write
+  ---
+  duration_ms: 52.663494
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL rejects adoption without a durable write
+ok 6 - F16 pipeJackEach tier MANUAL rejects adoption without a durable write
+  ---
+  duration_ms: 38.097414
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED rejects approval without a durable write
+ok 7 - F16 pipeJackEach tier AI_SUGGESTED rejects approval without a durable write
+  ---
+  duration_ms: 79.309123
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED rejects adoption without a durable write
+ok 8 - F16 pipeJackEach tier AI_SUGGESTED rejects adoption without a durable write
+  ---
+  duration_ms: 39.478828
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base unapproved legacy prices cannot gain a receipt
+ok 9 - F16 pipeJackEach base unapproved legacy prices cannot gain a receipt
+  ---
+  duration_ms: 32.561947
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier unapproved legacy prices cannot gain a receipt
+ok 10 - F16 pipeJackEach tier unapproved legacy prices cannot gain a receipt
+  ---
+  duration_ms: 32.628134
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base MANUAL accepts whole cents, measured fractions and legitimate adoption
+ok 11 - F16 pipeJackEach base MANUAL accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 248.951841
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+ok 12 - F16 pipeJackEach base AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 418.939712
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL accepts whole cents, measured fractions and legitimate adoption
+ok 13 - F16 pipeJackEach tier MANUAL accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 159.473567
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+ok 14 - F16 pipeJackEach tier AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 387.443779
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2064.774625

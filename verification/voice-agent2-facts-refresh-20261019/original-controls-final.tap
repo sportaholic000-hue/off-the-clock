@@ -1,0 +1,737 @@
+TAP version 13
+# Subtest: F16 pipeJackEach base MANUAL rejects approval without a durable write
+ok 1 - F16 pipeJackEach base MANUAL rejects approval without a durable write
+  ---
+  duration_ms: 148.004318
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base MANUAL rejects adoption without a durable write
+ok 2 - F16 pipeJackEach base MANUAL rejects adoption without a durable write
+  ---
+  duration_ms: 25.851495
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED rejects approval without a durable write
+ok 3 - F16 pipeJackEach base AI_SUGGESTED rejects approval without a durable write
+  ---
+  duration_ms: 71.714517
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED rejects adoption without a durable write
+ok 4 - F16 pipeJackEach base AI_SUGGESTED rejects adoption without a durable write
+  ---
+  duration_ms: 41.711145
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL rejects approval without a durable write
+ok 5 - F16 pipeJackEach tier MANUAL rejects approval without a durable write
+  ---
+  duration_ms: 52.450267
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL rejects adoption without a durable write
+ok 6 - F16 pipeJackEach tier MANUAL rejects adoption without a durable write
+  ---
+  duration_ms: 25.541546
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED rejects approval without a durable write
+ok 7 - F16 pipeJackEach tier AI_SUGGESTED rejects approval without a durable write
+  ---
+  duration_ms: 85.790528
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED rejects adoption without a durable write
+ok 8 - F16 pipeJackEach tier AI_SUGGESTED rejects adoption without a durable write
+  ---
+  duration_ms: 42.863753
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base unapproved legacy prices cannot gain a receipt
+ok 9 - F16 pipeJackEach base unapproved legacy prices cannot gain a receipt
+  ---
+  duration_ms: 23.01368
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier unapproved legacy prices cannot gain a receipt
+ok 10 - F16 pipeJackEach tier unapproved legacy prices cannot gain a receipt
+  ---
+  duration_ms: 32.675867
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base MANUAL accepts whole cents, measured fractions and legitimate adoption
+ok 11 - F16 pipeJackEach base MANUAL accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 183.586456
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach base AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+ok 12 - F16 pipeJackEach base AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 317.711553
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier MANUAL accepts whole cents, measured fractions and legitimate adoption
+ok 13 - F16 pipeJackEach tier MANUAL accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 146.44029
+  type: 'test'
+  ...
+# Subtest: F16 pipeJackEach tier AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+ok 14 - F16 pipeJackEach tier AI_SUGGESTED accepts whole cents, measured fractions and legitimate adoption
+  ---
+  duration_ms: 364.227317
+  type: 'test'
+  ...
+# (node:52087) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: single-excluded / customerReceiptPresentation / scope
+ok 15 - single-excluded / customerReceiptPresentation / scope
+  ---
+  duration_ms: 2.515257
+  type: 'test'
+  ...
+# Subtest: single-excluded / projectVoiceQuote / scope
+ok 16 - single-excluded / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.270431
+  type: 'test'
+  ...
+# Subtest: single-excluded / projectSavedQuoteContext / scope
+ok 17 - single-excluded / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.155079
+  type: 'test'
+  ...
+# Subtest: single-excluded / amounts, options and private fields
+ok 18 - single-excluded / amounts, options and private fields
+  ---
+  duration_ms: 1.037367
+  type: 'test'
+  ...
+# Subtest: single-excluded / stable projections, frozen input and unchanged stored receipt
+ok 19 - single-excluded / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 2.451042
+  type: 'test'
+  ...
+# Subtest: single-included / customerReceiptPresentation / scope
+ok 20 - single-included / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.120749
+  type: 'test'
+  ...
+# Subtest: single-included / projectVoiceQuote / scope
+ok 21 - single-included / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.217693
+  type: 'test'
+  ...
+# Subtest: single-included / projectSavedQuoteContext / scope
+ok 22 - single-included / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.098997
+  type: 'test'
+  ...
+# Subtest: single-included / amounts, options and private fields
+ok 23 - single-included / amounts, options and private fields
+  ---
+  duration_ms: 0.550055
+  type: 'test'
+  ...
+# Subtest: single-included / stable projections, frozen input and unchanged stored receipt
+ok 24 - single-included / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 1.006702
+  type: 'test'
+  ...
+# Subtest: mixed-options / customerReceiptPresentation / scope
+ok 25 - mixed-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.186997
+  type: 'test'
+  ...
+# Subtest: mixed-options / projectVoiceQuote / scope
+ok 26 - mixed-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.092667
+  type: 'test'
+  ...
+# Subtest: mixed-options / projectSavedQuoteContext / scope
+ok 27 - mixed-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.069012
+  type: 'test'
+  ...
+# Subtest: mixed-options / amounts, options and private fields
+ok 28 - mixed-options / amounts, options and private fields
+  ---
+  duration_ms: 0.355917
+  type: 'test'
+  ...
+# Subtest: mixed-options / stable projections, frozen input and unchanged stored receipt
+ok 29 - mixed-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.747458
+  type: 'test'
+  ...
+# Subtest: shared-intersection / customerReceiptPresentation / scope
+ok 30 - shared-intersection / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.105787
+  type: 'test'
+  ...
+# Subtest: shared-intersection / projectVoiceQuote / scope
+ok 31 - shared-intersection / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.086438
+  type: 'test'
+  ...
+# Subtest: shared-intersection / projectSavedQuoteContext / scope
+ok 32 - shared-intersection / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.067911
+  type: 'test'
+  ...
+# Subtest: shared-intersection / amounts, options and private fields
+ok 33 - shared-intersection / amounts, options and private fields
+  ---
+  duration_ms: 0.286614
+  type: 'test'
+  ...
+# Subtest: shared-intersection / stable projections, frozen input and unchanged stored receipt
+ok 34 - shared-intersection / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.763872
+  type: 'test'
+  ...
+# Subtest: shared-every-option / customerReceiptPresentation / scope
+ok 35 - shared-every-option / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.096393
+  type: 'test'
+  ...
+# Subtest: shared-every-option / projectVoiceQuote / scope
+ok 36 - shared-every-option / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.08055
+  type: 'test'
+  ...
+# Subtest: shared-every-option / projectSavedQuoteContext / scope
+ok 37 - shared-every-option / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.062473
+  type: 'test'
+  ...
+# Subtest: shared-every-option / amounts, options and private fields
+ok 38 - shared-every-option / amounts, options and private fields
+  ---
+  duration_ms: 0.313815
+  type: 'test'
+  ...
+# Subtest: shared-every-option / stable projections, frozen input and unchanged stored receipt
+ok 39 - shared-every-option / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.747959
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / customerReceiptPresentation / scope
+ok 40 - genuine-mixed / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.098015
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / projectVoiceQuote / scope
+ok 41 - genuine-mixed / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.078276
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / projectSavedQuoteContext / scope
+ok 42 - genuine-mixed / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.062623
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / amounts, options and private fields
+ok 43 - genuine-mixed / amounts, options and private fields
+  ---
+  duration_ms: 0.274978
+  type: 'test'
+  ...
+# Subtest: genuine-mixed / stable projections, frozen input and unchanged stored receipt
+ok 44 - genuine-mixed / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.717113
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / customerReceiptPresentation / scope
+ok 45 - genuine-same-label / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.090404
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / projectVoiceQuote / scope
+ok 46 - genuine-same-label / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.111916
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / projectSavedQuoteContext / scope
+ok 47 - genuine-same-label / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.047661
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / amounts, options and private fields
+ok 48 - genuine-same-label / amounts, options and private fields
+  ---
+  duration_ms: 1.21518
+  type: 'test'
+  ...
+# Subtest: genuine-same-label / stable projections, frozen input and unchanged stored receipt
+ok 49 - genuine-same-label / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.706016
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / customerReceiptPresentation / scope
+ok 50 - genuine-and-shared / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.084735
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / projectVoiceQuote / scope
+ok 51 - genuine-and-shared / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.057104
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / projectSavedQuoteContext / scope
+ok 52 - genuine-and-shared / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.042653
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / amounts, options and private fields
+ok 53 - genuine-and-shared / amounts, options and private fields
+  ---
+  duration_ms: 0.165275
+  type: 'test'
+  ...
+# Subtest: genuine-and-shared / stable projections, frozen input and unchanged stored receipt
+ok 54 - genuine-and-shared / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.538568
+  type: 'test'
+  ...
+# Subtest: single-without-options / customerReceiptPresentation / scope
+ok 55 - single-without-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.062253
+  type: 'test'
+  ...
+# Subtest: single-without-options / projectVoiceQuote / scope
+ok 56 - single-without-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.050355
+  type: 'test'
+  ...
+# Subtest: single-without-options / projectSavedQuoteContext / scope
+ok 57 - single-without-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.04003
+  type: 'test'
+  ...
+# Subtest: single-without-options / amounts, options and private fields
+ok 58 - single-without-options / amounts, options and private fields
+  ---
+  duration_ms: 0.115441
+  type: 'test'
+  ...
+# Subtest: single-without-options / stable projections, frozen input and unchanged stored receipt
+ok 59 - single-without-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.386853
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / customerReceiptPresentation / scope
+ok 60 - already-ready-mixed / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.059959
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / projectVoiceQuote / scope
+ok 61 - already-ready-mixed / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.048983
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / projectSavedQuoteContext / scope
+ok 62 - already-ready-mixed / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.066278
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / amounts, options and private fields
+ok 63 - already-ready-mixed / amounts, options and private fields
+  ---
+  duration_ms: 0.157844
+  type: 'test'
+  ...
+# Subtest: already-ready-mixed / stable projections, frozen input and unchanged stored receipt
+ok 64 - already-ready-mixed / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.41868
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / customerReceiptPresentation / scope
+ok 65 - malformed-before-single / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.064676
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / projectVoiceQuote / scope
+ok 66 - malformed-before-single / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.03385
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / projectSavedQuoteContext / scope
+ok 67 - malformed-before-single / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.038457
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / amounts, options and private fields
+ok 68 - malformed-before-single / amounts, options and private fields
+  ---
+  duration_ms: 0.108711
+  type: 'test'
+  ...
+# Subtest: malformed-before-single / stable projections, frozen input and unchanged stored receipt
+ok 69 - malformed-before-single / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.321787
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / customerReceiptPresentation / scope
+ok 70 - malformed-after-single / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.061251
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / projectVoiceQuote / scope
+ok 71 - malformed-after-single / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.031787
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / projectSavedQuoteContext / scope
+ok 72 - malformed-after-single / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.038287
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / amounts, options and private fields
+ok 73 - malformed-after-single / amounts, options and private fields
+  ---
+  duration_ms: 0.102712
+  type: 'test'
+  ...
+# Subtest: malformed-after-single / stable projections, frozen input and unchanged stored receipt
+ok 74 - malformed-after-single / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.272263
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / customerReceiptPresentation / scope
+ok 75 - malformed-with-two-shared / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.09505
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / projectVoiceQuote / scope
+ok 76 - malformed-with-two-shared / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.036694
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / projectSavedQuoteContext / scope
+ok 77 - malformed-with-two-shared / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.041832
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / amounts, options and private fields
+ok 78 - malformed-with-two-shared / amounts, options and private fields
+  ---
+  duration_ms: 0.115812
+  type: 'test'
+  ...
+# Subtest: malformed-with-two-shared / stable projections, frozen input and unchanged stored receipt
+ok 79 - malformed-with-two-shared / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.293705
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / customerReceiptPresentation / scope
+ok 80 - malformed-mixed-genuine / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.060039
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / projectVoiceQuote / scope
+ok 81 - malformed-mixed-genuine / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.031907
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / projectSavedQuoteContext / scope
+ok 82 - malformed-mixed-genuine / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.044466
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / amounts, options and private fields
+ok 83 - malformed-mixed-genuine / amounts, options and private fields
+  ---
+  duration_ms: 0.113508
+  type: 'test'
+  ...
+# Subtest: malformed-mixed-genuine / stable projections, frozen input and unchanged stored receipt
+ok 84 - malformed-mixed-genuine / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.35773
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / customerReceiptPresentation / scope
+ok 85 - malformed-empty-object / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.066889
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / projectVoiceQuote / scope
+ok 86 - malformed-empty-object / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.039088
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / projectSavedQuoteContext / scope
+ok 87 - malformed-empty-object / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.062202
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / amounts, options and private fields
+ok 88 - malformed-empty-object / amounts, options and private fields
+  ---
+  duration_ms: 0.090804
+  type: 'test'
+  ...
+# Subtest: malformed-empty-object / stable projections, frozen input and unchanged stored receipt
+ok 89 - malformed-empty-object / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.2767
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / customerReceiptPresentation / scope
+ok 90 - malformed-reversed-range / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.065046
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / projectVoiceQuote / scope
+ok 91 - malformed-reversed-range / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.072998
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / projectSavedQuoteContext / scope
+ok 92 - malformed-reversed-range / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.08073
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / amounts, options and private fields
+ok 93 - malformed-reversed-range / amounts, options and private fields
+  ---
+  duration_ms: 0.109052
+  type: 'test'
+  ...
+# Subtest: malformed-reversed-range / stable projections, frozen input and unchanged stored receipt
+ok 94 - malformed-reversed-range / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.296709
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / customerReceiptPresentation / scope
+ok 95 - malformed-all-options / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.064976
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / projectVoiceQuote / scope
+ok 96 - malformed-all-options / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.039819
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / projectSavedQuoteContext / scope
+ok 97 - malformed-all-options / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.044306
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / amounts, options and private fields
+ok 98 - malformed-all-options / amounts, options and private fields
+  ---
+  duration_ms: 0.096543
+  type: 'test'
+  ...
+# Subtest: malformed-all-options / stable projections, frozen input and unchanged stored receipt
+ok 99 - malformed-all-options / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.370749
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / customerReceiptPresentation / scope
+ok 100 - malformed-options-container / customerReceiptPresentation / scope
+  ---
+  duration_ms: 0.077815
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / projectVoiceQuote / scope
+ok 101 - malformed-options-container / projectVoiceQuote / scope
+  ---
+  duration_ms: 0.042322
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / projectSavedQuoteContext / scope
+ok 102 - malformed-options-container / projectSavedQuoteContext / scope
+  ---
+  duration_ms: 0.039358
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / amounts, options and private fields
+ok 103 - malformed-options-container / amounts, options and private fields
+  ---
+  duration_ms: 0.075752
+  type: 'test'
+  ...
+# Subtest: malformed-options-container / stable projections, frozen input and unchanged stored receipt
+ok 104 - malformed-options-container / stable projections, frozen input and unchanged stored receipt
+  ---
+  duration_ms: 0.237522
+  type: 'test'
+  ...
+# Subtest: all stored receipt bytes remain unchanged
+ok 105 - all stored receipt bytes remain unchanged
+  ---
+  duration_ms: 0.673297
+  type: 'test'
+  ...
+# Subtest: H1 unread global condition beyond pages budget
+not ok 106 - H1 unread global condition beyond pages budget
+  ---
+  duration_ms: 89.088605
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:7:48'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    review (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-fixture.mjs:33:32)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:14:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# {"finding":"H1","kind":"pages","input":{"first":"<html><body><p>Widget $10 each</p><a href=\\"/terms\\">Next</a></body></html>","terms":"Site-wide: all prices require membership","limits":{"pages":1}},"draft":{"prices":"Widget $10 each","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":true,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."}},"providerFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each","neverSay":[]}},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: H1 unread global condition beyond requests budget
+not ok 107 - H1 unread global condition beyond requests budget
+  ---
+  duration_ms: 41.496496
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:7:48'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    review (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-fixture.mjs:33:32)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:14:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"finding":"H1","kind":"requests","input":{"first":"<html><body><p>Widget $10 each</p><a href=\\"/terms\\">Next</a></body></html>","terms":"Site-wide: all prices require membership","limits":{"requests":1}},"draft":{"prices":"Widget $10 each","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":true,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."}},"providerFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each","neverSay":[]}},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: H1 unread global condition beyond bytes budget
+not ok 108 - H1 unread global condition beyond bytes budget
+  ---
+  duration_ms: 39.10264
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:7:48'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'calculated'
+    - 'needs_review'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs_review'
+  actual: 'calculated'
+  operator: 'strictEqual'
+  stack: |-
+    review (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-fixture.mjs:33:32)
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:14:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"finding":"H1","kind":"bytes","input":{"first":"<html><body><p>Widget $10 each</p><a href=\\"/terms\\">Next</a></body></html>","terms":"Site-wide: all prices require membership","limits":{"totalBytes":74}},"draft":{"prices":"Widget $10 each","websiteUrl":"https://synthetic.example/","draft":true,"websiteImport":{"entries":[{"excerpt":"Widget $10 each","amounts":["$10"],"sourceUrl":"https://synthetic.example/"}],"pages":["https://synthetic.example/"],"limited":true,"visibilityUnverified":false,"conditionsUnverified":false,"message":"Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."}},"providerFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each","neverSay":[]}},"result":{"status":"calculated","listedItem":"Widget $10 each","quantity":"3","extendedAmount":"30.00","currency":"$","voiceSummary":"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."}}
+# Subtest: H2 running provider snapshot after owner amount update
+ok 109 - H2 running provider snapshot after owner amount update
+  ---
+  duration_ms: 128.917771
+  type: 'test'
+  ...
+# {"finding":"H2","change":"amount","discovered":"Widget $10 each","updated":"Widget $12 each","deliveredPrices":["Widget $10 each","Widget $12 each"],"providerMessages":[{"turns":[{"role":"user","parts":[{"text":"[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]"}]}],"turnComplete":true},{"turns":[{"role":"user","parts":[{"text":"[Previously delivered server tool result; historical context only.]\\n{\\"name\\":\\"calculateListedPrice\\",\\"response\\":{\\"status\\":\\"calculated\\",\\"listedItem\\":\\"Widget $10 each\\",\\"quantity\\":\\"3\\",\\"extendedAmount\\":\\"30.00\\",\\"currency\\":\\"$\\",\\"voiceSummary\\":\\"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.\\"}}"}]},{"role":"user","parts":[{"text":"[Previously delivered server tool result; historical context only.]\\n{\\"name\\":\\"calculateListedPrice\\",\\"response\\":{\\"status\\":\\"needs_review\\",\\"message\\":\\"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.\\"}}"}]},{"role":"user","parts":[{"text":"[Server connection refresh for this same call. Do not greet again. Current OWNER_FACTS_JSON replaces earlier business facts. Prior tool results are historical context, not new authorizations. Continue the caller's request using the current facts and tool contract; reconfirm as required.]"}]}],"turnComplete":true}],"stale":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"fresh":{"status":"calculated","listedItem":"Widget $12 each","quantity":"3","extendedAmount":"36.00","currency":"$","voiceSummary":"Widget $12 each. At that listed price, 3 comes to $36.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"currentFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $12 each","neverSay":[]}}}
+# Subtest: H2 running provider snapshot after owner condition update
+ok 110 - H2 running provider snapshot after owner condition update
+  ---
+  duration_ms: 111.350201
+  type: 'test'
+  ...
+# {"finding":"H2","change":"condition","discovered":"Widget $10 each","updated":"Widget $10 each\\nAvailable to members","deliveredPrices":["Widget $10 each","Widget $10 each\\nAvailable to members"],"providerMessages":[{"turns":[{"role":"user","parts":[{"text":"[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]"}]}],"turnComplete":true},{"turns":[{"role":"user","parts":[{"text":"[Previously delivered server tool result; historical context only.]\\n{\\"name\\":\\"calculateListedPrice\\",\\"response\\":{\\"status\\":\\"calculated\\",\\"listedItem\\":\\"Widget $10 each\\",\\"quantity\\":\\"3\\",\\"extendedAmount\\":\\"30.00\\",\\"currency\\":\\"$\\",\\"voiceSummary\\":\\"Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added.\\"}}"}]},{"role":"user","parts":[{"text":"[Previously delivered server tool result; historical context only.]\\n{\\"name\\":\\"calculateListedPrice\\",\\"response\\":{\\"status\\":\\"needs_review\\",\\"message\\":\\"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.\\"}}"}]},{"role":"user","parts":[{"text":"[Server connection refresh for this same call. Do not greet again. Current OWNER_FACTS_JSON replaces earlier business facts. Prior tool results are historical context, not new authorizations. Continue the caller's request using the current facts and tool contract; reconfirm as required.]"}]}],"turnComplete":true}],"stale":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"fresh":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"currentFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each\\nAvailable to members","neverSay":[]}}}
+1..110
+# tests 110
+# suites 0
+# pass 107
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3208.841099

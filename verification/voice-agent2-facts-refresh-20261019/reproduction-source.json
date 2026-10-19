@@ -1,0 +1,16 @@
+[
+  {
+    "source_commit": "db1dcb4cb4dedebb59811c390c8fe2ac9a608846",
+    "source_path": "verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs",
+    "copy": "verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs",
+    "bytes": 2250,
+    "sha256": "8b2049b9e729742967004b80b2b90aa2a5706298293b79ca3aec8fce40ab0495"
+  },
+  {
+    "source_commit": "db1dcb4cb4dedebb59811c390c8fe2ac9a608846",
+    "source_path": "verification/qe-agent4-import-condition-boundaries-20261019/handoff-fixture.mjs",
+    "copy": "verification/voice-agent2-facts-refresh-20261019/handoff-fixture.mjs",
+    "bytes": 11001,
+    "sha256": "ba7c71debbb8ae93592241b816442b0fa4b5fffda0558e9aa4e760d3a4807e0a"
+  }
+]

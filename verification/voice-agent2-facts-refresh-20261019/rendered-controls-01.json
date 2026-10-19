@@ -1,0 +1,52 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test-concurrency=1",
+    "--test",
+    "--test-reporter=tap",
+    "test/qeAgent3ScopePresentation20261018.spec.mjs",
+    "test/qeAgent2PriceEditor.browser.spec.mjs",
+    "test/qeAgent3WidgetDependencies20261019.spec.mjs",
+    "test/qeAgent3WidgetDependencies20261019.browser.spec.mjs",
+    "test/qeAgent3RepresentativePublicIntake20261019.browser.spec.mjs",
+    "test/ownerAlertRepair20261006.browser.spec.mjs",
+    "test/ownerAlertsDelivery20261006.browser.spec.mjs",
+    "test/ownerDashboard20261007.browser.spec.mjs"
+  ],
+  "started_at": "2026-10-19T19:03:37.139229+00:00",
+  "finished_at": "2026-10-19T19:04:54.583824+00:00",
+  "head": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "changed_paths": [
+    "client/dist/assets/index-Cwi6Aiz2.css",
+    "client/dist/assets/index-DdcfYsVT.js",
+    "client/dist/index.html",
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "source_sha256": {
+    "server/src/voice/googleGenAiLiveAdapter.js": "85a04c7a1170ab9ae75389a5ec1ece9d3722ebc6578aa5252a241229d321087e",
+    "server/src/voice/productionVoiceRuntime.js": "5ceb2387f1b9bf6987292991caf6a7de98653f057664fad262e3e0b46f2fa655",
+    "test/voiceAgent2FactsRefresh20261019.spec.mjs": "2c0b0c8ec6261ec0fba6277338320aedc02ade0f230b9c27e23fd860b30595bf",
+    "test/voiceAgent2FactsRefresh20261019Fixture.mjs": "9890466afddcdfedf1df84a8d089400fd48db6c55c4dd9719a73c17eb2b8b9bf",
+    "test/voiceAgent2FactsRefreshHistorical20261019.spec.mjs": "b0819e9aad3b8a834c65f7390af494c8cc9dba008902a5894c07b316b4992904",
+    "test/voiceAgent2FactsRefreshProduction20261019.spec.mjs": "c50da0cf05e32d94d9dc5f029f97f6703336f577d139c9a3487a4513b373deeb",
+    "test/voiceAgent2FactsRefreshProduction20261019Fixture.mjs": "cd0f10ea5ed4d01749346d7b369fc3ebde43936b8c8cad2dc16b50d338d5902c"
+  },
+  "exit_code": 0,
+  "summary": {
+    "tests": 47,
+    "suites": 0,
+    "pass": 47,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 77399.794346
+  },
+  "log": "rendered-controls-01.tap",
+  "log_bytes": 12309,
+  "log_sha256": "a5bf178f83c46740ca49775c64b284a090624847695858818297c81767840a89"
+}

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "npm",
+    "install",
+    "--no-save",
+    "--no-audit",
+    "--no-fund",
+    "playwright@1.56.0"
+  ],
+  "started_at": "2026-10-19T19:00:48.831362+00:00",
+  "finished_at": "2026-10-19T19:00:49.794337+00:00",
+  "head": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "changed_paths": [
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "exit_code": 0,
+  "summary": {},
+  "log": "environment-playwright-exact.tap",
+  "log_bytes": 126,
+  "log_sha256": "b3118a2d86024400edc7f6ff96daed25d611724912cf45d45ccb6f24fdd05295"
+}

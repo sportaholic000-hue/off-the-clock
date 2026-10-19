@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: H2 running provider snapshot after owner amount update
+not ok 1 - H2 running provider snapshot after owner amount update
+  ---
+  duration_ms: 204.351153
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:16:44'
+  failureType: 'testCodeFailure'
+  error: 'Existing provider session still has the prior saved price/condition snapshot'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:28:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# {"finding":"H2","change":"amount","discovered":"Widget $10 each","updated":"Widget $12 each","deliveredPrices":["Widget $10 each"],"providerMessages":[{"turns":[{"role":"user","parts":[{"text":"[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]"}]}],"turnComplete":true}],"stale":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"fresh":{"status":"calculated","listedItem":"Widget $12 each","quantity":"3","extendedAmount":"36.00","currency":"$","voiceSummary":"Widget $12 each. At that listed price, 3 comes to $36.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."},"currentFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $12 each","neverSay":[]}}}
+# Subtest: H2 running provider snapshot after owner condition update
+not ok 2 - H2 running provider snapshot after owner condition update
+  ---
+  duration_ms: 117.622257
+  type: 'test'
+  location: '/workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:16:44'
+  failureType: 'testCodeFailure'
+  error: 'Existing provider session still has the prior saved price/condition snapshot'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/754089be5e74/off-the-clock-voice-facts/verification/voice-agent2-facts-refresh-20261019/handoff-probes.mjs:28:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"finding":"H2","change":"condition","discovered":"Widget $10 each","updated":"Widget $10 each\\nAvailable to members","deliveredPrices":["Widget $10 each"],"providerMessages":[{"turns":[{"role":"user","parts":[{"text":"[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]"}]}],"turnComplete":true}],"stale":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"fresh":{"status":"needs_review","message":"The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."},"currentFacts":{"business":{"businessName":"Synthetic Boundary Shop","agentName":"Synthetic Assistant"},"activeServices":[],"knowledge":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each\\nAvailable to members","neverSay":[]}}}
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1264.81404

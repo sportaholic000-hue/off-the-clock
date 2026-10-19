@@ -124,7 +124,11 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const handlers={...runtime.handlers};
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
     const voiceProfile=usageOwnerQuery(database)('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId);
-    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations().filter(tool=>voiceToolAllowed(tool.name,capabilities(context.ownerId))),greetOnConnect:true});
+    // Compare saved contents, not timestamps: consecutive saves may share the
+    // same clock value. Only the compiler's existing public projection is sent.
+    const factsQuery=usageOwnerQuery(database)('SELECT p.knowledgeBaseJson,p.agentName,p.greeting,u.businessName FROM businessProfiles p JOIN users u ON u.id=p.ownerId WHERE p.ownerId=? AND u.ownerId IS NULL AND u.role=\'owner\'');
+    const instructionRevision=()=>createHash('sha256').update(JSON.stringify(factsQuery.get(context.ownerId)||null)).digest('hex');
+    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),instructionRevision,toolDeclarations:getVoiceToolDeclarations().filter(tool=>voiceToolAllowed(tool.name,capabilities(context.ownerId))),greetOnConnect:true});
     let started=null;
     const pendingTranscripts=[];
     function flushTranscripts(){

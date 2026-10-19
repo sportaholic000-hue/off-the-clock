@@ -1,0 +1,45 @@
+{
+  "command": [
+    "timeout",
+    "--kill-after=2s",
+    "12s",
+    "node",
+    "--test",
+    "--test-timeout=3000",
+    "--test-name-pattern=^voice H2 refresh failure after a real tool response",
+    "test/voiceAgent2FactsRefreshProduction20261019.spec.mjs"
+  ],
+  "started_at": "2026-10-19T19:09:48.254491+00:00",
+  "finished_at": "2026-10-19T19:09:51.313039+00:00",
+  "head": "04df35cd8e9ced136ef611cfc2b25f2de64c21bf",
+  "changed_paths": [
+    "client/dist/assets/index-Cwi6Aiz2.css",
+    "client/dist/assets/index-DdcfYsVT.js",
+    "client/dist/index.html",
+    "server/src/voice/googleGenAiLiveAdapter.js",
+    "server/src/voice/productionVoiceRuntime.js"
+  ],
+  "source_sha256": {
+    "server/src/voice/googleGenAiLiveAdapter.js": "85a04c7a1170ab9ae75389a5ec1ece9d3722ebc6578aa5252a241229d321087e",
+    "server/src/voice/productionVoiceRuntime.js": "5ceb2387f1b9bf6987292991caf6a7de98653f057664fad262e3e0b46f2fa655",
+    "test/voiceAgent2FactsRefresh20261019.spec.mjs": "8cdb0b12ca0b1e945176e36132e341af8290380e33d8f3ef7cd6d2a5509b8fdf",
+    "test/voiceAgent2FactsRefresh20261019Fixture.mjs": "d82cd6658453d41fc99fcddd391b45420423aee946b94f1f4f9e9f4bab27ac10",
+    "test/voiceAgent2FactsRefreshHistorical20261019.spec.mjs": "b0819e9aad3b8a834c65f7390af494c8cc9dba008902a5894c07b316b4992904",
+    "test/voiceAgent2FactsRefreshProduction20261019.spec.mjs": "7a7c97fa42030ae0a237fce2590b8e70c57f2327b51ce11d87514291bf394939",
+    "test/voiceAgent2FactsRefreshProduction20261019Fixture.mjs": "cd0f10ea5ed4d01749346d7b369fc3ebde43936b8c8cad2dc16b50d338d5902c"
+  },
+  "exit_code": 1,
+  "summary": {
+    "tests": 1,
+    "suites": 0,
+    "pass": 0,
+    "fail": 0,
+    "cancelled": 1,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 3013.148486
+  },
+  "log": "response-failure-before-01.tap",
+  "log_bytes": 542,
+  "log_sha256": "1c29c9b2b3d8a84e5cf7cf6eb9570116075a65c50c94d7e1a3d12f73fe4f0f31"
+}
