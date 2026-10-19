@@ -11,7 +11,7 @@ const OWNED_SOURCE='client/src/quoteDoneControls.jsx';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const harness=path.join(root,'verification/qe-agent3-widget-dependencies-20261019/representative-browser-audit.mjs');
 const originalCaseSuiteSha256='b569519b641eb3cc8ea25e8b6bf2fb740097011bab9e5013a0f936cf736cecc0';
-const hostedAdapterSha256='d1e5f73700b248ee0731953e6860fb2ae9358c2bec06cfc6bd93afaf78541171';
+const hostedAdapterSha256='bde8f11578e2d7142e7cd62e650c7be0035de3f736af9eaa404353747997d548';
 
 test('qe-agent3 representative public-intake case suite runs in hosted Chromium and covers its actual 8 of 20 services',{timeout:300_000},t=>{
   assert.equal(OWNED_SOURCE,'client/src/quoteDoneControls.jsx');

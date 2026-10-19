@@ -223,7 +223,7 @@ try{
   assert.equal(oneTimePrepared.response.status,'ready');
   const oneTimeSaved=await savePrepared('one-time mowing');
   assert.ok(midValues(oneTimeSaved.response).includes(248));
-  assert.match(await page.locator('main').innerText(),/\$248\.00/);
+  assert.match(await page.locator('main').innerText(),/\$248(?:\.00)? per visit/);
   cases.push({id:'B10',serviceType:'LANDSCAPING_MOWING',pattern:'recurring-to-one-time completed customer path',expected:{cents:24800,frequency:'one_time'},observed:{prepare:oneTimePrepared,final:oneTimeSaved},screenshot:await screenshot('B10-mowing-one-time-result')});
 
   // Edit declared separate work in the widget, then verify partial output and persistence.
