@@ -1,0 +1,20 @@
+2026-10-19T16:17:20.7860521Z [command]/usr/bin/git log -1 --format=%H
+2026-10-19T16:17:29.2594033Z found 0 vulnerabilities
+2026-10-19T16:17:53.2776199Z # tests 12
+2026-10-19T16:17:53.2776700Z # pass 12
+2026-10-19T16:17:53.2776876Z # fail 0
+2026-10-19T16:17:53.2777055Z # cancelled 0
+2026-10-19T16:17:53.2777252Z # skipped 0
+2026-10-19T16:17:53.2777664Z # todo 0
+2026-10-19T16:27:53.1295700Z     not ok 61 - FENCING_REPLACEMENT removal-off-dependency
+2026-10-19T16:27:53.1326720Z     not ok 62 - FLAT_ROOF_REPLACEMENT partial-to-full-dependency
+2026-10-19T16:27:53.1446903Z not ok 3069 - qe-agent1 remaining twelve services use Chromium and real public HTTP
+2026-10-19T16:37:42.6204540Z # tests 6001
+2026-10-19T16:37:42.6205414Z # pass 5998
+2026-10-19T16:37:42.6205761Z # fail 3
+2026-10-19T16:37:42.6206093Z # cancelled 0
+2026-10-19T16:37:42.6206446Z # skipped 0
+2026-10-19T16:37:42.6206791Z # todo 0
+2026-10-19T16:37:42.6215368Z FAIL: /home/runner/work/off-the-clock/off-the-clock/test/qeAgent1RemainingPublicIntake20261019.browser.spec.mjs did not complete every test successfully.
+2026-10-19T16:37:42.6216737Z FAIL: The complete test summary is missing or contains unsuccessful tests.
+2026-10-19T16:37:42.6358697Z ##[error]Process completed with exit code 1.

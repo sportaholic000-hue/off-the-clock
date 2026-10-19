@@ -7,6 +7,7 @@ import {gzipSync} from 'node:zlib';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {CASES} from '../verification/qe-agent1-remaining-public-intake-20261019/cases.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 test('qe-agent1 independent fence and flat-roof dependency reproductions',{timeout:600_000},async t=>{
  const temp=mkdtempSync(path.join(tmpdir(),'qe-agent1-dependencies-')),out=path.join(temp,'evidence');
@@ -25,7 +26,9 @@ test('qe-agent1 independent fence and flat-roof dependency reproductions',{timeo
  assert.notEqual(result.status,'fatal',result.error||run.stderr);
  const rows=JSON.parse(readFileSync(path.join(out,'results.json'),'utf8'));
  assert.equal(result.serviceCount,2);assert.equal(rows.length,4);
- for(const type of ['FENCING_REPLACEMENT','FLAT_ROOF_REPLACEMENT'])assert.equal(rows.filter(r=>r.type===type).length,2,type);
+ const types=CASES.filter(row=>['FENCING_REPLACEMENT','FLAT_ROOF_REPLACEMENT'].includes(row.type)).map(row=>row.type);
+ assert.equal(types.length,2,'Both reproduction services must exist in the documented fixture catalog');
+ for(const type of types)assert.equal(rows.filter(r=>r.type===type).length,2,type);
  // Report each independent case, including every failure; one defect does not
  // prevent execution or assertions for the remaining registered services.
  for(const row of rows)await t.test(row.type+' '+row.stage,()=>assert.equal(row.status,'passed',JSON.stringify(row.error)));

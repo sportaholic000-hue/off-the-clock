@@ -12,20 +12,24 @@ if target.exists():
     raise SystemExit(f"Refusing to overwrite evidence: {target}")
 target.mkdir(parents=True)
 groups, pending, expected = [], [], 0
-for match in re.finditer(r"A1_REVIEW_EVIDENCE (\d+)/(\d+) ([A-Za-z0-9+/=]+)", source.read_text()):
-    number, total = map(int, match.group(1, 2))
-    if number == 1:
-        if pending:
-            raise ValueError("Incomplete preceding evidence bundle")
-        expected = total
-    if total != expected or number != len(pending) + 1:
-        raise ValueError("Missing, repeated or unordered evidence chunk")
-    pending.append(match.group(3))
-    if number == total:
-        groups.append(base64.b64decode("".join(pending), validate=True))
-        pending = []
-if pending or not groups:
-    raise ValueError("No complete evidence bundle")
+if source.suffix == ".gz":
+    # A previously extracted complete bundle retains the exact compressed bytes.
+    groups = [source.read_bytes()]
+else:
+    for match in re.finditer(r"A1_REVIEW_EVIDENCE (\d+)/(\d+) ([A-Za-z0-9+/=]+)", source.read_text()):
+        number, total = map(int, match.group(1, 2))
+        if number == 1:
+            if pending:
+                raise ValueError("Incomplete preceding evidence bundle")
+            expected = total
+        if total != expected or number != len(pending) + 1:
+            raise ValueError("Missing, repeated or unordered evidence chunk")
+        pending.append(match.group(3))
+        if number == total:
+            groups.append(base64.b64decode("".join(pending), validate=True))
+            pending = []
+    if pending or not groups:
+        raise ValueError("No complete evidence bundle")
 summary = []
 for number, compressed in enumerate(groups, 1):
     directory = target / f"run-{number:02d}"

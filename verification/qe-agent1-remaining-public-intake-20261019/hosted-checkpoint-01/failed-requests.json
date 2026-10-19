@@ -1,0 +1,218 @@
+[
+  {
+    "method": "POST",
+    "url": "/api/public/quote/synthetic-a/prepare",
+    "request": {
+      "requestId": "9e396fcc-3770-4ffd-ae01-a7a43446c1bf",
+      "serviceId": "c37948bb-1439-4c41-a2e7-07e4f448808e",
+      "serviceRequest": "[SYNTHETIC PUBLIC INTAKE] FENCING_REPLACEMENT",
+      "customerInputs": {
+        "linearFeet": 100,
+        "lfMethod": "exact",
+        "fenceType": "wood",
+        "fenceHeight": 6,
+        "terrainSlope": "flat",
+        "gates": {
+          "walk": 2
+        },
+        "cornerCount": 0,
+        "oldFenceRemoval": false,
+        "removalLengthLF": 50,
+        "confirmedFacts": {
+          "fenceType": {
+            "status": "identified",
+            "field": "fenceType",
+            "value": "wood",
+            "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        }
+      },
+      "customerFeeSelections": {},
+      "additionalWork": [],
+      "contact": {
+        "email": "synthetic-a1-fencing_replacement@example.invalid"
+      },
+      "intakeFlow": "job-details-v1",
+      "context": "",
+      "explicitUnknowns": "",
+      "urgency": "flexible"
+    },
+    "status": 200,
+    "response": {
+      "status": "needs_details",
+      "summary": {
+        "service": "[SYNTHETIC PUBLIC INTAKE] FENCING_REPLACEMENT",
+        "requestedWork": "[SYNTHETIC PUBLIC INTAKE] FENCING_REPLACEMENT",
+        "facts": [
+          {
+            "label": "Measured fence length excluding gate openings",
+            "value": "100 linear feet"
+          },
+          {
+            "label": "Fence type",
+            "value": "Wood"
+          },
+          {
+            "label": "Fence height",
+            "value": "6 ft"
+          },
+          {
+            "label": "Terrain slope",
+            "value": "Flat"
+          },
+          {
+            "label": "Gates by measured opening width",
+            "value": "2 \u00d7 walk \u2014 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+          },
+          {
+            "label": "Fence corners",
+            "value": "0 corners"
+          },
+          {
+            "label": "Old fence removal included",
+            "value": "No"
+          },
+          {
+            "label": "Measured old fence length to remove",
+            "value": "50 linear feet"
+          }
+        ],
+        "fees": [],
+        "contact": {
+          "email": "synthetic-a1-fencing_replacement@example.invalid"
+        },
+        "location": {},
+        "timing": "Flexible timing",
+        "additionalDetails": "",
+        "unknowns": "",
+        "additionalWork": [],
+        "clarifications": [],
+        "separateAdditionalWork": []
+      },
+      "followUps": [
+        "Check Measured old fence length to remove."
+      ],
+      "historyReceipt": {
+        "bookRevision": "64e06d23ec571f27fbc82174dad3d45ac72ca84f918a2ec758d68f8262660afb",
+        "signature": "93f99befb3787187cd56eaa6b568ef8739a33485fa82fe1f705fc6e041c18236"
+      }
+    }
+  },
+  {
+    "method": "POST",
+    "url": "/api/public/quote/synthetic-a/prepare",
+    "request": {
+      "requestId": "f38833cd-dbd2-4f55-b0de-1d752882552f",
+      "serviceId": "b82b6284-8ad0-418d-b26e-8518b06146e0",
+      "serviceRequest": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPLACEMENT",
+      "customerInputs": {
+        "roofSqft": 1000,
+        "sqftMethod": "exact",
+        "membraneType": "epdm",
+        "replacementMembraneType": "epdm",
+        "existingLayers": 2,
+        "accessDifficulty": "moderate",
+        "serviceScope": "full",
+        "buildingType": "residential",
+        "confirmedFacts": {
+          "membraneType": {
+            "status": "identified",
+            "field": "membraneType",
+            "value": "epdm",
+            "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+          },
+          "replacementMembraneType": {
+            "status": "identified",
+            "field": "replacementMembraneType",
+            "value": "epdm",
+            "offeringId": "13282f23-a404-4615-8a9e-c4f259c2e3fa"
+          }
+        },
+        "insulationNeeded": false,
+        "coverboardNeeded": false,
+        "partialAreaSqft": 500
+      },
+      "customerFeeSelections": {},
+      "additionalWork": [],
+      "contact": {
+        "email": "synthetic-a1-flat_roof_replacement@example.invalid"
+      },
+      "intakeFlow": "job-details-v1",
+      "context": "",
+      "explicitUnknowns": "",
+      "urgency": "flexible"
+    },
+    "status": 200,
+    "response": {
+      "status": "needs_details",
+      "summary": {
+        "service": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPLACEMENT",
+        "requestedWork": "[SYNTHETIC PUBLIC INTAKE] FLAT_ROOF_REPLACEMENT",
+        "facts": [
+          {
+            "label": "Measured flat-roof area",
+            "value": "1000 square feet"
+          },
+          {
+            "label": "Roof measurement method",
+            "value": "Measured area"
+          },
+          {
+            "label": "Existing membrane type",
+            "value": "Epdm"
+          },
+          {
+            "label": "Replacement membrane type",
+            "value": "Epdm"
+          },
+          {
+            "label": "Measured existing membrane layers",
+            "value": "2 layers"
+          },
+          {
+            "label": "Roof access",
+            "value": "Moderate"
+          },
+          {
+            "label": "Replacement scope",
+            "value": "Full"
+          },
+          {
+            "label": "buildingType",
+            "value": "residential"
+          },
+          {
+            "label": "New insulation needed",
+            "value": "No"
+          },
+          {
+            "label": "New coverboard needed",
+            "value": "No"
+          },
+          {
+            "label": "Measured affected roof area",
+            "value": "500 square feet"
+          }
+        ],
+        "fees": [],
+        "contact": {
+          "email": "synthetic-a1-flat_roof_replacement@example.invalid"
+        },
+        "location": {},
+        "timing": "Flexible timing",
+        "additionalDetails": "",
+        "unknowns": "",
+        "additionalWork": [],
+        "clarifications": [],
+        "separateAdditionalWork": []
+      },
+      "followUps": [
+        "Check Measured affected roof area."
+      ],
+      "historyReceipt": {
+        "bookRevision": "64e06d23ec571f27fbc82174dad3d45ac72ca84f918a2ec758d68f8262660afb",
+        "signature": "6a2313f282fe3788538c5eeaf663394e0ef9465136e71af9a500749264649efb"
+      }
+    }
+  }
+]

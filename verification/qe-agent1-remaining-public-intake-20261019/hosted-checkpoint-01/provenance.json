@@ -1,0 +1,33 @@
+{
+  "run": 39284239659,
+  "testJob": 118165547578,
+  "head": "0e2648930ab2f3ce64e92e9578e981dcdfa3522b",
+  "source": "Complete555/555 diagnostic chunks in hosted job log; gzip CRC and JSON decoded successfully",
+  "bundleSha256": "bd7cc2948ae34065a14df406b50bc2c600ea4a30b133961239b607fafe217b7f",
+  "testCounts": {
+    "strict": {
+      "total": 6001,
+      "passed": 5998,
+      "failed": 3,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "A1Cases": {
+      "total": 88,
+      "passed": 86,
+      "failed": 2
+    },
+    "dedicatedBrowserStep": {
+      "total": 12,
+      "passed": 12,
+      "failed": 0
+    }
+  },
+  "parentFailureCountedInStrict": true,
+  "fullSuite": "skipped by unchanged workflow after strict failure",
+  "checker": "skipped",
+  "dependencyAudit": "skipped",
+  "build": "passed",
+  "Docker": "passed"
+}

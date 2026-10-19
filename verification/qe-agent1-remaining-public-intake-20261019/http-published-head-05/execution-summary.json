@@ -1,0 +1,13 @@
+{
+  "head": "fe2387e3f2cf0e8271557c7f464e09feada43d0c",
+  "harnessWasUncommitted": false,
+  "harnessSha256": "12b06f150d997da81d81dd431988897dcc46b89ef2722198e36ac932e8c07c1b",
+  "node": "v22.23.3",
+  "exitCode": 0,
+  "cases": 72,
+  "passed": 72,
+  "failed": 0,
+  "serviceCount": 12,
+  "kind": "public HTTP, not Chromium",
+  "recordedAt": "2026-10-19T16:42:33.988319+00:00"
+}
