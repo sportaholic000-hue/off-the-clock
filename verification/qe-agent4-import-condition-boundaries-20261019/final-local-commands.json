@@ -1,0 +1,128 @@
+[
+  {
+    "name": "after-new",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T06:03:43.295055+00:00",
+    "sourceHashes": {
+      "server/src/websitePriceImport.js": "d78d69f6f8f616e2552d23e8a83fe0c34ceda786a54f1a3abe0d3f3a661f0ba6",
+      "server/src/websitePriceExtraction.js": "e15ac6a7725d7cce6d5442bd43513e3f23f27504206aa53f8c6fc1ff3e95e0dd",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs": "ca7208485b153558af412ba3f01f6de37b93c30bb29c51319c8a6b61d1e24089"
+    },
+    "exitCode": 0
+  },
+  {
+    "name": "retained-874",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceListedPriceConditions20261018.spec.mjs",
+      "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "test/websitePriceImport.spec.mjs",
+      "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "test/websitePriceDraftRoutes.spec.mjs",
+      "test/claudeListedUnits20261008.spec.mjs",
+      "test/engineAuditListedPrices20261008.spec.mjs",
+      "test/fixedPricesKnowledge20261005.spec.mjs",
+      "test/voiceCore20261007.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/voiceRuntimeRoutes.spec.mjs",
+      "test/voicePromptCompiler.spec.mjs",
+      "test/voiceSecurity.spec.mjs",
+      "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T06:03:45.918490+00:00",
+    "sourceHashes": {
+      "server/src/websitePriceImport.js": "d78d69f6f8f616e2552d23e8a83fe0c34ceda786a54f1a3abe0d3f3a661f0ba6",
+      "server/src/websitePriceExtraction.js": "e15ac6a7725d7cce6d5442bd43513e3f23f27504206aa53f8c6fc1ff3e95e0dd",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs": "ca7208485b153558af412ba3f01f6de37b93c30bb29c51319c8a6b61d1e24089"
+    },
+    "exitCode": 0
+  },
+  {
+    "name": "expanded-948",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "test/voiceListedPriceConditions20261018.spec.mjs",
+      "test/voiceAgent4ListedImport20261018.spec.mjs",
+      "test/voiceAgent4WebsiteQualifications20261018.spec.mjs",
+      "test/websitePriceImport.spec.mjs",
+      "test/websitePriceConditionsAudit20261008.spec.mjs",
+      "test/websitePriceDraftRoutes.spec.mjs",
+      "test/claudeListedUnits20261008.spec.mjs",
+      "test/engineAuditListedPrices20261008.spec.mjs",
+      "test/fixedPricesKnowledge20261005.spec.mjs",
+      "test/voiceCore20261007.spec.mjs",
+      "test/voiceSurfacePricing20261016.spec.mjs",
+      "test/voiceRuntimeRoutes.spec.mjs",
+      "test/voicePromptCompiler.spec.mjs",
+      "test/voiceSecurity.spec.mjs",
+      "test/voiceAgent4ParenthesizedConditions20261018.spec.mjs",
+      "test/voiceAgent4ImportPunctuation20261019.spec.mjs",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs"
+    ],
+    "startedAt": "2026-10-19T06:04:10.971882+00:00",
+    "sourceHashes": {
+      "server/src/websitePriceImport.js": "d78d69f6f8f616e2552d23e8a83fe0c34ceda786a54f1a3abe0d3f3a661f0ba6",
+      "server/src/websitePriceExtraction.js": "e15ac6a7725d7cce6d5442bd43513e3f23f27504206aa53f8c6fc1ff3e95e0dd",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs": "ca7208485b153558af412ba3f01f6de37b93c30bb29c51319c8a6b61d1e24089"
+    },
+    "exitCode": 0
+  },
+  {
+    "name": "after-handoffs",
+    "command": [
+      "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+      "--experimental-test-module-mocks",
+      "--import",
+      "./test/pricebookTestEnv.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs"
+    ],
+    "startedAt": "2026-10-19T06:04:38.570449+00:00",
+    "sourceHashes": {
+      "server/src/websitePriceImport.js": "d78d69f6f8f616e2552d23e8a83fe0c34ceda786a54f1a3abe0d3f3a661f0ba6",
+      "server/src/websitePriceExtraction.js": "e15ac6a7725d7cce6d5442bd43513e3f23f27504206aa53f8c6fc1ff3e95e0dd",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs": "ca7208485b153558af412ba3f01f6de37b93c30bb29c51319c8a6b61d1e24089"
+    },
+    "exitCode": 1
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "startedAt": "2026-10-19T06:04:39.791115+00:00",
+    "sourceHashes": {
+      "server/src/websitePriceImport.js": "d78d69f6f8f616e2552d23e8a83fe0c34ceda786a54f1a3abe0d3f3a661f0ba6",
+      "server/src/websitePriceExtraction.js": "e15ac6a7725d7cce6d5442bd43513e3f23f27504206aa53f8c6fc1ff3e95e0dd",
+      "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs": "ca7208485b153558af412ba3f01f6de37b93c30bb29c51319c8a6b61d1e24089"
+    },
+    "exitCode": 0
+  }
+]

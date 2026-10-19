@@ -24,12 +24,27 @@ const conditions=/%|\b(?:prices?|pricing|costs?|rates?|minimums?|min|max|maximum
 const accessOrPaymentCondition=/\b(?:available[\s\p{P}]+(?:exclusively[\s\p{P}]+)?(?:to|for)\b|payments?[\s\p{P}]+(?:by|in)\b|eligible[\s\p{P}]+(?:customers?|accounts?|members?)\b)/iu;
 const standaloneCharge=/^(?:an?\s+)?(?:all prices\b|prices\b|rates\b|minimum\b|min\b|maximum\b|max\b|booking\b|tax\b|taxes\b|HST\b|GST\b|VAT\b|surcharge\b|surcharges\b|fees?\b|discount\b|deposit\b|extra\b|additional\b)|\b(?:minimum|maximum|surcharges?|fees?|tax(?:es)?|deposits?|discounts?)\b|\b(?:a|an|we)\s+charge\b/i;
 const pageWide=/\b(?:all (?:prices|rates|services|bookings|visits|items)|every (?:visit|booking|service|order)|site[- ]wide)\b/i;
+// Only an explicit scope label crosses page boundaries. "All prices" alone
+// remains page-local; descriptive mentions of a site-wide search are not labels.
+const websiteWide=/^(?:site|website)[-\s]wide\s*:\s*\S/iu;
 const unclearReference=/\b(?:some|selected|certain|specific|applicable)\s+(?:services?|items?|prices?|offers?|bookings?)\b|\b(?:above|below|following|marked|asterisk)\b|[*†‡]/i;
 const SCOPE=new Set(['root','body','main','section','article','div','li','tr','table','aside','header','footer']);
 const SECTION=new Set(['section','article','li','tr','aside']);
 const amounts=text=>[...text.matchAll(moneyPattern)].map(m=>m[0].trimEnd());
 const normalize=text=>text.replace(/[\t\r\f ]+/g,' ').split('\n').map(s=>s.trim()).filter(Boolean).join('\n');
-const qualification=text=>(conditions.test(text)||accessOrPaymentCondition.test(text))&&(!amounts(text).length||pageWide.test(text)||/\b(?:minimums?|maximums?|surcharges?)\b/i.test(text)||standaloneCharge.test(text.slice(0,text.search(moneyPattern))));
+const qualification=text=>(conditions.test(text)||accessOrPaymentCondition.test(text)||websiteWide.test(text)&&/\brequires?\b/i.test(text))&&(!amounts(text).length||pageWide.test(text)||/\b(?:minimums?|maximums?|surcharges?)\b/i.test(text)||standaloneCharge.test(text.slice(0,text.search(moneyPattern))));
+function websiteConditions(notes){
+  const values=[...new Set(notes.flatMap(note=>note.text.split('\n')).filter(text=>websiteWide.test(text)))];
+  if(!values.length)return {};
+  return {websiteConditions:values.filter(text=>text.length<=500&&!unclearReference.test(text)),
+    websiteConditionsUnverified:values.some(text=>text.length>500||unclearReference.test(text))};
+}
+// Used only to detect a bare duplicate of a visibly qualified excerpt. This
+// comparison never rewrites the saved text or decides customer eligibility.
+export function websitePriceConditionIdentity(entry){
+  const lines=entry.excerpt.split('\n'),notes=lines.filter(line=>qualification(line));
+  return {key:lines.filter(line=>!qualification(line)).join('\n'),qualified:Boolean(notes.length||entry.conditions?.length)};
+}
 const within=(node,ancestor)=>{for(let n=node;n;n=n.parent)if(n===ancestor)return true;return false;};
 function finishConditions(candidates,notes,associate){
   const attached=new Map(candidates.map(entry=>[entry,[]])),withheld=new Set(),savedNotes=new Set();
@@ -92,7 +107,7 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
       if(affected.length===1)return affected;
       return null;
     });
-    return {...result,limited:limited||result.conditionsUnverified,links:[]};
+    return {...result,...websiteConditions(notes),limited:limited||result.conditionsUnverified,links:[]};
   }
   const root={name:'root',parts:[],parent:null,hidden:false};const stack=[root],nodes=[],links=[];
   const parser=new Parser({
@@ -186,6 +201,7 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
   }
   collectNotes(root);
   const result=finishConditions(candidates,notes,note=>{
+    if(websiteWide.test(note.text))return candidates;
     for(let scope=SCOPE.has(note.node.name)?note.node:note.node.parent||root;scope;scope=scope.parent){
       if(!SCOPE.has(scope.name))continue;
       let affected=candidates.filter(entry=>within(entry.node,scope));
@@ -203,5 +219,5 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
     }
     return candidates.length?null:[];
   });
-  return {...result,limited:limited||result.conditionsUnverified,links,linksLimited};
+  return {...result,...websiteConditions(notes),limited:limited||result.conditionsUnverified,links,linksLimited};
 }

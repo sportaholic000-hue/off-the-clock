@@ -1,0 +1,35 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Agent4 boundaries actual draft save provider dispatcher: landing global
+not ok 1 - Agent4 boundaries actual draft save provider dispatcher: landing global
+  ---
+  duration_ms: 131.377189
+  type: 'test'
+  location: '/workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs:202:51'
+  failureType: 'testCodeFailure'
+  error: '<Response><Gather input="speech" action="https://voice.example.test/api/twilio/voice/capture" method="POST" partialResultCallback="https://voice.example.test/api/twilio/voice/capture/partial" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto" timeout="8"><Say>Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we&apos;ll get back to you.</Say></Gather></Response>'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    Object.connect (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs:184:410)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/scratch/5ed2408ba85b/off-the-clock-import-condition-boundaries/test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs:205:100)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# {"kind":"voice-start","live":true,"xml":"<Response><Gather input=\\"speech\\" action=\\"https://voice.example.test/api/twilio/voice/capture\\" method=\\"POST\\" partialResultCallback=\\"https://voice.example.test/api/twilio/voice/capture/partial\\" partialResultCallbackMethod=\\"POST\\" actionOnEmptyResult=\\"true\\" speechTimeout=\\"auto\\" timeout=\\"8\\"><Say>Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we&apos;ll get back to you.</Say></Gather></Response>","account":{"id":"synthetic-agent4-boundary-1","ownerId":null,"role":"owner","plan":"Operator","planStatus":"pending_payment"},"profile":{"ownerId":"synthetic-agent4-boundary-1","country":null,"region":null,"existingPhoneNumber":null,"twilioNumber":"+19025500001","twilioNumberSid":"PN00000000000000000000000000000001","phoneProvisioningStatus":"provisioned","carrierSetupStatus":"not_started","voiceId":null,"agentName":"Synthetic Assistant","greeting":"","operatorEnabled":true,"onboardingStep":6,"updatedAt":"2026-10-19T05:55:34.321Z","businessTypes":[],"knowledgeBase":{"about":"Synthetic boundary business","hours":"Weekdays","services":"","policies":"","faqs":"","prices":"Widget $10 each","website":"https://synthetic.example/","neverSay":[],"draft":false},"calendar":{"provider":null,"status":"not_connected","calendlyUrl":null,"calendarId":null,"expiresAtUtc":null}},"calls":[{"status":"FALLBACK","outcome":"OPERATOR_INELIGIBLE","summaryText":null}]}
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 918.118446

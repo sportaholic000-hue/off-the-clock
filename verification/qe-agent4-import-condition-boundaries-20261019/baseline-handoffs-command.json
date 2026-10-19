@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-10-19T05:59:50.572059+00:00",
+  "command": [
+    "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs"
+  ],
+  "sourceHashes": {
+    "server/src/websitePriceImport.js": "81b258c0d8f79075c00932f47802910d32726e9cdaf5c63669f4d914bd8a69a6",
+    "server/src/websitePriceExtraction.js": "74e4e022436512d3db4d1b04af1bcbe78b0e20312d75d2650763771b107f6753",
+    "verification/qe-agent4-import-condition-boundaries-20261019/handoff-probes.mjs": "8b2049b9e729742967004b80b2b90aa2a5706298293b79ca3aec8fce40ab0495"
+  }
+}

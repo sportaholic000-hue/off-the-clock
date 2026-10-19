@@ -1,0 +1,276 @@
+[
+  {
+    "finding": "H1",
+    "kind": "pages",
+    "input": {
+      "first": "<html><body><p>Widget $10 each</p><a href=\"/terms\">Next</a></body></html>",
+      "terms": "Site-wide: all prices require membership",
+      "limits": {
+        "pages": 1
+      }
+    },
+    "draft": {
+      "prices": "Widget $10 each",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/"
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/"
+        ],
+        "limited": true,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."
+      }
+    },
+    "providerFacts": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each",
+        "neverSay": []
+      }
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "finding": "H1",
+    "kind": "requests",
+    "input": {
+      "first": "<html><body><p>Widget $10 each</p><a href=\"/terms\">Next</a></body></html>",
+      "terms": "Site-wide: all prices require membership",
+      "limits": {
+        "requests": 1
+      }
+    },
+    "draft": {
+      "prices": "Widget $10 each",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/"
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/"
+        ],
+        "limited": true,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."
+      }
+    },
+    "providerFacts": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each",
+        "neverSay": []
+      }
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "finding": "H1",
+    "kind": "bytes",
+    "input": {
+      "first": "<html><body><p>Widget $10 each</p><a href=\"/terms\">Next</a></body></html>",
+      "terms": "Site-wide: all prices require membership",
+      "limits": {
+        "totalBytes": 74
+      }
+    },
+    "draft": {
+      "prices": "Widget $10 each",
+      "websiteUrl": "https://synthetic.example/",
+      "draft": true,
+      "websiteImport": {
+        "entries": [
+          {
+            "excerpt": "Widget $10 each",
+            "amounts": [
+              "$10"
+            ],
+            "sourceUrl": "https://synthetic.example/"
+          }
+        ],
+        "pages": [
+          "https://synthetic.example/"
+        ],
+        "limited": true,
+        "visibilityUnverified": false,
+        "conditionsUnverified": false,
+        "message": "Website prices are a draft. Review the item names, amounts and conditions before saving. Only part of the website could be read within the import limits."
+      }
+    },
+    "providerFacts": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each",
+        "neverSay": []
+      }
+    },
+    "result": {
+      "status": "calculated",
+      "listedItem": "Widget $10 each",
+      "quantity": "3",
+      "extendedAmount": "30.00",
+      "currency": "$",
+      "voiceSummary": "Widget $10 each. At that listed price, 3 comes to $30.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    }
+  },
+  {
+    "finding": "H2",
+    "change": "amount",
+    "discovered": "Widget $10 each",
+    "updated": "Widget $12 each",
+    "deliveredPrices": [
+      "Widget $10 each"
+    ],
+    "providerMessages": [
+      {
+        "turns": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]"
+              }
+            ]
+          }
+        ],
+        "turnComplete": true
+      }
+    ],
+    "stale": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "fresh": {
+      "status": "calculated",
+      "listedItem": "Widget $12 each",
+      "quantity": "3",
+      "extendedAmount": "36.00",
+      "currency": "$",
+      "voiceSummary": "Widget $12 each. At that listed price, 3 comes to $36.00. The stated conditions still apply. No tax, fees, discounts or other items have been added."
+    },
+    "currentFacts": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $12 each",
+        "neverSay": []
+      }
+    }
+  },
+  {
+    "finding": "H2",
+    "change": "condition",
+    "discovered": "Widget $10 each",
+    "updated": "Widget $10 each\nAvailable to members",
+    "deliveredPrices": [
+      "Widget $10 each"
+    ],
+    "providerMessages": [
+      {
+        "turns": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]"
+              }
+            ]
+          }
+        ],
+        "turnComplete": true
+      }
+    ],
+    "stale": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "fresh": {
+      "status": "needs_review",
+      "message": "The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available."
+    },
+    "currentFacts": {
+      "business": {
+        "businessName": "Synthetic Boundary Shop",
+        "agentName": "Synthetic Assistant"
+      },
+      "activeServices": [],
+      "knowledge": {
+        "about": "Synthetic boundary business",
+        "hours": "Weekdays",
+        "services": "",
+        "policies": "",
+        "faqs": "",
+        "prices": "Widget $10 each\nAvailable to members",
+        "neverSay": []
+      }
+    }
+  }
+]

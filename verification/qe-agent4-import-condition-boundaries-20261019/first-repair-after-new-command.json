@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-10-19T06:00:51.824415+00:00",
+  "command": [
+    "/workspace/scratch/5ed2408ba85b/agent4-f18-runtime/node_modules/node/bin/node",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./test/pricebookTestEnv.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs"
+  ],
+  "sourceHashes": {
+    "server/src/websitePriceImport.js": "d78d69f6f8f616e2552d23e8a83fe0c34ceda786a54f1a3abe0d3f3a661f0ba6",
+    "server/src/websitePriceExtraction.js": "96ddfa8282ef877348ed3a00e699e95d28a294e638b2ea93169355be948ef7e1",
+    "test/voiceAgent4ImportConditionBoundaries20261019.spec.mjs": "ca7208485b153558af412ba3f01f6de37b93c30bb29c51319c8a6b61d1e24089"
+  }
+}
