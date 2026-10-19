@@ -1,0 +1,16 @@
+{
+  "phase": "after-repair",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "test/qeAgent3WidgetDependencies20261019.spec.mjs"
+  ],
+  "head": "c997546a230636fb3076604a6b27e5e6639fa7a7",
+  "tree": "f61562c6506db5e99d8eb4d53fbd1868ba87188f",
+  "branch": "codex/qe-agent3-widget-dependencies-20261019",
+  "node": "v24.19.0",
+  "exitCode": 0,
+  "signal": null,
+  "expected": "zero"
+}

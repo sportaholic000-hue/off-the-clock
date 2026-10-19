@@ -1,0 +1,16 @@
+{
+  "phase": "before-repair",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "test/qeAgent3WidgetDependencies20261019.spec.mjs"
+  ],
+  "head": "e50c9f58459a4362537eb5da5dc1cf082fbc3ca8",
+  "tree": "dd293f4cd60cf336db9b64941772fe256c7da2b7",
+  "branch": "codex/qe-agent3-widget-dependencies-20261019",
+  "node": "v24.19.0",
+  "exitCode": 1,
+  "signal": null,
+  "expected": "non-zero (regressions fail on exact base)"
+}
