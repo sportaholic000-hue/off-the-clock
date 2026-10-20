@@ -1,0 +1,610 @@
+{
+  "total_count": 9,
+  "jobs": [
+    {
+      "id": 118311899787,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbi_BSiw",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118311899787",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118311899787",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "created_at": "2026-10-19T21:15:06Z",
+      "started_at": "2026-10-19T21:15:08Z",
+      "completed_at": "2026-10-19T22:00:25Z",
+      "name": "test",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-19T21:15:09Z",
+          "completed_at": "2026-10-19T21:15:10Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-19T21:15:10Z",
+          "completed_at": "2026-10-19T21:15:17Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-19T21:15:17Z",
+          "completed_at": "2026-10-19T21:15:24Z"
+        },
+        {
+          "name": "Install from lockfile (ignores committed node_modules)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-19T21:15:24Z",
+          "completed_at": "2026-10-19T21:15:33Z"
+        },
+        {
+          "name": "Install Playwright test dependency without changing the lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-19T21:15:33Z",
+          "completed_at": "2026-10-19T21:15:35Z"
+        },
+        {
+          "name": "Install Chromium for the browser tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-19T21:15:35Z",
+          "completed_at": "2026-10-19T21:15:42Z"
+        },
+        {
+          "name": "Verify Chromium can launch; install system libraries if needed",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-19T21:15:42Z",
+          "completed_at": "2026-10-19T21:15:44Z"
+        },
+        {
+          "name": "Build owner app and widget",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-19T21:15:44Z",
+          "completed_at": "2026-10-19T21:15:49Z"
+        },
+        {
+          "name": "Candidate l controlled owner-alert browser reproduction",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-10-19T21:15:49Z",
+          "completed_at": "2026-10-19T21:15:49Z"
+        },
+        {
+          "name": "Owner alerts and dashboard browser regressions",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-19T21:15:49Z",
+          "completed_at": "2026-10-19T21:15:57Z"
+        },
+        {
+          "name": "Candidate l harness and CI safety regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 11,
+          "started_at": "2026-10-19T21:15:57Z",
+          "completed_at": "2026-10-19T21:15:57Z"
+        },
+        {
+          "name": "Candidate l shared HTTP fixture consumers and alert worker regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-10-19T21:15:57Z",
+          "completed_at": "2026-10-19T21:15:57Z"
+        },
+        {
+          "name": "Candidate m runner and tag qualification regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-10-19T21:15:57Z",
+          "completed_at": "2026-10-19T21:15:57Z"
+        },
+        {
+          "name": "Candidate n booking repair and tag qualification regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14,
+          "started_at": "2026-10-19T21:15:57Z",
+          "completed_at": "2026-10-19T21:15:57Z"
+        },
+        {
+          "name": "Strict quote engine and price book gate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-19T21:15:57Z",
+          "completed_at": "2026-10-19T21:37:29Z"
+        },
+        {
+          "name": "Full test suite",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "number": 16,
+          "started_at": "2026-10-19T21:37:29Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate h standalone regressions (each file independently)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 17,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate i standalone regressions (each file independently)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate i confirms required test names in the full-suite log",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate k backup coordination regressions",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 20,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate j and k standalone regressions (each file independently)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 21,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate j and k confirm required lock test names in the full-suite log",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 22,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate k confirms coordination test names in the full-suite log",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 23,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate l expiry regressions and required passing names",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 24,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate l follow-up required passing names",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 25,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate m confirms every CI-runner regression passed",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 26,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Candidate n confirms every booking service-end regression passed",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 27,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "No failures beyond the known list",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 28,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:21Z"
+        },
+        {
+          "name": "Publish test summary to claude/ci-results (push events only)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 29,
+          "started_at": "2026-10-19T22:00:21Z",
+          "completed_at": "2026-10-19T22:00:23Z"
+        },
+        {
+          "name": "Production dependency audit",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 30,
+          "started_at": "2026-10-19T22:00:23Z",
+          "completed_at": "2026-10-19T22:00:23Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 59,
+          "started_at": "2026-10-19T22:00:23Z",
+          "completed_at": "2026-10-19T22:00:23Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 60,
+          "started_at": "2026-10-19T22:00:23Z",
+          "completed_at": "2026-10-19T22:00:23Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 61,
+          "started_at": "2026-10-19T22:00:23Z",
+          "completed_at": "2026-10-19T22:00:23Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118311899787",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000001041,
+      "runner_name": "GitHub Actions 1000001041",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 118311900745,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbi_BWSQ",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118311900745",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118311900745",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-19T21:15:06Z",
+      "started_at": "2026-10-19T21:15:08Z",
+      "completed_at": "2026-10-19T21:15:36Z",
+      "name": "voice-docker-startup",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-19T21:15:08Z",
+          "completed_at": "2026-10-19T21:15:09Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-19T21:15:09Z",
+          "completed_at": "2026-10-19T21:15:14Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-19T21:15:14Z",
+          "completed_at": "2026-10-19T21:15:15Z"
+        },
+        {
+          "name": "Build production runtime image",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-19T21:15:15Z",
+          "completed_at": "2026-10-19T21:15:33Z"
+        },
+        {
+          "name": "Voice enabled with synthetic credentials and no provider network",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-19T21:15:33Z",
+          "completed_at": "2026-10-19T21:15:34Z"
+        },
+        {
+          "name": "Candidate h Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6,
+          "started_at": "2026-10-19T21:15:34Z",
+          "completed_at": "2026-10-19T21:15:34Z"
+        },
+        {
+          "name": "Candidate i Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-10-19T21:15:34Z",
+          "completed_at": "2026-10-19T21:15:34Z"
+        },
+        {
+          "name": "Candidate j and k Railway restart, redeploy, SIGTERM and restore smoke",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-10-19T21:15:34Z",
+          "completed_at": "2026-10-19T21:15:34Z"
+        },
+        {
+          "name": "Candidate j and k production-user lock database proof",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-10-19T21:15:34Z",
+          "completed_at": "2026-10-19T21:15:34Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-10-19T21:15:34Z",
+          "completed_at": "2026-10-19T21:15:34Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-10-19T21:15:34Z",
+          "completed_at": "2026-10-19T21:15:34Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-10-19T21:15:34Z",
+          "completed_at": "2026-10-19T21:15:34Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118311900745",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000001042,
+      "runner_name": "GitHub Actions 1000001042",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 118331633127,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbjR1t5w",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118331633127",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118331633127",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-19T22:00:27Z",
+      "started_at": "2026-10-19T22:00:27Z",
+      "completed_at": "2026-10-19T22:00:26Z",
+      "name": "tag-candidate-l",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118331633127",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 118331633526,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbjR1vdg",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118331633526",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118331633526",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-19T22:00:27Z",
+      "started_at": "2026-10-19T22:00:27Z",
+      "completed_at": "2026-10-19T22:00:26Z",
+      "name": "tag-candidate-m",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118331633526",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 118331633636,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbjR1v5A",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118331633636",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118331633636",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-19T22:00:27Z",
+      "started_at": "2026-10-19T22:00:27Z",
+      "completed_at": "2026-10-19T22:00:26Z",
+      "name": "tag-candidate-j",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118331633636",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 118331634060,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbjR1xjA",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118331634060",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118331634060",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-19T22:00:27Z",
+      "started_at": "2026-10-19T22:00:27Z",
+      "completed_at": "2026-10-19T22:00:26Z",
+      "name": "tag-candidate-n",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118331634060",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 118331634255,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbjR1yTw",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118331634255",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118331634255",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-19T22:00:27Z",
+      "started_at": "2026-10-19T22:00:27Z",
+      "completed_at": "2026-10-19T22:00:26Z",
+      "name": "tag-candidate-k",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118331634255",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 118331634659,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbjR1z4w",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118331634659",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118331634659",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-19T22:00:27Z",
+      "started_at": "2026-10-19T22:00:27Z",
+      "completed_at": "2026-10-19T22:00:26Z",
+      "name": "tag-candidate-i",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118331634659",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 118331634668,
+      "run_id": 39326003260,
+      "workflow_name": "CI",
+      "head_branch": "codex/qe-agent3-recovery-integration-20261019",
+      "run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/runs/39326003260",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTc2VpM8AAAAbjR1z7A",
+      "head_sha": "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/jobs/118331634668",
+      "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/39326003260/job/118331634668",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-19T22:00:27Z",
+      "started_at": "2026-10-19T22:00:27Z",
+      "completed_at": "2026-10-19T22:00:26Z",
+      "name": "tag-candidate-h",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/check-runs/118331634668",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    }
+  ]
+}

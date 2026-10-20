@@ -1,0 +1,16 @@
+{
+  "orderedParents": [
+    "cc0f6cf1d4bc89dddbeb5d4da8d6d0a3957238ed",
+    "927cb5d3bd9df7c433e08bbbe0a74d06277610d5"
+  ],
+  "firstParentFilesPreserved": 4227,
+  "authorizedWorkflowChange": "test timeout 45 to 60 only",
+  "incomingNewFilesPreserved": 9,
+  "allProductionTestsAssertionsHistoricalEvidenceUnchanged": true,
+  "newEvidencePrefix": "verification/qe-agent3-headroom-integration-20261020",
+  "expectedStrict": 6176,
+  "expectedFull": 8141,
+  "expectedDedicatedBrowser": 12,
+  "strictFiles": 295,
+  "fullFiles": 369
+}

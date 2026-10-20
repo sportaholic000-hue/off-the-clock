@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index cd064413..ebf95a35 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -10,7 +10,7 @@ jobs:
+     permissions:
+       contents: write # Existing ci-results summary branch publication.
+     runs-on: ubuntu-latest
+-    timeout-minutes: 45
++    timeout-minutes: 60
+     steps:
+       - uses: actions/checkout@v4
+         with: { fetch-depth: 0 }
