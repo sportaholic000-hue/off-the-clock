@@ -2,7 +2,7 @@ import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {createQuoteEmailProvider} from './quoteEmailProvider.js';
 import {quoteMoneyFormatter} from '../quoteMoneyFormat.js';
-import {quoteValidityEndsAtVNext} from '../quote-engine-vnext/quoteValidity.js';
+import {quoteValidityEndsAtVNext} from './quoteDoneBridge.js';
 const EMAIL=/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/;
 const SAFE_REPLAY_MS=23*60*60*1000,LINK_MS=30*24*60*60*1000;
 const fail=(code,statusCode=409,message='The quote email could not be completed safely.')=>{throw Object.assign(Error(message),{code,statusCode});};
