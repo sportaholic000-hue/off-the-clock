@@ -2,9 +2,19 @@ import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {createQuoteEmailProvider} from './quoteEmailProvider.js';
 import {quoteMoneyFormatter} from '../quoteMoneyFormat.js';
+import {quoteValidityEndsAtVNext} from '../quote-engine-vnext/quoteValidity.js';
 const EMAIL=/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/;
 const SAFE_REPLAY_MS=23*60*60*1000,LINK_MS=30*24*60*60*1000;
-const fail=(code,statusCode=409)=>{throw Object.assign(Error('The quote email could not be completed safely.'),{code,statusCode});};
+const fail=(code,statusCode=409,message='The quote email could not be completed safely.')=>{throw Object.assign(Error(message),{code,statusCode});};
+// A link follows the validity stated in the quote; without one it lasts
+// LINK_MS from sending. Rows already issued keep their stored expiresAt.
+function linkExpiresAt(internal,now){
+  const outcome=internal?.applicationOutcome||internal,record=outcome?.internalResult?.calculationRecord;
+  const ends=record?.quoteDate?quoteValidityEndsAtVNext(record.financialInputs?.businessDefaults||{},record.quoteDate):null;
+  if(ends===null)return now+LINK_MS;
+  if(ends<=now)fail('QUOTE_VALIDITY_EXPIRED',409,'This quote has expired. Create a new quote before emailing it.');
+  return ends;
+}
 const hash=s=>createHash('sha256').update(s).digest('hex');
 export function quoteEmailOrigin(env){
   let u;try{u=new URL(env.PUBLIC_BASE_URL);}catch{fail('QUOTE_EMAIL_LINK_UNAVAILABLE');}
@@ -38,8 +48,9 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
       if(!candidate)fail('EMAIL_READBACK_CHANGED');
       const prior=row(ownerId,requestId);if(prior)return state(prior);
       const saved=q('SELECT narration FROM voiceQuoteNarrations WHERE ownerId=? AND requestId=? AND callSid=?').get(ownerId,requestId,callSid);
-      const quote=q('SELECT recordId,resultType FROM quoteSubmissions WHERE ownerId=? AND requestId=? AND recordId=?').get(ownerId,requestId,recordId);
+      const quote=q('SELECT recordId,resultType,internalOutcomeJson FROM quoteSubmissions WHERE ownerId=? AND requestId=? AND recordId=?').get(ownerId,requestId,recordId);
       if(!saved||!quote||!['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(quote.resultType))fail('QUOTE_EMAIL_UNAVAILABLE');
+      const expiresAt=linkExpiresAt(JSON.parse(quote.internalOutcomeJson||'{}'),clock());
       const owner=q("SELECT businessName,email FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId);
       if(!owner||!EMAIL.test(owner.email)||!owner.businessName?.trim()||/[\r\n]/.test(owner.businessName)||owner.businessName.length>500)fail('QUOTE_EMAIL_BUSINESS_UNAVAILABLE');
       if(!EMAIL.test(environment.EMAIL_FROM||''))fail('EMAIL_NOT_CONFIGURED');
@@ -50,7 +61,7 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
         subject:'Your quote from '+businessName,text:saved.narration+'\n\nView your saved quote: '+url,idempotencyKey:'quote-email/'+id};
       q("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'quote.email_requested',?,?,'PENDING',?,?)").run(id,ownerId,recordId,JSON.stringify({callSid,requestId,recordId}),at,at);
       q(`INSERT INTO quoteEmailDeliveries(id,ownerId,requestId,recordId,callSid,recipient,businessName,narration,messageJson,tokenHash,expiresAt,createdAt,updatedAt)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(id,ownerId,requestId,recordId,callSid,email,businessName,saved.narration,JSON.stringify(message),hash(token),clock()+LINK_MS,at,at);
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(id,ownerId,requestId,recordId,callSid,email,businessName,saved.narration,JSON.stringify(message),hash(token),expiresAt,at,at);
       return state(row(ownerId,requestId));
     }).immediate();
   }
@@ -77,6 +88,7 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
         !EMAIL.test(environment.EMAIL_FROM||''))fail('EMAIL_NOT_CONFIGURED');
       const requestId='saved-quote:'+quoteId,prior=row(ownerId,requestId);
       if(prior)return state(prior);
+      const expiresAt=linkExpiresAt(internal,clock());
       // Prefer the frozen script already presented on the bound call.
       const presented=saved.callId?q(`SELECT n.narration FROM voiceQuoteNarrations n
         JOIN quoteSubmissions s ON s.ownerId=n.ownerId AND s.requestId=n.requestId
@@ -93,7 +105,7 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
         .run(id,ownerId,quoteId,JSON.stringify({recordId:quoteId}),at,at);
       q(`INSERT INTO quoteEmailDeliveries(id,ownerId,requestId,recordId,callSid,recipient,businessName,narration,messageJson,tokenHash,expiresAt,createdAt,updatedAt)
         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(id,ownerId,requestId,quoteId,saved.callId||'',email,owner.businessName,narration,
-          JSON.stringify(message),hash(token),clock()+LINK_MS,at,at);
+          JSON.stringify(message),hash(token),expiresAt,at,at);
       return state(row(ownerId,requestId));
     }).immediate();
   }

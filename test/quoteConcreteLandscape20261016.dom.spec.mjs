@@ -63,7 +63,7 @@ test('concrete owner DOM keeps new fields blank and saves rates, control joints 
   await fill(h,'#field-slabLaborMinThicknessInches input','4');await fill(h,'#field-slabLaborMaxThicknessInches input','6');
   await fill(h,'[aria-label="Placement flat charge ($ per pour) Pump"]','1500');
   await choose(h,'controlJointPricing','excluded');await choose(h,'defaultPlacementMethod','pump');await choose(h,'uncertainPlacementMethod','pump');await save(h);
-  await waitFor(()=>/Control-joint spacing of 15 feet exceeds the configured spacing limit of 10 feet/.test(h.d.body.textContent),'saved spacing warning');
+  await waitFor(()=>/Control-joint spacing of 15 feet exceeds NRMCA's recommended maximum of 10 feet for a 4-inch slab/.test(h.d.body.textContent),'saved spacing warning');
   const pricing=loadPricebook(h.owner).services[0].pricing;
   assert.equal(pricing.shortLoadPerYard,4000);assert.equal(pricing.placementFlat.pump,150000);
   assert.equal(pricing.sawCutPerLF,150);assert.equal(pricing.controlJointSpacingFt,15);

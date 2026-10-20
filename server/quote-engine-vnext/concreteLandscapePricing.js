@@ -83,7 +83,7 @@ export function concreteLandscapeNotices(type,p={}){
   if(!present(p.slabLaborMinThicknessInches)&&!present(p.slabLaborMaxThicknessInches))notices.push('Set the thickness range covered by this slab labor rate. Until then, the existing 2–24 inch input range remains available.');
   if(!present(p.controlJointPricing))notices.push('State whether saw-cut control joints are included in the slab labor price.');
   const thickness=present(p.slabLaborMinThicknessInches)?p.slabLaborMinThicknessInches:4;
-  if(p.controlJointPricing==='excluded'&&p.controlJointSpacingFt>jointSpacingCap(thickness))notices.push(`Control-joint spacing of ${p.controlJointSpacingFt} feet exceeds the configured spacing limit of ${jointSpacingCap(thickness)} feet for a ${thickness}-inch slab. Check the spacing for every thickness this rate covers.`);
+  if(p.controlJointPricing==='excluded'&&p.controlJointSpacingFt>jointSpacingCap(thickness))notices.push(`Control-joint spacing of ${p.controlJointSpacingFt} feet exceeds NRMCA's recommended maximum of ${jointSpacingCap(thickness)} feet for a ${thickness}-inch slab. Check the spacing for every thickness this rate covers.`);
   return notices;
 }
 export function concreteLandscapeDiagnostics(type,p={}){

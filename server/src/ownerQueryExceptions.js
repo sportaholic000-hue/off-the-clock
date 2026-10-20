@@ -2246,7 +2246,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote email application method named draft, not a database access.",
     "signature": "55c15137b2afa99405d2a7fc54c299b619fac5e1dccf838963e9b04e2b515361",
     "occurrence": 1,
-    "line": 20
+    "line": 30
   },
   {
     "file": "server/src/quoteEmailService.js",
@@ -2254,7 +2254,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote email application method named draft, not a database access.",
     "signature": "36b890c6677253d910dc009ec080e1fccbfbdafb6e0d1fadfe68448d9a0aa4bf",
     "occurrence": 1,
-    "line": 152
+    "line": 164
   },
   {
     "file": "server/src/voice/productionVoiceRuntime.js",
