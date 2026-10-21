@@ -12,6 +12,7 @@ import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
+import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones} from '../travelZones.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -1464,6 +1465,47 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   }
   if (!Number.isInteger(currentMonth) || currentMonth < 1 || currentMonth > 12) return finishReview({ reviewReason: 'Quote month is invalid.', invalidCustomerFields: ['currentMonth'] });
 
+  let effectiveDefaults = businessDefaults;
+  if (hasTravelZones(businessDefaults)) {
+    if (prepared && customerInputs.postalCode === undefined) {
+      const sampleCode = sampleCustomerCodeForZones(businessDefaults.travelZones);
+      if (sampleCode) customerInputs = { ...customerInputs, postalCode: sampleCode };
+    }
+    const zoneMatch = matchTravelZone(customerInputs?.postalCode, businessDefaults.travelZones);
+    if (zoneMatch.status === 'missing') {
+      return finishReview({
+        reviewReason: zoneMatch.message,
+        missingCustomerFields: ['postalCode']
+      });
+    }
+    if (zoneMatch.status === 'invalid') {
+      return finishReview({
+        reviewReason: zoneMatch.message,
+        invalidCustomerFields: ['postalCode'],
+        validationMessages: [zoneMatch.message]
+      });
+    }
+    if (zoneMatch.status === 'outside_zones') {
+      const checkPricing = mergePricingForValidationVNext(basePricing, (Array.isArray(ownerPricing.tiers) && ownerPricing.tiers[0]?.overrides) || {});
+      const customerValidation = validateCustomerInputs(serviceType, customerInputs, checkPricing, ownerPricing, ownerPricing.tiers?.[0]?.name || null);
+      if (!customerValidation.ok) {
+        return finishReview({
+          reviewReason: customerValidation.reviewReason,
+          missingCustomerFields: customerValidation.missingCustomerFields || [],
+          invalidCustomerFields: customerValidation.invalidCustomerFields || [],
+          validationMessages: customerValidation.validationMessages || []
+        });
+      }
+      return finishReview({
+        reviewReason: zoneMatch.reviewReason,
+        ownerDecisionRequired: [{ field: 'postalCode', reason: 'outside_travel_zones', message: zoneMatch.reviewReason }],
+        normalizedScope: structuredClone(customerValidation.normalized),
+        validatedMeasurements: validatedMeasurementsFor(serviceType, customerValidation.normalized)
+      });
+    }
+    effectiveDefaults = { ...businessDefaults, travelFee: zoneMatch.charge };
+  }
+
   const tiers = fenceType(serviceType)&&fenceCatalog(basePricing)?fenceQuoteTiers(basePricing,customerInputs):Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
     ? ownerPricing.tiers
     : [{ name: null, overrides: {} }];
@@ -1480,7 +1522,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         customerInputs,
         ownerPricing,
         pricing,
-        defaults: businessDefaults,
+        defaults: effectiveDefaults,
         tierName: tier.name,
         feeSelections,
         month: currentMonth,
@@ -1882,7 +1924,7 @@ export function customerFieldClassesVNext(serviceType){
       ...(OFFERING_TYPES.includes(serviceType)?['installed','itemized'].flatMap(offeringMode=>Object.entries(offeringContract(serviceType,{offeringMode,offeringDetails:{}}).fields)):[]),
       ...Object.values(scopeDefinitions(serviceType,{})).flatMap(definition=>Object.entries(definition.customerFields||{}))
     ];
-    const known=new Set(),measurements=new Set();
+    const known=new Set(['postalCode']),measurements=new Set();
     for(const [name,field] of entries){
       known.add(name);
       if(SIZE_METHOD_FIELDS.has(name)||['orthogonal_outline','fence_runs','surface_rows'].includes(field?.type)||(field?.type==='number'&&SIZE_UNITS.has(field.unit)))measurements.add(name);

@@ -19,6 +19,7 @@ import {CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
+import {hasTravelZones,isValidCustomerPostalCode,normalizePostalCode,validateTravelZonesEngine} from '../travelZones.js';
 
 // Readiness validates many selections against one immutable tier. Only private,
 // fully snapshotted and deeply frozen copies are eligible for this reuse. Caller
@@ -1054,14 +1055,23 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   serviceRules = rules.value;
   contract=customerContractForVNext(serviceType,pricing,serviceRules,tierName);
   const allowed = new Set(Object.keys(contract.fields));
+  if (Object.hasOwn(customerInputs, 'postalCode')) allowed.add('postalCode');
   const unexpected = Object.keys(customerInputs).filter(key => !allowed.has(key));
   const required = [...new Set(contract.required?.(customerInputs, pricing) || [])];
   const missingCustomerFields = required.filter(name => missing(customerInputs[name]));
   const invalidCustomerFields = [];
   const validationMessages = [];
+  if (Object.hasOwn(customerInputs, 'postalCode')) {
+    if (missing(customerInputs.postalCode)) {
+      missingCustomerFields.push('postalCode');
+    } else if (!isValidCustomerPostalCode(customerInputs.postalCode)) {
+      invalidCustomerFields.push('postalCode');
+      validationMessages.push('Enter a valid Canadian postal code or 5-digit US ZIP code.');
+    }
+  }
 
   for (const [name, value] of Object.entries(customerInputs)) {
-    if (!allowed.has(name)) continue;
+    if (!allowed.has(name) || name === 'postalCode') continue;
     if (missing(value)) continue;
     const message = validateFieldValue(contract.fields[name], value);
     if (message) {
@@ -1411,7 +1421,7 @@ const positive = value => typeof value === 'number' && Number.isFinite(value) &&
 const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedPricingFields(serviceType)));
 const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
-  'travelFee', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
+  'travelFee', 'travelZones', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
   'rangeBufferPercent', ...RANGE_FIELDS, 'markupApplies', 'peakMonths', 'peakSurchargePercent',
   'stalePriceThresholdDays', 'quoteValidityDays'
 ];
@@ -2233,7 +2243,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays',...RANGE_FIELDS].includes(field));
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays','travelZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -2299,6 +2309,15 @@ export function validateBusinessDefaults(defaults = {}) {
   }
   if (!missing(defaults.peakSurchargePercent) && (!nonNegative(defaults.peakSurchargePercent) || defaults.peakSurchargePercent > 500)) invalid('peakSurchargePercent', 'peakSurchargePercent must be from 0 to 500.');
   for(const [field,label] of [['stalePriceThresholdDays','Price age threshold'],['quoteValidityDays','Quote validity']])if(!missing(defaults[field])&&(!Number.isSafeInteger(defaults[field])||defaults[field]<=0||defaults[field]>36500))invalid(field,`${label} must be a positive whole number of days, up to 36500.`);
+  if (defaults.travelZones !== undefined) {
+    for (const item of validateTravelZonesEngine(defaults.travelZones)) {
+      const shortPath = item.path.replace(/^businessDefaults\./, '');
+      diagnostics.push(ownerDiagnostic(item.type, 'business_default', shortPath, item.message));
+      if (item.type === 'missing') missingFields.push(shortPath);
+      else if (item.type === 'unsupported') unsupportedFields.push(shortPath);
+      else invalidFields.push(shortPath);
+    }
+  }
   const finalDiagnostics = uniqueDiagnostics(diagnostics);
   const errors = [...new Set(finalDiagnostics.filter(item => item.type !== 'missing').map(item => item.message))];
   const finalMissing = [...new Set(missingFields)];
@@ -2409,6 +2428,7 @@ export function canonicalCustomerIdentityVNext(input) {
   if (isRecord(customer.confirmedFacts)) for (const fact of Object.values(customer.confirmedFacts)) {
     if (isRecord(fact) && Object.hasOwn(fact, 'offeringId')) fact.offeringId = canonicalUuid(fact.offeringId);
   }
+  if (typeof customer.postalCode === 'string') customer.postalCode = normalizePostalCode(customer.postalCode);
   return customer;
 }
 

@@ -197,7 +197,7 @@ function quoteApplicationDefaults(database,clock) {
   return {
     loadBook: loadPricebook,
     status: (service,book)=>cachedApplicationStatus(service,book,{...dateContext(book.ownerId),quick:true}),
-    definition: service=>{try{return applicationServiceDefinition(service);}catch{return {customerFields:[]};}},
+    definition: (service,book)=>{try{return applicationServiceDefinition(service,book);}catch{return {customerFields:[]};}},
     serviceName: applicationServiceName,
     serviceMatches: applicationServiceMatches,
     revision: bookRevision,
@@ -378,7 +378,7 @@ export function createVoiceToolRuntime({
       status: 'matched',
       serviceHandle,
       serviceName: selected.name,
-      questionContract: voiceQuestionContract(selected.service,quoteApp.definition(selected.service)),
+      questionContract: voiceQuestionContract(selected.service,quoteApp.definition(selected.service,book)),
       confidence: Number(selected.score.toFixed(3))
     };
   }
@@ -391,6 +391,7 @@ export function createVoiceToolRuntime({
       callSid: context.callSid,
       serviceHandleHash: selected.handleHash,
       customerInputs: args.customerInputs,
+      ...(args.postalCode!==undefined?{postalCode:args.postalCode}:{}),
       productConfirmations: args.productConfirmations || {},
       // Preserve legacy request identities without scope tokens, while a new
       // confirmation can never replay a receipt for a different confirmation.
@@ -429,7 +430,7 @@ export function createVoiceToolRuntime({
       throw runtimeError('SERVICE_NOT_PUBLISHED');
     }
     const service = matches[0];
-    const definition=quoteApp.definition(service);
+    const definition=quoteApp.definition(service,book);
     const scopeAuthority={secret,binding:json([context.ownerId,context.callSid,quoteApp.revision(book)])};
     const bound=bindVoiceQuoteInputs(service,definition,args,scopeAuthority);
     if(bound.followUps.length)return {status:'needs_details',resultType:'ESTIMATE_REQUIRES_REVIEW',followUps:bound.followUps,questionContract:voiceQuestionContract(service,definition,bound.customerInputs||args.customerInputs,scopeAuthority)};
@@ -522,7 +523,7 @@ export function createVoiceToolRuntime({
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'customer', ?)`).run(
           recordId, context.ownerId, call.id,
           typeof response.quoteId === 'string' ? response.quoteId : null,
-          service.serviceType, JSON.stringify(args.customerInputs), JSON.stringify(internal),
+          service.serviceType, JSON.stringify(bound.customerInputs), JSON.stringify(internal),
           response.resultType === 'PARTIAL_ESTIMATE_READY' ? 'PARTIAL' : 'INSTANT', createdAt
         );
       }
@@ -537,10 +538,13 @@ export function createVoiceToolRuntime({
           createdAt
         );
       }
+      const storedPostalCode = typeof bound.customerInputs?.postalCode === 'string' && bound.customerInputs.postalCode.trim()
+        ? bound.customerInputs.postalCode.trim()
+        : null;
       tenantQuery(`INSERT INTO quoteRequests (
-        id, ownerId, callId, describedService, estimatedValue, createdAt
-      ) VALUES (?, ?, ?, ?, NULL, ?)`).run(
-        recordId, context.ownerId, call.id, quoteApp.serviceName(service), createdAt
+        id, ownerId, callId, describedService, estimatedValue, postalCode, createdAt
+      ) VALUES (?, ?, ?, ?, NULL, ?, ?)`).run(
+        recordId, context.ownerId, call.id, quoteApp.serviceName(service), storedPostalCode, createdAt
       );
 
       let intentId = null;
@@ -1228,7 +1232,7 @@ export function createVoiceToolRuntime({
     if(revision!==selected.reference.bookRevision)throw runtimeError('PRICE_BOOK_CHANGED');
     const matches=quoteApp.serviceMatches(book,selected.reference.serviceId);
     if(!Array.isArray(matches)||matches.length!==1||!publishedServices(book).some(service=>service===matches[0]))throw runtimeError('SERVICE_NOT_PUBLISHED');
-    const service=matches[0],choices=voiceCatalogChoices(service,quoteApp.definition(service),args.field,args.customerInputs||{});
+    const service=matches[0],choices=voiceCatalogChoices(service,quoteApp.definition(service,book),args.field,args.customerInputs||{});
     if(!choices)throw runtimeError('INVALID_CATALOG_FIELD');
     // Stateless signed continuations require no handle insert or update. The
     // existing service handle supplies call/tenant authority and lifetime.

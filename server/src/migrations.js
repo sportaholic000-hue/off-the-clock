@@ -43,6 +43,9 @@ const ADDITIVE_COLUMNS = {
     bookingIntentId: 'TEXT',
     bookingTokenReceipt: 'TEXT'
   },
+  quoteRequests: {
+    postalCode: 'TEXT'
+  },
   calls: {
     voiceAnsweredAt: 'TEXT',
     transportOutcome: 'TEXT',

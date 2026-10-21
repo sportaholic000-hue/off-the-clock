@@ -2,6 +2,7 @@ import { registeredProductKey, productIdentityRequired } from '../../productName
 import {createHmac} from 'node:crypto';
 import {customerFieldForInputs,customerFieldVisible} from '../../scopeConfiguration.js';
 import {voiceChoicePage,VOICE_QUESTION_CATALOG_BYTES} from './voiceCatalog.js';
+import {isValidCustomerPostalCode,normalizePostalCode} from '../../travelZones.js';
 
 const own = (value, key) => Object.hasOwn(value || {}, key);
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value) &&
@@ -143,6 +144,16 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
   const confirmations = record(args.productConfirmations) ? args.productConfirmations : {};
   const confirmedFacts = {};
   const followUps = [];
+  if (fields.some(field => field.name === 'postalCode')) {
+    const rawPostal = customerInputs.postalCode ?? args.postalCode;
+    if (rawPostal === undefined || rawPostal === null || (typeof rawPostal === 'string' && !rawPostal.trim())) {
+      followUps.push('What is the postal or ZIP code for the job?');
+    } else if (!isValidCustomerPostalCode(rawPostal)) {
+      followUps.push('Please provide a valid Canadian postal code or 5-digit US ZIP code for the job.');
+    } else {
+      customerInputs.postalCode = normalizePostalCode(rawPostal);
+    }
+  }
   for (const key of Object.keys(confirmations)) {
     if (!fields.some(field => field.name === key && field.type === 'slug')) followUps.push('Confirm only a product requested for this service.');
   }

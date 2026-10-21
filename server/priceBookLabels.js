@@ -11,7 +11,7 @@ const SPECIAL_LABELS = {
   included_in_floor_price:'Included in flooring material price',
   installedLaborPercent:'Labor portion (%)', installedMaterialsPercent:'Materials share (%)',
   priceBasisByCategory:'Price meaning by category', taxabilityByCategory:'Tax treatment by category',
-  feeRules:'Fixed charge rules', knownOfferings:'Registered products', offeringDetails:'Work included', offeringRates:'Offering prices',
+  feeRules:'Fixed charge rules', travelZones:'Travel zones', knownOfferings:'Registered products', offeringDetails:'Work included', offeringRates:'Offering prices',
   fenceOfferings:'Fence offerings',heightRows:'Height rows',minimumHeight:'Height over (ft)',maximumHeight:'Height up to and including',exactHeight:'Exact fence height',postSpacingLF:'Post spacing (ft)',
   TAX_NONE:'No tax', TAX_ALL:'Tax entire job', TAX_MATERIALS:'Tax materials only'
 };

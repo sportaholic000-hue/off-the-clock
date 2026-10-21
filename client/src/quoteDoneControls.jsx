@@ -1,5 +1,6 @@
 import {SurfaceRowsInput} from './surfacePricingEditor.jsx';
 import {QuoteRangeControls,RangeBufferConfirmation} from './quoteRangeControls.jsx';
+import {TravelZonesEditor} from './travelZonesEditor.jsx';
 import {registeredProductKey} from '../../server/productNames.js';
 import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations} from '../../server/scopeConfiguration.js';
 import React,{useEffect,useRef,useState} from 'react';
@@ -175,6 +176,7 @@ export function ServiceRules({service,services=[],meta,categories=[],feeNames=[]
   {service.serviceType==='LANDSCAPING_SOD'&&<Field label={label('disposalScope')}><Select value={service.disposalScope||''} onChange={e=>onService({...service,disposalScope:e.target.value||undefined})}><option value="">Not configured</option><option value="separate_project_debris">Separate project debris</option></Select></Field>}
   <h3>Currency</h3><Field label="Currency of your prices" help="Set from your business country during onboarding. Every quote states it."><Select aria-label="Currency of your prices" value={defaults.currency||''} onChange={e=>onDefault('currency',e.target.value||undefined)}>{!defaults.currency&&<option value="">Choose a currency</option>}<option value="CAD">Canadian dollars (CAD)</option><option value="USD">US dollars (USD)</option></Select></Field>
   <h3>Business-wide fixed charges and range</h3>{['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee'].map(field=><Field key={field} label={human(field)+' ($)'}><ExactNumericInput kind="fixed_amount" value={defaults[field]} onChange={v=>onDefault(field,v)}/></Field>)}
+  <TravelZonesEditor zones={defaults.travelZones} onChange={v=>onDefault('travelZones',v)}/>
   <Field label="Estimate range buffer (%)"><ExactNumericInput value={defaults.rangeBufferPercent} onChange={v=>onDefault('rangeBufferPercent',v)}/></Field>
   <QuoteRangeControls defaults={defaults} service={service} onDefault={onDefault} onService={onService}/>
   <h3>Optional busy-season labor surcharge</h3>

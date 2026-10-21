@@ -8,6 +8,7 @@ import {PAINTING_RATES,surfaceExtraDefinitions} from './quote-engine-vnext/surfa
 import {fenceType,fenceRowsDiagnostics} from './quote-engine-vnext/fencePricing.js';
 import {FLOORING_PATTERN_FIELDS} from './quote-engine-vnext/flooringPricing.js';
 import {CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS} from './quote-engine-vnext/concreteLandscapePricing.js';
+import {parseZoneCodesInput} from './travelZones.js';
 
 // Monetary semantics are declared once here and consumed by every dollar/cent
 // boundary. A field that the active pricing metadata exposes cannot silently
@@ -528,6 +529,18 @@ function convertDefaults(defaults, direction, location) {
     output[field] = convertedLeaf(defaults[field], UNIT_RATE_FIELDS.has(field) ? 'unit_rate' : 'fixed_amount', direction, `${location}.${field}`);
   }
   if (Object.hasOwn(defaults, 'peakMonths')) output.peakMonths = canonicalPeakMonths(defaults.peakMonths, `${location}.peakMonths`);
+  if (Array.isArray(defaults.travelZones)) {
+    output.travelZones = defaults.travelZones.map((zone, index) => {
+      if (!isRecord(zone)) return cloneData(zone);
+      const next = cloneData(zone);
+      if (typeof next.name === 'string') next.name = next.name.trim();
+      if (Object.hasOwn(zone, 'codes')) next.codes = parseZoneCodesInput(zone.codes);
+      if (Object.hasOwn(zone, 'charge')) {
+        next.charge = convertedLeaf(zone.charge, 'fixed_amount', direction, `${location}.travelZones[${index}].charge`);
+      }
+      return next;
+    });
+  }
   return output;
 }
 
@@ -605,6 +618,16 @@ export function validatePricebookNumericDraft(data) {
         assertDraftNumber(data.defaults[field], `defaults.${field}`, NULLABLE_DEFAULT_NUMERIC_FIELDS.has(field));
       }
       if (Object.hasOwn(data.defaults, 'peakMonths')) canonicalPeakMonths(data.defaults.peakMonths, 'defaults.peakMonths');
+      if (Object.hasOwn(data.defaults, 'travelZones') && data.defaults.travelZones !== undefined) {
+        if (!Array.isArray(data.defaults.travelZones)) failure('defaults.travelZones', 'Travel zones must be a list.');
+        data.defaults.travelZones.forEach((zone, index) => {
+          if (!isRecord(zone)) failure(`defaults.travelZones[${index}]`, 'Enter a valid travel zone.');
+          if (!Object.hasOwn(zone, 'charge') || zone.charge === undefined || zone.charge === null || zone.charge === '') {
+            failure(`defaults.travelZones[${index}].charge`, 'Enter a travel charge for each travel zone (0 is allowed).');
+          }
+          assertDraftNumber(zone.charge, `defaults.travelZones[${index}].charge`);
+        });
+      }
     }
   }
   convertPricebookMoney(data, 'toCents');

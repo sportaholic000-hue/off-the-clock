@@ -81,7 +81,7 @@ export function createOwnerCallService({ownerQuery,database}) {
       WHERE p.ownerId=? AND ${source} ORDER BY p.createdAt,p.id`).all(ownerId,ownerId,id,ownerId,id)
       .map(({preferredWindowsJson,customerJson,locationJson,...request})=>({...request,preferredWindows:transcriptWindows(preferredWindowsJson),
         customer:followUpContact(storedObject(customerJson)),location:followUpLocation(storedObject(locationJson))}));
-    const quoteRequests=ownerQuery('SELECT id,describedService,estimatedValue,createdAt FROM quoteRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
+    const quoteRequests=ownerQuery('SELECT id,describedService,estimatedValue,postalCode,createdAt FROM quoteRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const {transcriptJson,...call}=row;
     const callbackRequests=ownerQuery('SELECT id,leadId,source,reason,notes,historyJson,createdAt,updatedAt FROM callbackRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
       .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));

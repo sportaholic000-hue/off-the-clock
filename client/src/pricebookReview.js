@@ -75,6 +75,14 @@ export function reviewRows(service,defaults,meta={},retainedPaths=[]) {
   if(group==='Prices and factors'&&(retained.has(root)||retained.has('pricing.'+root)))return;
   if(group==='Offering'&&retained.has(root))return;
   if(group==='Business settings'&&retained.has('defaults.'+root))return;
+  if(path==='travelZones'&&Array.isArray(value)){
+   if(!value.length)return;
+   for(const zone of value){
+    const codes=Array.isArray(zone?.codes)?zone.codes.join(', '):String(zone?.codes||'');
+    add((group?group+' · ':'')+'Travel zone: '+(zone?.name||'Unnamed'),`${codes} · ${displayAmount(zone?.charge)}`);
+   }
+   return;
+  }
   if(Array.isArray(value)&&/fenceOfferings\.[^.]+\.tiers$/.test(path)){
    const prefix=path.slice(0,-'tiers'.length);
    for(const tier of value)for(const [key,v]of Object.entries(tier.overrides||{}))walk(v,prefix+key,'Price option: '+tier.name,context);

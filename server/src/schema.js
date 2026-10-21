@@ -216,6 +216,7 @@ export const CREATE_TABLE_STATEMENTS = [
     callId TEXT,
     describedService TEXT,
     estimatedValue INTEGER,
+    postalCode TEXT,
     createdAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id),
     FOREIGN KEY (callId) REFERENCES calls(id)
