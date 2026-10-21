@@ -154,5 +154,16 @@ const declarations={
   modifyAppointment:object({appointmentHandle:opaque,action:enumeration(['reschedule','cancel']),slotHandle:opaque,customerConfirmed:confirmation},['appointmentHandle','action','customerConfirmed']),
   getCustomerContext:object({callerConfirmedIdentity:boolean('False for the first lookup. True only after asking the returned identity question and hearing this caller affirm that identity; the server checks the call transcript before releasing any history.')})
 };
-export const VOICE_TOOL_DECLARATIONS=deepFreeze(VOICE_TOOL_NAMES.map(name=>({name,description:name==='bookAppointment'?'After explicit caller confirmation, the server obtains one hold and then confirms that held appointment. Do not supply hold IDs, finalize flags, addresses or times.':"Perform "+name+" using this call's server-authoritative records. Never invent prices, identities or outcomes.",parameters:declarations[name]})));
+// Audit Note (Gemini Live Protocol):
+// Explicitly specify `behavior` on function declarations for Gemini Live (BidiGenerateContent):
+// - NON_BLOCKING for read-only calculations and queries so the model can generate conversational
+//   filler / natural backchanneling while the server executes.
+// - BLOCKING for mutating tools (calendar booking, email dispatch, call transfer) to ensure
+//   the model waits for authoritative server confirmation before speaking.
+export const VOICE_TOOL_DECLARATIONS=deepFreeze(VOICE_TOOL_NAMES.map(name=>({
+  name,
+  description:name==='bookAppointment'?'After explicit caller confirmation, the server obtains one hold and then confirms that held appointment. Do not supply hold IDs, finalize flags, addresses or times.':"Perform "+name+" using this call's server-authoritative records. Never invent prices, identities or outcomes.",
+  parameters:declarations[name],
+  behavior:MUTATING_VOICE_TOOLS.includes(name)?'BLOCKING':'NON_BLOCKING'
+})));
 export const getVoiceToolDeclarations=()=>VOICE_TOOL_DECLARATIONS;

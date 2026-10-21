@@ -459,4 +459,21 @@ test("invalid provider audio, transcript, or tool data fails closed without echo
     assert.equal((await harness.result.controller.done).reason, "INVALID_GEMINI_TOOL_CALL");
     assert.equal(harness.events.toolCalls.length, 0);
   });
+
+  await t.test("cancelled tool calls are dropped before execution and do not send tool response", async () => {
+    let executed = false;
+    const harness = await createHarness({
+      onToolCall: async () => {
+        executed = true;
+        return { ok: true, handle: "opaque-result" };
+      }
+    });
+    await begin(harness);
+    await harness.callbacks.onToolCallCancellation({ toolCallId: "tool-cancelled-1" });
+    await harness.callbacks.onToolCall({ name: "quote", args: {}, toolCallId: "tool-cancelled-1" });
+    await harness.result.controller.whenIdle();
+    assert.equal(executed, false);
+    assert.equal(harness.events.toolCalls.length, 0);
+    assert.equal(harness.events.toolResponses.length, 0);
+  });
 });

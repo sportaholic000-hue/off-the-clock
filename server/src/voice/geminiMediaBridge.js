@@ -430,6 +430,7 @@ export function createGeminiMediaBridge({
     }
 
     function callbacks() {
+      const cancelledToolCalls = new Set();
       return Object.freeze({
         onAudio(value) {
           let pcm;
@@ -509,6 +510,26 @@ export function createGeminiMediaBridge({
           return transcriptTail;
         },
 
+        // Audit Note (Gemini Live Protocol):
+        // Track tool call cancellations triggered by user barge-in / speech activity.
+        // If a cancellation signal arrives for a pending tool call, drop execution and
+        // refrain from transmitting a stale sendToolResponse to the model.
+        onToolCallCancellation(value) {
+          let toolCallId;
+          try {
+            assertClosed(value, ["toolCallId"], ["toolCallId"], "INVALID_GEMINI_TOOL_CANCELLATION");
+            if (typeof value.toolCallId !== "string" || !TOOL_CALL_ID.test(value.toolCallId)) {
+              throw bridgeError("INVALID_GEMINI_TOOL_CANCELLATION");
+            }
+            toolCallId = value.toolCallId;
+          } catch (error) {
+            void abort(error);
+            return Promise.resolve();
+          }
+          cancelledToolCalls.add(toolCallId);
+          return Promise.resolve();
+        },
+
         onToolCall(value) {
           let toolCall;
           try {
@@ -518,8 +539,15 @@ export function createGeminiMediaBridge({
             return Promise.resolve();
           }
           const task = toolTail.then(async () => {
-            if (ended) return;
+            if (ended || cancelledToolCalls.has(toolCall.toolCallId)) {
+              cancelledToolCalls.delete(toolCall.toolCallId);
+              return;
+            }
             const response = await onToolCall({ context, session, streamSid, toolCall });
+            if (ended || cancelledToolCalls.has(toolCall.toolCallId)) {
+              cancelledToolCalls.delete(toolCall.toolCallId);
+              return;
+            }
             validateJsonValue(response, {
               maxBytes: limits.maxToolResultJsonBytes,
               maxNodes: 20000,

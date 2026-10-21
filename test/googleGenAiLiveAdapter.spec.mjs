@@ -37,6 +37,7 @@ function harness(overrides = {}) {
     async onInterruption() { calls.events.push(['interruption']); },
     async onTranscript(value) { calls.events.push(['transcript', value]); },
     async onToolCall(value) { calls.events.push(['tool', value]); },
+    async onToolCallCancellation(value) { calls.events.push(['toolCancellation', value]); },
     async onError() { calls.events.push(['error']); },
     async onClose() { calls.events.push(['close']); }
   };
@@ -159,5 +160,53 @@ test('construction and connection failures use stable local error codes', async 
     error => error instanceof GoogleGenAiLiveAdapterError && error.code === 'GEMINI_CONNECT_FAILED' &&
       !error.message.includes('secret provider detail')
   );
+});
+
+test('accepts authentic @google/genai LiveServerMessage class instances with prototype accessors', async () => {
+  const { LiveServerMessage } = await import('@google/genai');
+  const h = harness();
+  await h.open();
+  const msg = new LiveServerMessage();
+  Object.assign(msg, {
+    serverContent: {
+      modelTurn: { parts: [{ text: 'Hello from Gemini Live' }] },
+      outputTranscription: { text: 'Hello from Gemini Live' },
+      turnComplete: true
+    }
+  });
+  assert.equal(typeof msg.text, 'string');
+  assert.equal(msg.text, 'Hello from Gemini Live');
+  h.providerCallbacks.onmessage(msg);
+  await settle();
+  assert.deepEqual(h.calls.events, [
+    ['transcript', { text: 'Hello from Gemini Live', role: 'model', final: true }]
+  ]);
+});
+
+test('maps toolCallCancellation on caller barge-in during tool call prediction', async () => {
+  const h = harness();
+  await h.open();
+  h.providerCallbacks.onmessage({ toolCallCancellation: { ids: ['tool-cancel-1'] } });
+  await settle();
+  assert.deepEqual(h.calls.events, [
+    ['toolCancellation', { toolCallId: 'tool-cancel-1' }]
+  ]);
+});
+
+test('supports batched function responses for parallel tool calls in one message', async () => {
+  const h = harness();
+  const session = await h.open();
+  await session.sendToolResponse({
+    functionResponses: [
+      { id: 'call-1', name: 'getQuote', response: { status: 'quoted' } },
+      { id: 'call-2', name: 'getQuote', response: { status: 'quoted' } }
+    ]
+  });
+  assert.deepEqual(h.calls.responses, [{
+    functionResponses: [
+      { id: 'call-1', name: 'getQuote', response: { status: 'quoted' } },
+      { id: 'call-2', name: 'getQuote', response: { status: 'quoted' } }
+    ]
+  }]);
 });
 

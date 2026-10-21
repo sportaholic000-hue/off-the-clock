@@ -5,13 +5,27 @@ import {VOICE_INSTRUCTION_CHARACTER_LIMIT} from './voiceProviderLimits.js';
 export class GoogleGenAiLiveAdapterError extends Error{constructor(code){super('The live voice provider is unavailable.');this.name='GoogleGenAiLiveAdapterError';this.code=code;}}
 const fail=code=>{throw new GoogleGenAiLiveAdapterError(code);};
 const plain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
+// Audit Note (Gemini Live Protocol):
+// @google/genai instantiates incoming WebSocket messages as LiveServerMessage class instances.
+// In Node.js, Object.getPrototypeOf(item) for an SDK message is LiveServerMessage.prototype,
+// whose prototype in turn is Object.prototype. The SDK also defines helper getters (text, data)
+// on LiveServerMessage.prototype.
+// Strict check Object.getPrototypeOf(item) === Object.prototype at root would reject genuine SDK message
+// instances. We accept plain objects as well as direct SDK class instances at depth 0, while ensuring
+// all nested payloads (tool arguments, transcription bodies) remain strictly plain objects without
+// inherited prototypes or accessors.
+const isLiveMessage=value=>{
+  if(value===null||typeof value!=='object'||Array.isArray(value))return false;
+  const proto=Object.getPrototypeOf(value);
+  return proto===Object.prototype||proto?.constructor?.name==='LiveServerMessage'||(proto!==null&&Object.getPrototypeOf(proto)===Object.prototype);
+};
 function jsonData(value,maxBytes=VOICE_RESULT_BYTES){
   let nodes=0;
   function visit(item,depth){
     if(++nodes>20000||depth>12)fail('INVALID_GOOGLE_LIVE_MESSAGE');
     if(item===null||typeof item==='string'||typeof item==='boolean'||typeof item==='number'&&Number.isFinite(item))return;
     if(Array.isArray(item)){for(const child of item)visit(child,depth+1);return;}
-    if(!plain(item))fail('INVALID_GOOGLE_LIVE_MESSAGE');
+    if(depth===0?!isLiveMessage(item):!plain(item))fail('INVALID_GOOGLE_LIVE_MESSAGE');
     for(const key of Reflect.ownKeys(item)){if(typeof key!=='string'||['__proto__','constructor','prototype'].includes(key))fail('INVALID_GOOGLE_LIVE_MESSAGE');const descriptor=Object.getOwnPropertyDescriptor(item,key);if(!descriptor||!('value' in descriptor))fail('INVALID_GOOGLE_LIVE_MESSAGE');visit(descriptor.value,depth+1);}
   }
   visit(value,0);if(Buffer.byteLength(JSON.stringify(value),'utf8')>maxBytes)fail('INVALID_GOOGLE_LIVE_MESSAGE');
@@ -63,6 +77,17 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
         if(!Array.isArray(value.toolCall.functionCalls)||value.toolCall.functionCalls.length>20)fail('INVALID_GOOGLE_LIVE_MESSAGE');
         for(const call of value.toolCall.functionCalls){if(!plain(call)||typeof call.id!=='string'||!/^[A-Za-z0-9_.:-]{1,200}$/.test(call.id)||!toolDeclarations.some(tool=>tool.name===call.name)||!plain(call.args))fail('INVALID_GOOGLE_LIVE_MESSAGE');jsonData(call.args,32768);await callbacks.onToolCall({name:call.name,args:call.args,toolCallId:call.id});}
       }
+      // Audit Note (Gemini Live Protocol):
+      // Process toolCallCancellation events emitted by the Gemini Live API when
+      // user speech barge-in cancels an in-flight tool prediction.
+      if(value.toolCallCancellation&&!closing&&!failed){
+        const cancel=value.toolCallCancellation;
+        if(!plain(cancel)||!Array.isArray(cancel.ids)||cancel.ids.length>20)fail('INVALID_GOOGLE_LIVE_MESSAGE');
+        for(const id of cancel.ids){
+          if(typeof id!=='string'||!/^[A-Za-z0-9_.:-]{1,200}$/.test(id))fail('INVALID_GOOGLE_LIVE_MESSAGE');
+          if(typeof callbacks.onToolCallCancellation==='function')await callbacks.onToolCallCancellation({toolCallId:id});
+        }
+      }
     }
     const enqueue=work=>{if(closing||closed)return;queue=queue.then(work).catch(error);};
     function acceptMessage(value){
@@ -79,7 +104,12 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
       });
       transcriptions=received.catch(error);
       enqueue(async()=>{await received;await message(value);
-        if(body?.turnComplete&&goAwayEpoch===generation)void reconnect(generation);
+        // Audit Note (Gemini Live Protocol):
+        // Reconnect after goAway only when turnComplete is emitted AND interactionStatus is IDLE
+        // (or unspecified). If interactionStatus is IN_PROGRESS, reasoning or multi-step tool turns
+        // are still active.
+        const isIdle=!body?.interactionStatus||body.interactionStatus==='IDLE';
+        if(body?.turnComplete&&isIdle&&goAwayEpoch===generation)void reconnect(generation);
       });
     }
     // The empty sliding window uses Google's default trigger and target sizes.
@@ -171,9 +201,24 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
           }
         });}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
       },
+      // Audit Note (Gemini Live Protocol):
+      // Support both single functionResponses and batched arrays in sendToolResponse,
+      // enabling atomic delivery of all function responses for a multi-call turn.
       async sendToolResponse(value){
-        if(closed||failed||typeof value?.toolCallId!=='string'||typeof value?.name!=='string'||!toolDeclarations.some(tool=>tool.name===value.name))fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');jsonData(value.response);
-        try{await sendOrdered(async()=>{await (await ready()).sendToolResponse({functionResponses:[{id:value.toolCallId,name:value.name,response:value.response}]});if(transparentSessionResumption)clientMessageIndex++;});}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
+        if(closed||failed)fail('GOOGLE_LIVE_SEND_FAILED');
+        let responses;
+        if(Array.isArray(value?.functionResponses)){
+          responses=value.functionResponses;
+        }else{
+          if(typeof value?.toolCallId!=='string'||typeof value?.name!=='string'||!toolDeclarations.some(tool=>tool.name===value.name))fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');
+          responses=[{id:value.toolCallId,name:value.name,response:value.response}];
+        }
+        if(!responses.length||responses.length>20)fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');
+        for(const resp of responses){
+          if(typeof resp?.id!=='string'||typeof resp?.name!=='string'||!toolDeclarations.some(tool=>tool.name===resp.name))fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');
+          jsonData(resp.response);
+        }
+        try{await sendOrdered(async()=>{await (await ready()).sendToolResponse({functionResponses:responses});if(transparentSessionResumption)clientMessageIndex++;});}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
       },close,whenIdle:()=>Promise.all([queue,transcriptions])
     });
   };

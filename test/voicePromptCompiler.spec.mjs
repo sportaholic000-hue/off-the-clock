@@ -300,6 +300,11 @@ test("Gemini function declarations have exact tool coverage and validator-requir
     assert.equal(Object.isFrozen(declaration.parameters.properties), true);
     assert.equal(declaration.parameters.type, "OBJECT");
     assert.equal(declaration.parameters.additionalProperties, false);
+    assert.equal(
+      declaration.behavior,
+      MUTATING_VOICE_TOOLS.includes(declaration.name) ? "BLOCKING" : "NON_BLOCKING",
+      `${declaration.name} must declare valid Gemini Live behavior`,
+    );
     assert.deepEqual(
       Object.keys(declaration.parameters.properties).filter((key) => isForbiddenVoiceField(key)),
       [],
