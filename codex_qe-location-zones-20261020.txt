@@ -1,6 +1,15 @@
-run 39547646542 sha 13feb5eb0ee2fd8effa3d1731f1919448eb473cd
-Earlier gate outcomes: install=success; build=success; browser=success; quote=failure
-Full-suite outcome: skipped; checker outcome: skipped
+run 39546213066 sha 5a193cc36c46adc1a2e146a7f2bfeae6bb81255e
+Earlier gate outcomes: install=success; build=success; browser=success; quote=success
+Full-suite outcome: failure; checker outcome: skipped
 Checker output unavailable: test-check.txt was not created (checker skipped; an earlier failed/skipped stage may have prevented it). No checker pass is inferred.
-TAP unavailable: test-results.tap was not created (full suite skipped; an earlier stage may have failed). Tests are NOT RUN/unverified, not passed.
+Available TAP failures (including nested subtests):
+not ok 1411 - candidate n keeps the completed booking repair and its 17-case source byte-identical
+Available TAP summary:
+# tests 8145
+# pass 8144
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1248361.109558
 This summary does not override the original gate outcomes.
