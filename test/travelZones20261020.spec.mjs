@@ -21,6 +21,11 @@ import { migrateDatabase } from '../server/src/migrations.js';
 import { createOwnerCallService } from '../server/src/ownerCallService.js';
 import { storedLeadView } from '../server/src/ownerRecordViews.js';
 import { createVoiceToolRuntime } from '../server/src/voice/voiceToolRuntime.js';
+import { checkQuoteBookingPostalCode, extractQuotedPostalCode } from '../server/travelZones.js';
+import { isServiceAreaConfigured, serviceAreaDecision } from '../server/src/serviceArea.js';
+import { resolveBookingCapability } from '../server/src/bookingCapabilities.js';
+import { createBookingService } from '../server/src/bookingService.js';
+import { createBookingPreferenceService } from '../server/src/bookingPreferenceService.js';
 
 const MOWING_SERVICE_ID = '11111111-2222-4333-8444-555555555555';
 
@@ -547,4 +552,331 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
     callDetailAfterOut.quoteRequests.map((r) => r.postalCode).sort(),
     ['E2J', 'E3B5A3']
   );
+});
+
+test('Quote-to-booking postal-code and travel-zone consistency across serviceArea, bookingService, bookingPreferenceService, and voice', async () => {
+  // 1) Pure postal-code and travel-zone binding checks
+  assert.equal(
+    checkQuoteBookingPostalCode({
+      quotedPostalCode: 'e2l 4l1',
+      bookingPostalCode: 'E2L4L1',
+      travelZones: REQUIRED_ZONES_CENTS
+    }).ok,
+    true
+  );
+  // Voice FSA E2J matches full postal code E2J 2A1 in the same Outer zone
+  assert.equal(
+    checkQuoteBookingPostalCode({
+      quotedPostalCode: 'E2J',
+      bookingPostalCode: 'e2j 2a1',
+      travelZones: REQUIRED_ZONES_CENTS
+    }).ok,
+    true
+  );
+  // Mismatched zone: quoted Core (E2L 4L1, $0) vs booking Outer (E2J 2A1, $35) -> POSTAL_CODE_MISMATCH
+  const zoneSwap = checkQuoteBookingPostalCode({
+    quotedPostalCode: 'E2L 4L1',
+    bookingPostalCode: 'E2J 2A1',
+    travelZones: REQUIRED_ZONES_CENTS
+  });
+  assert.equal(zoneSwap.ok, false);
+  assert.equal(zoneSwap.reason, 'POSTAL_CODE_MISMATCH');
+
+  // 2) serviceAreaDecision & isServiceAreaConfigured with travelZones when city serviceArea is unconfigured
+  assert.equal(isServiceAreaConfigured(null, { travelZones: REQUIRED_ZONES_CENTS }), true);
+  assert.deepEqual(
+    serviceAreaDecision(null, { postalCode: 'E2J 2A1' }, { travelZones: REQUIRED_ZONES_CENTS }),
+    { eligible: true, reason: 'IN_AREA' }
+  );
+  assert.deepEqual(
+    serviceAreaDecision(null, { postalCode: 'E3B 5A3' }, { travelZones: REQUIRED_ZONES_CENTS }),
+    { eligible: false, reason: 'OUT_OF_AREA' }
+  );
+
+  // 3) Widget / HTTP Booking & Preference: cannot quote in Core (E2L 4L1, $0) and book or request preference in Outer (E2J 2A1, $35)
+  const ownerId = `owner-booking-zones-${crypto.randomUUID().slice(0, 8)}`;
+  const now = new Date('2026-06-15T13:00:00.000Z');
+  const nowIso = now.toISOString();
+
+  saveApplicationBook(ownerId, {
+    ownerId,
+    defaults: buildDefaultsDollars({ travelZones: REQUIRED_ZONES_DOLLARS }),
+    services: [buildMowingServiceDollars(ownerId)]
+  });
+  const savedBook = readApplicationBook(ownerId);
+  approveApplicationService(ownerId, MOWING_SERVICE_ID, {
+    revision: savedBook.revision,
+    confirmConfiguration: true,
+    now
+  });
+
+  const db = new Database(':memory:');
+  migrateDatabase(db);
+  db.prepare(`INSERT INTO users (
+    id, email, passwordHash, firstName, businessName, plan, planStatus, timezone, role, createdAt
+  ) VALUES (?, ?, 'hash', 'Owner', 'Zone Lawn Care', 'QuoteDone', 'active', 'America/Moncton', 'owner', ?)`).run(
+    ownerId,
+    `${ownerId}@example.com`,
+    nowIso
+  );
+  db.prepare(`INSERT INTO businessProfiles (ownerId, knowledgeBaseJson) VALUES (?, '{}')`).run(ownerId);
+  db.prepare(`INSERT INTO bookingSettings (
+    ownerId, revision, timezone, provider, calendarId, weeklyAvailabilityJson, blackoutsJson,
+    bookingHorizonDays, minimumNoticeMinutes, slotIncrementMinutes, bufferBeforeMinutes, bufferAfterMinutes,
+    directBookingEnabled, updatedAt
+  ) VALUES (?, 'rev-settings-1', 'America/Moncton', 'google', 'primary', ?, '[]', 14, 60, 60, 0, 0, 1, ?)`).run(
+    ownerId,
+    JSON.stringify({
+      mon: [{ start: '09:00', end: '17:00' }],
+      tue: [{ start: '09:00', end: '17:00' }],
+      wed: [{ start: '09:00', end: '17:00' }],
+      thu: [{ start: '09:00', end: '17:00' }],
+      fri: [{ start: '09:00', end: '17:00' }]
+    }),
+    nowIso
+  );
+  db.prepare(`INSERT INTO bookingPolicies (
+    ownerId, serviceId, revision, bookingMode, durationMinutes, enabled, updatedAt
+  ) VALUES (?, ?, 'rev-policy-1', 'book_job', 60, 1, ?)`).run(ownerId, MOWING_SERVICE_ID, nowIso);
+
+  const createdEvents = [];
+  const bookingService = createBookingService({
+    db,
+    clock: () => new Date(nowIso),
+    slotTokenSecret: 'booking-zones-slot-secret-32bytes-minimum',
+    calendar: {
+      listBusy: async () => [],
+      createEvent: async (req) => {
+        createdEvents.push(req);
+        return {
+          eventId: req.eventId,
+          status: 'CONFIRMED',
+          startAtUtc: req.startAtUtc,
+          endAtUtc: req.endAtUtc
+        };
+      }
+    }
+  });
+  const preferenceService = createBookingPreferenceService({
+    db,
+    clock: () => new Date(nowIso)
+  });
+
+  // Create a Core quote (E2L 4L1, $0 travel) and its booking intent
+  const quoteId = crypto.randomUUID();
+  db.prepare(`INSERT INTO quotes (
+    id, ownerId, quoteId, serviceType, customerInputsJson, resultJson, status, callerType, createdAt
+  ) VALUES (?, ?, ?, 'LANDSCAPING_MOWING', ?, ?, 'INSTANT', 'customer', ?)`).run(
+    quoteId,
+    ownerId,
+    quoteId,
+    JSON.stringify({ ...BASE_MOWING_INPUTS, postalCode: 'E2L4L1' }),
+    JSON.stringify({ postalCode: 'E2L4L1', midEstimate: 105 }),
+    nowIso
+  );
+  const intent = bookingService.createIntent({
+    ownerId,
+    sourceType: 'quote',
+    sourceId: quoteId,
+    serviceId: MOWING_SERVICE_ID,
+    resultType: 'INSTANT_ESTIMATE_READY',
+    allowedTierNames: ['Standard'],
+    expiresAtUtc: '2026-06-22T13:00:00.000Z'
+  });
+
+  const coreLocation = {
+    addressLine1: '10 King St',
+    addressLine2: '',
+    city: 'Saint John',
+    region: 'NB',
+    postalCode: 'e2l 4l1',
+    country: 'CA'
+  };
+  const outerLocation = {
+    ...coreLocation,
+    addressLine1: '20 Loch Lomond Rd',
+    postalCode: 'E2J 2A1'
+  };
+
+  // Availability with mismatched postalCode (E2J 2A1 vs quoted E2L 4L1) throws REQUOTE_REQUIRED (409)
+  await assert.rejects(
+    () => bookingService.availability({
+      ownerId,
+      intentId: intent.intentId,
+      filters: { fromDate: '2026-06-16', days: 1, location: outerLocation }
+    }),
+    (err) => err.code === 'REQUOTE_REQUIRED' && err.statusCode === 409
+  );
+
+  // Preference request with mismatched postalCode (E2J 2A1 vs quoted E2L 4L1) throws REQUOTE_REQUIRED (409)
+  assert.throws(
+    () => preferenceService.request({
+      ownerId,
+      intentId: intent.intentId,
+      idempotencyKey: crypto.randomUUID(),
+      body: {
+        preferredWindows: [{ date: '2026-06-16', timeOfDay: 'morning' }],
+        customer: { name: 'Alex', email: 'alex@example.com', phone: '+15065550100' },
+        location: outerLocation
+      }
+    }),
+    (err) => err.code === 'REQUOTE_REQUIRED' && err.statusCode === 409
+  );
+
+  // Availability with matching postalCode (e2l 4l1) succeeds even with empty knowledgeBaseJson serviceArea
+  const availRes = await bookingService.availability({
+    ownerId,
+    intentId: intent.intentId,
+    filters: { fromDate: '2026-06-16', days: 1, location: coreLocation }
+  });
+  assert.equal(availRes.statusCode, 200);
+  assert.equal(availRes.body.status, 'AVAILABLE');
+  assert.ok(availRes.body.slots.length > 0);
+
+  const slot = availRes.body.slots[0];
+  const held = bookingService.hold({
+    ownerId,
+    intentId: intent.intentId,
+    idempotencyKey: crypto.randomUUID(),
+    slotId: slot.slotId
+  });
+  assert.equal(held.statusCode, 201);
+
+  // Attempting to confirm with Outer postal code (E2J 2A1) after holding a slot is rejected with REQUOTE_REQUIRED (409)
+  await assert.rejects(
+    () => bookingService.confirm({
+      ownerId,
+      intentId: intent.intentId,
+      idempotencyKey: crypto.randomUUID(),
+      body: {
+        holdId: held.body.holdId,
+        confirmedSlotId: slot.slotId,
+        explicitConfirmation: true,
+        addressConfirmation: true,
+        tierName: 'Standard',
+        customer: { name: 'Alex', email: 'alex@example.com', phone: '+15065550100' },
+        location: outerLocation
+      }
+    }),
+    (err) => err.code === 'REQUOTE_REQUIRED' && err.statusCode === 409
+  );
+
+  // Confirming with matching Core postal code (e2l 4l1) succeeds
+  const confirmed = await bookingService.confirm({
+    ownerId,
+    intentId: intent.intentId,
+    idempotencyKey: crypto.randomUUID(),
+    body: {
+      holdId: held.body.holdId,
+      confirmedSlotId: slot.slotId,
+      explicitConfirmation: true,
+      addressConfirmation: true,
+      tierName: 'Standard',
+      customer: { name: 'Alex', email: 'alex@example.com', phone: '+15065550100' },
+      location: coreLocation
+    }
+  });
+  assert.equal(confirmed.statusCode, 201);
+  assert.equal(confirmed.body.status, 'CONFIRMED');
+
+  // 4) Voice runtime: caller quotes in E2J, then tries to checkAvailability in E2L 4L1 (rejected) vs E2J 2A1 (succeeds and books)
+  const callId = crypto.randomUUID();
+  const callSid = 'CAabababababababababababababababab';
+  const accountSid = 'ACcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd';
+  const callerPhone = '+15065550177';
+  const destPhone = '+15065550188';
+  db.prepare(`INSERT INTO calls (
+    id, ownerId, callSid, accountSid, callerNumber, destinationNumber, status, duration, spamFiltered, createdAt
+  ) VALUES (?, ?, ?, ?, ?, ?, 'in-progress', 0, 0, ?)`).run(
+    callId, ownerId, callSid, accountSid, callerPhone, destPhone, nowIso
+  );
+  // Single-tier policy for voice direct booking
+  db.prepare(`UPDATE bookingPolicies SET bookingMode = 'site_visit_first' WHERE ownerId = ? AND serviceId = ?`).run(
+    ownerId, MOWING_SERVICE_ID
+  );
+
+  const callContext = { ownerId, callSid, accountSid, from: callerPhone, to: destPhone };
+  const runtime = createVoiceToolRuntime({
+    database: db,
+    callContext,
+    handleSecret: 'voice-zones-test-secret-key-32bytes',
+    bookingService,
+    clock: () => new Date(nowIso)
+  });
+
+  const matched = await runtime.handlers.matchService({
+    context: callContext,
+    args: { query: 'Lawn Mowing' }
+  });
+  const quotedVoice = await runtime.handlers.getQuote({
+    context: callContext,
+    args: {
+      serviceHandle: matched.serviceHandle,
+      customerConfirmed: true,
+      customerInputs: { ...BASE_MOWING_INPUTS, postalCode: 'E2J' }
+    }
+  });
+  assert.equal(quotedVoice.status, 'quoted');
+
+  // Capture lead with mismatched postal code E2L 4L1
+  const wrongLead = await runtime.handlers.captureLead({
+    context: callContext,
+    args: {
+      name: 'Taylor',
+      address: {
+        line1: '10 King St',
+        city: 'Saint John',
+        region: 'NB',
+        postalCode: 'E2L 4L1',
+        country: 'CA'
+      }
+    }
+  });
+  const wrongAvail = await runtime.handlers.checkAvailability({
+    context: callContext,
+    args: {
+      quoteHandle: quotedVoice.quoteHandle,
+      leadHandle: wrongLead.leadHandle,
+      preference: { fromDate: '2026-06-16', days: 1 }
+    }
+  });
+  assert.equal(wrongAvail.status, 'unavailable');
+  assert.equal(wrongAvail.reason, 'REQUOTE_REQUIRED');
+
+  // Update lead with matching full postal code E2J 2A1 in the quoted E2J zone
+  const rightLead = await runtime.handlers.captureLead({
+    context: callContext,
+    args: {
+      leadHandle: wrongLead.leadHandle,
+      name: 'Taylor',
+      address: {
+        line1: '20 Loch Lomond Rd',
+        city: 'Saint John',
+        region: 'NB',
+        postalCode: 'E2J 2A1',
+        country: 'CA'
+      }
+    }
+  });
+  const rightAvail = await runtime.handlers.checkAvailability({
+    context: callContext,
+    args: {
+      quoteHandle: quotedVoice.quoteHandle,
+      leadHandle: rightLead.leadHandle,
+      preference: { fromDate: '2026-06-16', days: 1 }
+    }
+  });
+  assert.equal(rightAvail.status, 'available');
+  assert.ok(rightAvail.slotOptions.length > 0);
+
+  const bookedVoice = await runtime.handlers.bookAppointment({
+    context: callContext,
+    args: {
+      slotHandle: rightAvail.slotOptions[0].slotHandle,
+      leadHandle: rightLead.leadHandle,
+      customerConfirmed: true
+    }
+  });
+  assert.equal(bookedVoice.status, 'confirmed');
+  assert.equal(bookedVoice.serviceAddress.postalCode, 'E2J 2A1');
 });
