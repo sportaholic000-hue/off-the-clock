@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import test from 'node:test';
@@ -598,16 +599,31 @@ test('Quote-to-booking postal-code and travel-zone consistency across serviceAre
   const now = new Date('2026-06-15T13:00:00.000Z');
   const nowIso = now.toISOString();
 
-  saveApplicationBook(ownerId, {
-    ownerId,
-    defaults: buildDefaultsDollars({ travelZones: REQUIRED_ZONES_DOLLARS }),
-    services: [buildMowingServiceDollars(ownerId)]
+  const initialBook = readApplicationBook(ownerId);
+  const fullServiceDollars = convertPricebookMoney({ services: [buildMowingServiceCents(ownerId)] }, 'toDollars').services[0];
+  const { origin: _origin, zeroPricePolicy: _zeroPricePolicy, ...serviceDollars } = fullServiceDollars;
+  const defaultsDollars = {
+    ...convertPricebookMoney({ defaults: buildDefaultsCents({ travelFee: 2500 }) }, 'toDollars').defaults,
+    travelZones: [
+      { name: 'Core', codes: ['E2L', 'E2M'], charge: 0 },
+      { name: 'Outer', codes: ['E2H', 'E2J'], charge: 35 },
+      { name: 'Maine', codes: ['041'], charge: 45 }
+    ]
+  };
+  const savedBook = saveApplicationBook(ownerId, {
+    revision: initialBook.revision,
+    services: [serviceDollars],
+    defaults: defaultsDollars
   });
-  const savedBook = readApplicationBook(ownerId);
   approveApplicationService(ownerId, MOWING_SERVICE_ID, {
     revision: savedBook.revision,
     confirmConfiguration: true,
-    now
+    source: 'MANUAL',
+    zeroClassification: {
+      freeCompleteService: false,
+      freeTiers: [],
+      includedPrices: {}
+    }
   });
 
   const db = new Database(':memory:');
