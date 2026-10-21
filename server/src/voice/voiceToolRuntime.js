@@ -25,10 +25,10 @@ import {
 } from '../quoteDoneBridge.js';
 import { loadBookingCapability } from '../bookingCapabilities.js';
 import { JOB_DETAILS_FLOW } from '../quoteIntake.js';
+import { checkQuoteBookingPostalCode, extractQuotedPostalCode } from '../../travelZones.js';
 import { serviceAreaDecision, serviceAreaFromKnowledgeBase } from '../serviceArea.js';
 import {
-  createVoiceHandleStore,
-  createVoiceToolIdempotencyStore
+  createVoiceHandleStore, createVoiceToolIdempotencyStore
 } from './voicePersistence.js';
 import {voiceCatalogPage} from './voiceCatalog.js';
 const CALL_SID = /^CA[0-9a-f]{32}$/i;
@@ -656,11 +656,11 @@ export function createVoiceToolRuntime({
         message: 'A complete service address is required before checking availability.'
       };
     }
-    const profile = tenantQuery('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
-    const area = serviceAreaDecision(
-      serviceAreaFromKnowledgeBase(profile?.knowledgeBaseJson),
-      { city: address.city, region: address.region, country: address.country }
-    );
+    const addressGuard = checkVoiceBookingAddress(quoteRow, reference.intentId, address);
+    if (addressGuard) {
+      return addressGuard;
+    }
+    const area = voiceServiceAreaDecision(address);
     if (!area.eligible) {
       return {
         status: 'unavailable',
@@ -755,11 +755,11 @@ export function createVoiceToolRuntime({
     }
     if (!completeAddress(details.address)) throw runtimeError('ADDRESS_REQUIRED');
     if (!details.contact?.name) throw runtimeError('CUSTOMER_NAME_REQUIRED');
-    if (!bookingService || typeof bookingService.hold !== 'function' ||
-        typeof bookingService.confirm !== 'function') {
+    const addressGuard = checkVoiceBookingAddress(null, slot.intentId, details.address, slot.quoteRequestId);
+    if (addressGuard) return addressGuard;
+    if (!bookingService || typeof bookingService.hold !== 'function' || typeof bookingService.confirm !== 'function') {
       return {
-        status: 'unavailable',
-        reason: 'BOOKING_PROVIDER_UNAVAILABLE',
+        status: 'unavailable', reason: 'BOOKING_PROVIDER_UNAVAILABLE',
         message: 'The appointment could not be booked right now.'
       };
     }
@@ -891,6 +891,63 @@ export function createVoiceToolRuntime({
       email:resolved.reference.email,version:resolved.reference.version,customerConfirmed:true});
     return {status:delivery.status==='DELIVERED'?'delivered':'saved',deliveryStatus:delivery.status,
       message:delivery.status==='DELIVERED'?'The quote email has a delivery receipt.':'Your confirmed quote email request is saved. Delivery has not yet been confirmed.'};
+  }
+
+  function voiceTravelZones() {
+    try {
+      const book = quoteApp.loadBook(context.ownerId);
+      return Array.isArray(book?.defaults?.travelZones) ? book.defaults.travelZones : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function voiceServiceAreaDecision(address) {
+    const profile = tenantQuery('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    return serviceAreaDecision(
+      serviceAreaFromKnowledgeBase(profile?.knowledgeBaseJson),
+      { city: address.city, region: address.region, postalCode: address.postalCode, country: address.country },
+      { travelZones: voiceTravelZones() }
+    );
+  }
+
+  function checkVoiceBookingAddress(submissionRow, intentId, address, quoteRequestId = null) {
+    let row = submissionRow;
+    if (!row && quoteRequestId) {
+      try {
+        row = tenantQuery('SELECT originalSubmissionJson, internalOutcomeJson FROM quoteSubmissions WHERE ownerId = ? AND requestId = ?').get(context.ownerId, quoteRequestId);
+      } catch {}
+    }
+    if (!row && intentId) {
+      try {
+        row = tenantQuery('SELECT originalSubmissionJson, internalOutcomeJson FROM quoteSubmissions WHERE ownerId = ? AND bookingIntentId = ?').get(context.ownerId, intentId);
+      } catch {}
+    }
+    const travelZones = voiceTravelZones();
+    const quotedPostalCode = extractQuotedPostalCode({ submissionRow: row });
+    const postalCheck = checkQuoteBookingPostalCode({
+      quotedPostalCode,
+      bookingPostalCode: address?.postalCode,
+      travelZones
+    });
+    if (!postalCheck.ok) {
+      return {
+        status: 'unavailable',
+        reason: 'REQUOTE_REQUIRED',
+        message: postalCheck.message
+      };
+    }
+    const area = voiceServiceAreaDecision(address);
+    if (!area.eligible) {
+      return {
+        status: 'unavailable',
+        reason: area.reason,
+        message: area.reason === 'OUT_OF_AREA'
+          ? 'The service address is outside the configured service area.'
+          : 'Service-area eligibility could not be confirmed.'
+      };
+    }
+    return null;
   }
 
   async function flagUrgent(input) {
