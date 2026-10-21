@@ -684,5 +684,27 @@ export const CREATE_TRIGGER_STATEMENTS = [
       )
     BEGIN
       SELECT RAISE(ABORT, 'owner role cannot change while staff reference it');
+    END`,
+  `CREATE TRIGGER IF NOT EXISTS quote_requests_populate_postal_code
+    AFTER INSERT ON quoteRequests
+    WHEN NEW.postalCode IS NULL
+    BEGIN
+      UPDATE quoteRequests
+      SET postalCode = COALESCE(
+        (SELECT NULLIF(UPPER(REPLACE(TRIM(COALESCE(
+          json_extract(q.customerInputsJson, '$.postalCode'),
+          json_extract(q.resultJson, '$.request.customerInputs.postalCode'),
+          json_extract(q.resultJson, '$.originalSubmission.customerInputs.postalCode'),
+          json_extract(q.resultJson, '$.originalSubmission.postalCode'),
+          json_extract(q.resultJson, '$.applicationOutcome.request.customerInputs.postalCode')
+        )), ' ', '')), '') FROM quotes AS q WHERE q.ownerId = NEW.ownerId AND q.id = NEW.id),
+        (SELECT NULLIF(UPPER(REPLACE(TRIM(COALESCE(
+          json_extract(l.collectedInputsJson, '$.request.customerInputs.postalCode'),
+          json_extract(l.collectedInputsJson, '$.originalSubmission.customerInputs.postalCode'),
+          json_extract(l.collectedInputsJson, '$.originalSubmission.postalCode'),
+          json_extract(l.collectedInputsJson, '$.applicationOutcome.request.customerInputs.postalCode')
+        )), ' ', '')), '') FROM leads AS l WHERE l.ownerId = NEW.ownerId AND l.id = NEW.id)
+      )
+      WHERE id = NEW.id AND ownerId = NEW.ownerId;
     END`
 ];

@@ -543,5 +543,8 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
     'Postal or ZIP code E3B5A3 is outside configured travel zones.'
   );
   assert.equal(callDetailAfterOut.quoteRequests.length, 2);
-  assert.equal(callDetailAfterOut.quoteRequests[1].postalCode, 'E3B5A3');
+  assert.deepEqual(
+    callDetailAfterOut.quoteRequests.map((r) => r.postalCode).sort(),
+    ['E2J', 'E3B5A3']
+  );
 });

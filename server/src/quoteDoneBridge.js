@@ -508,7 +508,8 @@ export function applicationServiceDefinition(raw,book=null) {
   const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
   const baseFields=customerQuoteFields(raw,p);
-  const customerFields=hasTravelZones(book?.defaults)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
+  const resolvedBook=book||(typeof raw?.origin?.ownerId==='string'&&raw.origin.ownerId?(()=>{try{return loadPricebook(raw.origin.ownerId);}catch{return null;}})():null);
+  const customerFields=hasTravelZones(resolvedBook?.defaults)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
   if(raw.serviceType.startsWith('FENCING_')&&p.fenceOfferings){
     const offeringSummary=Object.values(p.fenceOfferings).filter(value=>value&&typeof value==='object').flatMap(offer=>{

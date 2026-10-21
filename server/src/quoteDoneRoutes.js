@@ -82,8 +82,8 @@ function requireSavedQuoteService(req,res,next) {
   if(!serviceFor(loadPricebook(req.tenantOwnerId),req.body||{}))return res.status(404).json({error:'Service not found.'});
   next();
 }
-function customerCatalogService(service,metadata,bookingCapability,book=null) {
-  const definition=applicationServiceDefinition(service,book);
+function customerCatalogService(service,metadata,bookingCapability) {
+  const definition=applicationServiceDefinition(service);
   const knownOfferings={};
   for(const field of definition?.customerFields||[])if(field.type==='slug') {
     const values=service.knownOfferings?.[field.name];
@@ -153,19 +153,17 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
     const internal={ownerId,customerId:customer?.id??null,selectedServiceId:service?.id??null,requestedServiceId:body.serviceId??null,bookRevision:bookRevision(book),bookSnapshot:book,originalSubmission:body,...calculated};
     const contact=object(body.contact)?body.contact:{};
     const describedService=limitedText(body.serviceRequest)||service?.service||'Customer service request';
-    const rawPostal=calculated.request?.customerInputs?.postalCode??body.customerInputs?.postalCode??body.postalCode;
-    const storedPostalCode=typeof rawPostal==='string'&&rawPostal.trim()?rawPostal.trim().toUpperCase().replace(/\s+/g,'').slice(0,32):null;
     const partial=response.resultType==='PARTIAL_ESTIMATE_READY';
     if(response.resultType==='INSTANT_ESTIMATE_READY'||partial) {
       ownerQuery(`INSERT INTO quotes (id,ownerId,quoteId,serviceType,customerInputsJson,resultJson,status,callerType,createdAt)
-        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,response.quoteId,service?.serviceType??null,JSON.stringify(calculated.request?.customerInputs??body.customerInputs??null),JSON.stringify(internal),partial?'PARTIAL':'INSTANT','customer',createdAt);
+        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,response.quoteId,service?.serviceType??null,JSON.stringify(body.customerInputs??null),JSON.stringify(internal),partial?'PARTIAL':'INSTANT','customer',createdAt);
       ownerQuery(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
         VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify({...internal,linkedQuoteId:recordId}),partial?'additional_work':'widget_quote',partial?'NEEDS REVIEW':'NEW',createdAt);
     } else {
       ownerQuery(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
         VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify(internal),'quote_review','NEEDS REVIEW',createdAt);
     }
-    ownerQuery('INSERT INTO quoteRequests (id,ownerId,describedService,estimatedValue,postalCode,createdAt) VALUES (?,?,?,?,?,?)').run(recordId,ownerId,describedService,null,storedPostalCode,createdAt);
+    ownerQuery('INSERT INTO quoteRequests (id,ownerId,describedService,estimatedValue,createdAt) VALUES (?,?,?,?,?)').run(recordId,ownerId,describedService,null,createdAt);
     const bookingCapability=service?loadBookingCapability(db,ownerId,service.id):'NONE';
     let customerResponse={...response,bookingCapability};
     let storedResponse=customerResponse;
@@ -259,8 +257,7 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requirePriceBookPlan,bo
       .map(service=>customerCatalogService(
         service,
         meta,
-        loadBookingCapability(db,req.tenantOwnerId,service.id),
-        book
+        loadBookingCapability(db,req.tenantOwnerId,service.id)
       ));
     res.json({
       contractVersion:PUBLIC_CONTRACT_VERSION,

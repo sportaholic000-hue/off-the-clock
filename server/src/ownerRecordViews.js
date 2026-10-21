@@ -25,7 +25,8 @@ export function storedQuoteView(row, role, originalSubmission) {
   const internal=storedObject(row.resultJson), calculation=internal.applicationOutcome || internal;
   const submitted=originalSubmission||internal.originalSubmission||{};
   const customerInputs=Object.keys(storedObject(row.customerInputsJson)).length?storedObject(row.customerInputsJson):(calculation.request?.customerInputs||submitted.customerInputs||{});
-  const postalCode=safeText(customerInputs?.postalCode??submitted.customerInputs?.postalCode??submitted.postalCode,32)||null;
+  const rawPostal=customerInputs?.postalCode??calculation.request?.customerInputs?.postalCode??submitted.customerInputs?.postalCode??submitted.postalCode;
+  const postalCode=typeof rawPostal==='string'&&rawPostal.trim()?rawPostal.trim().toUpperCase().replace(/\s+/g,'').slice(0,32):null;
   return {id:row.id, callId:row.callId, serviceType:row.serviceType, status:row.status,
     tierChosen:row.tierChosen, createdAt:row.createdAt, result:calculation.customerResult || null,
     customerInputs,
@@ -39,7 +40,8 @@ export function storedQuoteView(row, role, originalSubmission) {
 export function storedLeadView(row, role, originalSubmission, preferredRequest) {
   const detail=storedObject(row.collectedInputsJson), calculation=detail.applicationOutcome || detail;
   const submitted=originalSubmission || detail.originalSubmission || {};
-  const postalCode=safeText(submitted.customerInputs?.postalCode??submitted.postalCode??calculation.request?.customerInputs?.postalCode??detail.customerInputs?.postalCode,32)||null;
+  const rawPostal=submitted.customerInputs?.postalCode??submitted.postalCode??calculation.request?.customerInputs?.postalCode??detail.customerInputs?.postalCode;
+  const postalCode=typeof rawPostal==='string'&&rawPostal.trim()?rawPostal.trim().toUpperCase().replace(/\s+/g,'').slice(0,32):null;
   const common={id:row.id,callId:row.callId,customerName:row.customerName,callerNumber:row.callerNumber,
     describedService:row.describedService,type:row.type,status:row.status,createdAt:row.createdAt,
     contact:followUpContact(submitted.contact??detail.contact),location:followUpLocation(submitted.location??detail.address),
