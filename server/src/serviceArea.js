@@ -1,3 +1,5 @@
+import { hasTravelZones, matchTravelZone } from '../travelZones.js';
+
 const MAX_CITIES = 100;
 const COUNTRY = /^[A-Z]{2}$/;
 
@@ -69,7 +71,8 @@ export function serviceAreaFromKnowledgeBase(value) {
   catch { return null; }
 }
 
-export function isServiceAreaConfigured(value) {
+export function isServiceAreaConfigured(value, { travelZones } = {}) {
+  if (hasTravelZones({ travelZones })) return true;
   try {
     normalizeServiceArea(value);
     return true;
@@ -78,7 +81,16 @@ export function isServiceAreaConfigured(value) {
   }
 }
 
-export function serviceAreaDecision(policy, location) {
+export function serviceAreaDecision(policy, location, { travelZones } = {}) {
+  if (hasTravelZones({ travelZones })) {
+    if (!record(location) || typeof location.postalCode !== 'string' || !location.postalCode.trim()) {
+      return { eligible: false, reason: 'ADDRESS_REQUIRED' };
+    }
+    const zoneMatch = matchTravelZone(location.postalCode, travelZones);
+    if (zoneMatch.status === 'missing') return { eligible: false, reason: 'ADDRESS_REQUIRED' };
+    if (zoneMatch.status !== 'matched') return { eligible: false, reason: 'OUT_OF_AREA' };
+    if (!isServiceAreaConfigured(policy)) return { eligible: true, reason: 'IN_AREA' };
+  }
   let normalized;
   try { normalized = normalizeServiceArea(policy); }
   catch {

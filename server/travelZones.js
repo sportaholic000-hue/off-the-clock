@@ -277,3 +277,97 @@ export function sampleCustomerCodeForZones(travelZones) {
   }
   return null;
 }
+
+function parseJsonRecord(value) {
+  if (isPlainRecord(value)) return value;
+  if (typeof value !== 'string' || !value) return null;
+  try {
+    const parsed = JSON.parse(value);
+    return isPlainRecord(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+export function extractQuotedPostalCode({ quoteRow, leadRow, submissionRow } = {}) {
+  const quoteInputs = parseJsonRecord(quoteRow?.customerInputsJson);
+  const quoteResult = parseJsonRecord(quoteRow?.resultJson);
+  const submissionOriginal = parseJsonRecord(submissionRow?.originalSubmissionJson);
+  const submissionInternal = parseJsonRecord(submissionRow?.internalOutcomeJson);
+  const leadInputs = parseJsonRecord(leadRow?.collectedInputsJson);
+
+  const candidates = [
+    quoteInputs?.postalCode,
+    quoteResult?.postalCode,
+    quoteResult?.customerInputs?.postalCode,
+    submissionOriginal?.customerInputs?.postalCode,
+    submissionOriginal?.postalCode,
+    submissionInternal?.postalCode,
+    submissionInternal?.customerInputs?.postalCode,
+    leadInputs?.postalCode,
+    leadInputs?.customerInputs?.postalCode
+  ];
+
+  for (const candidate of candidates) {
+    const normalized = normalizePostalCode(candidate);
+    if (normalized) return normalized;
+  }
+  return '';
+}
+
+export function checkQuoteBookingPostalCode({ quotedPostalCode, bookingPostalCode, travelZones } = {}) {
+  const quotedCode = normalizePostalCode(quotedPostalCode);
+  const bookingCode = normalizePostalCode(bookingPostalCode);
+  if (!quotedCode) {
+    return { ok: true, quotedPostalCode: '', bookingPostalCode: bookingCode };
+  }
+  if (!bookingCode) {
+    return {
+      ok: false,
+      reason: 'ADDRESS_REQUIRED',
+      quotedPostalCode: quotedCode,
+      bookingPostalCode: '',
+      message: 'Confirm the complete project address before booking.'
+    };
+  }
+  const mismatchResult = {
+    ok: false,
+    reason: 'POSTAL_CODE_MISMATCH',
+    quotedPostalCode: quotedCode,
+    bookingPostalCode: bookingCode,
+    message: 'The project address postal or ZIP code does not match the quoted postal or ZIP code. Return to the quote flow to update the estimate.'
+  };
+  if (!isValidCustomerPostalCode(bookingCode)) {
+    return mismatchResult;
+  }
+
+  let codeMatches = false;
+  if (CANADIAN_FSA_RE.test(quotedCode)) {
+    codeMatches = (CANADIAN_FSA_RE.test(bookingCode) || CANADIAN_POSTAL_RE.test(bookingCode))
+      && bookingCode.slice(0, 3) === quotedCode;
+  } else if (CANADIAN_POSTAL_RE.test(quotedCode)) {
+    codeMatches = bookingCode === quotedCode;
+  } else if (US_ZIP3_RE.test(quotedCode)) {
+    codeMatches = US_CUSTOMER_ZIP_RE.test(bookingCode) && bookingCode.slice(0, 3) === quotedCode;
+  } else if (US_ZIP5_RE.test(quotedCode)) {
+    codeMatches = US_CUSTOMER_ZIP_RE.test(bookingCode) && bookingCode.slice(0, 5) === quotedCode;
+  } else if (US_CUSTOMER_ZIP_RE.test(quotedCode)) {
+    codeMatches = bookingCode === quotedCode || bookingCode === quotedCode.slice(0, 5);
+  } else {
+    codeMatches = bookingCode === quotedCode;
+  }
+
+  if (!codeMatches) return mismatchResult;
+
+  if (hasTravelZones({ travelZones })) {
+    const quotedZone = matchTravelZone(quotedCode, travelZones);
+    const bookingZone = matchTravelZone(bookingCode, travelZones);
+    if (bookingZone.status !== 'matched') return mismatchResult;
+    if (quotedZone.status === 'matched' &&
+        (bookingZone.zoneIndex !== quotedZone.zoneIndex || bookingZone.charge !== quotedZone.charge)) {
+      return mismatchResult;
+    }
+  }
+
+  return { ok: true, quotedPostalCode: quotedCode, bookingPostalCode: bookingCode };
+}

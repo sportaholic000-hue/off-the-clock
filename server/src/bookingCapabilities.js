@@ -1,9 +1,33 @@
+import { readFileSync } from 'node:fs';
+import { dirname, isAbsolute, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import { isValidIanaTimeZone } from './calendarTime.js';
 import { isServiceAreaConfigured, serviceAreaFromKnowledgeBase } from './serviceArea.js';
+import { validateTravelZonesEngine } from '../travelZones.js';
 
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const HEX_COLOR = /^#[0-9A-F]{6}$/i;
 const E164 = /^\+[1-9]\d{7,14}$/;
+
+export function loadOwnerTravelZones(ownerId) {
+  if (typeof ownerId !== 'string' || !ownerId.trim()) return [];
+  try {
+    const configuredDir = process.env.PRICEBOOK_PATH;
+    const dir = configuredDir
+      ? (isAbsolute(configuredDir) ? configuredDir : resolve(projectRoot, configuredDir))
+      : resolve(projectRoot, 'data', 'pricebooks');
+    const parsed = JSON.parse(readFileSync(resolve(dir, `${ownerId}.json`), 'utf8'));
+    if (Array.isArray(parsed?.defaults?.travelZones) &&
+        parsed.defaults.travelZones.length > 0 &&
+        validateTravelZonesEngine(parsed.defaults.travelZones).length === 0) {
+      return parsed.defaults.travelZones;
+    }
+  } catch {
+    return [];
+  }
+  return [];
+}
 
 function integer(value, min, max) {
   return Number.isInteger(value) && value >= min && value <= max;
@@ -27,7 +51,7 @@ function jsonArray(value) {
   }
 }
 
-export function resolveBookingCapability({ settings, policy, serviceArea } = {}) {
+export function resolveBookingCapability({ settings, policy, serviceArea, travelZones } = {}) {
   if (policy && Number(policy.enabled) === 0) return 'NONE';
   if (settings?.provider === 'calendly') {
     return typeof settings.externalUrl === 'string' && /^https:\/\//i.test(settings.externalUrl)
@@ -37,7 +61,7 @@ export function resolveBookingCapability({ settings, policy, serviceArea } = {})
   const duration = policy?.bookingMode === 'site_visit_first' && !integer(policy.durationMinutes, 1, 10080)
     ? 45
     : policy?.durationMinutes;
-  const direct = isServiceAreaConfigured(serviceArea) &&
+  const direct = isServiceAreaConfigured(serviceArea, { travelZones }) &&
     Number(settings?.directBookingEnabled) === 1 &&
     Number(policy?.enabled) === 1 &&
     settings.provider === 'google' &&
@@ -68,7 +92,10 @@ export function loadBookingCapability(database, ownerId, serviceId) {
     'SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?'
   ).get(ownerId);
   return resolveBookingCapability({
-    settings, policy, serviceArea: serviceAreaFromKnowledgeBase(profile?.knowledgeBaseJson)
+    settings,
+    policy,
+    serviceArea: serviceAreaFromKnowledgeBase(profile?.knowledgeBaseJson),
+    travelZones: loadOwnerTravelZones(ownerId)
   });
 }
 
