@@ -635,7 +635,7 @@ test('Quote-to-booking postal-code and travel-zone consistency across serviceAre
     `${ownerId}@example.com`,
     nowIso
   );
-  db.prepare(`INSERT INTO businessProfiles (ownerId, knowledgeBaseJson) VALUES (?, '{}')`).run(ownerId);
+  db.prepare(`INSERT INTO businessProfiles (ownerId, knowledgeBaseJson, updatedAt) VALUES (?, '{}', ?)`).run(ownerId, nowIso);
   db.prepare(`INSERT INTO bookingSettings (
     ownerId, revision, timezone, provider, calendarId, weeklyAvailabilityJson, blackoutsJson,
     bookingHorizonDays, minimumNoticeMinutes, slotIncrementMinutes, bufferBeforeMinutes, bufferAfterMinutes,
