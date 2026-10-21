@@ -15,6 +15,7 @@ import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, o
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
+import {applyAnswerDefinitionsVNext} from './answerDefinitions.js';
 import {CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
@@ -1369,7 +1370,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   const effective={...(rules.pricing||{}),...(tier.overrides||{})},definitions=scopeDefinitions(type,effective);
   for(const key of Object.keys(tier.overrides?.scopeDetails||{}))if(definitions[key])optionConfirmations[definitions[key].confirmation]={...booleanField('Confirmed '+definitions[key].label.toLowerCase()),evidenceOnly:true};
  }
- return {...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)};
+ return applyAnswerDefinitionsVNext({...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p,rules);
 }
 
 export function allowedPricingFields(serviceType) {

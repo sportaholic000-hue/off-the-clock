@@ -1,3 +1,4 @@
+import {answerDefinitionIssuesVNext,answerDefinitionFieldsVNext} from '../quote-engine-vnext/answerDefinitions.js';
 import {FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,FLAT_REPAIR_COPY} from '../quote-engine-vnext/flatRoofRepairPricing.js';
 import {serviceNameProblem,SERVICE_NAME_LIMIT} from '../serviceName.js';
 import {settingError,validatePricebookReceptionistSettings} from './voice/receptionistSettings.js';
@@ -19,7 +20,7 @@ import {
   configuredOffering, mergePricingVNext
 } from '../quote-engine-vnext/index.js';
 import {synchronizeStartingValuesVNext,startingValueDefinitionsVNext,startingValueGroupsVNext,synchronizeDependentLinesVNext,roofDependentDefinitionsVNext} from '../quote-engine-vnext/priceGroundwork.js';
-import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
+import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext, customerContractForVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
 import { missingPricebookServiceId } from '../priceBookStructure.js';
 import { convertPricebookMoney, moneyKindForField, wholeCentsForPricingField, validatePricebookNumericDraft, pricingMapField } from '../priceBookMoney.js';
@@ -76,7 +77,8 @@ function projection(raw) {
     if(fields.includes(field)) {if(has(nested,field))pricing[field]=clone(nested[field]);else if(has(raw,field))pricing[field]=clone(raw[field]);}
   }
   const out={...pick(raw,ROOT_FIELDS),pricing};
-  const applicationFields=new Set(['pricing','validationInputs','quoteDoneApproval','ownerFeeSelections','starterSuggestion','createdAt','updatedAt','priceMetadata','startingValueActions','dependentLineActions']);
+  // Answer descriptions are customer wording only; pricing never receives them.
+  const applicationFields=new Set(['pricing','validationInputs','quoteDoneApproval','ownerFeeSelections','starterSuggestion','createdAt','updatedAt','priceMetadata','startingValueActions','dependentLineActions','answerDefinitions']);
   for(const field of Object.keys(raw))if(!ROOT_FIELDS.includes(field)&&!fields.includes(field)&&!legacy.has(field)&&!applicationFields.has(field))out[field]=clone(raw[field]);
   // Never translate a floor-area price into a wall-area price or derive a new
   // category. Legacy settings remain on the saved record and are disclosed.
@@ -180,6 +182,12 @@ function seasonalDecision(raw,book) {
 }
 function applicationPresentationIssues(raw) {
   const nameProblem=raw.service!==undefined?serviceNameProblem(raw.service):null;if(nameProblem)return [nameProblem];
+  if(has(raw,'answerDefinitions')){
+    let definitionIssues;
+    try{const p=projection(raw).pricing;definitionIssues=answerDefinitionIssuesVNext(raw,customerContractForVNext(raw.serviceType,p,raw).fields,p);}
+    catch{definitionIssues=answerDefinitionIssuesVNext(raw,null);}
+    if(definitionIssues.length)return definitionIssues;
+  }
   try{return voiceConfigurationIssues(raw,applicationServiceDefinition(raw));}
   catch{return ['Correct the invalid service configuration before presenting it on the call or in a saved quote.'];}
 }
@@ -229,7 +237,9 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContex
   const stalePrices=staleOwnerPrices(raw,book.defaults?.stalePriceThresholdDays,dateContext.quoteInstant);
   const placeholders=aiPlaceholderPrices(raw);
   const disposalNotice=service.serviceType==='LANDSCAPING_CLEANUP'?[service.pricing,...(service.tiers||[]).map(t=>mergePricingVNext(service.pricing,t.overrides||{}))].map(cleanupDisposalWarning).find(Boolean):null;
-  return {...withOwnerLabels({...status,...(disposalNotice?{statusNotices:[...(status.statusNotices||[]),disposalNotice]}:{}),ownerDiagnostics:[...(status.ownerDiagnostics||[]),...approvalDiagnostics]},service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approval.current,confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
+  let answerDefinitionFields=[];
+  try{answerDefinitionFields=answerDefinitionFieldsVNext(customerContractForVNext(raw.serviceType,service.pricing,raw).fields,service.pricing);}catch{}
+  return {answerDefinitionFields,...withOwnerLabels({...status,...(disposalNotice?{statusNotices:[...(status.statusNotices||[]),disposalNotice]}:{}),ownerDiagnostics:[...(status.ownerDiagnostics||[]),...approvalDiagnostics]},service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approval.current,confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
 }
 export function bookRevision(book) { return digest(book); }
 function synchronizedStartingService(raw,now){

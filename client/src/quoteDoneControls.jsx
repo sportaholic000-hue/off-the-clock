@@ -87,6 +87,12 @@ export function customerMeasurementVisible(field,values={}){
  return (values.newFlooringType!=='carpet'||field.name!=='layoutPattern')&&(!roomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name))&&(field.type!=='carpet_connections'||values.carpetRooms?.length>1)&&customerFieldVisible(field,values);
 }
 
+// One line per choice, from the same engine definition the receptionist reads.
+function ChoiceDefinitions({field}){
+ const rows=Object.entries(field.optionDefinitions||{});
+ if(!rows.length)return null;
+ return <ul className="field-help choice-definitions" aria-label={field.label+' choices'}>{rows.map(([value,item])=><li key={value}><strong>{item.label}:</strong> {item.definition}</li>)}</ul>;
+}
 export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onChange,knownOfferings={}}) {
  const fencing=fields.some(f=>f.type==='fence_runs');
  const [totalOnly,setTotalOnly]=useState(value.fenceRuns===undefined&&value.linearFeet!==undefined);
@@ -120,7 +126,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
   if(name==='groundPrepNeeded'&&next!==true)delete updated.usableTopsoilDepthInches;
   onChange(clearChangedScopeConfirmations(scopeFields,value,updated));
  };
- return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerMeasurementVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}
+ return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerMeasurementVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}<ChoiceDefinitions field={f}/>
   {f.type==='boolean'?<Select aria-label={f.label} value={value[f.name]===undefined?'':String(value[f.name])} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='true')}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select>:
    f.type==='multi_enum'?<fieldset aria-label={f.label}>{(f.values||[]).map(key=><label key={key}><input type="checkbox" aria-label={f.optionLabels?.[key]||human(key)} checked={(value[f.name]||[]).includes(key)} onChange={e=>update(f.name,e.target.checked?[...(value[f.name]||[]),key]:(value[f.name]||[]).filter(item=>item!==key))}/>{f.optionLabels?.[key]||human(key)}</label>)}</fieldset>:
    f.type==='enum'?<Select aria-label={f.label} value={f.aliases?.[value[f.name]]??value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:f.values.find(v=>String(v)===e.target.value))}><option value="">Unknown / not supplied</option>{(f.values||[]).map(v=><option key={v} value={v}>{f.optionLabels?.[v]||human(v)}</option>)}</Select>:

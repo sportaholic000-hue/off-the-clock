@@ -108,6 +108,11 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
       question.choices=page.choices;catalogBytes-=page.bytes;
       if(page.nextOffset<choices.length){question.moreChoicesAvailable=true;question.catalogLookup='lookupQuoteCatalog';}
     }
+    const definitions=Object.entries(field.optionDefinitions||{});
+    if(definitions.length)question.choiceDefinitions=definitions.map(([value,item])=>{
+      if(!safeText(item?.label)||!safeText(item?.definition))throw new TypeError('Invalid choice definition.');
+      return {value,label:item.label,definition:item.definition};
+    });
     if (field.type === 'slug') question.productConfirmationRequired = true;
     if(field.type==='multi_enum')question.details=[...(question.details||[]),'Supply an array of selected choice values, or an empty array for none.'];
     if(field.type==='surface_rows'){
