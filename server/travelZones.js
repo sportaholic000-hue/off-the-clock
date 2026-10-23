@@ -315,59 +315,22 @@ export function extractQuotedPostalCode({ quoteRow, leadRow, submissionRow } = {
   return '';
 }
 
-export function checkQuoteBookingPostalCode({ quotedPostalCode, bookingPostalCode, travelZones } = {}) {
+export function checkQuoteBookingPostalCode({ quotedPostalCode, bookingPostalCode, travelZones, quotedTravelCharge } = {}) {
   const quotedCode = normalizePostalCode(quotedPostalCode);
   const bookingCode = normalizePostalCode(bookingPostalCode);
-  if (!quotedCode) {
-    return { ok: true, quotedPostalCode: '', bookingPostalCode: bookingCode };
+  const charge = quotedTravelCharge ?? matchTravelZone(quotedCode, travelZones).charge;
+  if (!quotedCode || !Number.isSafeInteger(charge) || charge < 0) {
+    return { ok: true, quotedPostalCode: quotedCode, bookingPostalCode: bookingCode };
   }
-  if (!bookingCode) {
+  const bookingZone = matchTravelZone(bookingCode, travelZones);
+  if (bookingZone.status !== 'matched' || bookingZone.charge !== charge) {
     return {
       ok: false,
-      reason: 'ADDRESS_REQUIRED',
+      reason: 'TRAVEL_CHARGE_MISMATCH',
       quotedPostalCode: quotedCode,
-      bookingPostalCode: '',
-      message: 'Confirm the complete project address before booking.'
+      bookingPostalCode: bookingCode,
+      message: 'This address needs a new quote before booking.'
     };
   }
-  const mismatchResult = {
-    ok: false,
-    reason: 'POSTAL_CODE_MISMATCH',
-    quotedPostalCode: quotedCode,
-    bookingPostalCode: bookingCode,
-    message: 'The project address postal or ZIP code does not match the quoted postal or ZIP code. Return to the quote flow to update the estimate.'
-  };
-  if (!isValidCustomerPostalCode(bookingCode)) {
-    return mismatchResult;
-  }
-
-  let codeMatches = false;
-  if (CANADIAN_FSA_RE.test(quotedCode)) {
-    codeMatches = (CANADIAN_FSA_RE.test(bookingCode) || CANADIAN_POSTAL_RE.test(bookingCode))
-      && bookingCode.slice(0, 3) === quotedCode;
-  } else if (CANADIAN_POSTAL_RE.test(quotedCode)) {
-    codeMatches = bookingCode === quotedCode;
-  } else if (US_ZIP3_RE.test(quotedCode)) {
-    codeMatches = US_CUSTOMER_ZIP_RE.test(bookingCode) && bookingCode.slice(0, 3) === quotedCode;
-  } else if (US_ZIP5_RE.test(quotedCode)) {
-    codeMatches = US_CUSTOMER_ZIP_RE.test(bookingCode) && bookingCode.slice(0, 5) === quotedCode;
-  } else if (US_CUSTOMER_ZIP_RE.test(quotedCode)) {
-    codeMatches = bookingCode === quotedCode || bookingCode === quotedCode.slice(0, 5);
-  } else {
-    codeMatches = bookingCode === quotedCode;
-  }
-
-  if (!codeMatches) return mismatchResult;
-
-  if (hasTravelZones({ travelZones })) {
-    const quotedZone = matchTravelZone(quotedCode, travelZones);
-    const bookingZone = matchTravelZone(bookingCode, travelZones);
-    if (bookingZone.status !== 'matched') return mismatchResult;
-    if (quotedZone.status === 'matched' &&
-        (bookingZone.zoneIndex !== quotedZone.zoneIndex || bookingZone.charge !== quotedZone.charge)) {
-      return mismatchResult;
-    }
-  }
-
   return { ok: true, quotedPostalCode: quotedCode, bookingPostalCode: bookingCode };
 }

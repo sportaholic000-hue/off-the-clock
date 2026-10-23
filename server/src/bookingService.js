@@ -3,11 +3,11 @@ import {hasOperatorAccess} from './planAccess.js';
 import {linkWidgetBookingLead} from './widgetBookingLead.js';
 import crypto from 'node:crypto';
 import { serviceAreaFromKnowledgeBase, serviceAreaDecision } from './serviceArea.js';
-import { checkQuoteBookingPostalCode, extractQuotedPostalCode } from '../travelZones.js';
-import { loadOwnerTravelZones } from './bookingCapabilities.js';
 import {
-  createBookingToken, hashBookingToken,
-  openSlotToken, requestDigest,
+  createBookingToken,
+  hashBookingToken,
+  openSlotToken,
+  requestDigest,
   sealSlotToken
 } from './bookingTokens.js';
 import {
@@ -413,42 +413,6 @@ export function createBookingService({
     return safeIntent(policyStatement.get(intentId, ownerId), now);
   }
 
-  function intentLocationContext(ownerId, row) {
-    let quoteRow = null, leadRow = null, submissionRow = null;
-    if (row?.sourceId) {
-      if (row.sourceType === 'quote') {
-        try { quoteRow = usageOwnerQuery(db)('SELECT customerInputsJson, resultJson FROM quotes WHERE id = ? AND ownerId = ?').get(row.sourceId, ownerId); } catch {}
-      } else if (row.sourceType === 'lead') {
-        try { leadRow = usageOwnerQuery(db)('SELECT collectedInputsJson FROM leads WHERE id = ? AND ownerId = ?').get(row.sourceId, ownerId); } catch {}
-      }
-      try { submissionRow = usageOwnerQuery(db)('SELECT originalSubmissionJson, internalOutcomeJson FROM quoteSubmissions WHERE recordId = ? AND ownerId = ?').get(row.sourceId, ownerId); } catch {}
-    }
-    return {
-      quotedPostalCode: extractQuotedPostalCode({ quoteRow, leadRow, submissionRow }),
-      travelZones: loadOwnerTravelZones(ownerId)
-    };
-  }
-
-  function assertQuoteLocationMatch(locationContext, location) {
-    const check = checkQuoteBookingPostalCode({
-      quotedPostalCode: locationContext.quotedPostalCode,
-      bookingPostalCode: location?.postalCode,
-      travelZones: locationContext.travelZones
-    });
-    if (!check.ok && check.reason === 'POSTAL_CODE_MISMATCH') {
-      throw bookingError('REQUOTE_REQUIRED', 409, check.message, {
-        details: {
-          reason: check.reason,
-          quotedPostalCode: check.quotedPostalCode,
-          bookingPostalCode: check.bookingPostalCode,
-          recoveryAction: 'CHANGE_JOB_DETAILS',
-          fields: ['postalCode']
-        }
-      });
-    }
-    return check;
-  }
-
   const preparationsInFlight = new Set();
 
   function requireUnbookedIntent(ownerId, intentId) {
@@ -580,19 +544,7 @@ export function createBookingService({
     if (policy.capability === 'unavailable') {
       return { statusCode: 200, body: { status: 'UNAVAILABLE', reason: policy.reason } };
     }
-    const locationContext = intentLocationContext(ownerId, row);
-    const postalCheck = assertQuoteLocationMatch(locationContext, filters.location);
-    if (!postalCheck.ok) {
-      return {
-        statusCode: 200,
-        body: { status: 'PREFERRED_TIME_ONLY', reason: postalCheck.reason, timezone: policy.timezone }
-      };
-    }
-    const coverage = serviceAreaDecision(
-      serviceAreaFromKnowledgeBase(row.knowledgeBaseJson),
-      filters.location,
-      { travelZones: locationContext.travelZones }
-    );
+    const coverage = serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), filters.location);
     if (!coverage.eligible) {
       return {
         statusCode: 200,
@@ -979,12 +931,8 @@ export function createBookingService({
           throw bookingError('HOLD_EXPIRED', 410, 'The held time has expired. Request fresh availability.');
         }
         const validated = validateConfirmation(row, holdRow, body.confirmedSlotId, body, now);
-        const locationContext = intentLocationContext(ownerId, row);
-        assertQuoteLocationMatch(locationContext, validated.location);
         const coverage = serviceAreaDecision(
-          serviceAreaFromKnowledgeBase(row.knowledgeBaseJson),
-          validated.location,
-          { travelZones: locationContext.travelZones }
+          serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), validated.location
         );
         if (!coverage.eligible) {
           throw bookingError('SERVICE_AREA_MISMATCH', 409,
@@ -1108,9 +1056,7 @@ export function createBookingService({
         if (current?.status !== 'PENDING_PROVIDER' || current.providerEventStatus !== 'PREPARING') return false;
         const now = nowFrom(clock), row = context(ownerId, intentId, now);
         validateConfirmation(row, phase.holdRow, body.confirmedSlotId, body, now);
-        const locationContext = intentLocationContext(ownerId, row);
-        assertQuoteLocationMatch(locationContext, phase.location);
-        if (!serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), phase.location, { travelZones: locationContext.travelZones }).eligible) {
+        if (!serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), phase.location).eligible) {
           throw bookingError('SERVICE_AREA_MISMATCH', 409, 'The project address needs owner follow-up before booking.');
         }
         return usageOwnerQuery(db)(`UPDATE appointments SET providerEventStatus = 'PENDING_PROVIDER', updatedAt = ?
@@ -1206,12 +1152,10 @@ export function createBookingService({
       const policy = policyConfiguration(row);
       const customer = safeCustomer(parseJson(appointment.customerJson, null));
       const location = safeLocation(parseJson(appointment.locationJson, null));
-      const locationContext = intentLocationContext(appointment.ownerId, row);
       if (policy.capability !== 'direct' || policy.provider !== appointment.provider ||
           policy.calendarId !== appointment.providerCalendarId || policy.policyRevision !== appointment.policyRevision ||
           Date.parse(appointment.startAtUtc) <= now.getTime() + policy.minimumNoticeMinutes * 60000 ||
-          !assertQuoteLocationMatch(locationContext, location).ok ||
-          !serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), location, { travelZones: locationContext.travelZones }).eligible) return null;
+          !serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), location).eligible) return null;
       const busy = normalizeBusy(await calendar.listBusy({ownerId:appointment.ownerId,provider:appointment.provider,
         calendarId:appointment.providerCalendarId,timeMinUtc:appointment.lockStartAtUtc,timeMaxUtc:appointment.lockEndAtUtc}));
       if (busy.some(interval=>intervalsOverlap(appointment.lockStartAtUtc,appointment.lockEndAtUtc,interval.startAtUtc,interval.endAtUtc))) return null;

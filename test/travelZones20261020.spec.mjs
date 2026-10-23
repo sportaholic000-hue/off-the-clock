@@ -2,6 +2,7 @@ import './pricebookTestEnv.mjs';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import test from 'node:test';
+import express from 'express';
 import Database from 'better-sqlite3';
 
 process.env.JWT_SECRET ||= 'test-jwt-secret-key-for-travel-zones-20261020';
@@ -26,6 +27,8 @@ import { checkQuoteBookingPostalCode, extractQuotedPostalCode } from '../server/
 import { isServiceAreaConfigured, serviceAreaDecision } from '../server/src/serviceArea.js';
 import { resolveBookingCapability } from '../server/src/bookingCapabilities.js';
 import { createBookingService } from '../server/src/bookingService.js';
+import { installBookingRoutes } from '../server/src/bookingRoutes.js';
+import { checkStoredQuoteBookingAddress, withQuoteBookingLocationGuard } from '../server/src/quoteBookingLocation.js';
 import { createBookingPreferenceService } from '../server/src/bookingPreferenceService.js';
 
 const MOWING_SERVICE_ID = '11111111-2222-4333-8444-555555555555';
@@ -555,344 +558,168 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
   );
 });
 
-test('Quote-to-booking postal-code and travel-zone consistency across serviceArea, bookingService, bookingPreferenceService, and voice', async () => {
-  // 1) Pure postal-code and travel-zone binding checks
-  assert.equal(
-    checkQuoteBookingPostalCode({
-      quotedPostalCode: 'e2l 4l1',
-      bookingPostalCode: 'E2L4L1',
-      travelZones: REQUIRED_ZONES_CENTS
-    }).ok,
-    true
-  );
-  // Voice FSA E2J matches full postal code E2J 2A1 in the same Outer zone
-  assert.equal(
-    checkQuoteBookingPostalCode({
-      quotedPostalCode: 'E2J',
-      bookingPostalCode: 'e2j 2a1',
-      travelZones: REQUIRED_ZONES_CENTS
-    }).ok,
-    true
-  );
-  // Mismatched zone: quoted Core (E2L 4L1, $0) vs booking Outer (E2J 2A1, $35) -> POSTAL_CODE_MISMATCH
-  const zoneSwap = checkQuoteBookingPostalCode({
-    quotedPostalCode: 'E2L 4L1',
-    bookingPostalCode: 'E2J 2A1',
-    travelZones: REQUIRED_ZONES_CENTS
-  });
-  assert.equal(zoneSwap.ok, false);
-  assert.equal(zoneSwap.reason, 'POSTAL_CODE_MISMATCH');
+// Expected outcomes are recorded in verification/zones-booking-20261023/EXPECTED.md.
+const BOOKING_CASES = [
+  ['E2L 4L1', 'E2L 4L2', true],
+  ['E2L 4L1', 'E2M 1A1', true],
+  ['E2L 4L1', 'E2J 2A1', false],
+  ['E2J 2A1', 'E3B 5A3', false]
+];
+const bookingLocation = postalCode => ({
+  addressLine1: '10 King St', addressLine2: '', city: 'Saint John',
+  region: 'NB', postalCode, country: 'CA'
+});
+const bookingCustomer = { name: 'Synthetic customer', email: 'synthetic@example.com', phone: '+15065550100' };
 
-  // 2) serviceAreaDecision & isServiceAreaConfigured with travelZones when city serviceArea is unconfigured
-  assert.equal(isServiceAreaConfigured(null, { travelZones: REQUIRED_ZONES_CENTS }), true);
-  assert.deepEqual(
-    serviceAreaDecision(null, { postalCode: 'E2J 2A1' }, { travelZones: REQUIRED_ZONES_CENTS }),
-    { eligible: true, reason: 'IN_AREA' }
-  );
-  assert.deepEqual(
-    serviceAreaDecision(null, { postalCode: 'E3B 5A3' }, { travelZones: REQUIRED_ZONES_CENTS }),
-    { eligible: false, reason: 'OUT_OF_AREA' }
-  );
-
-  // 3) Widget / HTTP Booking & Preference: cannot quote in Core (E2L 4L1, $0) and book or request preference in Outer (E2J 2A1, $35)
-  const ownerId = `owner-booking-zones-${crypto.randomUUID().slice(0, 8)}`;
-  const now = new Date('2026-06-15T13:00:00.000Z');
-  const nowIso = now.toISOString();
-
+function bookingFixture(t, { serviceArea = { mode: 'all', cities: [] } } = {}) {
+  const ownerId = 'owner-zones-' + crypto.randomUUID();
+  const nowIso = '2026-06-15T13:00:00.000Z';
   const initialBook = readApplicationBook(ownerId);
-  const fullServiceDollars = convertPricebookMoney({ services: [buildMowingServiceCents(ownerId)] }, 'toDollars').services[0];
-  const { origin: _origin, zeroPricePolicy: _zeroPricePolicy, ...serviceDollars } = fullServiceDollars;
-  const defaultsDollars = {
-    ...convertPricebookMoney({ defaults: buildDefaultsCents({ travelFee: 2500 }) }, 'toDollars').defaults,
-    travelZones: [
-      { name: 'Core', codes: ['E2L', 'E2M'], charge: 0 },
-      { name: 'Outer', codes: ['E2H', 'E2J'], charge: 35 },
-      { name: 'Maine', codes: ['041'], charge: 45 }
-    ]
-  };
-  const savedBook = saveApplicationBook(ownerId, {
-    revision: initialBook.revision,
-    services: [serviceDollars],
-    defaults: defaultsDollars
+  const { origin, zeroPricePolicy, ...service } = convertPricebookMoney({ services: [buildMowingServiceCents(ownerId)] }, 'toDollars').services[0];
+  const saved = saveApplicationBook(ownerId, {
+    revision: initialBook.revision, services: [service],
+    defaults: convertPricebookMoney({ defaults: buildDefaultsCents({ travelZones: REQUIRED_ZONES_CENTS }) }, 'toDollars').defaults
   });
   approveApplicationService(ownerId, MOWING_SERVICE_ID, {
-    revision: savedBook.revision,
-    confirmConfiguration: true,
-    source: 'MANUAL',
-    zeroClassification: {
-      freeCompleteService: false,
-      freeTiers: [],
-      includedPrices: {}
-    }
+    revision: saved.revision, confirmConfiguration: true, source: 'MANUAL',
+    zeroClassification: { freeCompleteService: false, freeTiers: [], includedPrices: {} }
   });
-
   const db = new Database(':memory:');
+  t.after(() => db.close());
   migrateDatabase(db);
-  db.prepare(`INSERT INTO users (
-    id, email, passwordHash, firstName, businessName, plan, planStatus, timezone, role, createdAt
-  ) VALUES (?, ?, 'hash', 'Owner', 'Zone Lawn Care', 'QuoteDone', 'active', 'America/Moncton', 'owner', ?)`).run(
-    ownerId,
-    `${ownerId}@example.com`,
-    nowIso
-  );
-  db.prepare(`INSERT INTO businessProfiles (ownerId, knowledgeBaseJson, updatedAt) VALUES (?, '{}', ?)`).run(ownerId, nowIso);
-  db.prepare(`INSERT INTO bookingSettings (
-    ownerId, revision, timezone, provider, calendarId, weeklyAvailabilityJson, blackoutsJson,
-    bookingHorizonDays, minimumNoticeMinutes, slotIncrementMinutes, bufferBeforeMinutes, bufferAfterMinutes,
-    directBookingEnabled, updatedAt
-  ) VALUES (?, 'rev-settings-1', 'America/Moncton', 'google', 'primary', ?, '[]', 14, 60, 60, 0, 0, 1, ?)`).run(
-    ownerId,
-    JSON.stringify({
-      mon: [{ start: '09:00', end: '17:00' }],
-      tue: [{ start: '09:00', end: '17:00' }],
-      wed: [{ start: '09:00', end: '17:00' }],
-      thu: [{ start: '09:00', end: '17:00' }],
-      fri: [{ start: '09:00', end: '17:00' }]
-    }),
-    nowIso
-  );
-  db.prepare(`INSERT INTO bookingPolicies (
-    ownerId, serviceId, revision, bookingMode, durationMinutes, enabled, updatedAt
-  ) VALUES (?, ?, 'rev-policy-1', 'book_job', 60, 1, ?)`).run(ownerId, MOWING_SERVICE_ID, nowIso);
+  db.prepare(`INSERT INTO users (id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt)
+    VALUES (?,?,'hash','Owner','Synthetic business','QuoteDone','active','America/Moncton','owner',?)`)
+    .run(ownerId, ownerId + '@example.com', nowIso);
+  db.prepare('INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,updatedAt) VALUES(?,?,?)')
+    .run(ownerId, JSON.stringify(serviceArea ? { serviceArea } : {}), nowIso);
+  db.prepare(`INSERT INTO bookingSettings(ownerId,revision,timezone,provider,calendarId,weeklyAvailabilityJson,blackoutsJson,
+    bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt)
+    VALUES(?,'settings-1','America/Moncton','google','primary',?,'[]',14,60,60,0,0,1,?)`)
+    .run(ownerId, JSON.stringify(Object.fromEntries(['mon','tue','wed','thu','fri'].map(day => [day, [{ start: '09:00', end: '17:00' }]]))), nowIso);
+  db.prepare(`INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt)
+    VALUES(?,?,'policy-1','site_visit_first',60,1,?)`).run(ownerId, MOWING_SERVICE_ID, nowIso);
+  db.prepare('INSERT INTO quoteAccessKeys(ownerId,publicKey,allowedOriginsJson,createdAt) VALUES(?,?,?,?)')
+    .run(ownerId, 'synthetic-key-hash', JSON.stringify(['https://synthetic.example']), nowIso);
+  const events = [];
+  const raw = createBookingService({ db, clock: () => new Date(nowIso), slotTokenSecret: 'zones-booking-slot-secret-at-least-32-bytes', calendar: {
+    listBusy: async () => [],
+    createEvent: async req => { events.push(req); return { eventId: req.eventId, status: 'CONFIRMED', startAtUtc: req.startAtUtc, endAtUtc: req.endAtUtc }; }
+  } });
+  db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)").run(ownerId,"cus_synthetic_"+ownerId,nowIso,nowIso,nowIso);
+  db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(ownerId);
+  const booking = withQuoteBookingLocationGuard(raw, db);
+  function quote(postalCode, zones = REQUIRED_ZONES_CENTS) {
+    const customerInputs = { ...BASE_MOWING_INPUTS, ...(postalCode ? { postalCode } : {}) };
+    const internalResult = generateQuoteVNext({ serviceType: 'LANDSCAPING_MOWING', ownerPricing: buildMowingServiceCents(ownerId),
+      businessDefaults: buildDefaultsCents({ ...(zones ? { travelZones: zones } : {}) }), currentMonth: 6, customerInputs, callerType: 'owner' });
+    const id = crypto.randomUUID();
+    db.prepare(`INSERT INTO quotes(id,ownerId,quoteId,serviceType,customerInputsJson,resultJson,status,callerType,createdAt)
+      VALUES(?,?,?,'LANDSCAPING_MOWING',?,?,'INSTANT','customer',?)`)
+      .run(id, ownerId, id, JSON.stringify(customerInputs), JSON.stringify({ internalResult }), nowIso);
+    return booking.createIntent({ ownerId, sourceType: 'quote', sourceId: id, serviceId: MOWING_SERVICE_ID,
+      resultType: 'INSTANT_ESTIMATE_READY', expiresAtUtc: '2026-06-22T13:00:00.000Z' });
+  }
+  return { db, ownerId, nowIso, booking, raw, events, quote };
+}
 
-  const createdEvents = [];
-  const bookingService = createBookingService({
-    db,
-    clock: () => new Date(nowIso),
-    slotTokenSecret: 'booking-zones-slot-secret-32bytes-minimum',
-    calendar: {
-      listBusy: async () => [],
-      createEvent: async (req) => {
-        createdEvents.push(req);
-        return {
-          eventId: req.eventId,
-          status: 'CONFIRMED',
-          startAtUtc: req.startAtUtc,
-          endAtUtc: req.endAtUtc
-        };
-      }
-    }
-  });
-  const preferenceService = createBookingPreferenceService({
-    db,
-    clock: () => new Date(nowIso)
-  });
-
-  // Create a Core quote (E2L 4L1, $0 travel) and its booking intent
-  const quoteId = crypto.randomUUID();
-  db.prepare(`INSERT INTO quotes (
-    id, ownerId, quoteId, serviceType, customerInputsJson, resultJson, status, callerType, createdAt
-  ) VALUES (?, ?, ?, 'LANDSCAPING_MOWING', ?, ?, 'INSTANT', 'customer', ?)`).run(
-    quoteId,
-    ownerId,
-    quoteId,
-    JSON.stringify({ ...BASE_MOWING_INPUTS, postalCode: 'E2L4L1' }),
-    JSON.stringify({ postalCode: 'E2L4L1', midEstimate: 105 }),
-    nowIso
-  );
-  const intent = bookingService.createIntent({
-    ownerId,
-    sourceType: 'quote',
-    sourceId: quoteId,
-    serviceId: MOWING_SERVICE_ID,
-    resultType: 'INSTANT_ESTIMATE_READY',
-    allowedTierNames: ['Standard'],
-    expiresAtUtc: '2026-06-22T13:00:00.000Z'
-  });
-
-  const coreLocation = {
-    addressLine1: '10 King St',
-    addressLine2: '',
-    city: 'Saint John',
-    region: 'NB',
-    postalCode: 'e2l 4l1',
-    country: 'CA'
+async function httpBooking(t, f, intent, publicRoute = true) {
+  const app = express(); app.use(express.json());
+  installBookingRoutes(app, { bookingService: f.booking, preferenceService: createBookingPreferenceService({ db: f.db, clock: () => new Date(f.nowIso) }), database: f.db,
+    requireAuth: () => (req, _res, next) => { req.tenantOwnerId = f.ownerId; next(); },
+    asyncHandler: handler => (req, res, next) => Promise.resolve(handler(req, res, next)).catch(next) });
+  app.use((error, _req, res, _next) => res.status(error.statusCode || 500).json({ code: error.code, error: error.message }));
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise(resolve => server.once('listening', resolve));
+  t.after(() => new Promise(resolve => { server.close(resolve); server.closeAllConnections(); }));
+  const prefix = publicRoute ? '/api/public/bookings/' + intent.bookingToken : '/api/bookings/' + intent.intentId;
+  return async (action, body) => {
+    const response = await fetch('http://127.0.0.1:' + server.address().port + prefix + '/' + action, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://synthetic.example', 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify(body)
+    });
+    return { status: response.status, body: await response.json() };
   };
-  const outerLocation = {
-    ...coreLocation,
-    addressLine1: '20 Loch Lomond Rd',
-    postalCode: 'E2J 2A1'
-  };
+}
 
-  // Availability with mismatched postalCode (E2J 2A1 vs quoted E2L 4L1) throws REQUOTE_REQUIRED (409)
-  await assert.rejects(
-    () => bookingService.availability({
-      ownerId,
-      intentId: intent.intentId,
-      filters: { fromDate: '2026-06-16', days: 1, location: outerLocation }
-    }),
-    (err) => err.code === 'REQUOTE_REQUIRED' && err.statusCode === 409
-  );
-
-  // Preference request with mismatched postalCode (E2J 2A1 vs quoted E2L 4L1) throws REQUOTE_REQUIRED (409)
-  assert.throws(
-    () => preferenceService.request({
-      ownerId,
-      intentId: intent.intentId,
-      idempotencyKey: crypto.randomUUID(),
-      body: {
-        preferredWindows: [{ date: '2026-06-16', timeOfDay: 'morning' }],
-        customer: { name: 'Alex', email: 'alex@example.com', phone: '+15065550100' },
-        location: outerLocation
-      }
-    }),
-    (err) => err.code === 'REQUOTE_REQUIRED' && err.statusCode === 409
-  );
-
-  // Availability with matching postalCode (e2l 4l1) succeeds even with empty knowledgeBaseJson serviceArea
-  const availRes = await bookingService.availability({
-    ownerId,
-    intentId: intent.intentId,
-    filters: { fromDate: '2026-06-16', days: 1, location: coreLocation }
-  });
-  assert.equal(availRes.statusCode, 200);
-  assert.equal(availRes.body.status, 'AVAILABLE');
-  assert.ok(availRes.body.slots.length > 0);
-
-  const slot = availRes.body.slots[0];
-  const held = bookingService.hold({
-    ownerId,
-    intentId: intent.intentId,
-    idempotencyKey: crypto.randomUUID(),
-    slotId: slot.slotId
-  });
-  assert.equal(held.statusCode, 201);
-
-  // Attempting to confirm with Outer postal code (E2J 2A1) after holding a slot is rejected with REQUOTE_REQUIRED (409)
-  await assert.rejects(
-    () => bookingService.confirm({
-      ownerId,
-      intentId: intent.intentId,
-      idempotencyKey: crypto.randomUUID(),
-      body: {
-        holdId: held.body.holdId,
-        confirmedSlotId: slot.slotId,
-        explicitConfirmation: true,
-        addressConfirmation: true,
-        tierName: 'Standard',
-        customer: { name: 'Alex', email: 'alex@example.com', phone: '+15065550100' },
-        location: outerLocation
-      }
-    }),
-    (err) => err.code === 'REQUOTE_REQUIRED' && err.statusCode === 409
-  );
-
-  // Confirming with matching Core postal code (e2l 4l1) succeeds
-  const confirmed = await bookingService.confirm({
-    ownerId,
-    intentId: intent.intentId,
-    idempotencyKey: crypto.randomUUID(),
-    body: {
-      holdId: held.body.holdId,
-      confirmedSlotId: slot.slotId,
-      explicitConfirmation: true,
-      addressConfirmation: true,
-      tierName: 'Standard',
-      customer: { name: 'Alex', email: 'alex@example.com', phone: '+15065550100' },
-      location: coreLocation
+for (const [quoted, postalCode, allowed] of BOOKING_CASES) {
+  test(`Zone booking widget: ${quoted} -> ${postalCode}: ${allowed ? 'booked' : 'new quote'}`, async t => {
+    const f = bookingFixture(t), intent = f.quote(quoted), call = await httpBooking(t, f, intent);
+    const location = bookingLocation(postalCode);
+    const availability = await call('availability', { fromDate: '2026-06-16', days: 1, scopeConfirmation: 'UNCHANGED', customer: bookingCustomer, location });
+    if (!allowed) {
+      assert.equal(availability.status, 409, JSON.stringify(availability)); assert.equal(availability.body.code, 'REQUOTE_REQUIRED');
+      assert.equal(availability.body.error, 'This address needs a new quote before booking.');
+    } else {
+      assert.equal(availability.body.status, 'AVAILABLE', JSON.stringify(availability));
+      const slotId = availability.body.slots[0].slotId;
+      const held = await call('holds', { slotId }); assert.equal(held.status, 201);
+      const confirmed = await call('confirm', { holdId: held.body.holdId, confirmedSlotId: slotId, explicitConfirmation: true,
+        addressConfirmation: true, customer: bookingCustomer, location });
+      assert.equal(confirmed.body.status, 'CONFIRMED');
+      assert.equal(JSON.parse(f.db.prepare('SELECT locationJson FROM appointments').get().locationJson).postalCode, postalCode);
     }
+    assert.equal(f.events.length, allowed ? 1 : 0);
+    assert.equal(f.db.prepare('SELECT count(*) AS n FROM appointments').get().n, allowed ? 1 : 0);
   });
-  assert.equal(confirmed.statusCode, 201);
-  assert.equal(confirmed.body.status, 'CONFIRMED');
-
-  // 4) Voice runtime: caller quotes in E2J, then tries to checkAvailability in E2L 4L1 (rejected) vs E2J 2A1 (succeeds and books)
-  const callId = crypto.randomUUID();
-  const callSid = 'CAabababababababababababababababab';
-  const accountSid = 'ACcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd';
-  const callerPhone = '+15065550177';
-  const destPhone = '+15065550188';
-  db.prepare(`INSERT INTO calls (
-    id, ownerId, callSid, accountSid, callerNumber, destinationNumber, status, duration, spamFiltered, createdAt
-  ) VALUES (?, ?, ?, ?, ?, ?, 'in-progress', 0, 0, ?)`).run(
-    callId, ownerId, callSid, accountSid, callerPhone, destPhone, nowIso
-  );
-  // Single-tier policy for voice direct booking
-  db.prepare(`UPDATE bookingPolicies SET bookingMode = 'site_visit_first' WHERE ownerId = ? AND serviceId = ?`).run(
-    ownerId, MOWING_SERVICE_ID
-  );
-
-  const callContext = { ownerId, callSid, accountSid, from: callerPhone, to: destPhone };
-  const runtime = createVoiceToolRuntime({
-    database: db,
-    callContext,
-    handleSecret: 'voice-zones-test-secret-key-32bytes',
-    bookingService,
-    clock: () => new Date(nowIso)
-  });
-
-  const matched = await runtime.handlers.matchService({
-    context: callContext,
-    args: { query: 'Lawn Mowing' }
-  });
-  const quotedVoice = await runtime.handlers.getQuote({
-    context: callContext,
-    args: {
-      serviceHandle: matched.serviceHandle,
-      customerConfirmed: true,
-      customerInputs: { ...BASE_MOWING_INPUTS, postalCode: 'E2J' }
+  test(`Zone booking phone: ${quoted} -> ${postalCode}: ${allowed ? 'booked' : 'new quote'}`, async t => {
+    const f = bookingFixture(t);
+    const callId = crypto.randomUUID(), callSid = 'CA' + crypto.randomBytes(16).toString('hex'), accountSid = 'AC' + 'cd'.repeat(16);
+    const callContext = { ownerId: f.ownerId, callSid, accountSid, from: '+15065550177', to: '+15065550188' };
+    f.db.prepare(`INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,duration,spamFiltered,createdAt)
+      VALUES(?,?,?,?,?,?,'in-progress',0,0,?)`).run(callId, f.ownerId, callSid, accountSid, callContext.from, callContext.to, f.nowIso);
+    const runtime = createVoiceToolRuntime({ database: f.db, callContext, handleSecret: 'voice-zones-test-secret-at-least-32-bytes', bookingService: f.booking, clock: () => new Date(f.nowIso) });
+    const invoke = (name, args) => runtime.handlers[name]({ context: callContext, args });
+    const matched = await invoke('matchService', { query: 'Lawn Mowing' });
+    const quote = await invoke('getQuote', { serviceHandle: matched.serviceHandle, customerConfirmed: true, customerInputs: { ...BASE_MOWING_INPUTS, postalCode: quoted } });
+    assert.equal(quote.status, 'quoted');
+    const lead = await invoke('captureLead', { name: 'Synthetic customer', address: { line1: '10 King St', city: 'Saint John', region: 'NB', postalCode, country: 'CA' } });
+    const availability = await invoke('checkAvailability', { quoteHandle: quote.quoteHandle, leadHandle: lead.leadHandle, preference: { fromDate: '2026-06-16', days: 1 } });
+    if (!allowed) {
+      assert.equal(availability.status, 'unavailable'); assert.equal(availability.reason, 'REQUOTE_REQUIRED');
+      assert.equal(availability.message, 'This address needs a new quote before booking.');
+    } else {
+      assert.equal(availability.status, 'available');
+      const booked = await invoke('bookAppointment', { slotHandle: availability.slotOptions[0].slotHandle, leadHandle: lead.leadHandle, customerConfirmed: true });
+      assert.equal(booked.status, 'confirmed'); assert.equal(booked.serviceAddress.postalCode, postalCode);
     }
+    assert.equal(f.events.length, allowed ? 1 : 0);
+    assert.equal(f.db.prepare('SELECT count(*) AS n FROM appointments').get().n, allowed ? 1 : 0);
   });
-  assert.equal(quotedVoice.status, 'quoted');
+}
 
-  // Capture lead with mismatched postal code E2L 4L1
-  const wrongLead = await runtime.handlers.captureLead({
-    context: callContext,
-    args: {
-      name: 'Taylor',
-      address: {
-        line1: '10 King St',
-        city: 'Saint John',
-        region: 'NB',
-        postalCode: 'E2L 4L1',
-        country: 'CA'
-      }
-    }
-  });
-  const wrongAvail = await runtime.handlers.checkAvailability({
-    context: callContext,
-    args: {
-      quoteHandle: quotedVoice.quoteHandle,
-      leadHandle: wrongLead.leadHandle,
-      preference: { fromDate: '2026-06-16', days: 1 }
-    }
-  });
-  assert.equal(wrongAvail.status, 'unavailable');
-  assert.equal(wrongAvail.reason, 'REQUOTE_REQUIRED');
+test('Zone booking: authenticated confirmation rechecks a changed address after a valid hold', async t => {
+  const f = bookingFixture(t), intent = f.quote('E2L 4L1'), call = await httpBooking(t, f, intent, false);
+  const availability = await call('availability', { fromDate: '2026-06-16', days: 1, scopeConfirmation: 'UNCHANGED', customer: bookingCustomer, location: bookingLocation('E2L 4L2') });
+  const slotId = availability.body.slots[0].slotId, held = await call('holds', { slotId });
+  const result = await call('confirm', { holdId: held.body.holdId, confirmedSlotId: slotId, explicitConfirmation: true, addressConfirmation: true,
+    customer: bookingCustomer, location: bookingLocation('E2J 2A1') });
+  assert.equal(result.status, 409); assert.equal(result.body.code, 'REQUOTE_REQUIRED'); assert.equal(f.events.length, 0);
+  assert.equal(f.db.prepare('SELECT count(*) AS n FROM appointments').get().n, 0);
+});
 
-  // Update lead with matching full postal code E2J 2A1 in the quoted E2J zone
-  const rightLead = await runtime.handlers.captureLead({
-    context: callContext,
-    args: {
-      leadHandle: wrongLead.leadHandle,
-      name: 'Taylor',
-      address: {
-        line1: '20 Loch Lomond Rd',
-        city: 'Saint John',
-        region: 'NB',
-        postalCode: 'E2J 2A1',
-        country: 'CA'
-      }
-    }
-  });
-  const rightAvail = await runtime.handlers.checkAvailability({
-    context: callContext,
-    args: {
-      quoteHandle: quotedVoice.quoteHandle,
-      leadHandle: rightLead.leadHandle,
-      preference: { fromDate: '2026-06-16', days: 1 }
-    }
-  });
-  assert.equal(rightAvail.status, 'available');
-  assert.ok(rightAvail.slotOptions.length > 0);
+test('Zone booking: zones alone do not configure a service area or enable direct booking', async t => {
+  const f = bookingFixture(t, { serviceArea: null });
+  assert.equal(isServiceAreaConfigured(null, { travelZones: REQUIRED_ZONES_CENTS }), false);
+  assert.deepEqual(serviceAreaDecision(null, { postalCode: 'E2L 4L2' }, { travelZones: REQUIRED_ZONES_CENTS }), { eligible: false, reason: 'SERVICE_AREA_UNCONFIGURED' });
+  const settings = f.db.prepare('SELECT * FROM bookingSettings').get(), policy = f.db.prepare('SELECT * FROM bookingPolicies').get();
+  assert.equal(resolveBookingCapability({ settings, policy, serviceArea: null, travelZones: REQUIRED_ZONES_CENTS }), 'PREFERRED_TIME_ONLY');
+  const intent = f.quote('E2L 4L1');
+  const availability = await f.booking.availability({ ownerId: f.ownerId, intentId: intent.intentId, filters: { location: bookingLocation('E2L 4L2') } });
+  assert.equal(availability.body.status, 'PREFERRED_TIME_ONLY'); assert.equal(f.events.length, 0);
+});
 
-  const bookedVoice = await runtime.handlers.bookAppointment({
-    context: callContext,
-    args: {
-      slotHandle: rightAvail.slotOptions[0].slotHandle,
-      leadHandle: rightLead.leadHandle,
-      customerConfirmed: true
-    }
-  });
-  assert.equal(bookedVoice.status, 'confirmed');
-  assert.equal(bookedVoice.serviceAddress.postalCode, 'E2J 2A1');
+test('Zone booking: saved charge, same-charge different zones, ZIP codes, and legacy quotes', () => {
+  const defaults = buildDefaultsCents({ travelZones: REQUIRED_ZONES_CENTS });
+  const saved = code => ({ customerInputsJson: JSON.stringify({ postalCode: code }), resultJson: JSON.stringify({ internalResult: { calculationRecord: { financialInputs: { businessDefaults: defaults } } } }) });
+  const check = (quoteRow, bookingPostalCode, zones = REQUIRED_ZONES_CENTS) => checkStoredQuoteBookingAddress({ quoteRow, bookingPostalCode, ownerId: 'synthetic-owner', loadBook: () => ({ defaults: { travelZones: zones } }) });
+  assert.equal(check(saved('E2L 4L1'), 'E2M 1A1', [{ name: 'Other', codes: ['E2M'], charge: 0 }]).ok, true);
+  assert.equal(check(saved('E2L 4L1'), 'E2M 1A1', [{ name: 'Changed', codes: ['E2L','E2M'], charge: 3500 }]).ok, false);
+  assert.equal(check(saved('E2J 2A1'), 'E2L 4L2', [{ name: 'Changed', codes: ['E2L'], charge: 3500 }]).ok, true);
+  assert.equal(check(saved('E2J 2A1'), 'E2J 2A1', []).ok, false);
+  assert.equal(check(saved(''), 'E3B 5A3').ok, true);
+  assert.equal(check({ customerInputsJson: '{"postalCode":"E2L4L1"}', resultJson: '{}' }, 'E3B 5A3').ok, true);
+  assert.equal(check(saved('04101'), '04102-1234').ok, true);
+  assert.equal(check(saved('04101'), '10001').ok, false);
+  assert.equal(check(saved('E2L 4L1'), 'invalid').ok, false);
+  assert.equal(extractQuotedPostalCode({ quoteRow: saved('e2l 4l1') }), 'E2L4L1');
+  assert.equal(checkQuoteBookingPostalCode({ quotedPostalCode: 'E2L4L1', bookingPostalCode: 'E2M1A1', travelZones: REQUIRED_ZONES_CENTS }).ok, true);
 });

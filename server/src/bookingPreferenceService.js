@@ -1,11 +1,11 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import crypto from 'node:crypto';
 import { requestDigest } from './bookingTokens.js';
-import { checkQuoteBookingPostalCode, extractQuotedPostalCode } from '../travelZones.js';
-import { loadOwnerTravelZones } from './bookingCapabilities.js';
 import {
-  compareLocalDates, isValidIanaTimeZone,
-  localDateForInstant, parseLocalDate
+  compareLocalDates,
+  isValidIanaTimeZone,
+  localDateForInstant,
+  parseLocalDate
 } from './calendarTime.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -199,37 +199,6 @@ export function createBookingPreferenceService({
     return db.transaction(work).immediate();
   }
 
-  function assertQuotePostalMatch(ownerId, intentId, location) {
-    let source = null;
-    try {
-      source = usageOwnerQuery(db)('SELECT sourceType, sourceId FROM bookingIntents WHERE id = ? AND ownerId = ?').get(intentId, ownerId);
-    } catch { return; }
-    if (!source || !source.sourceId) return;
-    let quoteRow = null, leadRow = null, submissionRow = null;
-    if (source.sourceType === 'quote') {
-      try { quoteRow = usageOwnerQuery(db)('SELECT customerInputsJson, resultJson FROM quotes WHERE id = ? AND ownerId = ?').get(source.sourceId, ownerId); } catch {}
-    } else if (source.sourceType === 'lead') {
-      try { leadRow = usageOwnerQuery(db)('SELECT collectedInputsJson FROM leads WHERE id = ? AND ownerId = ?').get(source.sourceId, ownerId); } catch {}
-    }
-    try { submissionRow = usageOwnerQuery(db)('SELECT originalSubmissionJson, internalOutcomeJson FROM quoteSubmissions WHERE recordId = ? AND ownerId = ?').get(source.sourceId, ownerId); } catch {}
-    const quotedPostalCode = extractQuotedPostalCode({ quoteRow, leadRow, submissionRow });
-    const travelZones = loadOwnerTravelZones(ownerId);
-    const check = checkQuoteBookingPostalCode({
-      quotedPostalCode,
-      bookingPostalCode: location?.postalCode,
-      travelZones
-    });
-    if (!check.ok) {
-      throw preferenceError('REQUOTE_REQUIRED', 409, check.message, {
-        reason: check.reason,
-        quotedPostalCode: check.quotedPostalCode,
-        bookingPostalCode: check.bookingPostalCode,
-        recoveryAction: 'CHANGE_JOB_DETAILS',
-        fields: ['postalCode']
-      });
-    }
-  }
-
   function request({ ownerId, intentId, idempotencyKey, body }) {
     if (typeof ownerId !== 'string' || !ownerId || typeof intentId !== 'string' || !intentId) {
       throw invalid('A tenant and booking request are required.');
@@ -277,7 +246,6 @@ export function createBookingPreferenceService({
         );
       }
       const validated = validateBody(body, timeZone, now);
-      assertQuotePostalMatch(ownerId, intentId, validated.location);
       const preferenceRequestId = randomUUID();
       if (typeof preferenceRequestId !== 'string' || !UUID.test(preferenceRequestId)) {
         throw new TypeError('UUID generator returned an invalid identifier.');
