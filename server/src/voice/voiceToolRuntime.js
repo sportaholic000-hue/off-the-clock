@@ -660,11 +660,7 @@ export function createVoiceToolRuntime({
     if (addressGuard) {
       return addressGuard;
     }
-    const profile = tenantQuery('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
-    const area = serviceAreaDecision(
-      serviceAreaFromKnowledgeBase(profile?.knowledgeBaseJson),
-      { city: address.city, region: address.region, country: address.country }
-    );
+    const profile = tenantQuery('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId); const area = serviceAreaDecision(serviceAreaFromKnowledgeBase(profile?.knowledgeBaseJson), { city: address.city, region: address.region, country: address.country });
     if (!area.eligible) {
       return {
         status: 'unavailable',
