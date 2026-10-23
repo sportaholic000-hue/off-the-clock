@@ -751,8 +751,8 @@ function Preview({ preview, loading, status, plan }) {
   );
 }
 
-// Blank uses the starting description. Text is customer-facing: no numbers,
-// prices, percentages or codes (the server rejects them on save).
+// Blank uses the starting description. Only measured numbers or ratios are
+// allowed in customer-facing text; the server enforces the save rules.
 function AnswerDefinitionsEditor({service,fields,onChange}) {
   const saved=service.answerDefinitions||{};
   const update=(name,value,text)=>{
@@ -763,7 +763,7 @@ function AnswerDefinitionsEditor({service,fields,onChange}) {
     if(!Object.keys(next).length)delete updated.answerDefinitions;
     onChange(updated);
   };
-  return <div className="field-stack">{fields.map(field=><fieldset key={field.name} aria-label={field.label}><legend className="field-label">{field.label}</legend>
+  return <div className="field-stack"><p>Measurements are allowed (e.g., 6 inches, 4/12 to 6/12, 8 ft). Use one line, up to 160 characters. No currency symbols, percent signs, x or × multipliers, underscores or line breaks.</p>{fields.map(field=><fieldset key={field.name} aria-label={field.label}><legend className="field-label">{field.label}</legend>
     {field.choices.map(choice=><Field key={choice.value} label={choice.label} help={'Blank uses: '+choice.startingDefinition}><TextInput aria-label={field.label+' '+choice.label+' description'} maxLength={160} placeholder={choice.startingDefinition} value={saved[field.name]?.[choice.value]||''} onChange={event=>update(field.name,choice.value,event.target.value)}/></Field>)}
   </fieldset>)}</div>;
 }
@@ -1320,7 +1320,7 @@ export default function PriceBook() {
                 </section>
 
                 {selectedMeta.supportsScopeConfiguration&&<div className="editor-optional" data-editor-section="scope"><Disclosure key={'scope-'+selectedType} title="Additional priced scope" subtitle="Set up removal, preparation and other measured work you offer." summaryChip={selectedStatus.scopeCoverage?.some(scope=>!scope.configurationComplete)?'SETUP NEEDED':'REVIEW SCOPE'}><ScopeEditor service={selected} onChange={replaceSelected}/></Disclosure></div>}
-                {!!selectedStatus.answerDefinitionFields?.length&&<div className="editor-optional" data-editor-section="answer-definitions"><Disclosure key={'answers-'+selectedType} title="Answer descriptions" subtitle="One line per choice, shown in the widget and read by the receptionist when a caller is unsure."><AnswerDefinitionsEditor service={selected} fields={selectedStatus.answerDefinitionFields} onChange={replaceSelected}/></Disclosure></div>}
+                {!!selectedStatus.answerDefinitionFields?.length&&<div className="editor-optional" data-editor-section="answer-definitions"><Disclosure key={'answers-'+selectedType} title="Answer descriptions" subtitle="Owner-written descriptions appear in the widget and are read by the receptionist when a caller is unsure."><AnswerDefinitionsEditor service={selected} fields={selectedStatus.answerDefinitionFields} onChange={replaceSelected}/></Disclosure></div>}
                 {contract.engineVersion&&<>
                   <InstalledMaterialsEditor service={selected} onChange={replaceSelected}/>
                   <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} services={book.services} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>

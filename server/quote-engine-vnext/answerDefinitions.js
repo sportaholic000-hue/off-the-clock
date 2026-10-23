@@ -50,22 +50,39 @@ export const ANSWER_DEFINITION_STARTING_TEXT = Object.freeze({
     small: 'Perennials, groundcover or small shrubs in small nursery pots.',
     medium: 'Shrubs or small evergreens in larger nursery pots.',
     large: 'Trees or large shrubs, sold balled or in very large containers.'
+  },
+  bed: {
+    clean: 'Beds are clear of weeds and debris and ready for mulch or planting.',
+    needs_weeding: 'Some weeds or unwanted plants are growing in the bed and need removal first.',
+    overgrown: 'Thick weeds or brush cover most of the bed and must be cleared before work.'
+  },
+  subfloor: {
+    requires_underlayment: 'The floor under the old covering needs a separate layer before vinyl plank is laid, as confirmed by the flooring instructions or an installer.',
+    does_not_require_underlayment: 'The floor under the old covering can take vinyl plank without a separate layer, as confirmed by the flooring instructions or an installer.',
+    unknown: 'You are not sure whether a separate layer is needed under the new vinyl plank.'
   }
 });
 
-const UNSAFE = /[0-9$€£¢¥%×_]/;
+const UNSAFE = /[$€£¢¥%×_]|(?:\d\s*[xX]\b|\b[xX]\s*\d)/;
+// A number is only customer wording when it names a measurement or ratio.
+// Strip valid measured quantities first; any leftover digit is an unsupported
+// numeric claim (including unmarked amounts, prices or factor values).
+const RATIO = /\b\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?\b/g;
+const MEASURED = /\b\d+(?:\.\d+)?\s*(?:square\s+(?:feet|inches|yards|meters|metres)|sq\.?\s*(?:ft|feet|inches|yards|meters|metres)|inches?|in|feet|foot|ft|yards?|yds?|meters?|metres?|m|cm|mm)\b/gi;
+const hasUnsupportedNumber = text => /\d/.test(text.replace(RATIO, '').replace(MEASURED, ''));
 export const ANSWER_DEFINITION_LIMIT = 160;
 // Unsafe or malformed owner text never reaches customers; saves reject it.
-const safeOwnerText = text => typeof text === 'string' && !/[\r\n]/.test(text) && text.trim().length <= ANSWER_DEFINITION_LIMIT && !UNSAFE.test(text) ? text.trim() : '';
+const safeOwnerText = text => typeof text === 'string' && !/[\r\n]/.test(text) && text.trim().length <= ANSWER_DEFINITION_LIMIT && !UNSAFE.test(text) && !hasUnsupportedNumber(text) ? text.trim() : '';
 
 const FIELD_SETS = Object.freeze({
   accessDifficulty: 'access', demolitionAccessDifficulty: 'access',
   terrainSlope: 'slope', slope: 'slope',
   debrisLevel: 'debris', grassCondition: 'grass',
   surfaceCondition: 'surface', ceilingSurfaceCondition: 'surface', trimSurfaceCondition: 'surface',
-  wallHeight: 'wall', pitch: 'pitch', roofComplexity: 'complexity', plantsBySize: 'plant'
+  wallHeight: 'wall', pitch: 'pitch', roofComplexity: 'complexity', plantsBySize: 'plant',
+  bedCondition: 'bed', subfloorCondition: 'subfloor'
 });
-const CHOICE_LABELS = Object.freeze({ very_steep: 'Very steep' });
+const CHOICE_LABELS = Object.freeze({ very_steep: 'Very steep', unknown: 'Not sure' });
 const choiceLabel = value => CHOICE_LABELS[value] || value[0].toUpperCase() + value.slice(1).replaceAll('_', ' ');
 const BAND_KEYS = [['standard', 'standardMaxFeet'], ['high', 'highMaxFeet'], ['vaulted', 'vaultedMaxFeet']];
 const feet = value => String(value) + ' ft';
@@ -120,7 +137,7 @@ export function answerDefinitionIssuesVNext(rules = {}, fields = {}, pricing = {
   if (!own(rules, 'answerDefinitions')) return [];
   const saved = rules.answerDefinitions;
   if (!record(saved)) return ['Answer descriptions must be saved as one line per choice.'];
-  if (fields === null) return Object.values(saved).some(lines => !record(lines) || Object.values(lines).some(text => typeof text !== 'string' || text.trim() && !safeOwnerText(text))) ? ['Answer descriptions must be one line of text per choice, without numbers, prices, percentages or codes.'] : [];
+  if (fields === null) return Object.values(saved).some(lines => !record(lines) || Object.values(lines).some(text => typeof text !== 'string' || text.trim() && !safeOwnerText(text))) ? ['Answer descriptions must be one line per choice (up to 160 characters). Numbers need a measurement unit or ratio; currency symbols, percent signs, multipliers and underscores are not allowed.'] : [];
   const editable = new Map(answerDefinitionFieldsVNext(fields, pricing).map(field => [field.name, field]));
   const issues = [];
   for (const [name, lines] of Object.entries(saved)) {
@@ -132,7 +149,7 @@ export function answerDefinitionIssuesVNext(rules = {}, fields = {}, pricing = {
       const where = `${field.label}, ${choice.label}`;
       if (typeof text !== 'string') issues.push(`${where}: enter the description as text.`);
       else if (/[\r\n]/.test(text) || text.trim().length > ANSWER_DEFINITION_LIMIT) issues.push(`${where}: keep the description to one line of up to ${ANSWER_DEFINITION_LIMIT} characters.`);
-      else if (UNSAFE.test(text)) issues.push(`${where}: describe what the customer sees, without numbers, prices, percentages or codes.`);
+      else if (UNSAFE.test(text) || hasUnsupportedNumber(text)) issues.push(`${where}: describe what the customer sees; numbers need a unit or ratio. No currency symbols, percent signs, multipliers or underscores.`);
     }
   }
   return issues;

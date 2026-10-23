@@ -22,7 +22,9 @@ const START={
   wall:{standard:['Standard','A typical room height you can paint from a short step ladder.'],high:['High','Taller than a typical room; a tall ladder is needed to reach the top.'],vaulted:['Vaulted','A sloped or cathedral ceiling, or a two-storey space such as a foyer.']},
   pitch:{low:['Low','Nearly flat or gently sloped; easy to walk on.'],medium:['Medium','A typical house roof slope you can walk on with care.'],steep:['Steep','Too steep to walk on comfortably; roofers need safety gear.'],very_steep:['Very steep','Very steep, close to a wall in places, such as a mansard or A-frame roof.']},
   complexity:{simple:['Simple','A gable roof.'],moderate:['Moderate','A hip roof or several valleys.'],complex:['Complex','Dormers or turrets.']},
-  plant:{small:['Small','Perennials, groundcover or small shrubs in small nursery pots.'],medium:['Medium','Shrubs or small evergreens in larger nursery pots.'],large:['Large','Trees or large shrubs, sold balled or in very large containers.']}
+  plant:{small:['Small','Perennials, groundcover or small shrubs in small nursery pots.'],medium:['Medium','Shrubs or small evergreens in larger nursery pots.'],large:['Large','Trees or large shrubs, sold balled or in very large containers.']},
+  bed:{clean:['Clean','Beds are clear of weeds and debris and ready for mulch or planting.'],needs_weeding:['Needs weeding','Some weeds or unwanted plants are growing in the bed and need removal first.'],overgrown:['Overgrown','Thick weeds or brush cover most of the bed and must be cleared before work.']},
+  subfloor:{requires_underlayment:['Requires underlayment','The floor under the old covering needs a separate layer before vinyl plank is laid, as confirmed by the flooring instructions or an installer.'],does_not_require_underlayment:['Does not require underlayment','The floor under the old covering can take vinyl plank without a separate layer, as confirmed by the flooring instructions or an installer.'],unknown:['Not sure','You are not sure whether a separate layer is needed under the new vinyl plank.']}
 };
 const QUESTIONS=[
   ['LANDSCAPING_CLEANUP','debrisLevel','debris'],['LANDSCAPING_CLEANUP','slope','slope'],
@@ -35,7 +37,9 @@ const QUESTIONS=[
   ['LANDSCAPING_MULCH','accessDifficulty','access'],['LANDSCAPING_PLANTING','accessDifficulty','access'],['LANDSCAPING_SOD','accessDifficulty','access'],
   ['LANDSCAPING_SOD','slope','slope'],['FENCING_INSTALL','terrainSlope','slope'],['FENCING_REPLACEMENT','terrainSlope','slope'],
   ['ROOFING_REPLACEMENT','pitch','pitch'],['ROOFING_REPAIR','pitch','pitch'],['ROOFING_REPLACEMENT','roofComplexity','complexity'],
-  ['LANDSCAPING_PLANTING','plantsBySize','plant']
+  ['LANDSCAPING_PLANTING','plantsBySize','plant'],
+  ['LANDSCAPING_MULCH','bedCondition','bed'],['LANDSCAPING_PLANTING','bedCondition','bed'],
+  ['FLOORING_INSTALL','subfloorCondition','subfloor'],['FLOORING_REPLACEMENT','subfloorCondition','subfloor']
 ];
 const expected=set=>Object.entries(START[set]).map(([value,[label,definition]])=>({value,label,definition}));
 let render;
@@ -94,11 +98,11 @@ test('wall height with owner bands 8 / 10 / 20 ft is defined by the bands in bot
   assert.ok(!bridge.applicationStatus(service,{ownerId:'synthetic',defaults:{currency:'CAD'},services:[service]}).answerDefinitionFields.some(f=>f.name==='wallHeight'));
 });
 
-function savedOwner(){
+function savedOwner(type='LANDSCAPING_CLEANUP'){
   migrate();const owner='synthetic-answers-'+randomUUID(),at='2026-10-20T12:00:00.000Z';
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic Answers','QuoteDone','active','UTC','owner',?)").run(owner,owner+'@example.invalid',at);
   db.prepare("INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,updatedAt) VALUES(?,'{}',?)").run(owner,at);
-  const service=structuredClone(fixture('LANDSCAPING_CLEANUP',{},{}).ownerPricing);delete service.origin;
+  const service=structuredClone(fixture(type,{},{}).ownerPricing);delete service.origin;
   const draft=bridge.convertApplicationBook({services:[service],defaults:{currency:'CAD',quoteTimeZone:'UTC'}},'toDollars');
   bridge.saveApplicationBook(owner,{...draft,revision:bridge.readApplicationBook(owner).revision});
   return owner;
@@ -130,10 +134,10 @@ test('owner edits the debris-level Heavy description: widget and voice show it; 
   shown=heavy(owner);assert.equal(shown.widget,START.debris.heavy[1]);assert.ok(shown.html.includes('<strong>Heavy:</strong> '+START.debris.heavy[1]));
 });
 
-test('owner descriptions cannot carry prices, percentages, multipliers, numbers or codes',()=>{
+test('owner descriptions refuse money, percentages, multipliers, codes, line breaks and excess length on save',()=>{
   const owner=savedOwner();
-  for(const text of ['$50 extra for heavy debris','Adds 25% to the price','Charged at 1.5x','heavy_debris','Two\nlines','A'.repeat(161)])
-    assert.throws(()=>saveDefinitions(owner,{debrisLevel:{heavy:text}}),error=>error.statusCode===422&&error.details?.code==='INVALID_QUOTE_PRESENTATION',JSON.stringify(text));
+  for(const text of ['Adds 25%','1.5x the price','$50 extra','rate_key','1.5× higher','6 times the price','Two\nlines','A'.repeat(161)])
+    assert.throws(()=>saveDefinitions(owner,{debrisLevel:{heavy:text}}),error=>error.statusCode===422&&error.details?.code==='INVALID_QUOTE_PRESENTATION'&&error.details.issues.some(issue=>issue.startsWith('Debris level, Heavy:')),JSON.stringify(text));
   assert.throws(()=>saveDefinitions(owner,{grassCondition:{severe:'Tall grass'}}),error=>error.statusCode===422);
   assert.throws(()=>saveDefinitions(owner,{debrisLevel:{extreme:'Everything'}}),error=>error.statusCode===422);
   assert.equal(heavy(owner).widget,START.debris.heavy[1]);
@@ -188,4 +192,63 @@ test('saved owner descriptions never change a quote: phone and widget cents matc
   assert.equal(b.match.questionContract.fields.find(q=>q.field==='debrisLevel').choiceDefinitions.find(c=>c.value==='heavy').definition,'Fallen trees and brush covering the yard.');
   const wa=webQuote(plain),wb=webQuote(described);
   assert.equal(wa.result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(wb.result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(cents(wb.result),cents(wa.result));
+});
+
+const NEW_DEFINITION_FIELDS=[
+  ['LANDSCAPING_MULCH','bedCondition','bed'],['LANDSCAPING_PLANTING','bedCondition','bed'],
+  ['FLOORING_INSTALL','subfloorCondition','subfloor'],['FLOORING_REPLACEMENT','subfloorCondition','subfloor']
+];
+
+test('measured Overgrown text saves unchanged and reaches the widget and phone; clearing restores the starting text',()=>{
+  const owner=savedOwner('LANDSCAPING_MOWING'),name='grassCondition',value='overgrown',edited='Grass over 6 inches tall.';
+  saveDefinitions(owner,{[name]:{[value]:edited}});
+  const service=loadPricebook(owner).services[0],{definition,phone}=surfaces(service);
+  const field=definition.customerFields.find(f=>f.name===name);
+  assert.equal(field.optionDefinitions[value].definition,edited);
+  assert.equal(phone.fields.find(q=>q.field===name).choiceDefinitions.find(c=>c.value===value).definition,edited);
+  assert.ok(render([field]).includes('<strong>Overgrown:</strong> '+edited));
+  assert.deepEqual(bridge.readApplicationBook(owner).services[0].answerDefinitions,{[name]:{[value]:edited}});
+  saveDefinitions(owner,{[name]:{[value]:'  '}});
+  const reset=surfaces(loadPricebook(owner).services[0]);
+  assert.equal(reset.definition.customerFields.find(f=>f.name===name).optionDefinitions[value].definition,START.grass.overgrown[1]);
+  assert.equal(reset.phone.fields.find(q=>q.field===name).choiceDefinitions.find(c=>c.value===value).definition,START.grass.overgrown[1]);
+});
+
+test('units and a roof-pitch ratio are valid measurements on save',()=>{
+  const grass=savedOwner('LANDSCAPING_MOWING');
+  saveDefinitions(grass,{grassCondition:{overgrown:'Grass standing 8 ft tall.'}});
+  assert.equal(surfaces(loadPricebook(grass).services[0]).definition.customerFields.find(f=>f.name==='grassCondition').optionDefinitions.overgrown.definition,'Grass standing 8 ft tall.');
+  const roof=savedOwner('ROOFING_REPAIR');
+  saveDefinitions(roof,{pitch:{medium:'Roof pitch 4/12 to 6/12.'}});
+  const {definition,phone}=surfaces(loadPricebook(roof).services[0]);
+  assert.equal(definition.customerFields.find(f=>f.name==='pitch').optionDefinitions.medium.definition,'Roof pitch 4/12 to 6/12.');
+  assert.equal(phone.fields.find(f=>f.field==='pitch').choiceDefinitions.find(c=>c.value==='medium').definition,'Roof pitch 4/12 to 6/12.');
+});
+
+for(const [type,name,set] of NEW_DEFINITION_FIELDS)test(type+'.'+name+': each owner edit reaches widget and phone; clearing restores all starting descriptions',()=>{
+  const owner=savedOwner(type);
+  const initial=surfaces(loadPricebook(owner).services[0]);
+  const editor=bridge.applicationStatus(loadPricebook(owner).services[0],loadPricebook(owner)).answerDefinitionFields.find(f=>f.name===name);
+  assert.ok(editor,type+' exposes '+name+' in the owner editor');
+  assert.deepEqual(editor.choices.map(c=>({value:c.value,label:c.label,startingDefinition:c.startingDefinition})),
+    expected(set).map(c=>({value:c.value,label:c.label,startingDefinition:c.definition})));
+  assert.deepEqual(widgetRows(initial.definition.customerFields.find(f=>f.name===name)),expected(set));
+  assert.deepEqual(initial.phone.fields.find(f=>f.field===name).choiceDefinitions,expected(set));
+  for(const {value,label,definition:starting} of expected(set)){
+    const edited='Customer checks the work area and selects '+label.toLowerCase()+'.';
+    saveDefinitions(owner,{[name]:{[value]:edited}});
+    const editedSurface=surfaces(loadPricebook(owner).services[0]);
+    const field=editedSurface.definition.customerFields.find(f=>f.name===name);
+    assert.equal(field.optionDefinitions[value].definition,edited);
+    assert.equal(editedSurface.phone.fields.find(q=>q.field===name).choiceDefinitions.find(c=>c.value===value).definition,edited);
+    assert.ok(render([{...field,visibleWhen:undefined}]).includes('<strong>'+label+':</strong> '+edited));
+    saveDefinitions(owner,{[name]:{[value]:' '}});
+    const cleared=surfaces(loadPricebook(owner).services[0]);
+    assert.equal(cleared.definition.customerFields.find(f=>f.name===name).optionDefinitions[value].definition,starting);
+    assert.equal(cleared.phone.fields.find(f=>f.field===name).choiceDefinitions.find(c=>c.value===value).definition,starting);
+  }
+  saveDefinitions(owner,undefined);
+  const removed=surfaces(loadPricebook(owner).services[0]);
+  assert.deepEqual(widgetRows(removed.definition.customerFields.find(f=>f.name===name)),expected(set));
+  assert.deepEqual(removed.phone.fields.find(f=>f.field===name).choiceDefinitions,expected(set));
 });
