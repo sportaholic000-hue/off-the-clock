@@ -193,20 +193,43 @@ test('maps toolCallCancellation on caller barge-in during tool call prediction',
   ]);
 });
 
-test('supports batched function responses for parallel tool calls in one message', async () => {
-  const h = harness();
-  const session = await h.open();
-  await session.sendToolResponse({
-    functionResponses: [
-      { id: 'call-1', name: 'getQuote', response: { status: 'quoted' } },
-      { id: 'call-2', name: 'getQuote', response: { status: 'quoted' } }
-    ]
-  });
-  assert.deepEqual(h.calls.responses, [{
-    functionResponses: [
-      { id: 'call-1', name: 'getQuote', response: { status: 'quoted' } },
-      { id: 'call-2', name: 'getQuote', response: { status: 'quoted' } }
-    ]
-  }]);
+test('unused batched functionResponses input is refused', async () => {
+  const h=harness(),session=await h.open();
+  await assert.rejects(session.sendToolResponse({functionResponses:[{id:'call-1',name:'getQuote',response:{}}]}),{code:'INVALID_GOOGLE_LIVE_TOOL_RESPONSE'});
+  assert.deepEqual(h.calls.responses,[]);
+  await session.close();
 });
 
+for(const status of [undefined,'INTERACTION_STATUS_UNSPECIFIED','IDLE','REQUIRES_ACTION'])test(`goAway reconnects once at idle turnComplete: ${status}`,async()=>{
+  const h=harness(),s=await h.open(),old=h.providerCallbacks;
+  old.onmessage({sessionResumptionUpdate:{newHandle:'synthetic-handle',resumable:false}});
+  old.onmessage({goAway:{timeLeft:'20s'}});
+  old.onmessage({serverContent:{turnComplete:true,...(status?{interactionStatus:status}:{})}});
+  await s.whenIdle();await settle();
+  assert.equal(h.calls.connect.length,2);
+  assert.equal(h.calls.connect[1].config.sessionResumption.handle,'synthetic-handle');
+  old.onmessage({serverContent:{turnComplete:true}});await settle();
+  assert.equal(h.calls.connect.length,2);await s.close();
+});
+
+test('IN_PROGRESS waits at turnComplete but reconnects before timeLeft expires',async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  const h=harness(),s=await h.open();
+  h.providerCallbacks.onmessage({sessionResumptionUpdate:{newHandle:'synthetic-handle',resumable:false}});
+  h.providerCallbacks.onmessage({goAway:{timeLeft:'10s'}});
+  h.providerCallbacks.onmessage({serverContent:{turnComplete:true,interactionStatus:'IN_PROGRESS'}});
+  await s.whenIdle();assert.equal(h.calls.connect.length,1);
+  t.mock.timers.tick(7999);await Promise.resolve();assert.equal(h.calls.connect.length,1);
+  t.mock.timers.tick(1);await Promise.resolve();await Promise.resolve();
+  assert.equal(h.calls.connect.length,2);
+  t.mock.timers.tick(2000);await s.whenIdle();assert.equal(h.calls.connect.length,2);
+  assert.deepEqual(h.calls.events,[]);await s.close();
+});
+
+test('SDK class allowance never extends to nested objects or unrelated root classes',async()=>{
+  const {LiveServerMessage}=await import('@google/genai');
+  for(const msg of [Object.assign(new LiveServerMessage(),{serverContent:new (class Nested {})()}),new (class Pretender {})()]){
+    const h=harness(),s=await h.open();h.providerCallbacks.onmessage(msg);await settle();
+    assert.deepEqual(h.calls.events,[['error']]);await s.close();
+  }
+});

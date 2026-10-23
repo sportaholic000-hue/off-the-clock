@@ -1,3 +1,4 @@
+import {MUTATING_VOICE_TOOLS} from './toolSchemas.js';
 import {
   VOICE_AUDIO_FORMATS,
   VoiceAudioCodecError,
@@ -431,6 +432,7 @@ export function createGeminiMediaBridge({
 
     function callbacks() {
       const cancelledToolCalls = new Set();
+      const completedMutations = new Map();
       return Object.freeze({
         onAudio(value) {
           let pcm;
@@ -510,10 +512,7 @@ export function createGeminiMediaBridge({
           return transcriptTail;
         },
 
-        // Audit Note (Gemini Live Protocol):
-        // Track tool call cancellations triggered by user barge-in / speech activity.
-        // If a cancellation signal arrives for a pending tool call, drop execution and
-        // refrain from transmitting a stale sendToolResponse to the model.
+        // Skip queued calls; completed mutations must remain in model context.
         onToolCallCancellation(value) {
           let toolCallId;
           try {
@@ -527,6 +526,11 @@ export function createGeminiMediaBridge({
             return Promise.resolve();
           }
           cancelledToolCalls.add(toolCallId);
+          const completed=completedMutations.get(toolCallId);
+          if(completed){
+            completedMutations.delete(toolCallId);
+            return gemini.sendCancelledToolResult(completed).catch(error=>abort(error));
+          }
           return Promise.resolve();
         },
 
@@ -544,20 +548,21 @@ export function createGeminiMediaBridge({
               return;
             }
             const response = await onToolCall({ context, session, streamSid, toolCall });
-            if (ended || cancelledToolCalls.has(toolCall.toolCallId)) {
-              cancelledToolCalls.delete(toolCall.toolCallId);
-              return;
-            }
+            if (ended) return;
+            const cancelled=cancelledToolCalls.delete(toolCall.toolCallId);
+            const mutating=MUTATING_VOICE_TOOLS.includes(toolCall.name);
+            if(cancelled&&!mutating)return;
             validateJsonValue(response, {
               maxBytes: limits.maxToolResultJsonBytes,
               maxNodes: 20000,
               code: "INVALID_TOOL_RESPONSE",
             });
-            await gemini.sendToolResponse({
-              toolCallId: toolCall.toolCallId,
-              name: toolCall.name,
-              response,
-            });
+            const result={toolCallId:toolCall.toolCallId,name:toolCall.name,response};
+            if(cancelled)await gemini.sendCancelledToolResult(result);
+            else {
+              if(mutating)completedMutations.set(toolCall.toolCallId,result);
+              await gemini.sendToolResponse(result);
+            }
           });
           toolTail = task.catch((error) => abort(
             error instanceof GeminiMediaBridgeError

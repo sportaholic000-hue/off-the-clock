@@ -1,5 +1,6 @@
 import { EventEmitter } from "node:events";
 import test from "node:test";
+import {createGoogleGenAiLiveSessionOpener} from '../server/src/voice/googleGenAiLiveAdapter.js';
 import assert from "node:assert/strict";
 
 import { encodeMuLawSample } from "../server/src/voice/audioCodec.js";
@@ -476,4 +477,57 @@ test("invalid provider audio, transcript, or tool data fails closed without echo
     assert.equal(harness.events.toolCalls.length, 0);
     assert.equal(harness.events.toolResponses.length, 0);
   });
+});
+
+// Synthetic durable booking state exercises the real bridge + SDK adapter boundary.
+for(const cancelAfterResponse of [false,true])test(`cancelled confirmed booking is retained in context before further output (response sent: ${cancelAfterResponse})`,async()=>{
+  let receive,release,booked=false;
+  const sent=[],pending=new Promise(resolve=>{release=resolve;});
+  const opener=createGoogleGenAiLiveSessionOpener({
+    model:'gemini-3.8-live',systemInstruction:'[SYNTHETIC] test',
+    toolDeclarations:[{name:'bookAppointment'},{name:'matchService'}],
+    client:{live:{connect:async ({callbacks})=>{
+      receive=callbacks.onmessage;
+      return {sendRealtimeInput(){},sendToolResponse:v=>sent.push(['response',v]),sendClientContent:v=>sent.push(['context',v]),close(){}};
+    }}}
+  });
+  const h=await createHarness({openGeminiSession:opener,onToolCall:async({toolCall})=>{
+    assert.equal(toolCall.name,'bookAppointment');booked=true;
+    if(!cancelAfterResponse)await pending;
+    return {status:'confirmed',appointmentHandle:'synthetic-confirmed-appointment'};
+  }});
+  await begin(h);
+  receive({toolCall:{functionCalls:[{id:'booking-1',name:'bookAppointment',args:{}}]}});
+  for(let i=0;i<10&&!booked;i++)await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(booked,true);
+  if(cancelAfterResponse)await h.result.controller.whenIdle();
+  receive({toolCallCancellation:{ids:['booking-1','match-1']}});
+  receive({toolCall:{functionCalls:[{id:'match-1',name:'matchService',args:{}}]}});
+  receive({serverContent:{outputTranscription:{text:'[SYNTHETIC] stale reply'},modelTurn:{parts:[{inlineData:{data:'AAAA',mimeType:'audio/pcm;rate=24000'}}]},turnComplete:true}});
+  release();
+  for(let i=0;i<10;i++)await new Promise(resolve=>setImmediate(resolve));
+  await h.result.controller.whenIdle();
+  assert.equal(booked,true);assert.equal(h.events.toolCalls.length,1);
+  const recovery=sent.filter(x=>x[0]==='context');assert.equal(recovery.length,1);
+  assert.deepEqual(JSON.parse(recovery[0][1].turns[0].parts[0].text),{cancelledToolResult:{toolCallId:'booking-1',name:'bookAppointment',response:{status:'confirmed',appointmentHandle:'synthetic-confirmed-appointment'}}});
+  assert.equal(recovery[0][1].turnComplete,true);
+  assert.equal(sent.filter(x=>x[0]==='response').length,cancelAfterResponse?1:0);
+  assert.equal(h.events.transcripts.length,0);
+  receive({serverContent:{outputTranscription:{text:'[SYNTHETIC] appointment confirmed'},turnComplete:true}});
+  for(let i=0;i<5;i++)await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(h.events.transcripts[0].transcript.text,'[SYNTHETIC] appointment confirmed');
+  await h.result.controller.close();
+});
+
+test('read-only matchService cancelled after starting may discard its result',async()=>{
+  let release,started=false;
+  const pending=new Promise(resolve=>{release=resolve;});
+  const h=await createHarness({onToolCall:async()=>{started=true;await pending;return {status:'matched'};}});
+  await begin(h);
+  const work=h.callbacks.onToolCall({name:'matchService',args:{},toolCallId:'read-1'});
+  await Promise.resolve();assert.equal(started,true);
+  await h.callbacks.onToolCallCancellation({toolCallId:'read-1'});
+  release();await work;
+  assert.deepEqual(h.events.toolResponses,[]);
+  assert.equal(h.result.controller.state,'active');await h.result.controller.close();
 });

@@ -1,3 +1,5 @@
+import {LiveServerMessage} from '@google/genai';
+import {MUTATING_VOICE_TOOLS} from './toolSchemas.js';
 // SDK boundary: injected clients let tests execute without a live provider.
 import {VOICE_RESULT_BYTES} from './voiceQuotePresentation.js';
 import {validLiveModelName} from './liveModelName.js';
@@ -5,27 +7,15 @@ import {VOICE_INSTRUCTION_CHARACTER_LIMIT} from './voiceProviderLimits.js';
 export class GoogleGenAiLiveAdapterError extends Error{constructor(code){super('The live voice provider is unavailable.');this.name='GoogleGenAiLiveAdapterError';this.code=code;}}
 const fail=code=>{throw new GoogleGenAiLiveAdapterError(code);};
 const plain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
-// Audit Note (Gemini Live Protocol):
-// @google/genai instantiates incoming WebSocket messages as LiveServerMessage class instances.
-// In Node.js, Object.getPrototypeOf(item) for an SDK message is LiveServerMessage.prototype,
-// whose prototype in turn is Object.prototype. The SDK also defines helper getters (text, data)
-// on LiveServerMessage.prototype.
-// Strict check Object.getPrototypeOf(item) === Object.prototype at root would reject genuine SDK message
-// instances. We accept plain objects as well as direct SDK class instances at depth 0, while ensuring
-// all nested payloads (tool arguments, transcription bodies) remain strictly plain objects without
-// inherited prototypes or accessors.
-const isLiveMessage=value=>{
-  if(value===null||typeof value!=='object'||Array.isArray(value))return false;
-  const proto=Object.getPrototypeOf(value);
-  return proto===Object.prototype||proto?.constructor?.name==='LiveServerMessage'||(proto!==null&&Object.getPrototypeOf(proto)===Object.prototype);
-};
-function jsonData(value,maxBytes=VOICE_RESULT_BYTES){
+// Only the SDK message root may have a class prototype; nested data stays plain.
+const isLiveMessage=value=>plain(value)||(value!==null&&typeof value==='object'&&Object.getPrototypeOf(value)===LiveServerMessage.prototype);
+function jsonData(value,maxBytes=VOICE_RESULT_BYTES,liveRoot=false){
   let nodes=0;
   function visit(item,depth){
     if(++nodes>20000||depth>12)fail('INVALID_GOOGLE_LIVE_MESSAGE');
     if(item===null||typeof item==='string'||typeof item==='boolean'||typeof item==='number'&&Number.isFinite(item))return;
     if(Array.isArray(item)){for(const child of item)visit(child,depth+1);return;}
-    if(depth===0?!isLiveMessage(item):!plain(item))fail('INVALID_GOOGLE_LIVE_MESSAGE');
+    if(depth===0&&liveRoot?!isLiveMessage(item):!plain(item))fail('INVALID_GOOGLE_LIVE_MESSAGE');
     for(const key of Reflect.ownKeys(item)){if(typeof key!=='string'||['__proto__','constructor','prototype'].includes(key))fail('INVALID_GOOGLE_LIVE_MESSAGE');const descriptor=Object.getOwnPropertyDescriptor(item,key);if(!descriptor||!('value' in descriptor))fail('INVALID_GOOGLE_LIVE_MESSAGE');visit(descriptor.value,depth+1);}
   }
   visit(value,0);if(Buffer.byteLength(JSON.stringify(value),'utf8')>maxBytes)fail('INVALID_GOOGLE_LIVE_MESSAGE');
@@ -45,6 +35,8 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     let generation=0,resumeHandle=null,reconnectPromise=null,latestResumable=true,goAwayTimer=null,goAwayEpoch=null;
     let outbound=Promise.resolve(),clientMessageIndex=0,lastConsumedIndex=-1,bufferedAudioBytes=0;
     const audioBuffer=[];
+    const knownTools=new Map(),pendingRecovery=new Set();
+    let outputRevision=0,interactionStatus;
     const removeOldestAudio=()=>{const removed=audioBuffer.shift();if(removed)bufferedAudioBytes-=removed.bytes;};
     const clearGoAway=()=>{if(goAwayTimer)clearTimeout(goAwayTimer);goAwayTimer=null;goAwayEpoch=null;};
     function close(){
@@ -66,49 +58,36 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
       Promise.resolve(callbacks.onError()).catch(()=>{});void close();
     }
     async function flush(final){if(!modelText)return;const text=modelText;modelText='';await callbacks.onTranscript({text,role:'model',final});}
-    async function message(value){
-      if(closed)return;jsonData(value);const body=value.serverContent;
+    async function message(value,discardOutput=false){
+      if(closed)return;jsonData(value,VOICE_RESULT_BYTES,true);const body=value.serverContent;
       if(body){
         if(!plain(body))fail('INVALID_GOOGLE_LIVE_MESSAGE');
-        for(const part of (closing||failed?[]:body.modelTurn?.parts||[]))if(part.inlineData){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
+        for(const part of (closing||failed||discardOutput?[]:body.modelTurn?.parts||[]))if(part.inlineData){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
         if(body.interrupted&&!closing&&!failed)await callbacks.onInterruption();
       }
       if(value.toolCall&&!closing&&!failed){
         if(!Array.isArray(value.toolCall.functionCalls)||value.toolCall.functionCalls.length>20)fail('INVALID_GOOGLE_LIVE_MESSAGE');
-        for(const call of value.toolCall.functionCalls){if(!plain(call)||typeof call.id!=='string'||!/^[A-Za-z0-9_.:-]{1,200}$/.test(call.id)||!toolDeclarations.some(tool=>tool.name===call.name)||!plain(call.args))fail('INVALID_GOOGLE_LIVE_MESSAGE');jsonData(call.args,32768);await callbacks.onToolCall({name:call.name,args:call.args,toolCallId:call.id});}
+        for(const call of value.toolCall.functionCalls){if(!plain(call)||typeof call.id!=='string'||!/^[A-Za-z0-9_.:-]{1,200}$/.test(call.id)||!toolDeclarations.some(tool=>tool.name===call.name)||!plain(call.args))fail('INVALID_GOOGLE_LIVE_MESSAGE');jsonData(call.args,32768);knownTools.set(call.id,call.name);await callbacks.onToolCall({name:call.name,args:call.args,toolCallId:call.id});}
       }
-      // Audit Note (Gemini Live Protocol):
-      // Process toolCallCancellation events emitted by the Gemini Live API when
-      // user speech barge-in cancels an in-flight tool prediction.
-      if(value.toolCallCancellation&&!closing&&!failed){
-        const cancel=value.toolCallCancellation;
-        if(!plain(cancel)||!Array.isArray(cancel.ids)||cancel.ids.length>20)fail('INVALID_GOOGLE_LIVE_MESSAGE');
-        for(const id of cancel.ids){
-          if(typeof id!=='string'||!/^[A-Za-z0-9_.:-]{1,200}$/.test(id))fail('INVALID_GOOGLE_LIVE_MESSAGE');
-          if(typeof callbacks.onToolCallCancellation==='function')await callbacks.onToolCallCancellation({toolCallId:id});
-        }
-      }
+
     }
     const enqueue=work=>{if(closing||closed)return;queue=queue.then(work).catch(error);};
     function acceptMessage(value){
       if(closed)return;
-      try{jsonData(value);}catch{error();return;}
+      try{jsonData(value,VOICE_RESULT_BYTES,true);}catch{error();return;}
       const body=value.serverContent;
+      const revision=outputRevision,discardOutput=pendingRecovery.size>0;
       // Text receipt has its own queue. A slow email/calendar/tool operation must
       // never prevent already received caller words from reaching persistence.
       const received=transcriptions.then(async()=>{
         if(!body)return;if(!plain(body))fail('INVALID_GOOGLE_LIVE_MESSAGE');
         if(body.inputTranscription?.text){if(typeof body.inputTranscription.text!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onTranscript({text:body.inputTranscription.text,role:'user',final:true});}
-        if(body.outputTranscription?.text){if(typeof body.outputTranscription.text!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');modelText+=body.outputTranscription.text;if(modelText.length>16384)fail('INVALID_GOOGLE_LIVE_MESSAGE');}
+        if(!discardOutput&&revision===outputRevision&&body.outputTranscription?.text){if(typeof body.outputTranscription.text!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');modelText+=body.outputTranscription.text;if(modelText.length>16384)fail('INVALID_GOOGLE_LIVE_MESSAGE');}
         if(body.interrupted)await flush(false);else if(body.turnComplete)await flush(true);
       });
       transcriptions=received.catch(error);
-      enqueue(async()=>{await received;await message(value);
-        // Audit Note (Gemini Live Protocol):
-        // Reconnect after goAway only when turnComplete is emitted AND interactionStatus is IDLE
-        // (or unspecified). If interactionStatus is IN_PROGRESS, reasoning or multi-step tool turns
-        // are still active.
-        const isIdle=!body?.interactionStatus||body.interactionStatus==='IDLE';
+      enqueue(async()=>{await received;await message(value,discardOutput||revision!==outputRevision);
+        const isIdle=body?.interactionStatus!=='IN_PROGRESS';
         if(body?.turnComplete&&isIdle&&goAwayEpoch===generation)void reconnect(generation);
       });
     }
@@ -125,7 +104,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
           // acknowledgement; keep accepting that text on the active socket.
           if(epoch!==generation||closed||failed)return;
           try{
-            jsonData(value);
+            jsonData(value,VOICE_RESULT_BYTES,true);
             const update=value.sessionResumptionUpdate;
             if(update!==undefined){
               if(!plain(update)||update.resumable!==undefined&&typeof update.resumable!=='boolean'||update.newHandle!==undefined&&typeof update.newHandle!=='string'||update.lastConsumedClientMessageIndex!==undefined&&typeof update.lastConsumedClientMessageIndex!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');
@@ -141,12 +120,23 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
               }
             }
           }catch{error();return;}
+          // Cancellation cannot wait behind the tool promise it cancels.
+          if(value.toolCallCancellation&&!closing){
+            const cancel=value.toolCallCancellation;
+            if(!plain(cancel)||!Array.isArray(cancel.ids)||cancel.ids.length>20||cancel.ids.some(id=>typeof id!=='string'||!/^[A-Za-z0-9_.:-]{1,200}$/.test(id))){error();return;}
+            outputRevision++;
+            for(const id of cancel.ids){
+              if(MUTATING_VOICE_TOOLS.includes(knownTools.get(id)))pendingRecovery.add(id);
+              Promise.resolve(callbacks.onToolCallCancellation?.({toolCallId:id})).catch(error);
+            }
+          }
+          if(value.serverContent?.interactionStatus!==undefined)interactionStatus=value.serverContent.interactionStatus;
           acceptMessage(value);
-          if(value.sessionResumptionUpdate?.resumable===true&&goAwayEpoch===epoch)void reconnect(epoch);
+          if(value.sessionResumptionUpdate?.resumable===true&&interactionStatus!=='IN_PROGRESS'&&goAwayEpoch===epoch)void reconnect(epoch);
           if(value.goAway!==undefined&&!closing){
             if(!plain(value.goAway)||value.goAway.timeLeft!==undefined&&typeof value.goAway.timeLeft!=='string'){error();return;}
             if(!resumeHandle){error();return;}
-            if(latestResumable){void reconnect(epoch);return;}
+            if(latestResumable&&interactionStatus!=='IN_PROGRESS'){void reconnect(epoch);return;}
             clearGoAway();goAwayEpoch=epoch;
             const seconds=/^(\d+(?:\.\d+)?)s$/.exec(value.goAway.timeLeft||'');
             const deadline=seconds?Math.max(0,Number(seconds[1])*1000-2000):0;
@@ -201,24 +191,25 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
           }
         });}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
       },
-      // Audit Note (Gemini Live Protocol):
-      // Support both single functionResponses and batched arrays in sendToolResponse,
-      // enabling atomic delivery of all function responses for a multi-call turn.
       async sendToolResponse(value){
         if(closed||failed)fail('GOOGLE_LIVE_SEND_FAILED');
-        let responses;
-        if(Array.isArray(value?.functionResponses)){
-          responses=value.functionResponses;
-        }else{
-          if(typeof value?.toolCallId!=='string'||typeof value?.name!=='string'||!toolDeclarations.some(tool=>tool.name===value.name))fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');
-          responses=[{id:value.toolCallId,name:value.name,response:value.response}];
-        }
-        if(!responses.length||responses.length>20)fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');
-        for(const resp of responses){
-          if(typeof resp?.id!=='string'||typeof resp?.name!=='string'||!toolDeclarations.some(tool=>tool.name===resp.name))fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');
-          jsonData(resp.response);
-        }
-        try{await sendOrdered(async()=>{await (await ready()).sendToolResponse({functionResponses:responses});if(transparentSessionResumption)clientMessageIndex++;});}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
+        if(typeof value?.toolCallId!=='string'||typeof value?.name!=='string'||!toolDeclarations.some(tool=>tool.name===value.name))fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');
+        jsonData(value.response);
+        try{await sendOrdered(async()=>{await (await ready()).sendToolResponse({functionResponses:[{id:value.toolCallId,name:value.name,response:value.response}]});if(transparentSessionResumption)clientMessageIndex++;});}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
+      },
+      async sendCancelledToolResult(value){
+        if(!MUTATING_VOICE_TOOLS.includes(value?.name)||typeof value?.toolCallId!=='string')fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');
+        jsonData(value.response);
+        // A cancelled tool ID is no longer a pending function call. Insert its
+        // authoritative result as ordered context and request a fresh reply.
+        await callbacks.onInterruption();
+        try{await sendOrdered(async()=>{
+          await (await ready()).sendClientContent({turns:[{role:'user',parts:[{text:JSON.stringify({cancelledToolResult:{toolCallId:value.toolCallId,name:value.name,response:value.response}})}]}],turnComplete:true});
+          if(transparentSessionResumption)clientMessageIndex++;
+          pendingRecovery.delete(value.toolCallId);
+          knownTools.delete(value.toolCallId);
+          outputRevision++;
+        });}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
       },close,whenIdle:()=>Promise.all([queue,transcriptions])
     });
   };
