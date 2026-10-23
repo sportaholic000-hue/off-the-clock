@@ -28,7 +28,7 @@ import { isServiceAreaConfigured, serviceAreaDecision } from '../server/src/serv
 import { resolveBookingCapability } from '../server/src/bookingCapabilities.js';
 import { createBookingService } from '../server/src/bookingService.js';
 import { installBookingRoutes } from '../server/src/bookingRoutes.js';
-import { checkStoredQuoteBookingAddress, withQuoteBookingLocationGuard } from '../server/src/quoteBookingLocation.js';
+import { checkStoredQuoteBookingAddress } from '../server/src/quoteBookingLocation.js';
 import { createBookingPreferenceService } from '../server/src/bookingPreferenceService.js';
 
 const MOWING_SERVICE_ID = '11111111-2222-4333-8444-555555555555';
@@ -607,7 +607,7 @@ function bookingFixture(t, { serviceArea = { mode: 'all', cities: [] } } = {}) {
   } });
   db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)").run(ownerId,"cus_synthetic_"+ownerId,nowIso,nowIso,nowIso);
   db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(ownerId);
-  const booking = withQuoteBookingLocationGuard(raw, db);
+  const booking = raw;
   function quote(postalCode, zones = REQUIRED_ZONES_CENTS) {
     const customerInputs = { ...BASE_MOWING_INPUTS, ...(postalCode ? { postalCode } : {}) };
     const internalResult = generateQuoteVNext({ serviceType: 'LANDSCAPING_MOWING', ownerPricing: buildMowingServiceCents(ownerId),
@@ -709,13 +709,21 @@ test('Zone booking: zones alone do not configure a service area or enable direct
 
 test('Zone booking: saved charge, same-charge different zones, ZIP codes, and legacy quotes', () => {
   const defaults = buildDefaultsCents({ travelZones: REQUIRED_ZONES_CENTS });
-  const saved = code => ({ customerInputsJson: JSON.stringify({ postalCode: code }), resultJson: JSON.stringify({ internalResult: { calculationRecord: { financialInputs: { businessDefaults: defaults } } } }) });
+  const saved = (code, travel = 'always') => ({
+    customerInputsJson: JSON.stringify({ postalCode: code }),
+    resultJson: JSON.stringify({ internalResult: generateQuoteVNext({
+      serviceType: 'LANDSCAPING_MOWING', businessDefaults: defaults, currentMonth: 6, callerType: 'owner',
+      ownerPricing: { ...buildMowingServiceCents(), feeRules: { ...buildMowingServiceCents().feeRules, travel } },
+      customerInputs: { ...BASE_MOWING_INPUTS, ...(code ? { postalCode: code } : {}) }
+    }) })
+  });
   const check = (quoteRow, bookingPostalCode, zones = REQUIRED_ZONES_CENTS) => checkStoredQuoteBookingAddress({ quoteRow, bookingPostalCode, ownerId: 'synthetic-owner', loadBook: () => ({ defaults: { travelZones: zones } }) });
   assert.equal(check(saved('E2L 4L1'), 'E2M 1A1', [{ name: 'Other', codes: ['E2M'], charge: 0 }]).ok, true);
   assert.equal(check(saved('E2L 4L1'), 'E2M 1A1', [{ name: 'Changed', codes: ['E2L','E2M'], charge: 3500 }]).ok, false);
   assert.equal(check(saved('E2J 2A1'), 'E2L 4L2', [{ name: 'Changed', codes: ['E2L'], charge: 3500 }]).ok, true);
   assert.equal(check(saved('E2J 2A1'), 'E2J 2A1', []).ok, false);
   assert.equal(check(saved(''), 'E3B 5A3').ok, true);
+  assert.equal(check(saved('E2L 4L1', 'not_applicable'), 'E3B 5A3').ok, true);
   assert.equal(check({ customerInputsJson: '{"postalCode":"E2L4L1"}', resultJson: '{}' }, 'E3B 5A3').ok, true);
   assert.equal(check(saved('04101'), '04102-1234').ok, true);
   assert.equal(check(saved('04101'), '10001').ok, false);

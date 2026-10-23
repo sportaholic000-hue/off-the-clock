@@ -37,7 +37,6 @@ import { CREATE_TABLE_STATEMENTS } from './schema.js';
 import {installAccountRoutes} from './accountRoutes.js';
 import { installQuoteDoneRoutes } from './quoteDoneRoutes.js';
 import { createBookingService } from './bookingService.js';
-import { withQuoteBookingLocationGuard } from './quoteBookingLocation.js';
 import {latestForwardingArrival} from './voice/voiceForwardingCheck.js';
 import { createBookingPreferenceService } from './bookingPreferenceService.js';
 import { installBookingRoutes } from './bookingRoutes.js';
@@ -179,7 +178,7 @@ const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');
 const bookingRuntimeAvailable = Buffer.byteLength(bookingTokenSecret) >= 32;
 const bookingCalendar = bookingRuntimeAvailable ? createGoogleCalendarAdapter() : null;
 const bookingService = bookingRuntimeAvailable
-  ? withQuoteBookingLocationGuard(createBookingService({ db, calendar: bookingCalendar, slotTokenSecret: bookingTokenSecret }), db)
+  ? createBookingService({ db, calendar: bookingCalendar, slotTokenSecret: bookingTokenSecret })
   : null;
 const bookingPreferenceService = bookingRuntimeAvailable
   ? createBookingPreferenceService({ db })

@@ -12,9 +12,10 @@ Widget HTTP and phone, each independently:
 - Saved charge controls comparison after owner changes rates; current quoted-postal charge cannot substitute for it.
 - ZIP5 and ZIP+4 at equal charges: allowed; incompatible/outside ZIP: refused.
 - Quote without postal code: no new restriction.
+- A quote whose travel fee was not applied: no new restriction, even if the saved defaults contain zones. An applied zero-cent travel line still binds the quote.
 - Quote made without zones: no new restriction, even if zones are saved later.
 - Owner zones without a configured service area: PREFERRED_TIME_ONLY, matching 98d4e0f.
 - Existing city service-area restrictions and calendar capability remain in force.
-- bookingService.js SHA-256 must match candidate-n pin and baseline 98d4e0f; no guard changes.
+- bookingService.js must be baseline 98d4e0f plus its guard import and returned-interface wrapper; update only its candidate-n SHA-256 in the same commit under the owner-approved exception. bookingRoutes.js, server.js, every route source pin and all other guard entries stay unchanged.
 - Existing no-zone booking tests and candidateNTagGate20261014.spec.mjs: unchanged, pass.
 - Every existing quote-side assertion in travelZones20261020.spec.mjs remains unchanged. Core total 10500 cents; Outer total 14000 cents; legacy no-zone total 13000 cents; outside every zone remains review. Quote-producing code and calculators remain byte-identical to de38e4da.
