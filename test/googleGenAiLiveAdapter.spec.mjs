@@ -37,6 +37,7 @@ function harness(overrides = {}) {
     async onInterruption() { calls.events.push(['interruption']); },
     async onTranscript(value) { calls.events.push(['transcript', value]); },
     async onToolCall(value) { calls.events.push(['tool', value]); },
+    async onToolCallCancellation(value) { calls.events.push(['toolCancellation', value]); },
     async onError() { calls.events.push(['error']); },
     async onClose() { calls.events.push(['close']); }
   };
@@ -161,3 +162,74 @@ test('construction and connection failures use stable local error codes', async 
   );
 });
 
+test('accepts authentic @google/genai LiveServerMessage class instances with prototype accessors', async () => {
+  const { LiveServerMessage } = await import('@google/genai');
+  const h = harness();
+  await h.open();
+  const msg = new LiveServerMessage();
+  Object.assign(msg, {
+    serverContent: {
+      modelTurn: { parts: [{ text: 'Hello from Gemini Live' }] },
+      outputTranscription: { text: 'Hello from Gemini Live' },
+      turnComplete: true
+    }
+  });
+  assert.equal(typeof msg.text, 'string');
+  assert.equal(msg.text, 'Hello from Gemini Live');
+  h.providerCallbacks.onmessage(msg);
+  await settle();
+  assert.deepEqual(h.calls.events, [
+    ['transcript', { text: 'Hello from Gemini Live', role: 'model', final: true }]
+  ]);
+});
+
+test('maps toolCallCancellation on caller barge-in during tool call prediction', async () => {
+  const h = harness();
+  await h.open();
+  h.providerCallbacks.onmessage({ toolCallCancellation: { ids: ['tool-cancel-1'] } });
+  await settle();
+  assert.deepEqual(h.calls.events, [
+    ['toolCancellation', { toolCallId: 'tool-cancel-1' }]
+  ]);
+});
+
+test('unused batched functionResponses input is refused', async () => {
+  const h=harness(),session=await h.open();
+  await assert.rejects(session.sendToolResponse({functionResponses:[{id:'call-1',name:'getQuote',response:{}}]}),{code:'INVALID_GOOGLE_LIVE_TOOL_RESPONSE'});
+  assert.deepEqual(h.calls.responses,[]);
+  await session.close();
+});
+
+for(const status of [undefined,'INTERACTION_STATUS_UNSPECIFIED','IDLE','REQUIRES_ACTION'])test(`goAway reconnects once at idle turnComplete: ${status}`,async()=>{
+  const h=harness(),s=await h.open(),old=h.providerCallbacks;
+  old.onmessage({sessionResumptionUpdate:{newHandle:'synthetic-handle',resumable:false}});
+  old.onmessage({goAway:{timeLeft:'20s'}});
+  old.onmessage({serverContent:{turnComplete:true,...(status?{interactionStatus:status}:{})}});
+  await s.whenIdle();await settle();
+  assert.equal(h.calls.connect.length,2);
+  assert.equal(h.calls.connect[1].config.sessionResumption.handle,'synthetic-handle');
+  old.onmessage({serverContent:{turnComplete:true}});await settle();
+  assert.equal(h.calls.connect.length,2);await s.close();
+});
+
+test('IN_PROGRESS waits at turnComplete but reconnects before timeLeft expires',async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  const h=harness(),s=await h.open();
+  h.providerCallbacks.onmessage({sessionResumptionUpdate:{newHandle:'synthetic-handle',resumable:false}});
+  h.providerCallbacks.onmessage({goAway:{timeLeft:'10s'}});
+  h.providerCallbacks.onmessage({serverContent:{turnComplete:true,interactionStatus:'IN_PROGRESS'}});
+  await s.whenIdle();assert.equal(h.calls.connect.length,1);
+  t.mock.timers.tick(7999);await Promise.resolve();assert.equal(h.calls.connect.length,1);
+  t.mock.timers.tick(1);await Promise.resolve();await Promise.resolve();
+  assert.equal(h.calls.connect.length,2);
+  t.mock.timers.tick(2000);await s.whenIdle();assert.equal(h.calls.connect.length,2);
+  assert.deepEqual(h.calls.events,[]);await s.close();
+});
+
+test('SDK class allowance never extends to nested objects or unrelated root classes',async()=>{
+  const {LiveServerMessage}=await import('@google/genai');
+  for(const msg of [Object.assign(new LiveServerMessage(),{serverContent:new (class Nested {})()}),new (class Pretender {})()]){
+    const h=harness(),s=await h.open();h.providerCallbacks.onmessage(msg);await settle();
+    assert.deepEqual(h.calls.events,[['error']]);await s.close();
+  }
+});

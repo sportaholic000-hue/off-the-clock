@@ -1,5 +1,6 @@
 {
   "codes": {
+    "INVALID_GEMINI_TOOL_CANCELLATION": "The call contained audio or connection data the receptionist could not process safely.",
     "GEMINI_SESSION_CLOSED": "The receptionist's connection closed unexpectedly.",
     "GEMINI_SESSION_ERROR": "The receptionist hit a connection error.",
     "GEMINI_CONNECT_FAILED": "The receptionist hit a connection error.",

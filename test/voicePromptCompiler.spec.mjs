@@ -294,12 +294,18 @@ test("Gemini function declarations have exact tool coverage and validator-requir
     VOICE_TOOL_NAMES.filter((name) => !["matchService", "lookupQuoteCatalog", "getCustomerContext", "calculateListedPrice", "calculateVoiceArea"].includes(name)),
   );
 
+  assert.equal(VOICE_TOOL_DECLARATIONS.length, 15);
   for (const declaration of VOICE_TOOL_DECLARATIONS) {
     assert.equal(Object.isFrozen(declaration), true);
     assert.equal(Object.isFrozen(declaration.parameters), true);
     assert.equal(Object.isFrozen(declaration.parameters.properties), true);
     assert.equal(declaration.parameters.type, "OBJECT");
     assert.equal(declaration.parameters.additionalProperties, false);
+    assert.equal(
+      declaration.behavior,
+      "BLOCKING",
+      `${declaration.name} must declare valid Gemini Live behavior`,
+    );
     assert.deepEqual(
       Object.keys(declaration.parameters.properties).filter((key) => isForbiddenVoiceField(key)),
       [],
