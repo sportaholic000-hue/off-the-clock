@@ -1,4 +1,4 @@
-import {usageOwnerQuery} from './billingUsagePolicy.js';
+import { withQuoteBookingLocationGuard } from './quoteBookingLocation.js'; import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {hasOperatorAccess} from './planAccess.js';
 import {linkWidgetBookingLead} from './widgetBookingLead.js';
 import crypto from 'node:crypto';
@@ -1390,7 +1390,7 @@ export function createBookingService({
     }finally{changesInFlight.delete(idempotencyKey);}
   }
 
-  return {
+  return withQuoteBookingLocationGuard({
     createIntent,
     appointmentAvailability,
     modifyAppointment,
@@ -1406,5 +1406,5 @@ export function createBookingService({
     confirm,
     confirmBooking: confirm,
     getConfirmationStatus
-  };
+  }, db);
 }
