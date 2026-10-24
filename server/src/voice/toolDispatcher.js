@@ -63,8 +63,12 @@ function publicQuestionContract(value){
   assertClosed(value,['fields','customerFees'],['fields','customerFees'],'INVALID_TOOL_RESULT');
   if(!Array.isArray(value.fields)||value.fields.length>64||!Array.isArray(value.customerFees)||value.customerFees.length>4)fail('INVALID_TOOL_RESULT',502);
   const fields=value.fields.map(field=>{
-    assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','visibleWhen','details','scopeConfirmationRequired','confirmationToken','choices','moreChoicesAvailable','catalogLookup','productConfirmationRequired','productConfirmationExemptValues','unknownAllowed','unknownLabel','integer'],['field','label','type'],'INVALID_TOOL_RESULT');
+    assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','visibleWhen','details','scopeConfirmationRequired','confirmationToken','choices','moreChoicesAvailable','catalogLookup','productConfirmationRequired','productConfirmationExemptValues','unknownAllowed','unknownLabel','integer','choiceDefinitions'],['field','label','type'],'INVALID_TOOL_RESULT');
     if(field.choices!==undefined)catalogChoices(field.choices);
+    if(field.choiceDefinitions!==undefined){
+      if(!Array.isArray(field.choiceDefinitions)||field.choiceDefinitions.length>16)fail('INVALID_TOOL_RESULT',502);
+      for(const item of field.choiceDefinitions){assertClosed(item,['value','label','definition'],['value','label','definition'],'INVALID_TOOL_RESULT');for(const key of ['value','label','definition'])resultText(item[key],400);}
+    }
     if(field.catalogLookup!==undefined&&(field.catalogLookup!=='lookupQuoteCatalog'||field.moreChoicesAvailable!==true))fail('INVALID_TOOL_RESULT',502);
     if(field.unknownAllowed!==undefined&&(!['number_or_unknown','carpet_connections'].includes(field.type)||field.unknownAllowed!==true||field.unknownLabel!=='Not sure'||field.integer!==undefined&&(field.type!=='number_or_unknown'||field.integer!==true)))fail('INVALID_TOOL_RESULT',502);
     if (field.productConfirmationExemptValues !== undefined && (field.field !== 'existingFloorType' || field.type !== 'slug' || !Array.isArray(field.productConfirmationExemptValues) || field.productConfirmationExemptValues.length !== 1 || field.productConfirmationExemptValues[0] !== 'none')) fail('INVALID_TOOL_RESULT',502);
