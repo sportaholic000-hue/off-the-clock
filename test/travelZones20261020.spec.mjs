@@ -558,12 +558,23 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
   );
 });
 
-// Expected outcomes are recorded in verification/zones-booking-20261023/EXPECTED.md.
+// Expected outcomes were written before execution in verification/zones-booking-saved-20261023/EXPECTED.md.
+const RAISED_OUTER_ZONES = REQUIRED_ZONES_CENTS.map(zone => zone.name === 'Outer' ? { ...zone, charge: 4000 } : zone);
+const MOVED_E2J_ZONES = REQUIRED_ZONES_CENTS.map(zone => zone.name === 'Core'
+  ? { ...zone, codes: [...zone.codes, 'E2J'] }
+  : { ...zone, codes: zone.codes.filter(code => code !== 'E2J') });
 const BOOKING_CASES = [
   ['E2L 4L1', 'E2L 4L2', true],
   ['E2L 4L1', 'E2M 1A1', true],
   ['E2L 4L1', 'E2J 2A1', false],
-  ['E2J 2A1', 'E3B 5A3', false]
+  ['E2J 2A1', 'E3B 5A3', false],
+  ['E2L 4L1', 'E3B 5A3', false],
+  ['E2J 2A1', 'E2H 1A1', true],
+  ['E2J 2A1', 'E2L 4L1', false],
+  ['', 'E3B 5A3', true, { noZones: true, label: 'no zones when quoted' }],
+  ['E2J 2A1', 'E2J 2A1', true, { laterZones: RAISED_OUTER_ZONES, label: 'Outer raised to 4000 cents' }],
+  ['E2J 2A1', 'E2J 2A1', true, { laterZones: [], label: 'all zones deleted' }],
+  ['E2L 4L1', 'E2J 2A1', false, { laterZones: MOVED_E2J_ZONES, label: 'E2J moved into Core' }]
 ];
 const bookingLocation = postalCode => ({
   addressLine1: '10 King St', addressLine2: '', city: 'Saint John',
@@ -571,14 +582,14 @@ const bookingLocation = postalCode => ({
 });
 const bookingCustomer = { name: 'Synthetic customer', email: 'synthetic@example.com', phone: '+15065550100' };
 
-function bookingFixture(t, { serviceArea = { mode: 'all', cities: [] } } = {}) {
+function bookingFixture(t, { serviceArea = { mode: 'all', cities: [] }, noZones = false } = {}) {
   const ownerId = 'owner-zones-' + crypto.randomUUID();
   const nowIso = '2026-06-15T13:00:00.000Z';
   const initialBook = readApplicationBook(ownerId);
   const { origin, zeroPricePolicy, ...service } = convertPricebookMoney({ services: [buildMowingServiceCents(ownerId)] }, 'toDollars').services[0];
   const saved = saveApplicationBook(ownerId, {
     revision: initialBook.revision, services: [service],
-    defaults: convertPricebookMoney({ defaults: buildDefaultsCents({ travelZones: REQUIRED_ZONES_CENTS }) }, 'toDollars').defaults
+    defaults: convertPricebookMoney({ defaults: buildDefaultsCents(noZones ? {} : { travelZones: REQUIRED_ZONES_CENTS }) }, 'toDollars').defaults
   });
   approveApplicationService(ownerId, MOWING_SERVICE_ID, {
     revision: saved.revision, confirmConfiguration: true, source: 'MANUAL',
@@ -608,7 +619,7 @@ function bookingFixture(t, { serviceArea = { mode: 'all', cities: [] } } = {}) {
   db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)").run(ownerId,"cus_synthetic_"+ownerId,nowIso,nowIso,nowIso);
   db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(ownerId);
   const booking = raw;
-  function quote(postalCode, zones = REQUIRED_ZONES_CENTS) {
+  function quote(postalCode, zones = noZones ? null : REQUIRED_ZONES_CENTS) {
     const customerInputs = { ...BASE_MOWING_INPUTS, ...(postalCode ? { postalCode } : {}) };
     const internalResult = generateQuoteVNext({ serviceType: 'LANDSCAPING_MOWING', ownerPricing: buildMowingServiceCents(ownerId),
       businessDefaults: buildDefaultsCents({ ...(zones ? { travelZones: zones } : {}) }), currentMonth: 6, customerInputs, callerType: 'owner' });
@@ -619,7 +630,16 @@ function bookingFixture(t, { serviceArea = { mode: 'all', cities: [] } } = {}) {
     return booking.createIntent({ ownerId, sourceType: 'quote', sourceId: id, serviceId: MOWING_SERVICE_ID,
       resultType: 'INSTANT_ESTIMATE_READY', expiresAtUtc: '2026-06-22T13:00:00.000Z' });
   }
-  return { db, ownerId, nowIso, booking, raw, events, quote };
+  function changeZones(zones) {
+    const current = readApplicationBook(ownerId);
+    saveApplicationBook(ownerId, {
+      revision: current.revision, services: current.services,
+      defaults: { ...current.defaults, travelZones: convertPricebookMoney({ defaults: { travelZones: zones } }, 'toDollars').defaults.travelZones }
+    });
+    assert.deepEqual(loadPricebook(ownerId).defaults.travelZones, zones);
+  }
+  const savedQuotes = () => db.prepare('SELECT resultJson FROM quotes WHERE ownerId = ? ORDER BY id').all(ownerId);
+  return { db, ownerId, nowIso, booking, raw, events, quote, changeZones, savedQuotes };
 }
 
 async function httpBooking(t, f, intent, publicRoute = true) {
@@ -640,9 +660,12 @@ async function httpBooking(t, f, intent, publicRoute = true) {
   };
 }
 
-for (const [quoted, postalCode, allowed] of BOOKING_CASES) {
-  test(`Zone booking widget: ${quoted} -> ${postalCode}: ${allowed ? 'booked' : 'new quote'}`, async t => {
-    const f = bookingFixture(t), intent = f.quote(quoted), call = await httpBooking(t, f, intent);
+for (const [quoted, postalCode, allowed, changes = {}] of BOOKING_CASES) {
+  const label = changes.label ? ` (${changes.label})` : '';
+  test(`Zone booking widget: ${quoted} -> ${postalCode}: ${allowed ? 'booked' : 'new quote'}${label}`, async t => {
+    const f = bookingFixture(t, changes), intent = f.quote(quoted), call = await httpBooking(t, f, intent);
+    const savedQuotes = f.savedQuotes();
+    if (changes.laterZones) f.changeZones(changes.laterZones);
     const location = bookingLocation(postalCode);
     const availability = await call('availability', { fromDate: '2026-06-16', days: 1, scopeConfirmation: 'UNCHANGED', customer: bookingCustomer, location });
     if (!allowed) {
@@ -659,9 +682,10 @@ for (const [quoted, postalCode, allowed] of BOOKING_CASES) {
     }
     assert.equal(f.events.length, allowed ? 1 : 0);
     assert.equal(f.db.prepare('SELECT count(*) AS n FROM appointments').get().n, allowed ? 1 : 0);
+    assert.deepEqual(f.savedQuotes(), savedQuotes);
   });
-  test(`Zone booking phone: ${quoted} -> ${postalCode}: ${allowed ? 'booked' : 'new quote'}`, async t => {
-    const f = bookingFixture(t);
+  test(`Zone booking phone: ${quoted} -> ${postalCode}: ${allowed ? 'booked' : 'new quote'}${label}`, async t => {
+    const f = bookingFixture(t, changes);
     const callId = crypto.randomUUID(), callSid = 'CA' + crypto.randomBytes(16).toString('hex'), accountSid = 'AC' + 'cd'.repeat(16);
     const callContext = { ownerId: f.ownerId, callSid, accountSid, from: '+15065550177', to: '+15065550188' };
     f.db.prepare(`INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,duration,spamFiltered,createdAt)
@@ -669,8 +693,10 @@ for (const [quoted, postalCode, allowed] of BOOKING_CASES) {
     const runtime = createVoiceToolRuntime({ database: f.db, callContext, handleSecret: 'voice-zones-test-secret-at-least-32-bytes', bookingService: f.booking, clock: () => new Date(f.nowIso) });
     const invoke = (name, args) => runtime.handlers[name]({ context: callContext, args });
     const matched = await invoke('matchService', { query: 'Lawn Mowing' });
-    const quote = await invoke('getQuote', { serviceHandle: matched.serviceHandle, customerConfirmed: true, customerInputs: { ...BASE_MOWING_INPUTS, postalCode: quoted } });
+    const quote = await invoke('getQuote', { serviceHandle: matched.serviceHandle, customerConfirmed: true, customerInputs: { ...BASE_MOWING_INPUTS, ...(quoted ? { postalCode: quoted } : {}) } });
     assert.equal(quote.status, 'quoted');
+    const savedQuotes = f.savedQuotes();
+    if (changes.laterZones) f.changeZones(changes.laterZones);
     const lead = await invoke('captureLead', { name: 'Synthetic customer', address: { line1: '10 King St', city: 'Saint John', region: 'NB', postalCode, country: 'CA' } });
     const availability = await invoke('checkAvailability', { quoteHandle: quote.quoteHandle, leadHandle: lead.leadHandle, preference: { fromDate: '2026-06-16', days: 1 } });
     if (!allowed) {
@@ -683,6 +709,7 @@ for (const [quoted, postalCode, allowed] of BOOKING_CASES) {
     }
     assert.equal(f.events.length, allowed ? 1 : 0);
     assert.equal(f.db.prepare('SELECT count(*) AS n FROM appointments').get().n, allowed ? 1 : 0);
+    assert.deepEqual(f.savedQuotes(), savedQuotes);
   });
 }
 
@@ -717,11 +744,17 @@ test('Zone booking: saved charge, same-charge different zones, ZIP codes, and le
       customerInputs: { ...BASE_MOWING_INPUTS, ...(code ? { postalCode: code } : {}) }
     }) })
   });
-  const check = (quoteRow, bookingPostalCode, zones = REQUIRED_ZONES_CENTS) => checkStoredQuoteBookingAddress({ quoteRow, bookingPostalCode, ownerId: 'synthetic-owner', loadBook: () => ({ defaults: { travelZones: zones } }) });
+  let currentBookLoads = 0;
+  const check = (quoteRow, bookingPostalCode, zones = REQUIRED_ZONES_CENTS) => checkStoredQuoteBookingAddress({ quoteRow, bookingPostalCode, ownerId: 'synthetic-owner', loadBook: () => {
+    currentBookLoads++;
+    return { defaults: { travelZones: zones } };
+  } });
   assert.equal(check(saved('E2L 4L1'), 'E2M 1A1', [{ name: 'Other', codes: ['E2M'], charge: 0 }]).ok, true);
-  assert.equal(check(saved('E2L 4L1'), 'E2M 1A1', [{ name: 'Changed', codes: ['E2L','E2M'], charge: 3500 }]).ok, false);
-  assert.equal(check(saved('E2J 2A1'), 'E2L 4L2', [{ name: 'Changed', codes: ['E2L'], charge: 3500 }]).ok, true);
-  assert.equal(check(saved('E2J 2A1'), 'E2J 2A1', []).ok, false);
+  assert.equal(check(saved('E2L 4L1'), 'E2M 1A1', [{ name: 'Changed', codes: ['E2L','E2M'], charge: 3500 }]).ok, true);
+  assert.equal(check(saved('E2J 2A1'), 'E2L 4L2', [{ name: 'Changed', codes: ['E2L'], charge: 3500 }]).ok, false);
+  assert.equal(check(saved('E2J 2A1'), 'E2J 2A1', []).ok, true);
+  assert.equal(check(saved('E2J 2A1'), 'E2J 2A1', RAISED_OUTER_ZONES).ok, true);
+  assert.equal(check(saved('E2L 4L1'), 'E2J 2A1', MOVED_E2J_ZONES).ok, false);
   assert.equal(check(saved(''), 'E3B 5A3').ok, true);
   assert.equal(check(saved('E2L 4L1', 'not_applicable'), 'E3B 5A3').ok, true);
   assert.equal(check({ customerInputsJson: '{"postalCode":"E2L4L1"}', resultJson: '{}' }, 'E3B 5A3').ok, true);
@@ -730,4 +763,5 @@ test('Zone booking: saved charge, same-charge different zones, ZIP codes, and le
   assert.equal(check(saved('E2L 4L1'), 'invalid').ok, false);
   assert.equal(extractQuotedPostalCode({ quoteRow: saved('e2l 4l1') }), 'E2L4L1');
   assert.equal(checkQuoteBookingPostalCode({ quotedPostalCode: 'E2L4L1', bookingPostalCode: 'E2M1A1', travelZones: REQUIRED_ZONES_CENTS }).ok, true);
+  assert.equal(currentBookLoads, 0);
 });

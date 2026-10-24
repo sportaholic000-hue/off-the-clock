@@ -1,4 +1,3 @@
-import { loadPricebook } from '../priceBookService.js';
 import { checkQuoteBookingPostalCode, extractQuotedPostalCode, matchTravelZone, normalizePostalCode } from '../travelZones.js';
 import { usageOwnerQuery } from './billingUsagePolicy.js';
 
@@ -8,9 +7,9 @@ function record(value) {
   try { return record(JSON.parse(value)); } catch { return null; }
 }
 
-// Use the immutable calculation evidence, not today's charge at the quoted code.
+// Match both addresses against the quote's immutable zones and charges.
 // Old quotes without zone pricing (or without a postal code) keep their behavior.
-export function checkStoredQuoteBookingAddress({ quoteRow, submissionRow, bookingPostalCode, ownerId, loadBook = loadPricebook }) {
+export function checkStoredQuoteBookingAddress({ quoteRow, submissionRow, bookingPostalCode }) {
   const saved = record(submissionRow?.internalOutcomeJson) || record(quoteRow?.resultJson);
   const result = saved?.applicationOutcome?.internalResult || saved?.internalResult || saved;
   const quotedPostalCode = normalizePostalCode(result?.submittedCustomerInputs?.postalCode)
@@ -24,12 +23,11 @@ export function checkStoredQuoteBookingAddress({ quoteRow, submissionRow, bookin
   if (!quotedPostalCode || quotedZone.status !== 'matched' || !Number.isSafeInteger(quotedZone.charge)) {
     return { ok: true };
   }
-  const book = loadBook(ownerId);
   return checkQuoteBookingPostalCode({
     quotedPostalCode,
     quotedTravelCharge: quotedZone.charge,
     bookingPostalCode,
-    travelZones: book?.defaults?.travelZones
+    travelZones: defaults.travelZones
   });
 }
 
