@@ -39,6 +39,7 @@ const repairSizeLabels=type=>type==='ROOFING_REPAIR'
 // The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
+export {quoteValidityEndsAtVNext} from '../quote-engine-vnext/quoteValidity.js';
 export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
 const ROOT_FIELDS = ['rangeLowPercent','rangeHighPercent','id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
 const has = (v,k) => Object.hasOwn(v,k);

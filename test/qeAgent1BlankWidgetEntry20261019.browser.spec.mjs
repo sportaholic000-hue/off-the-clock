@@ -1,0 +1,26 @@
+import './pricebookTestEnv.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {mkdtempSync,readFileSync,readdirSync,rmSync} from 'node:fs';
+import {gzipSync} from 'node:zlib';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {CASES,VIEWPORTS} from '../verification/qe-agent1-widget-entry-review-20261019/cases.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+test('qe-agent1 actual widget loader and blank-storage wizard cover twenty services on desktop and mobile',{timeout:600_000},async t=>{
+ const temp=mkdtempSync(path.join(tmpdir(),'qe-agent1-widget-entry-')),out=path.join(temp,'evidence');t.after(()=>rmSync(temp,{recursive:true,force:true}));
+ const run=spawnSync(process.execPath,[path.join(root,'verification/qe-agent1-widget-entry-review-20261019/browser-entry.mjs'),root,out],{cwd:root,env:process.env,encoding:'utf8',maxBuffer:20*1024*1024,timeout:570_000});
+ assert.equal(run.signal,null,run.stderr||run.stdout);assert.ok([0,1].includes(run.status),run.stderr||run.stdout);
+ const result=JSON.parse(readFileSync(path.join(out,'result.json'),'utf8')),rows=JSON.parse(readFileSync(path.join(out,'results.json'),'utf8'));
+ const images=new Set(rows.filter(r=>r.status==='failed'&&r.screenshot).map(r=>r.type+'/'+r.screenshot));
+ const files={};function collect(dir,prefix=''){for(const entry of readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,entry.name),relative=prefix+entry.name;if(entry.isDirectory())collect(full,relative+'/');else if(entry.name.endsWith('.json')||images.has(relative)){const encoding=entry.name.endsWith('.json')?'utf8':'base64';files[relative]={encoding,content:readFileSync(full).toString(encoding)};}}}collect(out);
+ const bundle=gzipSync(JSON.stringify(files)).toString('base64'),chunks=bundle.match(/.{1,6000}/g)||[];
+ for(let i=0;i<chunks.length;i++)t.diagnostic(`A1_WIDGET_ENTRY_EVIDENCE ${i+1}/${chunks.length} ${chunks[i]}`);
+ assert.notEqual(result.status,'fatal',result.error||run.stderr);
+ assert.equal(rows.length,CASES.length*VIEWPORTS.length*3);assert.equal(result.services,20);
+ for(const spec of CASES)for(const view of VIEWPORTS)assert.equal(rows.filter(r=>r.type===spec.type&&r.viewport===view.name).length,3);
+ for(const row of rows)await t.test(row.type+' '+row.viewport+' '+row.stage,()=>assert.equal(row.status,'passed',JSON.stringify(row.error)));
+ assert.equal(result.failed,0);assert.equal(run.status,0,run.stderr||run.stdout);
+});
