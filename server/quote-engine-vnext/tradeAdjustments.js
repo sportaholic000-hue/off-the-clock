@@ -1,6 +1,9 @@
 import {exactAdd,exactMultiply,exactFromEvidence} from './exactMath.js';
 import {flooringLayoutValue} from './flooringPricing.js';
 
+// A waste-adjusted quantity is no longer the measured quantity; say so in its unit.
+export const wasteAdjustedUnit=unit=>typeof unit!=='string'||/^waste-adjusted /.test(unit)?unit:'waste-adjusted '+unit.replace(/^measured /,'');
+
 // Adjust the measured component before its one line-level cent rounding. Fixed
 // allowances, installed prices and purchased package quantities are excluded.
 export function tradeAdjustment(type,c,p,line) {
@@ -37,6 +40,7 @@ export function tradeAdjustment(type,c,p,line) {
   return {
     quantity:wastePath?exactMultiply(quantity,exactAdd(1,value(wastePath))):quantity,
     multipliers:[...line.calculation.multipliers,...(factorPath?[{name:'Labor adjustment',path:factorPath,value:value(factorPath)}]:[])],
+    ...(wastePath?{unit:wasteAdjustedUnit(line.calculation.unit)}:{}),
     wastePath,waste:wastePath?value(wastePath):null,originalQuantity:line.calculation.quantity
   };
 }

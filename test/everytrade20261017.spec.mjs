@@ -32,7 +32,7 @@ test('range endpoints, independent service overrides, private settings and uncha
  const tampered=structuredClone(result);tampered.options[0].calculationRecord.range.highBufferPercent=1;assert.equal(sanitizeForCustomerVNext(tampered).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 test('legacy single-buffer evidence retains its 25% bound',()=>{
- const f=fixture();Object.assign(f.businessDefaults,{rangeLowPercent:30,rangeHighPercent:30});const result=generateQuoteVNext(f),option=result.options[0],evidence=option.calculationRecord.range;
+ const f=fixture();Object.assign(f.businessDefaults,{rangeLowPercent:25,rangeHighPercent:25});const result=generateQuoteVNext(f),option=result.options[0],evidence=option.calculationRecord.range;
  evidence.source='business_range_buffer';delete evidence.lowBufferPercent;delete evidence.highBufferPercent;
  for(const key of ['bufferPercent','effectiveRangeBufferPercent','rangeBufferUsed'])evidence[key]=30;
  option.rangeBufferUsed=30;option.effectiveRangeBufferPercent=30;result.rangeBufferUsed=30;result.effectiveRangeBufferPercent=30;
@@ -40,9 +40,9 @@ test('legacy single-buffer evidence retains its 25% bound',()=>{
 });
 test('blank range sides fall back; wide high bands, minimum and zero side validation',()=>{
  const f=fixture();Object.assign(f.businessDefaults,{rangeLowPercent:null,rangeHighPercent:''});assert.deepEqual([range(generateQuoteVNext(f)).lowCents,range(generateQuoteVNext(f)).highCents],[87840,107360]);
- Object.assign(f.businessDefaults,{rangeLowPercent:0,rangeHighPercent:30});assert.equal(range(generateQuoteVNext(f)).highCents,126880);
+ Object.assign(f.businessDefaults,{rangeLowPercent:0,rangeHighPercent:25});assert.equal(range(generateQuoteVNext(f)).highCents,122000);
  f.ownerPricing.pricing.minimumJob=100000;let result=generateQuoteVNext(f);assert.deepEqual([range(result).lowCents,range(result).highCents],[100000,100000]);assert.equal(sanitizeForCustomerVNext(result).resultType,'INSTANT_ESTIMATE_READY');
- for(const invalid of [-1,101,NaN,Infinity,'5']){f.businessDefaults.rangeLowPercent=invalid;assert.equal(validateBusinessDefaults(f.businessDefaults).ok,false);}
+ for(const invalid of [-1,25.01,101,NaN,Infinity,'5']){f.businessDefaults.rangeLowPercent=invalid;assert.equal(validateBusinessDefaults(f.businessDefaults).ok,false);}
  f.ownerPricing.rangeHighPercent=-1;assert.ok(validateServiceRulesDetailed(f.ownerPricing,'CUSTOM').some(d=>d.path==='rangeHighPercent'));
 });
 function splitFixture(){const f=fixture();f.ownerPricing.pricing.price=100000;f.ownerPricing.pricing.installedMaterialsPercent={price:40};f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=20;Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:15});return f;}

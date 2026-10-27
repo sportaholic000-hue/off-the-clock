@@ -1489,7 +1489,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
       const adjustment=tradeAdjustment(serviceType,customerInputs,pricing,line);
       if(!adjustment)return line;
       const rebuilt=makeLine({...line,...line.calculation,...adjustment});
-      if(adjustment.wastePath)recordQuantityDerivation(result,{name:line.name+' material quantity',formula:'measured quantity * (1 + owner material waste)',inputs:{measuredQuantity:adjustment.originalQuantity,wasteFactor:adjustment.waste,wastePath:adjustment.wastePath},result:adjustment.quantity,unit:line.calculation.unit,usedBy:[line.name]});
+      if(adjustment.wastePath)recordQuantityDerivation(result,{name:line.name+' material quantity',formula:'measured quantity * (1 + owner material waste)',inputs:{measuredQuantity:adjustment.originalQuantity,wasteFactor:adjustment.waste,wastePath:adjustment.wastePath},result:adjustment.quantity,unit:rebuilt.calculation.unit,usedBy:[line.name]});
       return rebuilt;
     });
     return recordNoChargeClassification(result,serviceRules,pricing);

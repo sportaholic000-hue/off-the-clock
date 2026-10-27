@@ -1,9 +1,11 @@
 // Optional commercial settings. Do not materialize defaults into saved books.
 export const RANGE_FIELDS=['rangeLowPercent','rangeHighPercent'];
 export const rangeBlank=value=>value===undefined||value===null||value==='';
-export const validRangePercent=(field,value)=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&(field!=='rangeLowPercent'||value<=100);
+// Same commercial bound as the single estimate range buffer (rangeBufferPercent).
+export const RANGE_MAX_PERCENT=25;
+export const validRangePercent=(field,value)=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=RANGE_MAX_PERCENT;
 export function rangeSettingIssues(settings={}) {
-  return RANGE_FIELDS.filter(field=>!rangeBlank(settings[field])&&!validRangePercent(field,settings[field])).map(path=>({path,message:path==='rangeLowPercent'?'Low range buffer must be from 0 to 100%.':'High range buffer must be a finite non-negative percentage.'}));
+  return RANGE_FIELDS.filter(field=>!rangeBlank(settings[field])&&!validRangePercent(field,settings[field])).map(path=>({path,message:(path==='rangeLowPercent'?'Low':'High')+' range buffer must be from 0 to '+RANGE_MAX_PERCENT+'%.'}));
 }
 export function resolvedRangeSettings(defaults,service={}) {
   if(!RANGE_FIELDS.some(field=>!rangeBlank(defaults[field])||!rangeBlank(service[field])))return null;

@@ -42,5 +42,12 @@ export function integratedBaselineExpectation(row) {
       }
     }
   }
+  // Waste-adjusted quantity labels (October 27, 2026 audit fix): only the unit
+  // text of lines whose recorded derivation applied an owner waste factor, and
+  // of that derivation, advances. Quantities and amounts still compare fully.
+  const wasteUnit=unit=>'waste-adjusted '+unit.replace(/^measured /,'');
+  const wasted=new Set(records.flatMap(record=>(record.quantityDerivations||[]).filter(d=>d.formula==='measured quantity * (1 + owner material waste)'&&d.inputs?.wastePath).map(d=>{d.unit=wasteUnit(d.unit);return d.usedBy[0];})));
+  const allLines=[...(result.lineItems||[]),...result.options.flatMap(o=>o.lineItems||[]),...records.flatMap(r=>[...(r.lineItems||[]),...Object.values(r.scenarios||{}).flatMap(s=>s.lineItems||[])])];
+  for(const line of allLines)if(wasted.has(line.name)&&typeof line.calculation?.unit==='string')line.calculation.unit=wasteUnit(line.calculation.unit);
   return result;
 }
