@@ -433,7 +433,7 @@ function allTradeControls() {
     ['CONCRETE_DRIVEWAY', driveway, 892222, '300,000 labor + 122,222 concrete + 300,000 formwork + 87,500 prep + 82,500 wire'],
     ['CONCRETE_PATIO_SLAB', concrete(), 353889, '120,000 labor + 48,889 concrete + 150,000 formwork + 35,000 prep'],
     ['LANDSCAPING_CLEANUP', cleanup, 40000, '20,000 labor + 15,000 disposal + 5,000 haul-away'],
-    ['LANDSCAPING_MULCH', mulch, 32275, '5,400 prep + 14,375 material + 7,500 install + 5,000 edging'],
+    ['LANDSCAPING_MULCH', mulch, 31650, '5,400 prep + 2.5 yd x 1.10 x 5,000 = 13,750 material + 7,500 install + 5,000 edging'],
     ['LANDSCAPING_SOD', sod, 253750, '78,750 material + 125,000 install + 50,000 prep'],
     ['LANDSCAPING_PLANTING', planting, 28500, '7,000 plant labor + 3,500 plant material + 2,000 prep + 10,000 mulch material + 6,000 mulch labor'],
     ['LANDSCAPING_MOWING', mowing(), 10000, '5,000 sqft * 2 cents'],

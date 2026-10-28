@@ -1713,7 +1713,7 @@
         "complex": 1.4
       }
     },
-    "expectedCents": 54,
+    "expectedCents": 58,
     "lines": [
       {
         "name": "Roofing labor",
@@ -1764,6 +1764,22 @@
         "cents": 1
       },
       {
+        "name": "Steep-pitch additional-layer removal",
+        "unrounded": {
+          "numerator": "91",
+          "denominator": "100"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch additional-layer disposal",
+        "unrounded": {
+          "numerator": "13",
+          "denominator": "100"
+        },
+        "cents": 0
+      },
+      {
         "name": "Steep-pitch installation",
         "unrounded": {
           "numerator": "31",
@@ -1780,6 +1796,22 @@
         "cents": 1
       },
       {
+        "name": "Steep-pitch additional-layer removal",
+        "unrounded": {
+          "numerator": "287",
+          "denominator": "200"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch additional-layer disposal",
+        "unrounded": {
+          "numerator": "41",
+          "denominator": "200"
+        },
+        "cents": 0
+      },
+      {
         "name": "Steep-pitch installation",
         "unrounded": {
           "numerator": "5",
@@ -1794,6 +1826,22 @@
           "denominator": "20"
         },
         "cents": 2
+      },
+      {
+        "name": "Steep-pitch additional-layer removal",
+        "unrounded": {
+          "numerator": "21",
+          "denominator": "10"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Steep-pitch additional-layer disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "10"
+        },
+        "cents": 0
       },
       {
         "name": "Field materials",
@@ -1886,7 +1934,7 @@
         "complex": 1.4
       }
     },
-    "expectedCents": 54,
+    "expectedCents": 58,
     "lines": [
       {
         "name": "Roofing labor",
@@ -1937,6 +1985,22 @@
         "cents": 1
       },
       {
+        "name": "Steep-pitch additional-layer removal",
+        "unrounded": {
+          "numerator": "91",
+          "denominator": "100"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch additional-layer disposal",
+        "unrounded": {
+          "numerator": "13",
+          "denominator": "100"
+        },
+        "cents": 0
+      },
+      {
         "name": "Steep-pitch installation",
         "unrounded": {
           "numerator": "31",
@@ -1953,6 +2017,22 @@
         "cents": 1
       },
       {
+        "name": "Steep-pitch additional-layer removal",
+        "unrounded": {
+          "numerator": "287",
+          "denominator": "200"
+        },
+        "cents": 1
+      },
+      {
+        "name": "Steep-pitch additional-layer disposal",
+        "unrounded": {
+          "numerator": "41",
+          "denominator": "200"
+        },
+        "cents": 0
+      },
+      {
         "name": "Steep-pitch installation",
         "unrounded": {
           "numerator": "5",
@@ -1967,6 +2047,22 @@
           "denominator": "20"
         },
         "cents": 2
+      },
+      {
+        "name": "Steep-pitch additional-layer removal",
+        "unrounded": {
+          "numerator": "21",
+          "denominator": "10"
+        },
+        "cents": 2
+      },
+      {
+        "name": "Steep-pitch additional-layer disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "10"
+        },
+        "cents": 0
       },
       {
         "name": "Field materials",
@@ -2057,7 +2153,7 @@
       },
       "disposalPerSquare": 2000
     },
-    "expectedCents": 644200,
+    "expectedCents": 695040,
     "lines": [
       {
         "name": "Roofing labor",
@@ -2094,6 +2190,22 @@
           "denominator": "1"
         },
         "cents": 32800
+      },
+      {
+        "name": "Steep-pitch additional-layer removal",
+        "unrounded": {
+          "numerator": "34440",
+          "denominator": "1"
+        },
+        "cents": 34440
+      },
+      {
+        "name": "Steep-pitch additional-layer disposal",
+        "unrounded": {
+          "numerator": "16400",
+          "denominator": "1"
+        },
+        "cents": 16400
       },
       {
         "name": "Field materials",
@@ -2210,6 +2322,22 @@
       },
       {
         "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "0",
+          "denominator": "1"
+        },
+        "cents": 0
+      },
+      {
+        "name": "Steep-pitch additional-layer removal",
+        "unrounded": {
+          "numerator": "0",
+          "denominator": "1"
+        },
+        "cents": 0
+      },
+      {
+        "name": "Steep-pitch additional-layer disposal",
         "unrounded": {
           "numerator": "0",
           "denominator": "1"

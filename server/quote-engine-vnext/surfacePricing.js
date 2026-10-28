@@ -213,7 +213,7 @@ export function surfaceCustomerContract(type,p,base){
   fields.surfaceCondition={...fields.surfaceCondition,label:'Wall surface condition'};
   if(interior){
    if(p.paintingSettings?.heightBands)fields.wallHeight={...fields.wallHeight,visibleWhen:[]};
-   fields.wallScopeUniform={...fields.wallScopeUniform,visibleWhen:when('areaInputMethod','wall_sqft')};
+   fields.wallScopeUniform={...fields.wallScopeUniform,visibleWhen:when('areaInputMethod','wall_sqft'),evidenceOnly:true};
    fields.ceilingCoats={...num('Ceiling finish coats','coats',1,3,{integer:true}),visibleWhen:when('ceilingsIncluded')};
    fields.ceilingSurfaceCondition={...conditions,label:'Ceiling surface condition',visibleWhen:when('ceilingsIncluded')};
    fields.trimCoats={...num('Trim finish coats','coats',1,3,{integer:true}),visibleWhen:when('trimIncluded')};

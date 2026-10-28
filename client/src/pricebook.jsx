@@ -16,7 +16,7 @@ import {consumePricebookTransfer} from './pricebookDrafts.js';
 import {PricebookConflict} from './pricebookConflict.jsx';
 import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliationErrors, withClientServiceIds} from './pricebookConflict.js';
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
-import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
+import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import {roofMaterialPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
@@ -578,6 +578,12 @@ function TierBuilder({ tiers, definitions, onChange }) {
   );
 }
 
+// Canadian building codes (NBC 9.26.5.1 and the provincial codes built on it)
+// require eave protection on shingle, shake and tile roofs in most of Canada.
+function CanadianEaveProtectionNotice() {
+  return <Notice><strong>Ice and water at the eaves.</strong> Canadian building codes require eave protection on shingle, shake and tile roofs: a membrane at least 900 mm (about 3 ft) up the slope from the edge and 300 mm (about 1 ft) past the inside of the wall. It is not required over unheated garages, carports and porches, on very steep roofs, or in mild areas with 3,500 or fewer degree-days. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
+}
+
 function RoofDependentLineNotice({service,onConfirm}) {
   const rows=service?.serviceType==='ROOFING_REPLACEMENT'
     ?Object.entries(service.dependentLineState||{}).filter(([,row])=>row?.confirmed!==true)
@@ -912,8 +918,7 @@ export default function PriceBook() {
     setMetadata(meta.services || []);
     setContract(meta);
     setBook({ ...loadedBook, services, defaults:{
-      markupPercent:30, markupMode:'markup', taxMode:'TAX_NONE', taxPercent:0,
-      rangeBufferPercent:10, ...(loadedBook.defaults || {})
+      markupMode:'markup', taxMode:'TAX_NONE', taxPercent:0, ...(loadedBook.defaults || {})
     }});
     setStatuses(null);
     setDraftValidationErrors([]);
@@ -1162,7 +1167,7 @@ export default function PriceBook() {
   const selectedMoneyFields=selected?ownerMoneyEntries(selected):[];
 
   const markup = Number(book.defaults.markupPercent || 0);
-  const equivalence = book.defaults.markupMode === 'markup'
+  const equivalence = typeof book.defaults.markupPercent !== 'number' ? 'Enter your markup before quotes can go out.' : book.defaults.markupMode === 'markup'
     ? `${markup}% markup = ${(markup / (100 + markup) * 100).toFixed(1)}% margin`
     : `${markup}% margin = ${markup >= 100 ? 'invalid' : (markup / (100 - markup) * 100).toFixed(1)}% markup`;
 
@@ -1352,6 +1357,7 @@ export default function PriceBook() {
                 )}
 
                 <RoofDependentLineNotice service={selected} onConfirm={confirmRoofDependentLine}/>
+                {selected?.serviceType==='ROOFING_REPLACEMENT'&&book.defaults.currency==='CAD'&&<CanadianEaveProtectionNotice/>}
 
                 {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
                 {(selectedMeta.class2Fields || []).length > 0 && (
@@ -1371,9 +1377,10 @@ export default function PriceBook() {
                       }}>Reset all to default</Button>
                     </div>
                     {[...new Set((selectedMeta.class2Fields||[]).map(field=>field.startingValueGroup).filter(group=>selected.startingValueAdoptions?.[group]?.mode==='legacy'))].map(group=>{const trade=group==='painting_coats_20261017'?'painting':group==='flooring_patterns_20261017'?'flooring':'roofing';return <Notice key={group} tone="warning"><strong>New {trade} starting values are available.</strong> This service is still using its previously approved pricing rules. Review the sources and assumptions below, then use one owner action to confirm these values and switch this service to the new rules. Existing owner values stay unchanged. <Button variant="secondary" onClick={()=>adoptStartingValues(group)}>Adopt new {trade} rules and starting values</Button></Notice>;})}
-                    {(selectedMeta.class2Fields || []).filter(d=>!(servicePricing(selected).fenceOfferings&&d.field==='postSpacingLF')).map(definition => {
+                    {(selectedMeta.class2Fields || []).filter(d=>!(servicePricing(selected).fenceOfferings&&d.field==='postSpacingLF')&&!(selected.serviceType==='ROOFING_REPLACEMENT'&&d.field==='pitchMultiplier'&&['new','adopted'].includes(selected.startingValueAdoptions?.roofing_replacement_20261016?.mode))).map(definition => {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);
                       const wastePercent=definition.ownerInputUnit==='percent';
+                      const overagePercent=definition.ownerInputUnit==='overage_percent';
                       const isStructured = definition.defaultValue && typeof definition.defaultValue === 'object';
                       const startingEntries=Object.entries(selected.startingValueState||{}).filter(([path])=>path===definition.field||path.startsWith(definition.field+'.'));
                       const startingNotice=startingEntries.length?<div className="starting-value-note">
@@ -1411,11 +1418,11 @@ export default function PriceBook() {
                         <AssumptionRow
                           label={definition.label}
                           explanation={definition.help}
-                          unit={wastePercent?'%':definition.unit}
+                          unit={wastePercent||overagePercent?'%':definition.unit}
                           value={current}
-                          defaultValue={wastePercent?String(definition.defaultValue*100):JSON.stringify(definition.defaultValue).replace(/"/g, '')}
+                          defaultValue={wastePercent?String(definition.defaultValue*100):overagePercent?String(Number(((definition.defaultValue-1)*100).toFixed(10))):JSON.stringify(definition.defaultValue).replace(/"/g, '')}
                           overridden={JSON.stringify(current) !== JSON.stringify(definition.defaultValue)}
-                          inputControl={wastePercent?<WastePercentInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field,value)}/>:<ExactNumericInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field, value)} />}
+                          inputControl={wastePercent?<WastePercentInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field,value)}/>:overagePercent?<OveragePercentInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field,value)}/>:<ExactNumericInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field, value)} />}
                           onReset={() => resetClass2(definition.field)}
                         />
                         {startingNotice}

@@ -9,11 +9,13 @@ test.after(()=>{if(process.env.OPUS_CASE_EVIDENCE)fs.writeFileSync(process.env.O
 test('Opus 1: decking explanations never expose the owner unit price',()=>{
  for(const sheets of [undefined,0,2]){const {r,c}=quote(roof(sheets));assert.equal(r.calculationRecord.options[0].scenarios.mid.finalTotalCents,234600+(sheets||0)*8900);assert.doesNotMatch(JSON.stringify(c),/billed at|\$89\.00\/sheet/);assert.match(c.priceDrivers.join(' '),/decking.*per sheet.*confirmed on site/i);}
 });
-for(const [mode,tax,total]of [['TAX_NONE',0,45000],['TAX_MATERIALS',767,45767],['TAX_ALL',6750,51750]])test('Opus 2: '+mode+' preserves the 45000-cent pre-tax minimum',()=>{
+// 96 sq ft x 3 in = 0.8889 yd: material x 1.10 overage x 5,000 = 4,889; labor x 3,000 = 2,667;
+// minimum adds 45,000 - 7,556 = 37,444; materials tax 15% x 4,889 = 733.
+for(const [mode,tax,total]of [['TAX_NONE',0,45000],['TAX_MATERIALS',733,45733],['TAX_ALL',6750,51750]])test('Opus 2: '+mode+' preserves the 45000-cent pre-tax minimum',()=>{
  const {r,c}=quote(mulch(mode)),s=r.calculationRecord.options[0].scenarios.mid;
- assert.equal(s.lineItems.find(x=>x.name==='Mulch material').amountCents,5111);
+ assert.equal(s.lineItems.find(x=>x.name==='Mulch material').amountCents,4889);
  assert.equal(s.lineItems.find(x=>x.name==='Mulch installation labor').amountCents,2667);
- assert.equal(s.minimum.adjustmentCents,37222);
+ assert.equal(s.minimum.adjustmentCents,37444);
  assert.equal(s.tax.taxCents,tax);
  assert.equal(s.finalTotalCents,total);assert.equal(c.midEstimate,total/100);
  assert.ok(c.lowEstimate*100>=45000+tax,'The customer lower bound must also preserve the pre-tax floor.');

@@ -77,7 +77,7 @@ export const OWNER_FIELD_COPY = {
   laborPerSquare: copy('Roof installation labor price per roofing square', 'Labor charge for each 100 square feet of roof area before pitch and story adjustments.'),
   materialCostPerSquare: ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE.per_square_allin,
   tearOffPerSquare: copy('Roof tear-off price per existing roofing square', 'Removal labor for each roofing square and each existing layer, adjusted for pitch and stories.'),
-  underlaymentPerSquare: copy('Underlayment material price per roofing square', 'Material price applied to each waste-adjusted roofing square.'),
+  underlaymentPerSquare: copy('Underlayment material price per roofing square', 'Material price applied to each measured installed roofing square.'),
   accessoryPricingMode: copy('Roof accessory pricing method', 'Choose whether starter, drip edge, and ridge cap are included in the all-in material price or priced separately.'),
   starterPerLF: copy('Starter strip material price per linear foot', 'Used only with itemized roof accessories and applied to the estimated or measured eave and rake length.'),
   dripEdgePerLF: copy('Drip edge material price per linear foot', 'Used only with itemized roof accessories and applied to the estimated or measured eave and rake length.'),
@@ -212,6 +212,7 @@ const CLASS2_COPY = {
   prepHoursPerSqft: copy('Surface preparation hours per square foot', 'Labor-hour allowance for fair or poor surface preparation.'),
   ceilingMaterialFactor: copy('Ceiling paint material factor', 'Material quantity for ceilings relative to the two-coat wall material rate.'),
   paintableAreaMap: copy('Estimated paintable wall area by home size and stories', 'Square-foot assumptions used when exterior wall area is not measured.'),
+  wasteFactorByComplexity: copy('Roofing material waste by roof complexity', 'Shingle and field material added for cuts at hips, valleys and edges. Published ranges run about 10% for a simple gable roof to 15% or more for a cut-up hip roof.'),
   wasteFactorByType: copy('Material waste allowance by product type', 'Material quantity added for cuts, breakage, and layout waste for each product type.'),
   patternWasteAdder: copy('Flooring pattern waste addition', 'Legacy fallback material additions for straight and diagonal layouts. Optional per-type pattern values take precedence. Room/roll carpet uses its roll cuts and repeat allowance instead.'),
   roomComplexityMultiplier: copy('Room-size labor multiplier', 'Average room area at or below the small maximum uses small; above small and at or below the medium maximum uses medium; above medium uses large.'),
@@ -219,13 +220,13 @@ const CLASS2_COPY = {
   heightMultiplierLabor: copy('Fence-height labor multiplier', 'Adjusts fence labor for 4-foot, 6-foot, and 8-foot installations.'),
   heightMultiplierMaterial: copy('Fence-height material multiplier', 'Adjusts fence material for 4-foot, 6-foot, and 8-foot installations.'),
   terrainMultiplier: copy('Terrain labor multiplier', 'Adjusts fencing labor for flat, moderate, or steep terrain.'),
-  concreteWasteFactor: copy('Concrete ordering waste allowance', 'Adds concrete volume for chute loss, uneven subgrade, and ordering tolerance. Enter 0.10 for 10%.'),
+  concreteWasteFactor: copy('Concrete ordering waste allowance', 'Adds concrete volume for chute loss, uneven subgrade, and ordering tolerance.'),
   assumedDrivewayWidthFt: copy('Assumed driveway width', 'Width used to estimate driveway length and perimeter when only total area is known.'),
   finishMultiplier: copy('Concrete finish labor multiplier', 'Adjusts labor for broom, smooth, exposed aggregate, or stamped finishes.'),
   accessMultiplier: copy('Project access labor multiplier', 'Adjusts labor for easy, moderate, or difficult access.'),
   slopeMultiplier: copy('Slope labor multiplier', 'Adjusts landscaping labor for flat, moderate, or steep ground.'),
-  mulchOverageFactor: copy('Mulch ordering overage factor', 'Adds material for settling and compaction. Enter 1.15 to order 15% extra.'),
-  sodWasteFactor: copy('Sod material waste allowance', 'Adds sod material for cuts and fitting. Enter 0.05 for 5%.'),
+  mulchOverageFactor: copy('Mulch ordering overage', 'Adds material for settling and compaction. Enter 10 to order 10% extra.'),
+  sodWasteFactor: copy('Sod material waste allowance', 'Adds sod material for cuts and fitting.'),
   sidingAreaMap: copy('Estimated siding wall area by home size and stories', 'Square-foot assumptions used when siding wall area is not measured.'),
   trimRatio: copy('Estimated siding trim length ratio', 'Linear feet of trim estimated per square foot of siding wall area.'),
   'SIDING_REPLACEMENT.storyMultiplier': copy('Siding story labor and removal multiplier', 'Adjusts siding installation and removal for one-, two-, and three-story homes.'),
@@ -318,15 +319,25 @@ export function class2FieldCopy(serviceType, field, defaultValue) {
     const stored=firstNumericLeaf(defaultValue)??0.10,entered=stored*100;
     return {
       ...(value||copy('Material waste allowance','Adds material for cuts, fitting, or ordering waste.')),
-      help:`Enter ${Number.isInteger(entered)?entered:String(entered)} for ${Number.isInteger(entered)?entered:String(entered)}%; the saved calculation factor is ${stored.toFixed(2)}.`,
+      help:`Enter ${Number.isInteger(entered)?entered:String(entered)} for ${Number.isInteger(entered)?entered:String(entered)}%; the saved calculation factor is ${stored.toFixed(2)}.`+(field==='fenceWasteFactor'?' If your fence material price per foot already includes waste, enter 0.':''),
       unit:'decimal fraction',ownerInputUnit:'percent'
     };
   }
-  const fraction=['wasteFactorByComplexity','wasteFactorByType','patternWasteAdder'].includes(field);
+  // Every waste allowance is entered as a percent and saved as a fraction.
+  if(['wasteFactorByComplexity','wasteFactorByType','patternWasteAdder'].includes(field)){
+    const base=value||copy('Material waste allowance','Adds material for cuts, fitting, or ordering waste.');
+    return {...base,help:base.help+' Enter each as a percent, for example 10 for 10%.',unit:'decimal fraction',ownerInputUnit:'percent'};
+  }
+  // The mulch overage is saved as a quantity multiplier (1.10) and entered as
+  // the extra percent ordered (10).
+  if(field==='mulchOverageFactor'){
+    const stored=typeof defaultValue==='number'?defaultValue:1.10,extra=Number(((stored-1)*100).toFixed(10));
+    return {...value,help:`Adds material for settling and compaction. Enter ${extra} to order ${extra}% extra; the saved calculation factor is ${stored.toFixed(2)}.`,unit:'quantity multiplier',ownerInputUnit:'overage_percent'};
+  }
   return {
     ...(value || copy('Quantity adjustment', 'Adjusts the quantity or labor used for this service.')),
-    unit: fraction?'decimal fraction':CLASS2_UNITS[field] || CLASS2_UNITS.default,
-    ownerInputUnit:fraction?'fraction':'native'
+    unit: CLASS2_UNITS[field] || CLASS2_UNITS.default,
+    ownerInputUnit:'native'
   };
 }
 

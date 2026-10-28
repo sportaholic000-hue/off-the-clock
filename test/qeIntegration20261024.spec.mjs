@@ -20,8 +20,12 @@ test('integration: requested weekly 5000 sq ft Outer quote totals 13500 cents, t
   assert.equal(q.calculationRecord.options[0].range.exactMidScenarioTotalCents,13500);
   assert.equal(q.lineItems.find(x=>x.category==='travel').amountCents,3500);
 });
-test('integration: requested outside postal goes to review and malformed postal is asked again',()=>{
-  assert.equal(generateQuoteVNext(input('E3B 5A3')).resultType,'ESTIMATE_REQUIRES_REVIEW');
+test('integration: outside postal quotes the work without travel and malformed postal is asked again',()=>{
+  // Outside every zone: 5000 sq ft * 2 cents = 10000 cents; travel is left for the business to confirm.
+  const outside=generateQuoteVNext(input('E3B 5A3'));
+  assert.equal(outside.resultType,'INSTANT_ESTIMATE_READY');
+  assert.equal(outside.calculationRecord.options[0].range.exactMidScenarioTotalCents,10000);
+  assert.equal(outside.lineItems.some(x=>x.category==='travel'),false);
   assert.ok(generateQuoteVNext(input('12')).invalidCustomerFields.includes('postalCode'));
 });
 test('integration: both source voice rule blocks survive the merge',()=>{

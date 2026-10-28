@@ -1,5 +1,6 @@
 import {exactAdd,exactCompare,exactDecimal,exactDivide,exactToNumber} from './exactMath.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
+import {formatFenceHeight} from './configuredOfferings.js';
 
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const own=(v,k)=>Object.hasOwn(v||{},k);
@@ -9,6 +10,7 @@ const count=v=>Number.isSafeInteger(v)&&v>=1&&v<=1_000_000;
 export const fenceType=type=>['FENCING_INSTALL','FENCING_REPLACEMENT'].includes(type);
 export const FENCE_RUN_QUESTION='How many separate fence runs?';
 export const FENCE_CLOSED_QUESTION='Does this run connect back to where it starts?';
+export const FENCE_CLOSED_COUNT_QUESTION='How many of those runs connect back to where they start?';
 export const FENCE_SECTION_QUESTION='Length of each straight section, in feet, between ends, corners and gates';
 export const FENCE_POST_RATES={
   terminalPostMaterialEach:['Terminal post materials','material'],
@@ -84,7 +86,7 @@ export function fenceSelection(p,c={}){
   const offer=fenceCatalog(p)?p.fenceOfferings[c.fenceType]:p;
   if(!record(offer)||offer.offeringDetails?.fenceType!==c.fenceType)return {error:'No offering is set for '+String(c.fenceType||'the requested fence type').replaceAll('_',' ')+'.',field:'fenceType'};
   const matches=Object.entries(fenceHeightRows(offer)).filter(([,r])=>fenceRowCovers(r,c.fenceHeight));
-  if(matches.length!==1)return {error:matches.length?'More than one price covers this fence height. Review the overlapping height rows.':`No price is set for a fence at ${c.fenceHeight} ft.`,field:'fenceHeight'};
+  if(matches.length!==1)return {error:matches.length?'More than one price covers this fence height. Review the overlapping height rows.':`No price is set for a fence at ${formatFenceHeight(c.fenceHeight)}.`,field:'fenceHeight'};
   return {type:c.fenceType,offer,rowKey:matches[0][0],row:matches[0][1]};
 }
 // Selection never borrows another height's or another fence type's prices.
@@ -192,8 +194,15 @@ export function fencePostQuantities(c,p){
     if(!Number.isSafeInteger(n)||n<0||!own(p.offeringDetails?.gates,key))throw new RangeError('Supply whole counts for offered gates.');
     gates+=n;if(p.offeringDetails.gates[key].postsAndFootingsIncluded)included+=n;
   }
+  // Total length only: section lengths are unknown, so line posts use the
+  // largest count any split of that length can need (each section needs fewer
+  // than its length / spacing), never fewer than the real layout. A run that
+  // connects back to where it starts has no end posts.
+  const closed=measured?0:inputs.closedRunCount??0;
+  if(!measured&&(!Number.isSafeInteger(closed)||closed<0||closed>runs))throw new RangeError('Closed runs must be a whole number no larger than the number of runs.');
+  const openRuns=measured?measured.openRuns:runs-closed;
   const line=measured?c.fenceRuns.reduce((sum,run)=>sum+run.sections.reduce((s,section)=>s+ceilSpans(section.lengthLF,p.postSpacingLF)-1,0),0):ceilSpans(inputs.linearFeet,p.postSpacingLF)-1;
-  const terminal=2*(measured?measured.openRuns:runs)+inputs.cornerCount+2*(gates-included);
+  const terminal=2*openRuns+inputs.cornerCount+2*(gates-included);
   const total=line+terminal;
   if([line,terminal,total].some(n=>!Number.isSafeInteger(n)||n<0))throw new RangeError('Fence post quantity is outside the supported range.');
   return {total,terminal,line,method:measured?'sections':'total_length_allowance',inputs};

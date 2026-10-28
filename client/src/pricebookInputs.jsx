@@ -62,6 +62,17 @@ export function WastePercentInput({value,onChange,...props}) {
  }}/>;
 }
 
+// A quantity multiplier (1.10) shown and entered as the extra percent (10).
+export function OveragePercentInput({value,onChange,...props}) {
+ let shown=value;
+ try { if(typeof value==='number')shown=Number((scaleOwnerDecimal(value,2)-100).toFixed(10)); } catch { /* preserve rejected value */ }
+ return <ExactNumericInput {...props} value={shown} onChange={number=>{
+   if(typeof number!=='number'){onChange(number);return;}
+   try { onChange(scaleOwnerDecimal(Number((number+100).toFixed(10)),-2)); }
+   catch { onChange(String(number)); }
+ }}/>;
+}
+
 // The decimal-foot value remains unchanged until the user edits a dimension.
 // Both owner and customer use this same conversion, including decimal inches.
 export function FenceHeightInput({value,onChange,label='Fence height'}) {

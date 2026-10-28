@@ -1,4 +1,4 @@
-import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
+import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactSubtract,exactToNumber} from './exactMath.js';
 
 export const FLOORING_PATTERN_FIELDS=['diagonalWasteAdderByType','diagonalLaborMultiplierByType','herringboneWasteAdderByType','herringboneLaborMultiplierByType'];
 export const FLOORING_ADDONS=[
@@ -87,10 +87,22 @@ export function carpetRollPurchase(c,p){
   const width=p.carpetRollWidthFt,repeat=present(p.carpetPatternRepeatFt)?p.carpetPatternRepeatFt:0;
   if(!pricePresent(width)||width>1_000_000)throw Object.assign(new TypeError('Set the carpet roll width for this product in the price book.'),{flooringOwnerField:'carpetRollWidthFt'});
   if(typeof repeat!=='number'||!Number.isFinite(repeat)||repeat<0||repeat>1_000_000)throw Object.assign(new TypeError('Set a non-negative carpet pattern-repeat allowance.'),{flooringOwnerField:'carpetPatternRepeatFt'});
+  // Trim (0.5 ft) and pattern repeat go on every cut length. A room no wider
+  // than the roll takes one width. A wider room takes full widths plus either
+  // one more full width or a fill: short cuts across the roll, each cut to the
+  // remaining width plus trim and repeat, laid as strips along the room and
+  // cross-seamed. The cheaper of the two is bought.
   const cuts=(group,turned)=>group.map(index=>{
     const room=c.carpetRooms[index],across=turned?room.lengthFt:room.widthFt,along=turned?room.widthFt:room.lengthFt;
-    const pieces=ceiling(exactDivide(exactAdd(across,0.5),width)),length=exactAdd(along,0.5,repeat);
-    return {room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length),exactArea:exactMultiply(pieces,width,length)};
+    const length=exactAdd(along,0.5,repeat),pieces=ceiling(exactDivide(across,width));
+    const fullArea=exactMultiply(pieces,width,length),row={room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length)};
+    const full=Math.max(pieces-1,0),remainder=exactSubtract(across,exactMultiply(full,width));
+    if(pieces>1&&exactCompare(remainder,0)>0){
+      const fillCuts=ceiling(exactDivide(length,width)),fillCutLength=exactAdd(remainder,0.5,repeat);
+      const fillArea=exactAdd(exactMultiply(full,width,length),exactMultiply(fillCuts,width,fillCutLength));
+      if(exactCompare(fillArea,fullArea)<0)return {...row,pieces:full,fillCuts,fillCutLengthFt:exactToNumber(fillCutLength),exactArea:fillArea};
+    }
+    return {...row,exactArea:fullArea};
   });
   const chosen=[],areaChoices=[];
   for(const group of measured.groups){

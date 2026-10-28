@@ -38,6 +38,7 @@ export function scopeStructureDiagnostics(type,p={}){
   if(base==='demolition'&&finite(d.minimumThickness)&&finite(d.maximumThickness)&&d.minimumThickness>=d.maximumThickness)add(at+'.minimumThickness','The lower thickness limit must be less than the maximum slab thickness.');
   if(key==='exposed_aggregate'&&d.basePriceExcludesFinish!==true)add(at+'.basePriceExcludesFinish','Separate finishing charges require base prices that exclude those same charges.');
   if(key==='insulation'&&d.baseRoofLaborExcludesInstallation!==true)add(at+'.baseRoofLaborExcludesInstallation','Separate installation charges require roof labor that excludes those same installation charges.');
+  if(base==='floor_overlay'&&d.existingFloorType==='carpet')add(at+'.existingFloorType','No floor is installed over carpet; existing carpet is always removed.');
   if(base==='floor_overlay'&&d.basePriceExcludesPreparation!==true)add(at+'.basePriceExcludesPreparation','Separate overlay preparation charges require base flooring prices that exclude that preparation.');
   if(key==='siding_trim'&&d.basePriceExcludesTrim!==true)add(at+'.basePriceExcludesTrim','Separate trim charges require base siding prices that exclude the same trim.');
  }

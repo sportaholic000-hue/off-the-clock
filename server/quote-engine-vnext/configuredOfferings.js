@@ -1,7 +1,7 @@
 import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal,exactToNumber} from './exactMath.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES} from './surfacePricing.js';
-import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION} from './fencePricing.js';
+import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION} from './fencePricing.js';
 export {exactFenceHeight} from './fencePricing.js';
 
 // Opt-in owner offerings. Existing pricing fields retain their original meaning.
@@ -178,17 +178,19 @@ export function offeringContract(type,p,rules={}) {
     fenceRunCount:{...number(FENCE_RUN_QUESTION,'runs',1,1_000_000,{integer:true,required:true}),summaryLabel:'Fence runs'},
     fenceRuns:{label:FENCE_SECTION_QUESTION,summaryLabel:'Fence layout',type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${value.replaceAll('_',' ')} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
     cornerCount:number('Fence corners','corners',0,1_000_000,{integer:true}),
+    // Optional: blank counts every run as open, which never under-counts posts.
+    closedRunCount:{...number(FENCE_CLOSED_COUNT_QUESTION,'runs',0,1_000_000,{integer:true}),summaryLabel:'Runs that connect back to where they start',details:['Optional. Leave blank if none or not sure.']},
     ...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:bool('Old fence removal included'),removalLengthLF:number('Measured old fence length to remove','linear feet',0.1)}:{})
   });
   else Object.assign(fields,{
     areaInputMethod:choice('Wall area measurement method',['wall_sqft']),
     [type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']:number('Measured paintable wall area','square feet',1,2_000_000),
     coats:number(installed?'Finish paint coats':'Finish coats on walls and selected ceilings','coats',1,3,{integer:true}),surfaceCondition:choice('Surface condition',['good','fair','poor']),
-    ...(type==='INTERIOR_PAINTING'?{wallHeight:choice('Wall height',['standard','high','vaulted']),wallScopeUniform:bool('All wall area shares the confirmed height, access, and finish-coat count'),ceilingsIncluded:bool('Ceiling painting included'),ceilingAreaSqft:number('Measured ceiling area','square feet',1,2_000_000),trimIncluded:bool('Trim painting included'),trimLengthLF:number('Measured trim length','linear feet',0.1)}:{stories:choice('Building stories',[1,2,3])})
+    ...(type==='INTERIOR_PAINTING'?{wallHeight:choice('Wall height',['standard','high','vaulted']),wallScopeUniform:{...bool('All wall area shares the confirmed height, access, and finish-coat count'),evidenceOnly:true},ceilingsIncluded:bool('Ceiling painting included'),ceilingAreaSqft:number('Measured ceiling area','square feet',1,2_000_000),trimIncluded:bool('Trim painting included'),trimLengthLF:number('Measured trim length','linear feet',0.1)}:{stories:choice('Building stories',[1,2,3])})
   });
   return {fields,required:c=>{
     if(fence(type))return [...(c.fenceRuns!==undefined?['fenceRunCount','fenceRuns']:['linearFeet','lfMethod','gates','cornerCount',...(fenceHasRows(p)?['fenceRunCount']:[])]),'fenceType','fenceHeight','terrainSlope',...(type==='FENCING_REPLACEMENT'?['oldFenceRemoval',...(c.oldFenceRemoval?['removalLengthLF']:[])]:[])];
-    return ['areaInputMethod',type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft','coats','surfaceCondition',...(type==='INTERIOR_PAINTING'?['wallHeight','wallScopeUniform','ceilingsIncluded','trimIncluded',...(c.ceilingsIncluded?['ceilingAreaSqft']:[]),...(c.trimIncluded?['trimLengthLF']:[])]:['stories'])];
+    return ['areaInputMethod',type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft','coats','surfaceCondition',...(type==='INTERIOR_PAINTING'?['wallHeight','ceilingsIncluded','trimIncluded',...(c.ceilingsIncluded?['ceilingAreaSqft']:[]),...(c.trimIncluded?['trimLengthLF']:[])]:['stories'])];
   },inspection:c=>fence(type)?c.lfMethod!=='exact'&&c.fenceRuns===undefined?'Measured fence length is required.':positive(c.fenceHeight)&&c.fenceType===d.fenceType?fenceSelection(p,c).error||null:null:c.areaInputMethod!=='wall_sqft'?'Measured paintable wall area is required.':null,
   crossValidate:c=>{
     const errors=[],bad=(field,message)=>errors.push({field,message});
@@ -200,6 +202,11 @@ export function offeringContract(type,p,rules={}) {
       const confirmedGates=offeringGateDefinitions(p,rules);
       for(const [key,count] of Object.entries(c.gates||{}))if(count>0&&positive(d.gates?.[key]?.widthLF)&&positive(confirmedGates[key]?.widthLF)&&exactCompare(d.gates[key].widthLF,confirmedGates[key].widthLF)!==0)bad('gates.'+key,'This option changes the confirmed gate-opening width. Choose an offering for the measured opening.');
       if(c.fenceHeight!==undefined&&typeof c.fenceHeight==='number'&&Number.isFinite(c.fenceHeight)&&c.fenceHeight>0&&!fenceHeightWithinPrecision(c.fenceHeight))bad('fenceHeight',FENCE_HEIGHT_PRECISION_MESSAGE);
+      if(c.fenceRuns===undefined&&c.closedRunCount!==undefined){
+        const boundaries=(c.cornerCount??0)+Object.values(c.gates||{}).reduce((a,n)=>a+(Number.isSafeInteger(n)?n:0),0);
+        if(c.closedRunCount>(c.fenceRunCount??1))bad('closedRunCount','More runs connect back than there are runs.');
+        else if(c.closedRunCount*3>boundaries)bad('closedRunCount','A run that connects back to where it starts needs at least three corners or gates.');
+      }
       if(c.oldFenceRemoval===true&&!d.removalOffered)bad('oldFenceRemoval','Removal is not included in this offering.');
       if(c.oldFenceRemoval===false&&c.removalLengthLF!==undefined)bad('removalLengthLF','Removal length cannot be supplied when removal is excluded.');
     } else {
@@ -212,7 +219,7 @@ export function offeringContract(type,p,rules={}) {
         if(d.trimFinishCoats!==undefined)equal('trimCoats',d.trimFinishCoats);
         if(d.trimSurfaceCondition!==undefined)equal('trimSurfaceCondition',d.trimSurfaceCondition);
       }
-      if(c.wallScopeUniform===false)bad('wallScopeUniform','Price differing wall zones as their separate measured offerings.');
+      if(c.wallScopeUniform===false)bad('wallScopeUniform','Enter each room\'s measurements so each room keeps its own height and coats.');
       if(c.ceilingsIncluded===true&&!d.ceilingsOffered)bad('ceilingsIncluded','Ceilings are not offered in this configuration.');
       if(c.trimIncluded===true&&!d.trimOffered)bad('trimIncluded','Trim is not offered in this configuration.');
       if(c.ceilingsIncluded===false&&c.ceilingAreaSqft!==undefined)bad('ceilingAreaSqft','Ceiling area cannot be supplied when ceilings are excluded.');
@@ -279,12 +286,8 @@ function prepRateKey(p,category,condition) {
 export function calculatedFencePosts(c,p) {
  return fencePostQuantities(c,p).total;
 }
-// Fence prices are entered for the offering's height. Any other requested height
-// is priced in proportion to height (price per square foot of fence face): fence
-// labor and material per foot, posts, footings and gates all scale by
-// requested height / priced height. Post and footing depth follow the standard
-// rule of burying a fixed fraction of the post, so they scale the same way.
-// Removal of an existing fence is priced per foot as entered.
+// Fence prices are entered for each offered height. A requested height with no
+// price set is not scaled from another height; the quote names the missing price.
 // Heights arrive as binary numbers, and a feet-and-inches entry (feet + inches/12)
 // is usually not exactly representable (5 ft 3.65 in = 63.65/12 ft). Recover the
 // exact value that was entered: the first scale 12 x 10^k (inches with up to six

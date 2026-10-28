@@ -22,10 +22,11 @@ test('carpet derived room area survives customer projection; altered room eviden
 test('carpet never silently drops a stated room when fewer room dimensions are supplied',()=>{
   // Expected before execution: a stated2-room scope with one measured room
   // needs the second room's numbers; removing that contradictory legacy count
-  // leaves the explicit one-room12x14 quote at145,608c, with estimates accepted.
+  // leaves the explicit one-room 12x14 quote: carpet 12*14.5=174 sq ft, 126 fewer
+  // than the earlier 300 at 300 cents -> 145,608 - 37,800 = 107,808c.
   const f=carpet([{lengthFt:12,widthFt:14}]);f.customerInputs.roomCount=2;
   let q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.invalidCustomerFields.includes('carpetRooms'));
-  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1456.08);
+  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1078.08);
 });
 
 test('new area-only carpet layouts add no hard-floor pattern allowance, while the legacy pattern request keeps its cents',()=>{
@@ -101,7 +102,12 @@ test('carpet connected-area direction matches an independent exhaustive orientat
   for(let trial=0;trial<1000;trial++){
     const count=1+next(6),rooms=Array.from({length:count},()=>({lengthFt:(4+next(116))/4,widthFt:(4+next(116))/4})),roll=[12,13.5,15][next(3)],repeat=next(9)/4;
     const groups=[[],[]];for(let i=1;i<=count;i++)groups[next(2)].push(i);const nonempty=groups.filter(g=>g.length);
-    const expected=nonempty.reduce((sum,group)=>sum+Math.min(...[false,true].map(turn=>group.reduce((total,index)=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt;return total+Math.ceil((across+.5)/roll)*roll*(along+.5+repeat);},0))),0);
+    // Per room: cut length = run + 0.5 trim + repeat; whole widths, or full widths
+    // plus fill cuts (remaining width + 0.5 + repeat) when that buys less.
+    const roomArea=(across,along)=>{const length=along+.5+repeat,pieces=Math.ceil(across/roll),full=pieces*roll*length;
+      if(pieces<2||across===(pieces-1)*roll)return full;
+      return Math.min(full,(pieces-1)*roll*length+Math.ceil(length/roll)*roll*(across-(pieces-1)*roll+.5+repeat));};
+    const expected=nonempty.reduce((sum,group)=>sum+Math.min(...[false,true].map(turn=>group.reduce((total,index)=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt;return total+roomArea(across,along);},0))),0);
     const bought=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:nonempty},{carpetRollWidthFt:roll,carpetPatternRepeatFt:repeat});
     assert.equal(Number(bought.purchasedQuantity.numerator)/Number(bought.purchasedQuantity.denominator),expected,'trial '+trial);
   }

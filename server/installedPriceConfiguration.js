@@ -39,7 +39,8 @@ export function installedLaborFactorPath(type,c,ratePath) {
   if(ratePath.startsWith('surfaceExtraRates.'))return null;
   // Wall height changes wall and ceiling labor, never separately measured trim.
   if(type==='INTERIOR_PAINTING'&&ratePath==='offeringRates.installedTrimPerLF')return null;
-  if(type.startsWith('FENCING_'))return 'terrainLaborMultiplier.'+c.terrainSlope;
+  // Slope changes the fence run and its post digging, not a gate unit.
+  if(type.startsWith('FENCING_'))return ratePath.startsWith('offeringRates.gate_')?null:'terrainLaborMultiplier.'+c.terrainSlope;
   if(type==='INTERIOR_PAINTING')return 'wallHeightLaborMultiplier.'+c.wallHeight;
   if(type==='EXTERIOR_PAINTING')return 'storyMultiplier.'+c.stories;
   return null;

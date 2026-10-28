@@ -54,11 +54,12 @@ test('itemized fence with two gate types, corners and steep ground, at the price
   // Posts: ceil(160 / 8) + 1 end + 2 corners + 2 per walk gate (price excludes posts) x 2 gates; the double gate includes its posts.
   const posts = D(20 + 1 + 2 + 4), steep = D('1.3');
   // Oct16: independently priced rows intentionally retain identical component rates.
+  // Gates are unit prices: steep ground raises run and footing labor only.
   for (const [height, f] of [[6,D(1)],[8,D(1)]]) {
     const result = quote(wood({ linearFeet:160,fenceRunCount:1, lfMethod:'exact', fenceType:'wood', fenceHeight:height, terrainSlope:'steep', gates:{ walk:2, double:1 }, cornerCount:2 }));
     assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', height + ' ft');
     assert.deepEqual(lines(result), sorted([cents(mul(D(160), D(950), f, steep)), cents(mul(D(160), D('1.1'), D(1425), f)), cents(mul(posts, D(2875), f)),
-      cents(mul(posts, D(2200), f, steep)), cents(mul(posts, D(940), f)), cents(mul(D(2), D(38500), f, D('1.12'))), cents(mul(D(125000), f, D('1.105')))]), height + ' ft');
+      cents(mul(posts, D(2200), f, steep)), cents(mul(posts, D(940), f)), cents(mul(D(2), D(38500), f)), cents(mul(D(125000), f))]), height + ' ft');
   }
 });
 
@@ -68,9 +69,10 @@ test('installed fence with two gate types and moderate ground applies each labor
     offeringRates:{ installedFencePerLF:38.5, gate_walk:385, gate_double:1250 },
     installedLaborPercent:{ 'offeringRates.installedFencePerLF':50, 'offeringRates.gate_walk':40, 'offeringRates.gate_double':35 } } });
   const result = quote(wood({ linearFeet:160, lfMethod:'exact', fenceType:'wood', fenceHeight:6, terrainSlope:'moderate', gates:{ walk:2, double:1 }, cornerCount:2 }));
-  // 1 + share x (1.15 - 1): 1.075, 1.06 and 1.0525; the double gate is 131,562.5 cents and rounds up.
-  assert.deepEqual(lines(result), sorted([cents(mul(D(160), D(3850), D('1.075'))), cents(mul(D(2), D(38500), D('1.06'))), cents(mul(D(125000), D('1.0525')))]));
-  assert.equal(result.options[0].calculationRecord.scenarios.mid.finalTotalCents, 662200 + 81620 + 131563);
+  // Run: 1 + 50% x (1.15 - 1) = 1.075 -> 662,200. Gates are unit prices and are
+  // not adjusted for terrain: 2 x 38,500 = 77,000 and 125,000.
+  assert.deepEqual(lines(result), sorted([cents(mul(D(160), D(3850), D('1.075'))), 77000, 125000]));
+  assert.equal(result.options[0].calculationRecord.scenarios.mid.finalTotalCents, 662200 + 77000 + 125000);
 });
 
 test('interior painting with walls, ceilings, primer, fair-condition prep and trim together on vaulted walls', () => {

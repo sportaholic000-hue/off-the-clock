@@ -187,13 +187,13 @@ export const CLASS2_DEFAULTS_BY_SERVICE = {
     accessMultiplier: { easy: 1, moderate: 1.10, difficult: 1.25 }
   },
   LANDSCAPING_CLEANUP: { slopeMultiplier: { flat: 1, moderate: 1.15, steep: 1.35 } },
-  LANDSCAPING_MULCH: { mulchOverageFactor: 1.15 },
+  LANDSCAPING_MULCH: { mulchOverageFactor: 1.10 },
   LANDSCAPING_SOD: {
     sodWasteFactor: 0.05,
     slopeMultiplier: { flat: 1, moderate: 1.15, steep: 1.35 },
     accessMultiplier: { easy: 1, moderate: 1.10, difficult: 1.25 }
   },
-  LANDSCAPING_PLANTING: { mulchOverageFactor: 1.15 },
+  LANDSCAPING_PLANTING: { mulchOverageFactor: 1.10 },
   LANDSCAPING_MOWING: {},
   SIDING_REPLACEMENT: {
     wasteFactorByType: { vinyl: 0.10, fiber_cement: 0.12, wood: 0.12, metal: 0.10 },

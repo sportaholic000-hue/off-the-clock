@@ -1,3 +1,4 @@
+import {workMonthNumber} from './workMonth.js';
 import {requestedSurfaceExtras,surfaceExtraDefinitions} from './surfacePricing.js';
 import {FLAT_ROOF_ITEMS,FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_SERVICES,flatRepairContract,flatRepairPricingDiagnostics,repairUnitRequirements,repairUnitConfig,hasSurfacePrice,normalizeRepairArea} from './flatRoofRepairPricing.js';
 import {RANGE_FIELDS,rangeSettingIssues} from '../quoteRangeSettings.js';
@@ -7,7 +8,7 @@ import {validPricebookServiceId} from '../priceBookStructure.js';
 import {productIdentityRequired} from '../productNames.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
-import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
+import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
@@ -16,7 +17,7 @@ import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {applyAnswerDefinitionsVNext} from './answerDefinitions.js';
-import {CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
+import {concreteSpecInputs,CONCRETE_SPEC_INPUTS,CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
@@ -748,7 +749,7 @@ export const CLASS2_DEFINITIONS = {
     slopeMultiplier: factorMap({ flat: 1, moderate: 1.15, steep: 1.35 }, 'Cleanup slope labor multiplier', 'multiplier', 0.1, 5)
   },
   LANDSCAPING_MULCH: {
-    mulchOverageFactor: factor(1.15, 'Mulch ordering overage factor', 'quantity multiplier', 1, 2)
+    mulchOverageFactor: factor(1.10, 'Mulch ordering overage', 'quantity multiplier', 1, 2)
   },
   LANDSCAPING_SOD: {
     sodWasteFactor: factor(0.05, 'Sod material waste allowance', 'decimal fraction', 0, 0.5),
@@ -756,7 +757,7 @@ export const CLASS2_DEFINITIONS = {
     accessMultiplier: factorMap({ easy: 1, moderate: 1.10, difficult: 1.25 }, 'Sod access labor multiplier', 'multiplier', 0.1, 5)
   },
   LANDSCAPING_PLANTING: {
-    mulchOverageFactor: factor(1.15, 'Mulch ordering overage factor', 'quantity multiplier', 1, 2)
+    mulchOverageFactor: factor(1.10, 'Mulch ordering overage', 'quantity multiplier', 1, 2)
   },
   LANDSCAPING_MOWING: {},
   SIDING_REPLACEMENT: {
@@ -891,10 +892,24 @@ extendMeasuredContract('FLAT_ROOF_REPLACEMENT', {replacementMembraneType:slugFie
 for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredContract(type,
  {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000)}, c=>c.removalNeeded?['removalAreaSqft']:[],
  (c,p)=>c.stairSteps>0&&!scopeEntriesFor(p,'stairs').length?'Stair scope requires an explicitly all-inclusive owner price or separate labor, material, underlayment, removal, and disposal pricing.':null,
- c=>c.removalNeeded===false && c.removalAreaSqft!==undefined?[{field:'removalAreaSqft',message:'Removal area cannot be supplied when removal is not selected.'}]:[]);
+ c=>[
+  ...(c.removalNeeded===false && c.removalAreaSqft!==undefined?[{field:'removalAreaSqft',message:'Removal area cannot be supplied when removal is not selected.'}]:[]),
+  ...(c.removalNeeded===false && c.existingFloorType==='carpet'?[{field:'removalNeeded',message:'Existing carpet has to be removed before a new floor is installed.'}]:[]),
+  ...(c.removalNeeded===true && Number.isFinite(c.removalAreaSqft) && Number.isFinite(c.sqft) && exactCompare(c.removalAreaSqft,c.sqft)>0?[{field:'removalAreaSqft',message:'The removal area is larger than the new floor area. Check both measurements.'}]:[])
+ ]);
 extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
+// New slab area from whichever measurement method was used; null when unknown.
+export function concreteSlabAreaVNext(c){
+  try{
+    if(c.dimensionMethod==='exact'&&Number.isFinite(c.length)&&Number.isFinite(c.width))return exactMultiply(c.length,c.width);
+    if(c.dimensionMethod==='measured_area_perimeter'&&Number.isFinite(c.areaSqft))return exactMultiply(c.areaSqft,1);
+    if(c.dimensionMethod==='measured_outline')return measuredOutlineVNext(c.outlinePoints).exactAreaSqft??null;
+  }catch{}
+  return null;
+}
 for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredContract(type,{},()=>[],
  (c,p)=>c.demolitionNeeded&&!scopeEntriesFor(p,'demolition').length?'Existing slab thickness, reinforcement, access, and demolition scope require an owner-priced contract; new slab facts cannot price the existing slab.'
+ :c.demolitionNeeded&&Number.isFinite(c.demolitionAreaSqft)&&(()=>{const area=concreteSlabAreaVNext(c);return area!==null&&exactCompare(c.demolitionAreaSqft,exactMultiply(area,2))>0;})()?'The demolition area is more than twice the new slab area. The business will confirm both measurements before pricing.'
  :null,
  c=>{
    const errors=[];
@@ -910,8 +925,10 @@ for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredCon
 extendMeasuredContract('INTERIOR_PAINTING',{
  wallScopeUniform:booleanField('All wall area shares the confirmed height, access, and finish-coat count'),
  ceilingCoats:numberField('Independently confirmed ceiling finish coats','coats',1,3,{integer:true})
-},c=>['wallScopeUniform',...(c.ceilingsIncluded?['ceilingCoats']:[])],
- c=>c.wallScopeUniform!==true?'Mixed wall height, access, or coat zones require separate measured scope or inspection.':null,
+},c=>[...(c.ceilingsIncluded?['ceilingCoats']:[])],
+ // A single wall total uses one height and coat count; rooms that differ are
+ // entered room by room instead of answering a uniform-scope question.
+ c=>c.wallScopeUniform===false?'Enter each room\'s measurements so each room keeps its own height and coats.':null,
  c=>c.ceilingsIncluded===false && c.ceilingCoats!==undefined?[{field:'ceilingCoats',message:'Ceiling coats cannot be supplied when ceilings are excluded.'}]:[]);
 extendMeasuredContract('EXTERIOR_PAINTING',{},()=>[],()=> 'Set up an exterior painting offering with the surface, coating, coats, preparation and primer it includes, then enter its installed or itemized prices.');
 extendMeasuredContract('LANDSCAPING_SOD',{separateDisposalSelected:booleanField('Separate project debris disposal selected')},()=>[]);
@@ -1034,6 +1051,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     reviewReason: `Pricing context must contain only plain data objects; ${pricingNonPlainPath} is not plain data.`
   };
   pricing = pricingSnapshot.value;
+  if(serviceType.startsWith('CONCRETE_'))customerInputs=concreteSpecInputs(customerInputs,pricing);
   if(serviceType.startsWith('FLOORING_')){
     if(customerInputs.newFlooringType==='carpet'&&Array.isArray(customerInputs.carpetRooms)&&!missing(customerInputs.roomCount)&&customerInputs.roomCount!==customerInputs.carpetRooms.length){
       const message='Supply lengths and widths for every room in scope.';
@@ -1057,6 +1075,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   contract=customerContractForVNext(serviceType,pricing,serviceRules,tierName);
   const allowed = new Set(Object.keys(contract.fields));
   if (Object.hasOwn(customerInputs, 'postalCode')) allowed.add('postalCode');
+  if (Object.hasOwn(customerInputs, 'workMonth')) allowed.add('workMonth');
   const unexpected = Object.keys(customerInputs).filter(key => !allowed.has(key));
   const required = [...new Set(contract.required?.(customerInputs, pricing) || [])];
   const missingCustomerFields = required.filter(name => missing(customerInputs[name]));
@@ -1071,8 +1090,12 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     }
   }
 
+  if (!missing(customerInputs.workMonth) && workMonthNumber(customerInputs.workMonth) === null) {
+    invalidCustomerFields.push('workMonth');
+    validationMessages.push('Choose the month you want the work done.');
+  }
   for (const [name, value] of Object.entries(customerInputs)) {
-    if (!allowed.has(name) || name === 'postalCode') continue;
+    if (!allowed.has(name) || name === 'postalCode' || name === 'workMonth') continue;
     if (missing(value)) continue;
     const message = validateFieldValue(contract.fields[name], value);
     if (message) {
@@ -1278,6 +1301,13 @@ const ALLOWED_PRICING_FIELDS = {
   CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
 };
 
+// Owner-set new-slab specifications are not asked of the customer.
+function concreteOwnerSpecContract(type,contract,p={}){
+  if(!type.startsWith('CONCRETE_'))return contract;
+  const fields={...contract.fields};
+  for(const [ownerField,input] of Object.entries(CONCRETE_SPEC_INPUTS))if(p[ownerField]!==undefined&&p[ownerField]!==null&&p[ownerField]!==''&&fields[input])fields[input]={...fields[input],evidenceOnly:true};
+  return {...contract,fields};
+}
 export function customerContractForVNext(type,p={},rules={},tierName=null) {
  let base=surfaceCustomerContract(type,p,configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type]);
  if(type.startsWith('CONCRETE_'))base={...base,fields:{...base.fields,placementMethod:{...base.fields.placementMethod,values:offeredPlacement(p),...(!offeredPlacement(p).length||p.defaultPlacementMethod||offeredPlacement(p).length===1?{evidenceOnly:true}:{})}}};
@@ -1312,8 +1342,10 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
    return {field:'pitchAreaUpTo6Sqft',message:c.serviceScope==='partial'?'Areas by pitch must add up to the roof area being replaced.':'Areas by pitch must add up to the measured roof surface area.'};
   };
   const legacy=base,fields={...legacy.fields,
-   roofSizeMethod:enumField('Roof area method',['roof_measured','footprint']),
-   roofSizeInput:numberField('Measured roof surface area or footprint including overhangs','square feet',50,1_000_000),
+   roofSizeMethod:enumField('Roof area method',['roof_measured','footprint'],{optionLabels:{roof_measured:'Measured roof surface area',footprint:'Ground-floor footprint of the house'}}),
+   // A homeowner's listing area is every floor; a footprint is the ground floor
+   // only, out to the edge of the roof overhang.
+   roofSizeInput:{...numberField('Measured roof surface area, or the ground-floor footprint out to the roof edge','square feet',50,1_000_000),details:['For the footprint, use the ground floor only, measured out to the edge of the roof overhang, not the total living area of every floor.']},
    pitchMethod:enumField('How the roof pitch is supplied',['whole_roof','area_by_pitch','not_sure']),
    pitchBand:enumField('Rise per 12 for the whole roof',['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],{optionLabels:{up_to_six:'Up to 6/12 — walkable roof',seven_to_nine:'7/12-9/12 — steep roof',ten_to_twelve:'10/12-12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'}}),
    pitchRisePer12:numberField('Roof rise per 12 inches of run','inches',0,100),
@@ -1380,7 +1412,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   const effective={...(rules.pricing||{}),...(tier.overrides||{})},definitions=scopeDefinitions(type,effective);
   for(const key of Object.keys(tier.overrides?.scopeDetails||{}))if(definitions[key])optionConfirmations[definitions[key].confirmation]={...booleanField('Confirmed '+definitions[key].label.toLowerCase()),evidenceOnly:true};
  }
- return applyAnswerDefinitionsVNext({...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p,rules);
+ return applyAnswerDefinitionsVNext(concreteOwnerSpecContract(type,{...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p),p,rules);
 }
 
 export function allowedPricingFields(serviceType) {
@@ -2110,7 +2142,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   if (serviceType.startsWith('FLOORING_')) {
     if (['hardwood', 'laminate', 'carpet'].includes(customerInputs.newFlooringType) && !pricing.scopeDetails?.['floor_underlayment_'+customerInputs.newFlooringType]) requireDecision(`underlaymentPricing.${customerInputs.newFlooringType}`, 'product_specific_underlayment_contract', 'Approve product-specific underlayment scope, coverage, purchasable quantity, and pricing for this flooring type. The vinyl-plank scalar is not reused.');
     if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost' && !pricing.scopeDetails?.floor_underlayment_vinyl_plank) requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
-    if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !scopeEntriesFor(pricing,'floor_overlay').some(([key,d])=>scopeMatchesRequest(key,d,customerInputs))) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
+    if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !floatingOverHardFloorVNext(customerInputs) && !scopeEntriesFor(pricing,'floor_overlay').some(([key,d])=>scopeMatchesRequest(key,d,customerInputs))) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
   }
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) {
     const labels={paint_wall:'Wall paint product',paint_ceiling:'Ceiling paint product',paint_trim:'Trim paint product',paint_primer:'Wall primer product',paint_ceiling_primer:'Ceiling primer product',paint_prep:'Preparation product'};

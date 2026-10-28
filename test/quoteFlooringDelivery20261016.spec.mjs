@@ -39,9 +39,9 @@ test('carpet resolved phone questions use room dimensions without requesting a d
 });
 
 test('flooring carpet caller-confirmed about 12 by 14 quotes, persists rooms and keeps site qualifications in phone/email/public copy',async t=>{
-  // Expected before execution: floor168 sq ft; roll cuts min(2*12*14.5,
-  // 2*12*12.5)=300 bought sq ft=90,000c material. Labor168*300*1.10
-  // =55,440c; explicitly priced underlayment168c; total145,608 cents.
+  // Expected before execution: floor 168 sq ft; the 12-ft side fits one roll
+  // width cut 14.5 long: 12*14.5=174 bought sq ft=52,200c material. Labor
+  // 168*300*1.10=55,440c; explicitly priced underlayment 168c; total 107,808 cents.
   const f=carpet([{lengthFt:12,widthFt:14}]);delete f.customerInputs.sqft;delete f.customerInputs.roomCount;
   const h=quoteEmailFixture(t),p=await estimatedCarpetPhone(h,f,{publish});
   assert.equal(p.result.status,'quoted',JSON.stringify({result:p.result,stored:h.db.prepare('SELECT internalOutcomeJson FROM quoteSubmissions WHERE ownerId=?').get(h.c.ownerId)}));
@@ -59,7 +59,7 @@ test('flooring carpet caller-confirmed about 12 by 14 quotes, persists rooms and
   const w=webQuote(f);w.email.enqueueSavedQuote({ownerId:w.owner,quoteId:w.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
   for(const text of [JSON.parse(w.rows()[0].messageJson).text,publicCopy(w.email,w.rows()[0]).copy.narration])assert.match(text,/carpet quantity.*confirmed on site.*seaming diagram/i);
   const internal=JSON.parse(w.row.internalOutcomeJson).internalResult;
-  assert.equal(internal.lineItems.reduce((s,l)=>s+l.amountCents,0),145608);
+  assert.equal(internal.lineItems.reduce((s,l)=>s+l.amountCents,0),107808);
 });
 
 test('cleanup bag-only warning is owner-only and disappears after load estimation is priced',()=>{

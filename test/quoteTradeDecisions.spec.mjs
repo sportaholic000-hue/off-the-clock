@@ -45,8 +45,10 @@ test('T03 local quote month determines labor surcharge across UTC month boundary
 test('T04 fence derives 18 posts, waste on infill only and terrain on labor only',()=>{
  const f=offeringFixture('FENCING_INSTALL','itemized');Object.assign(f.customerInputs,{cornerCount:2,gates:{walk:1}});
  const q=cents(f,399000);assert.equal(q.lineItems.find(line=>line.calculation?.ratePath==='offeringRates.postMaterialEach').calculation.quantity,18);
- f.customerInputs.terrainSlope='moderate';cents(f,417330);
- f.ownerPricing.pricing.offeringDetails.gates.walk.postsAndFootingsIncluded=true;cents(f,411210);
+ // Moderate ground raises run labor only; the 25,000 walk gate is a unit price (no terrain).
+ f.customerInputs.terrainSlope='moderate';cents(f,415080);
+ // Gate includes its posts: 2 fewer posts x (2,000 + 400 x 1.15 + 600) = 6,120 less.
+ f.ownerPricing.pricing.offeringDetails.gates.walk.postsAndFootingsIncluded=true;cents(f,408960);
 });
 test('T05 patterned flooring changes labor and retains existing additive material waste',()=>{
  const f=flooring();cents(f,178000);f.customerInputs.layoutPattern='diagonal_or_pattern';cents(f,198200);
@@ -63,7 +65,8 @@ test('T07 measured concrete area and perimeter match rectangular control; imposs
 test('T08 stated mulch yards are used as-is; only derived yards receive ordering overage',()=>{
  const f=fixture('LANDSCAPING_MULCH',{minimumServiceCharge:0,mulchMaterialPerYard:{brown:5000},mulchInstallLaborPerYard:2000},{inputMethod:'yards',mulchArea:10,mulchType:'brown',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'});
  cents(f,70000);f.customerInputs.accessDifficulty='moderate';cents(f,72000);
- Object.assign(f.customerInputs,{inputMethod:'sqft',mulchArea:1080,mulchDepth:3});cents(f,79500);
+ // 1080 sq ft x 3 in = 10 yd: material 10 x 1.10 x 5,000 = 55,000; labor 10 x 2,000 x 1.10 access = 22,000.
+ Object.assign(f.customerInputs,{inputMethod:'sqft',mulchArea:1080,mulchDepth:3});cents(f,77000);
 });
 test('T09 a minimum-priced job shows one exact price including applicable tax',()=>{
  const f=mowing();Object.assign(f.businessDefaults,{minimumJobPrice:25001,rangeBufferPercent:10,taxMode:'TAX_ALL',taxPercent:10});

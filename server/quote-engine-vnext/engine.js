@@ -1,3 +1,4 @@
+import {workMonthNumber} from './workMonth.js';
 import {FLOORING_ADDONS} from './flooringPricing.js';
 import {REPAIR_SERVICES} from './flatRoofRepairPricing.js';
 import {resolvedRangeSettings,validRangePercent} from '../quoteRangeSettings.js';
@@ -12,7 +13,7 @@ import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
-import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones} from '../travelZones.js';
+import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -66,6 +67,7 @@ const FEWER_OPTIONS_NOTICE = 'Fewer options are available because one or more co
 const CUSTOMER_SKIPPED_ADDONS = new Set([
   ...FLOORING_ADDONS.map(addon=>addon.label),
   'Ponding water surcharge',
+  'Travel to this location',
   'Clipping bagging and disposal',
   'Lawn edging','Door sides','Door frames','Windows','Cabinet doors or drawer faces','Doors','Shutters','Garage doors','Exterior trim','Soffit','Fascia','Power washing'
 ]);
@@ -493,6 +495,7 @@ function feeSelection(mode, fee, feeSelections) {
 
 function applyCommonFees(lines, template, ownerPricing, defaults, feeSelections, record) {
   const replaced = new Set(template.replacedCommonFees || []);
+  const excluded = new Set(template.excludedCommonFees || []);
   for (const fee of Object.keys(FEE_DEFAULT_FIELDS)) {
     const mode = ownerPricing.feeRules[fee];
     const amountCents = checkedCents(defaults[FEE_DEFAULT_FIELDS[fee]], FEE_DEFAULT_FIELDS[fee]);
@@ -500,6 +503,8 @@ function applyCommonFees(lines, template, ownerPricing, defaults, feeSelections,
     let reason = mode;
     if (replaced.has(fee)) {
       reason = 'replaced_by_service_quantity_charge';
+    } else if (excluded.has(fee)) {
+      reason = 'outside_travel_zones';
     } else if (mode === 'always') {
       applies = true;
     } else if (mode === 'when_scope_selected') {
@@ -1129,7 +1134,7 @@ function exclusionsMatch(options) {
   return options.every(option => JSON.stringify(option.skippedAddons) === first);
 }
 
-function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit }) {
+function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
   if(fenceType(serviceType)&&fenceHasRows(pricing)){
     try{pricing=resolvedFencePricing(pricing,customerInputs);validation=null;}
@@ -1169,6 +1174,16 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
+  if (travelOutsideZones) {
+    const mode = ownerPricing.feeRules.travel;
+    const applies = mode === 'always' || (mode === 'when_scope_selected' && template.feeScope.travel === true) ||
+      ((mode === 'owner_selected' || mode === 'customer_selected') && feeSelection(mode, 'travel', feeSelections));
+    template.excludedCommonFees = ['travel'];
+    if (applies) {
+      ctx.skipAddon('Travel to this location');
+      template.disclosures.push('This location is outside the areas with a set travel charge; the business will confirm the travel charge.');
+    }
+  }
   const unconfirmedStarting=unconfirmedStartingValueUsesVNext(ownerPricing,template,pricing,tierName);
   if(unconfirmedStarting.length)throw new QuoteReviewError(unconfirmedStarting[0].message,{
     missingOwnerFields:unconfirmedStarting.map(item=>item.path),
@@ -1466,7 +1481,10 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   if (!Number.isInteger(currentMonth) || currentMonth < 1 || currentMonth > 12) return finishReview({ reviewReason: 'Quote month is invalid.', invalidCustomerFields: ['currentMonth'] });
 
   let effectiveDefaults = businessDefaults;
-  if (hasTravelZones(businessDefaults)) {
+  // Zones price travel. A service that never charges travel ignores them, and a
+  // code outside every zone still gets the work quoted with travel left out.
+  let travelOutsideZones = false;
+  if (hasTravelZones(businessDefaults) && travelChargeableVNext(ownerPricing)) {
     if (prepared && customerInputs.postalCode === undefined) {
       const sampleCode = sampleCustomerCodeForZones(businessDefaults.travelZones);
       if (sampleCode) customerInputs = { ...customerInputs, postalCode: sampleCode };
@@ -1485,25 +1503,8 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         validationMessages: [zoneMatch.message]
       });
     }
-    if (zoneMatch.status === 'outside_zones') {
-      const checkPricing = mergePricingForValidationVNext(basePricing, (Array.isArray(ownerPricing.tiers) && ownerPricing.tiers[0]?.overrides) || {});
-      const customerValidation = validateCustomerInputs(serviceType, customerInputs, checkPricing, ownerPricing, ownerPricing.tiers?.[0]?.name || null);
-      if (!customerValidation.ok) {
-        return finishReview({
-          reviewReason: customerValidation.reviewReason,
-          missingCustomerFields: customerValidation.missingCustomerFields || [],
-          invalidCustomerFields: customerValidation.invalidCustomerFields || [],
-          validationMessages: customerValidation.validationMessages || []
-        });
-      }
-      return finishReview({
-        reviewReason: zoneMatch.reviewReason,
-        ownerDecisionRequired: [{ field: 'postalCode', reason: 'outside_travel_zones', message: zoneMatch.reviewReason }],
-        normalizedScope: structuredClone(customerValidation.normalized),
-        validatedMeasurements: validatedMeasurementsFor(serviceType, customerValidation.normalized)
-      });
-    }
-    effectiveDefaults = { ...businessDefaults, travelFee: zoneMatch.charge };
+    if (zoneMatch.status === 'outside_zones') travelOutsideZones = true;
+    else effectiveDefaults = { ...businessDefaults, travelFee: zoneMatch.charge };
   }
 
   const tiers = fenceType(serviceType)&&fenceCatalog(basePricing)?fenceQuoteTiers(basePricing,customerInputs):Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
@@ -1523,9 +1524,11 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         ownerPricing,
         pricing,
         defaults: effectiveDefaults,
+        travelOutsideZones,
         tierName: tier.name,
         feeSelections,
-        month: currentMonth,
+        // Busy-season pricing follows the customer's chosen work month.
+        month: workMonthNumber(customerInputs?.workMonth) ?? currentMonth,
         quoteDate,
         inherited: { appliedRules, urgencyFlags }
       };
@@ -1924,7 +1927,7 @@ export function customerFieldClassesVNext(serviceType){
       ...(OFFERING_TYPES.includes(serviceType)?['installed','itemized'].flatMap(offeringMode=>Object.entries(offeringContract(serviceType,{offeringMode,offeringDetails:{}}).fields)):[]),
       ...Object.values(scopeDefinitions(serviceType,{})).flatMap(definition=>Object.entries(definition.customerFields||{}))
     ];
-    const known=new Set(['postalCode']),measurements=new Set();
+    const known=new Set(['postalCode','workMonth']),measurements=new Set();
     for(const [name,field] of entries){
       known.add(name);
       if(SIZE_METHOD_FIELDS.has(name)||['orthogonal_outline','fence_runs','surface_rows'].includes(field?.type)||(field?.type==='number'&&SIZE_UNITS.has(field.unit)))measurements.add(name);

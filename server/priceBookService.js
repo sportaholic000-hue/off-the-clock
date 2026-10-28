@@ -85,12 +85,12 @@ function blankPricebook(ownerId) {
   return {
     ownerId,
     services: [],
+    // Markup and the estimate range are the owner's own numbers; a new book
+    // starts them blank so no quote goes out until the owner enters them.
     defaults: {
-      markupPercent: 30,
       markupMode: 'markup',
       taxMode: 'TAX_NONE',
       taxPercent: 0,
-      rangeBufferPercent: 10,
       peakMonths: [],
       peakSurchargePercent: 0
     }

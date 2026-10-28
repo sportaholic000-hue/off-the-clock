@@ -2050,7 +2050,8 @@ test('repair 44: money-driving derived quantities are hand-recomputed across eve
     minimumServiceCharge: 0
   }));
   assert.equal(getDerivation(mulch, 'installedMulchYards').result, 10);
-  close(getDerivation(mulch, 'mulchOrderYards').result, 11.5, 'mulch order yards');
+  // 10 installed yards x 1.10 starting overage = 11 ordered yards.
+  close(getDerivation(mulch, 'mulchOrderYards').result, 11, 'mulch order yards');
 
   const sod = run('LANDSCAPING_SOD', {
     sodSqft: 1000,
@@ -4738,7 +4739,7 @@ test('repair 68: nested pricing is the one canonical service shape across status
   }
 });
 
-test('repair 69: equal partial measurements quote; unconfigured flooring overlays still require setup', () => {
+test('repair 69: equal partial measurements quote; unconfigured floating-over-floating overlays still require setup', () => {
   const roofOwner = roofService();
   const roofBoth = run('ROOFING_REPLACEMENT', roofInputs({
     serviceScope: 'partial',
@@ -4775,8 +4776,14 @@ test('repair 69: equal partial measurements quote; unconfigured flooring overlay
     ...flatBase, partialPercent: 25
   }, flatOwner).resultType, 'INSTANT_ESTIMATE_READY');
 
-  const overlay = run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
+  // Floating vinyl plank over a hard floor is ordinary installation; floating
+  // over another floating floor still needs the owner's overlay rule.
+  assert.equal(run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
     existingFloorType: 'tile',
+    removalNeeded: false
+  })), flooringService()).resultType, 'INSTANT_ESTIMATE_READY');
+  const overlay = run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
+    existingFloorType: 'laminate',
     removalNeeded: false
   })), flooringService());
   assert.equal(overlay.resultType, 'ESTIMATE_REQUIRES_REVIEW');
@@ -6797,7 +6804,8 @@ test('repair 120: stair counts remain review-only until an all-inclusive or allo
 });
 test('repair 121: flooring removal and disposal use only independently measured removal area',()=>{
  const p=flooringService({removalPerSqft:{vinyl:100},disposalPerSqft:50}),c=flooringInputs(confirmedFixtureInputs({removalNeeded:true,existingFloorType:'vinyl'}));assert.equal(auditRun(c,p).resultType,auditReview);
- for(const area of [0.999,1,1.001,100,999999.999,1000000,1000000.001]){const r=auditRun({...c,removalAreaSqft:area},p);assert.equal(r.resultType,area>=1&&area<=1000000?auditReady:auditReview);if(r.resultType===auditReady){assert.equal(lineAmount(r,'Existing flooring removal'),oracleRound(oracleMultiply(oracleDecimal(area),100)));assert.equal(lineAmount(r,'Flooring disposal'),oracleRound(oracleMultiply(oracleDecimal(area),50)));assert.equal(lineAmount(r,'Flooring materials'),162000);}}
+ // Removal area runs from 1 sq ft up to the 300 sq ft new floor; more than that is a measurement error.
+ for(const area of [0.999,1,1.001,100,300,300.001,999999.999,1000000,1000000.001]){const r=auditRun({...c,removalAreaSqft:area},p);assert.equal(r.resultType,area>=1&&area<=300?auditReady:auditReview);if(r.resultType===auditReady){assert.equal(lineAmount(r,'Existing flooring removal'),oracleRound(oracleMultiply(oracleDecimal(area),100)));assert.equal(lineAmount(r,'Flooring disposal'),oracleRound(oracleMultiply(oracleDecimal(area),50)));assert.equal(lineAmount(r,'Flooring materials'),162000);}}
  assert.equal(auditRun(flooringInputs({removalAreaSqft:100}),p).resultType,auditReview);
 });
 test('repair 122: siding removal cannot reuse replacement type and installation area',()=>{
@@ -6830,8 +6838,9 @@ test('repair 124: concrete demolition is review-only without existing-slab prici
 test('repair 125: commercial building type does not establish insulation or coverboard scope',()=>{
  assert.equal(auditRun(auditFlatC(),auditFlatP()).resultType,auditReady);const r=auditRun({...auditFlatC(),buildingType:'commercial'},auditFlatP());assert.equal(r.resultType,auditReady);assert.equal(auditRun({...auditFlatC(),insulationNeeded:true},auditFlatP()).resultType,auditReview);
 });
-test('repair 126: wall uniformity is explicit and ceiling coats are independently measured',()=>{
- const p=interiorService(),c=interiorInputs();for(const uniform of [true,false,undefined])assert.equal(auditRun({...c,wallScopeUniform:uniform},p).resultType,uniform===true?auditReady:auditReview);
+test('repair 126: differing walls go room by room and ceiling coats are independently measured',()=>{
+ const p=interiorService(),c=interiorInputs();// The uniform-walls question is no longer asked; only an explicit No sends the caller to room-by-room entry.
+ for(const uniform of [true,false,undefined])assert.equal(auditRun({...c,wallScopeUniform:uniform},p).resultType,uniform===false?auditReview:auditReady);
  for(const coats of [0,1,2,3,4]){const r=auditRun({...c,ceilingsIncluded:true,ceilingAreaSqft:100,ceilingCoats:coats},p);assert.equal(r.resultType,coats>=1&&coats<=3?auditReady:auditReview);if(r.resultType===auditReady){assert.equal(lineAmount(r,'Ceiling labor'),10000*coats);assert.equal(lineAmount(r,'Ceiling materials'),5000*coats);assert.equal(lineAmount(r,'Wall labor'),10000);}}
 });
 test('repair 127: exterior substrate coating and affected preparation remain review-only without an owner contract',()=>{

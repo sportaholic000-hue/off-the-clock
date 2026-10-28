@@ -1407,13 +1407,13 @@
       "side": "11.5001"
     },
     "expected": {
-      "totalCents": 99758,
+      "totalCents": 56557,
       "lines": {
         "Flooring labor": 13225,
-        "Flooring materials": 86401,
+        "Flooring materials": 43200,
         "carpet underlayment": 132
       },
-      "purchasedSqft": "360003/1250"
+      "purchasedSqft": "360003/2500"
     }
   },
   {

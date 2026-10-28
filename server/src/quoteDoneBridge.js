@@ -29,7 +29,8 @@ import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE} from '../priceBook
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
 import {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
-import {hasTravelZones,POSTAL_CODE_FIELD} from '../travelZones.js';
+import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
+import {WORK_MONTH_FIELD} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 
 // The engine sorts a measured affected area into these bands
@@ -520,7 +521,8 @@ export function applicationServiceDefinition(raw,book=null) {
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
   const baseFields=customerQuoteFields(raw,p);
   const resolvedBook=book||(typeof raw?.origin?.ownerId==='string'&&raw.origin.ownerId?(()=>{try{return loadPricebook(raw.origin.ownerId);}catch{return null;}})():null);
-  const customerFields=hasTravelZones(resolvedBook?.defaults)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
+  const zoneFields=hasTravelZones(resolvedBook?.defaults)&&travelChargeableVNext(raw)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
+  const customerFields=resolvedBook&&peakSurchargeConfigured(raw,resolvedBook.defaults||{})?[...zoneFields,clone(WORK_MONTH_FIELD)]:zoneFields;
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
   if(raw.serviceType.startsWith('FENCING_')&&p.fenceOfferings){
     const offeringSummary=Object.values(p.fenceOfferings).filter(value=>value&&typeof value==='object').flatMap(offer=>{
@@ -607,7 +609,7 @@ export function applicationMetadata() {
     const offeringRegistryFields=Object.values(MEASUREMENT_CONTRACTS[meta.serviceType].fields).some(f=>f.type==='slug')?[{field:'knownOfferings',label:'Products you explicitly offer',type:'offering_registry',interviewPriority:1}]:[];
     const nameFields=meta.serviceType==='CUSTOM'?[{field:'service',label:'Offering name',type:'text',maxLength:SERVICE_NAME_LIMIT,interviewPriority:0}]:[];
     return {...old,...meta,name:meta.service,requiresOffering,fields:ownerFields,interviewFields:[...nameFields,...offeringRegistryFields,...allocationInterviewFields],legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>{
-      const inputCopy=class2FieldCopy(meta.serviceType,field.name,field.defaultValue),percent=inputCopy.ownerInputUnit==='percent';
+      const inputCopy=class2FieldCopy(meta.serviceType,field.name,field.defaultValue),percent=['percent','overage_percent'].includes(inputCopy.ownerInputUnit);
       return {...field,...(percent?{help:inputCopy.help,unit:inputCopy.unit}:{}),ownerInputUnit:inputCopy.ownerInputUnit,field:field.name};
     }),class2Defaults:Object.fromEntries(meta.class2Fields.filter(field=>!field.startingValueOnly).map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
   })};

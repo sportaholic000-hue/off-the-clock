@@ -16,6 +16,11 @@ export const POSTAL_CODE_FIELD = Object.freeze({
   details: ['Enter your Canadian postal code or 5-digit US ZIP code. Street address is only needed if you book.']
 });
 
+// Only a service whose travel rule can add a travel charge uses zones.
+export function travelChargeableVNext(service) {
+  return !['not_applicable', 'included_in_rates'].includes(service?.feeRules?.travel);
+}
+
 export function hasTravelZones(defaults) {
   return Array.isArray(defaults?.travelZones) && defaults.travelZones.length > 0;
 }

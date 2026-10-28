@@ -50,7 +50,7 @@ test('release storage: valid incomplete draft remains readable and cannot quote'
 });
 test('release storage: omitted optional pricing and tiers remain readable',()=>{
  const key=owner(),input=book();delete input.services[0].pricing;delete input.services[0].tiers;
- assert.deepEqual(loadPricebook(key),{ownerId:key,services:[],defaults:{markupPercent:30,markupMode:'markup',taxMode:'TAX_NONE',taxPercent:0,rangeBufferPercent:10,peakMonths:[],peakSurchargePercent:0}});
+ assert.deepEqual(loadPricebook(key),{ownerId:key,services:[],defaults:{markupMode:'markup',taxMode:'TAX_NONE',taxPercent:0,peakMonths:[],peakSurchargePercent:0}}); // markup and range start blank for the owner to enter
  assert.equal(existsSync(path(key)),false);savePricebook(key,input);assert.equal(loadPricebook(key).services.length,1);
 });
 test('release storage: valid uppercase identity, approval, other owner and $100 quote survive a save',()=>{

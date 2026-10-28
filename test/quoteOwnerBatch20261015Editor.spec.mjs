@@ -127,7 +127,7 @@ test('QE-013: retained complete tier stairs remain customer-quotable after base 
   assert.equal(quote.options[0].calculationRecord.scenarios.mid.finalTotalCents,265500);
 });
 
-test('QE-018: metadata matches percent-entry controls while true fraction fields remain fractions',()=>{
+test('QE-018: metadata matches percent-entry controls for every waste allowance',()=>{
   const metadata=bridge.applicationMetadata().services;
   const field=(type,name)=>metadata.find(item=>item.serviceType===type).class2Fields.find(item=>item.field===name);
   for(const [type,name,entered,saved] of [
@@ -148,10 +148,11 @@ test('QE-018: metadata matches percent-entry controls while true fraction fields
     ['FLOORING_INSTALL','patternWasteAdder'],
     ['SIDING_REPLACEMENT','wasteFactorByType']
   ]) {
+    // Per-type waste maps are entered as percents too (10 for 10%) and saved as fractions.
     const definition=field(type,name);
-    assert.equal(definition.ownerInputUnit,'fraction',type+' '+name);
+    assert.equal(definition.ownerInputUnit,'percent',type+' '+name);
     assert.match(definition.unit,/fraction|decimal/i);
-    assert.doesNotMatch(definition.help||'',/Enter 10 for 10%/i);
+    assert.match(definition.help||'',/Enter each as a percent, for example 10 for 10%\./);
   }
 });
 

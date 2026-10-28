@@ -7,7 +7,18 @@ export const PLACEMENT_LABELS = {pump:'Pump',conveyor:'Conveyor',power_buggy:'Po
 export const STOCK_LABELS = {container:'Container',balled_and_burlapped:'Balled and burlapped',bare_root:'Bare root'};
 export const CONCRETE_MONEY_FIELDS = ['shortLoadPerYard','shortLoadFlatFee','sawCutPerLF','baseGravelPerCubicYard','baseExcavationGradingPerSqft'];
 export const SOD_MONEY_FIELDS = ['sodRemovalPerSqft','sodGradingPerSqft','topsoilPerCubicYard'];
-export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance'];
+// The contractor specifies new-slab thickness, reinforcement and base. When the
+// owner sets them, the customer is not asked; blank keeps asking the customer.
+export const CONCRETE_SPEC_FIELDS = ['defaultSlabThicknessInches','defaultReinforcement','newSlabBase'];
+export const CONCRETE_SPEC_INPUTS = {defaultSlabThicknessInches:'thickness',defaultReinforcement:'reinforcement',newSlabBase:'baseNeeded'};
+export function concreteSpecInputs(c,p){
+  const out={...c};
+  if(out.thickness===undefined&&present(p.defaultSlabThicknessInches))out.thickness=p.defaultSlabThicknessInches;
+  if(out.reinforcement===undefined&&present(p.defaultReinforcement))out.reinforcement=p.defaultReinforcement;
+  if(out.baseNeeded===undefined&&present(p.newSlabBase))out.baseNeeded=p.newSlabBase==='included';
+  return out;
+}
+export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance',...CONCRETE_SPEC_FIELDS];
 export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'topsoilTargetDepthInches','topsoilTypicalImportDepthInches'];
 export const FIELD_COPY = {
   shortLoadThresholdCubicYards:{label:'Supplier short-load threshold (cubic yards)',help:'Orders below this quantity incur your chosen short-load fee, after the ready-mix order increment. Enter either a per-yard-short fee or a flat fee.'},
@@ -22,6 +33,9 @@ export const FIELD_COPY = {
   placementPerCubicYard:{label:'Placement charge ($ per cubic yard ordered)',help:'Optional charge on ready-mix quantity after waste and the order increment. Added to any flat charge for the selected method using your Additional work category settings.',type:'json',tree:{depth:1,rootKeys:PLACEMENT_METHODS,keyLabel:'Placement method',leafLabels:PLACEMENT_LABELS,allowEmpty:true}},
   defaultPlacementMethod:{label:'Placement when the chute cannot reach',help:'Choose an offered method for No. With one priced method it is selected automatically; with several and no default the customer chooses.',type:'select',options:PLACEMENT_METHODS,optionLabels:PLACEMENT_LABELS},
   uncertainPlacementMethod:{label:'Placement allowance for Not sure',help:'Optional offered method to price when chute access is uncertain. Blank quotes without placement and states that placement other than the chute is extra.',type:'select',options:PLACEMENT_METHODS,optionLabels:PLACEMENT_LABELS},
+  defaultSlabThicknessInches:{label:'New slab thickness (inches)',help:'The thickness you pour for this service, for example 4 for a patio or walk and 5 to 6 for a driveway. When set, customers are not asked. Blank asks the customer.'},
+  defaultReinforcement:{label:'New slab reinforcement',help:'The reinforcement you use for this service. When set, customers are not asked. Blank asks the customer.',type:'select',options:['none','wire_mesh','rebar'],optionLabels:{none:'None',wire_mesh:'Wire mesh',rebar:'Rebar'}},
+  newSlabBase:{label:'Compacted gravel base on new slabs',help:'Whether every new slab gets your base preparation. When set, customers are not asked. Blank asks the customer.',type:'select',options:['included','not_included'],optionLabels:{included:'Included on every new slab',not_included:'Not included'}},
   baseDepthInches:{label:'Compacted base depth (inches)',help:'Owner-set base depth for this service or price option, stated in quotes using separate base pricing.'},
   baseCompactionAllowance:{label:'Base gravel compaction allowance',help:'Additional gravel fraction for compaction; enter 0.20 for 20%. Gravel quantity is slab area times base depth divided by 324, then multiplied by one plus this allowance.'},
   baseGravelPerCubicYard:{label:'Base gravel ($ per cubic yard)',help:'Optional gravel material price. Any separate base price replaces the old combined Base preparation line. Enter excavation and grading separately if offered.'},
@@ -83,7 +97,7 @@ export function concreteLandscapeNotices(type,p={}){
   if(!present(p.slabLaborMinThicknessInches)&&!present(p.slabLaborMaxThicknessInches))notices.push('Set the thickness range covered by this slab labor rate. Until then, the existing 2–24 inch input range remains available.');
   if(!present(p.controlJointPricing))notices.push('State whether saw-cut control joints are included in the slab labor price.');
   const thickness=present(p.slabLaborMinThicknessInches)?p.slabLaborMinThicknessInches:4;
-  if(p.controlJointPricing==='excluded'&&p.controlJointSpacingFt>jointSpacingCap(thickness))notices.push(`Control-joint spacing of ${p.controlJointSpacingFt} feet exceeds NRMCA's recommended maximum of ${jointSpacingCap(thickness)} feet for a ${thickness}-inch slab. Check the spacing for every thickness this rate covers.`);
+  if(p.controlJointPricing==='excluded'&&p.controlJointSpacingFt>jointSpacingCap(thickness))notices.push(`Control-joint spacing of ${p.controlJointSpacingFt} feet exceeds ${jointSpacingCap(thickness)} feet for a ${thickness}-inch slab. NRMCA recommends a maximum of 24 to 36 times the slab thickness (about 10 feet for a 4-inch slab) and never more than 15 feet. Check the spacing for every thickness this rate covers.`);
   return notices;
 }
 export function concreteLandscapeDiagnostics(type,p={}){
@@ -94,6 +108,10 @@ export function concreteLandscapeDiagnostics(type,p={}){
     for(const key of ['shortLoadThresholdCubicYards','controlJointSpacingFt'])numeric(key,0.01,1_000_000);
     for(const key of ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches'])numeric(key,2,24);
     numeric('baseDepthInches',0.01,120);numeric('baseCompactionAllowance',0,5);
+    numeric('defaultSlabThicknessInches',2,24);
+    if(present(p.defaultSlabThicknessInches)&&present(p.slabLaborMinThicknessInches)&&present(p.slabLaborMaxThicknessInches)&&(p.defaultSlabThicknessInches<p.slabLaborMinThicknessInches||p.defaultSlabThicknessInches>p.slabLaborMaxThicknessInches))bad('defaultSlabThicknessInches','The new slab thickness must be inside the thickness range your slab labor covers.');
+    if(present(p.defaultReinforcement)&&!['none','wire_mesh','rebar'].includes(p.defaultReinforcement))bad('defaultReinforcement','Choose none, wire mesh or rebar.');
+    if(present(p.newSlabBase)&&!['included','not_included'].includes(p.newSlabBase))bad('newSlabBase','Choose whether the base is included on every new slab.');
     if(present(p.shortLoadPerYard)&&present(p.shortLoadFlatFee))bad('shortLoadFlatFee','Choose either a per-yard-short fee or a flat short-load fee, not both.');
     if(present(p.controlJointPricing)&&!['included','excluded'].includes(p.controlJointPricing))bad('controlJointPricing','Choose Included or Excluded for control joints.');
     const min=present(p.slabLaborMinThicknessInches),max=present(p.slabLaborMaxThicknessInches);

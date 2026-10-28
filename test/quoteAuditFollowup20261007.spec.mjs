@@ -33,7 +33,8 @@ function mulch(inputMethod='sqft'){
     {inputMethod,mulchArea:300,...(inputMethod==='sqft'?{mulchDepth:3}:{}),mulchType:'brown',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'});
 }
 test('mulch keeps its independently calculated area and direct-volume prices',()=>{
-  for(const [method,cents] of [['sqft',22708],['yards',2250000]]){
+  // 300*3/324 = 2.7778 yd: material x 1.10 x 4,500 = 13,750 + labor x 3,000 = 8,333 -> 22,083.
+  for(const [method,cents] of [['sqft',22083],['yards',2250000]]){
     const q=generateQuoteVNext(mulch(method));assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));
     assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,cents);
   }

@@ -175,7 +175,7 @@ function totalCentsOf(optionOrQuote) {
   return rec.range.exactMidScenarioTotalCents;
 }
 
-test('Travel zones: Core ($0), Outer ($35.00), Maine ($45.00), out-of-zone review, invalid asked again, and most-specific match', () => {
+test('Travel zones: Core ($0), Outer ($35.00), Maine ($45.00), out-of-zone quoted without travel, invalid asked again, and most-specific match', () => {
   const service = buildMowingServiceCents();
   const defaults = buildDefaultsCents({ travelZones: REQUIRED_ZONES_CENTS });
 
@@ -232,7 +232,8 @@ test('Travel zones: Core ($0), Outer ($35.00), Maine ($45.00), out-of-zone revie
   assert.equal(maineQuote.highEstimate, 150);
   assert.equal(maineQuote.submittedCustomerInputs.postalCode, '04101');
 
-  // 4) "E3B 5A3" -> outside every zone -> review with owner-facing reason
+  // 4) "E3B 5A3" -> outside every zone -> the work is quoted (10,500 cents) with
+  // no travel line, and the quote says the business will confirm travel.
   const outsideQuote = generateQuoteVNext({
     serviceType: 'LANDSCAPING_MOWING',
     ownerPricing: service,
@@ -241,10 +242,10 @@ test('Travel zones: Core ($0), Outer ($35.00), Maine ($45.00), out-of-zone revie
     customerInputs: { ...BASE_MOWING_INPUTS, postalCode: 'E3B 5A3' },
     callerType: 'owner'
   });
-  assert.equal(outsideQuote.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.equal(outsideQuote.reviewReason, 'Postal or ZIP code E3B5A3 is outside configured travel zones.');
-  assert.deepEqual(outsideQuote.invalidCustomerFields, []);
-  assert.deepEqual(outsideQuote.missingCustomerFields, []);
+  assert.equal(outsideQuote.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.equal(travelCentsOf(outsideQuote), 0);
+  assert.equal(totalCentsOf(outsideQuote), 10500);
+  assert.ok(JSON.stringify(outsideQuote).includes('the business will confirm the travel charge'));
 
   // 5) "12" -> invalid code -> invalidCustomerFields: ['postalCode'] (asked again in widget/voice)
   const invalidQuote = generateQuoteVNext({
@@ -369,7 +370,7 @@ test('No zones defined: no postal question in widget or voice, and every quote g
   assert.equal(unzonedQuote.highEstimate, 130);
 });
 
-test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before quote, re-asks "12", sends "E3B 5A3" to review, prices "E2J" at 3,500 cents travel without street address, and stores postalCode for owner', async () => {
+test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before quote, re-asks "12", quotes "E3B 5A3" without travel, prices "E2J" at 3,500 cents travel without street address, and stores postalCode for owner', async () => {
   const ownerId = `owner-zones-${crypto.randomUUID()}`;
   const db = new Database(':memory:');
   migrateDatabase(db);
@@ -532,7 +533,7 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
   assert.equal(travelCentsOf(callDetail.quotes[0].internal.applicationOutcome.internalResult), 3500);
   assert.equal(totalCentsOf(callDetail.quotes[0].internal.applicationOutcome.internalResult), 14000);
 
-  // Phone caller outside zones "E3B 5A3" -> goes to review with owner-facing reason and stores postalCode
+  // Phone caller outside zones "E3B 5A3" -> quoted without travel; the postal code is stored
   const phoneOut = await runtime.handlers.getQuote({
     context: callContext,
     args: {
@@ -541,16 +542,14 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
       customerInputs: { ...BASE_MOWING_INPUTS, postalCode: 'E3B 5A3' }
     }
   });
-  assert.equal(phoneOut.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(phoneOut.resultType, 'INSTANT_ESTIMATE_READY');
   assert.equal(typeof phoneOut.quoteHandle, 'string');
 
   const callDetailAfterOut = callService.detail({ ownerId, id: callId, role: 'owner' });
-  assert.equal(callDetailAfterOut.leads.length, 1);
-  assert.equal(callDetailAfterOut.leads[0].postalCode, 'E3B5A3');
-  assert.equal(
-    callDetailAfterOut.leads[0].reviewReason,
-    'Postal or ZIP code E3B5A3 is outside configured travel zones.'
-  );
+  const outsideSaved = callDetailAfterOut.quotes.find(quote => quote.postalCode === 'E3B5A3');
+  assert.ok(outsideSaved);
+  assert.equal(travelCentsOf(outsideSaved.internal.applicationOutcome.internalResult), 0);
+  assert.equal(totalCentsOf(outsideSaved.internal.applicationOutcome.internalResult), 10500);
   assert.equal(callDetailAfterOut.quoteRequests.length, 2);
   assert.deepEqual(
     callDetailAfterOut.quoteRequests.map((r) => r.postalCode).sort(),

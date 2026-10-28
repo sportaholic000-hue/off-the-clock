@@ -268,7 +268,8 @@ const happyCases = [
       bedPrepLaborPerSqft: { needs_weeding: 20, overgrown: 40 },
       edgingPerLinearFoot: 50
     }),
-    expected: { lines: { 'Bed preparation': 5400, 'Mulch material': 14375, 'Mulch installation labor': 7500, 'Bed edging': 5000 }, low: 290, mid: 320, high: 350 }
+    // 270 sq ft x 3 in = 2.5 yd; material 2.5 x 1.10 overage x 5,000 = 13,750.
+    expected: { lines: { 'Bed preparation': 5400, 'Mulch material': 13750, 'Mulch installation labor': 7500, 'Bed edging': 5000 }, low: 290, mid: 320, high: 350 }
   },
   {
     name: 'sod installation uses measured area',

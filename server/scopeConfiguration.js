@@ -62,13 +62,21 @@ export function scopeDefinitions(type,p={}){
  return out;
 }
 
+// A floating floor (laminate, click vinyl plank) laid over a sound hard floor is
+// a standard install needing no extra rule. Floating over another floating
+// floor, carpet left in place, and nail-down or tiled floors over anything are not.
+export const FLOATING_FLOOR_TYPES=Object.freeze(['laminate','vinyl_plank']);
+export const HARD_OVERLAY_BASES=Object.freeze(['vinyl','sheet_vinyl','linoleum','tile','ceramic_tile','porcelain_tile','hardwood','concrete']);
+export const floatingOverHardFloorVNext=c=>FLOATING_FLOOR_TYPES.includes(c?.newFlooringType)&&HARD_OVERLAY_BASES.includes(c?.existingFloorType);
+
 export function scopeKeysForRequest(type,c,p={},rules={}){
  const keys=[];
  if(type.startsWith('FLOORING_')){
   const k='floor_underlayment_'+c.newFlooringType;
   if(floorUnderlay(c,p)&&(c.newFlooringType!=='vinyl_plank'||p.underlaymentPriceBasis==='cost'||own(p.scopeDetails,k)))keys.push(k);
   if(c.stairSteps>0)keys.push('stairs');
-  if(c.removalNeeded===false&&c.existingFloorType!=='none')keys.push('floor_overlay');
+  // An owner overlay rule still applies to a floating floor when one is priced.
+  if(c.removalNeeded===false&&c.existingFloorType!=='none'&&(!floatingOverHardFloorVNext(c)||scopeEntriesFor(p,'floor_overlay').length))keys.push('floor_overlay');
  }
  if(type==='ROOFING_REPLACEMENT'&&p.underlaymentPriceBasis?.[c.replacementRoofType]==='cost')keys.push('roof_underlayment_'+c.replacementRoofType);
  if(type==='SIDING_REPLACEMENT'){if(c.oldSidingRemoval)keys.push('siding_removal');if(c.trimIncluded)keys.push('siding_trim');}

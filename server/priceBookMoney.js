@@ -45,7 +45,7 @@ const DEFAULT_MONEY_FIELDS = new Set([
   'travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice','laborHourlyRate'
 ]);
 const NON_MONEY_PRICING_FIELDS = new Set([
-  'flatRoofDeckPriceBasis','repairPricingUnit','repairFirstAreaSqft',
+  'flatRoofDeckPriceBasis','flatRoofAdditionalLayerFactor','repairPricingUnit','repairFirstAreaSqft',
   'allowAssumptionBasedQuotes','postsIncludedInMaterial','accessoryPricingMode','unit',
   'postSpacing','trimLinearFeetPerRoom','repairHours','patchRepairHours',
   'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing',

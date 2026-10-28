@@ -53,7 +53,17 @@ for(const type of ['laminate','hardwood','carpet'])test('component explicit incl
  assert.equal(ready(f).midEstimate,type==='laminate'?2217.6:2244);
  const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.equal(status.status,'QUOTING LIVE');assert.equal(status.scopeCoverage.find(s=>s.key===key).configurationComplete,true);
 });
-for(const [type,mode,changes]of [['EXTERIOR_PAINTING','installed',{stories:2}],['EXTERIOR_PAINTING','installed',{stories:3}],['FENCING_INSTALL','itemized',{terrainSlope:'moderate'}],['FENCING_INSTALL','itemized',{terrainSlope:'steep'}]])test('component owner sees review coverage for '+type+' '+JSON.stringify(changes),()=>{
+// A gate is a unit price: terrain changes run labor only, so an itemized fence
+// with an installed gate needs no gate labor share to quote on sloped ground.
+// Moderate: 115,000 + 220,000 + 36,000 + 18*400*1.15=8,280 + 10,800 + 50,000 = 440,080.
+// Steep: 130,000 + 220,000 + 36,000 + 18*400*1.3=9,360 + 10,800 + 50,000 = 456,160.
+for(const [terrainSlope,cents] of [['moderate',440080],['steep',456160]])test('itemized fence with an installed gate quotes '+terrainSlope+' ground without a gate labor share',()=>{
+ const f=offeringFixture('FENCING_INSTALL','itemized');delete f.ownerPricing.pricing.installedLaborPercent;
+ const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.equal(status.status,'QUOTING LIVE');
+ assert.equal((status.laborAdjustmentCoverage||[]).some(row=>row.selection.terrainSlope===terrainSlope&&row.missingOwnerFields.length>0),false);
+ f.customerInputs.terrainSlope=terrainSlope;const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,cents);
+});
+for(const [type,mode,changes]of [['EXTERIOR_PAINTING','installed',{stories:2}],['EXTERIOR_PAINTING','installed',{stories:3}]])test('component owner sees review coverage for '+type+' '+JSON.stringify(changes),()=>{
  const f=offeringFixture(type,mode);if(type==='EXTERIOR_PAINTING')f.ownerPricing.pricing.offeringDetails.stories=1;delete f.ownerPricing.pricing.installedLaborPercent;
  const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.equal(status.status,'QUOTING LIVE');
  assert.equal(status.laborAdjustmentCoverage.some(row=>Object.entries(changes).every(([key,value])=>row.selection[key]===value)&&row.missingOwnerFields.length>0),true);

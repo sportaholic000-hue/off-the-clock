@@ -11,9 +11,10 @@ export const FLAT_ROOF_ITEMS=[
   {rate:'flatRoofDrainEach',field:'drainCount',label:'Drains',unit:'each',max:100_000,integer:true},
   {rate:'flatRoofDeckPerSheet',field:'deckSheets',label:'Deck replacement',unit:'sheets',max:100_000,integer:true}
 ];
-export const FLAT_ROOF_FIELDS=[...FLAT_ROOF_ITEMS.map(i=>i.rate),'flatRoofDeckPriceBasis'];
+export const FLAT_ROOF_FIELDS=[...FLAT_ROOF_ITEMS.map(i=>i.rate),'flatRoofDeckPriceBasis','flatRoofAdditionalLayerFactor'];
 export const FLAT_REPAIR_COPY={
   ...Object.fromEntries(FLAT_ROOF_ITEMS.map(i=>[i.rate,{label:i.label+' price per '+(i.unit==='linear feet'?'linear foot':i.unit==='sheets'?'sheet':'item'),help:'Optional separate '+(i.unit==='sheets'?'deck selling price. Blank price basis means material only; choose installed and enter its labor portion when labor is included.':'installed selling price. Do not include work already covered by your base roof prices.')+' Blank leaves existing quotes unchanged and asks no quantity.'}])),
+  flatRoofAdditionalLayerFactor:{label:'Additional-layer tear-off rate',help:'Share of your tear-off price charged for each existing layer after the first, for example 0.70 for 70%. Heavy built-up or gravel layers are often charged at the full rate. Blank charges every layer at the full tear-off price.'},
   flatRoofDeckPriceBasis:{label:'Deck replacement price includes',help:'Blank means material only. Installed includes labor and material; enter the labor portion in Installed prices. The remaining percentage is material.',type:'select',options:['material_only','installed'],optionLabels:{material_only:'Material only',installed:'Installed: labor and material'}},
   repairPricingUnit:{label:'Repair pricing unit by material and repair type',help:'Choose square feet for patches or panels, linear feet for seams or flashing, or each for boots, vents and penetrations. Without a unit price, existing repair bands remain unchanged.',tree:{depth:2,leafType:'enum',options:['square_feet','linear_feet','each'],allowEmpty:true,emptyHelp:'No entries. Add only the repair types you price with this setting.'}},
   repairUnitPrice:{label:'Installed repair price per unit or extra square foot',help:'For area repairs, this is the price per square foot above the first area. For length or count repairs, this is the price per linear foot or item. Enter the labor portion for each installed price; the remaining percentage is material. Blank keeps existing repair bands.',tree:{depth:2,allowEmpty:true,emptyHelp:'No entries. Add only the repair types you price with this setting.'}},
@@ -77,6 +78,7 @@ export function flatRepairPricingDiagnostics(type,p){
   if(type==='FLAT_ROOF_REPLACEMENT'){
     for(const i of FLAT_ROOF_ITEMS)if(hasSurfacePrice(p[i.rate])&&(!(typeof p[i.rate]==='number'&&Number.isFinite(p[i.rate])&&p[i.rate]>=0&&p[i.rate]<=Number.MAX_SAFE_INTEGER)||i.integer&&!Number.isSafeInteger(p[i.rate])))bad(i.rate,'Enter a non-negative price; per-item and per-sheet prices use whole-cent precision.');
     if(hasSurfacePrice(p.flatRoofDeckPriceBasis)&&!['material_only','installed'].includes(p.flatRoofDeckPriceBasis))bad('flatRoofDeckPriceBasis','Choose material only or installed.');
+    if(hasSurfacePrice(p.flatRoofAdditionalLayerFactor)&&!(typeof p.flatRoofAdditionalLayerFactor==='number'&&Number.isFinite(p.flatRoofAdditionalLayerFactor)&&p.flatRoofAdditionalLayerFactor>=0&&p.flatRoofAdditionalLayerFactor<=1))bad('flatRoofAdditionalLayerFactor','Enter a share from 0 to 1 of your tear-off price, for example 0.70.');
   }
   if(REPAIR_SERVICES.includes(type))for(const root of REPAIR_UNIT_FIELDS){
     if(!hasSurfacePrice(p[root]))continue;

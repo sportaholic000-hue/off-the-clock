@@ -590,6 +590,14 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     const q=exactDivide(areas[band],100),installPath=band==='over_twelve'?'pitchInstallationAdderOverTwelve':'pitchInstallationAdder.'+band,removePath=band==='over_twelve'?'pitchRemovalAdderOverTwelve':'pitchRemovalAdder.'+band;
     add(out,makeLine({name:'Steep-pitch installation',category:'labor',quantity:q,unit:'roofing squares at '+band.replaceAll('_','-'),rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'pitch addition',value:installFactors[band],path:installPath,...(installFactors[band]===0?{allowZero:true}:{})}]}));
     add(out,makeLine({name:'Steep-pitch removal',category:'removal',quantity:q,unit:'roofing squares at '+band.replaceAll('_','-'),rateCents:exactToNumber(exactAdd(tearRate,disposalRate)),ratePath:tearPath,contributingRatePaths:disposalRate?['disposalPerSquare']:[],multipliers:[{name:'pitch removal addition',value:removalFactors[band],path:removePath,...(removalFactors[band]===0?{allowZero:true}:{})}]}));
+    // Every removed layer on this pitch band is steep-roof removal: the
+    // additional layers carry the same addition on their reduced tear-off
+    // rate and on their disposal.
+    if(layers>1){
+      const extra=exactMultiply(q,layers-1),unit='additional-layer roofing squares at '+band.replaceAll('_','-'),pitch={name:'pitch removal addition',value:removalFactors[band],path:removePath,...(removalFactors[band]===0?{allowZero:true}:{})};
+      add(out,makeLine({name:'Steep-pitch additional-layer removal',category:'removal',quantity:extra,unit,rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})},pitch]}));
+      if(disposalRate)add(out,makeLine({name:'Steep-pitch additional-layer disposal',category:'removal',quantity:extra,unit,rateCents:disposalRate,ratePath:'disposalPerSquare',multipliers:[pitch]}));
+    }
   }
   if(assumed)out.priceDrivers.push('The owner-selected pitch band was used because the roof pitch was not known; the business will confirm the pitch on site.');
   add(out,makeLine({name:'Field materials',category:'material',quantity:purchase.purchasedQuantity,unit:'waste-adjusted roofing squares',rateCents:valueAtPath(p,`materialCostPerSquare.${c.replacementRoofType}`),ratePath:`materialCostPerSquare.${c.replacementRoofType}`}));
@@ -698,7 +706,10 @@ function calculateFlatRoofReplacement(c, p, ctx) {
   const access = quantityFactor(p.accessMultiplier[c.accessDifficulty], `accessMultiplier.${c.accessDifficulty}`);
   add(out, makeLine({ name: 'Flat roof labor', category: 'labor', quantity: exactAreaSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `laborPerSqft.${membraneKey}`), ratePath: `laborPerSqft.${membraneKey}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }], customerDriver: `Measured flat-roof area: ${areaSqft} square feet` }));
   add(out, makeLine({ name: 'Membrane', category: 'material', quantity: exactAreaSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `membraneCostPerSqft.${membraneKey}`), ratePath: `membraneCostPerSqft.${membraneKey}`, customerDriver: `Membrane: ${membraneKey.replaceAll('_', ' ')}` }));
-  add(out, makeLine({ name: 'Tear-off', category: 'removal', quantity: exactTearOffAreaSqft, unit: 'existing-layer square feet', rateCents: valueAtPath(p, `tearOffPerSqft.${c.membraneType}`), ratePath: `tearOffPerSqft.${c.membraneType}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }], customerDriver: `${layers} existing membrane layer${layers === 1 ? '' : 's'}` }));
+  // Blank owner factor keeps every layer at the full tear-off rate.
+  const layerFactor=p.flatRoofAdditionalLayerFactor,reducedLayers=layers>1&&typeof layerFactor==='number';
+  add(out, makeLine({ name: 'Tear-off', category: 'removal', quantity: reducedLayers?exactAreaSqft:exactTearOffAreaSqft, unit: reducedLayers?'first-layer square feet':'existing-layer square feet', rateCents: valueAtPath(p, `tearOffPerSqft.${c.membraneType}`), ratePath: `tearOffPerSqft.${c.membraneType}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }], customerDriver: `${layers} existing membrane layer${layers === 1 ? '' : 's'}` }));
+  if(reducedLayers)add(out, makeLine({ name: 'Additional-layer tear-off', category: 'removal', quantity: exactMultiply(exactAreaSqft, layers-1), unit: 'additional-layer square feet', rateCents: valueAtPath(p, `tearOffPerSqft.${c.membraneType}`), ratePath: `tearOffPerSqft.${c.membraneType}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }, { name: 'additional layer removal factor', value: layerFactor, path: 'flatRoofAdditionalLayerFactor', ...(layerFactor===0?{allowZero:true}:{}) }] }));
   out.feeScope.disposal = true;
   addDisposalOverride(out, p, 'disposalPerSqft', exactTearOffAreaSqft, 'existing-layer square feet', 'Flat-roof disposal');
   recordMeasurement(out, 'roofAreaSqft', areaSqft, 'square feet');
@@ -844,7 +855,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
     usedBy: ['average-room complexity rule']
   });
   recordQuantityDerivation(out, {
-    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(pieces * rollWidthFt * cutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; least common direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
+    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(pieces * rollWidthFt * cutLengthFt + fillCuts * rollWidthFt * fillCutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; pieces = ceil(across / rollWidthFt), or full widths plus cross-cut fill strips (fillCutLengthFt = remaining width + 0.5 ft trim + repeat; fillCuts = ceil(cutLengthFt / rollWidthFt)) when cheaper; least carpet direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
     inputs: carpetPurchase?{floorAreaSqft:sqft,rollWidthFt:carpetPurchase.rollWidthFt,repeatFt:carpetPurchase.repeatFt,cuts:carpetPurchase.cuts,connectedAreaDirections:carpetPurchase.areaChoices}:{ floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
     result: exactMaterialSqft, unit: 'square feet',
     usedBy: ['Flooring materials']

@@ -94,7 +94,8 @@ test('a product registered and priced under the same typed name goes live and qu
   assert.equal(live.status.status, 'QUOTING LIVE', JSON.stringify(live.status.validationErrors));
   const result = quote(live, confirmed({ ...mulchInputs, mulchType:key }, known));
   assert.equal(result.internalResult.resultType, 'INSTANT_ESTIMATE_READY');
-  assert.equal(result.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents, 104332);
+  // Mulch material: 820 x 3 / 324 yd x 1.10 overage x 4,250 = 35,495 (was 37,109 at 1.15).
+  assert.equal(result.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents, 102718);
 });
 
 test('every owner name-entry control uses the shared conversion and shows refusals', () => {

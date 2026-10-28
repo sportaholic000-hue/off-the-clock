@@ -50,10 +50,11 @@ test('explicit itemized height rows quote 2, 5 ft 3.65 in, 6, 9 and 13 ft withou
   const posts = 30n; // ceil(187 / 8) + 1 end + 3 corners + 2 walk-gate posts
   const exactHeights = { '5 ft 3.65 in': div(dec('63.65'), dec(12)) };
   for (const [height, label] of [[2, '2 ft'], [5 + 3.65 / 12, '5 ft 3.65 in'], [6, '6 ft'], [9, '9 ft'], [13, '13 ft']]) {
-    const result = quote(confirm({ linearFeet:187, lfMethod:'exact', fenceType:'wood', fenceHeight:height, terrainSlope:'moderate', gates:{ walk:1 }, cornerCount:3 }));
+    const result = quote(confirm({ linearFeet:187, lfMethod:'exact', fenceType:'wood', fenceHeight:height, terrainSlope:'moderate', gates:{ walk:1 }, cornerCount:3, closedRunCount:0 }));
     assert.equal(result.internalResult.resultType, 'INSTANT_ESTIMATE_READY', label);
-    // 187 LF; 30 posts; terrain 1.15 on labor and 40% of the installed gate.
-    const expected = [204298,293123,86250,75900,28200,40810];
+    // 187 LF; 30 posts; terrain 1.15 on labor. The installed gate is a unit
+    // price and is not adjusted for terrain: 38,500.
+    const expected = [204298,293123,86250,75900,28200,38500];
     const lines = result.internalResult.options[0].lineItems.map(line => line.amountCents);
     assert.deepEqual([...lines].sort((a, b) => a - b), [...expected].sort((a, b) => a - b), label);
     assert.ok(result.customerResult.priceDrivers.some(text => text.includes(label + ' wood fencing')), label + ' driver');

@@ -55,7 +55,10 @@ test('G1 installed floor underlayment and additional installed scopes do not req
  hardwood.ownerPricing.pricing.installedLaborPercent={'scopeRates.floor_underlayment_hardwood':0};ready(hardwood,202600);
 });
 
-const migrations=[['FENCING_INSTALL','itemized','terrainSlope','moderate',444580],['FENCING_INSTALL','itemized','terrainSlope','steep',465160],['FENCING_INSTALL','installed','terrainSlope','steep',531000],['INTERIOR_PAINTING','itemized','wallHeight','high',352200],['INTERIOR_PAINTING','itemized','wallHeight','vaulted',387450],['INTERIOR_PAINTING','installed','wallHeight','high',401600],['EXTERIOR_PAINTING','itemized','stories',2,247500],['EXTERIOR_PAINTING','itemized','stories',3,265000],['EXTERIOR_PAINTING','installed','stories',2,318000],['EXTERIOR_PAINTING','installed','stories',3,336000]];
+// Fence terrain changes run labor only; the two 25,000 gates are unit prices.
+// Itemized moderate 440,080; itemized steep 130,000+220,000+36,000+9,360+10,800+50,000=456,160;
+// installed steep 400,000*(1+60%*0.3)=472,000+50,000=522,000.
+const migrations=[['FENCING_INSTALL','itemized','terrainSlope','moderate',440080],['FENCING_INSTALL','itemized','terrainSlope','steep',456160],['FENCING_INSTALL','installed','terrainSlope','steep',522000],['INTERIOR_PAINTING','itemized','wallHeight','high',352200],['INTERIOR_PAINTING','itemized','wallHeight','vaulted',387450],['INTERIOR_PAINTING','installed','wallHeight','high',401600],['EXTERIOR_PAINTING','itemized','stories',2,247500],['EXTERIOR_PAINTING','itemized','stories',3,265000],['EXTERIOR_PAINTING','installed','stories',2,318000],['EXTERIOR_PAINTING','installed','stories',3,336000]];
 for(const [type,mode,field,value,total] of migrations)test('G2 old '+type+' '+mode+' '+value+' requires explicit baseline confirmation',()=>{
  const f=offeringFixture(type,mode),p=f.ownerPricing.pricing;p.offeringDetails[field]=value;delete p.offeringDetails.baselinePricesConfirmed;f.customerInputs[field]=value;
  const prices=structuredClone(p.offeringRates),q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(JSON.stringify(q.ownerDecisionRequired),/baseline/i);assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'NEEDS PRICING');
