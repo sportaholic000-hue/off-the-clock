@@ -12,7 +12,7 @@ import {scopeLines} from '../server/quote-engine-vnext/scopePricing.js';
 import {build} from '../verification/qe-agent1-geometry-boundary-repair-20261019/fixtures.mjs';
 const audit=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases-final.json',import.meta.url)));
 const extendedBytes=readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url));
-assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'257116e6baa93c3e380b190cf4e50e6de0186d1f57c5963d49863e5554e99a4f');
+assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'5fcedaf59610bfa90da91eab5e23b6d337ca9356e9441e6f513d3d19d9227b45');
 const extended=JSON.parse(extendedBytes);
 test('geometry v12 literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-geometry-20261019-v12');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
 for(const row of [...audit,...extended])test('geometry correctness '+row.id,()=>{

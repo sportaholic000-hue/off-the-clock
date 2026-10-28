@@ -2946,7 +2946,9 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       }
     }
   }
-  assertReadyCases('LANDSCAPING_SOD', sodOwner, sodCases);
+  // The topsoil settling overage applies only when imported topsoil is priced
+  // separately; this all-in ground-preparation owner never consumes it.
+  assertReadyCases('LANDSCAPING_SOD', sodOwner, sodCases, ['topsoilWasteFactor']);
 
   const plantingOwner = service('LANDSCAPING_PLANTING', {
     plantingLaborPerPlant: { small: 1000, medium: 2000, large: 3000 },
@@ -7374,9 +7376,12 @@ test('repair 145: fully rebuilt rate multiplier fee tax and markup forgeries can
   assert.equal(scenario(feeOriginal).finalTotalCents,15100);assert.equal(scenario(feeChanged).finalTotalCents,15200);
   assert.equal(sanitizeForCustomerVNext(forgeConsistentResult139(feeOriginal,feeChanged)).resultType,auditReview);
   const seasonal=interiorService({}, {peakMonths:[1],peakSurchargePercent:10});
-  const inSeason=exactRepairQuote139(c,seasonal,defaults,{currentMonth:1}),outSeason=exactRepairQuote139(c,seasonal,defaults,{currentMonth:2});
+  // Busy-season pricing follows the customer's work month (January busy, February not).
+  const inSeason=exactRepairQuote139({...c,workMonth:'january'},seasonal,defaults,{currentMonth:1}),outSeason=exactRepairQuote139({...c,workMonth:'february'},seasonal,defaults,{currentMonth:2});
   assert.equal(scenario(inSeason).finalTotalCents,16000);assert.equal(scenario(outSeason).finalTotalCents,15000);
-  assert.equal(sanitizeForCustomerVNext(forgeConsistentResult139(inSeason,outSeason)).resultType,auditReview);
+  // Forge off-season amounts onto the January request: the retained inputs rebuild in season.
+  const seasonForged=forgeConsistentResult139(inSeason,outSeason);seasonForged.submittedCustomerInputs=structuredClone(inSeason.submittedCustomerInputs);
+  assert.equal(sanitizeForCustomerVNext(seasonForged).resultType,auditReview);
   for(const financialInputs of [undefined,{},null]){const changed=structuredClone(original);changed.calculationRecord.financialInputs=financialInputs;assert.equal(sanitizeForCustomerVNext(changed).resultType,auditReview);}
   assert.equal(sanitizeForCustomerVNext(structuredClone(original)).resultType,auditReady);
   assert.deepEqual(original.calculationRecord.financialInputs,{businessDefaults:defaults,feeSelections:{},currentMonth:1});

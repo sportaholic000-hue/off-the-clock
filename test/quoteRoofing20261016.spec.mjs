@@ -228,7 +228,8 @@ test('application adoption keeps a historically approved roof live, then atomica
   assert.equal(historicalStatus.status,'QUOTING LIVE',JSON.stringify(historicalStatus));
   let preview=bridge.previewApplicationQuote(owner,{revision:bridge.bookRevision(saved),serviceId:raw.id,customerInputs:{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'very_steep',stories:3,existingLayers:1,roofComplexity:'moderate',serviceScope:'full',confirmedFacts:input.customerInputs.confirmedFacts}});
   assert.equal(preview.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(preview));
-  assert.equal(preview.midEstimate,4568.21);
+  // Field material is 1 cent per square: 10 squares x 1.15 hip-roof starting waste = 11.5 -> 12 cents.
+  assert.equal(preview.midEstimate,4568.22);
   const display=bridge.readApplicationBook(owner);
   assert.equal(display.services[0].startingValueAdoptions.roofing_replacement_20261016.mode,'legacy');
   bridge.approveApplicationService(owner,raw.id,{revision:display.revision,adoptStartingValueGroup:'roofing_replacement_20261016'});
@@ -236,7 +237,7 @@ test('application adoption keeps a historically approved roof live, then atomica
   assert.equal(saved.services[0].startingValueAdoptions.roofing_replacement_20261016.mode,'adopted');
   assert.ok(Object.values(saved.services[0].startingValueState).every(row=>row.confirmed===true));
   preview=bridge.previewApplicationQuote(owner,{revision:bridge.bookRevision(saved),serviceId:raw.id,customerInputs:{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:'ten_to_twelve',stories:3,existingLayers:1,roofComplexity:'moderate',serviceScope:'full',confirmedFacts:input.customerInputs.confirmedFacts}});
-  assert.equal(preview.midEstimate,4668.21);
+  assert.equal(preview.midEstimate,4668.22);
 });
 
 test('new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band',()=>{

@@ -137,7 +137,8 @@ test('repair size bands switch exactly at the specified boundaries', () => {
   const roof = live({ serviceType:'ROOFING_REPAIR', service:'Roof repair', knownOfferings:roofKnown, pricing:{ laborHourlyRate:95.5, repairMinimum:0, largeRepairMaxSqft:500,
     repairHours:{ asphalt_shingle:{ shingle_patch:{ small:2, medium:3.5, large:6 } } }, repairMaterialAllowance:{ asphalt_shingle:{ shingle_patch:{ small:45, medium:85.25, large:160 } } } } });
   const facts = (known, inputs) => ({ ...inputs, confirmedFacts:Object.fromEntries(Object.entries(known).map(([field, map]) => [field, { status:'identified', field, value:inputs[field], offeringId:map[inputs[field]] }])) });
-  const band = { small:cents(mul(D(2), D(9550), D('1.15'))) + 4500, medium:cents(mul(D('3.5'), D(9550), D('1.15'))) + 8525, large:cents(mul(D(6), D(9550), D('1.15'))) + 16000 };
+  // A walkable "medium" roof starts with no pitch charge (1.00).
+  const band = { small:cents(mul(D(2), D(9550), D(1))) + 4500, medium:cents(mul(D('3.5'), D(9550), D(1))) + 8525, large:cents(mul(D(6), D(9550), D(1))) + 16000 };
   for (const [area, size] of [[49.99, 'small'], [50, 'medium'], [200, 'medium'], [200.01, 'large']]) {
     const result = roof(facts(roofKnown, { repairType:'shingle_patch', affectedArea:area, roofType:'asphalt_shingle', pitch:'medium', stories:1, leakPresent:false }));
     assert.equal(result.options[0].calculationRecord.scenarios.mid.finalTotalCents, band[size], area + ' sq ft is ' + size);

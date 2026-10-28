@@ -26,7 +26,9 @@ function quote(book,id,inputs,quoteInstant='2026-10-03T12:00Z',timeZone='America
 test('G1 roof stays live throughout the year without an installed-underlayment labor share',()=>{
  const f=peak(roof(),[7]),{id}=save(f),book=approve(id);
  assert.equal(bridge.applicationStatus(book.services[0],book,{timeZone:'America/Halifax'}).status,'QUOTING LIVE');
- for(let month=1;month<=12;month++){const q=quote(book,id,f.customerInputs,`2026-${String(month).padStart(2,'0')}-15T12:00Z`);assert.equal(q.customerResult.midEstimate,month===7?6289:5990);}
+ // Busy-season pricing follows the month the customer wants the work done.
+ const names=['january','february','march','april','may','june','july','august','september','october','november','december'];
+ for(let month=1;month<=12;month++){const q=quote(book,id,{...f.customerInputs,workMonth:names[month-1]},`2026-${String(month).padStart(2,'0')}-15T12:00Z`);assert.equal(q.customerResult.midEstimate,month===7?6289:5990);}
  f.businessDefaults.peakMonths=[10];ready(f,628900);
  f.ownerPricing.pricing.installedLaborPercent={'underlaymentPerSquare.asphalt_shingle':60};ready(f,631060);
 });
@@ -89,7 +91,10 @@ test('G3 missing quote/profile zone blocks peak quoting while explicit Atlantic 
  const local=structuredClone(book);local.defaults.quoteTimeZone='America/Halifax';savePricebook(id,local);const approved=approve(id);
  assert.equal(bridge.applicationStatus(approved.services[0],approved,{timeZone:null}).status,'QUOTING LIVE');
  assert.equal(quote(approved,id,f.customerInputs,'2026-11-01T01:30Z','UTC').customerResult.midEstimate,110);
- assert.equal(quote(approved,id,f.customerInputs,'2026-11-01T04:30Z','UTC').customerResult.midEstimate,100);
+ // November local quote with no work month: the busy-season price still applies.
+ assert.equal(quote(approved,id,f.customerInputs,'2026-11-01T04:30Z','UTC').customerResult.midEstimate,110);
+ // A customer who wants the work in November gets the off-season price.
+ assert.equal(quote(approved,id,{...f.customerInputs,workMonth:'november'},'2026-11-01T04:30Z','UTC').customerResult.midEstimate,100);
 });
 
 let rendered;

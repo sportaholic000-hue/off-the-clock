@@ -128,7 +128,8 @@ const happyCases = [
       repairHours: { asphalt_shingle: { shingle_patch: { small: 2, medium: 4, large: 8 } } },
       repairMaterialAllowance: { asphalt_shingle: { shingle_patch: { small: 4000, medium: 8000, large: 16000 } } }
     }),
-    expected: { lines: { 'Repair labor': 50600, 'Repair materials': 8000 }, low: 530, mid: 590, high: 650 }
+    // 4 hours x 10,000 x 1.00 walkable pitch x 1.10 two stories = 44,000 + 8,000 material = 52,000.
+    expected: { lines: { 'Repair labor': 44000, 'Repair materials': 8000 }, low: 470, mid: 520, high: 580 }
   },
   {
     name: 'flat roof replacement uses measured area and layer count',
@@ -787,7 +788,8 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   for(const fee of fees)lines.push({...fee});
   const months=p.peakMonths===undefined?b.peakMonths:p.peakMonths,percent=p.peakSurchargePercent===undefined?b.peakSurchargePercent:p.peakSurchargePercent;
   const labor=lines.filter(l=>l.category==='labor'||['Tear-off','Existing flooring removal'].includes(l.name)).reduce((sum,l)=>sum+l.cents,0);
-  const seasonal=months.includes(month)?precisionPercent(labor,percent):0;
+  // With no work month given, a configured busy season is priced (and disclosed).
+  const seasonal=months.length&&percent>0?precisionPercent(labor,percent):0;
   if(seasonal)lines.push({name:'Peak season adjustment',cents:seasonal,category:'surcharge'});
   const eligible=l=>(l.name==='Underlayment'?'sell_price':p.priceBasisByCategory[l.category])==='cost'&&b.markupApplies[l.category]===true;
   const sum=values=>values.reduce((total,l)=>total+l.cents,0);

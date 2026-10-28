@@ -1,6 +1,6 @@
 import {surfaceExtraDefinitions} from './surfacePricing.js';
-import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,hasSurfacePrice,repairScenarioCube,repairScenarioInputs} from './flatRoofRepairPricing.js';
-import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
+import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,hasSurfacePrice,repairScenarioCube,repairScenarioInputs,repairBands} from './flatRoofRepairPricing.js';
+import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,basicPaintNotice} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,peakSurchargeConfigured,MISSING_PEAK_TIME_ZONE,monthForRecordedQuoteDate} from '../src/quoteDate.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
@@ -49,7 +49,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 import { ownerFieldCopy } from '../priceBookCopy.js';
-import {synchronizeStartingValuesVNext} from './priceGroundwork.js';
+import {synchronizeStartingValuesVNext,dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 import {FLOORING_FIELD_COPY,FLOORING_ADDONS,flooringAddonConfigured,pricePresent} from './flooringPricing.js';
 import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNotices,present,offeredPlacement} from './concreteLandscapePricing.js';
 
@@ -136,6 +136,7 @@ const NEW_FIELD_COPY = {
   mulchOrderIncrementCubicYards: {label:'Mulch order increment',unit:'cubic yards',help:'Optional purchase increment by mulch product. Material rounds up after configured overage; installation labor remains on installed or customer-stated yards.'},
   sodPalletSizeSqft: {label:'Sod pallet coverage',unit:'square feet per pallet',help:'Optional pallet size. Sod material rounds up to whole pallets after waste; installation labor remains on measured installed square feet.'},
 
+  wallPriceIncludesTouchUp: { label: 'Does your wall price include touch-up of small cracks, nail holes and scuffs?', help: 'Yes quotes walls in fair condition at your wall rate. No, or blank, sends fair walls to you for review. Poor walls always go to review.' },
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
   customChargeClassification: { label: 'Custom service charge category', help: 'Choose the line category for this complete service charge. Its saved price basis, taxability, markup and seasonal settings apply. A final selling price is not marked up again. Blank materials share keeps this category; an entered materials share uses labor and material rules.' },
@@ -193,15 +194,14 @@ function flooringRoomBands(pricing) {
   ];
 }
 
-function repairScenarios(serviceType, cube, fallbacks, makeScenario, largeLimit) {
-  const affectedAreas = serviceType === 'ROOFING_REPAIR'
-    ? { small: 25, medium: 100, large: 250 }
-    : { small: 10, medium: 50, large: 100 };
+function repairScenarios(serviceType, cube, fallbacks, makeScenario, largeLimit, p = {}) {
+  const bands = repairBands(serviceType, p);
+  const affectedAreas = { small: bands[0] / 2, medium: (bands[0] + bands[1]) / 2, large: bands[1] * 1.25 };
   if (typeof largeLimit === 'number' && Number.isFinite(largeLimit) && largeLimit < affectedAreas.large) affectedAreas.large = largeLimit;
   const out = [];
   for (const first of keysOf(cube, fallbacks[0])) {
     for (const second of keysOf(cube?.[first], fallbacks[1])) {
-      const areas=[...new Set([...Object.values(affectedAreas),...repairBoundaryMeasurements(serviceType,largeLimit).filter(area=>typeof largeLimit!=='number'||area<=largeLimit)])];
+      const areas=[...new Set([...Object.values(affectedAreas),...repairBoundaryMeasurements(serviceType,largeLimit,bands).filter(area=>typeof largeLimit!=='number'||area<=largeLimit)])];
       for (const area of areas) out.push(makeScenario(first, second, area));
     }
   }
@@ -286,7 +286,12 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
       existingRoofType:existing,replacementRoofType:replacement,
       stories,existingLayers:10,roofComplexity,serviceScope:'full',
       ...(p.accessoryPricingMode==='itemized'?{starterLengthLF:1_000_000,dripEdgeLengthLF:1_000_000,ridgeCapLengthLF:1_000_000}:{}),
-      ...(p.deckingPerSheet!==undefined?{deckingSheets:100_000}:{})
+      ...(p.deckingPerSheet!==undefined?{deckingSheets:100_000}:{}),
+      // Confirmed flashing and vent lines are always asked; probe zero quantities
+      // here. A requested item without a price sends that quote to review.
+      ...(usesNewRoofReplacementRulesVNext(service)&&dependentLineEnabledVNext(service,roofFlashingVentDefinitionVNext(replacement),p)?{
+        ...(p.iceWaterBarrierUnit==='square_feet'?{iceWaterBarrierSqft:0}:p.iceWaterBarrierUnit==='linear_feet'?{iceWaterBarrierLengthLF:0}:{}),
+        valleyLengthLF:0,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0}:{})
     });
     if(!usesNewRoofReplacementRulesVNext(service)){
       const pitch=greatestConfiguredKey(p.pitchMultiplier,['low','medium','steep','very_steep'],'medium');
@@ -311,7 +316,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   if (serviceType === 'ROOFING_REPAIR') {
     const pitch = greatestConfiguredKey(p.pitchMultiplier, ['low', 'medium', 'steep', 'very_steep'], 'medium');
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    return repairScenarios(serviceType, repairScenarioCube(p.repairHours,p), ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => repairScenarioInputs(serviceType,{ repairType, affectedArea, roofType, pitch, stories, leakPresent: false },p), p.largeRepairMaxSqft);
+    return repairScenarios(serviceType, repairScenarioCube(p.repairHours,p), ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => repairScenarioInputs(serviceType,{ repairType, affectedArea, roofType, pitch, stories, leakPresent: false },p), p.largeRepairMaxSqft, p);
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
     const configured = keysOf(p.laborPerSqft, 'epdm').filter(key => key !== 'average');
@@ -324,7 +329,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
     return scenarios;
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
-    const base = repairScenarios(serviceType, repairScenarioCube(p.patchRepairHours,p), ['epdm', 'patch'], (membraneType, repairType, affectedArea) => repairScenarioInputs(serviceType,{ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false, accessDifficulty: greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult') },p), p.largeRepairMaxSqft);
+    const base = repairScenarios(serviceType, repairScenarioCube(p.patchRepairHours,p), ['epdm', 'patch'], (membraneType, repairType, affectedArea) => repairScenarioInputs(serviceType,{ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false, accessDifficulty: greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult') },p), p.largeRepairMaxSqft, p);
     // Probe optional treatment when configured; real selected requests always
     // require its price. An unpriced extra does not disable complete base repairs.
     return [undefined, null, ''].includes(p.pondingWaterSurcharge) ? base : base.flatMap(inputs => [
@@ -432,7 +437,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   }
   if (serviceType === 'SIDING_REPAIR') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    return repairScenarios(serviceType, repairScenarioCube(p.repairHours,p), ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => repairScenarioInputs(serviceType,{ sidingType, damageLevel, affectedArea, stories },p), p.largeRepairMaxSqft);
+    return repairScenarios(serviceType, repairScenarioCube(p.repairHours,p), ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => repairScenarioInputs(serviceType,{ sidingType, damageLevel, affectedArea, stories },p), p.largeRepairMaxSqft, p);
   }
   if (serviceType === 'CUSTOM') return [{ service: service.service, serviceConfirmed: true, unit: p.unit || 'flat', ...({ per_hour: { hours: 4 }, per_unit: { itemCount: 3 }, per_sqft: { areaSqft: 500 }, per_LF: { linearFeet: 120 }, per_square: { roofSquares: 20 } }[p.unit] || {}) }];
   return [];
@@ -614,8 +619,22 @@ function basicPaintNotices(service, validTierNames) {
   const available=validTierNames.length?variants.filter(v=>validTierNames.includes(v.name)):variants;
   const basic=available.filter(v=>basicInteriorPainting(service.serviceType,v.pricing));
   if(!basic.length)return [];
-  if(basic.length===available.length)return [BASIC_PAINT_PREPARATION_NOTICE];
-  return basic.map(v=>v.name+': '+BASIC_PAINT_PREPARATION_NOTICE);
+  if(basic.length===available.length&&new Set(basic.map(v=>basicPaintNotice(v.pricing))).size===1)return [basicPaintNotice(basic[0].pricing)];
+  return basic.map(v=>(v.name?v.name+': ':'')+basicPaintNotice(v.pricing));
+}
+
+// Confirmed flashing and vent lines are asked on every roof. Ice and water
+// barrier also needs its measurement unit before it can be asked.
+function roofFlashingNotices(service){
+  if(service?.serviceType!=='ROOFING_REPLACEMENT'||!usesNewRoofReplacementRulesVNext(service))return [];
+  const p=pricingOf(service);
+  const confirmed=Object.keys(p.materialCostPerSquare||{}).some(key=>dependentLineEnabledVNext(service,roofFlashingVentDefinitionVNext(key),p));
+  if(!confirmed)return [];
+  const out=[];
+  if(!['square_feet','linear_feet'].includes(p.iceWaterBarrierUnit))out.push('Ice and water barrier is not quoted yet: you confirmed your field-material price excludes it, but it has no measurement unit. Choose square feet or linear feet and enter its price.');
+  const missing=[['valleyPerLF','valley preparation'],['stepFlashingPerLF','step flashing'],['pipeJackEach','pipe jacks'],['ridgeVentPerLF','ridge vent'],...(p.iceWaterBarrierUnit==='square_feet'?[['iceWaterBarrierPerSqft','ice and water barrier']]:p.iceWaterBarrierUnit==='linear_feet'?[['iceWaterBarrierPerLF','ice and water barrier']]:[])].filter(([path])=>p[path]===undefined).map(([,label])=>label);
+  if(missing.length)out.push('Enter prices for '+missing.join(', ')+'. Your field-material price excludes them, so a quote that includes one goes to review until it has a price.');
+  return out;
 }
 
 function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [], validTierNames = []) {
@@ -625,7 +644,7 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
-    statusNotices: [...basicPaintNotices(service,validTierNames),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).map(note=>tier.name+': '+note))],
+    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).map(note=>tier.name+': '+note))],
     scopeCoverage: scopeCoverageForService(service),
     laborAdjustmentCoverage: laborAdjustmentCoverage(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',
@@ -1326,7 +1345,7 @@ function fieldCopy(serviceType, field) {
   if(FLAT_REPAIR_COPY[field])return {...FLAT_REPAIR_COPY[field]};
   if(serviceType.startsWith('FLOORING_')&&FLOORING_FIELD_COPY[field])return {...FLOORING_FIELD_COPY[field]};
   if(['paintingSettings','paintingRates','surfaceExtraRates','sidingSettings'].includes(field))return {label:{paintingSettings:'Painting coats and height bands',paintingRates:'Additional painting component prices',surfaceExtraRates:'Optional surface work prices',sidingSettings:'Siding measurement conventions'}[field],type:'surface_configuration',help:field==='paintingSettings'?'Optional coat and height settings. Review the sourced additional-coat starting ratios in Quantity assumptions; existing services keep their prices until adoption. Primer ratios have no starting values.':'Optional owner-entered settings. No starting prices are supplied.'};
-  if(serviceType==='CUSTOM'&&field==='installedMaterialsPercent')return {label:'Custom price materials share',help:'Optional percentage at price; the remainder is labor. Blank keeps the existing charge category. Applies to all custom price scenarios.'};
+  if(serviceType==='CUSTOM'&&field==='installedMaterialsPercent')return {label:'Custom price materials share',help:'Optional percentage at price; the remainder is labor. Blank keeps the existing charge category, so a busy-season surcharge counts the whole custom price as labor. Applies to all custom price scenarios.'};
   if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};
   if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};

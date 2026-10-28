@@ -470,7 +470,9 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     try{summary=describeInterviewConfiguration(service.serviceType,definition.field,value,pricing);}catch{summary='Retained structured configuration. Remove this override explicitly if it no longer applies.';}
     control=<div className="owner-field-preserved" role="note">{summary}</div>;
   } else {
-    control = <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} wholeCents={definition.wholeCents} />;
+    control = definition.ownerInputUnit==='percent'
+      ? <div className="money-input"><WastePercentInput aria-label={definition.label} value={value} onChange={onChange}/><span>%</span></div>
+      : <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} wholeCents={definition.wholeCents} />;
   }
   if (compact) return control;
   // Approved label ruling: concise trade-specific title is the primary label;
@@ -578,10 +580,12 @@ function TierBuilder({ tiers, definitions, onChange }) {
   );
 }
 
-// Canadian building codes (NBC 9.26.5.1 and the provincial codes built on it)
-// require eave protection on shingle, shake and tile roofs in most of Canada.
-function CanadianEaveProtectionNotice() {
-  return <Notice><strong>Ice and water at the eaves.</strong> Canadian building codes require eave protection on shingle, shake and tile roofs: a membrane at least 900 mm (about 3 ft) up the slope from the edge and 300 mm (about 1 ft) past the inside of the wall. It is not required over unheated garages, carports and porches, on very steep roofs, or in mild areas with 3,500 or fewer degree-days. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
+// Eave protection: NBC 9.26.5.1 (and the provincial codes built on it) in
+// Canada; IRC R905.1.2 in the US.
+function EaveProtectionNotice({currency}) {
+  if(currency==='CAD')return <Notice><strong>Ice and water at the eaves.</strong> Canadian building codes (NBC 9.26.5.1) require eave protection on shingle, shake and tile roofs, from the roof edge at least 900 mm (about 3 ft) up the slope and at least 300 mm (about 1 ft) past the inside face of the exterior wall. It is not required over unheated garages, carports and porches; where the overhang is more than 900 mm measured along the slope from the roof edge to the inside face of the wall; on shingles applied by the low-slope method of 9.26.8; on roofs of 8/12 or steeper (1 in 1.5); or where the area has 3,500 or fewer degree-days. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
+  if(currency==='USD')return <Notice><strong>Ice barrier at the eaves.</strong> Where the local code calls for it because ice dams form along the eaves, the International Residential Code (R905.1.2) requires an ice barrier on shingle, shake, slate and metal-shingle roofs from the lowest roof edge to at least 24 inches inside the exterior wall line, and at least 36 inches up the slope on roofs of 8/12 or steeper. Detached accessory buildings without conditioned space are exempt. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
+  return null;
 }
 
 function RoofDependentLineNotice({service,onConfirm}) {
@@ -1357,7 +1361,7 @@ export default function PriceBook() {
                 )}
 
                 <RoofDependentLineNotice service={selected} onConfirm={confirmRoofDependentLine}/>
-                {selected?.serviceType==='ROOFING_REPLACEMENT'&&book.defaults.currency==='CAD'&&<CanadianEaveProtectionNotice/>}
+                {selected?.serviceType==='ROOFING_REPLACEMENT'&&<EaveProtectionNotice currency={book.defaults.currency}/>}
 
                 {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
                 {(selectedMeta.class2Fields || []).length > 0 && (

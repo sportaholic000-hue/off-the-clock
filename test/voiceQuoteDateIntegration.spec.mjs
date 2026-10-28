@@ -28,7 +28,7 @@ function setup(t,profile,instant,bookZone='Invalid/Book'){
 for(const [label,profile,instant,bookZone,expected] of [
  ['west fallback','America/Los_Angeles',west,'Invalid/Book',110],
  ['east fallback','Asia/Tokyo',east,'Invalid/Book',110],
- ['UTC book overrides west','America/Los_Angeles',west,'UTC',100]
+ ['UTC book overrides west','America/Los_Angeles',west,'UTC',110] // no work month: busy-season price in every zone
 ])test('release voice date: '+label+' quotes $'+expected+' using the runtime clock',async t=>{
  const h=setup(t,profile,instant,bookZone);
  const matched=await h.runtime.handlers.matchService({context:h.context,args:{query:h.f.ownerPricing.service}});

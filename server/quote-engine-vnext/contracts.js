@@ -1,8 +1,8 @@
-import {workMonthNumber} from './workMonth.js';
+import {validWorkMonth} from './workMonth.js';
 import {requestedSurfaceExtras,surfaceExtraDefinitions} from './surfacePricing.js';
-import {FLAT_ROOF_ITEMS,FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_SERVICES,flatRepairContract,flatRepairPricingDiagnostics,repairUnitRequirements,repairUnitConfig,hasSurfacePrice,normalizeRepairArea} from './flatRoofRepairPricing.js';
+import {repairBands,REPAIR_BAND_FIELDS,FLAT_ROOF_ITEMS,FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_SERVICES,flatRepairContract,flatRepairPricingDiagnostics,repairUnitRequirements,repairUnitConfig,hasSurfacePrice,normalizeRepairArea} from './flatRoofRepairPricing.js';
 import {RANGE_FIELDS,rangeSettingIssues} from '../quoteRangeSettings.js';
-import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
+import {basicPaintNotice} from '../scopeConfiguration.js';
 import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surfaceCustomerContract,surfaceRowsIssue,surfaceOwnerDiagnostics,PAINTING_RATES} from './surfacePricing.js';
 import {validPricebookServiceId} from '../priceBookStructure.js';
 import {productIdentityRequired} from '../productNames.js';
@@ -102,9 +102,9 @@ export const PRICE_BASIS_CATEGORIES = Object.freeze([
 ]);
 export const TAXABILITY_CATEGORIES = Object.freeze([...PRICE_BASIS_CATEGORIES]);
 
-export function repairSizeFromAffectedArea(serviceType, affectedArea) {
+export function repairSizeFromAffectedArea(serviceType, affectedArea, pricing = {}) {
   if (typeof affectedArea !== 'number' || !Number.isFinite(affectedArea) || affectedArea <= 0) return null;
-  const boundaries = serviceType === 'ROOFING_REPAIR' ? [50, 200] : [20, 80];
+  const boundaries = repairBands(serviceType, pricing);
   if (!['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR', 'SIDING_REPAIR'].includes(serviceType)) return null;
   if (affectedArea < boundaries[0]) return 'small';
   if (affectedArea <= boundaries[1]) return 'medium';
@@ -283,9 +283,12 @@ export const MEASUREMENT_CONTRACTS = {
       if (c.trimIncluded) out.push('trimLengthLF');
       return out;
     },
-    inspection(c) {
+    inspection(c, p) {
       if (c.areaInputMethod !== 'wall_sqft') return 'Measured paintable wall area is required; floor-area and room-count geometry are not used by the audit engine.';
-      if (c.surfaceCondition !== 'good') return BASIC_PAINT_PREPARATION_NOTICE;
+      // Fair walls quote at the wall rate only when the owner says that rate
+      // covers touch-up of small cracks, nail holes and scuffs.
+      if (c.surfaceCondition === 'fair' && p?.wallPriceIncludesTouchUp === 'yes') return null;
+      if (c.surfaceCondition !== 'good') return basicPaintNotice(p);
       return null;
     },
     crossValidate(c) {
@@ -711,12 +714,14 @@ const factorMap = (defaultValue, label, unit, min, max) => ({ defaultValue, labe
 
 export const CLASS2_DEFINITIONS = {
   ROOFING_REPLACEMENT: {
-    wasteFactorByComplexity: factorMap({ simple: 0.10, moderate: 0.13, complex: 0.18 }, 'Roofing material waste by roof complexity', 'decimal fraction', 0, 0.5),
+    // Hip roofs (moderate) start at 15%, the published hip-roof waste figure.
+    wasteFactorByComplexity: factorMap({ simple: 0.10, moderate: 0.15, complex: 0.18 }, 'Roofing material waste by roof complexity', 'decimal fraction', 0, 0.5),
     pitchMultiplier: factorMap({ low: 1, medium: 1.15, steep: 1.25, very_steep: 1.40 }, 'Roof pitch labor multiplier', 'multiplier', 0.1, 5),
     storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Story-count labor multiplier', 'multiplier', 0.1, 5)
   },
   ROOFING_REPAIR: {
-    pitchMultiplier: factorMap({ low: 1, medium: 1.15, steep: 1.25, very_steep: 1.40 }, 'Roof pitch labor multiplier', 'multiplier', 0.1, 5),
+    // "Medium" is a walkable roof; steep-roof charges start above that (7/12).
+    pitchMultiplier: factorMap({ low: 1, medium: 1, steep: 1.25, very_steep: 1.40 }, 'Roof pitch labor multiplier', 'multiplier', 0.1, 5),
     storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Story-count labor multiplier', 'multiplier', 0.1, 5)
   },
   FLAT_ROOF_REPLACEMENT: {
@@ -753,6 +758,8 @@ export const CLASS2_DEFINITIONS = {
   },
   LANDSCAPING_SOD: {
     sodWasteFactor: factor(0.05, 'Sod material waste allowance', 'decimal fraction', 0, 0.5),
+    // Topsoil settles about 10-15% after placement; order the extra.
+    topsoilWasteFactor: factor(0.10, 'Imported topsoil settling overage', 'decimal fraction', 0, 0.5),
     slopeMultiplier: factorMap({ flat: 1, moderate: 1.15, steep: 1.35 }, 'Sod slope labor multiplier', 'multiplier', 0.1, 5),
     accessMultiplier: factorMap({ easy: 1, moderate: 1.10, difficult: 1.25 }, 'Sod access labor multiplier', 'multiplier', 0.1, 5)
   },
@@ -868,7 +875,7 @@ export function largeRepairLimitProblem(serviceType, value) {
     : `Enter the largest affected area priced as a repair: more than ${mediumMax} sq ft (the medium-repair limit) and at most 1,000,000.`;
 }
 for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR']) extendMeasuredContract(type, {}, () => [],
-  (c, p) => repairSizeFromAffectedArea(type, c.affectedArea) === 'large' && typeof p?.largeRepairMaxSqft === 'number' && c.affectedArea > p.largeRepairMaxSqft ? LARGE_REPAIR_LIMIT_MESSAGE : null);
+  (c, p) => repairSizeFromAffectedArea(type, c.affectedArea, p) === 'large' && typeof p?.largeRepairMaxSqft === 'number' && c.affectedArea > p.largeRepairMaxSqft ? LARGE_REPAIR_LIMIT_MESSAGE : null);
 for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasuredContract(type, {}, () => [], null, c => {
   if(c.serviceScope !== 'partial') return [];
   const total = type === 'ROOFING_REPLACEMENT' ? c.roofSizeInput : c.roofSqft;
@@ -1064,7 +1071,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   if(fenceType(serviceType)&&configuredOffering(serviceType,pricing)&&customerInputs.fenceRuns!==undefined){
     try{
       const selected=resolvedFencePricing(pricing,customerInputs),layout=fenceLayout(customerInputs,selected);
-      customerInputs={...customerInputs,...layout,lfMethod:'exact'};delete customerInputs.openRuns;
+      customerInputs={...customerInputs,...layout,lfMethod:'exact'};delete customerInputs.openRuns;delete customerInputs.endGates;
       pricing=selected;
     }catch(error){return {ok:false,missingCustomerFields:[],invalidCustomerFields:[error.fenceField||'fenceRuns'],reviewReason:error.message,validationMessages:[error.message]};}
   }
@@ -1090,7 +1097,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     }
   }
 
-  if (!missing(customerInputs.workMonth) && workMonthNumber(customerInputs.workMonth) === null) {
+  if (!missing(customerInputs.workMonth) && !validWorkMonth(customerInputs.workMonth)) {
     invalidCustomerFields.push('workMonth');
     validationMessages.push('Choose the month you want the work done.');
   }
@@ -1185,8 +1192,8 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
 }
 
 
-function previousInspectionOwnerDecisionsVNext(serviceType, customerInputs = {}) {
-  if (serviceType === 'INTERIOR_PAINTING' && ['fair', 'poor'].includes(customerInputs.surfaceCondition)) {
+function previousInspectionOwnerDecisionsVNext(serviceType, customerInputs = {}, pricing = {}) {
+  if (serviceType === 'INTERIOR_PAINTING' && (customerInputs.surfaceCondition === 'poor' || customerInputs.surfaceCondition === 'fair' && pricing.wallPriceIncludesTouchUp !== 'yes')) {
     return [{
       path: 'interiorPrepPricing',
       kind: 'measured_prep_pricing_contract',
@@ -1283,7 +1290,7 @@ const ALLOWED_PRICING_FIELDS = {
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance', 'largeRepairMaxSqft'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge', 'largeRepairMaxSqft'],
-  INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
+  INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF', 'wallPriceIncludesTouchUp'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
   FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS],
   FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft', 'cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft')],
@@ -1372,10 +1379,9 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
     if(c.pitchMethod==='area_by_pitch'&&['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].every(name=>c[name]===undefined))out.push('pitchAreaUpTo6Sqft');
     if(c.serviceScope==='partial'&&c.partialPercent===undefined&&c.partialAreaSqft===undefined)out.push('partialAreaSqft');
     if(p.accessoryPricingMode==='itemized')out.push('starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF');
-    if(dependentMaterials.includes(c.replacementRoofType)){
-      if(p.iceWaterBarrierUnit==='square_feet'&&c.iceWaterBarrierLengthLF!==undefined)out.push('iceWaterBarrierSqft');
-      if(p.iceWaterBarrierUnit==='linear_feet'&&c.iceWaterBarrierSqft!==undefined)out.push('iceWaterBarrierLengthLF');
-    }
+    // Once the owner confirms the field-material price excludes these items,
+    // each one is asked; 0 means none. A blank never drops a priced line.
+    if(dependentMaterials.includes(c.replacementRoofType))out.push(...(p.iceWaterBarrierUnit==='square_feet'?['iceWaterBarrierSqft']:p.iceWaterBarrierUnit==='linear_feet'?['iceWaterBarrierLengthLF']:[]),'valleyLengthLF','stepFlashingLengthLF','pipeJackCount','ridgeVentLengthLF');
     return out;
    },inspection(c){return pitchAreaError(c)?.message||null;},crossValidate(c){
     const errors=[];
@@ -1416,7 +1422,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
 }
 
 export function allowedPricingFields(serviceType) {
-  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []),...(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]),...(serviceType==='FLAT_ROOF_REPLACEMENT'?FLAT_ROOF_FIELDS:REPAIR_SERVICES.includes(serviceType)?REPAIR_UNIT_FIELDS:[]), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}).filter(name=>!CLASS2_DEFINITIONS[serviceType][name].startingValueOnly), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[]),...(paintingType(serviceType)?['paintingSettings','paintingRates','surfaceExtraRates']:serviceType==='SIDING_REPLACEMENT'?['sidingSettings','surfaceExtraRates']:[])];
+  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []),...(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]),...(serviceType==='FLAT_ROOF_REPLACEMENT'?FLAT_ROOF_FIELDS:REPAIR_SERVICES.includes(serviceType)?[...REPAIR_UNIT_FIELDS,...REPAIR_BAND_FIELDS]:[]), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}).filter(name=>!CLASS2_DEFINITIONS[serviceType][name].startingValueOnly), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(fenceType(serviceType)?['fenceOfferings','heightRows']:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[]),...(paintingType(serviceType)?['paintingSettings','paintingRates','surfaceExtraRates']:serviceType==='SIDING_REPLACEMENT'?['sidingSettings','surfaceExtraRates']:[])];
 }
 
 const AI_CONFIRMABLE_SERVICE_FIELDS = [
@@ -1573,10 +1579,17 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
       if (c.ridgeCapLengthLF > 0) add('ridgeCapPerLF', 'Ridge cap price per linear foot');
     }
     if (c.deckingSheets > 0) add('deckingPerSheet', 'Decking replacement price per sheet');
+    if ((c.iceWaterBarrierLengthLF !== undefined || c.iceWaterBarrierSqft !== undefined) && p.iceWaterBarrierUnit === undefined) out.push({ path: 'iceWaterBarrierUnit', label: 'Ice and water barrier measurement unit', kind: 'enum', values: ['square_feet', 'linear_feet'] });
+    if (c.iceWaterBarrierLengthLF > 0) add('iceWaterBarrierPerLF', 'Ice and water barrier price per linear foot');
+    if (c.iceWaterBarrierSqft > 0) add('iceWaterBarrierPerSqft', 'Ice and water barrier price per square foot');
+    if (c.valleyLengthLF > 0) add('valleyPerLF', 'Valley preparation price per linear foot');
+    if (c.stepFlashingLengthLF > 0) add('stepFlashingPerLF', 'Step flashing price per linear foot');
+    if (c.pipeJackCount > 0) add('pipeJackEach', 'Pipe jack price each');
+    if (c.ridgeVentLengthLF > 0) add('ridgeVentPerLF', 'Ridge vent price per linear foot');
   } else if (serviceType === 'ROOFING_REPAIR') {
     add('laborHourlyRate', 'Roof repair labor rate per hour');
     add('repairMinimum', 'Minimum repair visit price', { kind: 'minimum' });
-    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
+    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea, p);
     add(`repairHours.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair labor hours for the measured affected-area category', { kind: 'positive_number' });
     add(`repairMaterialAllowance.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair material allowance for the measured affected-area category');
     // A large repair is priced only up to the area the owner says it covers.
@@ -1595,7 +1608,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
   } else if (serviceType === 'FLAT_ROOF_REPAIR') {
     add('laborHourlyRate', 'Flat-roof repair labor rate per hour');
     add('repairMinimum', 'Minimum flat-roof repair visit price', { kind: 'minimum' });
-    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
+    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea, p);
     add(`patchRepairHours.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof repair hours for the measured affected-area category', { kind: 'positive_number' });
     add(`patchMaterialAllowance.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof material allowance for the measured affected-area category');
     // A large repair is priced only up to the area the owner says it covers.
@@ -1710,7 +1723,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
   } else if (serviceType === 'SIDING_REPAIR') {
     add('laborHourlyRate', 'Siding repair labor rate per hour');
     add('repairMinimum', 'Minimum siding repair visit price', { kind: 'minimum' });
-    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
+    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea, p);
     add(`repairHours.${c.sidingType}.${c.damageLevel}.${repairSize}`, 'Siding repair hours for the measured affected-area category', { kind: 'positive_number' });
     add(`materialAllowance.${c.sidingType}.${c.damageLevel}.${repairSize}`, 'Siding material allowance for the measured affected-area category');
     // A large repair is priced only up to the area the owner says it covers.
@@ -1890,6 +1903,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     if (p[name] !== undefined && !nonNegativeMoney(p[name])) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-negative integer-cent amount.`);
   }
   if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'baggingSurchargePercent must be from 0 to 500.');
+  if (serviceType === 'INTERIOR_PAINTING' && p.wallPriceIncludesTouchUp !== undefined && !['yes', 'no'].includes(p.wallPriceIncludesTouchUp)) structureDiagnostic(diagnostics, 'invalid', 'wallPriceIncludesTouchUp', 'Answer yes or no: does your wall price include touch-up of small cracks, nail holes and scuffs?');
   if (serviceType === 'CUSTOM' && p.customChargeClassification !== undefined && !PRICE_BASIS_CATEGORIES.includes(p.customChargeClassification)) structureDiagnostic(diagnostics, 'invalid', 'customChargeClassification', 'Choose the configured line category for this custom service.');
 
   if (serviceType === 'ROOFING_REPLACEMENT') {
@@ -2410,7 +2424,7 @@ export function approveVNextValues(input,operation) {
 
 export function inspectionOwnerDecisionsVNext(type,c={},p={}) {
  if(configuredOffering(type,p))return [];
- const decisions=previousInspectionOwnerDecisionsVNext(type,c);
+ const decisions=previousInspectionOwnerDecisionsVNext(type,c,p);
  const add=(path,kind,message)=>decisions.push({path,kind,message});
  for(const key of scopeKeysForRequest(type,c,p))if(!p.scopeDetails?.[key]&&scopeEntriesFor(p,scopeBaseKey(key)).length)add('scopeDetails.'+key,'scope_matching','No configured scope entry matches these measured job facts.');
  if(type.startsWith('FLOORING_')&&c.stairSteps>0&&!scopeEntriesFor(p,'stairs').length)add('perStepPrice','stair_scope_contract','Confirm an all-inclusive stair package or separately price every included stair component.');

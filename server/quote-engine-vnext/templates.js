@@ -1,4 +1,4 @@
-import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES} from './flatRoofRepairPricing.js';
+import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES,repairBands} from './flatRoofRepairPricing.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
 import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
@@ -637,7 +637,7 @@ function calculateRoofReplacementAdopted(c,p,ctx){
 function calculateRoofRepair(c, p) {
   const out = baseOutput('ROOFING_REPAIR');
   if(addUnitRepair(out,'ROOFING_REPAIR',c,p))return out;
-  const repairSize = repairSizeFromAffectedArea('ROOFING_REPAIR', c.affectedArea);
+  const repairSize = repairSizeFromAffectedArea('ROOFING_REPAIR', c.affectedArea, p);
   const hoursPath = `repairHours.${c.roofType}.${c.repairType}.${repairSize}`;
   const materialPath = `repairMaterialAllowance.${c.roofType}.${c.repairType}.${repairSize}`;
   const hours = quantityFactor(valueAtPath(p, hoursPath), hoursPath);
@@ -656,7 +656,7 @@ function calculateRoofRepair(c, p) {
   out.measurements.push({ name: 'affectedAreaSqft', value: c.affectedArea, unit: 'square feet', source: 'customer_measured', derivedCategory: repairSize });
   recordRuleApplication(out, {
     name: 'repairSizeFromAffectedArea',
-    rule: 'affectedArea < 50 => small; affectedArea <= 200 => medium; otherwise large',
+    rule: `affectedArea < ${repairBands('ROOFING_REPAIR', p)[0]} => small; affectedArea <= ${repairBands('ROOFING_REPAIR', p)[1]} => medium; otherwise large`,
     inputs: { serviceType: 'ROOFING_REPAIR', affectedAreaSqft: c.affectedArea },
     result: repairSize,
     usedBy: [hoursPath, materialPath]
@@ -729,7 +729,7 @@ function calculateFlatRoofRepair(c, p, ctx) {
     if(c.pondingWater){const rate=addonMoney(p.pondingWaterSurcharge,'pondingWaterSurcharge');if(rate===undefined)ctx.skipAddon('Ponding water surcharge');else add(out,fixedLine('Ponding water surcharge','addon',rate,'pondingWaterSurcharge',undefined,{allowZero:true}));}
     return out;
   }
-  const repairSize = repairSizeFromAffectedArea('FLAT_ROOF_REPAIR', c.affectedArea);
+  const repairSize = repairSizeFromAffectedArea('FLAT_ROOF_REPAIR', c.affectedArea, p);
   const hoursPath = `patchRepairHours.${c.membraneType}.${c.repairType}.${repairSize}`;
   const materialPath = `patchMaterialAllowance.${c.membraneType}.${c.repairType}.${repairSize}`;
   const hours = quantityFactor(valueAtPath(p, hoursPath), hoursPath);
@@ -743,7 +743,7 @@ function calculateFlatRoofRepair(c, p, ctx) {
   out.measurements.push({ name: 'affectedAreaSqft', value: c.affectedArea, unit: 'square feet', source: 'customer_measured', derivedCategory: repairSize });
   recordRuleApplication(out, {
     name: 'repairSizeFromAffectedArea',
-    rule: 'affectedArea < 20 => small; affectedArea <= 80 => medium; otherwise large',
+    rule: `affectedArea < ${repairBands('FLAT_ROOF_REPAIR', p)[0]} => small; affectedArea <= ${repairBands('FLAT_ROOF_REPAIR', p)[1]} => medium; otherwise large`,
     inputs: { serviceType: 'FLAT_ROOF_REPAIR', affectedAreaSqft: c.affectedArea },
     result: repairSize,
     usedBy: [hoursPath, materialPath]
@@ -855,7 +855,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
     usedBy: ['average-room complexity rule']
   });
   recordQuantityDerivation(out, {
-    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(pieces * rollWidthFt * cutLengthFt + fillCuts * rollWidthFt * fillCutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; pieces = ceil(across / rollWidthFt), or full widths plus cross-cut fill strips (fillCutLengthFt = remaining width + 0.5 ft trim + repeat; fillCuts = ceil(cutLengthFt / rollWidthFt)) when cheaper; least carpet direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
+    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(pieces * rollWidthFt * cutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; pieces = ceil(across / rollWidthFt), all with the same pile direction; least carpet direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
     inputs: carpetPurchase?{floorAreaSqft:sqft,rollWidthFt:carpetPurchase.rollWidthFt,repeatFt:carpetPurchase.repeatFt,cuts:carpetPurchase.cuts,connectedAreaDirections:carpetPurchase.areaChoices}:{ floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
     result: exactMaterialSqft, unit: 'square feet',
     usedBy: ['Flooring materials']
@@ -1170,7 +1170,7 @@ function calculateSod(c, p, ctx) {
       }
       if(present(p.topsoilPerCubicYard)){
         const soil=topsoilQuantity(c,p);
-        recordQuantityDerivation(out,{name:'topsoilCubicYards',formula:soil.unknown?'sodSqft * topsoilTypicalImportDepthInches / 324':'sodSqft * max(0, topsoilTargetDepthInches - usableTopsoilDepthInches) / 324',inputs:{sodSqft:sqft,importDepthInches:exactToNumber(soil.depth),...(soil.unknown?{topsoilTypicalImportDepthInches:p.topsoilTypicalImportDepthInches}:{topsoilTargetDepthInches:p.topsoilTargetDepthInches,usableTopsoilDepthInches:c.usableTopsoilDepthInches})},result:soil.quantity,unit:'cubic yards',usedBy:['Imported topsoil']});
+        recordQuantityDerivation(out,{name:'topsoilCubicYards',formula:soil.unknown?'sodSqft * topsoilTypicalImportDepthInches / 324 * (1 + topsoilWasteFactor)':'sodSqft * max(0, topsoilTargetDepthInches - usableTopsoilDepthInches) / 324 * (1 + topsoilWasteFactor)',inputs:{sodSqft:sqft,importDepthInches:exactToNumber(soil.depth),topsoilWasteFactor:soil.overage,...(soil.unknown?{topsoilTypicalImportDepthInches:p.topsoilTypicalImportDepthInches}:{topsoilTargetDepthInches:p.topsoilTargetDepthInches,usableTopsoilDepthInches:c.usableTopsoilDepthInches})},result:soil.quantity,unit:'cubic yards',usedBy:['Imported topsoil']});
         if(exactCompare(soil.quantity,0)>0){
           add(out,makeLine({name:'Imported topsoil',category:'material',quantity:soil.quantity,unit:'cubic yards',rateCents:p.topsoilPerCubicYard,ratePath:'topsoilPerCubicYard'}));
           included.push('imported topsoil');
@@ -1319,7 +1319,7 @@ function calculateSidingReplacement(c, p) {
 function calculateSidingRepair(c, p) {
   const out = baseOutput('SIDING_REPAIR');
   if(addUnitRepair(out,'SIDING_REPAIR',c,p))return out;
-  const repairSize = repairSizeFromAffectedArea('SIDING_REPAIR', c.affectedArea);
+  const repairSize = repairSizeFromAffectedArea('SIDING_REPAIR', c.affectedArea, p);
   const hoursPath = `repairHours.${c.sidingType}.${c.damageLevel}.${repairSize}`;
   const materialPath = `materialAllowance.${c.sidingType}.${c.damageLevel}.${repairSize}`;
   const hours = quantityFactor(valueAtPath(p, hoursPath), hoursPath);
@@ -1329,7 +1329,7 @@ function calculateSidingRepair(c, p) {
   out.measurements.push({ name: 'affectedAreaSqft', value: c.affectedArea, unit: 'square feet', source: 'customer_measured', derivedCategory: repairSize });
   recordRuleApplication(out, {
     name: 'repairSizeFromAffectedArea',
-    rule: 'affectedArea < 20 => small; affectedArea <= 80 => medium; otherwise large',
+    rule: `affectedArea < ${repairBands('SIDING_REPAIR', p)[0]} => small; affectedArea <= ${repairBands('SIDING_REPAIR', p)[1]} => medium; otherwise large`,
     inputs: { serviceType: 'SIDING_REPAIR', affectedAreaSqft: c.affectedArea },
     result: repairSize,
     usedBy: [hoursPath, materialPath]

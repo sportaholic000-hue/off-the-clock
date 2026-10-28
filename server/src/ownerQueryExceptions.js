@@ -2142,7 +2142,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Synthetic quote-engine test fixture implements a fake database method.",
     "signature": "f52c7812de0671eef1f2a0edc9a2cc36f5b59364e3222d7b846792390456f80c",
     "occurrence": 1,
-    "line": 83
+    "line": 85
   },
   {
     "file": "server/src/auth.js",

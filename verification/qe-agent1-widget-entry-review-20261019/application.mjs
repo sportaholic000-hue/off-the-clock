@@ -26,7 +26,7 @@ export async function serviceApplication(root,out,type,fixture,defaults){
   for(let pass=0;pass<3;pass++){
    const s=saved.services[0],start=Object.keys(s.startingValueState||{}),dep=Object.keys(s.dependentLineState||{});
    if(!start.length&&!dep.some(id=>!s.dependentLineState[id]?.confirmed||!s.dependentLineState[id]?.reentered))break;
-   if(start.length)s.startingValueActions={confirmPaths:start};if(dep.length)s.dependentLineActions={reenteredIds:dep,confirmIds:dep};
+   if(start.length)s.startingValueActions={confirmPaths:start};if(dep.length&&['valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','iceWaterBarrierUnit'].every(k=>s.pricing?.[k]!==undefined))s.dependentLineActions={reenteredIds:dep,confirmIds:dep};
    await api('POST','/api/pricebook/save',saved);saved=await api('GET','/api/pricebook/'+owner);
   }
   const validation=await api('POST','/api/pricebook/validate',saved),status=validation.statuses.find(s=>s.serviceId===saved.services[0].id);

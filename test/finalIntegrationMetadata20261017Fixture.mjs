@@ -49,5 +49,10 @@ export function integratedBaselineExpectation(row) {
   const wasted=new Set(records.flatMap(record=>(record.quantityDerivations||[]).filter(d=>d.formula==='measured quantity * (1 + owner material waste)'&&d.inputs?.wastePath).map(d=>{d.unit=wasteUnit(d.unit);return d.usedBy[0];})));
   const allLines=[...(result.lineItems||[]),...result.options.flatMap(o=>o.lineItems||[]),...records.flatMap(r=>[...(r.lineItems||[]),...Object.values(r.scenarios||{}).flatMap(s=>s.lineItems||[])])];
   for(const line of allLines)if(wasted.has(line.name)&&typeof line.calculation?.unit==='string')line.calculation.unit=wasteUnit(line.calculation.unit);
+  // Fence post formula text (October 28, 2026): the printed total-length
+  // formula now states the count the engine uses. The count is unchanged.
+  const fenceFormula='ceil(total length / spacing) - 1 + 2 * open runs + corners + 2 * gates without included posts';
+  const walk=value=>{if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(k==='formula'&&v==='ceil(total length / spacing) + 1 + corners + separate gate posts + 2 * (runs - 1)')value[k]=fenceFormula;else walk(v);}};
+  if(type.startsWith('FENCING_'))walk(result);
   return result;
 }

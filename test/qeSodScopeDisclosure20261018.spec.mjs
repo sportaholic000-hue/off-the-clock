@@ -82,10 +82,11 @@ test('sod disclosure money controls preserve no-prep and legacy combined output'
 });
 
 test('sod disclosure names partial and complete split preparation without changing cents',()=>{
+  // Topsoil: 1000 sq ft x 1 in deficit / 324 x 1.10 settling x 3,000 = 10,185 on the 205,000 sod job.
   const cases=[
     {
       name:'topsoil only',fixture:splitFixture({topsoilPerCubicYard:3000,topsoilTargetDepthInches:4}),
-      total:214259,included:[components.topsoil],excluded:[components.removal,components.grading]
+      total:215185,included:[components.topsoil],excluded:[components.removal,components.grading]
     },
     {
       name:'grading only',fixture:splitFixture({sodGradingPerSqft:90}),
@@ -93,7 +94,7 @@ test('sod disclosure names partial and complete split preparation without changi
     },
     {
       name:'all three',fixture:splitFixture({sodRemovalPerSqft:100,sodGradingPerSqft:90,topsoilPerCubicYard:3000,topsoilTargetDepthInches:4}),
-      total:404259,included:[components.removal,components.grading,components.topsoil],excluded:[]
+      total:405185,included:[components.removal,components.grading,components.topsoil],excluded:[]
     }
   ];
   for(const row of cases){
@@ -123,7 +124,7 @@ test('sod disclosure distinguishes valid zero rates, zero deficit and unknown al
   assert.doesNotMatch(zeroPublic.disclaimer,/Excluded ground preparation:[^.]*imported topsoil/);
 
   const unknown=splitFixture({topsoilPerCubicYard:3000,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:2},{usableTopsoilDepthInches:'unknown'});
-  result=ready(unknown);assert.equal(cents(result),223519);
+  result=ready(unknown);assert.equal(cents(result),225370);
   const unknownPublic=assertSplitDisclosure(result,{included:[components.topsoil],excluded:[components.removal,components.grading]});
   assert.match(unknownPublic.disclaimer,/Imported topsoil is an allowance using the business.s typical import depth and will be confirmed on site\./);
 });
@@ -143,7 +144,7 @@ test('saved-book widget application response uses requested/component wording an
   const fixture=splitFixture({topsoilPerCubicYard:3000,topsoilTargetDepthInches:4});
   const web=webQuote(fixture);
   assert.equal(web.result.resultType,'INSTANT_ESTIMATE_READY');
-  assert.equal(web.result.midEstimate,2142.59);
+  assert.equal(web.result.midEstimate,2151.85);
   assert.equal(web.result.engineVersion,undefined,'customer response must not expose the internal engine version');
   assert.ok(web.result.priceDrivers.includes(REQUESTED));
   assert.match(web.result.disclaimer,/Included ground preparation: imported topsoil\./);

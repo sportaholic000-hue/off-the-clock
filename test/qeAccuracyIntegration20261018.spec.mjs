@@ -65,8 +65,9 @@ test('accuracy integration: sod component disclosure and unchanged cents cross w
   const included='Included ground preparation: imported topsoil.';
   const excluded='Excluded ground preparation: old-lawn removal and disposal, grading. Any required excluded work needs a separate on-site estimate.';
 
+  // 205,000 sod job + topsoil 1000 sq ft x 1 in / 324 x 1.10 settling x 3,000 = 10,185.
   const widget=webQuote(fixture);
-  assert.equal(widget.result.midEstimate,2142.59);
+  assert.equal(widget.result.midEstimate,2151.85);
   assert.ok(widget.result.priceDrivers.includes('Ground preparation requested'));
   assert.match(widget.result.disclaimer,new RegExp(included.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
   assert.match(widget.result.disclaimer,new RegExp(excluded.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
@@ -74,7 +75,7 @@ test('accuracy integration: sod component disclosure and unchanged cents cross w
   const harness=quoteEmailFixture(t);
   const voice=await phone(harness,fixture);
   assert.equal(voice.result.status,'quoted',JSON.stringify(voice.result));
-  assert.equal(voice.result.midEstimate,2142.59);
+  assert.equal(voice.result.midEstimate,2151.85);
   assert.ok(voice.result.priceDrivers.includes('Ground preparation requested'));
   for(const field of ['writtenDisclosure','quoteNarration']){
     assert.match(voice.result[field],new RegExp(included.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
@@ -166,7 +167,8 @@ test('accuracy integration: genuine v7 sod approval stays stale while frozen ret
   assert.equal(prepared.status,'ready',JSON.stringify(prepared));
   const corrected=submitQuote(owner,{...newRequest,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});
   assert.equal(corrected.status,201);
-  assert.equal(corrected.response.midEstimate,2142.59);
+  // The saved service now carries the 10% topsoil settling starting value.
+  assert.equal(corrected.response.midEstimate,2151.85);
   assert.ok(corrected.response.priceDrivers.includes('Ground preparation requested'));
   assert.match(corrected.response.disclaimer,/Included ground preparation: imported topsoil\./);
   assert.match(corrected.response.disclaimer,/Excluded ground preparation: old-lawn removal and disposal, grading\. Any required excluded work needs a separate on-site estimate\./);

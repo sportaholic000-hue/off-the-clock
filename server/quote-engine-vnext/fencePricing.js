@@ -140,7 +140,7 @@ function measuredFenceRuns(c,p){
   if(!Array.isArray(c.fenceRuns)||!c.fenceRuns.length||c.fenceRuns.length>1000)throw new RangeError('Supply the measured sections for every fence run.');
   if(c.lfMethod!==undefined&&c.lfMethod!=='exact')throw new RangeError('The section layout requires measured section lengths.');
   if(c.fenceRunCount!==undefined&&c.fenceRunCount!==c.fenceRuns.length)throw new RangeError('The fence run count does not match the measured runs.');
-  let length=exactDecimal(0),corners=0,openRuns=0,sections=0;
+  let length=exactDecimal(0),corners=0,openRuns=0,sections=0,endGates=0;
   const gates={};
   for(const run of c.fenceRuns){
     if(!record(run)||Object.keys(run).some(k=>!['closed','sections'].includes(k))||typeof run.closed!=='boolean'||!Array.isArray(run.sections)||!run.sections.length||run.sections.length>1000)throw new RangeError('Each run needs Yes/No for its connection and its straight section lengths.');
@@ -150,7 +150,10 @@ function measuredFenceRuns(c,p){
       length=exactAdd(length,section.lengthLF);sections++;
       const boundary=i<run.sections.length-1||run.closed;
       if(own(section,'gateAfter')){
-        if(!boundary||typeof section.gateAfter!=='string'||!own(p.offeringDetails?.gates,section.gateAfter)||!positive(p.offeringDetails.gates[section.gateAfter]?.widthLF))throw new RangeError('Place each offered gate between two measured sections.');
+        // A gate may also end an open run (for example at a house wall); the
+        // run's end post is then that gate's post, so it is not counted twice.
+        if(!boundary)endGates++;
+        if(typeof section.gateAfter!=='string'||!own(p.offeringDetails?.gates,section.gateAfter)||!positive(p.offeringDetails.gates[section.gateAfter]?.widthLF))throw new RangeError('Place each gate after a measured section using an offered gate.');
         gates[section.gateAfter]=(gates[section.gateAfter]||0)+1;
       }else if(boundary)corners++;
     }
@@ -162,7 +165,7 @@ function measuredFenceRuns(c,p){
   if(c.gates!==undefined){
     if(!record(c.gates)||Object.keys(c.gates).some(k=>!own(p.offeringDetails?.gates,k))||Object.values(c.gates).some(n=>!Number.isSafeInteger(n)||n<0)||Object.keys({...gates,...c.gates}).some(k=>(gates[k]||0)!==(c.gates[k]||0)))throw new RangeError('The gate counts do not match their places in the measured sections.');
   }
-  return {linearFeet,cornerCount:corners,gates,fenceRunCount:c.fenceRuns.length,openRuns};
+  return {linearFeet,cornerCount:corners,gates,fenceRunCount:c.fenceRuns.length,openRuns,endGates};
 }
 // Public layout eligibility also requires a non-degenerate closed polygon.
 export function fenceLayout(c,p){
@@ -202,7 +205,7 @@ export function fencePostQuantities(c,p){
   if(!measured&&(!Number.isSafeInteger(closed)||closed<0||closed>runs))throw new RangeError('Closed runs must be a whole number no larger than the number of runs.');
   const openRuns=measured?measured.openRuns:runs-closed;
   const line=measured?c.fenceRuns.reduce((sum,run)=>sum+run.sections.reduce((s,section)=>s+ceilSpans(section.lengthLF,p.postSpacingLF)-1,0),0):ceilSpans(inputs.linearFeet,p.postSpacingLF)-1;
-  const terminal=2*openRuns+inputs.cornerCount+2*(gates-included);
+  const terminal=2*openRuns+inputs.cornerCount+2*(gates-included)-(measured?measured.endGates:0);
   const total=line+terminal;
   if([line,terminal,total].some(n=>!Number.isSafeInteger(n)||n<0))throw new RangeError('Fence post quantity is outside the supported range.');
   return {total,terminal,line,method:measured?'sections':'total_length_allowance',inputs};

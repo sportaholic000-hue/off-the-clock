@@ -42,7 +42,8 @@ try{
     const s=saved.services[0],start=Object.keys(s.startingValueState||{}),dependent=Object.keys(s.dependentLineState||{});
     if(!start.length&&!dependent.length)break;
     if(start.length)s.startingValueActions={confirmPaths:start};
-    if(dependent.length)s.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
+    // An owner confirms that the field price excludes flashing and vents only when they price those items.
+    if(dependent.length&&['valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','iceWaterBarrierUnit'].every(k=>s.pricing?.[k]!==undefined))s.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
     await ok('POST','/api/pricebook/save',saved);saved=await ok('GET','/api/pricebook/'+owner);
    }
    const access=await ok('POST','/api/quotedone/access',{allowedOrigins:[app.base]}),publicPath='/api/public/quote/'+access.publicKey;

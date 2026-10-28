@@ -22,9 +22,10 @@ const expected={
   'SIDING_REPAIR.materialAllowance':['Siding repair material allowance by damage level and project size','Material allowance for each damage level and size of affected area: '+SMALL]
 };
 const boxes={
-  ROOFING_REPAIR:{small:'Small (under 50 sq ft)',medium:'Medium (50 to 200 sq ft)',large:'Large (over 200 sq ft)'},
-  FLAT_ROOF_REPAIR:{small:'Small (under 20 sq ft)',medium:'Medium (20 to 80 sq ft)',large:'Large (over 80 sq ft)'},
-  SIDING_REPAIR:{small:'Small (under 20 sq ft)',medium:'Medium (20 to 80 sq ft)',large:'Large (over 80 sq ft)'}
+  // Starting limits; an owner's own size limits replace them.
+  ROOFING_REPAIR:{small:'Small (under 50 sq ft unless you set your own size limits)',medium:'Medium (50 to 200 sq ft unless you set your own)',large:'Large (over 200 sq ft unless you set your own)'},
+  FLAT_ROOF_REPAIR:{small:'Small (under 20 sq ft unless you set your own size limits)',medium:'Medium (20 to 80 sq ft unless you set your own)',large:'Large (over 80 sq ft unless you set your own)'},
+  SIDING_REPAIR:{small:'Small (under 20 sq ft unless you set your own size limits)',medium:'Medium (20 to 80 sq ft unless you set your own)',large:'Large (over 80 sq ft unless you set your own)'}
 };
 const fieldsOf=type=>{const meta=applicationMetadata();return (meta.services||meta).find(s=>(s.serviceType||s.type)===type).fields;};
 

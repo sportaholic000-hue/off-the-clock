@@ -10,7 +10,7 @@ function policy(f,includedPrices={},freeTiers=[]){return {serviceId:f.ownerPrici
 for(const [name,change]of [
  ['missing closure',c=>delete c.fenceRuns[0].closed],['zero section',c=>c.fenceRuns[0].sections[0].lengthLF=0],
  ['negative section',c=>c.fenceRuns[0].sections[0].lengthLF=-1],['unknown gate',c=>c.fenceRuns[0].sections[0].gateAfter='unknown'],
- ['gate at open end',c=>c.fenceRuns[0].sections[1].gateAfter='walk'],['empty runs',c=>c.fenceRuns=[]],
+ ['empty runs',c=>c.fenceRuns=[]],
  ['fractional run count',c=>c.fenceRunCount=1.5],['contradictory run count',c=>c.fenceRunCount=2],
  ['contradictory total',c=>c.linearFeet=17],['contradictory corners',c=>c.cornerCount=1],
  ['text total',c=>c.linearFeet='16'],['unmeasured method',c=>c.lfMethod='assumption'],
@@ -20,6 +20,14 @@ for(const [name,change]of [
   const f=layout();change(f.customerInputs);const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');const view=sanitizeForCustomerVNext(q);assert.equal(view.midEstimate,undefined);
   if(['zero section','negative section','text total'].includes(name))assert.match(view.customerMessage,/measurement/i);
  });
+test('Oct16 layout quotes a gate at the open end of a run: 6 posts / 119200 cents',()=>{
+  // 7 ft, walk gate, 9 ft, walk gate at the end: 1 line post (9 / 8), 2 run ends,
+  // 2 posts for each gate, less 1 because the run's end post is the end gate's post = 6.
+  // 16 x 1,000 labor + 16 x 1.10 x 2,000 infill + 6 x 3,000 posts + 2 x 25,000 gates = 119,200.
+  const f=layout();f.customerInputs.fenceRuns[0].sections[1].gateAfter='walk';
+  const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(total(q),119200);
+  assert.equal(fencePostQuantities(f.customerInputs,f.ownerPricing.pricing).total,6);
+});
 for(const [height,expected]of [[4,null],[6,400000],[6.01,600000],[7,600000],[8,600000],[9,null]])test('Oct16 exclusive/inclusive row boundary '+height+' ft: '+(expected??'review'),()=>{
   const f=fenceFixture('installed');f.customerInputs.fenceHeight=height;const q=generateQuoteVNext(f);
   if(expected===null){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,/No price is set/);}

@@ -54,9 +54,10 @@ function quote(o,instant) {
   const book=loadPricebook(o.id);
   return bridge.calculateApplicationQuote(book,book.services[0],{serviceId:book.services[0].id,customerInputs:o.fixture.customerInputs},{ownerId:o.id,quoteInstant:new Date(instant)});
 }
+// With no work month given, the October busy-season price ($110) applies in every zone.
 for(const [label,instant,first,second,before,after] of [
-  ['west','2026-11-01T06:30:00.000Z','America/Los_Angeles','UTC',110,100],
-  ['east','2026-09-30T15:30:00.000Z','UTC','Asia/Tokyo',100,110]
+  ['west','2026-11-01T06:30:00.000Z','America/Los_Angeles','UTC',110,110],
+  ['east','2026-09-30T15:30:00.000Z','UTC','Asia/Tokyo',110,110]
 ])test('release guard: '+label+' profile changes refresh public catalog/status without saving prices',async t=>{
   const api=await routes(t),a=owner(first),b=owner('UTC'),bytes=fs.readFileSync(a.filename);
   assert.equal((await api.status(a)).status,'QUOTING LIVE');assert.equal((await api.catalog(a)).services.length,1);

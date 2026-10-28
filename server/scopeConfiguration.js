@@ -1,5 +1,7 @@
 import {trimComponentPricing,trimPreparationNeeded} from './quote-engine-vnext/surfacePricing.js';
 export const BASIC_PAINT_PREPARATION_NOTICE='Fair or poor walls go to review until you use itemized pricing with preparation rates.';
+export const BASIC_PAINT_POOR_NOTICE='Poor walls go to review until you use itemized pricing with preparation rates.';
+export const basicPaintNotice=(p={})=>p.wallPriceIncludesTouchUp==='yes'?BASIC_PAINT_POOR_NOTICE:BASIC_PAINT_PREPARATION_NOTICE;
 export const basicInteriorPainting=(type,p={})=>type==='INTERIOR_PAINTING'&&!['itemized','installed'].includes(p.offeringMode);
 export const scopeVisibleInEditor=(type,p,key)=>!(basicInteriorPainting(type,p)&&key==='paint_prep');
 // Shared owner/customer form definitions. No prices or quantities are inferred.
@@ -27,7 +29,9 @@ const cchoice=(label,values)=>({type:'enum',label,values,unit:null});
 const cslug=label=>({type:'slug',label,unit:null});
 const rule=(label,fields,confirmation,customerFields={})=>({label,fields,confirmation,customerFields});
 const costing=(type,p,rules)=>['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type)&&p.offeringMode!=='installed'&&rules.priceBasisByCategory?.material==='cost';
-const floorUnderlay=(c,p)=>['hardwood','laminate','carpet'].includes(c.newFlooringType)||c.newFlooringType==='vinyl_plank'&&(p.vinylPlankUnderlaymentRule==='always_included'||p.vinylPlankUnderlaymentRule==='customer_selectable_addon'&&c.underlaymentSelected===true||p.vinylPlankUnderlaymentRule==='subfloor_condition'&&c.subfloorCondition==='requires_underlayment');
+// Tile underlayment (cement backer board or an uncoupling membrane) is priced
+// only when the owner sets it up; tile quotes without it are unchanged.
+const floorUnderlay=(c,p)=>['hardwood','laminate','carpet'].includes(c.newFlooringType)||c.newFlooringType==='tile'&&own(p.scopeDetails,'floor_underlayment_tile')||c.newFlooringType==='vinyl_plank'&&(p.vinylPlankUnderlaymentRule==='always_included'||p.vinylPlankUnderlaymentRule==='customer_selectable_addon'&&c.underlaymentSelected===true||p.vinylPlankUnderlaymentRule==='subfloor_condition'&&c.subfloorCondition==='requires_underlayment');
 
 const frozenScopeDefinitions=new WeakMap();
 const freezeDefinition=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))freezeDefinition(child);Object.freeze(value);}return value;};
@@ -41,7 +45,7 @@ export function scopeDefinitions(type,p={}){
  if(cached?.type===type)return cached.definitions;
  const out={};
  if(type.startsWith('FLOORING_')){
-  for(const f of ['hardwood','laminate','carpet','vinyl_plank'])out['floor_underlayment_'+f]=rule(f.replaceAll('_',' ')+' underlayment',{...product,mode:choice('Underlayment price meaning',['installed_area_sell_price','package_cost','included_in_floor_price'])},'underlaymentScopeConfirmed');
+  for(const f of ['hardwood','laminate','carpet','vinyl_plank','tile'])out['floor_underlayment_'+f]=rule(f==='tile'?'tile backer board or uncoupling membrane':f.replaceAll('_',' ')+' underlayment',{...product,mode:choice('Underlayment price meaning',['installed_area_sell_price','package_cost','included_in_floor_price'])},'underlaymentScopeConfirmed');
   out.stairs=rule('Complete stair work',{...common,mode:modes,category,flooringType:choice('Stair flooring type',['hardwood','laminate','carpet','vinyl_plank','tile']),maximumWidthLF:number('Maximum tread width included','feet',Number.MIN_VALUE),minimumWidthLF:{...number('Covers treads wider than (optional lower limit)','feet',0),optional:true},underlaymentIncluded:bool('Stair underlayment included'),removalIncluded:bool('Existing stair covering removal included'),disposalIncluded:bool('Stair debris disposal included')},'stairScopeConfirmed',{
    stairWidthLF:cnumber('Measured stair tread width','feet'),stairRemovalNeeded:confirm('Existing stair covering removal requested'),stairDisposalNeeded:confirm('Stair debris disposal requested'),floorAreaExcludesStairs:confirm('The measured flooring area excludes the separately priced stairs')});
   out.floor_overlay=rule('Additional preparation for flooring over an existing floor',{...common,mode:modes,category,existingFloorType:{...string('Existing flooring type covered'),slug:true},newFlooringType:choice('New flooring type covered',['hardwood','laminate','carpet','vinyl_plank','tile']),basePriceExcludesPreparation:bool('Base flooring prices exclude this additional preparation')},'overlayScopeConfirmed');

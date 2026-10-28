@@ -32,7 +32,7 @@ export const OPENING_FIELDS={areaSqft:num('Other opening area not counted above'
 export function surfaceExtraDefinitions(type,p={}){
  const each=(label,field)=>({label,field,unit:'each',integer:true});
  if(type==='INTERIOR_PAINTING')return {doorSides:each('Door sides','paintDoorSides'),doorFrames:each('Door frames','paintDoorFrames'),windows:each('Windows','paintWindows'),cabinetFaces:each('Cabinet doors or drawer faces','paintCabinetFaces')};
- if(type==='EXTERIOR_PAINTING')return {windows:each('Windows','paintWindows'),doors:each('Doors','paintDoors'),shutters:each('Shutters','paintShutters'),garageDoors:each('Garage doors','paintGarageDoors'),exteriorTrim:{label:'Exterior trim',field:'exteriorTrimLengthLF',unit:'linear feet'},soffit:{label:'Soffit',field:'soffitQuantity',unit:'linear feet'},fascia:{label:'Fascia',field:'fasciaLengthLF',unit:'linear feet'},powerWashing:{label:'Power washing',field:'powerWashingAreaSqft',unit:'square feet'}};
+ if(type==='EXTERIOR_PAINTING')return {windows:each('Windows','paintWindows'),doors:each('Doors','paintDoors'),shutters:each('Shutters','paintShutters'),garageDoors:each('Garage doors','paintGarageDoors'),exteriorTrim:{label:'Exterior trim',field:'exteriorTrimLengthLF',unit:'linear feet'},soffit:{label:'Soffit',field:'soffitQuantity',unit:p.paintingSettings?.soffitUnit==='square_feet'?'square feet':'linear feet'},fascia:{label:'Fascia',field:'fasciaLengthLF',unit:'linear feet'},powerWashing:{label:'Power washing',field:'powerWashingAreaSqft',unit:'square feet'}};
  if(type==='SIDING_REPLACEMENT')return {soffit:{label:'Soffit',field:'soffitQuantity',unit:p.sidingSettings?.soffitUnit==='square_feet'?'square feet':p.sidingSettings?.soffitUnit==='linear_feet'?'linear feet':null},fascia:{label:'Fascia',field:'fasciaLengthLF',unit:'linear feet'}};
  return {};
 }
@@ -45,6 +45,7 @@ export function surfaceOwnerDiagnostics(type,p={}){
   if(!paintingType(type)||!record(settings))bad('paintingSettings','Painting settings must be a plain named map.');
   else for(const [key,value] of Object.entries(settings)){
    if(own(COAT_RATIOS,key)){if(typeof value!=='number'||!Number.isFinite(value)||value<0||value>Number.MAX_SAFE_INTEGER)bad('paintingSettings.'+key,'An additional-coat ratio must be finite and non-negative; remove it to retain linear per-coat pricing.');}
+   else if(key==='soffitUnit'){if(type!=='EXTERIOR_PAINTING'||!['square_feet','linear_feet'].includes(value))bad('paintingSettings.soffitUnit','Choose square feet or linear feet for exterior soffit.');}
    else if(['primerCoats','ceilingPrimerCoats','trimPrimerCoats'].includes(key)){if(!Number.isInteger(value)||value<0||value>3)bad('paintingSettings.'+key,'Primer coats must be a whole number from 0 to 3.');}
    else if(key==='heightBands'){
     const keys=['standardMaxFeet','highMaxFeet','vaultedMaxFeet'];

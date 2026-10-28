@@ -18,7 +18,8 @@ for(const [name,alter,path] of [
  const f=request();alter(f);const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.midEstimate,undefined);
  assert.ok(q.invalidOwnerFields.includes(path),JSON.stringify(q));assert.ok(q.ownerDiagnostics.some(d=>d.path===path&&d.kind==='quote_date'),JSON.stringify(q));
 });
-for(const [zone,expected] of [['UTC',100],['America/Los_Angeles',110]])test('release diagnostics: valid '+zone+' still quotes $'+expected,()=>{
+// No work month given: the busy-season price applies whatever the zone.
+for(const [zone,expected] of [['UTC',110],['America/Los_Angeles',110]])test('release diagnostics: valid '+zone+' still quotes $'+expected,()=>{
  const f=request();f.businessDefaults.quoteTimeZone=zone;f.quoteDate.timeZone=zone;f.ownerPricing.peakMonths=[10];f.ownerPricing.peakSurchargePercent=10;
  const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,expected);assert.deepEqual(q.calculationRecord.quoteDate,f.quoteDate);
 });

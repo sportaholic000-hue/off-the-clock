@@ -4,8 +4,18 @@ const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 export const hasSurfacePrice=v=>v!==undefined&&v!==null&&v!=='';
 export const REPAIR_SERVICES=['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'];
 export const REPAIR_UNIT_FIELDS=['repairPricingUnit','repairUnitPrice','repairAreaMinimum','repairFirstAreaSqft'];
+// Owner-set affected-area break points between small, medium and large repairs.
+// Blank keeps the starting limits below.
+export const REPAIR_BAND_FIELDS=['repairSmallBelowSqft','repairMediumUpToSqft'];
+export const DEFAULT_REPAIR_BANDS=Object.freeze({ROOFING_REPAIR:[50,200],FLAT_ROOF_REPAIR:[20,80],SIDING_REPAIR:[20,80]});
+const bandNumber=v=>typeof v==='number'&&Number.isFinite(v)&&v>0&&v<=1_000_000;
+export function repairBands(type,p={}){
+  const small=p?.repairSmallBelowSqft,medium=p?.repairMediumUpToSqft;
+  return bandNumber(small)&&bandNumber(medium)&&small<medium?[small,medium]:DEFAULT_REPAIR_BANDS[type]||[20,80];
+}
 export const FLAT_ROOF_ITEMS=[
   {rate:'flatRoofEdgeMetalPerLF',field:'edgeMetalLF',label:'Perimeter edge metal or coping',unit:'linear feet',max:1_000_000},
+  {rate:'flatRoofWallFlashingPerLF',field:'wallFlashingLF',label:'Wall and parapet base flashing',unit:'linear feet',max:1_000_000},
   {rate:'flatRoofPenetrationEach',field:'penetrationCount',label:'Pipe flashings and other penetrations',unit:'each',max:100_000,integer:true},
   {rate:'flatRoofCurbEach',field:'curbCount',label:'Curbs',unit:'each',max:100_000,integer:true},
   {rate:'flatRoofDrainEach',field:'drainCount',label:'Drains',unit:'each',max:100_000,integer:true},
@@ -14,6 +24,8 @@ export const FLAT_ROOF_ITEMS=[
 export const FLAT_ROOF_FIELDS=[...FLAT_ROOF_ITEMS.map(i=>i.rate),'flatRoofDeckPriceBasis','flatRoofAdditionalLayerFactor'];
 export const FLAT_REPAIR_COPY={
   ...Object.fromEntries(FLAT_ROOF_ITEMS.map(i=>[i.rate,{label:i.label+' price per '+(i.unit==='linear feet'?'linear foot':i.unit==='sheets'?'sheet':'item'),help:'Optional separate '+(i.unit==='sheets'?'deck selling price. Blank price basis means material only; choose installed and enter its labor portion when labor is included.':'installed selling price. Do not include work already covered by your base roof prices.')+' Blank leaves existing quotes unchanged and asks no quantity.'}])),
+  repairSmallBelowSqft:{label:'Small repair: affected area under (sq ft)',help:'A repair smaller than this is priced with your small-repair hours and materials. Leave both size limits blank to keep the starting limits: 50 and 200 sq ft for roof repairs, 20 and 80 sq ft for flat-roof and siding repairs.',type:'number'},
+  repairMediumUpToSqft:{label:'Medium repair: affected area up to (sq ft)',help:'A repair from the small limit up to this area is medium; anything larger is a large repair.',type:'number'},
   flatRoofAdditionalLayerFactor:{label:'Additional-layer tear-off rate',help:'Share of your tear-off price charged for each existing layer after the first, for example 0.70 for 70%. Heavy built-up or gravel layers are often charged at the full rate. Blank charges every layer at the full tear-off price.'},
   flatRoofDeckPriceBasis:{label:'Deck replacement price includes',help:'Blank means material only. Installed includes labor and material; enter the labor portion in Installed prices. The remaining percentage is material.',type:'select',options:['material_only','installed'],optionLabels:{material_only:'Material only',installed:'Installed: labor and material'}},
   repairPricingUnit:{label:'Repair pricing unit by material and repair type',help:'Choose square feet for patches or panels, linear feet for seams or flashing, or each for boots, vents and penetrations. Without a unit price, existing repair bands remain unchanged.',tree:{depth:2,leafType:'enum',options:['square_feet','linear_feet','each'],allowEmpty:true,emptyHelp:'No entries. Add only the repair types you price with this setting.'}},
@@ -79,6 +91,11 @@ export function flatRepairPricingDiagnostics(type,p){
     for(const i of FLAT_ROOF_ITEMS)if(hasSurfacePrice(p[i.rate])&&(!(typeof p[i.rate]==='number'&&Number.isFinite(p[i.rate])&&p[i.rate]>=0&&p[i.rate]<=Number.MAX_SAFE_INTEGER)||i.integer&&!Number.isSafeInteger(p[i.rate])))bad(i.rate,'Enter a non-negative price; per-item and per-sheet prices use whole-cent precision.');
     if(hasSurfacePrice(p.flatRoofDeckPriceBasis)&&!['material_only','installed'].includes(p.flatRoofDeckPriceBasis))bad('flatRoofDeckPriceBasis','Choose material only or installed.');
     if(hasSurfacePrice(p.flatRoofAdditionalLayerFactor)&&!(typeof p.flatRoofAdditionalLayerFactor==='number'&&Number.isFinite(p.flatRoofAdditionalLayerFactor)&&p.flatRoofAdditionalLayerFactor>=0&&p.flatRoofAdditionalLayerFactor<=1))bad('flatRoofAdditionalLayerFactor','Enter a share from 0 to 1 of your tear-off price, for example 0.70.');
+  }
+  if(REPAIR_SERVICES.includes(type)){
+    for(const key of REPAIR_BAND_FIELDS)if(hasSurfacePrice(p[key])&&!bandNumber(p[key]))bad(key,'Enter a repair size limit from more than 0 up to 1,000,000 square feet.');
+    if(hasSurfacePrice(p.repairSmallBelowSqft)!==hasSurfacePrice(p.repairMediumUpToSqft))bad(hasSurfacePrice(p.repairSmallBelowSqft)?'repairMediumUpToSqft':'repairSmallBelowSqft','Enter both repair size limits, or leave both blank to keep the starting limits.');
+    else if(bandNumber(p.repairSmallBelowSqft)&&bandNumber(p.repairMediumUpToSqft)&&p.repairSmallBelowSqft>=p.repairMediumUpToSqft)bad('repairMediumUpToSqft','The medium repair limit must be larger than the small repair limit.');
   }
   if(REPAIR_SERVICES.includes(type))for(const root of REPAIR_UNIT_FIELDS){
     if(!hasSurfacePrice(p[root]))continue;

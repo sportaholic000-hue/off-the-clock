@@ -40,13 +40,15 @@ test('Oct16 Chromium: one gate between 7 and 9 ft sections quotes 5 posts / 9120
  await page.getByLabel('Length of each straight section, in feet, between ends, corners and gates — run 1, section 1',{exact:true}).fill('7');await page.getByRole('button',{name:'Add straight section',exact:true}).click();
  await page.getByLabel('Length of each straight section, in feet, between ends, corners and gates — run 1, section 2',{exact:true}).fill('9');await page.getByLabel('Gate after run 1, section 1',{exact:true}).selectOption('walk');
  const c=await output(page),q=generateQuoteVNext({...f,customerInputs:c});assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,91200);
- // Opening a loop cannot erase its closing gate; removing a section cannot
- // erase a gate on the section that remains. Both conflicts require review.
+ // Opening a loop keeps its closing gate, which then ends the open run; removing a
+ // section keeps the gate on the section that remains, again ending the run.
+ // 7 + gate + 9 + end gate: 6 posts -> 16,000 + 35,200 + 18,000 + 50,000 = 119,200.
+ // 7 + end gate: 3 posts -> 7,000 + 15,400 + 9,000 + 25,000 = 56,400.
  const closure=page.getByLabel('Does this run connect back to where it starts? — run 1',{exact:true});
  await closure.selectOption('true');await page.getByLabel('Gate after run 1, section 2',{exact:true}).selectOption('walk');await closure.selectOption('false');
- let edited=await output(page);assert.equal(edited.fenceRuns[0].sections[1].gateAfter,'walk');assert.equal(generateQuoteVNext({...f,customerInputs:edited}).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ let edited=await output(page);assert.equal(edited.fenceRuns[0].sections[1].gateAfter,'walk');assert.equal(generateQuoteVNext({...f,customerInputs:edited}).options[0].calculationRecord.scenarios.mid.finalTotalCents,119200);
  await page.getByLabel('Gate after run 1, section 2',{exact:true}).selectOption('');
- await page.getByRole('button',{name:'Remove section 2',exact:true}).click();edited=await output(page);assert.equal(edited.fenceRuns[0].sections[0].gateAfter,'walk');assert.equal(generateQuoteVNext({...f,customerInputs:edited}).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ await page.getByRole('button',{name:'Remove section 2',exact:true}).click();edited=await output(page);assert.equal(edited.fenceRuns[0].sections[0].gateAfter,'walk');assert.equal(generateQuoteVNext({...f,customerInputs:edited}).options[0].calculationRecord.scenarios.mid.finalTotalCents,56400);
  await page.getByRole('button',{name:'Add straight section',exact:true}).click();await page.getByLabel('Length of each straight section, in feet, between ends, corners and gates — run 1, section 2',{exact:true}).fill('9');
  assert.equal(generateQuoteVNext({...f,customerInputs:await output(page)}).options[0].calculationRecord.scenarios.mid.finalTotalCents,91200);
  await page.getByRole('button',{name:'I only know the total length',exact:true}).click();assert.equal((await output(page)).fenceRuns,undefined);assert.equal(await page.getByLabel('Fence corners',{exact:true}).count(),1);assert.equal(await page.getByLabel('How many separate fence runs?',{exact:true}).count(),1);

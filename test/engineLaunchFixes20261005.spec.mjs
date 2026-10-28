@@ -150,7 +150,8 @@ test('launch rounding: allocated installed-price surcharge receives no additiona
   const q=ready(f);assert.equal(q.midEstimate,232.24);assert.equal(sanitizeForCustomerVNext(q).resultType,'INSTANT_ESTIMATE_READY');
 });
 for(const off of ['zero','month'])test('launch peak off '+off+' leaves $201.22',()=>{
-  const f=peak();if(off==='zero')f.ownerPricing.peakSurchargePercent=0;else f.currentMonth=2;
+  // 'month': the customer wants the work done in February, outside the busy months.
+  const f=peak();if(off==='zero')f.ownerPricing.peakSurchargePercent=0;else f.customerInputs.workMonth='february';
   const q=ready(f);assert.equal(q.midEstimate,201.22);assert.ok(q.lineItems.every(line=>line.category!=='surcharge'));
 });
 for(const [sqft,band,labor,total] of [[450,'small',162000,4050],[900,'medium',297000,7830]])test('launch room maximum inclusive: '+sqft+'/3 -> '+band,()=>{

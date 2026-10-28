@@ -107,7 +107,8 @@ function tierReceiptRoof(){
     ownerId:f.ownerPricing.origin.ownerId,now:NOW,
     reenteredIds:[ids.base,ids.same,ids.premium],confirmIds:[ids.base,ids.premium]
   });
-  f.customerInputs.valleyLengthLF=20;
+  // Confirmed flashing lines are always asked; zero means none.
+  Object.assign(f.customerInputs,{valleyLengthLF:20,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0});
   return {f,definitions,ids};
 }
 

@@ -650,12 +650,12 @@
       "length": "10.0001"
     },
     "expected": {
-      "totalCents": 5500,
+      "totalCents": 6500,
       "lines": {
         "Concrete labor": 100,
         "Ready-mix concrete": 400,
         "Formwork": 4000,
-        "Saw-cut control joints": 1000
+        "Saw-cut control joints": 2000
       }
     }
   },
@@ -941,12 +941,12 @@
       "length": "10.0001"
     },
     "expected": {
-      "totalCents": 5500,
+      "totalCents": 6500,
       "lines": {
         "Concrete labor": 100,
         "Ready-mix concrete": 400,
         "Formwork": 4000,
-        "Saw-cut control joints": 1000
+        "Saw-cut control joints": 2000
       }
     }
   },

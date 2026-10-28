@@ -1,4 +1,4 @@
-import {workMonthNumber} from './workMonth.js';
+import {seasonalPricingMonth,workMonthName} from './workMonth.js';
 import {FLOORING_ADDONS} from './flooringPricing.js';
 import {REPAIR_SERVICES} from './flatRoofRepairPricing.js';
 import {resolvedRangeSettings,validRangePercent} from '../quoteRangeSettings.js';
@@ -1134,7 +1134,7 @@ function exclusionsMatch(options) {
   return options.every(option => JSON.stringify(option.skippedAddons) === first);
 }
 
-function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones }) {
+function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
   if(fenceType(serviceType)&&fenceHasRows(pricing)){
     try{pricing=resolvedFencePricing(pricing,customerInputs);validation=null;}
@@ -1174,6 +1174,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
+  if (seasonAssumed) template.disclosures.push(`Priced at the busy-season rate because no work month was given. The price is lower if the work is scheduled outside ${[...seasonAssumed].sort((a,b)=>a-b).map(workMonthName).join(', ')}.`);
   if (travelOutsideZones) {
     const mode = ownerPricing.feeRules.travel;
     const applies = mode === 'always' || (mode === 'when_scope_selected' && template.feeScope.travel === true) ||
@@ -1527,8 +1528,10 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         travelOutsideZones,
         tierName: tier.name,
         feeSelections,
-        // Busy-season pricing follows the customer's chosen work month.
-        month: workMonthNumber(customerInputs?.workMonth) ?? currentMonth,
+        // Busy-season pricing follows the customer's chosen work month; with no
+        // month given the busy-season price is quoted and disclosed.
+        ...(()=>{const seasonal=seasonalConfiguration(ownerPricing,effectiveDefaults),chosen=seasonalPricingMonth(customerInputs?.workMonth,seasonal.months,seasonal.percent);
+          return {month:chosen.month??currentMonth,seasonAssumed:chosen.assumed?seasonal.months:null};})(),
         quoteDate,
         inherited: { appliedRules, urgencyFlags }
       };

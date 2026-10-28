@@ -34,13 +34,18 @@ test('T03 configured peak season with a valid quote time zone does not disable s
  const f=mowing();delete f.ownerPricing.peakMonths;delete f.ownerPricing.peakSurchargePercent;Object.assign(f.businessDefaults,{quoteTimeZone:'UTC',peakMonths:[3],peakSurchargePercent:10});
  const {book}=saved(f);assert.equal(bridge.applicationStatus(book.services[0],book).status,'QUOTING LIVE');
 });
-test('T03 local quote month determines labor surcharge across UTC month boundary',()=>{
+test('T03 the work month, not the quote month, determines the labor surcharge',()=>{
+ // $100 mowing; March is busy at 10% labor. The quote instant is March in Los Angeles, April in Tokyo.
  const f=mowing();delete f.ownerPricing.peakMonths;delete f.ownerPricing.peakSurchargePercent;Object.assign(f.businessDefaults,{peakMonths:[3],peakSurchargePercent:10});
- const {book,id}=saved(f),raw=book.services[0],body={serviceId:raw.id,customerInputs:f.customerInputs};
+ const {book,id}=saved(f),raw=book.services[0],body=inputs=>({serviceId:raw.id,customerInputs:{...f.customerInputs,...inputs}});
  const date={ownerId:id,quoteInstant:new Date('2026-04-01T00:30:00Z')};
- assert.equal(bridge.calculateApplicationQuote(book,raw,body,{...date,timeZone:'America/Los_Angeles'}).customerResult.midEstimate,110);
- assert.equal(bridge.calculateApplicationQuote(book,raw,body,{...date,timeZone:'Asia/Tokyo'}).customerResult.midEstimate,100);
- assert.equal(bridge.previewApplicationQuote(id,{revision:bridge.bookRevision(book),...body},{...date,timeZone:'America/Los_Angeles'}).midEstimate,110);
+ const mid=(inputs,timeZone)=>bridge.calculateApplicationQuote(book,raw,body(inputs),{...date,timeZone}).customerResult.midEstimate;
+ for(const timeZone of ['America/Los_Angeles','Asia/Tokyo']){
+  assert.equal(mid({},timeZone),110,'no work month: busy-season price');
+  assert.equal(mid({workMonth:'march'},timeZone),110);
+  assert.equal(mid({workMonth:'april'},timeZone),100);
+ }
+ assert.equal(bridge.previewApplicationQuote(id,{revision:bridge.bookRevision(book),...body({workMonth:'april'})},{...date,timeZone:'America/Los_Angeles'}).midEstimate,100);
 });
 test('T04 fence derives 18 posts, waste on infill only and terrain on labor only',()=>{
  const f=offeringFixture('FENCING_INSTALL','itemized');Object.assign(f.customerInputs,{cornerCount:2,gates:{walk:1}});

@@ -37,7 +37,7 @@ export const FIELD_COPY = {
   defaultReinforcement:{label:'New slab reinforcement',help:'The reinforcement you use for this service. When set, customers are not asked. Blank asks the customer.',type:'select',options:['none','wire_mesh','rebar'],optionLabels:{none:'None',wire_mesh:'Wire mesh',rebar:'Rebar'}},
   newSlabBase:{label:'Compacted gravel base on new slabs',help:'Whether every new slab gets your base preparation. When set, customers are not asked. Blank asks the customer.',type:'select',options:['included','not_included'],optionLabels:{included:'Included on every new slab',not_included:'Not included'}},
   baseDepthInches:{label:'Compacted base depth (inches)',help:'Owner-set base depth for this service or price option, stated in quotes using separate base pricing.'},
-  baseCompactionAllowance:{label:'Base gravel compaction allowance',help:'Additional gravel fraction for compaction; enter 0.20 for 20%. Gravel quantity is slab area times base depth divided by 324, then multiplied by one plus this allowance.'},
+  baseCompactionAllowance:{ownerInputUnit:'percent',label:'Base gravel compaction allowance (%)',help:'Additional gravel for compaction, as a percent; enter 20 for 20%. Gravel quantity is slab area times base depth divided by 324, then multiplied by one plus this allowance.'},
   baseGravelPerCubicYard:{label:'Base gravel ($ per cubic yard)',help:'Optional gravel material price. Any separate base price replaces the old combined Base preparation line. Enter excavation and grading separately if offered.'},
   baseExcavationGradingPerSqft:{label:'Base excavation and grading labor ($ per square foot)',help:'Optional labor price with the same access adjustment as slab labor. Any separate base price replaces the old combined Base preparation line; gravel is charged only when separately priced.'},
   sodRemovalPerSqft:{label:'Old-lawn removal with disposal ($ per square foot)',help:'Optional preparation labor including removal, loading and disposal of the old lawn. Uses sod slope and access adjustments. Any separate preparation price replaces the old combined Ground preparation line.'},
@@ -69,7 +69,9 @@ export function placementFor(c,p){
 export const customPlantSizes = p => record(p.plantSizes)&&Object.keys(p.plantSizes).length>0;
 export const plantSizeKeys = p => customPlantSizes(p)?Object.keys(p.plantSizes):['small','medium','large'];
 export const plantSizeLabel = (p,key) => customPlantSizes(p)?p.plantSizes[key]?.name:key[0].toUpperCase()+key.slice(1);
-export const jointSpacingCap = thickness => thickness<=5?10:thickness<6?12.5:15;
+// NRMCA CIP 6: maximum joint spacing 24 to 36 times slab thickness, never over
+// 15 ft. Warn only past the top of that range (36 x thickness = 3 ft per inch).
+export const jointSpacingCap = thickness => Math.min(3*thickness,15);
 function ceiling(value){const r=exactDecimal(value);return Number((r.numerator+r.denominator-1n)/r.denominator);}
 export function controlJointLength(c,area,spacing){
   const rectangle=c.dimensionMethod==='exact';
@@ -82,14 +84,22 @@ export function controlJointLength(c,area,spacing){
     const quantity=exactDivide(exactSqrtRound(exactMultiply(area,200,200,cuts,cuts)),100);
     return {quantity,length,width,rectangle};
   }
-  const joints=exactAdd(exactMultiply(Math.max(0,ceiling(exactDivide(length,spacing))-1),width),exactMultiply(Math.max(0,ceiling(exactDivide(width,spacing))-1),length));
+  // NRMCA CIP 6: panels square or nearly so, length no more than 1.5 x width.
+  // Add cuts in the long direction until every panel meets that.
+  let alongLength=Math.max(1,ceiling(exactDivide(length,spacing))),alongWidth=Math.max(1,ceiling(exactDivide(width,spacing)));
+  while(exactCompare(exactMultiply(2,length,alongWidth),exactMultiply(3,width,alongLength))>0)alongLength++;
+  while(exactCompare(exactMultiply(2,width,alongLength),exactMultiply(3,length,alongWidth))>0)alongWidth++;
+  const joints=exactAdd(exactMultiply(alongLength-1,width),exactMultiply(alongWidth-1,length));
   return {quantity:joints,length,width,rectangle};
 }
 export function topsoilQuantity(c,p){
   const unknown=c.usableTopsoilDepthInches==='unknown';
   const difference=unknown?p.topsoilTypicalImportDepthInches:exactSubtract(p.topsoilTargetDepthInches,c.usableTopsoilDepthInches);
   const depth=exactCompare(difference,0)>0?difference:0;
-  return {unknown,depth,quantity:exactDivide(exactMultiply(c.sodSqft,depth),324)};
+  // Imported topsoil settles, so the order adds the owner's overage (blank on
+  // older services adds none).
+  const overage=typeof p.topsoilWasteFactor==='number'?p.topsoilWasteFactor:0;
+  return {unknown,depth,overage,quantity:exactMultiply(exactDivide(exactMultiply(c.sodSqft,depth),324),exactAdd(1,overage))};
 }
 export function concreteLandscapeNotices(type,p={}){
   if(typeof type!=='string'||!type.startsWith('CONCRETE_'))return [];

@@ -51,7 +51,7 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     for(const service of saved.services){
       const start=Object.keys(service.startingValueState||{}),dependent=Object.keys(service.dependentLineState||{});
       if(start.length)service.startingValueActions={confirmPaths:start};
-      if(dependent.length)service.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
+      if(dependent.length&&['valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','iceWaterBarrierUnit'].every(k=>service.pricing?.[k]!==undefined))service.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
     }
     await api('POST','/api/pricebook/save',saved);saved=await api('GET','/api/pricebook/'+owner);
   }

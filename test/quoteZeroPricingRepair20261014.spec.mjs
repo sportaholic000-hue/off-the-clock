@@ -419,7 +419,7 @@ function allTradeControls() {
 
   return [
     ['ROOFING_REPLACEMENT', roofReplacement, 244600, '50,000 labor + 110,000 field material + 20,000 tear-off + 15,000 underlayment + 11,000 starter + 22,000 drip edge + 6,600 ridge + 10,000 decking'],
-    ['ROOFING_REPAIR', roofRepair, 58600, '40,000 labor * 1.15 pitch * 1.10 stories = 50,600; + 8,000 material'],
+    ['ROOFING_REPAIR', roofRepair, 52000, '40,000 labor * 1.00 walkable pitch * 1.10 stories = 44,000; + 8,000 material'],
     ['FLAT_ROOF_REPLACEMENT', flatRoofReplacement, 1400000, '1,000 sqft * (500 labor + 700 membrane + 200 tear-off), with explicit zero membrane waste'],
     ['FLAT_ROOF_REPAIR', flatRepair(), 36000, '3 hours * 10,000 + 6,000 material'],
     ['INTERIOR_PAINTING', interior, 380000, '500*600 walls + 200*300 ceiling + 100*200 trim'],

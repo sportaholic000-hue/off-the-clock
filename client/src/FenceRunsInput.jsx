@@ -18,7 +18,7 @@ export function FenceRunsInput({field,runs=[],runCount,onChange}) {
           const next={...section};if(n===undefined)delete next.lengthLF;else next.lengthLF=n;
           edit(i,{...run,sections:run.sections.map((s,k)=>k===j?next:s)});
         }}/></Field>
-        {(j<run.sections.length-1||run.closed===true||section.gateAfter!==undefined)&&<Field label="Gate after this section"><Select aria-label={'Gate after run '+(i+1)+', section '+(j+1)} value={section.gateAfter||''} onChange={e=>{
+        {<Field label="Gate after this section"><Select aria-label={'Gate after run '+(i+1)+', section '+(j+1)} value={section.gateAfter||''} onChange={e=>{
           const next={...section};if(e.target.value)next.gateAfter=e.target.value;else delete next.gateAfter;
           edit(i,{...run,sections:run.sections.map((s,k)=>k===j?next:s)});
         }}><option value="">{run.closed!==true&&j===run.sections.length-1?'No gate — end':'No gate — corner'}</option>{(field.gateChoices||[]).map(g=><option key={g.value} value={g.value}>{g.label}</option>)}</Select></Field>}

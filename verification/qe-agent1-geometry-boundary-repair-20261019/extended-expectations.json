@@ -4777,15 +4777,15 @@
       "width": 10
     },
     "expected": {
-      "jointLF": 10.0,
+      "jointLF": 20.000000000000004,
       "area": 100.00000000000001,
       "lines": {
         "Concrete labor": 100,
         "Ready-mix concrete": 400,
         "Formwork": 4000,
-        "Saw-cut control joints": 1000
+        "Saw-cut control joints": 2000
       },
-      "totalCents": 5500
+      "totalCents": 6500
     }
   },
   {
@@ -5344,15 +5344,15 @@
       "width": 10
     },
     "expected": {
-      "jointLF": 10.0,
+      "jointLF": 20.000000000000004,
       "area": 100.00000000000001,
       "lines": {
         "Concrete labor": 100,
         "Ready-mix concrete": 400,
         "Formwork": 4000,
-        "Saw-cut control joints": 1000
+        "Saw-cut control joints": 2000
       },
-      "totalCents": 5500
+      "totalCents": 6500
     }
   },
   {

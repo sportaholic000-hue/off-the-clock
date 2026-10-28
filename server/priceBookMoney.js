@@ -15,7 +15,7 @@ import {parseZoneCodesInput} from './travelZones.js';
 // fall through without either an explicit non-money classification or a money
 // conversion path.
 const UNIT_RATE_FIELDS = new Set([
-  'flatRoofEdgeMetalPerLF','flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairUnitPrice',
+  'flatRoofEdgeMetalPerLF','flatRoofWallFlashingPerLF','flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairUnitPrice',
   'laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare',
   'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','disposalPerSquare',
   'laborHourlyRate','laborPerFloorSqft','materialPerFloorSqft2Coats',
@@ -49,8 +49,8 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'allowAssumptionBasedQuotes','postsIncludedInMaterial','accessoryPricingMode','unit',
   'postSpacing','trimLinearFeetPerRoom','repairHours','patchRepairHours',
   'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing',
-  'largeRepairMaxSqft','installedMaterialsPercent','installedLaborPercent',
-  'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule',
+  'largeRepairMaxSqft','repairSmallBelowSqft','repairMediumUpToSqft','installedMaterialsPercent','installedLaborPercent',
+  'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule','wallPriceIncludesTouchUp',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
   'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft',
   'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','paintingSettings','sidingSettings',

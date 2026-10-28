@@ -40,7 +40,7 @@ try{
     const current=saved.services[0],start=Object.keys(current.startingValueState||{}),dependent=Object.keys(current.dependentLineState||{});
     if(!start.length&&!dependent.length)break;
     if(start.length)current.startingValueActions={confirmPaths:start};
-    if(dependent.length)current.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
+    if(dependent.length&&['valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','iceWaterBarrierUnit'].every(k=>current.pricing?.[k]!==undefined))current.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
     await call('POST','/api/pricebook/save',saved);
     saved=await call('GET','/api/pricebook/'+owner);
   }

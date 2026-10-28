@@ -204,7 +204,7 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
     const choices=customerFieldForInputs(field,customerInputs).gateChoices||[];
     for(const run of customerInputs[field.name])if(record(run)&&Array.isArray(run.sections))for(const section of run.sections)if(record(section)&&own(section,'gateAfter')){
       const key=registeredProductKey(section.gateAfter,choices.map(g=>g.value));
-      if(key)section.gateAfter=key;else followUps.push('Identify the offered gate at each measured section boundary.');
+      if(key)section.gateAfter=key;else followUps.push('Identify the offered gate after each measured section that has one.');
     }
   }
   const scopeConfirmations=record(args.scopeConfirmations)?args.scopeConfirmations:{};

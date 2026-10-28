@@ -195,6 +195,10 @@ export function offeringContract(type,p,rules={}) {
   crossValidate:c=>{
     const errors=[],bad=(field,message)=>errors.push({field,message});
     const equal=(field,expected)=>{if(c[field]!==undefined&&c[field]!==expected)bad(field,'This detail does not match the selected owner offering.');};
+    // A price set for a surface condition also covers a better one (good is
+    // better than fair, fair better than poor); a worse surface needs review.
+    const RANK={good:0,fair:1,poor:2};
+    const covered=(field,priced)=>{if(c[field]===undefined)return;if(!(c[field] in RANK)||!(priced in RANK))return equal(field,priced);if(RANK[c[field]]>RANK[priced])bad(field,'These surfaces need more preparation than this price covers.');};
     if(fence(type)) {
       equal('fenceType',d.fenceType);
       if(positive(c.fenceHeight)&&c.fenceType===d.fenceType){const selected=fenceSelection(p,c);if(selected.error)bad(selected.field,selected.error);}
@@ -210,14 +214,14 @@ export function offeringContract(type,p,rules={}) {
       if(c.oldFenceRemoval===true&&!d.removalOffered)bad('oldFenceRemoval','Removal is not included in this offering.');
       if(c.oldFenceRemoval===false&&c.removalLengthLF!==undefined)bad('removalLengthLF','Removal length cannot be supplied when removal is excluded.');
     } else {
-      if(installed){equal('coats',d.finishCoats);equal('surfaceCondition',d.surfaceCondition);}
-      if(installed&&c.ceilingsIncluded){equal('ceilingCoats',d.ceilingCoats);equal('ceilingSurfaceCondition',d.ceilingSurfaceCondition??d.surfaceCondition);}
+      if(installed){equal('coats',d.finishCoats);covered('surfaceCondition',d.surfaceCondition);}
+      if(installed&&c.ceilingsIncluded){equal('ceilingCoats',d.ceilingCoats);covered('ceilingSurfaceCondition',d.ceilingSurfaceCondition??d.surfaceCondition);}
       if(c.trimIncluded&&(installed||!trimComponentPricing(p))){
         // Installed trim definitions may legitimately have only a description.
         // Match structured constraints when supplied; absence is not a conflicting
         // owner setting. Customer coat/condition types still validate normally.
         if(d.trimFinishCoats!==undefined)equal('trimCoats',d.trimFinishCoats);
-        if(d.trimSurfaceCondition!==undefined)equal('trimSurfaceCondition',d.trimSurfaceCondition);
+        if(d.trimSurfaceCondition!==undefined)(installed?covered:equal)('trimSurfaceCondition',d.trimSurfaceCondition);
       }
       if(c.wallScopeUniform===false)bad('wallScopeUniform','Enter each room\'s measurements so each room keeps its own height and coats.');
       if(c.ceilingsIncluded===true&&!d.ceilingsOffered)bad('ceilingsIncluded','Ceilings are not offered in this configuration.');
@@ -346,8 +350,10 @@ export function offeringLines(type,c,p) {
         const pair=split&&pairs.find(([terminal])=>terminal===key);
         const equal=pair&&posts.terminal>0&&posts.line>0&&typeof p.offeringRates?.[key]==='number'&&p.offeringRates[key]>0&&p.offeringRates[key]===p.offeringRates[pair[1]];
         if(equal){quantity=posts.total;combined.add(pair[1]);}
-        const totalFormula=posts.method==='sections'?'sum(ceil(section / spacing)) + gates + open runs - included gate posts':'ceil(total length / spacing) + 1 + corners + separate gate posts + 2 * (runs - 1)';
-        const formula=!split||equal?totalFormula:key.startsWith('terminal')?(posts.method==='sections'?'2 * open runs + corners + 2 * gates without included posts':'2 * runs + corners + 2 * gates without included posts'):(posts.method==='sections'?'sum(ceil(section / spacing) - 1)':'ceil(total length / spacing) - 1');
+        const terminalFormula=posts.method==='sections'?'2 * open runs + corners + 2 * gates without included posts - gates that end a run':'2 * open runs + corners + 2 * gates without included posts';
+        const lineFormula=posts.method==='sections'?'sum(ceil(section / spacing) - 1)':'ceil(total length / spacing) - 1';
+        const totalFormula=lineFormula+' + '+terminalFormula;
+        const formula=!split||equal?totalFormula:key.startsWith('terminal')?terminalFormula:lineFormula;
         if(quantity>0){
           add(key,quantity,{formula,inputs:{...posts.inputs,postSpacingLF:p.postSpacingLF,terminal:posts.terminal,line:posts.line}});
           // Identical prices share one rounding boundary, preserving the exact

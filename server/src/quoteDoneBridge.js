@@ -1,5 +1,5 @@
 import {answerDefinitionIssuesVNext,answerDefinitionFieldsVNext} from '../quote-engine-vnext/answerDefinitions.js';
-import {FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,FLAT_REPAIR_COPY} from '../quote-engine-vnext/flatRoofRepairPricing.js';
+import {FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_BAND_FIELDS,FLAT_REPAIR_COPY} from '../quote-engine-vnext/flatRoofRepairPricing.js';
 import {serviceNameProblem,SERVICE_NAME_LIMIT} from '../serviceName.js';
 import {settingError,validatePricebookReceptionistSettings} from './voice/receptionistSettings.js';
 import {reviewLabel} from '../priceBookLabels.js';
@@ -34,10 +34,11 @@ import {WORK_MONTH_FIELD} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 
 // The engine sorts a measured affected area into these bands
-// (repairSizeFromAffectedArea). Owners see the same limits on each price box.
+// (repairSizeFromAffectedArea). Owners see the starting limits on each price
+// box; their own size limits, when set, replace them.
 const repairSizeLabels=type=>type==='ROOFING_REPAIR'
-  ?{small:'Small (under 50 sq ft)',medium:'Medium (50 to 200 sq ft)',large:'Large (over 200 sq ft)'}
-  :{small:'Small (under 20 sq ft)',medium:'Medium (20 to 80 sq ft)',large:'Large (over 80 sq ft)'};
+  ?{small:'Small (under 50 sq ft unless you set your own size limits)',medium:'Medium (50 to 200 sq ft unless you set your own)',large:'Large (over 200 sq ft unless you set your own)'}
+  :{small:'Small (under 20 sq ft unless you set your own size limits)',medium:'Medium (20 to 80 sq ft unless you set your own)',large:'Large (over 80 sq ft unless you set your own)'};
 
 // The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
@@ -556,7 +557,7 @@ export function applicationMetadata() {
     const requiresOffering=['EXTERIOR_PAINTING','FENCING_INSTALL','FENCING_REPLACEMENT'].includes(meta.serviceType);
     const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)).filter(field=>!requiresOffering||field.type==='surface_configuration'||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
     const optionalFields={
-      INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
+      INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF','wallPriceIncludesTouchUp'],
       ROOFING_REPLACEMENT:['bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
       FLOORING_INSTALL:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS],
       FLOORING_REPLACEMENT:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft')],
@@ -574,7 +575,7 @@ export function applicationMetadata() {
       if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100,...(meta.serviceType==='CUSTOM'&&field.field==='installedMaterialsPercent'?{leafKeys:['price']}: {})},requiredAtBase:false});
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
       if((meta.serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:meta.serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:meta.serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]).includes(field.field))Object.assign(info,{requiredAtBase:false},CONCRETE_LANDSCAPE_COPY[field.field]);
-      if(FLAT_ROOF_FIELDS.includes(field.field)||REPAIR_UNIT_FIELDS.includes(field.field)){
+      if(FLAT_ROOF_FIELDS.includes(field.field)||REPAIR_UNIT_FIELDS.includes(field.field)||REPAIR_BAND_FIELDS.includes(field.field)){
         Object.assign(info,{...FLAT_REPAIR_COPY[field.field],requiredAtBase:false});
         if(REPAIR_UNIT_FIELDS.includes(field.field))info.type='json';
       }
@@ -584,7 +585,7 @@ export function applicationMetadata() {
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
       if(pricingMapField(meta.serviceType,field.field))Object.assign(info,{type:'json',tree:{depth:1}});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
-      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'],deckingPriceBasis:['material_only','installed'],iceWaterBarrierUnit:['square_feet','linear_feet'],unknownPitchBand:['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
+      const enums={wallPriceIncludesTouchUp:['yes','no'],accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'],deckingPriceBasis:['material_only','installed'],iceWaterBarrierUnit:['square_feet','linear_feet'],unknownPitchBand:['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='furnitureMovingPriceUnit')info.optionLabels={per_room:'Per room',flat:'Flat per job'};
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});

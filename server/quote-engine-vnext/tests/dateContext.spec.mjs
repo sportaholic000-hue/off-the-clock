@@ -41,16 +41,18 @@ for(const [name,instant,profile,bookZone,expected,zone] of [
  ['null book uses profile',east,'Asia/Tokyo',null,110,'Asia/Tokyo'],
  ['non-string book uses profile',east,'Asia/Tokyo',17,110,'Asia/Tokyo'],
  ['Halifax fallback','2026-11-01T01:30:00.000Z','America/Halifax','Invalid/Book',110,'America/Halifax']
-])test('date context: '+name+' ($'+expected+')',()=>{
+])test('date context: '+name+' (local quote month '+(expected===110?10:instant===west?11:9)+')',()=>{
+ // The local quote month is recorded; with no work month given, the
+ // October busy-season price ($110) is quoted in every zone.
  const s=setup({bookZone}),context={timeZone:profile,quoteInstant:new Date(instant)};
  const status=bridge.applicationStatus(s.service,s.book,context);assert.equal(status.status,'QUOTING LIVE',JSON.stringify(status));
- const result=ready(quote(s,context),expected);
+ const result=ready(quote(s,context),110);
  assert.deepEqual(result.calculationRecord.quoteDate,{timeZone:zone,quoteInstant:instant});
  assert.deepEqual(result.calculationRecord.financialInputs.quoteDate,result.calculationRecord.quoteDate);
  assert.equal(result.calculationRecord.financialInputs.currentMonth,expected===110?10:instant===west?11:9);
  assert.equal(result.calculationRecord.financialInputs.businessDefaults.quoteTimeZone,bookZone);
  assert.equal(s.book.defaults.quoteTimeZone,bookZone);
- assert.equal(bridge.previewApplicationQuote(s.id,{...s.body,revision:bridge.bookRevision(s.book)},context).midEstimate,expected);
+ assert.equal(bridge.previewApplicationQuote(s.id,{...s.body,revision:bridge.bookRevision(s.book)},context).midEstimate,110);
  assert.equal(applicationQuoteMonth(s.service,s.book.defaults,context),expected===110?10:instant===west?11:9);
 });
 for(const [bookZone,profile] of [[undefined,undefined],['Invalid/Book','Invalid/Profile'],[null,null],['',17]])test('date context: missing valid zones stops peak '+String(bookZone),()=>{

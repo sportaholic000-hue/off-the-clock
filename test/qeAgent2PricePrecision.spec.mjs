@@ -140,8 +140,8 @@ for(const serviceType of ['CONCRETE_PATIO_SLAB','CONCRETE_DRIVEWAY'])test('Agent
 test('Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines',()=>{
   const f=sodFixture();f.customerInputs.sodSqft=324;f.customerInputs.usableTopsoilDepthInches=3;
   Object.assign(f.ownerPricing.pricing,{sodGradingPerSqft:100.5,topsoilPerCubicYard:100.5,topsoilTargetDepthInches:4});
-  //324*100.5=32562c labor;324*(4-3)/324=1yd;1*100.5 ->101c material.
+  //324*100.5=32562c labor;324*(4-3)/324=1yd x 1.10 settling=1.1yd;1.1*100.5=110.55 ->111c material.
   assertLine(f,'sodGradingPerSqft','labor',32562);
-  assertLine(f,'topsoilPerCubicYard','material',101);
+  assertLine(f,'topsoilPerCubicYard','material',111);
   assert.equal(ROOF_EXPECTED.length+CONCRETE_EXPECTED.length+SOD_EXPECTED.length,15);
 });

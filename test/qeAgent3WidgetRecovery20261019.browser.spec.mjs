@@ -36,7 +36,7 @@ test('qe-agent3 widget request races and persisted recovery through real public 
       for(const s of saved.services){
         const start=Object.keys(s.startingValueState||{}),dependent=Object.keys(s.dependentLineState||{});
         if(start.length)s.startingValueActions={confirmPaths:start};
-        if(dependent.length)s.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
+        if(dependent.length&&['valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','iceWaterBarrierUnit'].every(k=>s.pricing?.[k]!==undefined))s.dependentLineActions={reenteredIds:dependent,confirmIds:dependent};
       }
       await ownerApi('POST','/api/pricebook/save',saved);saved=await ownerApi('GET','/api/pricebook/'+owner);
     }

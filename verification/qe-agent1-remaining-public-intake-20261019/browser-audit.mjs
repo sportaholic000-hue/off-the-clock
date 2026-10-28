@@ -130,7 +130,7 @@ try{
  let saved=await api('GET','/api/pricebook/'+owner);
  for(let pass=0;pass<3;pass++){
   if(!saved.services.some(s=>Object.keys(s.startingValueState||{}).length||Object.keys(s.dependentLineState||{}).some(id=>!s.dependentLineState[id]?.confirmed||!s.dependentLineState[id]?.reentered)))break;
-  for(const s of saved.services){const start=Object.keys(s.startingValueState||{}),dep=Object.keys(s.dependentLineState||{});if(start.length)s.startingValueActions={confirmPaths:start};if(dep.length)s.dependentLineActions={reenteredIds:dep,confirmIds:dep};}
+  for(const s of saved.services){const start=Object.keys(s.startingValueState||{}),dep=Object.keys(s.dependentLineState||{});if(start.length)s.startingValueActions={confirmPaths:start};if(dep.length&&['valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','iceWaterBarrierUnit'].every(k=>s.pricing?.[k]!==undefined))s.dependentLineActions={reenteredIds:dep,confirmIds:dep};}
   await api('POST','/api/pricebook/save',saved);saved=await api('GET','/api/pricebook/'+owner);
  }
  for(const {type} of CASES){saved=await api('GET','/api/pricebook/'+owner);const service=saved.services.find(s=>s.serviceType===type),validation=await api('POST','/api/pricebook/validate',saved),status=validation.statuses.find(s=>s.serviceId===service.id);assert.ok(status);await api('POST','/api/pricebook/services/'+service.id+'/approve',{revision:saved.revision,confirmConfiguration:true,confirmLegacySettings:true,fields:status.confirmationFields||[]});}
