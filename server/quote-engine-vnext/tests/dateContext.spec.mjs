@@ -55,38 +55,38 @@ for(const [name,instant,profile,bookZone,expected,zone] of [
  assert.equal(bridge.previewApplicationQuote(s.id,{...s.body,revision:bridge.bookRevision(s.book)},context).midEstimate,110);
  assert.equal(applicationQuoteMonth(s.service,s.book.defaults,context),expected===110?10:instant===west?11:9);
 });
-for(const [bookZone,profile] of [[undefined,undefined],['Invalid/Book','Invalid/Profile'],[null,null],['',17]])test('date context: missing valid zones stops peak '+String(bookZone),()=>{
- const s=setup({bookZone}),context={timeZone:profile,quoteInstant:new Date(west)};
+for(const [bookZone,profile] of [[undefined,undefined],['Invalid/Book','Invalid/Profile'],[null,null],['',17]])test('date context: no valid zone still quotes the busy-season price '+String(bookZone),()=>{
+ const s=setup({bookZone}),context={timeZone:profile,quoteInstant:new Date(west)}; // The surcharge follows the work month (busy price when none is given), so it needs no zone.
  for(const status of [bridge.applicationStatus(s.service,s.book,context),bridge.bookStatuses(s.book,context)[0],bridge.bookQuoteStatuses(s.book,context)[0]]){
-  assert.equal(status.status,'NEEDS PRICING');assert.ok(status.missingOwnerFields.includes('businessDefaults.quoteTimeZone'));
+  assert.equal(status.status,'QUOTING LIVE');assert.equal(status.missingOwnerFields.includes('businessDefaults.quoteTimeZone'),false);
  }
- review(quote(s,context));assert.equal(applicationQuoteMonth(s.service,s.book.defaults,context),null);
+ assert.deepEqual(ready(quote(s,context),110).calculationRecord.quoteDate,{timeZone:null,quoteInstant:west});
  const preview=bridge.previewApplicationQuote(s.id,{...s.body,revision:bridge.bookRevision(s.book)},context);
- assert.equal(preview.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(preview.midEstimate,undefined);
+ assert.equal(preview.resultType,'INSTANT_ESTIMATE_READY');assert.equal(preview.midEstimate,110);
 });
 for(const [name,settings] of [['zero percentage',{percent:0}],['empty months',{months:[]}],['service zero overrides business',{servicePercent:0}],['service months override business',{serviceMonths:[]}]])test('date context: '+name+' needs no zone ($100)',()=>{
  const s=setup(settings),context={timeZone:null,quoteInstant:new Date(west)};
  assert.equal(bridge.applicationStatus(s.service,s.book,context).status,'QUOTING LIVE');
  const result=ready(quote(s,context),100);assert.deepEqual(result.calculationRecord.quoteDate,{timeZone:null,quoteInstant:west});
 });
-test('date context: service-level peak still requires a zone',()=>{
+test('date context: service-level peak needs no zone either ($110)',()=>{
  const s=setup({months:[],percent:0,serviceMonths:[10],servicePercent:10});
- assert.equal(bridge.applicationStatus(s.service,s.book).status,'NEEDS PRICING');review(quote(s,{timeZone:null,quoteInstant:new Date(west)}));
+ assert.equal(bridge.applicationStatus(s.service,s.book).status,'QUOTING LIVE');ready(quote(s,{timeZone:null,quoteInstant:new Date(west)}),110);
 });
 test('date context: cached readiness follows profile changes without changing the book ($110)',()=>{
  const s=setup({bookZone:'Invalid/Book'}),before=JSON.stringify(s.book);
- assert.equal(bridge.bookQuoteStatuses(s.book,{timeZone:'Invalid/Profile'})[0].status,'NEEDS PRICING');
+ assert.equal(bridge.bookQuoteStatuses(s.book,{timeZone:'Invalid/Profile'})[0].status,'QUOTING LIVE');
  assert.equal(bridge.bookQuoteStatuses(s.book,{timeZone:'America/Los_Angeles'})[0].status,'QUOTING LIVE');
- ready(quote(s,{timeZone:'America/Los_Angeles',quoteInstant:new Date(west)}),110);
- assert.equal(bridge.bookQuoteStatuses(s.book,{timeZone:null})[0].status,'NEEDS PRICING');assert.equal(JSON.stringify(s.book),before);
+ assert.equal(ready(quote(s,{timeZone:'America/Los_Angeles',quoteInstant:new Date(west)}),110).calculationRecord.quoteDate.timeZone,'America/Los_Angeles');
+ assert.equal(bridge.bookQuoteStatuses(s.book,{timeZone:null})[0].status,'QUOTING LIVE');assert.equal(JSON.stringify(s.book),before);
 });
 test('date context: database fallback stays owner scoped and is refreshed ($110)',t=>{
  const a=setup(),b=setup(),zones=new Map([[a.id,'America/Los_Angeles'],[b.id,'Invalid/Profile']]),reads=[];
  const database={prepare(sql){assert.match(sql,/WHERE id = @ownerId/);return {get({ownerId}){reads.push(ownerId);return {timezone:zones.get(ownerId)};}};}};
  registerQuoteDateDatabase(database);t.after(()=>registerQuoteDateDatabase(undefined));
- assert.equal(bridge.bookStatuses(a.book)[0].status,'QUOTING LIVE');assert.equal(bridge.bookStatuses(b.book)[0].status,'NEEDS PRICING');
+ assert.equal(bridge.bookStatuses(a.book)[0].status,'QUOTING LIVE');assert.equal(bridge.bookStatuses(b.book)[0].status,'QUOTING LIVE');
  ready(quote(a,{quoteInstant:new Date(west)}),110);
- zones.set(a.id,'Invalid/Profile');assert.equal(bridge.bookStatuses(a.book)[0].status,'NEEDS PRICING');review(quote(a,{quoteInstant:new Date(west)}));
+ zones.set(a.id,'Invalid/Profile');assert.equal(bridge.bookStatuses(a.book)[0].status,'QUOTING LIVE');assert.equal(ready(quote(a,{quoteInstant:new Date(west)}),110).calculationRecord.quoteDate.timeZone,null);
  assert.ok(reads.includes(a.id)&&reads.includes(b.id));
  assert.deepEqual(quoteDateContext(database,b.id,new Date(east)),{timeZone:'Invalid/Profile',quoteInstant:new Date(east)});
 });

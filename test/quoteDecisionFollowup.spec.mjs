@@ -28,9 +28,11 @@ test('G1 roof stays live throughout the year without an installed-underlayment l
  assert.equal(bridge.applicationStatus(book.services[0],book,{timeZone:'America/Halifax'}).status,'QUOTING LIVE');
  // Busy-season pricing follows the month the customer wants the work done.
  const names=['january','february','march','april','may','june','july','august','september','october','november','december'];
- for(let month=1;month<=12;month++){const q=quote(book,id,{...f.customerInputs,workMonth:names[month-1]},`2026-${String(month).padStart(2,'0')}-15T12:00Z`);assert.equal(q.customerResult.midEstimate,month===7?6289:5990);}
- f.businessDefaults.peakMonths=[10];ready(f,628900);
- f.ownerPricing.pricing.installedLaborPercent={'underlaymentPerSquare.asphalt_shingle':60};ready(f,631060);
+ for(let month=1;month<=12;month++){const q=quote(book,id,{...f.customerInputs,workMonth:names[month-1]},`2026-${String(month).padStart(2,'0')}-15T12:00Z`);assert.equal(q.customerResult.midEstimate,month===7?5860:5600);}
+ // Medium (walkable) pitch starts at 1.00: labor 170,000 + tear-off 90,000 + material 264,000 + underlayment 36,000 = 560,000;
+ // busy season adds 10% of the 260,000 labor: 586,000; 60% of underlayment as labor adds 2,160.
+ f.businessDefaults.peakMonths=[10];ready(f,586000);
+ f.ownerPricing.pricing.installedLaborPercent={'underlaymentPerSquare.asphalt_shingle':60};ready(f,588160);
 });
 test('G1 peak uses explicit fence labor plus only the entered installed-gate labor share',()=>{
  const f=peak(offeringFixture('FENCING_INSTALL','itemized'));Object.assign(f.customerInputs,{cornerCount:2,gates:{walk:1}});
@@ -78,15 +80,16 @@ test('G2 baseline offerings need no migration confirmation; strings cannot count
  f.ownerPricing.pricing.offeringDetails.terrainSlope='steep';for(const flag of [false,'true',1,null]){f.ownerPricing.pricing.offeringDetails.baselinePricesConfirmed=flag;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');}
 });
 
-test('G3 missing quote/profile zone blocks peak quoting while explicit Atlantic choice respects the local month',()=>{
+test('G3 a missing quote/profile zone no longer blocks peak quoting; an explicit Atlantic choice still sets the local date',()=>{
+ // Busy-season pricing follows the customer's work month, so it needs no zone.
  const f=peak(mowing()),{id}=save(f),book=approve(id);
  const status=bridge.applicationStatus(book.services[0],book,{timeZone:null});
- assert.equal(status.status,'NEEDS PRICING');
- assert.ok(status.missingOwnerFields.includes('businessDefaults.quoteTimeZone'));
- const blocked=quote(book,id,f.customerInputs,'2026-10-03T12:00Z',null).customerResult;
- assert.equal(blocked.resultType,'ESTIMATE_REQUIRES_REVIEW');
- for(const field of ['lowEstimate','midEstimate','highEstimate'])assert.equal(blocked[field],undefined);
- assert.equal(applicationQuoteMonth(f.ownerPricing,f.businessDefaults,{quoteInstant:new Date('2026-10-03T12:00Z')}),null);
+ assert.equal(status.status,'QUOTING LIVE');
+ assert.equal(status.missingOwnerFields.includes('businessDefaults.quoteTimeZone'),false);
+ const open=quote(book,id,f.customerInputs,'2026-10-03T12:00Z',null).customerResult;
+ assert.equal(open.resultType,'INSTANT_ESTIMATE_READY');assert.equal(open.midEstimate,110);
+ assert.equal(quote(book,id,{...f.customerInputs,workMonth:'november'},'2026-10-03T12:00Z',null).customerResult.midEstimate,100);
+ assert.equal(applicationQuoteMonth(f.ownerPricing,f.businessDefaults,{quoteInstant:new Date('2026-10-03T12:00Z')}),10);
  for(const timeZone of ['UTC',null,'invalid'])assert.equal(applicationQuoteMonth(f.ownerPricing,{...f.businessDefaults,quoteTimeZone:'America/Halifax'},{timeZone,quoteInstant:new Date('2026-11-01T01:30:00Z')}),10);
  const local=structuredClone(book);local.defaults.quoteTimeZone='America/Halifax';savePricebook(id,local);const approved=approve(id);
  assert.equal(bridge.applicationStatus(approved.services[0],approved,{timeZone:null}).status,'QUOTING LIVE');
@@ -106,12 +109,13 @@ test('G2 actual offering component states baseline conditions beside prices and 
   const html=renderers().offering({service:f.ownerPricing,meta:meta.find(m=>m.serviceType===type)});assert.match(html,new RegExp(baseline));assert.match(html,/confirm.*baseline prices/i);assert.match(html,/does not quote until/i);
  }
 });
-test('G3 actual quote controls ask for time zone with business or service peak months and never auto-select one',()=>{
+test('G3 actual quote controls do not require a time zone for peak months and never auto-select one',()=>{
+ // Busy-season pricing follows the customer's work month, not the quote date.
  const f=mowing(),render=defaults=>renderers().rules({service:f.ownerPricing,defaults,meta:{}});
  assert.doesNotMatch(render(f.businessDefaults),/Choose a business time zone for peak pricing/);
- assert.match(render({...f.businessDefaults,peakMonths:[7]}),/Choose a business time zone for peak pricing/);
- f.ownerPricing.peakMonths=[10];assert.match(render(f.businessDefaults),/Choose a business time zone for peak pricing/);
- assert.doesNotMatch(render({...f.businessDefaults,quoteTimeZone:'UTC'}),/Choose a business time zone for peak pricing/);
+ assert.doesNotMatch(render({...f.businessDefaults,peakMonths:[7]}),/Choose a business time zone for peak pricing/);
+ f.ownerPricing.peakMonths=[10];assert.doesNotMatch(render(f.businessDefaults),/Choose a business time zone for peak pricing/);
+ assert.match(render({...f.businessDefaults,peakMonths:[7]}),/<option value="" selected="">Choose a business time zone<\/option>/);
 });
 
-test('Locked independent roof and tile product controls remain 599000 and 178000 cents',()=>{ready(roof(),599000);const f=flooring();Object.assign(f.ownerPricing.pricing.laborPerSqft,{vinyl_plank:300});Object.assign(f.ownerPricing.pricing.materialPerSqft,{vinyl_plank:500});f.ownerPricing.pricing.vinylPlankUnderlaymentRule='owner_review';ready(f,178000);});
+test('Locked independent roof and tile product controls remain 560000 and 178000 cents',()=>{ready(roof(),560000);const f=flooring();Object.assign(f.ownerPricing.pricing.laborPerSqft,{vinyl_plank:300});Object.assign(f.ownerPricing.pricing.materialPerSqft,{vinyl_plank:500});f.ownerPricing.pricing.vinylPlankUnderlaymentRule='owner_review';ready(f,178000);});

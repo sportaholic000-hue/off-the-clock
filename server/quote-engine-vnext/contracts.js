@@ -716,7 +716,9 @@ export const CLASS2_DEFINITIONS = {
   ROOFING_REPLACEMENT: {
     // Hip roofs (moderate) start at 15%, the published hip-roof waste figure.
     wasteFactorByComplexity: factorMap({ simple: 0.10, moderate: 0.15, complex: 0.18 }, 'Roofing material waste by roof complexity', 'decimal fraction', 0, 0.5),
-    pitchMultiplier: factorMap({ low: 1, medium: 1.15, steep: 1.25, very_steep: 1.40 }, 'Roof pitch labor multiplier', 'multiplier', 0.1, 5),
+    // Services on the earlier roofing rules: a walkable "medium" roof (up to
+    // 6/12) carries no steep charge, as under the October 16 rules.
+    pitchMultiplier: factorMap({ low: 1, medium: 1, steep: 1.25, very_steep: 1.40 }, 'Roof pitch labor multiplier', 'multiplier', 0.1, 5),
     storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Story-count labor multiplier', 'multiplier', 0.1, 5)
   },
   ROOFING_REPAIR: {
@@ -868,14 +870,15 @@ for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR']) extendMeasuredContract
 // Owner ruling area (audit M03): a repair larger than the area the owner prices as a
 // large repair is not quoted from the fixed large-repair hours and allowance.
 export const LARGE_REPAIR_LIMIT_MESSAGE = 'This repair is larger than the area this business prices as a repair. The business will follow up to assess it.';
-export function largeRepairLimitProblem(serviceType, value) {
+export function largeRepairLimitProblem(serviceType, value, pricing = {}) {
   if (value === undefined) return null;
-  const mediumMax = serviceType === 'ROOFING_REPAIR' ? 200 : 80;
+  // The service's own medium limit: the owner's when set, else the starting one.
+  const mediumMax = repairBands(serviceType, pricing)[1];
   return typeof value === 'number' && Number.isFinite(value) && value > mediumMax && value <= 1_000_000 ? null
     : `Enter the largest affected area priced as a repair: more than ${mediumMax} sq ft (the medium-repair limit) and at most 1,000,000.`;
 }
 for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR']) extendMeasuredContract(type, {}, () => [],
-  (c, p) => repairSizeFromAffectedArea(type, c.affectedArea, p) === 'large' && typeof p?.largeRepairMaxSqft === 'number' && c.affectedArea > p.largeRepairMaxSqft ? LARGE_REPAIR_LIMIT_MESSAGE : null);
+  (c, p) => typeof c.affectedArea === 'number' && typeof p?.largeRepairMaxSqft === 'number' && c.affectedArea > p.largeRepairMaxSqft ? LARGE_REPAIR_LIMIT_MESSAGE : null);
 for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasuredContract(type, {}, () => [], null, c => {
   if(c.serviceScope !== 'partial') return [];
   const total = type === 'ROOFING_REPLACEMENT' ? c.roofSizeInput : c.roofSqft;
@@ -1334,8 +1337,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
    base={...base,fields};
  }
  if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(rules)){
-  const materialKeys=Object.keys(p.materialCostPerSquare||{});
-  const dependentMaterials=materialKeys.filter(key=>dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tierName)||tierName===null&&(rules.tiers||[]).some(tier=>Object.is(valueAtPath(mergePricingForValidationVNext(rules.pricing||{},tier.overrides||{}),'materialCostPerSquare.'+key),p.materialCostPerSquare[key])&&dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tier.name)));
+  const dependentMaterials=roofDependentMaterialsVNext(rules,p,tierName);
   const dependentActive=dependentMaterials.length>0;
   const accessoryVisibleWhen=dependentMaterials.map(key=>[['replacementRoofType','eq',key]]);
 
@@ -1520,6 +1522,10 @@ export function valueAtPath(source, path) {
   return value;
 }
 
+// Roof materials whose owner confirmed the field price excludes flashing and vents.
+function roofDependentMaterialsVNext(rules,p,tierName=null){
+  return Object.keys(p.materialCostPerSquare||{}).filter(key=>dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tierName)||tierName===null&&(rules.tiers||[]).some(tier=>Object.is(valueAtPath(mergePricingForValidationVNext(rules.pricing||{},tier.overrides||{}),'materialCostPerSquare.'+key),p.materialCostPerSquare[key])&&dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tier.name)));
+}
 export function ownerRequirements(type,c={},p={},rules={}) {
  const extra=[];
  if(type.startsWith('FLOORING_'))for(const addon of FLOORING_ADDONS){
@@ -1542,7 +1548,7 @@ export function ownerRequirements(type,c={},p={},rules={}) {
    if(settings.trimPrimerCoats>0)for(const category of ['Labor','Material'])extra.push(requirement('paintingRates.trimPrimer'+category+'PerLFPerCoat','Trim primer '+category.toLowerCase()));
   }
  }
- return [...baseOwnerRequirements(type,c,p),...extra].filter(item=>!(type==='INTERIOR_PAINTING'&&!p.offeringMode&&c.trimIncluded&&trimComponentPricing(p)&&['trimLaborPerLF','trimMaterialPerLF'].includes(item.path))&&!scopesSuppressPrice(type,c,p,rules,item.path)).concat(scopeRequirements(type,c,p,rules));
+ return [...baseOwnerRequirements(type,c,p,rules),...extra].filter(item=>!(type==='INTERIOR_PAINTING'&&!p.offeringMode&&c.trimIncluded&&trimComponentPricing(p)&&['trimLaborPerLF','trimMaterialPerLF'].includes(item.path))&&!scopesSuppressPrice(type,c,p,rules,item.path)).concat(scopeRequirements(type,c,p,rules));
 }
 
 const requirement = (path, label, options = {}) => ({ path, label, kind: fixedPriceField(path.split('.')[0])?'non_negative_money':'non_negative_number', ...options });
@@ -1558,7 +1564,7 @@ export function vinylUnderlaymentApplies(customerInputs, pricing) {
   return false;
 }
 
-function baseOwnerRequirements(serviceType, c = {}, p = {}) {
+function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
   const unitRequirements=repairUnitRequirements(serviceType,c,p);
   if(unitRequirements)return unitRequirements;
   if(configuredOffering(serviceType,p))return offeringRequirements(serviceType,c,p);
@@ -1579,7 +1585,10 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
       if (c.ridgeCapLengthLF > 0) add('ridgeCapPerLF', 'Ridge cap price per linear foot');
     }
     if (c.deckingSheets > 0) add('deckingPerSheet', 'Decking replacement price per sheet');
-    if ((c.iceWaterBarrierLengthLF !== undefined || c.iceWaterBarrierSqft !== undefined) && p.iceWaterBarrierUnit === undefined) out.push({ path: 'iceWaterBarrierUnit', label: 'Ice and water barrier measurement unit', kind: 'enum', values: ['square_feet', 'linear_feet'] });
+    // A confirmed exclusion means ice and water barrier is never silently dropped:
+    // without its measurement unit the quote goes to review naming the barrier.
+    const iceExcluded = usesNewRoofReplacementRulesVNext(rules) && roofDependentMaterialsVNext(rules, p).includes(c.replacementRoofType);
+    if ((iceExcluded || c.iceWaterBarrierLengthLF !== undefined || c.iceWaterBarrierSqft !== undefined) && !['square_feet', 'linear_feet'].includes(p.iceWaterBarrierUnit)) out.push({ path: 'iceWaterBarrierUnit', label: 'Ice and water barrier measurement unit', kind: 'enum', values: ['square_feet', 'linear_feet'] });
     if (c.iceWaterBarrierLengthLF > 0) add('iceWaterBarrierPerLF', 'Ice and water barrier price per linear foot');
     if (c.iceWaterBarrierSqft > 0) add('iceWaterBarrierPerSqft', 'Ice and water barrier price per square foot');
     if (c.valleyLengthLF > 0) add('valleyPerLF', 'Valley preparation price per linear foot');
@@ -1922,7 +1931,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     }
   }
   if (['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'].includes(serviceType)) {
-    const limitProblem = largeRepairLimitProblem(serviceType, p.largeRepairMaxSqft);
+    const limitProblem = largeRepairLimitProblem(serviceType, p.largeRepairMaxSqft, p);
     if (limitProblem) structureDiagnostic(diagnostics, 'invalid', 'largeRepairMaxSqft', limitProblem);
   }
   if (serviceType === 'ROOFING_REPAIR') {

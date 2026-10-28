@@ -62,9 +62,11 @@ for(const [label,instant,first,second,before,after] of [
   const api=await routes(t),a=owner(first),b=owner('UTC'),bytes=fs.readFileSync(a.filename);
   assert.equal((await api.status(a)).status,'QUOTING LIVE');assert.equal((await api.catalog(a)).services.length,1);
   assert.equal(quote(a,instant).customerResult.midEstimate,before);
+  // An invalid profile zone no longer pauses the busy-season surcharge: it
+  // follows the work month. The quote records no zone.
   db.prepare('UPDATE users SET timezone=? WHERE id=?').run('Invalid/Profile',a.id);
-  assert.equal((await api.status(a)).status,'NEEDS PRICING');assert.deepEqual((await api.catalog(a)).services,[]);
-  const stopped=quote(a,instant);assert.equal(stopped.customerResult.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(stopped.customerResult.midEstimate,undefined);
+  assert.equal((await api.status(a)).status,'QUOTING LIVE');assert.equal((await api.catalog(a)).services.length,1);
+  const unzoned=quote(a,instant);assert.equal(unzoned.customerResult.midEstimate,before);assert.equal(unzoned.internalResult.calculationRecord.quoteDate.timeZone,null);
   assert.equal((await api.status(b)).status,'QUOTING LIVE');assert.equal((await api.catalog(b)).services.length,1);
   db.prepare('UPDATE users SET timezone=? WHERE id=?').run(second,a.id);
   assert.equal((await api.status(a)).status,'QUOTING LIVE');assert.equal((await api.catalog(a)).services.length,1);
@@ -89,8 +91,10 @@ test('release guard: owner notice does not promise silent UTC fallback',async()=
   try {
     const {ServiceRules}=await vite.ssrLoadModule('/src/quoteDoneControls.jsx');
     const html=renderToStaticMarkup(React.createElement(ServiceRules,{service:{serviceType:'CUSTOM'},meta:{},defaults:{peakMonths:[10],peakSurchargePercent:10},onService(){},onDefault(){}}));
-    assert.ok(html.includes('Choose a business time zone for peak pricing.'));
-    assert.ok(html.includes('Quotes use a valid saved profile time zone; if neither time zone is valid, quotes with a busy-season surcharge are paused.'));
+    // The surcharge follows the customer's work month, so no time zone is required for it.
+    assert.equal(html.includes('Choose a business time zone for peak pricing.'),false);
+    assert.equal(html.includes('are paused'),false);
+    assert.ok(html.includes('Busy-season pricing follows the month the customer wants the work done.'));
     assert.doesNotMatch(html,/UTC if none is available/);
   } finally {await vite.close();}
 });

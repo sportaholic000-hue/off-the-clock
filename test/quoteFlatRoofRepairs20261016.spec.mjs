@@ -95,13 +95,13 @@ test('pitched shingle patch and siding panel area prices replace bands only for 
 });
 
 test('repair pitch, stories and access adjust only installed labor; materials tax uses remaining share',()=>{
-  // Roof44000 with60%labor,1.25pitch*1.10stories =>36300labor+
-  // 17600material=53900;10%materialstax1760=>55660.
+  // Roof44000 with60%labor, pitch and story charges added (1+0.25+0.10=1.35)
+  // =>35640labor+17600material=53240;10%materialstax1760=>55000.
   // Flat27000 with60%labor*1.30access+40%material=31860.
   // Siding38000 with60%labor*1.10stories+40%material=40280.
   const f=units(pitched(),'square_feet',400,30000,25);Object.assign(f.customerInputs,{pitch:'steep',stories:2});
-  let q=quote(f);assert.equal(total(q),53900);assert.equal(q.lineItems.reduce((n,l)=>n+portion(l.installedLaborExactCents),0),36300);
-  f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;q=quote(f);assert.equal(q.midEstimate,556.60);
+  let q=quote(f);assert.equal(total(q),53240);assert.equal(q.lineItems.reduce((n,l)=>n+portion(l.installedLaborExactCents),0),35640);
+  f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;q=quote(f);assert.equal(q.midEstimate,550);
   const flat=units(flatRepair(),'linear_feet',900);Object.assign(flat.customerInputs,{repairLengthLF:30,accessDifficulty:'difficult'});assert.equal(total(quote(flat)),31860);
   const side=units(siding(),'square_feet',900,20000,20);side.customerInputs.stories=2;assert.equal(total(quote(side)),40280);
 });

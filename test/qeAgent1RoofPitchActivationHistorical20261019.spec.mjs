@@ -32,7 +32,11 @@ for(const saved of historical.records)test('AP01/AP02 authentic v12 immutable pr
  };
  const approval=structuredClone(saved.book.services[0].quoteDoneApproval);
  assert.equal(bridge.bookStatuses(loadPricebook(saved.owner),date)[0].approvalCurrent,true);
- assert.equal(bridge.bookStatuses(loadPricebook(saved.owner),date)[0].status,'QUOTING LIVE');
+ // These books confirmed the field price excludes ice and water barrier but
+ // never chose its unit: the service now needs that pricing before new quotes.
+ // Stored receipts stay byte-for-byte unchanged and replay as recorded.
+ const status=bridge.bookStatuses(loadPricebook(saved.owner),date)[0];
+ assert.equal(status.status,'NEEDS PRICING');assert.ok(status.missingOwnerFields.includes('iceWaterBarrierUnit'),JSON.stringify(status.missingOwnerFields));
  await replay();assert.deepEqual(loadPricebook(saved.owner),saved.book);
  bridge.saveApplicationBook(saved.owner,bridge.readApplicationBook(saved.owner),date);assert.deepEqual(loadPricebook(saved.owner).services[0].quoteDoneApproval,approval);await replay();
  const view=bridge.readApplicationBook(saved.owner);view.services[0].pricing.laborPerSquare.asphalt_shingle+=.01;bridge.saveApplicationBook(saved.owner,view,date);

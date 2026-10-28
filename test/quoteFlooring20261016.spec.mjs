@@ -76,10 +76,12 @@ test('flooring unknown leveling area preserves the 178,000-cent main quote and d
   assert.equal(line(q,'Floor leveling'),undefined);assert.match(q.disclaimer,/leveling.*confirm.*on site/i);
 });
 
-for(const [roll,repeat,quantity,cents] of [[12,0,324,97200],[15,0,202.5,60750],[12,1.5,360,108000]])test(`carpet 13 x 14, ${roll}-ft roll, ${repeat}-ft repeat: ${quantity} bought sq ft`,()=>{
-  // Min of the two whole-width cut directions, including 0.5-ft wall trim:
-  // 12-ft: 2*12*13.5=324; 15-ft: 1*15*13.5=202.5;
-  // 12-ft with repeat 1.5: 2*12*15=360. Material is quantity*300 cents.
+for(const [roll,repeat,quantity,cents] of [[12,0,220,66000],[15,0,202.5,60750],[12,1.5,256,76800]])test(`carpet 13 x 14, ${roll}-ft roll, ${repeat}-ft repeat: ${quantity} bought sq ft`,()=>{
+  // Cheaper direction, 0.5-ft trim on every cut and on the fill width.
+  // 12-ft: one 12 x 13.5 drop (162) + a 2.5-ft fill from one cut split into
+  // 3 strips, cut (13 + 3*0.5)/3 = 4.8333 long: 12*4.8333 = 58; total 220.
+  // 15-ft: the 14-ft width fits one piece: 15*13.5=202.5.
+  // 12-ft, repeat 1.5: drop 12*15=180 + fill 12*(13+3*2)/3=76 = 256. Material is quantity*300 cents.
   const f=carpet([{lengthFt:13,widthFt:14}],roll,repeat);delete f.customerInputs.sqft;
   const q=ready(f);assert.equal(line(q,'Flooring materials').calculation.quantity,quantity);
   assert.equal(line(q,'Flooring materials').amountCents,cents);
@@ -87,9 +89,11 @@ for(const [roll,repeat,quantity,cents] of [[12,0,324,97200],[15,0,202.5,60750],[
   assert.match(q.disclaimer,/carpet quantity.*confirm.*on site.*seaming diagram/i);
 });
 
-for(const [groups,quantity] of [[[[1,2]],426],['unknown',426],[[[1],[2]],348]])test(`carpet connected areas ${JSON.stringify(groups)} buy ${quantity} sq ft`,()=>{
-  // One shared direction: 2*12*10.5 + 1*12*14.5 =426 sq ft.
-  // Separate directions: 2*(1*12*14.5)=348 sq ft; labor remains 280 sq ft.
+for(const [groups,quantity] of [[[[1,2]],346],['unknown',346],[[[1],[2]],344]])test(`carpet connected areas ${JSON.stringify(groups)} buy ${quantity} sq ft`,()=>{
+  // A 14-ft-wide room run 10 ft: 12*10.5=126 drop + 2.5-ft fill, 3 strips cut
+  // (10+1.5)/3 long: 12*3.8333=46, so 172. The same room run 14 ft: 12*14.5=174.
+  // One shared direction: 172 + 174 = 346 either way.
+  // Separate directions: 172 + 172 = 344 sq ft; labor remains 280 sq ft.
   const f=carpet([{lengthFt:10,widthFt:14},{lengthFt:14,widthFt:10}],12,0,groups);
   const q=ready(f);assert.equal(line(q,'Flooring materials').calculation.quantity,quantity);
   assert.equal(line(q,'Flooring labor').calculation.quantity,280);

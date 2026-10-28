@@ -47,6 +47,26 @@ test('T03 the work month, not the quote month, determines the labor surcharge',(
  }
  assert.equal(bridge.previewApplicationQuote(id,{revision:bridge.bookRevision(book),...body({workMonth:'april'})},{...date,timeZone:'America/Los_Angeles'}).midEstimate,100);
 });
+test('T03 a busy-season surcharge needs no business time zone; the work month decides',()=>{
+ // $100 mowing; June is busy at 10% labor. No quote or profile time zone is saved.
+ const f=mowing();delete f.ownerPricing.peakMonths;delete f.ownerPricing.peakSurchargePercent;Object.assign(f.businessDefaults,{peakMonths:[6],peakSurchargePercent:10});delete f.businessDefaults.quoteTimeZone;
+ const {book,id}=saved(f),raw=book.services[0],body=inputs=>({serviceId:raw.id,customerInputs:{...f.customerInputs,...inputs}});
+ const date={ownerId:id,quoteInstant:new Date('2026-04-01T00:30:00Z'),timeZone:null};
+ assert.equal(bridge.applicationStatus(raw,book,{timeZone:null}).status,'QUOTING LIVE');
+ assert.equal(bridge.calculateApplicationQuote(book,raw,body({workMonth:'june'}),date).customerResult.midEstimate,110);
+ assert.equal(bridge.calculateApplicationQuote(book,raw,body({workMonth:'april'}),date).customerResult.midEstimate,100);
+});
+test('T03 a surcharge in every month is charged on every job: no work-month question and no note',()=>{
+ const f=mowing();delete f.ownerPricing.peakMonths;delete f.ownerPricing.peakSurchargePercent;Object.assign(f.businessDefaults,{quoteTimeZone:'UTC',peakMonths:[1,2,3,4,5,6,7,8,9,10,11,12],peakSurchargePercent:10});
+ const {book,id}=saved(f),raw=book.services[0];
+ assert.equal(bridge.applicationServiceDefinition(raw,book).customerFields.some(field=>field.name==='workMonth'),false);
+ const out=bridge.calculateApplicationQuote(book,raw,{serviceId:raw.id,customerInputs:f.customerInputs},{ownerId:id,quoteInstant:new Date('2026-04-01T00:30:00Z')}).customerResult;
+ assert.equal(out.midEstimate,110);
+ assert.equal(JSON.stringify(out).includes('busy-season rate'),false);
+ // A season with a gap still asks the month.
+ const g=mowing();delete g.ownerPricing.peakMonths;delete g.ownerPricing.peakSurchargePercent;Object.assign(g.businessDefaults,{quoteTimeZone:'UTC',peakMonths:[12,1,2],peakSurchargePercent:10});
+ const second=saved(g);assert.equal(bridge.applicationServiceDefinition(second.book.services[0],second.book).customerFields.some(field=>field.name==='workMonth'),true);
+});
 test('T04 fence derives 18 posts, waste on infill only and terrain on labor only',()=>{
  const f=offeringFixture('FENCING_INSTALL','itemized');Object.assign(f.customerInputs,{cornerCount:2,gates:{walk:1}});
  const q=cents(f,399000);assert.equal(q.lineItems.find(line=>line.calculation?.ratePath==='offeringRates.postMaterialEach').calculation.quantity,18);
@@ -101,11 +121,12 @@ test('T12 installed labor-only adjustments preserve materials and produce one cu
  const q=sanitizeForCustomerVNext(generateQuoteVNext(f));for(const word of ['installedLabor','installedMaterial','lineItems','rateCents','taxCents'])assert.equal(JSON.stringify(q).includes(word),false);
  delete f.ownerPricing.pricing.installedLaborPercent;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
-test('T13 asphalt remains quotable beside incomplete metal; complete control stays 599000 cents',()=>{
+test('T13 asphalt remains quotable beside incomplete metal; complete control stays 560000 cents',()=>{
+ // A walkable medium pitch starts at 1.00 labor (was 1.15: 599,000 cents).
  const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:8500,metal:8500},materialCostPerSquare:{asphalt_shingle:12000,metal:12000},tearOffPerSquare:{asphalt_shingle:4500,metal:4500},underlaymentPerSquare:{asphalt_shingle:1800,metal:1800},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price',metal:'installed_area_sell_price'},accessoryPricingMode:'per_square_allin',minimumJob:0},{roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
- cents(f,599000);f.ownerPricing.pricing.underlaymentPriceBasis.metal='cost';
+ cents(f,560000);f.ownerPricing.pricing.underlaymentPriceBasis.metal='cost';
  const {book,id}=saved(f),raw=book.services[0];assert.equal(bridge.applicationStatus(raw,book).status,'QUOTING LIVE');
- const result=bridge.calculateApplicationQuote(book,raw,{serviceId:raw.id,customerInputs:f.customerInputs},{ownerId:id});assert.equal(result.customerResult.midEstimate,5990);
+ const result=bridge.calculateApplicationQuote(book,raw,{serviceId:raw.id,customerInputs:f.customerInputs},{ownerId:id});assert.equal(result.customerResult.midEstimate,5600);
  assert.equal(JSON.stringify(result.customerResult.pricedScope).includes('asphalt_shingle'),false);
 });
 

@@ -20,7 +20,7 @@ const START={
   grass:{maintained:['Maintained','Mowed regularly; the grass is at a normal mowing height.'],overgrown:['Overgrown','A few mowings missed; the grass is clearly long and may be clumping.'],severe:['Severe','Not mowed in a long time; tall, thick grass or weeds hide the ground.']},
   surface:{good:['Good','Clean and sound, with no peeling, cracks or patching needed.'],fair:['Fair','Some small cracks, nail holes, scuffs or light peeling that need touch-up.'],poor:['Poor','Widespread peeling, cracking, stains or damage that needs repair before painting.']},
   wall:{standard:['Standard','A typical room height you can paint from a short step ladder.'],high:['High','Taller than a typical room; a tall ladder is needed to reach the top.'],vaulted:['Vaulted','A sloped or cathedral ceiling, or a two-storey space such as a foyer.']},
-  pitch:{low:['Low','Nearly flat or gently sloped; easy to walk on.'],medium:['Medium','A typical house roof slope you can walk on with care.'],steep:['Steep','Too steep to walk on comfortably; roofers need safety gear.'],very_steep:['Very steep','Very steep, close to a wall in places, such as a mansard or A-frame roof.']},
+  pitch:{low:['Low','Nearly flat or gently sloped, under 4 in 12 (less than 4 inches of rise per foot); easy to walk on.'],medium:['Medium','A typical house roof you can walk on with care, 4 in 12 to 6 in 12.'],steep:['Steep','Too steep to walk on comfortably, 7 in 12 to 9 in 12; roofers need safety gear.'],very_steep:['Very steep','Very steep, 10 in 12 or more, such as a mansard or A-frame roof.']},
   complexity:{simple:['Simple','A gable roof.'],moderate:['Moderate','A hip roof or several valleys.'],complex:['Complex','Dormers or turrets.']},
   plant:{small:['Small','Perennials, groundcover or small shrubs in small nursery pots.'],medium:['Medium','Shrubs or small evergreens in larger nursery pots.'],large:['Large','Trees or large shrubs, sold balled or in very large containers.']},
   bed:{clean:['Clean','Beds are clear of weeds and debris and ready for mulch or planting.'],needs_weeding:['Needs weeding','Some weeds or unwanted plants are growing in the bed and need removal first.'],overgrown:['Overgrown','Thick weeds or brush cover most of the bed and must be cleared before work.']},
@@ -153,7 +153,8 @@ test('no definition contains a price, a multiplier value or an internal key',()=
     const texts=[...definition.customerFields.flatMap(f=>Object.values(f.optionDefinitions||{}).flatMap(d=>[d.label,d.definition])),...phone.fields.flatMap(q=>(q.choiceDefinitions||[]).flatMap(d=>[d.label,d.definition]))];
     for(const text of texts){
       assert.doesNotMatch(text,/[$€£¢¥%×_]|\bx\s*\d|\d\s*x\b|\bmultipliers?\b|\bfactors?\b|\bper cent\b|\bprices?\b|\bcosts?\b|\brates?\b/i,text);
-      assert.doesNotMatch(text.replace(/\b\d+(?:\.\d+)? ft\b/g,''),/\d/,text);
+      // Measurements are allowed: feet, and roof pitch as rise in 12.
+      assert.doesNotMatch(text.replace(/\b\d+(?:\.\d+)? ft\b/g,'').replace(/\b\d+ in 12\b/g,'').replace(/\b\d+ inches of rise per foot\b/g,''),/\d/,text);
       for(const key of [...keys].filter(key=>/[A-Z_]/.test(key)))assert.ok(!new RegExp('\\b'+key+'\\b').test(text),`${text} contains ${key}`);
     }
   }

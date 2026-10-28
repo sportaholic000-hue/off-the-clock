@@ -2,7 +2,7 @@ import {surfaceExtraDefinitions} from './surfacePricing.js';
 import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,hasSurfacePrice,repairScenarioCube,repairScenarioInputs,repairBands} from './flatRoofRepairPricing.js';
 import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,basicPaintNotice} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
-import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,peakSurchargeConfigured,MISSING_PEAK_TIME_ZONE,monthForRecordedQuoteDate} from '../src/quoteDate.js';
+import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,monthForRecordedQuoteDate} from '../src/quoteDate.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics,scopeCustomerErrors} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
@@ -136,7 +136,7 @@ const NEW_FIELD_COPY = {
   mulchOrderIncrementCubicYards: {label:'Mulch order increment',unit:'cubic yards',help:'Optional purchase increment by mulch product. Material rounds up after configured overage; installation labor remains on installed or customer-stated yards.'},
   sodPalletSizeSqft: {label:'Sod pallet coverage',unit:'square feet per pallet',help:'Optional pallet size. Sod material rounds up to whole pallets after waste; installation labor remains on measured installed square feet.'},
 
-  wallPriceIncludesTouchUp: { label: 'Does your wall price include touch-up of small cracks, nail holes and scuffs?', help: 'Yes quotes walls in fair condition at your wall rate. No, or blank, sends fair walls to you for review. Poor walls always go to review.' },
+  wallPriceIncludesTouchUp: { label: 'Do your wall and ceiling prices include touch-up of small cracks, nail holes and scuffs?', help: 'Yes quotes walls and ceilings in fair condition at your wall and ceiling rates. No, or blank, sends fair surfaces to you for review. Poor walls and ceilings always go to review.' },
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
   customChargeClassification: { label: 'Custom service charge category', help: 'Choose the line category for this complete service charge. Its saved price basis, taxability, markup and seasonal settings apply. A final selling price is not marked up again. Blank materials share keeps this category; an entered materials share uses labor and material rules.' },
@@ -631,7 +631,7 @@ function roofFlashingNotices(service){
   const confirmed=Object.keys(p.materialCostPerSquare||{}).some(key=>dependentLineEnabledVNext(service,roofFlashingVentDefinitionVNext(key),p));
   if(!confirmed)return [];
   const out=[];
-  if(!['square_feet','linear_feet'].includes(p.iceWaterBarrierUnit))out.push('Ice and water barrier is not quoted yet: you confirmed your field-material price excludes it, but it has no measurement unit. Choose square feet or linear feet and enter its price.');
+  if(!['square_feet','linear_feet'].includes(p.iceWaterBarrierUnit))out.push('Ice and water barrier needs a measurement unit. You confirmed your field-material price excludes it, so roof quotes go to review until you choose square feet or linear feet and enter its price.');
   const missing=[['valleyPerLF','valley preparation'],['stepFlashingPerLF','step flashing'],['pipeJackEach','pipe jacks'],['ridgeVentPerLF','ridge vent'],...(p.iceWaterBarrierUnit==='square_feet'?[['iceWaterBarrierPerSqft','ice and water barrier']]:p.iceWaterBarrierUnit==='linear_feet'?[['iceWaterBarrierPerLF','ice and water barrier']]:[])].filter(([path])=>p[path]===undefined).map(([,label])=>label);
   if(missing.length)out.push('Enter prices for '+missing.join(', ')+'. Your field-material price excludes them, so a quote that includes one goes to review until it has a price.');
   return out;
@@ -997,7 +997,6 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   const pricing = pricingOf(service);
   const hasDateContext=Object.hasOwn(options,'dateContext');
   const timeZone=hasDateContext?resolvedQuoteTimeZone(businessDefaults||{},options.dateContext?.timeZone):null;
-  const missingPeakZone=hasDateContext&&timeZone===null&&peakSurchargeConfigured(service,businessDefaults||{});
   if(hasDateContext&&businessDefaults!==null&&businessDefaults!==undefined)businessDefaults=quoteDefaultsForTimeZone(businessDefaults,timeZone);
   const defaultValidation = businessDefaults === null || businessDefaults === undefined
     ? {
@@ -1012,7 +1011,6 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
       : `businessDefaults.${item.path}`
   }));
   const diagnostics = [...validateServiceRulesDetailed(service, service.serviceType), ...defaultDiagnostics];
-  if(missingPeakZone)diagnostics.push({type:'missing',kind:'quote_date',path:'businessDefaults.quoteTimeZone',message:MISSING_PEAK_TIME_ZONE});
   if (service.active !== true) diagnostics.push({ type: 'invalid', kind: 'activation', path: 'active', message: 'Service is not enabled for customer quoting.' });
   if (service.serviceType === 'CUSTOM' && (typeof service.service !== 'string' || !service.service.trim() || service.service.trim() === 'CUSTOM')) diagnostics.push({ type: 'invalid', kind: 'service', path: 'service', message: 'Custom service requires a specific configured offering name.' });
 

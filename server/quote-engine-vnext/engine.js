@@ -1,4 +1,4 @@
-import {seasonalPricingMonth,workMonthName} from './workMonth.js';
+import {seasonalPricingMonth,workMonthName,busySeasonMonths} from './workMonth.js';
 import {FLOORING_ADDONS} from './flooringPricing.js';
 import {REPAIR_SERVICES} from './flatRoofRepairPricing.js';
 import {resolvedRangeSettings,validRangePercent} from '../quoteRangeSettings.js';
@@ -1174,7 +1174,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
-  if (seasonAssumed) template.disclosures.push(`Priced at the busy-season rate because no work month was given. The price is lower if the work is scheduled outside ${[...seasonAssumed].sort((a,b)=>a-b).map(workMonthName).join(', ')}.`);
+  if (seasonAssumed) template.disclosures.push(`Priced at the busy-season rate because no work month was given. The price is lower if the work is scheduled outside ${busySeasonMonths(seasonAssumed).map(workMonthName).join(', ')}.`);
   if (travelOutsideZones) {
     const mode = ownerPricing.feeRules.travel;
     const applies = mode === 'always' || (mode === 'when_scope_selected' && template.feeScope.travel === true) ||

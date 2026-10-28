@@ -1,4 +1,4 @@
-import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
+import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactSubtract,exactToNumber} from './exactMath.js';
 
 export const FLOORING_PATTERN_FIELDS=['diagonalWasteAdderByType','diagonalLaborMultiplierByType','herringboneWasteAdderByType','herringboneLaborMultiplierByType'];
 export const FLOORING_ADDONS=[
@@ -8,7 +8,7 @@ export const FLOORING_ADDONS=[
   {rate:'toiletPullResetEach',input:'toiletPullResetCount',label:'Toilet pull and reset',question:'How many toilets need to be pulled and reset?',unit:'toilets',integer:true,category:'labor'},
   {rate:'floorLevelingPerSqft',input:'floorLevelingSqft',label:'Floor leveling',question:'About how many square feet need floor leveling?',unit:'square feet',category:'prep',installed:true}
 ];
-export const FLOORING_OPTIONAL_FIELDS=[...FLOORING_PATTERN_FIELDS,...FLOORING_ADDONS.map(a=>a.rate),'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt'];
+export const FLOORING_OPTIONAL_FIELDS=[...FLOORING_PATTERN_FIELDS,...FLOORING_ADDONS.map(a=>a.rate),'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams'];
 export const FLOORING_FIELD_COPY={
   diagonalWasteAdderByType:{label:'Diagonal additional waste by flooring type',help:'Optional additional material fraction for each hard flooring type. Blank uses your saved diagonal/pattern waste addition.',unit:'decimal fraction',ownerInputUnit:'percent'},
   diagonalLaborMultiplierByType:{label:'Diagonal labor adjustment by flooring type',help:'Optional labor multiplier for each hard flooring type. Blank uses your saved diagonal/pattern labor adjustment.',unit:'multiplier'},
@@ -21,7 +21,8 @@ export const FLOORING_FIELD_COPY={
   toiletPullResetEach:{label:'Toilet pull and reset ($ each)',help:'Labor to pull and reset one toilet. Repairs, a replacement toilet and separately purchased parts are additional work.'},
   floorLevelingPerSqft:{label:'Floor leveling ($ per square foot)',help:'Installed leveling price per affected square foot for a new flooring installation. Record its labor/material split in Quote configuration.'},
   carpetRollWidthFt:{label:'Carpet roll width (feet)',help:'Full roll width for this carpet product or price option, for example 12, 13.5 or 15 feet. Room-based carpet quotes need this owner-entered width.'},
-  carpetPatternRepeatFt:{label:'Carpet pattern-repeat allowance (feet)',help:'Optional extra cut length for pattern matching on every piece. Blank means no extra repeat allowance.'}
+  carpetPatternRepeatFt:{label:'Carpet pattern-repeat allowance (feet)',help:'Optional extra cut length for pattern matching on every piece. Blank means no extra repeat allowance.'},
+  carpetCrossgrainSeams:{label:'Crossgrain seams in carpet fills',help:'Allowed fills the strip left beside full roll widths with up to 3 pieces joined end to end (2 crossgrain seams), all the same pile direction. Choose Not allowed for sisal, flat-weave and other products that must not be cross-seamed; those buy whole roll widths. Blank means allowed.'}
 };
 export const CARPET_QUANTITY_NOTE='The carpet quantity is confirmed on site from the seaming diagram.';
 export const LEVELING_UNKNOWN_NOTE='Floor leveling is additional work; the business will confirm its area and price on site.';
@@ -82,18 +83,31 @@ export function normalizeFlooringInputs(c){
 }
 
 function ceiling(value){const x=exactDecimal(value);return Number((x.numerator+x.denominator-1n)/x.denominator);}
+function floor(value){const x=exactDecimal(value);return Number(x.numerator/x.denominator);}
 export function carpetRollPurchase(c,p){
   const measured=carpetRoomMeasurements(c.carpetRooms,c.carpetConnectedAreas);
   const width=p.carpetRollWidthFt,repeat=present(p.carpetPatternRepeatFt)?p.carpetPatternRepeatFt:0;
   if(!pricePresent(width)||width>1_000_000)throw Object.assign(new TypeError('Set the carpet roll width for this product in the price book.'),{flooringOwnerField:'carpetRollWidthFt'});
   if(typeof repeat!=='number'||!Number.isFinite(repeat)||repeat<0||repeat>1_000_000)throw Object.assign(new TypeError('Set a non-negative carpet pattern-repeat allowance.'),{flooringOwnerField:'carpetPatternRepeatFt'});
   // Trim (0.5 ft) and pattern repeat go on every cut length. Every piece in a
-  // room runs the same pile direction (CRI 105), so a room wider than the roll
-  // buys whole widths of that cut length; the cheaper direction is chosen.
+  // room runs the same pile direction (CRI 105 section 5.2). Full-width drops
+  // run the room's length; the leftover strip is filled from one cut of the roll
+  // split lengthwise into strips of the fill width plus 0.5 ft trim, joined end
+  // to end: at most 3 pieces, 2 crossgrain seams (CFI). The cheaper of that fill
+  // or one more full width is bought, then the cheaper room direction. Products
+  // the owner marks "no crossgrain seams" buy whole widths only.
+  const fillsAllowed=p.carpetCrossgrainSeams!=='not_allowed';
   const cuts=(group,turned)=>group.map(index=>{
     const room=c.carpetRooms[index],across=turned?room.lengthFt:room.widthFt,along=turned?room.widthFt:room.lengthFt;
     const length=exactAdd(along,0.5,repeat),pieces=ceiling(exactDivide(across,width));
-    return {room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length),exactArea:exactMultiply(pieces,width,length)};
+    const whole={room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length),exactArea:exactMultiply(pieces,width,length)};
+    const drops=pieces-1,fillWidth=exactAdd(exactSubtract(across,exactMultiply(drops,width)),0.5);
+    const strips=Math.min(3,floor(exactDivide(width,fillWidth)));
+    if(!fillsAllowed||drops<1||strips<2)return whole;
+    const fillCut=exactDivide(exactAdd(along,exactMultiply(strips,exactAdd(0.5,repeat))),strips);
+    const area=exactAdd(exactMultiply(drops,width,length),exactMultiply(width,fillCut));
+    if(exactCompare(area,whole.exactArea)>=0)return whole;
+    return {room:index+1,pieces:drops,rollWidthFt:width,cutLengthFt:whole.cutLengthFt,fill:{pieces:strips,crossgrainSeams:strips-1,widthFt:exactToNumber(fillWidth),cutLengthFt:exactToNumber(fillCut)},exactArea:area};
   });
   const chosen=[],areaChoices=[];
   for(const group of measured.groups){
@@ -116,6 +130,7 @@ export function flooringPricingDiagnostics(p){
     for(const [type,value] of Object.entries(p[key]))if(!['hardwood','laminate','vinyl_plank','tile'].includes(type)||typeof value!=='number'||!Number.isFinite(value)||value<(waste?0:0.1)||value>(waste?0.5:5))bad(key+'.'+type,waste?'Waste addition must be from 0% to 50% for a supported hard flooring type.':'Labor adjustment must be from 0.1 to 5 for a supported hard flooring type.');
   }
   for(const key of ['carpetRollWidthFt','carpetPatternRepeatFt'])if(own(p,key)&&(typeof p[key]!=='number'||!Number.isFinite(p[key])||p[key]<(key==='carpetRollWidthFt'?Number.MIN_VALUE:0)||p[key]>1_000_000))bad(key,'Enter a finite carpet dimension within the supported range.');
+  if(own(p,'carpetCrossgrainSeams')&&!['allowed','not_allowed'].includes(p.carpetCrossgrainSeams))bad('carpetCrossgrainSeams','Choose allowed or not allowed for crossgrain seams in carpet fills.');
   if(own(p,'furnitureMovingPriceUnit')&&!['per_room','flat'].includes(p.furnitureMovingPriceUnit))bad('furnitureMovingPriceUnit','Choose per room or flat per job for furniture moving.');
   if(pricePresent(p.furnitureMovingPrice)&&!['per_room','flat'].includes(p.furnitureMovingPriceUnit))bad('furnitureMovingPriceUnit','Choose per room or flat per job for furniture moving.');
   return out;

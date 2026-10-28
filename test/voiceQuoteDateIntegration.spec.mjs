@@ -39,11 +39,12 @@ for(const [label,profile,instant,bookZone,expected] of [
  const outcome=JSON.parse(stored.internalOutcomeJson);
  assert.deepEqual(outcome.applicationOutcome.internalResult.calculationRecord.quoteDate,{timeZone:bookZone==='UTC'?'UTC':profile,quoteInstant:instant});
 });
-test('release voice date: profile changes immediately unpublish and restore seasonal service',async t=>{
+test('release voice date: an invalid profile zone keeps a seasonal service published',async t=>{
+ // Busy-season pricing follows the work month, so it never depends on the zone.
  const h=setup(t,'America/Los_Angeles',west),match=()=>h.runtime.handlers.matchService({context:h.context,args:{query:h.f.ownerPricing.service}});
  assert.equal((await match()).status,'matched');
  h.database.prepare('UPDATE users SET timezone=? WHERE id=?').run('Invalid/Profile',h.context.ownerId);
- assert.equal((await match()).status,'needs_clarification');
+ assert.equal((await match()).status,'matched');
  h.database.prepare('UPDATE users SET timezone=? WHERE id=?').run('America/Los_Angeles',h.context.ownerId);
  assert.equal((await match()).status,'matched');
 });

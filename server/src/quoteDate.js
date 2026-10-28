@@ -32,7 +32,6 @@ export function quoteDefaultsForTimeZone(defaults,timeZone) {
   if(timeZone===null)delete result.quoteTimeZone;else result.quoteTimeZone=timeZone;
   return result;
 }
-export const MISSING_PEAK_TIME_ZONE='Choose a valid quote or profile time zone before using a busy-season surcharge.';
 export function applicationQuoteDate(service,defaults,{timeZone,quoteInstant=new Date()}={}) {
   const instant=quoteInstant instanceof Date?quoteInstant:typeof quoteInstant==='string'?new Date(quoteInstant):null;
   return {timeZone:resolvedQuoteTimeZone(defaults,timeZone),quoteInstant:instant&&Number.isFinite(instant.getTime())?instant.toISOString():null};
@@ -43,15 +42,14 @@ export function recordedQuoteDateDiagnostic(service,defaults,date) {
   if(typeof date.quoteInstant!=='string'||!Number.isFinite(Date.parse(date.quoteInstant))||new Date(date.quoteInstant).toISOString()!==date.quoteInstant)return invalid('quoteDate.quoteInstant','Quote instant is invalid.');
   if(date.timeZone!==null&&!isValidIanaTimeZone(date.timeZone))return invalid('quoteDate.timeZone','Quote time zone is invalid.');
   if(isValidIanaTimeZone(defaults.quoteTimeZone)&&date.timeZone!==defaults.quoteTimeZone)return invalid('quoteDate.timeZone','Quote time zone does not match the configured book time zone.');
-  if(date.timeZone===null&&peakSurchargeConfigured(service,defaults))return invalid('businessDefaults.quoteTimeZone',MISSING_PEAK_TIME_ZONE);
   return null;
 }
 export function recordedQuoteDateIssue(service,defaults,date) {
   return recordedQuoteDateDiagnostic(service,defaults,date)?.message??null;
 }
 export function monthForRecordedQuoteDate(date) {
-  // Null is recorded explicitly when no zone exists and seasonal pricing is
-  // off. UTC is used only for a financially irrelevant month in that case.
+  // Null is recorded explicitly when no zone exists. The busy-season surcharge
+  // follows the customer's work month, so the quote month never sets a price.
   return date.timeZone===null?new Date(date.quoteInstant).getUTCMonth()+1:Number(utcToLocalParts(date.quoteInstant,date.timeZone).month);
 }
 export function applicationQuoteMonth(service,defaults,context={}) {

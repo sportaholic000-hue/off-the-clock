@@ -174,8 +174,9 @@ test('caller approximate roofing inputs quote and voice retains the exact on-sit
 test('every legacy roof pitch, story, layer and complexity combination stays on the prior formula until adoption',()=>{
   // Written before execution: legacy labor remains squares*$200*pitch*story;
   // tear-off remains squares*layers*$60*pitch*story. Complexity changes only
-  // material waste, exactly as at the lane-A parent.
-  const pitch={low:1,medium:1.15,steep:1.25,very_steep:1.40},story={1:1,2:1.10,3:1.20};
+  // material waste, exactly as at the lane-A parent. A walkable medium pitch
+  // starts at 1.00, the same as under the October 16 rules.
+  const pitch={low:1,medium:1,steep:1.25,very_steep:1.40},story={1:1,2:1.10,3:1.20};
   for(const pitchName of Object.keys(pitch))for(const stories of [1,2,3])for(const layers of [1,2])for(const complexity of ['simple','moderate','complex']){
     const input=roof();delete input.ownerPricing.startingValueAdoptions;
     input.customerInputs={...input.customerInputs,pitch:pitchName,stories,existingLayers:layers,roofComplexity:complexity};

@@ -12,11 +12,16 @@ for(const [name,alter,path] of [
  ['noncanonical instant',f=>{f.quoteDate.quoteInstant='2026-11-01';},'quoteDate.quoteInstant'],
  ['invalid supplied zone',f=>{f.quoteDate.timeZone='Invalid/Zone';},'quoteDate.timeZone'],
  ['zone contradicts book',f=>{f.quoteDate.timeZone='America/Los_Angeles';},'quoteDate.timeZone'],
- ['month contradicts instant',f=>{f.currentMonth=10;},'currentMonth'],
- ['peak lacks any zone',f=>{delete f.businessDefaults.quoteTimeZone;f.ownerPricing.peakMonths=[10];f.ownerPricing.peakSurchargePercent=10;f.quoteDate.timeZone=null;},'businessDefaults.quoteTimeZone']
+ ['month contradicts instant',f=>{f.currentMonth=10;},'currentMonth']
 ])test('release diagnostics: '+name+' identifies '+path,()=>{
  const f=request();alter(f);const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.midEstimate,undefined);
  assert.ok(q.invalidOwnerFields.includes(path),JSON.stringify(q));assert.ok(q.ownerDiagnostics.some(d=>d.path===path&&d.kind==='quote_date'),JSON.stringify(q));
+});
+// The surcharge follows the work month, so a busy season needs no zone: no month quotes the busy price.
+test('release diagnostics: peak with no zone quotes the busy-season price ($110)',()=>{
+ const f=request();delete f.businessDefaults.quoteTimeZone;f.ownerPricing.peakMonths=[10];f.ownerPricing.peakSurchargePercent=10;f.quoteDate.timeZone=null;
+ const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,110);
+ f.customerInputs.workMonth='april';assert.equal(generateQuoteVNext(f).midEstimate,100);
 });
 // No work month given: the busy-season price applies whatever the zone.
 for(const [zone,expected] of [['UTC',110],['America/Los_Angeles',110]])test('release diagnostics: valid '+zone+' still quotes $'+expected,()=>{

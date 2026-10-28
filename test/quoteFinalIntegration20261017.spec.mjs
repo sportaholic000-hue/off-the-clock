@@ -10,7 +10,8 @@ import {quoteEmailFixture,phone,webQuote,bridge,date} from './quoteDeliveryBatch
 // Existing synthetic controls, unchanged at pinned base 56e19419. Expected
 // cents are recorded before execution; this is channel/integration evidence,
 // not a new estimate of trade prices or real-world accuracy.
-const controls={ROOFING_REPLACEMENT:244600,ROOFING_REPAIR:58600,
+// Roof repair: 4 h x 10,000 x (1 + 0.15 medium + 0.10 two storeys, added) + 8,000 = 58,000.
+const controls={ROOFING_REPLACEMENT:244600,ROOFING_REPAIR:58000,
   FLAT_ROOF_REPLACEMENT:1805000,FLAT_ROOF_REPAIR:36000,
   INTERIOR_PAINTING:169000,EXTERIOR_PAINTING:318000,
   FLOORING_INSTALL:260670,FLOORING_REPLACEMENT:311280,

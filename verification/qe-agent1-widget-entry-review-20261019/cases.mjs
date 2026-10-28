@@ -1,6 +1,6 @@
 import {auditFixtures} from '../qe-agent3-widget-dependencies-20261019/audit-fixtures.mjs';
 export const CASES=[
- ['ROOFING_REPLACEMENT',244600,'roofSizeInput'],['ROOFING_REPAIR',58600,'affectedArea'],
+ ['ROOFING_REPLACEMENT',244600,'roofSizeInput'],['ROOFING_REPAIR',58000,'affectedArea'],
  ['FLAT_ROOF_REPLACEMENT',1805000,'roofSqft'],['FLAT_ROOF_REPAIR',36000,'affectedArea'],
  ['INTERIOR_PAINTING',300000,'wallAreaSqft'],['EXTERIOR_PAINTING',318000,'exteriorAreaSqft'],
  ['FLOORING_INSTALL',260670,'sqft'],['FLOORING_REPLACEMENT',311280,'sqft'],

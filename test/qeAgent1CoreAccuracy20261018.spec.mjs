@@ -69,14 +69,14 @@ for(const [unit,input,wrong,rate,expected] of [['square_feet','iceWaterBarrierSq
  delete f.customerInputs[input];f.customerInputs[wrong]=100;assert.ok(review(f).invalidCustomerFields.includes(wrong));
 });
 test('Agent1 F12 asphalt accessory questions survive unconfirmed metal',()=>{
- const f=accessoryRoof({materialCostPerSquare:{asphalt_shingle:10000,metal:20000},laborPerSquare:{asphalt_shingle:20000,metal:30000},underlaymentPerSquare:{asphalt_shingle:100,metal:100},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price',metal:'installed_area_sell_price'},valleyPerLF:100});confirmAccessories(f,['roofing_flashing_vents.asphalt_shingle']);Object.assign(f.customerInputs,NO_OTHER_FLASHING);f.customerInputs.valleyLengthLF=10;
+ const f=accessoryRoof({materialCostPerSquare:{asphalt_shingle:10000,metal:20000},laborPerSquare:{asphalt_shingle:20000,metal:30000},underlaymentPerSquare:{asphalt_shingle:100,metal:100},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price',metal:'installed_area_sell_price'},valleyPerLF:100,iceWaterBarrierUnit:'linear_feet'});confirmAccessories(f,['roofing_flashing_vents.asphalt_shingle']);Object.assign(f.customerInputs,NO_OTHER_FLASHING,{iceWaterBarrierLengthLF:0});f.customerInputs.valleyLengthLF=10;
  assert.equal(total(ready(f)),40100);const fields=customerContractForVNext(f.serviceType,f.ownerPricing.pricing,f.ownerPricing).fields;assert.deepEqual(fields.valleyLengthLF.visibleWhen,[[['replacementRoofType','eq','asphalt_shingle']]]);
  f.customerInputs=confirmedFixtureInputs({...f.customerInputs,replacementRoofType:'metal'});review(f);
 });
 test('Agent1 F13 base migration cannot confirm unchanged premium override',()=>{
  const f=accessoryRoof({materialCostPerSquare:{asphalt_shingle:30000},wasteFactorByComplexity:{simple:0,moderate:0,complex:0}});f.ownerPricing.tiers=[{name:'Base',overrides:{}},{name:'Premium',overrides:{materialCostPerSquare:{asphalt_shingle:40000}}}];
  assert.deepEqual(ready(f).options.map(o=>o.midEstimate),[581,681]);
- f.ownerPricing.pricing.materialCostPerSquare.asphalt_shingle=10000;f.ownerPricing.pricing.valleyPerLF=1000;confirmAccessories(f,['roofing_flashing_vents.asphalt_shingle']);Object.assign(f.customerInputs,NO_OTHER_FLASHING);f.customerInputs.valleyLengthLF=20;
+ f.ownerPricing.pricing.materialCostPerSquare.asphalt_shingle=10000;f.ownerPricing.pricing.valleyPerLF=1000;confirmAccessories(f,['roofing_flashing_vents.asphalt_shingle']);f.ownerPricing.pricing.iceWaterBarrierUnit='linear_feet';Object.assign(f.customerInputs,NO_OTHER_FLASHING,{iceWaterBarrierLengthLF:0});f.customerInputs.valleyLengthLF=20;
  let q=ready(f);assert.deepEqual(q.options.map(o=>[o.tierName,o.midEstimate]),[['Base',581]]);assert.equal(f.ownerPricing.tiers[1].overrides.materialCostPerSquare.asphalt_shingle,40000);
  const definitions=roofDependentDefinitionsVNext(f.ownerPricing),id=definitions.find(d=>d.tierName==='Premium').id;
  assert.equal(f.ownerPricing.dependentLineState[id].tierName,'Premium');

@@ -9,6 +9,13 @@ const copy = (label, help) => ({ label, help });
 // Units, inclusions, exclusions and pricing meaning are unchanged.
 const titled = (title, authoritativeLabel, help) => ({ label: authoritativeLabel, title, help });
 
+// Roof replacement services not yet on the October 16 roofing rules price
+// labor and tear-off by multiplying, and charge every layer in full.
+export const EARLIER_ROOF_RULES_COPY = {
+  laborPerSquare: copy('Roof installation labor price per roofing square', 'Labor charge for each 100 square feet of roof area, multiplied by the pitch and story adjustments.'),
+  tearOffPerSquare: copy('Roof tear-off price per existing roofing square', 'Removal price for each roofing square of each existing layer. Every layer is charged in full, multiplied by the pitch and story adjustments.')
+};
+
 export const ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE = {
   per_square_allin:titled('All-in roofing material price per square','Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.','Material charge for each waste-adjusted roofing square when accessories are included in the all-in price.'),
   itemized:titled('Base roofing material price per square','Your base roofing material price per square, EXCLUDING separately itemized starter, drip edge, and ridge cap, and INCLUDING flashing and vents.','Material charge for each waste-adjusted roofing square. Starter, drip edge, and ridge cap are charged separately; flashing and vents remain included in this base price.')
@@ -74,7 +81,7 @@ export function roofMaterialPresentationCopy(definition,service={},pricing=servi
 }
 
 export const OWNER_FIELD_COPY = {
-  laborPerSquare: copy('Roof installation labor price per roofing square', 'Labor charge for each 100 square feet of roof area before pitch, story and roof-shape adjustments.'),
+  laborPerSquare: copy('Roof installation labor price per roofing square', 'Labor charge for each 100 square feet of roof area. Steep-pitch additions (above 6/12), the story adjustment and the roof-shape adjustment are each added on top.'),
   materialCostPerSquare: ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE.per_square_allin,
   tearOffPerSquare: copy('Roof tear-off price per existing roofing square', 'Removal price for each roofing square of the first existing layer. Each additional layer is charged at your additional-layer factor (starting value 70%), plus the story adjustment; steep-roof removal additions apply only above 6/12.'),
   underlaymentPerSquare: copy('Underlayment material price per roofing square', 'Material price applied to each measured installed roofing square.'),

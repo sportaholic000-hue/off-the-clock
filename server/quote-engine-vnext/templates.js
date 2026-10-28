@@ -634,6 +634,15 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   return out;
 }
 
+function roofRepairAccessFactor(p, c) {
+  const pitchPath = `pitchMultiplier.${c.pitch}`, storyPath = `storyMultiplier.${c.stories}`;
+  const pitch = quantityFactor(valueAtPath(p, pitchPath), pitchPath);
+  const story = quantityFactor(valueAtPath(p, storyPath), storyPath);
+  const exact = exactSubtract(exactAdd(pitch, story), 1);
+  if (exactCompare(exact, 0) <= 0) throw new QuoteReviewError('The pitch and story adjustments together must leave a positive labor factor.', { invalidOwnerFields: [pitchPath, storyPath] });
+  return { name: 'pitch and stories (added)', value: exactToNumber(exact), exactValue: exactEvidence(exact), path: pitchPath, contributingPaths: [pitchPath, storyPath] };
+}
+
 function calculateRoofRepair(c, p) {
   const out = baseOutput('ROOFING_REPAIR');
   if(addUnitRepair(out,'ROOFING_REPAIR',c,p))return out;
@@ -641,15 +650,13 @@ function calculateRoofRepair(c, p) {
   const hoursPath = `repairHours.${c.roofType}.${c.repairType}.${repairSize}`;
   const materialPath = `repairMaterialAllowance.${c.roofType}.${c.repairType}.${repairSize}`;
   const hours = quantityFactor(valueAtPath(p, hoursPath), hoursPath);
-  const pitch = quantityFactor(p.pitchMultiplier[c.pitch], `pitchMultiplier.${c.pitch}`);
-  const story = quantityFactor(p.storyMultiplier[c.stories], `storyMultiplier.${c.stories}`);
+  // Steep-roof and high-roof charges are separate additions to labor, as in
+  // Xactimate and the adopted roof replacement: 1 + (pitch - 1) + (stories - 1).
+  const access = roofRepairAccessFactor(p, c);
   add(out, makeLine({
     name: 'Repair labor', category: 'labor', quantity: hours, unit: 'configured labor hours',
     rateCents: p.laborHourlyRate, ratePath: 'laborHourlyRate',
-    multipliers: [
-      { name: 'pitch', value: pitch, path: `pitchMultiplier.${c.pitch}` },
-      { name: 'stories', value: story, path: `storyMultiplier.${c.stories}` }
-    ],
+    multipliers: [access],
     customerDriver: `${repairSize} ${c.repairType.replaceAll('_', ' ')} repair`
   }));
   add(out, fixedLine('Repair materials', 'material', valueAtPath(p, materialPath), materialPath));
@@ -855,7 +862,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
     usedBy: ['average-room complexity rule']
   });
   recordQuantityDerivation(out, {
-    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(pieces * rollWidthFt * cutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; pieces = ceil(across / rollWidthFt), all with the same pile direction; least carpet direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
+    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(full-width drops * rollWidthFt * cutLengthFt + fill rollWidthFt * fillCutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; drops = ceil(across / rollWidthFt) - 1; fill = the leftover strip + 0.5 ft trim, cut from one roll cut split lengthwise into k = min(3, floor(rollWidthFt / fill width)) strips joined end to end, fillCutLengthFt = (along + k * (0.5 + repeat)) / k; one more full width when that is less or k < 2 or crossgrain seams are not allowed; all pieces the same pile direction; least carpet direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
     inputs: carpetPurchase?{floorAreaSqft:sqft,rollWidthFt:carpetPurchase.rollWidthFt,repeatFt:carpetPurchase.repeatFt,cuts:carpetPurchase.cuts,connectedAreaDirections:carpetPurchase.areaChoices}:{ floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
     result: exactMaterialSqft, unit: 'square feet',
     usedBy: ['Flooring materials']
@@ -1479,7 +1486,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
         const factorPath=line.surfaceHeightBand?'wallHeightLaborMultiplier.'+line.surfaceHeightBand:installedLaborFactorPath(serviceType,customerInputs,ratePath);
         const unitRepair=REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\./.test(ratePath);
         const repairFactorPaths=unitRepair?(serviceType==='ROOFING_REPAIR'?[`pitchMultiplier.${customerInputs.pitch}`,`storyMultiplier.${customerInputs.stories}`]:serviceType==='FLAT_ROOF_REPAIR'?[`accessMultiplier.${customerInputs.accessDifficulty}`]:[`storyMultiplier.${customerInputs.stories}`]):[];
-        const exactRepairFactor=unitRepair?exactMultiply(...repairFactorPaths.map(path=>valueAtPath(pricing,path))):null;
+        const exactRepairFactor=unitRepair?(serviceType==='ROOFING_REPAIR'?exactFromEvidence(roofRepairAccessFactor(pricing,customerInputs).exactValue):exactMultiply(...repairFactorPaths.map(path=>valueAtPath(pricing,path)))):null;
         const factor=unitRepair?exactToNumber(exactRepairFactor):factorPath?valueAtPath(pricing,factorPath):1;
         const exactFactor=exactRepairFactor??exactDecimal(factor);
         const laborShare=pricing.installedLaborPercent?.[ratePath];

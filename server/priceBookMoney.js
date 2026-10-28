@@ -53,7 +53,7 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule','wallPriceIncludesTouchUp',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
   'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft',
-  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','paintingSettings','sidingSettings',
+  'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','paintingSettings','sidingSettings',
   'deckingPriceBasis','iceWaterBarrierUnit','unknownPitchBand','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates','paintingRates','surfaceExtraRates']);

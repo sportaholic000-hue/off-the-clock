@@ -7,7 +7,7 @@ import {offeringFixture} from '../../test/configuredOfferingsFixtures.mjs';
 
 export const expectedCents={
   ROOFING_REPLACEMENT:244600,
-  ROOFING_REPAIR:58600,
+  ROOFING_REPAIR:58000,
   FLAT_ROOF_REPLACEMENT:1805000,
   FLAT_ROOF_REPAIR:36000,
   INTERIOR_PAINTING:300000,
@@ -33,6 +33,9 @@ export function auditFixtures(){
   for(const row of explanationCases())if(!rows.has(row.input.serviceType))rows.set(row.input.serviceType,row.input);
   rows.set('INTERIOR_PAINTING',offeringFixture('INTERIOR_PAINTING','installed'));
   rows.get('ROOFING_REPLACEMENT').ownerPricing.pricing.unknownPitchBand='up_to_six';
+  // An owner who confirms the field price excludes flashing also chooses the
+  // ice-and-water unit; without it the service needs pricing.
+  rows.get('ROOFING_REPLACEMENT').ownerPricing.pricing.iceWaterBarrierUnit='square_feet';
   Object.assign(rows.get('ROOFING_REPLACEMENT').customerInputs,{pitchMethod:'whole_roof',pitchBand:'up_to_six'});
   delete rows.get('ROOFING_REPLACEMENT').customerInputs.pitch;
   for(const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'])rows.get(type).ownerPricing.pricing.largeRepairMaxSqft=1_000_000;
@@ -50,7 +53,7 @@ export function auditFixtures(){
 const copy=value=>structuredClone(value);
 export const correctionCases={
   ROOFING_REPLACEMENT:{kind:'stale_then_valid',mutate:c=>({...c,roofSizeInput:1000.5}),expectedCents:244698,quantity:{field:'roofSizeInput',value:1000.5,unit:'square feet'}},
-  ROOFING_REPAIR:{kind:'stale_then_valid',mutate:c=>({...c,affectedArea:100.5}),expectedCents:58600,quantity:{field:'affectedArea',value:100.5,unit:'square feet'}},
+  ROOFING_REPAIR:{kind:'stale_then_valid',mutate:c=>({...c,affectedArea:100.5}),expectedCents:58000,quantity:{field:'affectedArea',value:100.5,unit:'square feet'}},
   FLAT_ROOF_REPLACEMENT:{kind:'invalid',mutate:c=>({...c,serviceScope:'partial',partialAreaSqft:0})},
   FLAT_ROOF_REPAIR:{kind:'stale_then_valid',mutate:c=>({...c,pondingWater:true}),expectedCents:36000,scopeText:/ponding/i},
   INTERIOR_PAINTING:{kind:'invalid',mutate:c=>({...c,ceilingsIncluded:false,ceilingAreaSqft:200})},

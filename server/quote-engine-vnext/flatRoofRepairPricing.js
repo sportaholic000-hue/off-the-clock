@@ -57,7 +57,9 @@ export function flatRepairContract(type,base,p){
   if(type==='FLAT_ROOF_REPLACEMENT'){
     const fields={...base.fields,buildingType:{...base.fields.buildingType,evidenceOnly:true}};
     for(const item of FLAT_ROOF_ITEMS)fields[item.field]={label:item.label,unit:item.unit,type:'number',min:0,max:item.max,integer:Boolean(item.integer),details:['Your best estimate is fine. Enter 0 if none is needed.'],evidenceOnly:!hasSurfacePrice(p[item.rate])};
-    return {...base,fields};
+    // Every item the owner prices is asked; a blank is missing, 0 means none.
+    const priced=FLAT_ROOF_ITEMS.filter(item=>hasSurfacePrice(p[item.rate])).map(item=>item.field);
+    return {...base,fields,required(c,pricing){return [...base.required(c,pricing),...priced];}};
   }
   if(!REPAIR_SERVICES.includes(type))return base;
   const materialField=type==='ROOFING_REPAIR'?'roofType':type==='FLAT_ROOF_REPAIR'?'membraneType':'sidingType',repairField=type==='SIDING_REPAIR'?'damageLevel':'repairType';

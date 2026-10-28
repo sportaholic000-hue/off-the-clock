@@ -95,7 +95,7 @@ test('room-size labor is nondecreasing through both limits with later diagonal l
   }
 });
 
-test('carpet connected-area direction matches an independent exhaustive orientation oracle on 1,000 seeded layouts',()=>{
+test('carpet connected-area direction and lengthwise fills match an independent exhaustive oracle on 1,000 seeded layouts',()=>{
   // Expected before execution: every connected group shares one orientation;
   // exhaustive two-direction candidates give exactly the purchased area.
   // Integer quarter-feet keep this independent oracle exact in binary arithmetic.
@@ -103,10 +103,18 @@ test('carpet connected-area direction matches an independent exhaustive orientat
   for(let trial=0;trial<1000;trial++){
     const count=1+next(6),rooms=Array.from({length:count},()=>({lengthFt:(4+next(116))/4,widthFt:(4+next(116))/4})),roll=[12,13.5,15][next(3)],repeat=next(9)/4;
     const groups=[[],[]];for(let i=1;i<=count;i++)groups[next(2)].push(i);const nonempty=groups.filter(g=>g.length);
-    // Per room: whole roll widths across the room, each cut to the run + 0.5 trim + repeat.
-    const roomArea=(across,along)=>Math.ceil(across/roll)*roll*(along+.5+repeat);
+    // Per room: full-width drops cut to the run + 0.5 trim + repeat, then the
+    // leftover strip either as one more width or split lengthwise from one roll
+    // cut into 2 or 3 end-to-end strips (strip width = leftover + 0.5), cheapest wins.
+    const roomArea=(across,along)=>{
+      const n=Math.ceil(across/roll),whole=n*roll*(along+.5+repeat);
+      if(n<2)return whole;
+      const strip=across-(n-1)*roll+.5;
+      const fills=[2,3].filter(k=>k*strip<=roll).map(k=>(n-1)*roll*(along+.5+repeat)+roll*(along+k*(.5+repeat))/k);
+      return Math.min(whole,...fills);
+    };
     const expected=nonempty.reduce((sum,group)=>sum+Math.min(...[false,true].map(turn=>group.reduce((total,index)=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt;return total+roomArea(across,along);},0))),0);
     const bought=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:nonempty},{carpetRollWidthFt:roll,carpetPatternRepeatFt:repeat});
-    assert.equal(Number(bought.purchasedQuantity.numerator)/Number(bought.purchasedQuantity.denominator),expected,'trial '+trial);
+    assert.ok(Math.abs(Number(bought.purchasedQuantity.numerator)/Number(bought.purchasedQuantity.denominator)-expected)<1e-9,'trial '+trial);
   }
 });

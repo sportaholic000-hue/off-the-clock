@@ -18,6 +18,7 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
 import { moneyKindForField, validatePricebookNumericDraft, ownerMoneyEntries } from '../../server/priceBookMoney.js';
@@ -430,6 +431,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     :definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode]
       ?{...definition,...definition.copyByAccessoryPricingMode[pricing.accessoryPricingMode]}
       :definition;
+  if(definition.copyForEarlierRoofRules&&!['new','adopted'].includes(service.startingValueAdoptions?.roofing_replacement_20261016?.mode))definition={...definition,help:definition.copyForEarlierRoofRules.help};
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
     ? moneyKindForField(service.serviceType, definition.field, pricing)
     : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
@@ -1380,6 +1382,8 @@ export default function PriceBook() {
                         replaceSelected(next);
                       }}>Reset all to default</Button>
                     </div>
+                    {(()=>{const read=field=>serviceFieldValue(selected,field),updates=pendingStartingFactorUpdates(selected.serviceType,read,{earlierRoofRules:!['new','adopted'].includes(selected.startingValueAdoptions?.roofing_replacement_20261016?.mode)});
+                      return updates.length>0&&<Notice tone="warning"><strong>New starting values are available.</strong> This service still uses earlier starting values you never changed: {updates.map(u=>u.label+' '+u.from+' → '+u.to).join('; ')}. Values you set yourself are not affected. <Button variant="secondary" onClick={()=>{let next=selected;for(const [field,value] of Object.entries(startingFactorUpdateValues(updates,read)))next=editServiceField(next,field,value);replaceSelected(next);}}>Use the new starting values</Button></Notice>;})()}
                     {[...new Set((selectedMeta.class2Fields||[]).map(field=>field.startingValueGroup).filter(group=>selected.startingValueAdoptions?.[group]?.mode==='legacy'))].map(group=>{const trade=group==='painting_coats_20261017'?'painting':group==='flooring_patterns_20261017'?'flooring':'roofing';return <Notice key={group} tone="warning"><strong>New {trade} starting values are available.</strong> This service is still using its previously approved pricing rules. Review the sources and assumptions below, then use one owner action to confirm these values and switch this service to the new rules. Existing owner values stay unchanged. <Button variant="secondary" onClick={()=>adoptStartingValues(group)}>Adopt new {trade} rules and starting values</Button></Notice>;})}
                     {(selectedMeta.class2Fields || []).filter(d=>!(servicePricing(selected).fenceOfferings&&d.field==='postSpacingLF')&&!(selected.serviceType==='ROOFING_REPLACEMENT'&&d.field==='pitchMultiplier'&&['new','adopted'].includes(selected.startingValueAdoptions?.roofing_replacement_20261016?.mode))).map(definition => {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);

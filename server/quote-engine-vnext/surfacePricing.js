@@ -253,7 +253,7 @@ export function surfaceCustomerContract(type,p,base){
   if(modern&&paintingType(type)&&c.trimIncluded)out.push('trimCoats','trimSurfaceCondition');
   for(const [key,def] of Object.entries(extras))if(Array.isArray(c.surfaceOptionalItems)&&c.surfaceOptionalItems.includes(key)&&p.surfaceExtraRates?.[key]!==undefined&&def.unit!==null)out.push(def.field);
   return [...new Set(out)];
- },crossValidate:c=>[...(base.crossValidate?.(forLegacy(c),p)||[]),...geometryErrors(c)],inspection:c=>interior&&!p.offeringMode&&c.ceilingsIncluded&&['fair','poor'].includes(c.ceilingSurfaceCondition)?'Ceiling preparation for this condition requires itemized painting preparation prices.':base.inspection?.(forLegacy(c),p)};
+ },crossValidate:c=>[...(base.crossValidate?.(forLegacy(c),p)||[]),...geometryErrors(c)],inspection:c=>interior&&!p.offeringMode&&c.ceilingsIncluded&&(c.ceilingSurfaceCondition==='poor'||c.ceilingSurfaceCondition==='fair'&&p.wallPriceIncludesTouchUp!=='yes')?'Ceiling preparation for this condition requires itemized painting preparation prices.':base.inspection?.(forLegacy(c),p)};
 }
 
 // The legacy price is retained as a two-coat basis. Keeping the conversion as an

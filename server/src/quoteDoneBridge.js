@@ -25,12 +25,12 @@ import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLo
 import { missingPricebookServiceId } from '../priceBookStructure.js';
 import { convertPricebookMoney, moneyKindForField, wholeCentsForPricingField, validatePricebookNumericDraft, pricingMapField } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
-import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE} from '../priceBookCopy.js';
+import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,EARLIER_ROOF_RULES_COPY} from '../priceBookCopy.js';
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
 import {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
-import {WORK_MONTH_FIELD} from '../quote-engine-vnext/workMonth.js';
+import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 
 // The engine sorts a measured affected area into these bands
@@ -523,7 +523,7 @@ export function applicationServiceDefinition(raw,book=null) {
   const baseFields=customerQuoteFields(raw,p);
   const resolvedBook=book||(typeof raw?.origin?.ownerId==='string'&&raw.origin.ownerId?(()=>{try{return loadPricebook(raw.origin.ownerId);}catch{return null;}})():null);
   const zoneFields=hasTravelZones(resolvedBook?.defaults)&&travelChargeableVNext(raw)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
-  const customerFields=resolvedBook&&peakSurchargeConfigured(raw,resolvedBook.defaults||{})?[...zoneFields,clone(WORK_MONTH_FIELD)]:zoneFields;
+  const customerFields=resolvedBook&&peakSurchargeConfigured(raw,resolvedBook.defaults||{})&&!yearRoundSeason(raw.peakMonths!==undefined?raw.peakMonths:resolvedBook.defaults?.peakMonths)?[...zoneFields,clone(WORK_MONTH_FIELD)]:zoneFields;
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
   if(raw.serviceType.startsWith('FENCING_')&&p.fenceOfferings){
     const offeringSummary=Object.values(p.fenceOfferings).filter(value=>value&&typeof value==='object').flatMap(offer=>{
@@ -585,12 +585,14 @@ export function applicationMetadata() {
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
       if(pricingMapField(meta.serviceType,field.field))Object.assign(info,{type:'json',tree:{depth:1}});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
-      const enums={wallPriceIncludesTouchUp:['yes','no'],accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'],deckingPriceBasis:['material_only','installed'],iceWaterBarrierUnit:['square_feet','linear_feet'],unknownPitchBand:['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
+      const enums={carpetCrossgrainSeams:['allowed','not_allowed'],wallPriceIncludesTouchUp:['yes','no'],accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'],deckingPriceBasis:['material_only','installed'],iceWaterBarrierUnit:['square_feet','linear_feet'],unknownPitchBand:['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='furnitureMovingPriceUnit')info.optionLabels={per_room:'Per room',flat:'Flat per job'};
+      if(field.field==='carpetCrossgrainSeams')info.optionLabels={allowed:'Allowed (standard fills)',not_allowed:'Not allowed (whole widths only)'};
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});
       if(meta.serviceType==='ROOFING_REPLACEMENT'&&['materialAccessoryBasis','starterPerLF','dripEdgePerLF','ridgeCapPerLF'].includes(field.field))info.applicableWhen={field:'accessoryPricingMode',equals:'itemized'};
       if(meta.serviceType==='ROOFING_REPLACEMENT'&&field.field==='materialCostPerSquare')info.copyByAccessoryPricingMode=structuredClone(ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE);
+      if(meta.serviceType==='ROOFING_REPLACEMENT'&&EARLIER_ROOF_RULES_COPY[field.field])info.copyForEarlierRoofRules=structuredClone(EARLIER_ROOF_RULES_COPY[field.field]);
       if(['repairHours','repairMaterialAllowance','patchRepairHours','patchMaterialAllowance'].includes(field.field)||meta.serviceType==='SIDING_REPAIR'&&field.field==='materialAllowance')Object.assign(info,{type:'json',tree:{depth:3,leafKeys:['small','medium','large'],leafLabels:repairSizeLabels(meta.serviceType)}});
       if(field.field==='postsIncludedInMaterial')Object.assign(info,{type:'json',tree:{leafType:'boolean'}});
       if(info.tree){

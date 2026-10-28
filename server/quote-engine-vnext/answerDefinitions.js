@@ -36,10 +36,10 @@ export const ANSWER_DEFINITION_STARTING_TEXT = Object.freeze({
     vaulted: 'A sloped or cathedral ceiling, or a two-storey space such as a foyer.'
   },
   pitch: {
-    low: 'Nearly flat or gently sloped; easy to walk on.',
-    medium: 'A typical house roof slope you can walk on with care.',
-    steep: 'Too steep to walk on comfortably; roofers need safety gear.',
-    very_steep: 'Very steep, close to a wall in places, such as a mansard or A-frame roof.'
+    low: 'Nearly flat or gently sloped, under 4 in 12 (less than 4 inches of rise per foot); easy to walk on.',
+    medium: 'A typical house roof you can walk on with care, 4 in 12 to 6 in 12.',
+    steep: 'Too steep to walk on comfortably, 7 in 12 to 9 in 12; roofers need safety gear.',
+    very_steep: 'Very steep, 10 in 12 or more, such as a mansard or A-frame roof.'
   },
   complexity: {
     simple: 'A gable roof.',

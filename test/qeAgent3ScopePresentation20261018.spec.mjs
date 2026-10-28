@@ -93,7 +93,8 @@ function tierReceiptRoof(){
   const f=accessoryRoof({
     materialCostPerSquare:{asphalt_shingle:10000},
     wasteFactorByComplexity:{simple:0,moderate:0,complex:0},
-    valleyPerLF:1000
+    valleyPerLF:1000,
+    iceWaterBarrierUnit:'linear_feet'
   });
   f.ownerPricing.tiers=[
     {name:'Inherited',overrides:{}},
@@ -108,7 +109,7 @@ function tierReceiptRoof(){
     reenteredIds:[ids.base,ids.same,ids.premium],confirmIds:[ids.base,ids.premium]
   });
   // Confirmed flashing lines are always asked; zero means none.
-  Object.assign(f.customerInputs,{valleyLengthLF:20,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0});
+  Object.assign(f.customerInputs,{iceWaterBarrierLengthLF:0,valleyLengthLF:20,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0});
   return {f,definitions,ids};
 }
 

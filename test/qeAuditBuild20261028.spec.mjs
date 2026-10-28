@@ -7,30 +7,52 @@ import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {carpet} from './quoteFlooring20261016Fixture.mjs';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
 import {class2FieldCopy,ownerFieldCopy} from '../server/priceBookCopy.js';
-import {WORK_MONTH_FIELD,workMonthNumber} from '../server/quote-engine-vnext/workMonth.js';
+import {WORK_MONTH_FIELD,workMonthNumber,busySeasonMonths} from '../server/quote-engine-vnext/workMonth.js';
+import {pendingStartingFactorUpdates,startingFactorUpdateValues} from '../server/quote-engine-vnext/startingFactorUpdates.js';
+import {EARLIER_ROOF_RULES_COPY} from '../server/priceBookCopy.js';
 
 // Every expected value below was worked out by hand before the run.
 const cents=q=>Math.round(q.options[0].midEstimate*100);
 const lines=q=>q.options?.[0]?.lineItems||[];
 const line=(q,name)=>lines(q).find(l=>l.name===name);
 
-test('carpet buys whole roll widths cut to length plus 0.5 ft trim, every piece the same pile direction',()=>{
+test('carpet lays full-width drops and fills the leftover strip lengthwise, every piece the same pile direction',()=>{
   const bought=q=>lines(q).find(l=>l.calculation?.ratePath==='materialPerSqft.carpet')?.calculation?.quantity;
-  // 12 wide x 14 long, 12 ft roll: one width cut 14.5 long = 174 (the other way, 2 x 12 x 12.5 = 300).
-  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:12}],12))),174);
-  // 13 x 14: two widths either way; across 14 cut 13.5 long = 2 x 12 x 13.5 = 324 (across 13: 348).
-  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:13}],12))),324);
-  // 10 x 12: run the roll across 12 and cut 10.5 long: 12 x 10.5 = 126.
-  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:12,widthFt:10}],12))),126);
-  // Two rooms cut separately: 174 + 126 = 300.
+  const room=(w,l,extra={})=>{const f=carpet([{lengthFt:l,widthFt:w}],12);Object.assign(f.ownerPricing.pricing,extra);return bought(generateQuoteVNext(f));};
+  // 12 ft roll, 0.5 ft trim on every cut and on the fill width; fill = one roll
+  // cut split into k strips joined end to end, cut (run + k x 0.5) / k long.
+  // 13 x 13: 12 x 13.5 = 162 drop; 1.5 ft fill, 3 strips cut 14.5/3: 12 x 4.8333 = 58. 220.
+  assert.equal(room(13,13),220);
+  // 13 wide x 14 long: run 13: 162 + 2.5 ft fill 58 = 220 (run 14: 174 + 62 = 236).
+  assert.equal(room(13,14),220);
+  // 15 x 15: 12 x 15.5 = 186 + 3.5 ft fill, 3 strips cut 16.5/3 = 5.5: 66. 252.
+  assert.equal(room(15,15),252);
+  // 16 wide x 14 long: 12 x 14.5 = 174 + 4.5 ft fill, 2 strips cut 15/2 = 7.5: 90. 264.
+  assert.equal(room(16,14),264);
+  // 20 wide x 15 long: run 20: 12 x 20.5 = 246 + 3.5 ft fill, 3 strips cut 21.5/3: 86. 332.
+  assert.equal(room(20,15),332);
+  // 22 x 14: the 10.5 ft fill leaves no room for a second strip, so one more width: 2 x 12 x 14.5 = 348.
+  assert.equal(room(22,14),348);
+  // 25 wide x 14 long: 2 drops 348 + 1.5 ft fill 62 = 410 (run 25: 306 + 106 = 412; whole widths 522).
+  assert.equal(room(25,14),410);
+  // Rooms within the roll width stay one piece: 18 x 18 two widths 444; 12 x 12 one width 150; 12 x 14 one width 174.
+  assert.equal(room(18,18),444);
+  assert.equal(room(12,12),150);
+  assert.equal(room(12,14),174);
+  // Pattern repeat 2 ft goes on every cut: 15 x 15: 12 x 17.5 = 210 + 12 x (15 + 3 x 2.5)/3 = 90. 300.
+  assert.equal(room(15,15,{carpetPatternRepeatFt:2}),300);
+  // "No crossgrain seams" keeps whole widths: 15 x 15 = 2 x 12 x 15.5 = 372.
+  assert.equal(room(15,15,{carpetCrossgrainSeams:'not_allowed'}),372);
+  // Two rooms cut separately: 12 x 14 = 174 + 10 x 12 = 126 = 300.
   assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:12},{lengthFt:12,widthFt:10}],12,0,[[1],[2]]))),300);
-  // 13 x 14 on a 15 ft roll: across 14, cut 13.5 long: 15 x 13.5 = 202.5.
+  // 13 x 14 on a 15 ft roll fits one piece: 15 x 13.5 = 202.5.
   assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:13}],15))),202.5);
-  // 25 wide x 14 long: three widths cut 14.5 = 522 (across 14: 2 x 12 x 25.5 = 612).
-  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:25}],12))),522);
-  // 18 x 18: two widths cut 18.5 = 444. 12 x 12: one width cut 12.5 = 150.
-  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:18,widthFt:18}],12))),444);
-  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:12,widthFt:12}],12))),150);
+  // The cut plan records the fill and its crossgrain seams.
+  const cuts=generateQuoteVNext(carpet([{lengthFt:15,widthFt:15}],12)).options[0].calculationRecord.quantityDerivations.find(d=>d.name==='flooringMaterialSqft').inputs.cuts;
+  assert.deepEqual(cuts[0].fill,{pieces:3,crossgrainSeams:2,widthFt:3.5,cutLengthFt:5.5});
+  // An unknown switch value is an owner pricing error.
+  const bad=carpet([{lengthFt:15,widthFt:15}],12);bad.ownerPricing.pricing.carpetCrossgrainSeams='sometimes';
+  assert.equal(generateQuoteVNext(bad).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 
 function steepRoof(){
@@ -242,6 +264,22 @@ test('roof flashing, vent and ice-and-water lines are asked once the field price
   assert.deepEqual(held.missingOwnerFields,['pipeJackEach']);
 });
 
+test('a confirmed exclusion with no ice-and-water unit needs pricing and sends roof quotes to review naming the barrier',()=>{
+  const f=flashingRoof(Object.fromEntries(['valleyLengthLF','stepFlashingLengthLF','pipeJackCount','ridgeVentLengthLF'].map(k=>[k,0])));
+  delete f.ownerPricing.pricing.iceWaterBarrierUnit;
+  assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'NEEDS PRICING');
+  const q=generateQuoteVNext(f);
+  assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.ok(q.missingOwnerFields.includes('iceWaterBarrierUnit'));
+  // Once the unit is set, its quantity is asked like the other four.
+  f.ownerPricing.pricing.iceWaterBarrierUnit='square_feet';f.ownerPricing.pricing.iceWaterBarrierPerSqft=150;
+  const asked=generateQuoteVNext(f);
+  assert.deepEqual(asked.missingCustomerFields,['iceWaterBarrierSqft']);
+  // 400 sq ft x 150 = 60,000 on top of 560,042.
+  f.customerInputs.iceWaterBarrierSqft=400;
+  assert.equal(cents(generateQuoteVNext(f)),620042);
+});
+
 test('roof repair: a walkable "medium" roof starts with no pitch charge',()=>{
   assert.deepEqual(CLASS2_DEFINITIONS.ROOFING_REPAIR.pitchMultiplier.defaultValue,{low:1,medium:1,steep:1.25,very_steep:1.40});
 });
@@ -267,6 +305,15 @@ test('basic interior painting quotes fair walls at the wall rate when the owner 
   const poor=paint('poor','yes');
   assert.equal(poor.resultType,'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(poor.reviewReason,'Poor walls go to review until you use itemized pricing with preparation rates.');
+});
+
+test('the touch-up answer covers fair ceilings too; poor ceilings stay in review',()=>{
+  const paint=(ceiling,touchUp)=>{const f=fixture('INTERIOR_PAINTING',{laborPerWallSqftPerCoat:90,materialPerWallSqftPerCoat:20,ceilingLaborPerSqftPerCoat:100,ceilingMaterialPerSqftPerCoat:20,minimumJob:0,paintingSettings:{primerCoats:0},...(touchUp?{wallPriceIncludesTouchUp:touchUp}:{})},{areaInputMethod:'wall_sqft',wallAreaSqft:800,wallHeight:'standard',surfaceCondition:'fair',coats:2,ceilingsIncluded:true,ceilingAreaSqft:200,ceilingCoats:2,ceilingSurfaceCondition:ceiling,trimIncluded:false});f.ownerPricing.priceBasisByCategory.material='sell_price';return generateQuoteVNext(f);};
+  // Walls 1,600 coat-sq-ft: 144,000 + 35,200. Ceiling 400: 40,000 labor + 400 x 20 x 1.10 = 8,800. 228,000.
+  assert.equal(cents(paint('good','yes')),228000);
+  assert.equal(cents(paint('fair','yes')),228000);
+  assert.equal(paint('poor','yes').resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(paint('fair','no').resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 
 test('a fence gate may end an open run; its end post is counted once',()=>{
@@ -333,4 +380,76 @@ test('exterior painting soffit can be priced by square or linear feet; repair si
   assert.equal(CONCRETE_COPY.baseCompactionAllowance.ownerInputUnit,'percent');
   assert.match(ownerFieldCopy('ROOFING_REPLACEMENT','tearOffPerSquare').help,/additional-layer factor/);
   assert.doesNotMatch(ownerFieldCopy('SIDING_REPLACEMENT','materialPerSqft').title||ownerFieldCopy('SIDING_REPLACEMENT','materialPerSqft').label,/20–30%/);
+});
+
+function roofRepair(pitch='low',stories=1,extra={},area=10){
+  return fixture('ROOFING_REPAIR',{laborHourlyRate:10000,repairMinimum:0,largeRepairMaxSqft:1000,pitchMultiplier:{low:1,medium:1,steep:1.25,very_steep:1.40},storyMultiplier:{1:1,2:1.10,3:1.20},repairHours:{asphalt_shingle:{shingle_patch:{small:2,medium:4,large:8}}},repairMaterialAllowance:{asphalt_shingle:{shingle_patch:{small:5000,medium:9000,large:15000}}},...extra},{repairType:'shingle_patch',affectedArea:area,roofType:'asphalt_shingle',pitch,stories,leakPresent:false});
+}
+test('the largest repair is checked against the owner\'s own medium limit',()=>{
+  const bands={repairSmallBelowSqft:40,repairMediumUpToSqft:150,largeRepairMaxSqft:180};
+  // Small 2 h x 10,000 + 5,000; medium 4 h + 9,000; large 8 h + 15,000.
+  assert.deepEqual([10,100,170].map(a=>cents(generateQuoteVNext(roofRepair('low',1,bands,a)))),[25000,49000,95000]);
+  assert.equal(generateQuoteVNext(roofRepair('low',1,bands,181)).resultType,'ESTIMATE_REQUIRES_REVIEW');
+  const live=roofRepair('low',1,bands);assert.equal(vNextServiceStatus(live.ownerPricing,live.businessDefaults).status,'QUOTING LIVE');
+  // A largest repair at or below the owner's medium limit is rejected.
+  const bad=roofRepair('low',1,{repairSmallBelowSqft:40,repairMediumUpToSqft:300,largeRepairMaxSqft:250});
+  assert.equal(vNextServiceStatus(bad.ownerPricing,bad.businessDefaults).status,'NEEDS PRICING');
+  assert.equal(generateQuoteVNext(roofRepair('low',1,{repairSmallBelowSqft:40,repairMediumUpToSqft:300,largeRepairMaxSqft:250},260)).resultType,'ESTIMATE_REQUIRES_REVIEW');
+});
+
+test('roof repair adds pitch and story charges instead of multiplying them',()=>{
+  // 2 h x 10,000 x (1 + pitch addition + story addition) + 5,000 materials.
+  assert.equal(cents(generateQuoteVNext(roofRepair('low',1))),25000);
+  assert.equal(cents(generateQuoteVNext(roofRepair('medium',1))),25000);
+  // steep, two storeys: 1 + 0.25 + 0.10 = 1.35: 27,000 + 5,000.
+  assert.equal(cents(generateQuoteVNext(roofRepair('steep',2))),32000);
+  // very steep, three storeys: 1 + 0.40 + 0.20 = 1.60: 32,000 + 5,000 (multiplying gave 1.68: 38,600).
+  assert.equal(cents(generateQuoteVNext(roofRepair('very_steep',3))),37000);
+});
+
+test('flat roof replacement asks every priced extra; 0 means none and a blank goes to review',()=>{
+  const rates={flatRoofEdgeMetalPerLF:1500,flatRoofWallFlashingPerLF:1500,flatRoofPenetrationEach:15000,flatRoofDrainEach:39000};
+  const roof=inputs=>{const f=flatRoof();Object.assign(f.ownerPricing.pricing,rates);Object.assign(f.customerInputs,inputs);return f;};
+  const blank=generateQuoteVNext(roof({}));
+  assert.equal(blank.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(blank.missingCustomerFields,['edgeMetalLF','wallFlashingLF','penetrationCount','drainCount']);
+  assert.equal(cents(generateQuoteVNext(roof({edgeMetalLF:0,wallFlashingLF:0,penetrationCount:0,drainCount:0}))),1470000);
+  // 140 x 1,500 + 60 x 1,500 + 3 x 15,000 + 1 x 39,000 = 384,000 on top of 1,470,000.
+  assert.equal(cents(generateQuoteVNext(roof({edgeMetalLF:140,wallFlashingLF:60,penetrationCount:3,drainCount:1}))),1854000);
+  const live=roof({});assert.equal(vNextServiceStatus(live.ownerPricing,live.businessDefaults).status,'QUOTING LIVE');
+});
+
+test('the busy-season note lists a season that wraps the year in season order',()=>{
+  const f=flooring('tile',200);f.ownerPricing.peakMonths=[1,2,12];f.ownerPricing.peakSurchargePercent=10;
+  const q=generateQuoteVNext(f);
+  // Base 178,000 with 66,000 labor; busy price adds 10% of labor = 6,600.
+  assert.equal(cents(q),184600);
+  assert.ok(JSON.stringify(sanitizeForCustomerVNext(q)).includes('The price is lower if the work is scheduled outside December, January, February.'));
+  f.ownerPricing.peakMonths=[1,2,3,4,5,6,7,8,9,10,11,12];
+  const all=generateQuoteVNext(f);
+  assert.equal(cents(all),184600);
+  assert.equal(JSON.stringify(all).includes('busy-season rate'),false);
+});
+
+test('saved services still on an old starting value get it offered; owner values are left alone',()=>{
+  const saved={pitchMultiplier:{low:1,medium:1.15,steep:1.25,very_steep:1.40},wasteFactorByComplexity:{simple:0.10,moderate:0.13,complex:0.18}};
+  const read=field=>saved[field];
+  assert.deepEqual(pendingStartingFactorUpdates('ROOFING_REPLACEMENT',read).map(u=>u.path),['wasteFactorByComplexity.moderate','pitchMultiplier.medium']);
+  // On the October 16 rules the old pitch multiplier is unused, so only the waste is offered.
+  assert.deepEqual(pendingStartingFactorUpdates('ROOFING_REPLACEMENT',read,{earlierRoofRules:false}).map(u=>u.path),['wasteFactorByComplexity.moderate']);
+  const values=startingFactorUpdateValues(pendingStartingFactorUpdates('ROOFING_REPLACEMENT',read),read);
+  assert.deepEqual(values,{wasteFactorByComplexity:{simple:0.10,moderate:0.15,complex:0.18},pitchMultiplier:{low:1,medium:1,steep:1.25,very_steep:1.40}});
+  assert.equal(saved.pitchMultiplier.medium,1.15,'the saved service is not changed until the owner saves');
+  // An owner value (1.20) is never offered a change.
+  assert.deepEqual(pendingStartingFactorUpdates('ROOFING_REPAIR',f=>({pitchMultiplier:{low:1,medium:1.20,steep:1.25,very_steep:1.40}})[f]),[]);
+  assert.deepEqual(startingFactorUpdateValues(pendingStartingFactorUpdates('LANDSCAPING_MULCH',()=>1.15),()=>1.15),{mulchOverageFactor:1.10});
+  // Every offered value is the current starting value.
+  for(const [type,defs] of Object.entries(CLASS2_DEFINITIONS))for(const u of pendingStartingFactorUpdates(type,()=>undefined))assert.fail(type+u.path);
+  assert.equal(CLASS2_DEFINITIONS.ROOFING_REPLACEMENT.wasteFactorByComplexity.defaultValue.moderate,0.15);
+  assert.equal(CLASS2_DEFINITIONS.ROOFING_REPLACEMENT.pitchMultiplier.defaultValue.medium,1);
+  assert.equal(CLASS2_DEFINITIONS.LANDSCAPING_MULCH.mulchOverageFactor.defaultValue,1.10);
+  assert.deepEqual(busySeasonMonths([1,2,12]),[12,1,2]);
+  assert.deepEqual(busySeasonMonths([5,6,7,8]),[5,6,7,8]);
+  assert.match(EARLIER_ROOF_RULES_COPY.tearOffPerSquare.help,/Every layer is charged in full, multiplied by the pitch and story adjustments/);
+  assert.match(EARLIER_ROOF_RULES_COPY.laborPerSquare.help,/multiplied by the pitch and story adjustments/);
 });
