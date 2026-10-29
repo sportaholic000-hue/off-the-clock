@@ -1,0 +1,33 @@
+{
+ "url": "https://sum-balanced-steven-gnu.trycloudflare.com",
+ "checkedAt": "2026-10-29T15:21:51.182Z",
+ "errors": [],
+ "page": {
+  "title": "Off The Clock AI: the AI operator that quotes the job faster than you",
+  "plans": [
+   "STARTER",
+   "OPERATOR",
+   "QUOTEDONE"
+  ],
+  "signupLinks": 6,
+  "demoScript": "https://sum-balanced-steven-gnu.trycloudflare.com/demo/otc-live-demo.js"
+ },
+ "secondsToFirstAgentWords": 1.4,
+ "call": {
+  "status": "LIVE CALL",
+  "transcript": [
+   {
+    "who": "agent",
+    "text": "Thank you for calling Off The Clock AI. I'm Miles! What kind of business do you have?"
+   },
+   {
+    "who": "visitor",
+    "text": "Hi."
+   },
+   {
+    "who": "agent",
+    "text": "Hi there! What kind of business do you have?"
+   }
+  ]
+ }
+}
