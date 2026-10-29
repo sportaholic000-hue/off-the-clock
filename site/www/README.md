@@ -17,5 +17,6 @@ Source of truth for the design is `design-reference/homepage/index.html`; `site/
 
 ## Known gaps
 
-- The layout has no phone breakpoints. At a 390 px wide screen the page scrolls sideways (633 px wide). A Claude Design mobile pass is needed before launch.
+- The layout has no phone breakpoints. On a 390 px wide screen the page is 663 px wide and scrolls sideways, the brand name is cut off and the live-call panel is squeezed to the right edge. A Claude Design mobile pass is needed before launch.
+- React loads from unpkg.com every time the page opens. With unpkg.com unreachable the page shows nothing.
 - "Setup: self-serve, ~15 minutes" has not been timed against the real onboarding.
