@@ -2601,7 +2601,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       }
       const choices = {
         formingLaborPricing: ['included_in_slab_labor', 'per_linear_foot'], isolationJointPricing: ['included', 'per_linear_foot'],
-        roofBuildingCode: ['irc', 'nbc'], lowSlopeAssembly: ['double_underlayment', 'self_adhered_underlayment'], eaveProtectionRequired: ['no', 'yes']
+        roofBuildingCode: ['irc', 'nbc'], lowSlopeAssembly: ['double_underlayment', 'self_adhered_underlayment'], eaveProtectionRequired: ['no', 'yes'],
+        leadSafePainting: ['included', 'review_before_1978', 'review_before_1990'], olderMaterialRemoval: ['exclude', 'review_before_1990']
       }[path];
       if (choices) return choices[(choices.indexOf(original) + 1) % choices.length];
       // An unlisted product type needs its manufacturer minimum slope.

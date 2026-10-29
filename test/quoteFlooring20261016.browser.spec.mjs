@@ -47,11 +47,13 @@ test('flooring Chromium owner: per-type waste is entered as percent; new prices,
  await page.reload();await page.getByRole('button',{name:/Optional prices and add-on charges/}).click();assert.equal(await page.getByLabel('Vinyl plank Diagonal additional waste by flooring type',{exact:true}).inputValue(),'4');assert.equal(await page.locator('#field-carpetRollWidthFt input').inputValue(),'12');
 });
 
+// These customer-flow checks use an owner who allows crossgrain fills (CRI 105
+// leaves fills to the owner; blank buys whole roll widths).
 test('flooring Chromium customer: estimated room dimensions replace area questions and quote labor on measured area',async t=>{
  // Expected BEFORE execution:13x14=182 floor;220 boughtsqft (one 12x13.5 drop + a 2.5-ft
  // fill from one cut split into 3 strips, 12x4.8333=58)=66,000c material,
  // labor182*300*1.10=60,060c;underlayment182c;total126,242c.
- const f=carpet([{lengthFt:13,widthFt:14}]);for(const k of ['carpetRooms','carpetConnectedAreas','sqft','roomCount'])delete f.customerInputs[k];f.customerInputs.carpetMeasurementMethod='rooms';
+ const f=carpet([{lengthFt:13,widthFt:14}]);f.ownerPricing.pricing.carpetCrossgrainSeams='allowed';for(const k of ['carpetRooms','carpetConnectedAreas','sqft','roomCount'])delete f.customerInputs[k];f.customerInputs.carpetMeasurementMethod='rooms';
  const page=await customerPage(t,f);await page.getByLabel('Room 1 length, front to back',{exact:true}).fill('13');await page.getByLabel('Room 1 width, side to side',{exact:true}).fill('14');const inputs=await output(page);assert.equal(inputs.sqft,182);assert.equal(inputs.roomCount,1);
  assert.equal(await page.getByLabel('Measured flooring area',{exact:true}).count(),0);assert.equal(await page.getByLabel('Rooms in scope',{exact:true}).count(),0);assert.equal(await page.getByLabel('Carpet room connections',{exact:true}).count(),0);
  const q=generateQuoteVNext({...f,customerInputs:inputs});assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1262.42);assert.equal(q.lineItems.find(l=>l.name==='Flooring labor').calculation.quantity,182);
@@ -62,7 +64,7 @@ test('flooring Chromium customer: connection selection supports Not sure, separa
  // Switching from Not sure into manual groups must retain the incomplete draft.
  // Adding a5x6 room clears every old connection choice. Choosing Not sure
  // then buys346+12*5.5=412sqft, with310sqft measured floor area.
- const f=carpet([{lengthFt:10,widthFt:14},{lengthFt:14,widthFt:10}]);f.customerInputs.carpetMeasurementMethod='rooms';const page=await customerPage(t,f);
+ const f=carpet([{lengthFt:10,widthFt:14},{lengthFt:14,widthFt:10}]);f.ownerPricing.pricing.carpetCrossgrainSeams='allowed';f.customerInputs.carpetMeasurementMethod='rooms';const page=await customerPage(t,f);
  await page.getByLabel('Carpet room connections',{exact:true}).selectOption('separate');let inputs=await output(page);assert.deepEqual(inputs.carpetConnectedAreas,[[1],[2]]);assert.equal(generateQuoteVNext({...f,customerInputs:inputs}).lineItems.find(l=>l.name==='Flooring materials').calculation.quantity,344);
  await page.getByLabel('Carpet room connections',{exact:true}).selectOption('unknown');await page.getByLabel('Carpet room connections',{exact:true}).selectOption('groups');await page.getByLabel('Room 1 connected area',{exact:true}).selectOption('1');await page.getByLabel('Room 2 connected area',{exact:true}).selectOption('1');inputs=await output(page);assert.deepEqual(inputs.carpetConnectedAreas,[[1,2]]);assert.equal(generateQuoteVNext({...f,customerInputs:inputs}).lineItems.find(l=>l.name==='Flooring materials').calculation.quantity,346);
  await page.getByRole('button',{name:'Add room',exact:true}).click();
@@ -74,6 +76,6 @@ test('flooring Chromium customer: connection selection supports Not sure, separa
 test('flooring Chromium actual widget and saved public page keep the carpet seaming qualification',async t=>{
  // Expected BEFORE execution:13x14 on12ft roll126,242c;both actual rendered
  // customer surfaces retain the exact seaming-diagram confirmation sentence.
- const f=carpet([{lengthFt:13,widthFt:14}]),saved=webQuote(f);assert.equal(saved.result.midEstimate,1262.42);const page=await customerPage(t,f,saved.result);await page.getByText('The carpet quantity is confirmed on site from the seaming diagram.',{exact:false}).waitFor();
+ const f=carpet([{lengthFt:13,widthFt:14}]);f.ownerPricing.pricing.carpetCrossgrainSeams='allowed';const saved=webQuote(f);assert.equal(saved.result.midEstimate,1262.42);const page=await customerPage(t,f,saved.result);await page.getByText('The carpet quantity is confirmed on site from the seaming diagram.',{exact:false}).waitFor();
  saved.email.enqueueSavedQuote({ownerId:saved.owner,quoteId:saved.row.recordId,email:'caller@example.invalid',customerConfirmed:true});const{token}=publicCopy(saved.email,saved.rows()[0]),app=express();installQuoteEmailRoutes(app,{service:saved.email});const server=app.listen(0,'127.0.0.1');t.after(()=>new Promise(r=>server.close(r)));await new Promise(r=>server.once('listening',r));await page.goto(`http://127.0.0.1:${server.address().port}/quote-copy/${saved.owner}/${token}`);await page.getByText('The carpet quantity is confirmed on site from the seaming diagram.',{exact:false}).waitFor();
 });
