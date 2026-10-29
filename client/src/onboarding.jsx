@@ -19,6 +19,7 @@ import {
 import StructuredPricingQuestion, {
   describeStructuredValue, validateStructuredValue
 } from './interviewStructured.jsx';
+import { resolveJurisdiction } from '../../server/taxJurisdiction.js';
 
 const STEPS = [
   { name:'Account' },
@@ -273,7 +274,7 @@ function JurisdictionStep({ state, refresh, back, next }) {
         <>
           <div className="form-grid two">
             <Field label="Country">
-              <Select value={form.country} onChange={event => { setForm({ ...form, country:event.target.value, region:'' }); setTaxChoiceMade(false); }}>
+              <Select value={form.country} onChange={event => { setForm({ ...form, country:event.target.value, region:'', taxMode:'TAX_NONE', taxPercent:'' }); setTaxChoiceMade(false); }}>
                 <option value="US">United States</option><option value="CA">Canada</option>
               </Select>
             </Field>
@@ -297,11 +298,28 @@ function JurisdictionStep({ state, refresh, back, next }) {
               {taxChoiceMade && form.taxMode !== 'TAX_NONE' && <Field label="Sales tax rate (%)"><TextInput type="number" min="0" max="100" step="0.01" value={form.taxPercent} onChange={event => setForm({ ...form, taxPercent:event.target.value })} /></Field>}
             </fieldset>
           )}
-          {form.country === 'CA' && <Field label="Confirmed combined tax rate (%)"><TextInput type="number" min="0" max="100" step="0.01" value={form.taxPercent} onChange={event => setForm({ ...form, taxPercent:event.target.value, taxMode:'TAX_ALL' })} /></Field>}
+          {form.country === 'CA' && (
+            <fieldset className="tax-question">
+              <legend>Are you registered for GST/HST?</legend>
+              {[
+                ['TAX_ALL','Registered: I charge GST/HST on customer invoices.'],
+                ['TAX_NONE','Not registered (small supplier): no tax line on customer invoices.']
+              ].map(([value,label]) => (
+                <label key={value} className={form.taxMode === value && taxChoiceMade ? 'radio-row selected' : 'radio-row'}>
+                  <input type="radio" name="taxMode" checked={form.taxMode === value && taxChoiceMade} onChange={() => { const prefill = value === 'TAX_ALL' ? resolveJurisdiction('CA', form.region) : null; setForm({ ...form, taxMode:value, taxPercent:value === 'TAX_ALL' ? (form.taxPercent || (prefill?.taxPercent ? String(prefill.taxPercent) : '')) : '' }); setTaxChoiceMade(true); }} />
+                  <span>{label}</span>
+                </label>
+              ))}
+              {taxChoiceMade && form.taxMode === 'TAX_ALL' && <>
+                <Field label="Tax rate you charge (%)"><TextInput type="number" min="0" max="100" step="0.001" value={form.taxPercent} onChange={event => setForm({ ...form, taxPercent:event.target.value })} /></Field>
+                {resolveJurisdiction('CA', form.region).note && <Notice>{resolveJurisdiction('CA', form.region).note}</Notice>}
+              </>}
+            </fieldset>
+          )}
         </>
       )}
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextDisabled={!deferred && (!form.region || (form.country === 'US' && !taxChoiceMade) || ((form.country === 'CA' || (taxChoiceMade && form.taxMode !== 'TAX_NONE')) && !(Number(form.taxPercent) > 0)))} />
+      <StepActions onBack={back} onNext={save} nextDisabled={!deferred && (!form.region || !taxChoiceMade || (form.taxMode !== 'TAX_NONE' && !(Number(form.taxPercent) > 0)))} />
     </section>
   );
 }

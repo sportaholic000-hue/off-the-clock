@@ -6,6 +6,7 @@ import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engin
 import {fixture,flooring,concrete,siding} from '../verification/engine-independent/fixtures.mjs';
 import {synchronizeDependentLinesVNext,roofFlashingVentDefinitionVNext} from '../server/quote-engine-vnext/priceGroundwork.js';
 import {carpet} from './quoteFlooring20261016Fixture.mjs';
+import {normalizePostalCode,isValidCustomerPostalCode,matchTravelZone} from '../server/travelZones.js';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 import {vNextServiceStatus} from '../server/quote-engine-vnext/priceBook.js';
@@ -320,6 +321,18 @@ test('panel fences are priced per panel, one for each bay between posts',()=>{
   // Panels are priced only by an itemized offering.
   const installed=offeringFixture('FENCING_INSTALL','installed');installed.ownerPricing.pricing.offeringDetails.infillPricing='per_panel';
   assert.equal(generateQuoteVNext(installed).resultType,'ESTIMATE_REQUIRES_REVIEW');
+});
+
+test('postal codes: Canada Post letters only, a hyphen accepted, and a partial code never picks a cheaper zone',()=>{
+  assert.equal(normalizePostalCode('k1a-0b1'),'K1A0B1');assert.equal(isValidCustomerPostalCode('K1A-0B1'),true);
+  // D, F, I, O, Q and U are never used; W and Z never start a code.
+  for(const code of ['D1A 1A1','K1A 0U1','K1O 0B1','W1A 1A1','Z1A 1A1'])assert.equal(isValidCustomerPostalCode(code),false,code);
+  for(const code of ['X0A 0H0','Y1A 1A1','E2L 4L1','04101','04101-1234'])assert.equal(isValidCustomerPostalCode(code),true,code);
+  const zones=[{name:'Core',codes:['E2L'],charge:1000},{name:'Uptown',codes:['E2L1A1'],charge:10000}];
+  assert.equal(matchTravelZone('E2L',zones).status,'invalid');assert.match(matchTravelZone('E2L',zones).message,/full postal code/);
+  assert.equal(matchTravelZone('E2L 4L1',zones).charge,1000);assert.equal(matchTravelZone('e2l-1a1',zones).charge,10000);
+  // The same charge everywhere in the area: the 3-character answer is enough.
+  assert.equal(matchTravelZone('E2L',[{name:'Core',codes:['E2L','E2L1A1'],charge:1000}]).charge,1000);
 });
 
 const customerQuote=f=>{const q=generateQuoteVNext(f);return {q,c:sanitizeForCustomerVNext(q)};};

@@ -1,6 +1,7 @@
 const CONTROL_CHAR_RE = /[\u0000-\u001F\u007F]/;
-const CANADIAN_FSA_RE = /^[A-Z]\d[A-Z]$/;
-const CANADIAN_POSTAL_RE = /^[A-Z]\d[A-Z]\d[A-Z]\d$/;
+// Canada Post never uses D, F, I, O, Q or U, and never starts a code with W or Z.
+const CANADIAN_FSA_RE = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]$/;
+const CANADIAN_POSTAL_RE = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\d[ABCEGHJ-NPRSTV-Z]\d$/;
 const US_ZIP3_RE = /^\d{3}$/;
 const US_ZIP5_RE = /^\d{5}$/;
 const US_CUSTOMER_ZIP_RE = /^\d{5}(?:-\d{4})?$/;
@@ -27,12 +28,14 @@ export function hasTravelZones(defaults) {
 
 export function normalizePostalCode(raw) {
   if (typeof raw !== 'string') return '';
-  return raw.toUpperCase().replace(/\s+/g, '');
+  const code = raw.toUpperCase().replace(/\s+/g, '');
+  // "K1A-0B1" is a Canadian code written with a hyphen; ZIP+4 keeps its hyphen.
+  const hyphenated = /^([A-Z]\d[A-Z])-(\d[A-Z]\d)$/.exec(code);
+  return hyphenated ? hyphenated[1] + hyphenated[2] : code;
 }
 
 export function normalizeZoneEntry(raw) {
-  if (typeof raw !== 'string') return '';
-  return raw.toUpperCase().replace(/\s+/g, '');
+  return normalizePostalCode(raw);
 }
 
 export function parseZoneCodesInput(codes) {
@@ -251,6 +254,22 @@ export function matchTravelZone(rawCode, travelZones) {
     }
   }
 
+  // A 3-character area answer cannot choose between zones when the owner has
+  // priced a full postal code inside that area differently: ask for it.
+  if (isCanadian && normalizedCode.length === 3 && Array.isArray(travelZones)) {
+    const charges = new Set(bestMatch ? [bestMatch.charge] : []);
+    for (const zone of travelZones) {
+      if (!isPlainRecord(zone)) continue;
+      if (parseZoneCodesInput(zone.codes).some(entry => entry.length === 6 && entry.startsWith(normalizedCode))) charges.add(zone.charge);
+    }
+    if (charges.size > 1 || (!bestMatch && charges.size > 0)) {
+      return {
+        status: 'invalid',
+        normalizedCode,
+        message: 'Enter the full postal code; part of this area has a different travel charge.'
+      };
+    }
+  }
   if (bestMatch) {
     return {
       status: 'matched',
