@@ -6,7 +6,7 @@ let store;
 try {
   const args=process.argv.slice(2);
   if(args.length!==4 || !['--day','--checkpoint'].includes(args[0]) || args[2]!=='--target')throw Error('OFFSITE_ARGUMENTS_INVALID');
-  const deployment=prepareDeploymentEnvironment(),config=readOffsiteConfig();
+  const deployment=prepareDeploymentEnvironment(process.env,{startingServer:false}),config=readOffsiteConfig();
   if(!deployment.production || !config.enabled)throw Error('OFFSITE_RESTORE_CONFIG_INVALID');
   store=createS3BackupStore(config);
   const common={store,config,target:args[3],volume:deployment.volume};

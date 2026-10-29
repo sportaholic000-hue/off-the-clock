@@ -30,7 +30,9 @@ export function assertRealContainment(root, target) {
   }
   if (!inside(realRoot,fs.realpathSync(existing))) fail('Persistent path escapes its volume through a symlink.');
 }
-export function validateDeploymentConfig(env = process.env) {
+// startingServer=false is only for the backup and restore command-line tools,
+// which never accept signups and must keep working while email is down.
+export function validateDeploymentConfig(env = process.env, {startingServer = true} = {}) {
   const production = env.NODE_ENV === 'production';
   if(env.RAILWAY_ENVIRONMENT_ID && !production) fail('Railway requires NODE_ENV=production; refusing development storage defaults.');
   const mode = proxyMode(env);
@@ -46,7 +48,7 @@ export function validateDeploymentConfig(env = process.env) {
   }
   // A new owner cannot sign in until the verification email arrives, so open
   // signup without live email would silently lock every new owner out.
-  if (ownerSignupEnabled(env) && !transactionalEmailConfigured(env)) {
+  if (startingServer && ownerSignupEnabled(env) && !transactionalEmailConfigured(env)) {
     fail('Owner signup needs live email: set EMAIL_PROVIDER=resend, EMAIL_DELIVERY_ENABLED=true, RESEND_API_KEY and EMAIL_FROM, or set OWNER_SIGNUP_ENABLED=false.');
   }
   if (!env.TRUST_PROXY) fail('Production requires an explicit TRUST_PROXY.');
@@ -87,8 +89,8 @@ export function validateDeploymentConfig(env = process.env) {
     ownerDist:path.join(projectRoot,'client/dist')};
 }
 
-export function prepareDeploymentEnvironment(env = process.env) {
-  const config = validateDeploymentConfig(env);
+export function prepareDeploymentEnvironment(env = process.env, options = {}) {
+  const config = validateDeploymentConfig(env, options);
   if (!config.production) return config;
   if (!fs.existsSync(config.volume) || !fs.statSync(config.volume).isDirectory()) fail('The persistent volume is missing; refusing ephemeral storage.');
   // On Linux, a directory in the image is insufficient: the declared volume

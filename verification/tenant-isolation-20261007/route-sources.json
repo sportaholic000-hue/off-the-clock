@@ -65,7 +65,7 @@
   },
   {
     "file": "src/productionAssets.js",
-    "sha256": "6aad6bc8d590aa0c1526df6d18911fbc8ee1ed1f66026bafa89ce1d9da8b7e34"
+    "sha256": "043af0a62f82437d37ce072c73fbbf8cdea4806b89e1e4aeb336f7cfb1d41666"
   },
   {
     "file": "src/quoteDoneRoutes.js",
@@ -76,8 +76,12 @@
     "sha256": "8950b9ac7c824ba3221b1caefad32f8237cd3068244a6fcd565ef56f3d8e27a2"
   },
   {
+    "file": "src/securityHeaders.js",
+    "sha256": "084b200cb0464bb7602762476953a3d3b1fa507798fe55b625ce351db7dbca33"
+  },
+  {
     "file": "src/server.js",
-    "sha256": "e606b9e01c3b99d26ffcaa1fdcc6363eb17bdb3925a3e701953ccec329a6cd2d"
+    "sha256": "9407b7fdcc96ef901231f16dcb7a8df11dd7f5dbce5b2f274ae1dd73ef95de89"
   },
   {
     "file": "src/staffRoutes.js",

@@ -88,6 +88,8 @@ test('launch hardening: production refuses open owner signup without live email'
   assert.equal(validateDeploymentConfig({...open,...LIVE_EMAIL}).production,true);
   assert.equal(validateDeploymentConfig({...open,OWNER_SIGNUP_ENABLED:'false'}).production,true);
   assert.throws(()=>validateDeploymentConfig({...open,...LIVE_EMAIL,OWNER_SIGNUP_ENABLED:'no'}),/OWNER_SIGNUP_ENABLED must be true or false/);
+  // Backup and restore tools never accept signups and must work while email is down.
+  assert.equal(validateDeploymentConfig(open,{startingServer:false}).production,true);
   assert.equal(transactionalEmailConfigured(LIVE_EMAIL),true);
   assert.equal(ownerSignupEnabled({}),true);
   assert.equal(ownerSignupEnabled({OWNER_SIGNUP_ENABLED:'false'}),false);

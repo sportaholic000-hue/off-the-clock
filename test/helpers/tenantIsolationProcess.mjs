@@ -19,7 +19,7 @@ export async function startTenantIsolation(t,{production=false,configured=true}=
     STRIPE_CHECKOUT_SUCCESS_URL:origin+'/billing/success',STRIPE_CHECKOUT_CANCEL_URL:origin+'/billing/cancel',STRIPE_PORTAL_RETURN_URL:origin+'/billing',STRIPE_INTEGRATION_IDENTIFIER:'Synthetic_abcdefgh',
     TWILIO_ACCOUNT_SID:'AC'+'a'.repeat(32),TWILIO_AUTH_TOKEN:'SYNTHETIC_TWILIO_SIGNING_TOKEN',TWILIO_API_KEY_SID:'SK'+'a'.repeat(32),TWILIO_API_KEY_SECRET:'SYNTHETIC_API_KEY_SECRET',
     GEMINI_API_KEY:'SYNTHETIC_GEMINI_KEY',GEMINI_MODEL:'synthetic-live-model',ALLOW_PROVIDER_WRITES:configured?'true':'false',VOICE_RUNTIME_ENABLED:configured?'true':'false',
-    DEMO_ENABLED:'true',DEMO_ALLOWED_ORIGINS:origin,OUTBOUND_WEBHOOKS_ENABLED:'false',EMAIL_DELIVERY_ENABLED:'false',
+    DEMO_ENABLED:'true',DEMO_ALLOWED_ORIGINS:origin,OUTBOUND_WEBHOOKS_ENABLED:'false',EMAIL_DELIVERY_ENABLED:'false',OWNER_SIGNUP_ENABLED:'true',
     GOOGLE_CLIENT_ID:'synthetic-client',GOOGLE_CLIENT_SECRET:'synthetic-secret',GOOGLE_CALENDAR_REDIRECT_URI:origin+'/api/onboarding/calendar/google/callback',
     RAILWAY_ENVIRONMENT_ID:'',ADMIN_EMAIL:'',ADMIN_PASSWORD_HASH:''};
   const child=fork(new URL('./tenantIsolationFixture.mjs',import.meta.url),[],{env,execArgv:['--experimental-test-module-mocks'],stdio:['ignore','pipe','pipe','ipc']});

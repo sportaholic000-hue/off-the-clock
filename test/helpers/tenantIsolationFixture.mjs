@@ -41,6 +41,10 @@ class SyntheticStripe extends Stripe {
   }
 }
 mock.module('stripe',{defaultExport:SyntheticStripe});
+// Route isolation runs with owner signup open. Only the startup email check is
+// satisfied here; real senders still fail exactly as before without delivery settings.
+const email=await import('../../server/src/email.js');
+mock.module('../../server/src/email.js',{namedExports:{...email,transactionalEmailConfigured:()=>true}});
 // Provider data is synthetic, but the production route and number check are real.
 const integrations=await import('../../server/src/platformIntegrations.js');
 mock.module('../../server/src/platformIntegrations.js',{namedExports:{...integrations,getTwilioCallStatus:async sid=>{
