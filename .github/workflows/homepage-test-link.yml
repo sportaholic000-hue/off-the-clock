@@ -65,7 +65,7 @@ jobs:
           python3 - <<'PY'
           import wave
           r = wave.open('/tmp/s.wav'); p = r.getparams(); d = r.readframes(r.getnframes()); r.close()
-          w = wave.open('/tmp/speech.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * p.framerate * 7 + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
+          w = wave.open('/tmp/speech.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * p.framerate * 10 + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
           PY
           node e2e/homepage-test-link-check.mjs "$URL" /tmp/speech.wav /tmp/out
           cat /tmp/out/browser-check.json

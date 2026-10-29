@@ -42,9 +42,21 @@ try {
   await page.locator('#demo').screenshot({ path: path.join(out, 'demo-call.png') });
   const end = page.locator('#otc-live-demo .otcd-btn', { hasText: 'End call' });
   if (await end.isVisible()) { await end.click(); await page.waitForTimeout(800); }
+  // Text chat with the same agent: typed questions remove speech-recognition noise from the check.
   await page.goto(url, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#otc-live-demo', { timeout: 30000 });
   await page.waitForTimeout(3000);
   await page.screenshot({ path: path.join(out, 'homepage.png') });
+  try {
+    const ready = () => page.waitForFunction(() => { const b = document.querySelector('#otc-live-demo button[type=submit]'); return b && !b.disabled; }, null, { timeout: 45000 });
+    await page.click('#otc-live-demo .otcd-link:text("use text chat")');
+    await page.waitForSelector('#otc-live-demo .otcd-line.agent', { timeout: 30000 }); await ready();
+    for (const q of ['Can you do quotes?', 'I run a small fencing company.', 'What else would you do for my business?']) {
+      await page.fill('#otc-live-demo input', q); await page.press('#otc-live-demo input', 'Enter'); await page.waitForTimeout(500); await ready();
+    }
+    result.textChat = await lines();
+    await page.locator('#demo').screenshot({ path: path.join(out, 'text-chat.png') });
+  } catch (e) { result.errors.push('text: ' + String(e.message).split('\n')[0].slice(0, 200)); result.textChat = await lines().catch(() => null); }
 } catch (e) {
   result.errors.push('check: ' + String(e.message).split('\n')[0].slice(0, 300));
 } finally {
