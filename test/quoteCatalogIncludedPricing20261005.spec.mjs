@@ -23,7 +23,7 @@ function flatCatalog(n,mode='same_axis',cover= n-1) {
 function roofCatalog(n,basis='sell_price') {
   const p={laborPerSquare:map(n,5000),materialCostPerSquare:map(n,10000),tearOffPerSquare:map(n,2000),underlaymentPerSquare:map(n,0),underlaymentPriceBasis:map(n,'installed_area_sell_price'),minimumJob:0,accessoryPricingMode:'per_square_allin',wasteFactorByComplexity:{simple:0,moderate:0,complex:0},pitchMultiplier:{low:1,medium:1,steep:1,very_steep:1},storyMultiplier:{1:1,2:1,3:1}};
   explicitUnderlaymentFixtureShares('ROOFING_REPLACEMENT',p);
-  const f=fixture('ROOFING_REPLACEMENT',p,{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'product_0',replacementRoofType:'product_0',pitch:'low',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
+  const f=fixture('ROOFING_REPLACEMENT',p,{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'product_0',replacementRoofType:'product_0',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
   f.ownerPricing.priceBasisByCategory.material=basis;
   f.ownerPricing.knownOfferings=Object.fromEntries(['existingRoofType','replacementRoofType'].map(field=>[field,map(n,()=>randomUUID())]));
   f.ownerPricing=includedFixture(f.ownerPricing,Object.fromEntries(Object.keys(p.underlaymentPerSquare).map(key=>['underlaymentPerSquare.'+key,'materialCostPerSquare.'+key])));

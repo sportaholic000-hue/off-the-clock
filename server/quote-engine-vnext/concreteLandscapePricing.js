@@ -5,7 +5,7 @@ const record = value => value !== null && typeof value === 'object' && !Array.is
 export const PLACEMENT_METHODS = ['pump','conveyor','power_buggy','wheelbarrow'];
 export const PLACEMENT_LABELS = {pump:'Pump',conveyor:'Conveyor',power_buggy:'Power buggy',wheelbarrow:'Wheelbarrow'};
 export const STOCK_LABELS = {container:'Container',balled_and_burlapped:'Balled and burlapped',bare_root:'Bare root'};
-export const CONCRETE_MONEY_FIELDS = ['shortLoadPerYard','shortLoadFlatFee','sawCutPerLF','baseGravelPerCubicYard','baseExcavationGradingPerSqft'];
+export const CONCRETE_MONEY_FIELDS = ['shortLoadPerYard','shortLoadFlatFee','sawCutPerLF','baseGravelPerCubicYard','baseExcavationGradingPerSqft','formingLaborPerLF','isolationJointPerLF'];
 export const SOD_MONEY_FIELDS = ['sodRemovalPerSqft','sodGradingPerSqft','topsoilPerCubicYard'];
 // The contractor specifies new-slab thickness, reinforcement and base. When the
 // owner sets them, the customer is not asked and the owner's specification is
@@ -20,17 +20,25 @@ export function concreteSpecInputs(c,p){
   if(present(p.newSlabBase))out.baseNeeded=p.newSlabBase==='included';
   return out;
 }
-export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance',...CONCRETE_SPEC_FIELDS];
+export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance','formingLaborPricing','isolationJointPricing','concreteMixDescription',...CONCRETE_SPEC_FIELDS];
+// Decisions every concrete price book states before it quotes. They show with
+// the required prices, not the optional ones.
+export const CONCRETE_REQUIRED_DECISIONS = ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing','isolationJointPricing'];
 export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'topsoilTargetDepthInches','topsoilTypicalImportDepthInches'];
 export const FIELD_COPY = {
   shortLoadThresholdCubicYards:{label:'Supplier short-load threshold (cubic yards)',help:'Orders below this quantity incur your chosen short-load fee, after the ready-mix order increment. Enter either a per-yard-short fee or a flat fee.'},
   shortLoadPerYard:{label:'Short-load fee ($ per cubic yard short)',help:'Supplier charge for each cubic yard below the threshold. Leave the flat fee blank. Blank adds no per-yard short-load charge.'},
   shortLoadFlatFee:{label:'Short-load flat fee ($ per pour)',help:'Supplier charge once when the ordered quantity is below the threshold. Leave the per-yard-short fee blank. Blank adds no flat short-load charge.'},
+  formingLaborPricing:{label:'Forming labor',help:'Setting, staking and stripping forms is driven by the length of open slab edge, not the area. Choose per linear foot to charge it on the measured open edges, or included if your square-foot labor already covers it.',type:'select',options:['per_linear_foot','included_in_slab_labor'],optionLabels:{per_linear_foot:'Priced per linear foot of form',included_in_slab_labor:'Included in my square-foot slab labor'}},
+  formingLaborPerLF:{label:'Forming labor ($ per linear foot of form)',help:'Labor to set, stake and strip forms on each linear foot of open slab edge, using the slab access adjustment. Edges against a foundation or existing concrete are not formed.'},
+  isolationJointPricing:{label:'Isolation joints where a slab meets a foundation or existing concrete',help:'NRMCA separates a new slab from walls, foundations and existing slabs with an isolation joint. Choose per linear foot to charge it on the adjoining edges, or included if your other prices cover it.',type:'select',options:['per_linear_foot','included'],optionLabels:{per_linear_foot:'Priced per linear foot',included:'Included in my other prices'}},
+  isolationJointPerLF:{label:'Isolation joint ($ per linear foot)',help:'Joint filler and installation for each linear foot of edge against a foundation or existing concrete.'},
+  concreteMixDescription:{label:'Concrete mix you pour',help:'Optional. For example 32 MPa air-entrained, or 4,000 psi with 5 to 7 percent air. It is shown on the quote.'},
   controlJointPricing:{label:'Control joints in slab labor',help:'State whether your slab labor includes saw-cut control joints. A separate saw-cut price applies only when you choose Excluded.',type:'select',options:['included','excluded'],optionLabels:{included:'Included',excluded:'Excluded'}},
   controlJointSpacingFt:{label:'Control-joint spacing (feet)',help:'Maximum spacing used to lay out saw cuts. Rectangles use their stated dimensions; other slab shapes use a square of equal area, with joint length confirmed on site.'},
   sawCutPerLF:{label:'Saw-cut control joints ($ per linear foot)',help:'Optional separate labor price when control joints are excluded from slab labor, using the slab labor access adjustment. Blank adds no saw-cut line; the quote states that control joints are extra.'},
-  slabLaborMinThicknessInches:{label:'Slab labor minimum thickness (inches)',help:'Set both ends of the thickness range covered by this service or price option. Requests outside the range go to review. Blank range keeps existing pricing.'},
-  slabLaborMaxThicknessInches:{label:'Slab labor maximum thickness (inches)',help:'Thickest slab covered by this labor rate. Set the minimum too. Blank range keeps existing pricing.'},
+  slabLaborMinThicknessInches:{label:'Slab labor minimum thickness (inches)',help:'Thinnest slab covered by your slab labor price. Set both ends of the range; a request outside it goes to you for review instead of quoting.'},
+  slabLaborMaxThicknessInches:{label:'Slab labor maximum thickness (inches)',help:'Thickest slab covered by your slab labor price. Thicker slabs take more labor per square foot, so a request above this goes to you for review.'},
   placementFlat:{label:'Placement flat charge ($ per pour)',help:'Optional charge for each offered placement method. Add a per-yard charge if both apply. Blank methods are not offered. Uses your Additional work category settings; no slab-access multiplier is added.',type:'json',tree:{depth:1,rootKeys:PLACEMENT_METHODS,keyLabel:'Placement method',leafLabels:PLACEMENT_LABELS,allowEmpty:true}},
   placementPerCubicYard:{label:'Placement charge ($ per cubic yard ordered)',help:'Optional charge on ready-mix quantity after waste and the order increment. Added to any flat charge for the selected method using your Additional work category settings.',type:'json',tree:{depth:1,rootKeys:PLACEMENT_METHODS,keyLabel:'Placement method',leafLabels:PLACEMENT_LABELS,allowEmpty:true}},
   defaultPlacementMethod:{label:'Placement when the chute cannot reach',help:'Choose an offered method for No. With one priced method it is selected automatically; with several and no default the customer chooses.',type:'select',options:PLACEMENT_METHODS,optionLabels:PLACEMENT_LABELS},
@@ -62,8 +70,10 @@ export const TOPSOIL_SITE_NOTE = 'Imported topsoil is an allowance using the bus
 export const separateBase = p => ['baseGravelPerCubicYard','baseExcavationGradingPerSqft'].some(k=>present(p[k]));
 export const separateSodPrep = p => SOD_MONEY_FIELDS.some(k=>present(p[k]));
 export const offeredPlacement = p => PLACEMENT_METHODS.filter(k=>present(p.placementFlat?.[k])||present(p.placementPerCubicYard?.[k]));
+// A blank chute answer is not a yes: it is priced and disclosed as Not sure.
+export const chuteAccessUncertain=c=>c.chuteAccess!=='yes'&&c.chuteAccess!=='no';
 export function placementFor(c,p){
-  if(c.chuteAccess==='unknown')return p.uncertainPlacementMethod;
+  if(chuteAccessUncertain(c))return p.uncertainPlacementMethod;
   if(c.chuteAccess!=='no')return undefined;
   const offered=offeredPlacement(p);
   return c.placementMethod||p.defaultPlacementMethod||(offered.length===1?offered[0]:undefined);
@@ -75,32 +85,92 @@ export const plantSizeLabel = (p,key) => customPlantSizes(p)?p.plantSizes[key]?.
 // 15 ft. Warn only past the top of that range (36 x thickness = 3 ft per inch).
 export const jointSpacingCap = thickness => Math.min(3*thickness,15);
 function ceiling(value){const r=exactDecimal(value);return Number((r.numerator+r.denominator-1n)/r.denominator);}
-// A measured outline whose area equals its bounding box is a rectangle.
-function outlineRectangle(points,area){
-  if(!Array.isArray(points)||!points.length)return null;
-  const xs=points.map(p=>p.x),ys=points.map(p=>p.y);
-  const length=exactSubtract(Math.max(...xs),Math.min(...xs)),width=exactSubtract(Math.max(...ys),Math.min(...ys));
-  return exactCompare(exactMultiply(length,width),area)===0?{length:exactToNumber(length),width:exactToNumber(width)}:null;
-}
-export function controlJointLength(c,area,spacing){
-  const outline=c.dimensionMethod==='measured_outline'?outlineRectangle(c.outlinePoints,area):null;
-  const rectangle=c.dimensionMethod==='exact'||Boolean(outline);
-  // The approximate side is display evidence only. Decide spans from exact
-  // area / spacing^2, retaining which side of a perfect square the area is on.
-  const length=outline?outline.length:rectangle?c.length:Math.sqrt(exactToNumber(area)),width=outline?outline.width:rectangle?c.width:length;
-  if(!rectangle){
-    const cuts=Math.max(0,exactSqrtCeil(exactDivide(area,exactMultiply(spacing,spacing)))-1);
-    // 2 * cuts * sqrt(area), rounded once to 0.01 LF, without rounding the side.
-    const quantity=exactDivide(exactSqrtRound(exactMultiply(area,200,200,cuts,cuts)),100);
-    return {quantity,length,width,rectangle};
+// NRMCA CIP 6: panels square or nearly so (no longer than 1.5 x their width),
+// with sides within the joint spacing. Each count is set directly from the
+// rule, so the layout never steps one panel at a time.
+export function rectangleJointLayout(length,width,spacing){
+  let a=Math.max(1,ceiling(exactDivide(length,spacing))),b=Math.max(1,ceiling(exactDivide(width,spacing)));
+  for(let round=0;round<20;round++){
+    const nextA=Math.max(a,ceiling(exactDivide(exactMultiply(2,length,b),exactMultiply(3,width))));
+    const nextB=Math.max(b,ceiling(exactDivide(exactMultiply(2,width,nextA),exactMultiply(3,length))));
+    if(nextA===a&&nextB===b)return {panelsAlongLength:a,panelsAlongWidth:b,joints:exactAdd(exactMultiply(a-1,width),exactMultiply(b-1,length))};
+    a=nextA;b=nextB;
   }
-  // NRMCA CIP 6: panels square or nearly so, length no more than 1.5 x width.
-  // Add cuts in the long direction until every panel meets that.
-  let alongLength=Math.max(1,ceiling(exactDivide(length,spacing))),alongWidth=Math.max(1,ceiling(exactDivide(width,spacing)));
-  while(exactCompare(exactMultiply(2,length,alongWidth),exactMultiply(3,width,alongLength))>0)alongLength++;
-  while(exactCompare(exactMultiply(2,width,alongLength),exactMultiply(3,length,alongWidth))>0)alongWidth++;
-  const joints=exactAdd(exactMultiply(alongLength-1,width),exactMultiply(alongWidth-1,length));
-  return {quantity:joints,length,width,rectangle,panelsAlongLength:alongLength,panelsAlongWidth:alongWidth};
+  throw new RangeError('The joint layout did not settle.');
+}
+// An orthogonal outline is cut into rectangles along lines from its inside
+// corners; each of those cuts is a joint (NRMCA CIP 6: joints run through
+// re-entrant corners). Each rectangle is then laid out with the rectangle rule.
+function outlineStrips(points){
+  const ys=[...new Set(points.map(p=>p.y))].sort((a,b)=>a-b);
+  const verticals=[];
+  for(let i=0;i+1<points.length;i++){const a=points[i],b=points[i+1];if(a.x===b.x)verticals.push({x:a.x,y0:Math.min(a.y,b.y),y1:Math.max(a.y,b.y)});}
+  const rectangles=[];let open=new Map(),previous=[],cuts=exactDecimal(0);
+  for(let k=0;k+1<ys.length;k++){
+    const y0=ys[k],y1=ys[k+1],xs=verticals.filter(v=>v.y0<=y0&&v.y1>=y1).map(v=>v.x).sort((a,b)=>a-b);
+    const intervals=[];for(let i=0;i+1<xs.length;i+=2)intervals.push([xs[i],xs[i+1]]);
+    const next=new Map();
+    for(const [x0,x1] of intervals){
+      const key=x0+':'+x1,continuing=open.get(key);
+      if(continuing){continuing.y1=y1;next.set(key,continuing);}
+      else{const rectangle={x0,x1,y0,y1};rectangles.push(rectangle);next.set(key,rectangle);}
+    }
+    for(const [px0,px1] of previous)for(const [x0,x1] of intervals){
+      if(px0===x0&&px1===x1)continue;
+      const lo=Math.max(px0,x0),hi=Math.min(px1,x1);
+      if(lo<hi)cuts=exactAdd(cuts,exactSubtract(hi,lo));
+    }
+    open=next;previous=intervals;
+  }
+  return {rectangles,cuts};
+}
+function outlineJointLayout(points,spacing){
+  const layouts=[points,points.map(p=>({x:p.y,y:p.x}))].map(pts=>{
+    const {rectangles,cuts}=outlineStrips(pts);
+    let quantity=cuts,narrow=false;
+    const panels=rectangles.map(r=>{
+      const length=exactSubtract(r.x1,r.x0),width=exactSubtract(r.y1,r.y0);
+      if(exactCompare(length,1)<0||exactCompare(width,1)<0)narrow=true;
+      const layout=rectangleJointLayout(length,width,spacing);
+      quantity=exactAdd(quantity,layout.joints);
+      return {length:exactToNumber(length),width:exactToNumber(width),panelsAlongLength:layout.panelsAlongLength,panelsAlongWidth:layout.panelsAlongWidth};
+    });
+    return {quantity,cornerJoints:cuts,panels,narrow,rectangleCount:rectangles.length};
+  });
+  return exactCompare(layouts[1].quantity,layouts[0].quantity)<0?layouts[1]:layouts[0];
+}
+// The narrowest side of the slab as measured: a slab under 1 ft wide is not a
+// slab this service prices; it needs an on-site look.
+export function concreteNarrowestSideFt(c){
+  if(c.dimensionMethod==='exact'&&Number.isFinite(c.length)&&Number.isFinite(c.width))return Math.min(c.length,c.width);
+  if(c.dimensionMethod==='measured_outline'&&Array.isArray(c.outlinePoints)&&c.outlinePoints.length){
+    const xs=c.outlinePoints.map(p=>p.x),ys=c.outlinePoints.map(p=>p.y);
+    return Math.min(Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys));
+  }
+  if(c.dimensionMethod==='measured_area_perimeter'&&Number.isFinite(c.areaSqft)&&Number.isFinite(c.perimeterLF)){
+    const half=c.perimeterLF/2,disc=half*half-4*c.areaSqft;
+    return disc<0?undefined:(half-Math.sqrt(disc))/2;
+  }
+  return undefined;
+}
+export const NARROW_SLAB_MESSAGE='A slab narrower than 1 foot needs an on-site check before it can be priced.';
+export function controlJointLength(c,area,spacing){
+  if(c.dimensionMethod==='exact'){
+    const layout=rectangleJointLayout(c.length,c.width,spacing);
+    return {quantity:layout.joints,length:c.length,width:c.width,rectangle:true,panelsAlongLength:layout.panelsAlongLength,panelsAlongWidth:layout.panelsAlongWidth};
+  }
+  if(c.dimensionMethod==='measured_outline'&&Array.isArray(c.outlinePoints)&&c.outlinePoints.length){
+    const layout=outlineJointLayout(c.outlinePoints,spacing);
+    if(layout.rectangleCount===1){const panel=layout.panels[0];return {quantity:layout.quantity,length:panel.length,width:panel.width,rectangle:true,panelsAlongLength:panel.panelsAlongLength,panelsAlongWidth:panel.panelsAlongWidth,narrow:layout.narrow};}
+    return {quantity:layout.quantity,rectangle:false,outline:true,cornerJoints:layout.cornerJoints,panels:layout.panels,narrow:layout.narrow};
+  }
+  // Area and perimeter alone carry no shape: an allowance from a square of
+  // the same area, confirmed on site. Decide spans from exact area / spacing^2.
+  const side=Math.sqrt(exactToNumber(area));
+  const cuts=Math.max(0,exactSqrtCeil(exactDivide(area,exactMultiply(spacing,spacing)))-1);
+  // 2 * cuts * sqrt(area), rounded once to 0.01 LF, without rounding the side.
+  const quantity=exactDivide(exactSqrtRound(exactMultiply(area,200,200,cuts,cuts)),100);
+  return {quantity,length:side,width:side,rectangle:false};
 }
 export function topsoilQuantity(c,p){
   const unknown=c.usableTopsoilDepthInches==='unknown';
@@ -114,7 +184,6 @@ export function topsoilQuantity(c,p){
 export function concreteLandscapeNotices(type,p={}){
   if(typeof type!=='string'||!type.startsWith('CONCRETE_'))return [];
   const notices=[];
-  if(!present(p.slabLaborMinThicknessInches)&&!present(p.slabLaborMaxThicknessInches))notices.push('Set the thickness range covered by this slab labor rate. Until then, the existing 2–24 inch input range remains available.');
   if(!present(p.controlJointPricing))notices.push('State whether saw-cut control joints are included in the slab labor price.');
   const thickness=present(p.slabLaborMinThicknessInches)?p.slabLaborMinThicknessInches:4;
   if(p.controlJointPricing==='excluded'&&p.controlJointSpacingFt>jointSpacingCap(thickness))notices.push(`Control-joint spacing of ${p.controlJointSpacingFt} feet exceeds ${jointSpacingCap(thickness)} feet for a ${thickness}-inch slab. NRMCA recommends a maximum of 24 to 36 times the slab thickness (about 10 feet for a 4-inch slab) and never more than 15 feet. A quote for a slab too thin for this spacing (more than 36 times its thickness) goes to you for review.`);
@@ -136,6 +205,9 @@ export function concreteLandscapeDiagnostics(type,p={}){
     if(present(p.newSlabBase)&&!['included','not_included'].includes(p.newSlabBase))bad('newSlabBase','Choose whether the base is included on every new slab.');
     if(present(p.shortLoadPerYard)&&present(p.shortLoadFlatFee))bad('shortLoadFlatFee','Choose either a per-yard-short fee or a flat short-load fee, not both.');
     if(present(p.controlJointPricing)&&!['included','excluded'].includes(p.controlJointPricing))bad('controlJointPricing','Choose Included or Excluded for control joints.');
+    if(present(p.formingLaborPricing)&&!['per_linear_foot','included_in_slab_labor'].includes(p.formingLaborPricing))bad('formingLaborPricing','Choose per linear foot or included in slab labor for forming labor.');
+    if(present(p.isolationJointPricing)&&!['per_linear_foot','included'].includes(p.isolationJointPricing))bad('isolationJointPricing','Choose per linear foot or included for isolation joints.');
+    if(present(p.concreteMixDescription)&&(typeof p.concreteMixDescription!=='string'||!p.concreteMixDescription.trim()||p.concreteMixDescription.length>120||/[<>\u0000-\u001f]/.test(p.concreteMixDescription)))bad('concreteMixDescription','Describe the mix in 120 characters or fewer.');
     const min=present(p.slabLaborMinThicknessInches),max=present(p.slabLaborMaxThicknessInches);
     if(min!==max||min&&p.slabLaborMinThicknessInches>p.slabLaborMaxThicknessInches)bad('slabLaborMinThicknessInches','Set both slab labor thickness limits, with the minimum no greater than the maximum.');
     for(const field of ['placementFlat','placementPerCubicYard'])if(present(p[field])){

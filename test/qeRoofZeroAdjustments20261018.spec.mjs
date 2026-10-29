@@ -110,6 +110,7 @@ import {webQuote,phone,quoteEmailFixture,fixture as applicationFixture,bridge,da
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
+import {withRoofDecisions} from './ownerDecisionsFixture.mjs';
 
 const NEW_VERSION='quote-engine-vnext-audit-20261029-v13';
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|pitchInstallationAdder|pitchRemovalAdder|additionalLayerRemovalFactor|rateCents|priceMetadata|installedLaborPercent)"/);
@@ -230,7 +231,8 @@ test('roof zero genuine v8 approval remains stale through save; explicit current
   const approve=()=>{const shown=bridge.readApplicationBook(owner);bridge.approveApplicationService(owner,serviceId,{revision:shown.revision,confirmConfiguration:true,confirmLegacySettings:true},date);};
   const unchangedPricing=structuredClone(stale().services[0].pricing);approve();
   assert.deepEqual(loadPricebook(owner).services[0].pricing,unchangedPricing);replay();
-  let shown=bridge.readApplicationBook(owner);shown.services[0].pricing.pitchInstallationAdder.ten_to_twelve=0;
+  // Engine v14 also needs the building code, product type and slope decisions.
+  let shown=bridge.readApplicationBook(owner);shown.services[0].pricing=withRoofDecisions(shown.services[0].pricing);shown.services[0].pricing.pitchInstallationAdder.ten_to_twelve=0;
   bridge.saveApplicationBook(owner,shown,date);
   assert.equal(bridge.applicationStatus(loadPricebook(owner).services[0],loadPricebook(owner),date).approvalCurrent,false);
   assert.equal(bridge.prepareApplicationIntake(owner,{...fresh,requestId:randomUUID()},date).status,'needs_details');

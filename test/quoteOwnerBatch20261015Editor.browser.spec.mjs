@@ -152,7 +152,7 @@ function roof() {
     underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},
     installedLaborPercent:{'underlaymentPerSquare.asphalt_shingle':0},installedMaterialsPercent:{'underlaymentPerSquare.asphalt_shingle':100},
     accessoryPricingMode:'per_square_allin',minimumJob:0
-  },{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'low',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
+  },{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
   input.ownerPricing.priceBasisByCategory.material='sell_price';
   return input;
 }

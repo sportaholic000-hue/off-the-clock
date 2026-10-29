@@ -1,11 +1,12 @@
 import {fixtureIdentity} from './quoteEngineVNextFixtures.mjs';
 import {withClass2Defaults,PRICE_BASIS_CATEGORIES,TAXABILITY_CATEGORIES} from '../server/quote-engine-vnext/index.js';
+import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 
 // Marked synthetic, independently declared rates; never customer/business data.
 const map=(keys,value)=>Object.fromEntries(keys.map(key=>[key,value]));
 export function landscapeFixture(type,pricing,inputs){
  return {serviceType:type,customerInputs:inputs,ownerPricing:{...fixtureIdentity('MANUAL',undefined,type),
-  serviceType:type,service:'[SYNTHETIC] '+type,active:true,knownOfferings:{},pricing:withClass2Defaults(type,pricing),tiers:[],
+  serviceType:type,service:'[SYNTHETIC] '+type,active:true,knownOfferings:{},pricing:withClass2Defaults(type,withOwnerDecisions(type,pricing)),tiers:[],
   feeRules:map(['travel','disposal','permit','overhead'],'not_applicable'),priceBasisByCategory:map(PRICE_BASIS_CATEGORIES,'cost'),
   taxabilityByCategory:Object.fromEntries(TAXABILITY_CATEGORIES.map(key=>[key,key==='material'])),peakMonths:[],peakSurchargePercent:0},
   businessDefaults:{currency:'CAD',quoteTimeZone:'UTC',markupPercent:0,markupMode:'markup',overheadFixed:0,minimumJobPrice:0,

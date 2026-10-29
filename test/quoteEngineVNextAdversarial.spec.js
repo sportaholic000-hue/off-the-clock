@@ -18,6 +18,7 @@ import {
   withClass2Defaults
 } from '../server/quote-engine-vnext/index.js';
 import { calculateServiceVNext } from '../server/quote-engine-vnext/templates.js';
+import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -47,7 +48,7 @@ const defaults = {
 };
 
 function service(serviceType, pricing, overrides = {}) {
-  const configuredPricing = withClass2Defaults(serviceType, pricing);
+  const configuredPricing = withClass2Defaults(serviceType, withOwnerDecisions(serviceType, pricing));
   // Keep these historical defensive/precision fixtures at their explicitly
   // chosen pre-Oct3 quantities. quoteTradeDecisions.spec.mjs tests the new defaults.
   for(const field of ['membraneWasteFactor','paintWasteFactor','primerWasteFactor','prepMaterialWasteFactor','fenceWasteFactor','stampedMaterialWasteFactor'])if(field in configuredPricing && !(field in pricing))configuredPricing[field]=0;
@@ -117,7 +118,7 @@ function roofInputs(overrides = {}) {
     roofSizeInput: 1000,
     existingRoofType: 'asphalt_shingle',
     replacementRoofType: 'asphalt_shingle',
-    pitch: 'low',
+    pitch:'medium',
     stories: 1,
     existingLayers: 1,
     roofComplexity: 'simple',

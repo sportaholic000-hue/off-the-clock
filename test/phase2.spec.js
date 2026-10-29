@@ -30,7 +30,8 @@ test('mandated owner labels are preserved verbatim', () => {
   assert.equal(label('FENCING_INSTALL','concretePerPost'), 'Concrete + digging cost per post at your local frost/set depth.');
   assert.equal(label('FENCING_INSTALL','gatePrice'), "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.");
   assert.equal(label('CONCRETE_DRIVEWAY','basePrepPerSqft'), 'Excavation + compacted gravel base + grading, per square foot.');
-  assert.equal(label('CONCRETE_DRIVEWAY','laborPerSqft'), 'Include forming labor, expansion joints, cure & seal in your per-sqft labor rate.');
+  // Forming labor follows the open edge length (NRMCA CIP 6), so it is no longer folded into the square-foot rate.
+  assert.equal(label('CONCRETE_DRIVEWAY','laborPerSqft'), 'Slab labor price per square foot');
 });
 
 test('dollar conversion handles nested owner rates and leaves factors alone', () => {

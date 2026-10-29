@@ -20,6 +20,7 @@ import {
   withClass2Defaults
 } from '../server/quote-engine-vnext/index.js';
 import { calculateServiceVNext } from '../server/quote-engine-vnext/templates.js';
+import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -50,7 +51,7 @@ const defaults = {
 };
 
 function service(serviceType, pricing, overrides = {}) {
-  const configuredPricing = withClass2Defaults(serviceType, pricing);
+  const configuredPricing = withClass2Defaults(serviceType, withOwnerDecisions(serviceType, pricing));
   if (serviceType === 'ROOFING_REPLACEMENT' && configuredPricing.underlaymentPerSquare && configuredPricing.underlaymentPriceBasis === undefined) {
     configuredPricing.underlaymentPriceBasis = Object.fromEntries(Object.keys(configuredPricing.underlaymentPerSquare).map(key => [key, 'installed_area_sell_price']));
   }
@@ -100,7 +101,7 @@ const happyCases = [
     customerInputs: confirmedFixtureInputs({
       roofSizeMethod: 'roof_measured', roofSizeInput: 1000,
       existingRoofType: 'asphalt_shingle', replacementRoofType: 'asphalt_shingle',
-      pitch: 'low', stories: 1, existingLayers: 1,
+      pitch:'medium', stories: 1, existingLayers: 1,
       roofComplexity: 'simple', serviceScope: 'full',
       starterLengthLF: 100, dripEdgeLengthLF: 100,
       ridgeCapLengthLF: 20, deckingSheets: 2

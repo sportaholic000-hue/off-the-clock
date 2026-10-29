@@ -7,7 +7,7 @@ import {quoteEmailFixture,webQuote,publicCopy,publish,bridge,date} from './quote
 import {voiceQuestionContract,bindVoiceQuoteInputs} from '../server/src/voice/voiceQuoteContract.js';
 import {compileVoiceSystemInstruction} from '../server/src/voice/voicePromptCompiler.js';
 import {generateQuoteVNext,vNextServiceStatus,materializeVNextService} from '../server/quote-engine-vnext/index.js';
-import {CONCRETE_FIELDS,SOD_FIELDS,FIELD_COPY} from '../server/quote-engine-vnext/concreteLandscapePricing.js';
+import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,FIELD_COPY} from '../server/quote-engine-vnext/concreteLandscapePricing.js';
 import {starterFields,validateInterviewValue} from '../server/src/priceBookAI.js';
 import {reviewRows} from '../client/src/pricebookReview.js';
 import {loadPricebook} from '../server/priceBookService.js';
@@ -54,7 +54,10 @@ test('concrete and sod optional controls have labels, blank new services, exact 
   for(const [fixture,fields] of [[concreteFixture(),CONCRETE_FIELDS],[sodFixture(),SOD_FIELDS]]){
     const materialized=materializeVNextService(fixture.ownerPricing),schema=meta.services.find(s=>s.serviceType===fixture.serviceType);
     assert.equal(starterFields(fixture.serviceType).some(def=>fields.includes(def.field)),false);
-    for(const field of fields){assert.equal(Object.hasOwn(materialized.pricing,field),false);assert.equal(schema.fields.find(f=>f.field===field).label,FIELD_COPY[field].label);assert.equal(schema.fields.find(f=>f.field===field).requiredAtBase,false);}
+    // The thickness range, forming labor and isolation joints are decisions every
+    // concrete book states, so they show with the required prices (the fixture sets them).
+    const required=fixture.serviceType.startsWith('CONCRETE_')?CONCRETE_REQUIRED_DECISIONS:[];
+    for(const field of fields){if(!required.includes(field))assert.equal(Object.hasOwn(materialized.pricing,field),false);assert.equal(schema.fields.find(f=>f.field===field).label,FIELD_COPY[field].label);assert.equal(schema.fields.find(f=>f.field===field).requiredAtBase,required.includes(field),field);}
   }
   const owner='concrete-landscape-save-'+crypto.randomUUID();delete dollars.services[0].origin;
   bridge.saveApplicationBook(owner,{...dollars,revision:bridge.readApplicationBook(owner).revision},date);

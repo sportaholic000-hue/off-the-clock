@@ -9,12 +9,13 @@ import { validateInterviewConfiguration } from '../server/interviewConfiguration
 import { customerJobSummary } from '../server/src/quoteIntake.js';
 import { applicationServiceDefinition, readApplicationBook, convertApplicationBook } from '../server/src/quoteDoneBridge.js';
 import { validateBusinessDefaults } from '../server/quote-engine-vnext/contracts.js';
+import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 
 // Every expected amount below was calculated by hand before the code was run.
 const cost = Object.fromEntries(PRICE_BASIS_CATEGORIES.map(c => [c, 'cost']));
 const taxability = Object.fromEntries(TAXABILITY_CATEGORIES.map(c => [c, false]));
 const defaults = { currency:'CAD', markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0, taxMode:'TAX_NONE', taxPercent:0, rangeBufferPercent:10, markupApplies:Object.fromEntries(PRICE_BASIS_CATEGORIES.map(c => [c, true])), peakMonths:[], peakSurchargePercent:0 };
-const service = (serviceType, pricing, extra = {}) => ({ ...fixtureIdentity('MANUAL', undefined, serviceType), knownOfferings: fixtureOfferings(serviceType), active:true, serviceType, service:serviceType, pricing: withClass2Defaults(serviceType, pricing), feeRules:{ travel:'not_applicable', disposal:'not_applicable', permit:'not_applicable', overhead:'not_applicable' }, priceBasisByCategory:cost, taxabilityByCategory:taxability, peakMonths:[], peakSurchargePercent:0, ...extra });
+const service = (serviceType, pricing, extra = {}) => ({ ...fixtureIdentity('MANUAL', undefined, serviceType), knownOfferings: fixtureOfferings(serviceType), active:true, serviceType, service:serviceType, pricing: withClass2Defaults(serviceType, withOwnerDecisions(serviceType, pricing)), feeRules:{ travel:'not_applicable', disposal:'not_applicable', permit:'not_applicable', overhead:'not_applicable' }, priceBasisByCategory:cost, taxabilityByCategory:taxability, peakMonths:[], peakSurchargePercent:0, ...extra });
 const quote = (serviceType, inputs, ownerPricing) => generateQuoteVNext({ serviceType, customerInputs: inputs, ownerPricing, businessDefaults: defaults, callerType:'owner', currentMonth:1 });
 const amounts = result => Object.fromEntries(result.lineItems.map(line => [line.name, line.amountCents]));
 

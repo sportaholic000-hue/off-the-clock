@@ -13,6 +13,7 @@ import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {integratedBaselineExpectation} from './finalIntegrationMetadata20261017Fixture.mjs';
+import {withRoofDecisions} from './ownerDecisionsFixture.mjs';
 
 test('v9 comparison metadata advances only explicit paths on a clone, including results without options',()=>{
   // Expected before execution: only the four named engineVersion paths move
@@ -80,7 +81,7 @@ for(const [footprint,rolls,cost] of [[707.105,2,30000],[707.111,3,45000]])test(`
 
 for(const [scope,rolls,cost] of [['full',4,60000],['partial',2,30000]])test(`roof underlayment legacy ${scope} remains unchanged`,()=>{
   // Legacy measured 1500 sqft: 1650/500 -> 4; half 825/500 -> 2.
-  const f=roofFixture({mode:'legacy',customer:{roofSizeMethod:'roof_measured',pitch:'low',serviceScope:scope,...(scope==='partial'?{partialPercent:50}:{})}});
+  const f=roofFixture({mode:'legacy',customer:{roofSizeMethod:'roof_measured',pitch:'medium',serviceScope:scope,...(scope==='partial'?{partialPercent:50}:{})}});
   for(const field of ['pitchRisePer12','pitchMethod','pitchBand'])delete f.customerInputs[field];
   const result=ready(f);assert.equal(underlayment(result).calculation.quantity,rolls);assert.equal(underlayment(result).amountCents,cost);
   // At the isolated scope boundary, absence/legacy mode must never opt in.
@@ -164,9 +165,11 @@ test('roof underlayment v7 approval reviews new requests; explicit v9 reapproval
     assert.equal(db.prepare('SELECT resultJson FROM quotes WHERE ownerId=? AND id=?').get(owner,historical.quote.id).resultJson,historical.quote.resultJson);
   };
   replay();
+  // Engine v14 also needs the building code, product type and slope decisions.
+  const edit=bridge.readApplicationBook(owner);edit.services[0].pricing=withRoofDecisions(edit.services[0].pricing);bridge.saveApplicationBook(owner,edit,date);
   const shown=bridge.readApplicationBook(owner);
   bridge.approveApplicationService(owner,shown.services[0].id,{revision:shown.revision,confirmConfiguration:true,confirmLegacySettings:true},date);
-  const after=loadPricebook(owner);assert.deepEqual(after.services[0].pricing,savedPricing);
+  const after=loadPricebook(owner);assert.deepEqual(after.services[0].pricing,withRoofDecisions(savedPricing));
   assert.equal(after.services[0].quoteDoneApproval.engineVersion,ENGINE_VERSION);
   assert.equal(bridge.applicationStatus(after.services[0],after).status,'QUOTING LIVE');
   draft.requestId=randomUUID();const prepared=bridge.prepareApplicationIntake(owner,draft,date);assert.equal(prepared.status,'ready',JSON.stringify(prepared));

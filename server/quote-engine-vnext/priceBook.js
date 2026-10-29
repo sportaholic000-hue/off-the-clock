@@ -7,6 +7,8 @@ import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPr
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics,scopeCustomerErrors} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
 import {exactCompare} from './exactMath.js';
+import {hasTravelZones,sampleCustomerCodeForZones} from '../travelZones.js';
+import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
 import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants} from './fencePricing.js';
 import {surfaceActivationInput} from './surfacePricing.js';
 import {boundaryMeasurements,repairBoundaryMeasurements} from './activationBoundaries.js';
@@ -290,12 +292,19 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
       // Confirmed flashing and vent lines are always asked; probe zero quantities
       // here. A requested item without a price sends that quote to review.
       ...(usesNewRoofReplacementRulesVNext(service)&&dependentLineEnabledVNext(service,roofFlashingVentDefinitionVNext(replacement),p)?{
-        ...(p.iceWaterBarrierUnit==='square_feet'?{iceWaterBarrierSqft:0}:p.iceWaterBarrierUnit==='linear_feet'?{iceWaterBarrierLengthLF:0}:{}),
+        // Required eave protection is always measured, so probe it priced.
+        ...(p.iceWaterBarrierUnit==='square_feet'?{iceWaterBarrierSqft:p.eaveProtectionRequired==='yes'?1_000_000:0}:p.iceWaterBarrierUnit==='linear_feet'?{iceWaterBarrierLengthLF:p.eaveProtectionRequired==='yes'?1_000_000:0}:{}),
         valleyLengthLF:0,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0}:{})
     });
     if(!usesNewRoofReplacementRulesVNext(service)){
-      const pitch=greatestConfiguredKey(p.pitchMultiplier,['low','medium','steep','very_steep'],'medium');
-      return replacements.flatMap(replacement=>existingTypes.map(existing=>({...common(replacement,existing),pitch})));
+      // Probe the costliest pitch this product can be quoted on; a pitch below
+      // its minimum slope goes to review by design.
+      return replacements.flatMap(replacement=>{
+        const quotable=['low','medium','steep','very_steep'].filter(pitch=>!roofSlopeReviewMessage({pitch,replacementRoofType:replacement},p));
+        if(!quotable.length)return [];
+        const pitch=greatestConfiguredKey(p.pitchMultiplier,quotable,quotable.includes('medium')?'medium':quotable[0]);
+        return existingTypes.map(existing=>({...common(replacement,existing),pitch}));
+      });
     }
     const bands=['up_to_six','seven_to_nine','ten_to_twelve'];
     // These optional settings cover selected pitch work, not every roof.
@@ -304,14 +313,22 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
     // Structural validation separately rejects malformed settings, including null.
     if(p.pitchInstallationAdderOverTwelve!==undefined&&p.pitchRemovalAdderOverTwelve!==undefined)bands.push('over_twelve');
     return replacements.flatMap(replacement=>existingTypes.flatMap(existing=>{
-      const base=common(replacement,existing);
+      const base=common(replacement,existing),rule=roofSlopeRule(p,replacement);
+      // A low-slope roof within the product's code range is priced by the
+      // owner's low-slope method, so probe it before the service goes live.
+      // Underlayment priced by the roll goes to review below 4/12 when a code
+      // needs extra underlayment there, so that roof is not probed.
+      const rollUnderlayment=p.scopeDetails?.['roof_underlayment_'+replacement]&&p.underlaymentPriceBasis?.[replacement]==='cost';
+      const lowRise=rule?.lowSlope&&!(rule.lowSlope==='tile'&&rule.code==='nbc')&&!(rollUnderlayment&&rule.code==='irc')?Math.max(rule.min,3):undefined;
       // A large two-storey footprint is confirmed as the ground floor.
       return [
         ...bands.map(pitchBand=>({...base,pitchMethod:'whole_roof',pitchBand})),
         {...base,pitchMethod:'area_by_pitch',pitchAreaUpTo6Sqft:500_000,pitchArea7To9Sqft:500_000},
         ...(bands.includes(p.unknownPitchBand)?[{...base,pitchMethod:'not_sure'}]:[]),
-        {...base,roofSizeMethod:'footprint',roofSizeInput:500_000,pitchRisePer12:8,pitchMethod:'whole_roof',pitchBand:'seven_to_nine',...(base.stories>1?{footprintGroundFloorOnly:true}:{})}
-      ];
+        {...base,roofSizeMethod:'footprint',roofSizeInput:500_000,pitchRisePer12:8,pitchMethod:'whole_roof',pitchBand:'seven_to_nine',...(base.stories>1?{footprintGroundFloorOnly:true}:{})},
+        ...(lowRise!==undefined&&lowRise<LOW_SLOPE_BREAK?[{...base,pitchMethod:'whole_roof',pitchBand:'under_four',pitchRisePer12:lowRise}]:[])
+      // Slopes below the product's minimum go to review by design.
+      ].filter(input=>!roofSlopeReviewMessage(input,p));
     }));
   }
   if (serviceType === 'ROOFING_REPAIR') {
@@ -392,7 +409,9 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
     return dimensions.flatMap(dimension => {
       const base={...dimension,thickness:present(p.slabLaborMaxThicknessInches)?p.slabLaborMaxThicknessInches:24,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty,baseNeeded:false,adjoinsExistingConcrete:false};
       const candidates=['broom','smooth','stamped'].flatMap(finishType=>['none','wire_mesh','rebar'].flatMap(reinforcement=>[false,true].map(baseNeeded=>({...base,finishType,reinforcement,baseNeeded}))));
-      return [base,...candidates.filter(input=>completeOptionalPricing(service,input)),...offeredPlacement(p).map(placementMethod=>({...base,chuteAccess:'no',placementMethod})),...(p.uncertainPlacementMethod?[{...base,chuteAccess:'unknown'}]:[])];
+      // A slab against a house or existing concrete is common; its isolation
+      // joint must be decided before the service quotes.
+      return [base,{...base,adjoinsExistingConcrete:true,adjoiningEdgeLF:1000},...candidates.filter(input=>completeOptionalPricing(service,input)),...offeredPlacement(p).map(placementMethod=>({...base,chuteAccess:'no',placementMethod})),...(p.uncertainPlacementMethod?[{...base,chuteAccess:'unknown'}]:[])];
     });
   }
   if (serviceType === 'LANDSCAPING_CLEANUP') {
@@ -446,7 +465,7 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
 
 export function activationScenarios(service,confirmedService=service,tierName=null,selection=null,includeOptionalScopes=true,defaults=null) {
  const p=pricingOf(service),type=service.serviceType,extra=[];
- const scenarios=baseActivationScenarios(service,confirmedService,selection).map(input=>surfaceActivationInput(type,p,{...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
+ const scenarios=baseActivationScenarios(service,confirmedService,selection).map(input=>surfaceActivationInput(type,p,{...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')&&input.adjoinsExistingConcrete===undefined?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
   if(!configuredOffering(type,p))return true;
   const additional=input.ceilingsIncluded||input.trimIncluded||input.oldFenceRemoval||Object.values(input.gates||{}).some(count=>count>0);
   return !additional||completeOptionalPricing(confirmedService,input,p,tierName,defaults);
@@ -908,6 +927,9 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing },service,tierName,null,true,businessDefaults);
   const pipelineCheck=options.pipelineCheck||(businessDefaults?createActivationQuoteCheckVNext(activationPipelineRequest(service,effectivePricing,tierName,businessDefaults,options),tierName):null);
   let successfulScenarios=0;
+  // One customer-path check per status request covers the whole service: the
+  // customer check does not depend on which product or tier is priced.
+  const customerCheck=options.customerCheck||{done:false};
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
   for (const key of Object.keys(effectivePricing)) {
@@ -944,7 +966,23 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
       if (businessDefaults) {
         const pipelineResult = pipelineCheck(customer.normalized);
         if (pipelineResult.resultType !== 'INSTANT_ESTIMATE_READY') appendActivationReviewDiagnostics(diagnostics, pipelineResult);
-        else successfulScenarios++;
+        else {
+          successfulScenarios++;
+          // Once per variant, send the form exactly as a customer submits it
+          // through the same customer check a real quote passes. A service is
+          // not live if its customers would only ever get a follow-up message.
+          if (!customerCheck.done) {
+            customerCheck.done = true;
+            // A real customer in a travel-zone business also gives a postal or
+            // ZIP code inside a saved zone.
+            const sampleCode = hasTravelZones(businessDefaults) && customerInputs.postalCode === undefined ? sampleCustomerCodeForZones(businessDefaults.travelZones) : undefined;
+            const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: sampleCode ? { ...customerInputs, postalCode: sampleCode } : customerInputs });
+            if (submitted.resultType !== 'INSTANT_ESTIMATE_READY' || sanitizeForCustomerVNext(submitted).resultType !== 'INSTANT_ESTIMATE_READY') {
+              customerCheck.failure = { type: 'invalid', kind: 'activation_customer_check', path: 'pricingCalculation', message: 'A customer quote for this service would not pass the customer check, so every request would go to follow-up.' };
+              diagnostics.push(customerCheck.failure);
+            }
+          }
+        }
       }
     } catch (error) {
       if (!(error instanceof QuoteReviewError)) {
@@ -1002,6 +1040,8 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   if (!isPlainRecord(service)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'service', message: 'Service must be an object.' }]);
   service = canonicalServiceIdentityVNext(service);
   if (!SERVICE_TYPES.includes(service.serviceType)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'serviceType', message: 'Service type is unsupported.' }]);
+  const customerCheck = options.customerCheck || { done: false };
+  options = { ...options, customerCheck };
   const pricing = pricingOf(service);
   const hasDateContext=Object.hasOwn(options,'dateContext');
   const timeZone=hasDateContext?resolvedQuoteTimeZone(businessDefaults||{},options.dateContext?.timeZone):null;
@@ -1089,6 +1129,7 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
     validationMessages: variant.diagnostics.map(item => item.message)
   }));
   if (!validVariants.length) diagnostics.push(...statusVariants.flatMap(variant => variant.diagnostics));
+  else if (customerCheck.failure) diagnostics.push(customerCheck.failure);
   return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product))),
     ...(fenceType(service.serviceType)&&configuredOffering(service.serviceType,pricing)&&!fenceCatalog(pricing)&&!pricing.heightRows?{fenceHeightNotice:'Only the saved fence height is priced. Add rows for the other heights you build.'}:{})};
 }

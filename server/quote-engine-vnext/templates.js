@@ -1,6 +1,6 @@
 import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES,repairBands} from './flatRoofRepairPricing.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
-import {jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
+import {chuteAccessUncertain,jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
 import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
@@ -10,7 +10,7 @@ import {trimComponentPricing,trimPreparationNeeded,surfaceType,surfaceCalculatio
 import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
-import {roofDoubleUnderlayment} from './roofSlopeRules.js';
+import {roofLowSlopeMethod,roofKnownRise} from './roofSlopeRules.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
 import {fenceType,fenceHasRows,resolvedFencePricing,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {
@@ -556,7 +556,10 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const exactAreaSqft=c.serviceScope==='partial'?(c.partialAreaSqft!==undefined?exactDecimal(c.partialAreaSqft):exactDivide(exactMultiply(totalArea,c.partialPercent),100)):totalArea;
   const areaSqft=measured(exactToNumber(exactAreaSqft),'roof area'),squares=exactDivide(exactAreaSqft,100),squareNumber=exactToNumber(squares);
   const waste=quantityFactor(p.wasteFactorByComplexity[c.roofComplexity],`wasteFactorByComplexity.${c.roofComplexity}`,{allowZero:true});
-  const bundles=p.bundlesPerSquare?.[c.replacementRoofType],purchase=purchasedQuantityVNext(squares,waste,bundles===undefined?undefined:exactDivide(1,bundles));
+  // NBC 9.26.8 triple coverage takes more shingle per square: the owner's factor.
+  const shingleFactor=roofLowSlopeMethod(c,p)==='nbc_low_slope_application'?quantityFactor(p.nbcLowSlopeShingleFactor,'nbcLowSlopeShingleFactor'):undefined;
+  const shingleSquares=shingleFactor===undefined?squares:exactMultiply(squares,shingleFactor);
+  const bundles=p.bundlesPerSquare?.[c.replacementRoofType],purchase=purchasedQuantityVNext(shingleSquares,waste,bundles===undefined?undefined:exactDivide(1,bundles));
   const layers=count(c.existingLayers,'existingLayers'),story=quantityFactor(p.storyMultiplier[c.stories],`storyMultiplier.${c.stories}`),complexity=quantityFactor(p.complexityLaborMultiplier[c.roofComplexity],`complexityLaborMultiplier.${c.roofComplexity}`);
   // Subtract before recording evidence: native 1.15 - 1 loses the half-cent tie.
   // Keep separate adjustment lines and the exact rational through all later pricing.
@@ -568,8 +571,8 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   });
   recordQuantityDerivation(out,{name:'roofSquares',formula:'areaSqft / 100',inputs:{areaSqft},result:squares,unit:'roofing squares',usedBy:['Roofing labor','Underlayment']});
   recordQuantityDerivation(out,{
-    name:'materialSquares',formula:bundles===undefined?'roofSquares * (1 + wasteFactor)':'ceil(roofSquares * (1 + wasteFactor) * bundlesPerSquare) / bundlesPerSquare',
-    inputs:{roofSquares:squareNumber,wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:purchase.purchasedQuantity,unit:'roofing squares',usedBy:['Field materials']
+    name:'materialSquares',formula:(()=>{const base=shingleFactor===undefined?'roofSquares':'roofSquares * lowSlopeShingleFactor';return bundles===undefined?base+' * (1 + wasteFactor)':'ceil('+base+' * (1 + wasteFactor) * bundlesPerSquare) / bundlesPerSquare';})(),
+    inputs:{roofSquares:squareNumber,...(shingleFactor===undefined?{}:{lowSlopeShingleFactor:shingleFactor}),wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:purchase.purchasedQuantity,unit:'roofing squares',usedBy:['Field materials']
   });
   recordQuantityDerivation(out,{name:'tearOffSquares',formula:'roofSquares * existingLayers',inputs:{roofSquares:squareNumber,existingLayers:layers},result:exactTearOffSquares,unit:'existing-layer roofing squares',usedBy:['Tear-off','Roofing disposal']});
   recordRuleApplication(out,{
@@ -622,19 +625,35 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     if(layers>1)add(out,makeLine({name:'Additional-layer story adjustment',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})},{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
   }
   const underPath=`underlaymentPerSquare.${c.replacementRoofType}`;
-  // Shingles and tile from their minimum slope up to 4/12 need two layers of
-  // underlayment (IRC R905.1.1, R905.2.2, R905.3.2).
-  const knownRise=c.pitchMethod==='whole_roof'&&Number.isFinite(c.pitchRisePer12)?c.pitchRisePer12:undefined,doubleUnderlayment=roofDoubleUnderlayment(c.replacementRoofType,knownRise);
+  // From the product's minimum slope up to 4/12 a low-slope method applies:
+  // IRC two underlayment layers (R905.1.1, R905.3.3) or one self-adhered layer
+  // (ARMA) for shingles; NBC 9.26.8 triple-coverage cemented shingles, with no
+  // second underlayment.
+  const knownRise=roofKnownRise(c),lowSlope=roofLowSlopeMethod(c,p);
+  if(lowSlope==='undecided')throw new QuoteReviewError('Choose how you install asphalt shingles from 2/12 to under 4/12 before quoting this roof.',{missingOwnerFields:['lowSlopeAssembly']});
   const scopedUnderlayment=p.scopeDetails?.['roof_underlayment_'+c.replacementRoofType]&&p.underlaymentPriceBasis?.[c.replacementRoofType]==='cost';
-  if(doubleUnderlayment&&scopedUnderlayment)throw reviewForBusiness('This roof is below 4/12 and needs a second underlayment layer; the business will confirm the underlayment price.','underlaymentPerSquare','low_slope_underlayment');
+  if(['double_underlayment','self_adhered_underlayment'].includes(lowSlope)&&scopedUnderlayment)throw reviewForBusiness('This roof is below 4/12 and needs low-slope underlayment; the business will confirm the underlayment price.','underlaymentPerSquare','low_slope_underlayment');
   if(!scopedUnderlayment){
     const underlaymentLine={category:'material',quantity:squares,unit:'measured installed roofing squares',rateCents:valueAtPath(p,underPath),ratePath:underPath,priceBasis:installedAreaSellPriceBasis(valueAtPath(p,`underlaymentPriceBasis.${c.replacementRoofType}`),`underlaymentPriceBasis.${c.replacementRoofType}`)};
-    add(out,makeLine({name:'Underlayment',...underlaymentLine}));
-    if(doubleUnderlayment){
-      add(out,makeLine({name:'Low-slope second underlayment layer',...underlaymentLine}));
-      recordRuleApplication(out,{name:'lowSlopeDoubleUnderlayment',rule:'shingle or tile roof from its minimum slope up to 4/12 => two underlayment layers',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise},result:{layers:2},usedBy:['Underlayment','Low-slope second underlayment layer']});
-      out.priceDrivers.push(`Two underlayment layers for a ${knownRise}/12 roof`);
+    if(lowSlope==='self_adhered_underlayment'){
+      // One self-adhered layer over the whole roof replaces the regular underlayment.
+      add(out,makeLine({name:'Self-adhered underlayment',category:'material',priceBasis:'sell_price',quantity:squares,unit:'measured installed roofing squares',rateCents:p.selfAdheredUnderlaymentPerSquare,ratePath:'selfAdheredUnderlaymentPerSquare'}));
+      recordRuleApplication(out,{name:'lowSlopeSelfAdheredUnderlayment',rule:'asphalt shingles from 2/12 up to 4/12 => one layer of self-adhered underlayment over the whole roof (ARMA)',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise},result:{layers:1},usedBy:['Self-adhered underlayment']});
+      out.priceDrivers.push(`Self-adhered underlayment over the whole roof for a ${knownRise}/12 roof`);
+    }else{
+      add(out,makeLine({name:'Underlayment',...underlaymentLine}));
+      if(lowSlope==='double_underlayment'){
+        add(out,makeLine({name:'Low-slope second underlayment layer',...underlaymentLine}));
+        recordRuleApplication(out,{name:'lowSlopeDoubleUnderlayment',rule:'shingle or tile roof from its minimum slope up to 4/12 => two underlayment layers',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise},result:{layers:2},usedBy:['Underlayment','Low-slope second underlayment layer']});
+        out.priceDrivers.push(`Two underlayment layers for a ${knownRise}/12 roof`);
+      }
     }
+  }
+  if(lowSlope==='nbc_low_slope_application'){
+    add(out,makeLine({name:'Low-slope cement',category:'material',quantity:squares,unit:'roofing squares',rateCents:p.nbcLowSlopeCementPerSquare,ratePath:'nbcLowSlopeCementPerSquare'}));
+    add(out,makeLine({name:'Low-slope application labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:p.nbcLowSlopeLaborPerSquare,ratePath:'nbcLowSlopeLaborPerSquare'}));
+    recordRuleApplication(out,{name:'nbcLowSlopeApplication',rule:'asphalt shingles from 1 in 6 up to 1 in 3 => NBC 9.26.8: three thicknesses of shingle, cemented starter, courses and tabs, no second underlayment',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise,shingleFactor:p.nbcLowSlopeShingleFactor},result:{shingleCoverage:3},usedBy:['Field materials','Low-slope cement','Low-slope application labor']});
+    out.priceDrivers.push(`Low-slope shingle application for a ${knownRise}/12 roof: triple coverage with cemented courses (NBC 9.26.8)`);
   }
   if(p.accessoryPricingMode==='itemized')for(const [name,inputField,priceField] of [['Starter strip','starterLengthLF','starterPerLF'],['Drip edge','dripEdgeLengthLF','dripEdgePerLF'],['Hip-and-ridge cap','ridgeCapLengthLF','ridgeCapPerLF']])if(c[inputField]>0)add(out,makeLine({name,category:'material',quantity:c[inputField],unit:'measured linear feet',rateCents:p[priceField],ratePath:priceField}));
   const dependent=roofFlashingVentDefinitionVNext(c.replacementRoofType);
@@ -1075,20 +1094,26 @@ function calculateConcrete(serviceType, c, p) {
       // NRMCA CIP 6: no more than 36 times the slab thickness (3 ft per inch).
       if(Number.isFinite(c.thickness)&&p.controlJointSpacingFt>jointSpacingCap(c.thickness))throw reviewForBusiness(`Control-joint spacing of ${p.controlJointSpacingFt} feet is wider than the ${jointSpacingCap(c.thickness)} feet NRMCA allows for a ${c.thickness}-inch slab; the business will confirm the joint layout.`,'controlJointSpacingFt','control_joint_spacing');
       const joints=controlJointLength(c,dimensions.exactAreaSqft,p.controlJointSpacingFt);
-      recordQuantityDerivation(out,{name:'controlJointLengthLF',formula:joints.rectangle?'(panelsAlongLength - 1) * width + (panelsAlongWidth - 1) * length; panelsAlongLength = ceil(length / spacing), panelsAlongWidth = ceil(width / spacing), each raised until no panel is longer than 1.5 times its width':'roundTo0.01((ceil(sqrt(areaSqft) / spacing) - 1) * sqrt(areaSqft) * 2)',inputs:{areaSqft:dimensions.areaSqft,length:joints.length,width:joints.width,spacing:p.controlJointSpacingFt,...(joints.rectangle?{panelsAlongLength:joints.panelsAlongLength,panelsAlongWidth:joints.panelsAlongWidth}:{})},result:joints.quantity,unit:'linear feet',usedBy:['Saw-cut control joints']});
+      recordQuantityDerivation(out,{name:'controlJointLengthLF',formula:joints.rectangle?'(panelsAlongLength - 1) * width + (panelsAlongWidth - 1) * length; panelsAlongLength = ceil(length / spacing), panelsAlongWidth = ceil(width / spacing), each raised until no panel is longer than 1.5 times its width':joints.outline?'outline cut into rectangles by joints from each inside corner (cornerJointsLF), plus each rectangle laid out with (panelsAlongLength - 1) * width + (panelsAlongWidth - 1) * length under the same spacing and 1.5:1 panel rule; the direction with less joint length is used':'roundTo0.01((ceil(sqrt(areaSqft) / spacing) - 1) * sqrt(areaSqft) * 2)',inputs:{areaSqft:dimensions.areaSqft,spacing:p.controlJointSpacingFt,...(joints.outline?{rectangles:joints.panels.length,cornerJointsLF:exactToNumber(joints.cornerJoints)}:{length:joints.length,width:joints.width}),...(joints.rectangle?{panelsAlongLength:joints.panelsAlongLength,panelsAlongWidth:joints.panelsAlongWidth}:{})},result:joints.quantity,unit:'linear feet',usedBy:['Saw-cut control joints']});
       if(exactCompare(joints.quantity,0)>0)add(out,makeLine({name:'Saw-cut control joints',category:'labor',quantity:joints.quantity,unit:'linear feet',rateCents:p.sawCutPerLF,ratePath:'sawCutPerLF',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
-      if(!joints.rectangle)out.disclosures.push(`Control-joint length allowance: ${exactToNumber(joints.quantity).toFixed(2)} linear feet. ${JOINT_SITE_NOTE}`);
+      // Only area and perimeter, with no shape, leave the joint layout to an allowance.
+      if(!joints.rectangle&&!joints.outline)out.disclosures.push(`Control-joint length allowance: ${exactToNumber(joints.quantity).toFixed(2)} linear feet. ${JOINT_SITE_NOTE}`);
     }else out.disclosures.push(JOINT_EXTRA_NOTE);
   }
   const placement=placementFor(c,p);
   if(placement){
     if(present(p.placementFlat?.[placement]))add(out,fixedLine(`${PLACEMENT_LABELS[placement]} placement per pour`,'addon',p.placementFlat[placement],`placementFlat.${placement}`));
     if(present(p.placementPerCubicYard?.[placement]))add(out,makeLine({name:`${PLACEMENT_LABELS[placement]} placement by volume`,category:'addon',quantity:exactYards,unit:'cubic yards ordered',rateCents:p.placementPerCubicYard[placement],ratePath:`placementPerCubicYard.${placement}`}));
-    if(c.chuteAccess==='unknown')out.disclosures.push(PLACEMENT_SITE_NOTE);
-  }else if(c.chuteAccess==='unknown')out.disclosures.push(PLACEMENT_EXTRA_NOTE);
+    if(chuteAccessUncertain(c))out.disclosures.push(PLACEMENT_SITE_NOTE);
+  }else if(chuteAccessUncertain(c))out.disclosures.push(PLACEMENT_EXTRA_NOTE);
   const openEdges=exactSubtract(dimensions.exactPerimeterLF,c.adjoinsExistingConcrete?c.adjoiningEdgeLF:0);
   recordQuantityDerivation(out,{name:'formworkLF',formula:'measured perimeter minus edges adjoining foundation or existing concrete',inputs:{perimeterLF:dimensions.perimeterLF,adjoiningEdgeLF:c.adjoinsExistingConcrete?c.adjoiningEdgeLF:0},result:openEdges,unit:'linear feet',usedBy:['Formwork']});
   add(out, makeLine({ name: 'Formwork', category: 'material', quantity: openEdges, allowZeroQuantity:true, unit: 'measured linear feet', rateCents: p.formworkPerLF, ratePath: 'formworkPerLF', customerDriver: `${exactToNumber(openEdges)} measured linear feet of formwork` }));
+  // Forming labor follows the open edge, not the area (NRMCA CIP 6 layout).
+  if(p.formingLaborPricing==='per_linear_foot')add(out,makeLine({name:'Forming labor',category:'labor',quantity:openEdges,allowZeroQuantity:true,unit:'measured linear feet',rateCents:p.formingLaborPerLF,ratePath:'formingLaborPerLF',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
+  // An isolation joint separates the slab from a foundation or existing concrete.
+  if(c.adjoinsExistingConcrete&&p.isolationJointPricing==='per_linear_foot')add(out,makeLine({name:'Isolation joints',category:'addon',quantity:c.adjoiningEdgeLF,unit:'measured linear feet',rateCents:p.isolationJointPerLF,ratePath:'isolationJointPerLF',customerDriver:`${c.adjoiningEdgeLF} linear feet of isolation joint against existing construction`}));
+  if(present(p.concreteMixDescription))out.priceDrivers.push(`Concrete mix: ${p.concreteMixDescription.trim()}`);
   if (c.baseNeeded) {
     if(!separateBase(p))add(out, makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft' }));
     else {

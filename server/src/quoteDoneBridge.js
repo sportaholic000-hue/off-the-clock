@@ -28,7 +28,8 @@ import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from
 import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,EARLIER_ROOF_RULES_COPY} from '../priceBookCopy.js';
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
-import {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
+import {ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
+import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
 import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
@@ -558,7 +559,7 @@ export function applicationMetadata() {
     const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)).filter(field=>!requiresOffering||field.type==='surface_configuration'||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF','wallPriceIncludesTouchUp'],
-      ROOFING_REPLACEMENT:['bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
+      ROOFING_REPLACEMENT:['roofProductMinSlope','lowSlopeAssembly','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
       FLOORING_INSTALL:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS],
       FLOORING_REPLACEMENT:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft')],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
@@ -574,7 +575,7 @@ export function applicationMetadata() {
       const info={...prior,...field,type:field.type||prior?.type||'number',requiredAtBase:field.type==='surface_configuration'?false:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind,interviewPriority:interviewPriority(field.field)};
       if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100,...(meta.serviceType==='CUSTOM'&&field.field==='installedMaterialsPercent'?{leafKeys:['price']}: {})},requiredAtBase:false});
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
-      if((meta.serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:meta.serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:meta.serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]).includes(field.field))Object.assign(info,{requiredAtBase:false},CONCRETE_LANDSCAPE_COPY[field.field]);
+      if((meta.serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:meta.serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:meta.serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]).includes(field.field))Object.assign(info,{requiredAtBase:meta.serviceType.startsWith('CONCRETE_')&&CONCRETE_REQUIRED_DECISIONS.includes(field.field)},CONCRETE_LANDSCAPE_COPY[field.field]);
       if(FLAT_ROOF_FIELDS.includes(field.field)||REPAIR_UNIT_FIELDS.includes(field.field)||REPAIR_BAND_FIELDS.includes(field.field)){
         Object.assign(info,{...FLAT_REPAIR_COPY[field.field],requiredAtBase:false});
         if(REPAIR_UNIT_FIELDS.includes(field.field))info.type='json';
@@ -588,6 +589,13 @@ export function applicationMetadata() {
       const enums={vinylPlankInstallMethod:['floating','glue_down'],carpetCrossgrainSeams:['allowed','not_allowed'],wallPriceIncludesTouchUp:['yes','no'],accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'],deckingPriceBasis:['material_only','installed'],iceWaterBarrierUnit:['square_feet','linear_feet'],unknownPitchBand:['under_four','up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='furnitureMovingPriceUnit')info.optionLabels={per_room:'Per room',flat:'Flat per job'};
+      if(meta.serviceType==='ROOFING_REPLACEMENT'){
+        if(field.field==='roofBuildingCode')Object.assign(info,{type:'select',options:[...ROOF_BUILDING_CODES],optionLabels:{...ROOF_BUILDING_CODE_LABELS}});
+        if(field.field==='lowSlopeAssembly')Object.assign(info,{type:'select',options:['double_underlayment','self_adhered_underlayment'],optionLabels:{double_underlayment:'Two layers of underlayment',self_adhered_underlayment:'One layer of self-adhered underlayment'}});
+        if(field.field==='eaveProtectionRequired')Object.assign(info,{type:'select',options:['yes','no'],optionLabels:{yes:'Yes',no:'No'}});
+        if(field.field==='roofProductClass')Object.assign(info,{type:'json',tree:{leafType:'enum',options:[...ROOF_PRODUCT_CLASSES],optionLabels:{...ROOF_PRODUCT_CLASS_LABELS}}});
+        if(field.field==='roofProductMinSlope')Object.assign(info,{type:'json',tree:{depth:1,leafUnit:'rise per 12'}});
+      }
       if(field.field==='vinylPlankInstallMethod')info.optionLabels={floating:'Floating (click-lock)',glue_down:'Glue-down'};
       if(field.field==='carpetCrossgrainSeams')info.optionLabels={allowed:'Allowed (standard fills)',not_allowed:'Not allowed (whole widths only)'};
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});

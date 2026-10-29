@@ -270,7 +270,7 @@ function roofInput(customerOverrides={}) {
   },{
     roofSizeMethod:'roof_measured',roofSizeInput:1000,
     existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',
-    pitch:'low',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',
+    pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',
     ...customerOverrides
   });
   input.ownerPricing.priceBasisByCategory.material='sell_price';

@@ -15,7 +15,9 @@ export const PAINTING_RATES={
  trimPrimerLaborPerLFPerCoat:'Trim primer labor per linear foot per coat',trimPrimerMaterialPerLFPerCoat:'Trim primer material per linear foot per coat',
  ...Object.fromEntries(['good','fair','poor'].flatMap(condition=>[['trimPrepLaborPerLF_'+condition,condition+' trim preparation labor per linear foot'],['trimPrepMaterialPerLF_'+condition,condition+' trim preparation material per linear foot']]))
 };
-export const SIDING_CONVENTIONS={openings_left_in:'Openings left in (VSI, CertainTeed)',openings_subtracted:'Openings subtracted (LP)'};
+// How a siding rate was set: on the full wall area, with garage doors and
+// other large openings taken out, or with every opening taken out.
+export const SIDING_CONVENTIONS={openings_left_in:'Full wall area: openings left in',large_openings_subtracted:'Garage doors and other large openings subtracted; windows and doors left in',openings_subtracted:'All openings subtracted'};
 const num=(label,unit,min=0,max=1_000_000,extra={})=>({label,unit,type:'number',min,max,...extra});
 const select=(label,values,extra={})=>({label,type:'enum',unit:null,values,...extra});
 const conditions=select('Surface condition',['good','fair','poor']);
@@ -155,7 +157,7 @@ export function surfaceGeometry(type,c,p={}){
   const convention=p.sidingSettings?.areaConventionByType?.[c.sidingType];
   if(method==='building_dimensions'){
    if(!convention)fail('sidingType','The owner must choose the area convention for this siding rate before dimension-based quoting.');
-   labor=convention==='openings_left_in'?exactSubtract(gross,exactDivide(exactAdd(garage,otherArea),2)):paint;
+   labor=convention==='openings_left_in'?gross:convention==='large_openings_subtracted'?exactSubtract(gross,exactAdd(garage,otherArea)):paint;
   }else labor=gross; // Direct area is entered using the owner's stated convention.
   paint=labor;
  }
@@ -205,11 +207,11 @@ export function surfaceCustomerContract(type,p,base){
   fields.garageDoorHeightFeet={...num('Height of each garage-door opening','feet',0.01),visibleWhen:[[['garageDoorCount','gt',0]]]};
   fields.garageOpenings={...rows('Individual garage-door openings',GARAGE_FIELDS,1),details:['Use this list when opening sizes differ; otherwise enter the shared width and height above. Do not use both.'],visibleWhen:[[['garageDoorCount','gt',0]]]};
  }
- fields.largeOpenings={...rows('Other openings',interior?INTERIOR_OPENING_FIELDS:OPENING_FIELDS),details:[interior?INTERIOR_OPENING_HELP:siding?'Only openings not already counted as doors, windows or garage doors. Openings left in subtracts half the area of every garage door and every listed other opening, whatever its size; ordinary windows and doors stay in. Openings subtracted removes their full area.':'Only openings not already counted as doors, windows or garage doors. Openings 100 square feet or larger are removed from painting labor; all listed openings are removed from paint quantity.'],visibleWhen:paintingType(type)?[...dimensionalWhen,...when('areaInputMethod','wall_sqft')]:dimensionalWhen};
+ fields.largeOpenings={...rows('Other openings',interior?INTERIOR_OPENING_FIELDS:OPENING_FIELDS),details:[interior?INTERIOR_OPENING_HELP:siding?'Only openings not already counted as doors, windows or garage doors. Full wall area keeps every opening in. Large openings subtracted removes the full area of garage doors and these openings. All openings subtracted also removes 15 square feet per window and 20 per door.':'Only openings not already counted as doors, windows or garage doors. Openings 100 square feet or larger are removed from painting labor; all listed openings are removed from paint quantity.'],visibleWhen:paintingType(type)?[...dimensionalWhen,...when('areaInputMethod','wall_sqft')]:dimensionalWhen};
  if(interior)for(const [name,label]of [['doorCount','Door openings'],['windowCount','Window openings']])fields[name]={...num(label,'openings',0,10000,{integer:true}),visibleWhen:when('areaInputMethod','wall_sqft')};
  if(type==='EXTERIOR_PAINTING')for(const name of ['doorCount','windowCount','garageDoorCount'])fields[name].visibleWhen=[...when('areaInputMethod','building_dimensions'),...when('areaInputMethod','wall_sqft')];
  const areaKey=siding?'sidingAreaSqft':interior?'wallAreaSqft':'exteriorAreaSqft';
- fields[areaKey]={...fields[areaKey],visibleWhen:when('areaInputMethod',siding?'sqft':'wall_sqft'),...(siding?{details:['Use the convention saved for the selected siding rate. Gable triangles entered separately are added once.'],presentationVariants:Object.entries(convention||{}).map(([value,basis])=>({label:'Siding wall area — '+SIDING_CONVENTIONS[basis],details:[basis==='openings_left_in'?'Leave ordinary door and window openings in. Subtract half the area of every garage door and every listed other opening, whatever its size.':'Subtract 15 square feet per window, 20 per door and the full area of garage doors and other openings.','Include gable area (width × height ÷ 2), or enter its triangle separately below and leave it out of this direct area.'],visibleWhen:when('sidingType',value)}))}:{})};
+ fields[areaKey]={...fields[areaKey],visibleWhen:when('areaInputMethod',siding?'sqft':'wall_sqft'),...(siding?{details:['Use the convention saved for the selected siding rate. Gable triangles entered separately are added once.'],presentationVariants:Object.entries(convention||{}).map(([value,basis])=>({label:'Siding wall area — '+SIDING_CONVENTIONS[basis],details:[basis==='openings_left_in'?'Leave every opening in: do not subtract windows, doors or garage doors.':basis==='large_openings_subtracted'?'Subtract the full area of garage doors and other large openings. Leave windows and doors in.':'Subtract 15 square feet per window, 20 per door and the full area of garage doors and other openings.','Include gable area (width × height ÷ 2), or enter its triangle separately below and leave it out of this direct area.'],visibleWhen:when('sidingType',value)}))}:{})};
  if(!interior||p.paintingSettings?.heightBands)fields.wallHeightFeet={...num(interior?'Wall height':'Wall height to the eaves','feet',0.01,1000),visibleWhen:interior?when('areaInputMethod','wall_sqft'):when('areaInputMethod','building_dimensions')};
  if(paintingType(type)){
   fields.coats={...fields.coats,label:'Wall finish coats'};

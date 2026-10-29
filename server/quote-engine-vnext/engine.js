@@ -1876,7 +1876,9 @@ function rootCalculationRecordMatches(result) {
     if (option.tierName!==null && !tier) return false;
     let pricing=tier?mergePricingVNext(configuration.pricing,tier.overrides):configuration.pricing;
     if(fenceType(result.serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,inputs);}catch{return false;}
-    const derivedMeasurements=REPAIR_SERVICES.includes(result.serviceType)&&result.submittedCustomerInputs.repairAreaMethod==='dimensions'||result.serviceType.startsWith('FLOORING_')||fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined;
+    // Inputs the engine derives or fills in (owner slab specification, flooring
+    // rooms, repair dimensions, fence runs) are re-derived the same way here.
+    const derivedMeasurements=REPAIR_SERVICES.includes(result.serviceType)&&result.submittedCustomerInputs.repairAreaMethod==='dimensions'||result.serviceType.startsWith('FLOORING_')||result.serviceType.startsWith('CONCRETE_')||fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined;
     const normalized=derivedMeasurements?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration,option.tierName).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
     if (!plainDataEqual(inputs,normalized)||!validateCustomerInputs(result.serviceType,inputs,pricing,configuration,option.tierName).ok ||
         !validateOwnerPricing(result.serviceType,inputs,pricing,configuration,option.tierName).ok) return false;

@@ -36,7 +36,7 @@
         "roofSizeInput": 1000,
         "existingRoofType": "asphalt_shingle",
         "replacementRoofType": "asphalt_shingle",
-        "pitch": "low",
+        "pitch": "medium",
         "stories": 1,
         "existingLayers": 1,
         "roofComplexity": "simple",
@@ -115,7 +115,7 @@
           },
           "pitchMultiplier": {
             "low": 1,
-            "medium": 1.15,
+            "medium": 1,
             "steep": 1.25,
             "very_steep": 1.4
           },

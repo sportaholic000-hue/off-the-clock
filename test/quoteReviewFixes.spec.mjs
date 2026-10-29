@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import {CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
 
 // Regression coverage for the October 3 review follow-ups:
 // 1. one product-name conversion for every owner name-entry control;
@@ -65,7 +66,7 @@ const fence = { serviceType:'FENCING_INSTALL', service:'6 ft wood privacy', know
     postFootingDescription:'4x4 posts in concrete', gates:{ walk:{ widthLF:4, description:'Walk gate', postsAndFootingsIncluded:false } } },
   offeringRates:{ fenceLaborPerLF:9.5, fenceMaterialPerLF:14.25, postMaterialEach:28.75, footingLaborEach:22, footingMaterialEach:9.4, gate_walk:385 } } };
 const fenceInputs = confirmed({ linearFeet:187, lfMethod:'exact', fenceType:'wood', fenceHeight:6, terrainSlope:'flat', gates:{ walk:1 }, cornerCount:3 }, fenceKnown);
-const patio = { serviceType:'CONCRETE_PATIO_SLAB', service:'Patio', pricing:{ laborPerSqft:5.1, concreteCostPerCubicYard:172, formworkPerLF:2.85, minimumJob:0 } };
+const patio = { serviceType:'CONCRETE_PATIO_SLAB', service:'Patio', pricing:{ ...CONCRETE_OWNER_DECISIONS, laborPerSqft:5.1, concreteCostPerCubicYard:172, formworkPerLF:2.85, minimumJob:0 } };
 const patioInputs = { dimensionMethod:'measured_area_perimeter', areaSqft:300, perimeterLF:74, thickness:4, finishType:'broom', demolitionNeeded:false,
   reinforcement:'none', accessDifficulty:'easy', baseNeeded:false };
 const mulchKnown = registry({ mulchType:['brown'] });

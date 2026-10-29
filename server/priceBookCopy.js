@@ -1,4 +1,5 @@
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext,tierDependentDefinitionVNext} from './quote-engine-vnext/priceGroundwork.js';
+import {ROOF_SLOPE_FIELD_COPY} from './quote-engine-vnext/roofSlopeRules.js';
 
 const copy = (label, help) => ({ label, help });
 
@@ -101,6 +102,7 @@ export const OWNER_FIELD_COPY = {
   pitchInstallationAdderOverTwelve: copy('Installation addition for pitch over 12/12', 'Decimal addition to base installation labor per square on only the roof area over 12/12. Enter 0.50 for 50%.'),
   pitchRemovalAdderOverTwelve: copy('Removal addition for pitch over 12/12', 'Decimal addition to tear-off plus roofing disposal per square on only the roof area over 12/12. Enter 0.60 for 60%.'),
   unknownPitchBand: copy('Pitch band to use when the customer is not sure', 'Required under the new roofing rules before an unknown pitch can quote. The quote states that pitch will be confirmed on site.'),
+  ...Object.fromEntries(Object.entries(ROOF_SLOPE_FIELD_COPY).map(([field,{label,help}])=>[field,copy(label,help)])),
   disposalPerSquare: copy('Disposal price per roofing square', 'Optional disposal charge for each roofing square and each removed layer. When blank, the business-wide disposal charge is used.'),
   allowAssumptionBasedQuotes: copy('Allow size estimates (small/medium/large) instead of exact measurements', 'When enabled, the service may quote from the documented size assumptions when a customer cannot provide exact measurements.'),
   laborHourlyRate: copy('Labor rate per hour', 'Hourly labor charge used for repair work or preparation labor when that scope applies.'),
@@ -127,7 +129,7 @@ export const OWNER_FIELD_COPY = {
   removalPerLinearFoot: copy('Existing fence removal labor price per linear foot', 'Removal labor applied when the customer wants the old fence removed, adjusted for terrain.'),
   disposalPerLF: copy('Existing fence disposal price per linear foot', 'Optional disposal charge for each linear foot of old fence removed. When blank, the business-wide disposal charge is used.'),
   concreteCostPerCubicYard: copy('Ready-mix concrete material price per cubic yard', 'Concrete material cost multiplied by calculated slab volume, including the configured waste allowance.'),
-  formworkPerLF: copy('Formwork material price per linear foot', 'Forms and related materials for open slab edges, after subtracting measured edges against foundation or existing concrete.'),
+  formworkPerLF: copy('Form material price per linear foot', 'Form boards, stakes and related materials for open slab edges, after subtracting measured edges against foundation or existing concrete. Forming labor is set separately.'),
   demolitionPerSqft: copy('Concrete demolition labor price per square foot', 'Removal labor applied to the existing concrete area when demolition is included, adjusted for access.'),
   basePrepPerSqft: titled('Base preparation price per square foot', 'Excavation + compacted gravel base + grading, per square foot.', 'Preparation charge applied to the slab area when a new base is required.'),
   wireReinforcementPerSqft: copy('Wire mesh reinforcement material price per square foot', 'Material charge applied when wire mesh reinforcement is selected.'),
@@ -179,8 +181,8 @@ export const OWNER_FIELD_COPY = {
   'SIDING_REPLACEMENT.materialPerSqft': copy('All-in installed material per sqft for this siding type, including house wrap, starter strip, J-channel and corner posts unless you price siding trim separately below.', 'Material rate for each siding type, applied to wall area plus the configured waste allowance.'),
   'SIDING_REPLACEMENT.removalPerSqft': copy('Existing siding removal labor price per square foot', 'Removal labor applied to wall area when old siding removal is included, adjusted for stories.'),
   'SIDING_REPLACEMENT.disposalPerSqft': copy('Optional disposal price per square foot when removal is included.', 'Overrides the business-wide disposal charge for this siding service when old siding is removed.'),
-  'CONCRETE_DRIVEWAY.laborPerSqft': copy('Include forming labor, expansion joints, cure & seal in your per-sqft labor rate.', 'Base driveway labor applied to slab area and adjusted for access and finish.'),
-  'CONCRETE_PATIO_SLAB.laborPerSqft': copy('Include forming labor, expansion joints, cure & seal in your per-sqft labor rate.', 'Base patio labor applied to slab area and adjusted for access and finish.'),
+  'CONCRETE_DRIVEWAY.laborPerSqft': copy('Slab labor price per square foot', 'Placing, finishing and curing labor for each square foot of slab, adjusted for access and finish. It covers the thickness range you set below. Forming labor is included only if you choose that under Forming labor.'),
+  'CONCRETE_PATIO_SLAB.laborPerSqft': copy('Slab labor price per square foot', 'Placing, finishing and curing labor for each square foot of slab, adjusted for access and finish. It covers the thickness range you set below. Forming labor is included only if you choose that under Forming labor.'),
   'CONCRETE_DRIVEWAY.disposalPerSqft': copy('Concrete disposal price per demolished square foot', 'Optional disposal charge applied when existing driveway concrete is demolished.'),
   'CONCRETE_PATIO_SLAB.disposalPerSqft': copy('Concrete disposal price per demolished square foot', 'Optional disposal charge applied when existing patio concrete is demolished.'),
   'ROOFING_REPAIR.repairHours': copy('Roof repair labor hours by repair type and project size', 'Enter labor hours for each roof repair type and size of affected area: small is under 50 sq ft, medium is 50 to 200 sq ft, large is over 200 sq ft.'),

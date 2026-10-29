@@ -40,6 +40,7 @@ import {
 import { calculateServiceVNext } from '../server/quote-engine-vnext/templates.js';
 import { aiConfirmationFieldsVNext } from '../server/quote-engine-vnext/contracts.js';
 import { denseArrayIssue, snapshotPlainData } from '../server/quote-engine-vnext/safeData.js';
+import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -70,7 +71,7 @@ const defaults = {
 };
 
 function service(serviceType, pricing, overrides = {}) {
-  const configuredPricing = withClass2Defaults(serviceType, pricing);
+  const configuredPricing = withClass2Defaults(serviceType, withOwnerDecisions(serviceType, pricing));
   // Keep these historical defensive/precision fixtures at their explicitly
   // chosen pre-Oct3 quantities. quoteTradeDecisions.spec.mjs tests the new defaults.
   for(const field of ['membraneWasteFactor','paintWasteFactor','primerWasteFactor','prepMaterialWasteFactor','fenceWasteFactor','stampedMaterialWasteFactor'])if(field in configuredPricing && !(field in pricing))configuredPricing[field]=0;
@@ -333,7 +334,7 @@ function roofInputs(overrides = {}) {
     roofSizeInput: 1000,
     existingRoofType: 'asphalt_shingle',
     replacementRoofType: 'asphalt_shingle',
-    pitch: 'low',
+    pitch:'medium',
     stories: 1,
     existingLayers: 1,
     roofComplexity: 'simple',
@@ -2527,7 +2528,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       const class2 = CLASS2_DEFINITIONS[serviceType]?.[path.split('.')[0]];
       const requiresPositive = class2
         ? class2.min > 0
-        : /^(?:repairHours|patchRepairHours)(?:\.|$)|^largeRepairMaxSqft$|\.laborMultiplier$|^(?:frequencyMultipliers|overgrowthMultipliers)\./.test(path);
+        : /^(?:repairHours|patchRepairHours)(?:\.|$)|^largeRepairMaxSqft$|\.laborMultiplier$|^(?:frequencyMultipliers|overgrowthMultipliers)\.|^slabLaborM(?:in|ax)ThicknessInches$/.test(path);
       const zeroed = structuredClone(ownerPricing);
       setPricingLeaf(zeroed.pricing, path, 0);
       const zeroStatus = vNextServiceStatus(zeroed, defaults);
@@ -2581,6 +2582,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     }
     const alternativeValue = (path, original) => {
       const class2 = CLASS2_DEFINITIONS[serviceType]?.[path.split('.')[0]];
+      // Raise the thinnest covered slab to the thickest: the matrix slabs fall outside it.
+      if (path === 'slabLaborMinThicknessInches') return ownerPricing.pricing.slabLaborMaxThicknessInches;
       if (typeof original === 'number') {
         if (class2) {
           const span = class2.max - class2.min;
@@ -2596,6 +2599,13 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       if (path === 'underlaymentPriceBasis' || path.startsWith('underlaymentPriceBasis.')) {
         return original === 'installed_area_sell_price' ? 'cost' : 'installed_area_sell_price';
       }
+      const choices = {
+        formingLaborPricing: ['included_in_slab_labor', 'per_linear_foot'], isolationJointPricing: ['included', 'per_linear_foot'],
+        roofBuildingCode: ['irc', 'nbc'], lowSlopeAssembly: ['double_underlayment', 'self_adhered_underlayment'], eaveProtectionRequired: ['no', 'yes']
+      }[path];
+      if (choices) return choices[(choices.indexOf(original) + 1) % choices.length];
+      // An unlisted product type needs its manufacturer minimum slope.
+      if (path.startsWith('roofProductClass.')) return original === 'other' ? 'asphalt_shingle' : 'other';
       return undefined;
     };
     const unconsumed = [];
@@ -2633,7 +2643,9 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
 
   const roofCases = [];
   let roofIndex = 0;
-  for (const pitch of ['low', 'medium', 'steep', 'very_steep']) {
+  // A "low" pitch (under 4/12) always goes to review on this route: the
+  // slope must be known exactly (qeAccuracy20261029.spec.mjs).
+  for (const pitch of ['medium', 'steep', 'very_steep']) {
     for (const stories of [1, 2, 3]) {
       for (const roofComplexity of ['simple', 'moderate', 'complex']) {
         const scopeIndex = roofIndex % 3;
@@ -2669,7 +2681,11 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
   assertReadyCases('ROOFING_REPLACEMENT', matrixRoof, roofCases,[
     'additionalLayerRemovalFactor','complexityLaborMultiplier.complex','complexityLaborMultiplier.moderate','complexityLaborMultiplier.simple',
     'pitchInstallationAdder.seven_to_nine','pitchInstallationAdder.ten_to_twelve',
-    'pitchRemovalAdder.seven_to_nine','pitchRemovalAdder.ten_to_twelve'
+    'pitchRemovalAdder.seven_to_nine','pitchRemovalAdder.ten_to_twelve',
+    // The code and low-slope choices change nothing for asphalt shingles at
+    // 4/12 or steeper; eave protection applies only to separately priced barrier.
+    // A "low" pitch always goes to review, so its multiplier never prices.
+    'roofBuildingCode','lowSlopeAssembly','eaveProtectionRequired','pitchMultiplier.low'
   ]);
 
   const roofRepair = repairFixture('ROOFING_REPAIR');
@@ -4791,7 +4807,12 @@ test('repair 69: equal partial measurements quote; unconfigured floating-over-fl
   const floating = flooringService({ vinylPlankInstallMethod: 'floating' });
   assert.deepEqual(run('FLOORING_INSTALL', flooringInputs(overTile), floating).missingCustomerFields, ['existingFloorSound']);
   assert.equal(run('FLOORING_INSTALL', flooringInputs({ ...overTile, existingFloorSound: 'yes' }), floating).resultType, 'INSTANT_ESTIMATE_READY');
-  assert.deepEqual(run('FLOORING_INSTALL', flooringInputs({ ...overTile, existingFloorSound: 'not_sure' }), floating).ownerDecisionRequired.map(item => item.kind), ['floor_overlay_contract']);
+  // The customer's Not sure about the old floor is a site check, not missing owner pricing.
+  const unsure = run('FLOORING_INSTALL', flooringInputs({ ...overTile, existingFloorSound: 'not_sure' }), floating);
+  assert.equal(unsure.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(unsure.inspectionFirst, true);
+  assert.deepEqual(unsure.ownerDecisionRequired, []);
+  assert.match(unsure.reviewReason, /on-site check/);
   assert.deepEqual(run('FLOORING_INSTALL', flooringInputs(overTile), flooringService({ vinylPlankInstallMethod: 'glue_down' })).ownerDecisionRequired.map(item => item.kind), ['floor_overlay_contract']);
   const overlay = run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
     existingFloorType: 'laminate',
@@ -6815,8 +6836,9 @@ test('repair 120: stair counts remain review-only until an all-inclusive or allo
 });
 test('repair 121: flooring removal and disposal use only independently measured removal area',()=>{
  const p=flooringService({removalPerSqft:{vinyl:100},disposalPerSqft:50}),c=flooringInputs(confirmedFixtureInputs({removalNeeded:true,existingFloorType:'vinyl'}));assert.equal(auditRun(c,p).resultType,auditReview);
- // Removal area runs from 1 sq ft up to the 300 sq ft new floor; more than that is a measurement error.
- for(const area of [0.999,1,1.001,100,300,300.001,999999.999,1000000,1000000.001]){const r=auditRun({...c,removalAreaSqft:area},p);assert.equal(r.resultType,area>=1&&area<=300?auditReady:auditReview);if(r.resultType===auditReady){assert.equal(lineAmount(r,'Existing flooring removal'),oracleRound(oracleMultiply(oracleDecimal(area),100)));assert.equal(lineAmount(r,'Flooring disposal'),oracleRound(oracleMultiply(oracleDecimal(area),50)));assert.equal(lineAmount(r,'Flooring materials'),162000);}}
+ // Removal area runs from 1 sq ft to the field limit; removing more floor than is
+ // installed is a real job (old floor out of a room that gets nothing new).
+ for(const area of [0.999,1,1.001,100,300,300.001,999999.999,1000000,1000000.001]){const r=auditRun({...c,removalAreaSqft:area},p);assert.equal(r.resultType,area>=1&&area<=1000000?auditReady:auditReview);if(r.resultType===auditReady){assert.equal(lineAmount(r,'Existing flooring removal'),oracleRound(oracleMultiply(oracleDecimal(area),100)));assert.equal(lineAmount(r,'Flooring disposal'),oracleRound(oracleMultiply(oracleDecimal(area),50)));assert.equal(lineAmount(r,'Flooring materials'),162000);}}
  assert.equal(auditRun(flooringInputs({removalAreaSqft:100}),p).resultType,auditReview);
 });
 test('repair 122: siding removal cannot reuse replacement type and installation area',()=>{

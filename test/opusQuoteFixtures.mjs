@@ -1,5 +1,6 @@
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 export const sourceRoot=process.env.OPUS_SOURCE_ROOT||fileURLToPath(new URL('..',import.meta.url));
 export const engine=await import(pathToFileURL(path.join(sourceRoot,'server/quote-engine-vnext/index.js')).href);
 const {fixtureIdentity,fixtureOfferings,confirmedFixtureInputs}=await import(pathToFileURL(path.join(sourceRoot,'test/quoteEngineVNextFixtures.mjs')).href);
@@ -9,7 +10,7 @@ const {scopeRequiredCustomer}=await import(pathToFileURL(path.join(sourceRoot,'s
 const map=(keys,value)=>Object.fromEntries(keys.map(k=>[k,value]));
 export const defaults=()=>({markupPercent:0,markupMode:'markup',overheadFixed:0,minimumJobPrice:0,travelFee:0,disposalFee:0,permitFee:0,taxMode:'TAX_NONE',taxPercent:0,rangeBufferPercent:0,markupApplies:map(engine.PRICE_BASIS_CATEGORIES,true),peakMonths:[],peakSurchargePercent:0});
 function owner(type,prices){
- const p=engine.withClass2Defaults(type,prices);
+ const p=engine.withClass2Defaults(type,withOwnerDecisions(type,prices));
  if(type==='ROOFING_REPLACEMENT')p.underlaymentPriceBasis={asphalt_shingle:'installed_area_sell_price'};
  return {...fixtureIdentity('MANUAL',undefined,type),serviceType:type,service:'[SYNTHETIC] '+type,active:true,knownOfferings:fixtureOfferings(type),pricing:p,feeRules:{travel:'not_applicable',disposal:'not_applicable',permit:'not_applicable',overhead:'not_applicable'},priceBasisByCategory:map(engine.PRICE_BASIS_CATEGORIES,'cost'),taxabilityByCategory:Object.fromEntries(engine.TAXABILITY_CATEGORIES.map(k=>[k,k==='material'])),peakMonths:[],peakSurchargePercent:0};
 }
@@ -19,7 +20,7 @@ export function mulch(mode='TAX_MATERIALS'){
  Object.assign(r.businessDefaults,{minimumJobPrice:45000,taxMode:mode,taxPercent:mode==='TAX_NONE'?0:15,rangeBufferPercent:10});return r;
 }
 export function roof(sheets){
- const c={roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'low',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',starterLengthLF:100,dripEdgeLengthLF:100,ridgeCapLengthLF:20};
+ const c={roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',starterLengthLF:100,dripEdgeLengthLF:100,ridgeCapLengthLF:20};
  if(sheets!==undefined)c.deckingSheets=sheets;
  const r=request('ROOFING_REPLACEMENT',c,{laborPerSquare:{asphalt_shingle:5000},materialCostPerSquare:{asphalt_shingle:10000},tearOffPerSquare:{asphalt_shingle:2000},underlaymentPerSquare:{asphalt_shingle:1500},accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories',starterPerLF:100,dripEdgePerLF:200,ridgeCapPerLF:300,deckingPerSheet:8900,minimumJob:0});
  r.ownerPricing.priceBasisByCategory.material='sell_price';return r;

@@ -33,11 +33,14 @@ test('nonrectangle 600 sqft joints square allowance97.98LF /14697 cents; owner s
   const q=ready(f);assert.equal(line(q,'Saw-cut control joints').calculation.quantity,97.98);assert.equal(line(q,'Saw-cut control joints').amountCents,14697);assert.match(q.disclaimer,/97\.98 linear feet/);assert.match(q.disclaimer,/control-joint length.*confirmed on site/);
   f.ownerPricing.pricing.controlJointSpacingFt=15;assert.match(concreteLandscapeNotices(f.serviceType,f.ownerPricing.pricing).join(' '),/15 feet.*10 feet.*4-inch/);
 });
-test('4–6 inch labor band accepts5, reviews8 naming the band; blank accepts8',()=>{
+test('4–6 inch labor band accepts5, reviews8 naming the band; a blank band is an owner decision still to make',()=>{
   // No cents change is expected from declaring a band; only eligibility changes.
   const f=concreteFixture();Object.assign(f.ownerPricing.pricing,{slabLaborMinThicknessInches:4,slabLaborMaxThicknessInches:6});f.customerInputs.thickness=5;ready(f);
   f.customerInputs.thickness=8;const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,/4–6 inches/);
-  delete f.ownerPricing.pricing.slabLaborMinThicknessInches;delete f.ownerPricing.pricing.slabLaborMaxThicknessInches;ready(f);
+  // A square-foot slab labor price covers a thickness range; an 8 inch slab is
+  // not priced at a 4 inch rate unless the owner says the rate covers it.
+  delete f.ownerPricing.pricing.slabLaborMinThicknessInches;delete f.ownerPricing.pricing.slabLaborMaxThicknessInches;
+  const blank=generateQuoteVNext(f);assert.equal(blank.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(blank.missingOwnerFields.includes('slabLaborMinThicknessInches'));
 });
 test('No chute: pump150000; buggy1.5*3000=4500; no offered method reviews',()=>{
   const f=concreteFixture();f.customerInputs.chuteAccess='no';f.ownerPricing.pricing.placementFlat={pump:150000};
@@ -80,7 +83,10 @@ test('all42 concrete/sod/planting baseline quotes retain their exact8b53169 cent
 });
 test('blank optional values preserve187000-cent patio and355000-cent sod; invalid negative price reviews',()=>{
   //Patio60000labor+27000mix+100000form=187000; sod105000+100000+150000=355000.
-  const f=concreteFixture();for(const field of CONCRETE_FIELDS)f.ownerPricing.pricing[field]='';assert.equal(cents(ready(f)),187000);
+  // The thickness range and the forming-labor choice are required owner decisions, not optional values.
+  const required=['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing'];
+  const f=concreteFixture();for(const field of CONCRETE_FIELDS)if(!required.includes(field))f.ownerPricing.pricing[field]='';assert.equal(cents(ready(f)),187000);
+  for(const field of required){const r=structuredClone(f);r.ownerPricing.pricing[field]='';assert.equal(generateQuoteVNext(r).resultType,'ESTIMATE_REQUIRES_REVIEW',field);}
   const s=sodFixture();for(const field of SOD_FIELDS)s.ownerPricing.pricing[field]=null;assert.equal(cents(ready(s)),355000);
   f.ownerPricing.pricing.shortLoadPerYard=-1;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });

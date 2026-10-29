@@ -363,7 +363,7 @@ function allTradeControls() {
   }, {
     roofSizeMethod:'roof_measured', roofSizeInput:1000,
     existingRoofType:'asphalt_shingle', replacementRoofType:'asphalt_shingle',
-    pitch:'low', stories:1, existingLayers:1, roofComplexity:'simple', serviceScope:'full',
+    pitch:'medium', stories:1, existingLayers:1, roofComplexity:'simple', serviceScope:'full',
     starterLengthLF:100, dripEdgeLengthLF:100, ridgeCapLengthLF:20, deckingSheets:2
   });
   roofReplacement.ownerPricing.priceBasisByCategory.material = 'sell_price';

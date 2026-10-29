@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import {CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
 
 // Price-book saves: a complete flushed sibling file is renamed over the saved book
 // and the directory is flushed before success is reported. Any failed step leaves
@@ -86,7 +87,7 @@ const defaults = { currency:'CAD', markupPercent:0, markupMode:'markup', overhea
   taxMode:'TAX_NONE', taxPercent:0, rangeBufferPercent:0, markupApplies:all(true), peakMonths:[], peakSurchargePercent:0 };
 const patio = rate => ({ serviceType:'CONCRETE_PATIO_SLAB', service:'Patio', source:'MANUAL', active:true, tiers:[],
   feeRules:{ travel:'not_applicable', disposal:'not_applicable', permit:'not_applicable', overhead:'not_applicable' },
-  priceBasisByCategory:all('cost'), taxabilityByCategory:all(false), pricing:{ laborPerSqft:rate, concreteCostPerCubicYard:172, formworkPerLF:2.85, minimumJob:0 } });
+  priceBasisByCategory:all('cost'), taxabilityByCategory:all(false), pricing:{ ...CONCRETE_OWNER_DECISIONS, laborPerSqft:rate, concreteCostPerCubicYard:172, formworkPerLF:2.85, minimumJob:0 } });
 const inputs = { adjoinsExistingConcrete:false, dimensionMethod:'measured_area_perimeter', areaSqft:300, perimeterLF:74, thickness:4, finishType:'broom', demolitionNeeded:false, reinforcement:'none', accessDifficulty:'easy', baseNeeded:false };
 function liveOwner(rate) {
   const ownerId = 'durable-' + crypto.randomUUID();

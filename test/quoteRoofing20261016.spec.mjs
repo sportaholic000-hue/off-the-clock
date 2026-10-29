@@ -186,6 +186,8 @@ test('every legacy roof pitch, story, layer and complexity combination stays on 
     input.customerInputs={...input.customerInputs,pitch:pitchName,stories,existingLayers:layers,roofComplexity:complexity};
     delete input.customerInputs.pitchMethod;delete input.customerInputs.pitchAreaUpTo6Sqft;delete input.customerInputs.pitchArea7To9Sqft;
     const result=generateQuoteVNext(input),key=[pitchName,stories,layers,complexity].join('/');
+    // A "low" pitch is under 4/12, where shingles need the exact slope: review.
+    if(pitchName==='low'){assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW',key);assert.match(result.reviewReason,/below 4\/12/);continue;}
     assert.equal(line(result,'Roofing labor').amountCents,Math.round(20*20000*pitch[pitchName]*story[stories]),key+' labor');
     assert.equal(line(result,'Tear-off').amountCents,Math.round(20*layers*6000*pitch[pitchName]*story[stories]),key+' tear-off');
   }

@@ -13,7 +13,7 @@ export function floor(sqft=200,roomCount=1) {
 export function roof(n=1,{included=false,shares=true}={}) {
  const p={laborPerSquare:map(n,5000),materialCostPerSquare:map(n,10000),tearOffPerSquare:map(n,2000),underlaymentPerSquare:map(n,included?0:100),underlaymentPriceBasis:map(n,'installed_area_sell_price'),minimumJob:0,accessoryPricingMode:'per_square_allin',wasteFactorByComplexity:{simple:0,moderate:0,complex:0},pitchMultiplier:{low:1,medium:1,steep:1,very_steep:1},storyMultiplier:{1:1,2:1,3:1}};
  explicitUnderlaymentFixtureShares('ROOFING_REPLACEMENT',p);if(!shares)delete p.installedMaterialsPercent;
- const f=fixture('ROOFING_REPLACEMENT',p,{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'product_0',replacementRoofType:'product_0',pitch:'low',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
+ const f=fixture('ROOFING_REPLACEMENT',p,{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'product_0',replacementRoofType:'product_0',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
  f.ownerPricing.priceBasisByCategory.material='sell_price';
  f.ownerPricing.knownOfferings=Object.fromEntries(['existingRoofType','replacementRoofType'].map(field=>[field,map(n,()=>randomUUID())]));
  if(included)f.ownerPricing=includedFixture(f.ownerPricing,Object.fromEntries(Object.keys(p.underlaymentPerSquare).map(key=>['underlaymentPerSquare.'+key,'materialCostPerSquare.'+key])));

@@ -1,9 +1,11 @@
 import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
 import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
-import {fixture,flooring} from '../verification/engine-independent/fixtures.mjs';
+import {fixture,flooring,concrete} from '../verification/engine-independent/fixtures.mjs';
 import {synchronizeDependentLinesVNext,roofFlashingVentDefinitionVNext} from '../server/quote-engine-vnext/priceGroundwork.js';
+import {vNextServiceStatus} from '../server/quote-engine-vnext/priceBook.js';
 
 // Accuracy fixes of October 29, 2026. Every expected value below was worked
 // out by hand, from the trade or tax rule named beside it, before the run.
@@ -141,4 +143,208 @@ test('materials-only tax needs the materials share of each priced flashing item,
   const q=generateQuoteVNext(flashingRoof({installedLaborPercent:{'underlaymentPerSquare.asphalt_shingle':0},installedMaterialsPercent:{'underlaymentPerSquare.asphalt_shingle':100}}));
   assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');
   assert.ok(q.missingOwnerFields.includes('installedMaterialsPercent.valleyPerLF'));
+});
+
+// Roof slope rules follow the owner's building code and product type (IRC R905,
+// NBC Table 9.26.3.1), never the product's name. 20 squares at labor 200.00,
+// material 150.00 with 10% waste, tear-off 60.00, underlayment 20.00 and
+// disposal 30.00: 4,000 + 3,300 + 1,200 + 400 + 600 = 9,500.00.
+function slopeRoof(customer={},pricing={},product='asphalt_shingle'){
+  const p=Object.fromEntries(Object.entries({laborPerSquare:20000,materialCostPerSquare:15000,tearOffPerSquare:6000,underlaymentPerSquare:2000,underlaymentPriceBasis:'installed_area_sell_price'}).map(([k,v])=>[k,{[product]:v}]));
+  const f=fixture('ROOFING_REPLACEMENT',{...p,disposalPerSquare:3000,accessoryPricingMode:'per_square_allin',minimumJob:0,
+    pitchInstallationAdder:{seven_to_nine:0.20,ten_to_twelve:0.31},pitchRemovalAdder:{seven_to_nine:0.26,ten_to_twelve:0.41},complexityLaborMultiplier:{simple:1,moderate:1.20,complex:1.40},additionalLayerRemovalFactor:0.70,...pricing},
+    {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:product,replacementRoofType:product,pitchMethod:'whole_roof',pitchBand:'up_to_six',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',...customer});
+  for(const [k,v] of Object.entries(pricing))if(v===undefined)delete f.ownerPricing.pricing[k];
+  for(const [k,v] of Object.entries(customer))if(v===undefined)delete f.customerInputs[k];
+  f.ownerPricing.startingValueAdoptions={roofing_replacement_20261016:{mode:'adopted'}};
+  // Register the product as an offering the customer can name.
+  const facts={};
+  for(const field of ['existingRoofType','replacementRoofType']){const id=randomUUID();f.ownerPricing.knownOfferings[field]={...f.ownerPricing.knownOfferings[field],[product]:id};facts[field]={status:'identified',field,value:product,offeringId:id};}
+  f.customerInputs.confirmedFacts={...f.customerInputs.confirmedFacts,...facts};
+  return f;
+}
+const ready=f=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify([q.reviewReason,q.missingOwnerFields,q.invalidOwnerFields]));assert.equal(sanitizeForCustomerVNext(q).resultType,'INSTANT_ESTIMATE_READY');return q;};
+const review=(f,pattern)=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');if(pattern)assert.match(q.reviewReason,pattern);return q;};
+test('a roofing product is checked by the type the owner gives it, never by its name',()=>{
+  const name='gaf_timberline_hdz';
+  // Unclassified: the owner is asked for the type before it quotes.
+  const unclassified=slopeRoof({},{},name);delete unclassified.ownerPricing.pricing.roofProductClass;
+  assert.ok(generateQuoteVNext(unclassified).missingOwnerFields.includes('roofProductClass.'+name));
+  review(slopeRoof({pitchRisePer12:1},{},name),/Asphalt shingles are installed only on roofs of 2\/12 or steeper/);
+  // Stone-coated steel is a metal shingle: 3/12 (IRC R905.4.2, DECRA), single underlayment.
+  const steel=(rise,pricing={})=>slopeRoof({pitchBand:'under_four',pitchRisePer12:rise},{roofProductClass:{stone_coated_steel_tile:'metal_shingle'},...pricing},'stone_coated_steel_tile');
+  review(steel(2.5),/Metal shingles and stone-coated steel are installed only on roofs of 3\/12 or steeper/);
+  assert.equal(cents(ready(steel(3))),950000);
+  // A manufacturer minimum above the code governs: 3.5/12 entered, so 3/12 goes to review.
+  review(steel(3,{roofProductMinSlope:{stone_coated_steel_tile:3.5}}),/3\.5\/12 or steeper/);
+});
+test('Canadian roofs use NBC Table 9.26.3.1 minimums; US roofs use IRC R905',()=>{
+  const slate=(code,customer)=>slopeRoof(customer,{roofBuildingCode:code,roofProductClass:{slate:'slate'}},'slate');
+  // Slate: NBC 1 in 2 (6/12), IRC 4/12.
+  review(slate('nbc',{pitchRisePer12:5}),/Slate is installed only on roofs of 6\/12 or steeper/);
+  review(slate('nbc',{}),/6\/12 or steeper. The business will confirm/);
+  assert.equal(generateQuoteVNext(slate('nbc',{pitchBand:'seven_to_nine'})).resultType,'INSTANT_ESTIMATE_READY');
+  assert.equal(cents(ready(slate('irc',{pitchRisePer12:4}))),950000);
+  // Clay tile: NBC 6/12; IRC 2.5/12 with two underlayment layers below 4/12 (+ 400.00).
+  const clay=(code,rise)=>slopeRoof({pitchBand:rise<4?'under_four':'up_to_six',pitchRisePer12:rise},{roofBuildingCode:code,roofProductClass:{clay:'clay_tile'}},'clay');
+  review(clay('nbc',5),/Clay tile is installed only on roofs of 6\/12/);
+  assert.equal(cents(ready(clay('irc',3))),990000);
+  // Wood shakes: NBC 1 in 3 (4/12), IRC 3/12.
+  const shake=code=>slopeRoof({pitchBand:'under_four',pitchRisePer12:3.5},{roofBuildingCode:code,roofProductClass:{shake:'wood_shake'}},'shake');
+  review(shake('nbc'),/Wood shakes are installed only on roofs of 4\/12/);
+  assert.equal(cents(ready(shake('irc'))),950000);
+  // Concrete tile under NBC follows the manufacturer (CSA A220): asked for.
+  assert.ok(generateQuoteVNext(slopeRoof({},{roofBuildingCode:'nbc',roofProductClass:{tile:'concrete_tile'}},'tile')).missingOwnerFields.includes('roofProductMinSlope.tile'));
+  // Standing seam: IRC 1/4:12; NBC profiled metal 1 in 4 unless the manufacturer's low-slope system allows less.
+  const seam=(code,pricing={})=>slopeRoof({pitchBand:'under_four',pitchRisePer12:1},{roofBuildingCode:code,roofProductClass:{seam:'standing_seam_metal'},...pricing},'seam');
+  assert.equal(cents(ready(seam('irc'))),950000);
+  review(seam('nbc'),/3\/12 or steeper/);
+  assert.equal(cents(ready(seam('nbc',{roofProductMinSlope:{seam:0.5}}))),950000);
+});
+test('low-slope shingles from 2/12 to under 4/12 are priced by the owner\'s method',()=>{
+  const low=(pricing={})=>slopeRoof({pitchBand:'under_four',pitchRisePer12:3},pricing);
+  // No method chosen: the owner is asked.
+  assert.deepEqual(review(low({lowSlopeAssembly:undefined})).missingOwnerFields,['lowSlopeAssembly']);
+  // Two underlayment layers: + 20 x 20.00 = 400.00.
+  assert.equal(cents(ready(low({lowSlopeAssembly:'double_underlayment'}))),990000);
+  // One self-adhered layer at 45.00 installed replaces the 400.00 underlayment: 9,500 - 400 + 900 = 10,000.00.
+  const sa=ready(low({lowSlopeAssembly:'self_adhered_underlayment',selfAdheredUnderlaymentPerSquare:4500}));
+  assert.equal(cents(sa),1000000);assert.equal(line(sa,'Underlayment'),undefined);assert.equal(line(sa,'Self-adhered underlayment').amountCents,90000);
+  assert.deepEqual(review(low({lowSlopeAssembly:'self_adhered_underlayment'})).missingOwnerFields,['selfAdheredUnderlaymentPerSquare']);
+  // NBC 9.26.8: shingles x 1.5 = 20 x 1.5 x 1.10 = 33 squares x 150 = 4,950; cement 20 x 12 = 240;
+  // labor 20 x 30 = 600; one underlayment layer. 4,000 + 4,950 + 1,200 + 400 + 600 + 240 + 600 = 11,990.00.
+  const nbc=ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined,nbcLowSlopeShingleFactor:1.5,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000}));
+  assert.equal(cents(nbc),1199000);assert.equal(line(nbc,'Low-slope second underlayment layer'),undefined);
+  assert.equal(line(nbc,'Field materials').calculation.quantity,33);
+  assert.deepEqual(review(low({roofBuildingCode:'nbc'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactor']);
+  review(slopeRoof({pitchBand:'under_four',pitchRisePer12:1.5},{roofBuildingCode:'nbc'}),/2\/12 or steeper/);
+});
+test('older roofing services check slope too: a "low" pitch goes to review',()=>{
+  const legacy=pitch=>{const f=slopeRoof({pitch,pitchMethod:undefined,pitchBand:undefined},{pitchMultiplier:{low:1,medium:1,steep:1,very_steep:1}});delete f.ownerPricing.startingValueAdoptions;return f;};
+  review(legacy('low'),/below 4\/12/);
+  assert.equal(generateQuoteVNext(legacy('medium')).resultType,'INSTANT_ESTIMATE_READY');
+  const slate=legacy('medium');Object.assign(slate.ownerPricing.pricing,{roofBuildingCode:'nbc',roofProductClass:{asphalt_shingle:'slate'}});
+  review(slate,/Slate is installed only on roofs of 6\/12/);
+});
+test('eave protection the owner requires is never quoted at zero, except where the code exempts it',()=>{
+  const shares={installedLaborPercent:{...FLASHING_SHARES.installedLaborPercent,iceWaterBarrierPerLF:50},installedMaterialsPercent:{...FLASHING_SHARES.installedMaterialsPercent,iceWaterBarrierPerLF:50}};
+  const eave=(pricing={},customer={})=>{const f=flashingRoof({...shares,eaveProtectionRequired:'yes',...pricing});Object.assign(f.customerInputs,customer);for(const [k,v] of Object.entries(customer))if(v===undefined)delete f.customerInputs[k];return f;};
+  review(eave(),/Eave protection \(ice and water barrier\) is required on this roof/);
+  assert.equal(line(ready(eave({},{iceWaterBarrierLengthLF:100})),'Ice and water barrier').amountCents,40000);
+  // NBC 9.26.5.1(2)(d): none needed at 1 in 1.5 (8/12) or steeper; the IRC has no slope exemption.
+  const steep={pitchMethod:'whole_roof',pitchBand:'ten_to_twelve',pitchAreaUpTo6Sqft:undefined};
+  assert.equal(generateQuoteVNext(eave({roofBuildingCode:'nbc'},steep)).resultType,'INSTANT_ESTIMATE_READY');
+  review(eave({roofBuildingCode:'irc'},steep),/Eave protection/);
+  // The decision itself is required once the barrier is priced separately.
+  assert.ok(generateQuoteVNext(eave({eaveProtectionRequired:undefined})).missingOwnerFields.includes('eaveProtectionRequired'));
+});
+test('a roofing service goes live only once its slope decisions are made',()=>{
+  const status=f=>vNextServiceStatus(f.ownerPricing,f.businessDefaults);
+  const f=slopeRoof();delete f.ownerPricing.pricing.lowSlopeAssembly;
+  let s=status(f);assert.equal(s.status,'NEEDS PRICING');assert.ok(s.missingOwnerFields.includes('lowSlopeAssembly'));
+  f.ownerPricing.pricing.lowSlopeAssembly='double_underlayment';assert.equal(status(f).status,'QUOTING LIVE');
+  delete f.ownerPricing.pricing.roofBuildingCode;s=status(f);assert.ok(s.missingOwnerFields.includes('roofBuildingCode'));
+  // Slate in Canada still goes live: roofs below 6/12 go to review by design.
+  const slate=slopeRoof({},{roofBuildingCode:'nbc',roofProductClass:{slate:'slate'}},'slate');
+  assert.equal(status(slate).status,'QUOTING LIVE');
+});
+
+const customerQuote=f=>{const q=generateQuoteVNext(f);return {q,c:sanitizeForCustomerVNext(q)};};
+test('concrete owner defaults reach the customer: blank or stale answers still get the owner-spec quote',()=>{
+  // 20 x 10 slab, 60 LF form, base included. At 6 in: 200 x 6/324 x 1.10 = 4.0741 yd x 180 = 733.33;
+  // labor 1,200 + forms 1,500 + base 350 = 3,783.33. At 4 in: 488.89 -> 3,538.89.
+  const withDefault=(field,value,drop)=>{const f=concrete();f.ownerPricing.pricing[field]=value;if(drop)delete f.customerInputs[drop];return f;};
+  for(const [f,expected] of [
+    [withDefault('defaultSlabThicknessInches',6,'thickness'),3783.33],
+    [(()=>{const f=withDefault('defaultSlabThicknessInches',6);f.customerInputs.thickness=4;return f;})(),3783.33],
+    [withDefault('defaultReinforcement','none','reinforcement'),3538.89],
+    [withDefault('newSlabBase','included','baseNeeded'),3538.89]
+  ]){
+    const {q,c}=customerQuote(f);
+    assert.equal(q.midEstimate,expected);
+    assert.equal(c.resultType,'INSTANT_ESTIMATE_READY');
+    assert.equal(c.midEstimate,expected);
+  }
+});
+
+function slabJob(customer={},pricing={}){
+  const f=concrete();Object.assign(f.ownerPricing.pricing,pricing);
+  for(const [k,v] of Object.entries(customer)){if(v===undefined)delete f.customerInputs[k];else f.customerInputs[k]=v;}
+  return f;
+}
+const outline=points=>({dimensionMethod:'measured_outline',length:undefined,width:undefined,outlinePoints:[...points,points[0]]});
+const sawCut={controlJointPricing:'excluded',controlJointSpacingFt:10,sawCutPerLF:150};
+test('a blank chute answer is priced and disclosed as Not sure',()=>{
+  // 20 x 10 x 4 in slab: 3,538.89. With a 500.00 pump allowance for Not sure: 4,038.89.
+  let q=generateQuoteVNext(slabJob({chuteAccess:undefined},{placementFlat:{pump:50000},uncertainPlacementMethod:'pump'}));
+  assert.equal(q.midEstimate,4038.89);assert.match(q.disclaimer,/Concrete placement is an allowance/);
+  // No placement priced: same as the chute price, with the extra-placement note.
+  q=generateQuoteVNext(slabJob({chuteAccess:undefined}));
+  assert.equal(q.midEstimate,3538.89);assert.match(q.disclaimer,/Placement other than the truck chute would be extra/);
+  assert.equal(generateQuoteVNext(slabJob({chuteAccess:'yes'})).disclaimer.includes('truck chute'),false);
+});
+test('slabs under 1 ft wide go to review, and no outline can stall the joint layout',()=>{
+  const narrow=/narrower than 1 foot/;
+  assert.match(generateQuoteVNext(slabJob({length:100,width:0.5})).reviewReason,narrow);
+  const start=Date.now();
+  assert.match(generateQuoteVNext(slabJob(outline([{x:0,y:0},{x:100000,y:0},{x:100000,y:0.00001},{x:0,y:0.00001}]),sawCut)).reviewReason,narrow);
+  assert.match(generateQuoteVNext(slabJob(outline([{x:0,y:0},{x:100,y:0},{x:100,y:0.01},{x:0,y:0.01}]),sawCut)).reviewReason,narrow);
+  assert.ok(Date.now()-start<2000);
+  // A 1 ft x 100 ft strip quotes; panels at most 1.5 ft long: ceil(200/3) = 67 panels, 66 cuts x 1 ft = 66 LF.
+  assert.equal(line(generateQuoteVNext(slabJob({length:100,width:1},sawCut)),'Saw-cut control joints').calculation.quantity,66);
+});
+test('joints on L- and U-shaped slabs follow the outline: a joint from each inside corner, then the panel rule',()=>{
+  const cut=points=>line(generateQuoteVNext(slabJob(outline(points),sawCut)),'Saw-cut control joints')?.calculation.quantity;
+  // 8 x 8 L with a 4 x 4 corner out: one 4 ft joint from the inside corner, and the 8 x 4 leg
+  // split into two 4 x 4 panels by a 4 ft joint: 8 LF.
+  assert.equal(cut([{x:0,y:0},{x:8,y:0},{x:8,y:4},{x:4,y:4},{x:4,y:8},{x:0,y:8}]),8);
+  // 30 x 30 L with 10 ft legs: inside-corner joint 10 ft; 30 x 10 leg in three panels, 20 ft;
+  // 10 x 20 leg in two panels, 10 ft: 40 LF.
+  assert.equal(cut([{x:0,y:0},{x:30,y:0},{x:30,y:10},{x:10,y:10},{x:10,y:30},{x:0,y:30}]),40);
+  // 30 x 20 U with a 10 x 10 notch: two 10 ft inside-corner joints, 30 x 10 base in three panels (20 ft): 40 LF.
+  assert.equal(cut([{x:0,y:0},{x:30,y:0},{x:30,y:20},{x:20,y:20},{x:20,y:10},{x:10,y:10},{x:10,y:20},{x:0,y:20}]),40);
+  // A rectangle outline matches the rectangle rule: 40 x 10 -> four panels, 30 LF.
+  assert.equal(cut([{x:0,y:0},{x:40,y:0},{x:40,y:10},{x:0,y:10}]),30);
+  const q=generateQuoteVNext(slabJob(outline([{x:0,y:0},{x:8,y:0},{x:8,y:4},{x:4,y:4},{x:4,y:8},{x:0,y:8}]),sawCut));
+  assert.doesNotMatch(q.disclaimer,/square of the same area/);
+});
+test('a concrete slab labor rate needs its thickness range and a forming-labor decision',()=>{
+  let q=generateQuoteVNext(slabJob({},{slabLaborMinThicknessInches:undefined,slabLaborMaxThicknessInches:undefined}));
+  assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.ok(q.missingOwnerFields.includes('slabLaborMinThicknessInches'));
+  q=generateQuoteVNext(slabJob({thickness:8},{slabLaborMinThicknessInches:4,slabLaborMaxThicknessInches:6}));
+  assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  q=generateQuoteVNext(slabJob({},{formingLaborPricing:undefined}));
+  assert.ok(q.missingOwnerFields.includes('formingLaborPricing'));
+});
+test('forming labor follows the open edge, so a walk costs more than a pad of the same area',()=>{
+  const forming={formingLaborPricing:'per_linear_foot',formingLaborPerLF:200};
+  // 10 x 10 pad: labor 600.00 + concrete 244.44 + forms 40 x 25 = 1,000.00 + base 175.00
+  // + forming 40 x 2.00 = 80.00 -> 2,099.44.
+  assert.equal(generateQuoteVNext(slabJob({length:10,width:10},forming)).midEstimate,2099.44);
+  // 25 x 4 walk, same 100 sq ft: forms 58 x 25 = 1,450.00, forming 58 x 2.00 = 116.00 -> 2,585.44.
+  assert.equal(generateQuoteVNext(slabJob({length:25,width:4},forming)).midEstimate,2585.44);
+});
+test('edges against existing construction get an isolation joint decision and price',()=>{
+  // 20 x 10 with 20 ft against the house: forms 40 x 25 = 1,000.00; isolation 20 x 3.00 = 60.00.
+  // 1,200 labor + 488.89 concrete + 1,000 forms + 350 base + 60 = 3,098.89.
+  const adj={adjoinsExistingConcrete:true,adjoiningEdgeLF:20};
+  const q=generateQuoteVNext(slabJob(adj,{isolationJointPricing:'per_linear_foot',isolationJointPerLF:300}));
+  assert.equal(line(q,'Isolation joints').amountCents,6000);
+  assert.equal(q.midEstimate,3098.89);
+  assert.equal(generateQuoteVNext(slabJob(adj,{isolationJointPricing:'included'})).midEstimate,3038.89);
+  assert.ok(generateQuoteVNext(slabJob(adj,{isolationJointPricing:undefined})).missingOwnerFields.includes('isolationJointPricing'));
+});
+test('a concrete service goes live only after the isolation joint decision, since slabs against a house are common',()=>{
+  const f=concrete();delete f.ownerPricing.pricing.isolationJointPricing;
+  let s=vNextServiceStatus(f.ownerPricing,f.businessDefaults);
+  assert.equal(s.status,'NEEDS PRICING');assert.deepEqual(s.missingOwnerFields,['isolationJointPricing']);
+  f.ownerPricing.pricing.isolationJointPricing='per_linear_foot';
+  s=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.deepEqual(s.missingOwnerFields,['isolationJointPerLF']);
+  f.ownerPricing.pricing.isolationJointPerLF=300;
+  assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
+});
+test('the owner mix shows on the concrete quote',()=>{
+  const c=sanitizeForCustomerVNext(generateQuoteVNext(slabJob({},{concreteMixDescription:'32 MPa air-entrained'})));
+  assert.ok(c.priceDrivers.includes('Concrete mix: 32 MPa air-entrained'));
 });

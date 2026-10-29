@@ -48,7 +48,7 @@ try{
  const meta=await call('GET','/api/pricebook/meta'),map=v=>Object.fromEntries(meta.categories.map(k=>[k,v]));
  const roof=structuredClone(adapterCases.find(e=>e.serviceType==='ROOFING_REPLACEMENT'));
  roof.pricing={laborPerSquare:{asphalt_shingle:90},materialCostPerSquare:{asphalt_shingle:150},tearOffPerSquare:{asphalt_shingle:45},underlaymentPerSquare:{asphalt_shingle:20},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},accessoryPricingMode:'per_square_allin',minimumJob:2500};
- roof.customerInputs={roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'low',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'partial',partialAreaSqft:200};
+ roof.customerInputs={roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'partial',partialAreaSqft:200};
  const concrete=structuredClone(adapterCases.find(e=>e.serviceType==='CONCRETE_PATIO_SLAB'));delete concrete.pricing.basePrepPerSqft;concrete.customerInputs.baseNeeded=false;
  const paint=structuredClone(adapterCases.find(e=>e.serviceType==='INTERIOR_PAINTING'));for(const k of ['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'])delete paint.pricing[k];paint.customerInputs.trimIncluded=false;delete paint.customerInputs.trimLengthLF;
  const siding=structuredClone(adapterCases.find(e=>e.serviceType==='SIDING_REPLACEMENT'));siding.pricing.laborPerSqft.vinyl=2.55;

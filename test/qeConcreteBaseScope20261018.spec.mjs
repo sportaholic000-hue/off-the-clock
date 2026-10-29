@@ -9,6 +9,7 @@ import {webQuote,phone,quoteEmailFixture,bridge,date,db} from './quoteDeliveryBa
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {migrate} from '../server/src/db.js';
+import {withConcreteDecisions} from './ownerDecisionsFixture.mjs';
 import {projectSavedQuoteContext} from '../server/src/voice/voiceQuotePresentation.js';
 
 // Independent expectations precede execution in EXPECTED.md and fixtures.mjs.
@@ -18,6 +19,9 @@ const responses=JSON.parse(readFileSync(new URL('../verification/qe-concrete-bas
 const HISTORICAL_ENGINE_VERSION='quote-engine-vnext-accuracy-20261018-v8';
 const gravel='base gravel material',labor='base excavation and grading labor';
 const labels={gravel:[gravel],grading:[labor],both:[gravel,labor],zero_gravel:[gravel],zero_grading:[labor],zero_both:[gravel,labor],financial:[gravel,labor],fees:[gravel,labor],minimum:[gravel,labor]};
+// The owner's new slab-thickness range is echoed in the internal record; it adds
+// those two numbers and changes no price.
+const priced=numbers=>Object.fromEntries(Object.entries(numbers).filter(([key])=>!/slabLaborM(?:in|ax)ThicknessInches$/.test(key)));
 const optionKinds={'Gravel only':'gravel','Both components':'both','Labor only':'grading'};
 function disclosure(text,kind){
   assert.doesNotMatch(text,/Base preparation is priced for/);
@@ -41,9 +45,12 @@ function requested(result,wanted=true){
   assert.equal(result.pricedScope.facts.some(f=>f.label==='Base preparation included'),false);
 }
 for(const row of before.rows)test(`concrete base disclosure ${row.type} ${row.kind}: every numerical output unchanged`,()=>{
-  assert.equal(before.base,BASE);const result=generateQuoteVNext(structuredClone(row.input)),safe=sanitizeForCustomerVNext(result),wanted=expected[row.kind];
+  // The frozen October 18 books predate the required thickness range, forming
+  // and isolation decisions; give them the decisions that reproduce their pricing.
+  const input=structuredClone(row.input);input.ownerPricing.pricing=withConcreteDecisions(input.ownerPricing.pricing);
+  assert.equal(before.base,BASE);const result=generateQuoteVNext(input),safe=sanitizeForCustomerVNext(result),wanted=expected[row.kind];
   assert.equal(result.resultType,row.resultType);
-  assert.deepEqual(numericalOutput(result),row.numbers);
+  assert.deepEqual(priced(numericalOutput(result)),row.numbers);
   assert.deepEqual(numericalOutput(safe),row.customerNumbers);
   assert.deepEqual(moneyText(safe),row.customerMoneyText);
   if(wanted===null){assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(JSON.stringify(result),/zero/i);assert.equal(safe.midEstimate,undefined);return;}
@@ -59,7 +66,7 @@ for(const type of types)for(const kind of ['none','legacy','gravel','grading','b
   publicScope(w.result,kind);requested(w.result,kind!=='none');
   assert.deepEqual(JSON.parse(w.row.customerResponseJson),w.result);
   const internal=JSON.parse(w.row.internalOutcomeJson).internalResult;
-  assert.deepEqual(numericalOutput(internal),before.rows.find(r=>r.type===type&&r.kind===kind).numbers);
+  assert.deepEqual(priced(numericalOutput(internal)),before.rows.find(r=>r.type===type&&r.kind===kind).numbers);
   const replay=w.submit();assert.equal(replay.status,200);assert.deepEqual(replay.response,w.result);
   if(kind==='gravel'){
     const old=responses.responses.find(r=>r.type===type);
@@ -130,7 +137,7 @@ for(const old of responses.responses)test(`concrete base genuine pre-change rece
     const keys=Object.keys(row);db.prepare(`INSERT INTO ${table} (${keys.join(',')}) VALUES (${keys.map(()=>'?').join(',')})`).run(...keys.map(k=>row[k]));
   }
   savePricebook(h.owner,h.book);
-  const historicalBook=loadPricebook(h.owner),historicalPricing=structuredClone(historicalBook.services[0].pricing),historicalApproval=structuredClone(historicalBook.services[0].quoteDoneApproval);
+  const historicalBook=loadPricebook(h.owner),historicalApproval=structuredClone(historicalBook.services[0].quoteDoneApproval);let historicalPricing=structuredClone(historicalBook.services[0].pricing);
   assert.equal(historicalApproval.engineVersion,HISTORICAL_ENGINE_VERSION);
   assert.equal(bridge.applicationStatus(historicalBook.services[0],historicalBook,date).approvalCurrent,false);
   const replay=()=>{
@@ -149,7 +156,11 @@ for(const old of responses.responses)test(`concrete base genuine pre-change rece
   const refused=submitQuote(h.owner,{...body,reviewRequested:true},{clock:()=>new Date(date.quoteInstant)});
   assert.equal(refused.response.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(refused.response.midEstimate,undefined);
   const shown=bridge.readApplicationBook(h.owner),status=bridge.applicationStatus(book.services[0],book,date);
-  bridge.approveApplicationService(h.owner,book.services[0].id,{revision:shown.revision,confirmConfiguration:true,confirmLegacySettings:true,fields:status.confirmationFields},date);
+  // Engine v14 also needs the owner's slab thickness range, forming labor and
+  // isolation joint decisions before this book can quote again.
+  shown.services[0].pricing=withConcreteDecisions(shown.services[0].pricing);bridge.saveApplicationBook(h.owner,shown,date);
+  const decided=bridge.readApplicationBook(h.owner);historicalPricing=withConcreteDecisions(historicalPricing);
+  bridge.approveApplicationService(h.owner,book.services[0].id,{revision:decided.revision,confirmConfiguration:true,confirmLegacySettings:true,fields:bridge.applicationStatus(loadPricebook(h.owner).services[0],loadPricebook(h.owner),date).confirmationFields},date);
   book=loadPricebook(h.owner);
   assert.equal(book.services[0].quoteDoneApproval.engineVersion,ENGINE_VERSION);
   assert.equal(bridge.applicationStatus(book.services[0],book,date).approvalCurrent,true);

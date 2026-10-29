@@ -31,7 +31,7 @@ export function measuredScopeCases(){
  for(const [key,group,coverage,rate]of [['paint_wall','finish',400,5000],['paint_ceiling','finish',400,5000],['paint_primer','primer',400,4000],['paint_ceiling_primer','primer',400,4000],['paint_prep','prep',100,2000]])configuredScope(f,key,purchase(group,coverage),{[key]:rate},{paintProductsConfirmed:true});
  add('paint-cost-packages',f,299000,'255000 labor +20000 installed trim +ceil(1400*1.1/400)*5000 +ceil(700*1.1/400)*4000 +ceil(700*1.1/100)*2000 =299000.');
  f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:50000},materialCostPerSquare:{asphalt_shingle:30000},tearOffPerSquare:{asphalt_shingle:10000},underlaymentPriceBasis:{asphalt_shingle:'cost'},minimumJob:0,accessoryPricingMode:'per_square_allin'},
- {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'low',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
+ {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
  add('roof-underlayment-packages',configuredScope(f,'roof_underlayment_asphalt_shingle',purchase('roof_roll',500),{roof_underlayment_asphalt_shingle:15000},{roofUnderlaymentScopeConfirmed:true}),1935000,'20*50000 labor +22*30000 field material +20*10000 removal +ceil(2000*1.1/500)*15000 underlayment.');
  return out;
 }

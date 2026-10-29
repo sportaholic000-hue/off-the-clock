@@ -61,8 +61,9 @@ test('asphalt shingles below 2/12 go to review; 2/12 up to 4/12 adds a second un
   // A steep band quotes.
   assert.equal(generateQuoteVNext(roof({pitchBand:'seven_to_nine'})).resultType,'INSTANT_ESTIMATE_READY');
   const live=roof();assert.equal(vNextServiceStatus(live.ownerPricing,live.businessDefaults).status,'QUOTING LIVE');
-  // Code minimums by material name (IRC R905).
-  assert.deepEqual(['architectural_shingle','slate','cedar_shake','metal_shingle','concrete_tile','standing_seam_metal'].map(name=>roofSlopeRule(name)?.min??null),[2,4,3,3,2.5,null]);
+  // Code minimums by the owner's product type (IRC R905); a product name decides nothing.
+  const p={roofBuildingCode:'irc',roofProductClass:{a:'asphalt_shingle',b:'slate',c:'wood_shake',d:'metal_shingle',e:'concrete_tile',f:'standing_seam_metal',g:'lapped_metal_panel',h:'lapped_metal_panel_sealed',slate_look:undefined}};
+  assert.deepEqual(['a','b','c','d','e','f','g','h','slate_look'].map(key=>roofSlopeRule(p,key)?.min??null),[2,4,3,3,2.5,0.25,3,0.5,null]);
 });
 
 test('a large two-storey footprint is confirmed as the ground floor only',()=>{

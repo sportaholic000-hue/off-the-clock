@@ -34,10 +34,13 @@ test('a rectangular 20x30 outline cuts 70 LF like its dimensions; rectangle10x10
   delete f.customerInputs.length;delete f.customerInputs.width;Object.assign(f.customerInputs,{dimensionMethod:'measured_outline',outlinePoints:[{x:0,y:0},{x:20,y:0},{x:20,y:30},{x:0,y:30},{x:0,y:0}]});
   // 30 ft / 10 = 3 panels along, 20 ft / 10 = 2 across: (3-1) x 20 + (2-1) x 30 = 70 LF x 150 = 10500.
   assert.equal(amount(ready(f),'Saw-cut control joints'),10500);
-  // A non-rectangular outline of the same 600 sq ft (L shape 30x10 + 20x15) keeps the area estimate:
-  // (ceil(sqrt600 / 10) - 1) x sqrt600 x 2 = 97.98 LF x 150 = 14697.
+  // An L of the same 600 sq ft (30x10 leg + 20x15 leg) follows its outline. Split at the inside
+  // corner along y=10: corner joint 20 ft; 30x10 leg in three 10x10 panels = 20 ft; 20x15 leg in
+  // 2 x 2 panels (10 x 7.5) = 15 + 20 = 35 ft; total 75 ft. Split along x=20 instead: corner joint
+  // 10 ft; 20x25 in 2 x 3 panels (10 x 8.33) = 25 + 40 = 65 ft; 10x10 leg none; total 75 ft.
+  // 75 LF x 150 = 11250.
   f.customerInputs.outlinePoints=[{x:0,y:0},{x:30,y:0},{x:30,y:10},{x:20,y:10},{x:20,y:25},{x:0,y:25},{x:0,y:0}];
-  assert.equal(amount(ready(f),'Saw-cut control joints'),14697);
+  assert.equal(amount(ready(f),'Saw-cut control joints'),11250);
 });
 test('tree height/bare-root is supported at43000c; ambiguous size definitions and unknown keys review',()=>{
   const f=customPlantFixture();f.customerInputs.plantsBySize={tree_2:1};const tree=f.ownerPricing.pricing.plantSizes.tree_2;delete tree.caliperInches;Object.assign(tree,{heightFt:8,stockType:'bare_root',name:'8 ft tree, bare root'});
@@ -49,8 +52,10 @@ test('tier-specific4–6 and8–12 thickness ranges select the supported option'
   const f=concreteFixture();f.customerInputs.thickness=8;f.ownerPricing.tiers=[{name:'Standard',overrides:{slabLaborMinThicknessInches:4,slabLaborMaxThicknessInches:6}},{name:'Deep',overrides:{slabLaborMinThicknessInches:8,slabLaborMaxThicknessInches:12}}];
   const q=ready(f);assert.deepEqual(q.options.map(o=>o.tierName),['Deep']);
 });
-test('empty range strings retain live readiness without inferring a zero thickness',()=>{
-  const f=concreteFixture();Object.assign(f.ownerPricing.pricing,{slabLaborMinThicknessInches:'',slabLaborMaxThicknessInches:''});const s=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.equal(s.status,'QUOTING LIVE',JSON.stringify(s));
+test('empty range strings ask for the thickness range without inferring a zero thickness',()=>{
+  const f=concreteFixture();Object.assign(f.ownerPricing.pricing,{slabLaborMinThicknessInches:'',slabLaborMaxThicknessInches:''});const s=vNextServiceStatus(f.ownerPricing,f.businessDefaults);
+  assert.equal(s.status,'NEEDS PRICING',JSON.stringify(s));assert.deepEqual(s.missingOwnerFields,['slabLaborMinThicknessInches','slabLaborMaxThicknessInches']);
+  assert.equal(s.ownerDiagnostics.some(d=>d.type==='invalid'),false,'blank is missing, never a zero thickness');
 });
 test('new optional notices preserve invalid service-type diagnostics without throwing',()=>{
   // Expected before execution: invalid numeric type stays NEEDS PRICING.

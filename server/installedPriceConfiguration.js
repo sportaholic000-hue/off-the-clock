@@ -22,6 +22,7 @@ export function installedPriceDefinitions(type,p={}) {
   // Separately priced flashing and vent work is installed work: its price
   // covers labor and materials, split by the owner's shares.
   if(type==='ROOFING_REPLACEMENT')for(const [field,label] of ROOF_FLASHING_VENT_PRICES)if(positiveInstalledPrice(p[field]))fields[field]=label;
+  if(type==='ROOFING_REPLACEMENT'&&positiveInstalledPrice(p.selfAdheredUnderlaymentPerSquare))fields.selfAdheredUnderlaymentPerSquare='Installed self-adhered underlayment';
   // Zero rates still need valid free/included classification at the pricing
   // boundary. They carry no separate installed amount to allocate for tax.
   if(type.startsWith('FLOORING_')&&p.underlaymentPriceBasis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSqft))fields.underlaymentPerSqft='Installed vinyl-plank underlayment';
