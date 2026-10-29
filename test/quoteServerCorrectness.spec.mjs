@@ -69,9 +69,8 @@ test('F01 tiers and markup/tax/minimum consume the corrected labor amount',()=>{
  // The corrected labor changes the selling total, not the material tax base.
  assert.equal(ready(f).midEstimate,5469.45);
  f.businessDefaults.minimumJobPrice=600000;
- // The 92472 top-up carries the taxable share 262778/507528: taxable 262778 x 600000/507528
- // = 310656.36; tax 15% = 46598.45 -> 46598; total 646598.
- assert.equal(ready(f).midEstimate,6465.98);
+ // The 92472 top-up is a charge for the work, untaxed like labor: 600000 + 15% x 262778.
+ assert.equal(ready(f).midEstimate,6394.17);
  f.businessDefaults.taxMode='TAX_ALL';
  assert.equal(ready(f).midEstimate,6900);
 });

@@ -635,11 +635,11 @@ function markupAmount(baseCents, defaults) {
 
 function applyTaxability(lines, ownerPricing, taxMode) {
   for (const line of lines) {
-    // A custom price split's material line is taxed only when the owner taxes
-    // materials; the split is price composition, not a tax decision.
+    // A custom price split's parts are taxed like any other line of their
+    // category: the labor part like labor, the materials part like materials.
     line.taxable = taxMode === 'TAX_ALL'
       ? true
-      : taxMode === 'TAX_MATERIALS' && (line.customPriceSplit ? line.category==='material' && ownerPricing.taxabilityByCategory.material === true : ownerPricing.taxabilityByCategory[line.category] === true);
+      : taxMode === 'TAX_MATERIALS' && ownerPricing.taxabilityByCategory[line.category] === true;
   }
 }
 
@@ -765,15 +765,12 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
     const taxableMarkupBaseCents = markupRecord.eligibleLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
     taxableMarkupCents = markupAmount(taxableMarkupBaseCents, defaults);
     exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxableMarkupCents);
-    // A minimum-charge top-up raises the price of the whole job, so its taxable
-    // part is the job's taxable share before the minimum.
+    // A minimum-charge top-up adds no materials; it is a charge for the work.
+    // It is taxed exactly like labor: untaxed under materials-only tax, taxed
+    // when the owner also taxes labor.
     if(minimumLine){
-      const before=preTaxSubtotalCents-minimumLine.amountCents;
-      const share=before>0?exactDivide(exactTaxableSubtotal,before):exactDecimal(0);
-      const taxedMinimum=exactMultiply(minimumLine.amountCents,share);
-      minimumLine.taxable=exactCompare(taxedMinimum,0)>0;
-      minimumLine.calculation.taxableShare=exactToNumber(share);
-      exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxedMinimum);
+      minimumLine.taxable=ownerPricing.taxabilityByCategory?.labor===true&&minimumLine.amountCents>0;
+      if(minimumLine.taxable)exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,minimumLine.amountCents);
     }
     taxableSubtotalCents=exactToNumber(exactTaxableSubtotal);
   }

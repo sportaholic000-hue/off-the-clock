@@ -10,8 +10,12 @@ export function splitCustomPriceLines(lines,{serviceType,pricing,ownerPricing,de
     if(line.calculation?.ratePath!=='price')return [line];
     const material=exactDivide(exactMultiply(line.amountCents,share),100),labor=exactSubtract(line.amountCents,material);
     const materialCents=exactRound(material),laborCents=line.amountCents-materialCents;
+    // The split only allocates the owner's price between labor and materials.
+    // Both parts keep the price basis the whole price had, so a selling price
+    // is never marked up because a share was entered.
+    const basis=line.priceBasis||ownerPricing.priceBasisByCategory?.[line.category];
     const portion=(category,amountCents,exact)=>({
-      name:category==='labor'?'Custom service labor':'Custom service materials',category,amountCents,
+      name:category==='labor'?'Custom service labor':'Custom service materials',category,amountCents,...(basis?{priceBasis:basis}:{}),
       customPriceSplit:true,ownerVisible:true,customerVisible:false,
       ...(category==='material'?{installedMaterialExactCents:exactEvidence(exact),installedMaterialCents:exactToNumber(exact),materialsPercent:share}:{}),
       ...(amountCents===0?{noCharge:true,noChargeReason:exactToNumber(exact)>0?'rounded_fractional_cent':line.amountCents===0?line.noChargeReason:'configured_zero_percentage'}:{}),
@@ -23,7 +27,10 @@ export function splitCustomPriceLines(lines,{serviceType,pricing,ownerPricing,de
     const months=ownerPricing.peakMonths??defaults.peakMonths,percent=ownerPricing.peakSurchargePercent??defaults.peakSurchargePercent;
     if(months.includes(month)&&percent>0){
       const exact=exactDivide(exactMultiply(labor,percent),100),amountCents=exactRound(exact);
-      if(amountCents>0)result.push({name:'Peak season adjustment on custom labor',category:'labor',amountCents,
+      // A busy-season charge on labor inside a selling price is itself a selling
+      // price, as for installed prices; on a cost price it follows the owner's
+      // surcharge settings like any other busy-season charge.
+      if(amountCents>0)result.push({name:'Peak season adjustment on custom labor',category:'surcharge',...(basis==='sell_price'?{priceBasis:'sell_price'}:{}),amountCents,
         customPriceSplit:true,ownerVisible:true,customerVisible:false,
         calculation:{evidenceVariant:'percentage_derived',ratePath:'customSplit.peakLabor',basisCategory:'labor',
           basisAmountCents:exactToNumber(labor),exactBasisAmountCents:exactEvidence(labor),percent,

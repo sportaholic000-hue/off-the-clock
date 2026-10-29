@@ -452,9 +452,8 @@ test('repairs 2 and 4: tax mode controls minimum ordering and adjustment tax', (
   const inputs = interiorInputs();
   const expected = {
     TAX_NONE: { tax: 0, adjustment: 5000, final: 20000, basis: 'post_markup', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum'] },
-    // The 5000 top-up carries the job's taxable share, 5000 materials / 15000 = 1/3:
-    // tax 10% x (5000 + 5000 / 3) = 666.67 -> 667.
-    TAX_MATERIALS: { tax: 667, adjustment: 5000, final: 20667, basis: 'pre_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'] },
+    // The 5000 top-up is a charge for the work, taxed like labor (untaxed here): 10% x 5000 materials = 500.
+    TAX_MATERIALS: { tax: 500, adjustment: 5000, final: 20500, basis: 'pre_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'] },
     TAX_ALL: { tax: 2000, adjustment: 5000, final: 22000, basis: 'pre_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'] }
   };
   const ownerPricing = interiorService({ minimumJob: 20000 }, { taxabilityByCategory: { ...noTaxability, material: true } });
@@ -466,7 +465,7 @@ test('repairs 2 and 4: tax mode controls minimum ordering and adjustment tax', (
     assert.equal(scenario(result).tax.finalTotalCents, values.final, `${taxMode} final`);
     assert.equal(scenario(result).minimum.basis, values.basis, `${taxMode} basis`);
     assert.deepEqual(scenario(result).order, values.order, `${taxMode} order`);
-    assert.equal(line(result, 'Minimum price adjustment').taxable, taxMode === 'TAX_MATERIALS', `${taxMode} adjustment category`);
+    assert.equal(line(result, 'Minimum price adjustment').taxable, false, `${taxMode} adjustment category`);
   }
 
   const obsoleteControl = interiorService(
@@ -3419,16 +3418,10 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
         .filter(item => ownerPricing.taxabilityByCategory[item.category] === true)
         .reduce((sum, item) => sum + item.amountCents, 0);
       taxableMarkupCents = markupAmount(taxableMarkupBaseCents, config);
-      // A minimum top-up carries the job's taxable share: taxable / (pre-tax - top-up).
-      // Exact: taxable x preTax / before, then tax rounded half up once.
-      const taxableBeforeMinimum = taxableNonMarkupCents + taxableMarkupCents;
-      const beforeMinimumCents = taxPreTaxSubtotalCents - minimumAdjustmentCents;
-      const [num, den] = minimumAdjustmentCents > 0 && beforeMinimumCents > 0
-        ? [BigInt(taxableBeforeMinimum) * BigInt(taxPreTaxSubtotalCents), BigInt(beforeMinimumCents)]
-        : [BigInt(taxableBeforeMinimum), 1n];
-      taxableSubtotalCents = Number(num) / Number(den);
-      const taxNum = num * BigInt(Math.round(config.taxPercent * 100)), taxDen = den * 10000n;
-      taxCents = Number((2n * taxNum + taxDen) / (2n * taxDen));
+      // A minimum top-up is a charge for the work, taxed exactly like labor.
+      taxableSubtotalCents = taxableNonMarkupCents + taxableMarkupCents +
+        (ownerPricing.taxabilityByCategory.labor === true ? minimumAdjustmentCents : 0);
+      taxCents = Math.round(taxableSubtotalCents * config.taxPercent / 100);
       if (taxCents > 0) lines.push({ category: 'tax', amountCents: taxCents });
       minimumBasis = 'pre_tax';
       order = ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'];
@@ -7894,7 +7887,7 @@ test('handoff C: minimum display agrees across entrypoints and does not change n
     handoffTotal(result,20001);assert.deepEqual([result.lowEstimate,result.midEstimate,result.highEstimate],[200.01,200.01,200.01]);
   }
   const taxable=structuredClone(p);taxable.taxabilityByCategory.labor=true;
-  // Every line is taxable labor, so the minimum top-up is fully taxable under either mode: 10% x 20001 = 2000.1 -> 2000.
+  // Every line is taxable labor, and the minimum top-up is taxed like labor, so it is fully taxable under either mode: 10% x 20001 = 2000.1 -> 2000.
   for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',22001,2000,10001],['TAX_ALL',22001,2000,10001]]) {
     const result=currentInspect(generateQuoteVNext(handoffRequest(taxable,c,{taxMode,taxPercent:10,minimumJobPrice:20001,rangeBufferPercent:10})));
     handoffTotal(result,total);assert.equal(scenario(result).tax.taxCents,tax);assert.equal(scenario(result).minimum.adjustmentCents,adjustment);

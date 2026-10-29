@@ -5,6 +5,7 @@ import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {FLOORING_ADDONS,pricePresent} from './quote-engine-vnext/flooringPricing.js';
 
 // Installed bundles, not ordinary material selling rates or package purchases.
+export const ROOF_FLASHING_VENT_PRICES=[['iceWaterBarrierPerSqft','Installed ice and water barrier'],['iceWaterBarrierPerLF','Installed ice and water barrier'],['valleyPerLF','Installed valley work'],['stepFlashingPerLF','Installed step flashing'],['pipeJackEach','Installed pipe jacks'],['ridgeVentPerLF','Installed ridge vent']];
 export function installedPriceDefinitions(type,p={}) {
   const fields={};
   if(type==='FLAT_ROOF_REPLACEMENT')for(const item of FLAT_ROOF_ITEMS)if(hasSurfacePrice(p[item.rate])&&(item.field!=='deckSheets'||p.flatRoofDeckPriceBasis==='installed'))fields[item.rate]=item.label;
@@ -18,6 +19,9 @@ export function installedPriceDefinitions(type,p={}) {
   }
   if(type==='ROOFING_REPLACEMENT')for(const [key,basis] of Object.entries(p.underlaymentPriceBasis||{}))if(basis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSquare?.[key]))fields['underlaymentPerSquare.'+key]=key.replaceAll('_',' ')+' installed roof underlayment';
   if(type==='ROOFING_REPLACEMENT'&&p.deckingPriceBasis==='installed'&&positiveInstalledPrice(p.deckingPerSheet))fields.deckingPerSheet='Installed decking replacement';
+  // Separately priced flashing and vent work is installed work: its price
+  // covers labor and materials, split by the owner's shares.
+  if(type==='ROOFING_REPLACEMENT')for(const [field,label] of ROOF_FLASHING_VENT_PRICES)if(positiveInstalledPrice(p[field]))fields[field]=label;
   // Zero rates still need valid free/included classification at the pricing
   // boundary. They carry no separate installed amount to allocate for tax.
   if(type.startsWith('FLOORING_')&&p.underlaymentPriceBasis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSqft))fields.underlaymentPerSqft='Installed vinyl-plank underlayment';

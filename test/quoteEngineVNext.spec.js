@@ -799,10 +799,8 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   const taxableSubtotal=sum(taxable)+precisionMarkup(sum(taxable.filter(eligible)),b);
   const minimum=Math.max(b.minimumJobPrice,p.pricing[precisionMinimumField(entry)]);
   const adjustment=Math.max(0,minimum-subtotal);
-  // Selective tax: a minimum top-up is taxed at the job's taxable share, so the
-  // taxable basis becomes taxableSubtotal x minimum / subtotal.
-  const [taxN,taxD]=precisionFraction(b.taxPercent);
-  const tax=b.taxMode==='TAX_NONE'?0:b.taxMode==='TAX_ALL'?precisionPercent(Math.max(subtotal,minimum),b.taxPercent):adjustment>0&&subtotal>0?precisionRound(BigInt(taxableSubtotal)*BigInt(minimum)*taxN,BigInt(subtotal)*100n*taxD):precisionPercent(taxableSubtotal,b.taxPercent);
+  // Selective tax: a minimum top-up is a charge for the work, taxed exactly like labor.
+  const tax=b.taxMode==='TAX_NONE'?0:b.taxMode==='TAX_ALL'?precisionPercent(Math.max(subtotal,minimum),b.taxPercent):precisionPercent(taxableSubtotal+(p.taxabilityByCategory.labor===true?adjustment:0),b.taxPercent);
   const total=subtotal+adjustment+tax;
   const amounts=Object.fromEntries(lines.map(l=>[l.name,l.cents]));
   if(markup)amounts.Markup=markup;

@@ -1624,12 +1624,12 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     // without its measurement unit the quote goes to review naming the barrier.
     const iceExcluded = usesNewRoofReplacementRulesVNext(rules) && roofDependentMaterialsVNext(rules, p).includes(c.replacementRoofType);
     if ((iceExcluded || c.iceWaterBarrierLengthLF !== undefined || c.iceWaterBarrierSqft !== undefined) && !['square_feet', 'linear_feet'].includes(p.iceWaterBarrierUnit)) out.push({ path: 'iceWaterBarrierUnit', label: 'Ice and water barrier measurement unit', kind: 'enum', values: ['square_feet', 'linear_feet'] });
-    if (c.iceWaterBarrierLengthLF > 0) add('iceWaterBarrierPerLF', 'Ice and water barrier price per linear foot');
-    if (c.iceWaterBarrierSqft > 0) add('iceWaterBarrierPerSqft', 'Ice and water barrier price per square foot');
-    if (c.valleyLengthLF > 0) add('valleyPerLF', 'Valley preparation price per linear foot');
-    if (c.stepFlashingLengthLF > 0) add('stepFlashingPerLF', 'Step flashing price per linear foot');
-    if (c.pipeJackCount > 0) add('pipeJackEach', 'Pipe jack price each');
-    if (c.ridgeVentLengthLF > 0) add('ridgeVentPerLF', 'Ridge vent price per linear foot');
+    if (c.iceWaterBarrierLengthLF > 0) add('iceWaterBarrierPerLF', 'Installed ice and water barrier price per linear foot (labor and material)');
+    if (c.iceWaterBarrierSqft > 0) add('iceWaterBarrierPerSqft', 'Installed ice and water barrier price per square foot (labor and material)');
+    if (c.valleyLengthLF > 0) add('valleyPerLF', 'Installed valley price per linear foot (labor and material)');
+    if (c.stepFlashingLengthLF > 0) add('stepFlashingPerLF', 'Installed step flashing price per linear foot (labor and material)');
+    if (c.pipeJackCount > 0) add('pipeJackEach', 'Installed pipe jack price each (labor and material)');
+    if (c.ridgeVentLengthLF > 0) add('ridgeVentPerLF', 'Installed ridge vent price per linear foot (labor and material)');
   } else if (serviceType === 'ROOFING_REPAIR') {
     add('laborHourlyRate', 'Roof repair labor rate per hour');
     add('repairMinimum', 'Minimum repair visit price', { kind: 'minimum' });
@@ -1930,7 +1930,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
     if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
     else for(const [key,value] of Object.entries(p[field])){
-      if(!(serviceType==='CUSTOM'&&field==='installedMaterialsPercent'&&key==='price'||serviceType.startsWith('FLOORING_')&&FLOORING_ADDONS.some(a=>a.installed&&a.rate===key&&(serviceType==='FLOORING_INSTALL'||a.rate!=='floorLevelingPerSqft'))||key.startsWith('surfaceExtraRates.')&&Object.hasOwn(surfaceExtraDefinitions(serviceType,p),key.slice('surfaceExtraRates.'.length))||/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
+      if(!(serviceType==='CUSTOM'&&field==='installedMaterialsPercent'&&key==='price'||serviceType.startsWith('FLOORING_')&&FLOORING_ADDONS.some(a=>a.installed&&a.rate===key&&(serviceType==='FLOORING_INSTALL'||a.rate!=='floorLevelingPerSqft'))||key.startsWith('surfaceExtraRates.')&&Object.hasOwn(surfaceExtraDefinitions(serviceType,p),key.slice('surfaceExtraRates.'.length))||/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||serviceType==='ROOFING_REPLACEMENT'&&['iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF'].includes(key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
       else if(field==='installedMaterialsPercent'&&typeof p.installedLaborPercent?.[key]==='number'&&Number.isFinite(p.installedLaborPercent[key])&&p.installedLaborPercent[key]>=0&&p.installedLaborPercent[key]<=100&&exactCompare(exactAdd(value,p.installedLaborPercent[key]),100)>0)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Materials and labor portions cannot total more than 100%.');
     }
   }

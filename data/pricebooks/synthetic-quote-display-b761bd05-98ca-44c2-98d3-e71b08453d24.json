@@ -1,0 +1,132 @@
+{
+  "ownerId": "synthetic-quote-display-b761bd05-98ca-44c2-98d3-e71b08453d24",
+  "services": [
+    {
+      "id": "daf92226-e519-4761-b7c1-76d08f8192a9",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "CUSTOM",
+      "service": "[SYNTHETIC] Fixed service",
+      "pricing": {
+        "customPricingMode": "fixed",
+        "customChargeClassification": "labor",
+        "price": 100000,
+        "unit": "flat",
+        "minimumJob": 0
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "sell_price",
+        "material": "sell_price",
+        "removal": "sell_price",
+        "prep": "sell_price",
+        "addon": "sell_price",
+        "equipment": "sell_price",
+        "travel": "sell_price",
+        "disposal": "sell_price",
+        "permit": "sell_price",
+        "overhead": "sell_price",
+        "surcharge": "sell_price"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": true,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [
+        1,
+        10
+      ],
+      "peakSurchargePercent": 20,
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "daf92226-e519-4761-b7c1-76d08f8192a9",
+        "serviceType": "CUSTOM",
+        "source": "MANUAL",
+        "ownerId": "synthetic-quote-display-b761bd05-98ca-44c2-98d3-e71b08453d24",
+        "operationId": "183430fd-7b2a-4536-abba-28209b79bf95",
+        "createdAt": "2026-10-29T17:27:50.199Z"
+      },
+      "priceMetadata": {
+        "price": {
+          "changedAt": "2026-10-29T17:27:50.220Z"
+        },
+        "minimumJob": {
+          "changedAt": "2026-10-29T17:27:50.220Z"
+        }
+      },
+      "quoteDoneApproval": {
+        "ownerId": "synthetic-quote-display-b761bd05-98ca-44c2-98d3-e71b08453d24",
+        "serviceId": "daf92226-e519-4761-b7c1-76d08f8192a9",
+        "operationId": "0ed75533-04c5-4c89-8303-ae668582050f",
+        "approvedAt": "2026-10-29T17:27:50.644Z",
+        "engineVersion": "quote-engine-vnext-audit-20261029-v13",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "ff79a585ddd991ad38875d9869c77a3722251681ba22d126340899688aa5eea2",
+        "sectionDigests": {
+          "service.feeRules": "54239c15533db032f332f1fbe7de723410973ff9306d980ac8b64ad49ef01fc4",
+          "service.id": "ec7020c4b848363c48e7f9848f8abcde032f38017640b6a624bd85a8793cdd54",
+          "service.knownOfferings": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "service.origin": "cf205deb6193f31a4b7b891fad82489094a93d4dae13387e1dfae618d58a6913",
+          "service.peakMonths": "17c4b27ce8d2e34e7cbde58d8666e8d9b9a3beb231cd8dc6441e79701f00d7a5",
+          "service.peakSurchargePercent": "f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b",
+          "service.priceBasisByCategory": "62d7595cb8aabebe47c5bdcb06bfb0dbd8540955c65c6b9ff5885d9d2c9ef37b",
+          "service.pricing": "39ec6c83f281ca39e1edf02030848141a7fe6c3b3cca0bc33c53ff73cd310fc4",
+          "service.service": "8605c1f3c45b01131d641294da757ef29d96972cb190c7352c1d0b77b708a346",
+          "service.serviceType": "4fd1d1325b47f5c42cf722479e32927e8ca4ceca606759261ee6917b7931a25f",
+          "service.source": "bf31436c2e6664e5d958496034851d9fecd0cfafdcee017b059d2cc593fc5b65",
+          "service.taxabilityByCategory": "d529f88a0f6df39ddba40dc3fecb8b57d0d6104c80316d1298a61a56bc36dffd",
+          "service.tiers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "businessDefaults": "d974ec88e90a9c9c5d334d983c5ec9761fc75798cffb37b1bc890494b5f4719d",
+          "legacySettings": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "feeSelections": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    }
+  ],
+  "defaults": {
+    "currency": "CAD",
+    "quoteTimeZone": "UTC",
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_MATERIALS",
+    "taxPercent": 15,
+    "rangeBufferPercent": 10,
+    "markupApplies": {
+      "labor": true,
+      "material": true,
+      "removal": true,
+      "prep": true,
+      "addon": true,
+      "equipment": true,
+      "travel": true,
+      "disposal": true,
+      "permit": true,
+      "overhead": true,
+      "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+  },
+  "updatedAt": "2026-10-29T17:27:50.645Z"
+}

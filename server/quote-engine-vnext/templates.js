@@ -522,7 +522,7 @@ function calculateRoofReplacement(c, p, ctx) {
   }
   if (c.deckingSheets !== undefined) {
     recordMeasurement(out, 'deckingSheets', c.deckingSheets, 'confirmed sheets');
-    if (c.deckingSheets > 0 || deckingUnitPrice !== undefined) add(out, makeLine({ name: 'Decking replacement', category: 'material', quantity: c.deckingSheets, allowZeroQuantity: true, unit: 'confirmed sheets', rateCents: p.deckingPerSheet, ratePath: 'deckingPerSheet', ...(c.deckingSheets > 0 ? {customerDriver: `${c.deckingSheets} decking sheet${c.deckingSheets === 1 ? '' : 's'} included`} : {}) }));
+    if (c.deckingSheets > 0 || deckingUnitPrice !== undefined) add(out, makeLine({ name: 'Decking replacement', category: 'material', ...(p.deckingPriceBasis === 'installed' ? { priceBasis: 'sell_price' } : {}), quantity: c.deckingSheets, allowZeroQuantity: true, unit: 'confirmed sheets', rateCents: p.deckingPerSheet, ratePath: 'deckingPerSheet', ...(c.deckingSheets > 0 ? {customerDriver: `${c.deckingSheets} decking sheet${c.deckingSheets === 1 ? '' : 's'} included`} : {}) }));
   }
 
   out.feeScope.disposal = layers > 0;
@@ -643,7 +643,8 @@ function calculateRoofReplacementAdopted(c,p,ctx){
       ['Ice and water barrier',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierSqft':'iceWaterBarrierLengthLF',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierPerSqft':'iceWaterBarrierPerLF',p.iceWaterBarrierUnit==='square_feet'?'square feet':'linear feet'],
       ['Valley preparation','valleyLengthLF','valleyPerLF','linear feet'],['Step flashing','stepFlashingLengthLF','stepFlashingPerLF','linear feet'],['Pipe jacks','pipeJackCount','pipeJackEach','each'],['Ridge vent','ridgeVentLengthLF','ridgeVentPerLF','linear feet']
     ];
-    for(const [name,input,rate,unit] of optional)if(c[input]!==undefined&&c[input]>0)add(out,makeLine({name,category:'material',quantity:c[input],unit,rateCents:p[rate],ratePath:rate}));
+    // Installed work priced by the owner: a selling price, never marked up.
+    for(const [name,input,rate,unit] of optional)if(c[input]!==undefined&&c[input]>0)add(out,makeLine({name,category:'material',priceBasis:'sell_price',quantity:c[input],unit,rateCents:p[rate],ratePath:rate}));
   }
   const deckingUnitPrice=optionalMoney(p.deckingPerSheet,'deckingPerSheet');
   if(deckingUnitPrice!==undefined){
@@ -652,7 +653,7 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   }
   if(c.deckingSheets!==undefined){
     recordMeasurement(out,'deckingSheets',c.deckingSheets,'confirmed sheets');
-    if(c.deckingSheets>0||deckingUnitPrice!==undefined)add(out,makeLine({name:'Decking replacement',category:'material',quantity:c.deckingSheets,allowZeroQuantity:true,unit:'confirmed sheets',rateCents:deckingUnitPrice,ratePath:'deckingPerSheet',...(c.deckingSheets>0?{customerDriver:`${c.deckingSheets} decking sheet${c.deckingSheets===1?'':'s'} included`}:{})}));
+    if(c.deckingSheets>0||deckingUnitPrice!==undefined)add(out,makeLine({name:'Decking replacement',category:'material',...(p.deckingPriceBasis==='installed'?{priceBasis:'sell_price'}:{}),quantity:c.deckingSheets,allowZeroQuantity:true,unit:'confirmed sheets',rateCents:deckingUnitPrice,ratePath:'deckingPerSheet',...(c.deckingSheets>0?{customerDriver:`${c.deckingSheets} decking sheet${c.deckingSheets===1?'':'s'} included`}:{})}));
   }
   out.feeScope.disposal=layers>0;
   if(disposalRate||p.disposalPerSquare===0)addDisposalOverride(out,p,'disposalPerSquare',exactTearOffSquares,'existing-layer roofing squares','Roofing disposal');
