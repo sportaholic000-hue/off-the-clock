@@ -1,4 +1,4 @@
-import {quoteValidityEndsAtVNext} from '../quote-engine-vnext/quoteValidity.js';
+import {quoteValidityEndsAtVNext} from './quoteDoneBridge.js';
 
 function record(value) {
   if (value && typeof value === 'object' && !Array.isArray(value)) return value;
