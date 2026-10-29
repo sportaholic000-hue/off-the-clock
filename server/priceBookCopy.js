@@ -1,5 +1,6 @@
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext,tierDependentDefinitionVNext} from './quote-engine-vnext/priceGroundwork.js';
 import {ROOF_SLOPE_FIELD_COPY} from './quote-engine-vnext/roofSlopeRules.js';
+import {repairBands} from './quote-engine-vnext/flatRoofRepairPricing.js';
 
 const copy = (label, help) => ({ label, help });
 
@@ -53,6 +54,15 @@ const roofMaterialReceiptActive=(service,pricing,materialType,pricesInDollars,ti
 // whether flashing and vent work is still inside a product's material price.
 // Resolve this for every effective product so a tier override cannot inherit
 // wording from a base price whose receipt it no longer matches.
+// Repair size bands are the owner's own limits when set, so the help states
+// the limits this service actually uses.
+const REPAIR_BAND_TEXT=/small is under [\d.,]+ sq ft, medium is [\d.,]+ to [\d.,]+ sq ft, large is over [\d.,]+ sq ft/;
+export function repairBandPresentationCopy(definition,serviceType,pricing={}) {
+  if(!['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'].includes(serviceType)||typeof definition?.help!=='string'||!REPAIR_BAND_TEXT.test(definition.help))return definition;
+  const [small,medium]=repairBands(serviceType,pricing).map(value=>value.toLocaleString('en-US',{maximumFractionDigits:2}));
+  return {...definition,help:definition.help.replace(REPAIR_BAND_TEXT,`small is under ${small} sq ft, medium is ${small} to ${medium} sq ft, large is over ${medium} sq ft`)};
+}
+
 export function roofMaterialPresentationCopy(definition,service={},pricing=service?.pricing||{},options={}) {
   if(definition?.field!=='materialCostPerSquare')return definition;
   const mode=pricing?.accessoryPricingMode==='itemized'?'itemized':'per_square_allin';

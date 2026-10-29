@@ -12,19 +12,24 @@ export function validCustomerQuoteRange(value) {
     (value.midEstimate===undefined||amount(value.midEstimate)&&value.lowEstimate<=value.midEstimate&&value.midEstimate<=value.highEstimate);
 }
 
-function sharedSurfaceExclusions(estimate) {
+function sharedSurfaceExclusions(estimate,keep=label=>SURFACE_EXTRA_LABELS.has(label)) {
   // Unknown evidence is different from a verified empty intersection. Optional
   // historical junk cannot erase the exclusions of the valid priced options.
   if(!record(estimate)||estimate.options!==undefined&&!Array.isArray(estimate.options))return null;
   const options=(Array.isArray(estimate.options)&&estimate.options.length?estimate.options:[estimate]).filter(validCustomerQuoteRange);
   if(!options.length||options.some(option=>!Array.isArray(option.skippedAddons)||option.skippedAddons.some(label=>typeof label!=='string')))return null;
   const optionExclusions=options.map(option=>option.skippedAddons
-    .filter(label=>typeof label==='string'&&SURFACE_EXTRA_LABELS.has(label)));
+    .filter(label=>typeof label==='string'&&keep(label)));
   return [...new Set(optionExclusions[0])].filter(label=>optionExclusions.every(labels=>labels.includes(label)));
 }
 
 const surfaceWorkItems=estimate=>(sharedSurfaceExclusions(estimate)||[])
   .map(description=>({source:'unpriced_surface_work',description}));
+// In every other trade, each extra the customer asked for that the business
+// has not priced (furniture moving, leveling of unknown depth, edging, a
+// ponding-water surcharge) is left out of the estimate, so the quote is partial.
+const requestedWorkItems=estimate=>(sharedSurfaceExclusions(estimate,()=>true)||[])
+  .map(description=>({source:'unpriced_requested_work',description}));
 
 export const ADDITIONAL_WORK_NOTICE = 'The business owner will estimate this additional work on site and agree its price with you before that work starts. It is not included in the estimate for the selected service.';
 export const SELECTED_WORK_NOTICE = 'This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.';
@@ -47,7 +52,7 @@ export function discloseQuoteScope(result,service,definition,submission,revision
   const additionalWork=declaredAdditionalWork(submission,clarifiedFields);
   if(['INTERIOR_PAINTING','EXTERIOR_PAINTING','SIDING_REPLACEMENT'].includes(service.serviceType)){
     additionalWork.push(...surfaceWorkItems(result));
-  }
+  }else additionalWork.push(...requestedWorkItems(result));
   const scope={pricedScope,submittedDetails,scopeNotice:SELECTED_WORK_NOTICE,fullJobTotal:null};
   if(!additionalWork.length)return {...result,...scope};
   // A partial response has no top-level amount or options that an API consumer

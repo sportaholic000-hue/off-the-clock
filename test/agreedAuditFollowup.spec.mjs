@@ -48,7 +48,8 @@ for(const [id,key,total,amount,name] of [['siding-removal-itemized','siding_remo
  input.ownerPricing.pricing.scopeDetails[key].description='[SYNTHETIC] Explicit scope without terminal punctuation';
  const q=generateQuoteVNext(input);
  assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,total);
- assert.match(q.disclaimer,/without terminal punctuation\. No tax added\./);
+ // Siding removal also states its asbestos and lead-paint exclusion.
+ assert.match(q.disclaimer,/without terminal punctuation\. (?:Removal does not include testing for or removing asbestos or lead paint\. Older siding can contain them; if found, that work is priced separately\. )?No tax added\./);
  const line=q.lineItems.find(l=>l.name===name);assert.ok(line);assert.equal(line.category,'removal');assert.equal(line.amountCents,amount*100);
  input.ownerPricing.pricing.scopeDetails[key].description+='.';
  assert.doesNotMatch(generateQuoteVNext(input).disclaimer,/punctuation\.\./);

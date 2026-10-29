@@ -15,6 +15,7 @@ import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOffe
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
 import {jobTaxPercent,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
+import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -57,7 +58,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-audit-20261029-v13';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261029-v14';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1195,6 +1196,8 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
+  const removalExclusion = buildingAgeDisclosure(serviceType, customerInputs, pricing);
+  if (removalExclusion) template.disclosures.push(removalExclusion);
   if (seasonAssumed) template.disclosures.push(`Priced at the busy-season rate because no work month was given. The price is lower if the work is scheduled outside ${busySeasonMonths(seasonAssumed).map(workMonthName).join(', ')}.`);
   if (travelOutsideZones) {
     const mode = ownerPricing.feeRules.travel;
@@ -1530,6 +1533,9 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   // Sales tax follows the job's location when the owner says so: the rate
   // comes from the province (CRA place of supply for real property services)
   // or the owner's ZIP tax zones. Math still reads only taxMode and taxPercent.
+  // An activation check answers the building-age question with a building
+  // that has no lead-paint or asbestos concern.
+  if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1990_or_later' };
   let taxLocation = null;
   if (taxByJobLocationActive(businessDefaults)) {
     if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults) };
@@ -1974,6 +1980,7 @@ export function customerFieldClassesVNext(serviceType){
       ...(OFFERING_TYPES.includes(serviceType)?['installed','itemized'].flatMap(offeringMode=>Object.entries(offeringContract(serviceType,{offeringMode,offeringDetails:{}}).fields)):[]),
       ...Object.values(scopeDefinitions(serviceType,{})).flatMap(definition=>Object.entries(definition.customerFields||{}))
     ];
+    if([...PAINTING_AGE_TYPES,...REMOVAL_AGE_TYPES].includes(serviceType))entries.push(['buildingAge',BUILDING_AGE_FIELD]);
     const known=new Set(['postalCode','workMonth']),measurements=new Set();
     for(const [name,field] of entries){
       known.add(name);

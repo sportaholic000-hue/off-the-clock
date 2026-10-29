@@ -12,7 +12,7 @@ import {ownerCallFixture} from './helpers/ownerCallFixture.mjs';
 import {createOwnerReportService} from '../server/src/ownerReportService.js';
 import {createOwnerWorkflowService} from '../server/src/ownerWorkflowService.js';
 import {integratedBaselineExpectation} from './finalIntegrationMetadata20261017Fixture.mjs';
-import {withConcreteDecisions,CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
+import {withConcreteDecisions,withPaintingDecisions,CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
 
 // Synthetic inputs; independent oracles were written in EXPECTATIONS.md first.
 const fixture=()=>{const f=custom();Object.assign(f.businessDefaults,{currency:'CAD',rangeBufferPercent:10});f.ownerPricing.pricing.price=97600;return f;};
@@ -22,7 +22,10 @@ const baseline=JSON.parse(gunzipSync(readFileSync(new URL('../verification/every
 for(const row of baseline)test('unchanged pinned quote and book: '+row.id,()=>{
  // The pinned v7 concrete book predates the required thickness range, forming
  // and isolation decisions; it quotes with the decisions that keep its pricing.
+ // The pinned painting books predate the year-built question; prices that
+ // cover lead-safe work keep them quoting without it.
  const input=structuredClone(row.input);if(input.serviceType.startsWith('CONCRETE_'))input.ownerPricing.pricing=withConcreteDecisions(input.ownerPricing.pricing);
+ if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(input.serviceType))input.ownerPricing.pricing=withPaintingDecisions(input.ownerPricing.pricing);
  assert.deepEqual(stable(generateQuoteVNext(input)),integratedBaselineExpectation(row));
  assert.deepEqual(convertApplicationBook(convertApplicationBook({services:[row.input.ownerPricing],defaults:row.input.businessDefaults},'toDollars'),'toCents'),row.book);
 });

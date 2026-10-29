@@ -33,7 +33,11 @@ export function withRoofDecisions(pricing={}){
   return {roofBuildingCode:'irc',lowSlopeAssembly:'double_underlayment',eaveProtectionRequired:'no',...pricing,
     roofProductClass:{...Object.fromEntries([...keys].map(key=>[key,fixtureRoofClass(key)])),...(pricing.roofProductClass||{})}};
 }
+// Painting: prices that already cover lead-safe work, so the customer is not
+// asked the year built.
+export const withPaintingDecisions=pricing=>({leadSafePainting:'included',...pricing});
 export const withOwnerDecisions=(serviceType,pricing)=>typeof serviceType!=='string'?pricing
   :serviceType.startsWith('CONCRETE_')?withConcreteDecisions(pricing)
   :serviceType==='ROOFING_REPLACEMENT'?withRoofDecisions(pricing)
+  :['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(serviceType)?withPaintingDecisions(pricing)
   :pricing;

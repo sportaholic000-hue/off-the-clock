@@ -1558,11 +1558,12 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
         if(item.rateCents===undefined){addonContext.skipAddon(item.label);result.disclosures.push(item.label+' is excluded and needs a separate on-site estimate.');}
         else add(result,makeLine({name:item.label,category:'addon',quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,priceBasis:'sell_price'}));
       }
+      // Doors and windows are counted, not measured: an itemized paint
+      // quantity uses a standard allowance for each, on every area route.
+      const counted=customerInputs._surfaceGeometry;
+      if(serviceType!=='SIDING_REPLACEMENT'&&counted&&(counted.doors>0||counted.windows>0)&&result.lineItems.some(line=>line.category==='material'))result.disclosures.push(OPENING_ALLOWANCE_NOTE);
       if(['room_dimensions','building_dimensions'].includes(customerInputs.areaInputMethod)){
         const geometry=customerInputs._surfaceGeometry;
-        // Doors and windows are counted, not measured: paint quantity uses a
-        // standard allowance for each.
-        if(serviceType!=='SIDING_REPLACEMENT'&&(geometry.doors>0||geometry.windows>0))result.disclosures.push(OPENING_ALLOWANCE_NOTE);
         recordQuantityDerivation(result,{name:'Wall area from supplied dimensions',formula:customerInputs.areaInputMethod==='room_dimensions'?'sum(2 * (room length + room width) * room height) minus openings 100 square feet or larger, or floor-to-ceiling openings wider than 5 feet':'perimeter * wall height + sum(gable width * gable height / 2), with the selected opening convention',inputs:{method:customerInputs.areaInputMethod},result:geometry.labor,unit:'square feet',usedBy:['Wall labor','Siding labor']});
       }
     }

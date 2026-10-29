@@ -10,7 +10,7 @@ export function integratedBaselineExpectation(row) {
   const result=structuredClone(row.result),type=row.input.serviceType;
   // The frozen v7 evidence stays intact. Only these known live-result metadata
   // paths advance; every price, scope and other assertion still compares fully.
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-audit-20261029-v13');
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261029-v14');
   const advanceVersion=record=>{
     assert.equal(record.engineVersion,'quote-engine-vnext-date-context-20261006-v7');
     record.engineVersion=ENGINE_VERSION;
@@ -83,6 +83,13 @@ export function integratedBaselineExpectation(row) {
       }};
       add(result);
     }
+  }
+  // Painting year-built question (October 29, 2026): the pinned books quote
+  // with prices that cover lead-safe work, and the internal record echoes that
+  // choice. Prices are unchanged.
+  if(type==='INTERIOR_PAINTING'||type==='EXTERIOR_PAINTING'){
+    const echo=value=>{if(Array.isArray(value))value.forEach(echo);else if(value&&typeof value==='object'){if(value.ownerConfiguration?.pricing)value.ownerConfiguration.pricing={leadSafePainting:'included',...value.ownerConfiguration.pricing};for(const v of Object.values(value))echo(v);}};
+    echo(result);
   }
   return result;
 }

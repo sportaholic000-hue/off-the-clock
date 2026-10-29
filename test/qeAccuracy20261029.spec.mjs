@@ -477,3 +477,60 @@ test('tax by job location asks the customer for a postal or ZIP code',async()=>{
   assert.equal(asked({taxMode:'TAX_ALL',taxPercent:13,taxByJobLocation:true}),true);
   assert.equal(asked({taxMode:'TAX_NONE',taxPercent:0,taxByJobLocation:true}),false);
 });
+
+// Year built. EPA RRP: painting that disturbs paint in a home built before
+// 1978 needs a lead-safe certified firm. OSHA 1926.1101: vinyl and asphalt
+// flooring installed in 1980 or earlier is treated as asbestos-containing.
+// WorkSafeBC: a hazardous-materials survey before renovating a pre-1990 building.
+test('painting asks when the home was built and reviews homes that may have lead paint',()=>{
+  for(const mode of ['installed','itemized']){
+    const f=offeringFixture('INTERIOR_PAINTING',mode);delete f.ownerPricing.pricing.leadSafePainting;
+    assert.deepEqual(generateQuoteVNext(f).missingCustomerFields,['buildingAge']);
+    const at=(age,rule)=>{const g=structuredClone(f);if(age)g.customerInputs.buildingAge=age;if(rule)g.ownerPricing.pricing.leadSafePainting=rule;return g;};
+    const priced=cents(ready(at(null,'included')));
+    // The price never changes with the answer; only whether it is quoted.
+    assert.equal(cents(ready(at('1990_or_later'))),priced);
+    assert.equal(cents(ready(at('1978_to_1989'))),priced);
+    for(const age of ['before_1978','not_sure'])review(at(age),/lead/);
+    // An owner who reviews up to 1990 (Health Canada: paint to 1990 may contain lead).
+    review(at('1978_to_1989','review_before_1990'),/lead/);
+    assert.equal(cents(ready(at('1990_or_later','review_before_1990'))),priced);
+    // Owners whose prices cover lead-safe work are not asked.
+    assert.equal(generateQuoteVNext(at(null,'included')).resultType,'INSTANT_ESTIMATE_READY');
+    assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
+  }
+});
+test('removal states that asbestos and lead-paint work is excluded, or reviews older buildings when the owner asks',()=>{
+  // 200 sq ft of new tile; 250 sq ft of old vinyl out at 1.00 = 250.00.
+  const job=(rule,age)=>{const f=flooring('tile',200);f.ownerPricing.pricing.removalPerSqft={vinyl:100};if(rule)f.ownerPricing.pricing.olderMaterialRemoval=rule;
+    f.customerInputs=confirmedFixtureInputs({...f.customerInputs,existingFloorType:'vinyl',removalNeeded:true,removalAreaSqft:250,...(age?{buildingAge:age}:{})});return f;};
+  let q=ready(job());assert.equal(line(q,'Existing flooring removal').amountCents,25000);
+  assert.match(q.disclaimer,/Removal does not include testing for or removing asbestos or lead paint\. Older flooring can contain them/);
+  assert.deepEqual(generateQuoteVNext(job('review_before_1990')).missingCustomerFields,['buildingAge']);
+  for(const age of ['before_1978','1978_to_1989','not_sure'])review(job('review_before_1990',age),/asbestos/);
+  q=ready(job('review_before_1990','1990_or_later'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);assert.doesNotMatch(q.disclaimer,/asbestos/);
+  // No removal: nothing is asked and nothing is excluded.
+  const keep=flooring('tile',200);keep.ownerPricing.pricing.olderMaterialRemoval='review_before_1990';assert.doesNotMatch(ready(keep).disclaimer,/asbestos/);
+  const bad=flooring('tile',200);bad.ownerPricing.pricing.olderMaterialRemoval='always';assert.ok(generateQuoteVNext(bad).invalidOwnerFields.includes('olderMaterialRemoval'));
+});
+test('an extra the customer asked for that has no price makes the quote partial in every trade',async()=>{
+  const {customerContractForVNext}=await import('../server/quote-engine-vnext/contracts.js');
+  const {discloseQuoteScope}=await import('../server/src/quoteScopeDisclosure.js');
+  const present=f=>{const q=sanitizeForCustomerVNext(generateQuoteVNext(f)),contract=customerContractForVNext(f.serviceType,f.ownerPricing.pricing);
+    return discloseQuoteScope(q,f.ownerPricing,{customerFields:Object.entries(contract.fields).map(([name,d])=>({name,...d}))},{customerInputs:f.customerInputs},1);};
+  // Toilets requested; the business has no toilet price. 200 sq ft tile stays 1,780.00.
+  const f=flooring('tile',200);f.customerInputs.toiletPullResetCount=1;
+  const shown=present(f);
+  assert.equal(shown.resultType,'PARTIAL_ESTIMATE_READY');
+  assert.deepEqual(shown.additionalWork,[{source:'unpriced_requested_work',description:'Toilet pull and reset'}]);
+  assert.equal(shown.pricedEstimate.options[0].midEstimate,1780);
+  // Nothing extra requested: an ordinary quote.
+  assert.equal(present(flooring('tile',200)).resultType,'INSTANT_ESTIMATE_READY');
+});
+test('painting states the door and window paint allowance on the direct-area route too',()=>{
+  // 500 sq ft of wall, 2 doors and 3 windows: paint on 500 - 40 - 45 = 415 sq ft,
+  // 2 coats x 1.10 = 913 sq ft of finish material.
+  const f=offeringFixture('INTERIOR_PAINTING','itemized');Object.assign(f.customerInputs,{doorCount:2,windowCount:3,buildingAge:'1990_or_later'});
+  const q=ready(f);assert.equal(line(q,'Wall finish materials').calculation.quantity,913);
+  assert.match(q.disclaimer,/allows 20 square feet for each door and 15 square feet for each window/);
+});

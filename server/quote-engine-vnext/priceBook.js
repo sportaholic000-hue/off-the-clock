@@ -9,6 +9,7 @@ import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivation
 import {exactCompare} from './exactMath.js';
 import {hasTravelZones,sampleCustomerCodeForZones} from '../travelZones.js';
 import {sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
+import {BUILDING_AGE_OWNER_COPY,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES} from './buildingAgeRules.js';
 import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
 import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants} from './fencePricing.js';
 import {surfaceActivationInput} from './surfacePricing.js';
@@ -140,6 +141,8 @@ const NEW_FIELD_COPY = {
   mulchOrderIncrementCubicYards: {label:'Mulch order increment',unit:'cubic yards',help:'Optional purchase increment by mulch product. Material rounds up after configured overage; installation labor remains on installed or customer-stated yards.'},
   sodPalletSizeSqft: {label:'Sod pallet coverage',unit:'square feet per pallet',help:'Optional pallet size. Sod material rounds up to whole pallets after waste; installation labor remains on measured installed square feet.'},
 
+  leadSafePainting: { label: BUILDING_AGE_OWNER_COPY.leadSafePainting.label, help: BUILDING_AGE_OWNER_COPY.leadSafePainting.help },
+  olderMaterialRemoval: { label: BUILDING_AGE_OWNER_COPY.olderMaterialRemoval.label, help: BUILDING_AGE_OWNER_COPY.olderMaterialRemoval.help },
   wallPriceIncludesTouchUp: { label: 'Do your wall and ceiling prices include touch-up of small cracks, nail holes and scuffs?', help: 'Yes quotes walls and ceilings in fair condition at your wall and ceiling rates. No, or blank, sends fair surfaces to you for review. Poor walls and ceilings always go to review.' },
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
@@ -273,7 +276,13 @@ function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tie
   return validateOwnerPricing(service.serviceType,normalized,pricing,service,tierName).ok&&!scopeCustomerErrors(service.serviceType,normalized,pricing,service).length&&!selectedShareDiagnostics(service,normalized,pricing,defaults).length;
 }
 
+// Activation answers the building-age question with a building that has no
+// lead-paint or asbestos concern; older buildings are reviewed by design.
 function baseActivationScenarios(service,confirmedService=service,selection=null) {
+  const scenarios=baseActivationScenariosByType(service,confirmedService,selection);
+  return [...PAINTING_AGE_TYPES,...REMOVAL_AGE_TYPES].includes(service?.serviceType)?scenarios.map(input=>input.buildingAge===undefined?{...input,buildingAge:'1990_or_later'}:input):scenarios;
+}
+function baseActivationScenariosByType(service,confirmedService=service,selection=null) {
   const serviceType = service.serviceType;
   const p = pricingOf(service);
   if(configuredOffering(serviceType,p))return offeringActivationScenarios(serviceType,p,confirmedService);
@@ -997,7 +1006,8 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
             const sampleCode = customerInputs.postalCode !== undefined ? undefined
               : (hasTravelZones(businessDefaults) ? sampleCustomerCodeForZones(businessDefaults.travelZones) : null)
                 ?? (taxByJobLocationActive(businessDefaults) ? sampleTaxLocationCode(businessDefaults) : undefined);
-            const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: sampleCode ? { ...customerInputs, postalCode: sampleCode } : customerInputs });
+            const ageAnswer = [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(service.serviceType) && customerInputs.buildingAge === undefined ? { buildingAge: '1990_or_later' } : {};
+            const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: { ...customerInputs, ...ageAnswer, ...(sampleCode ? { postalCode: sampleCode } : {}) } });
             if (submitted.resultType !== 'INSTANT_ESTIMATE_READY' || sanitizeForCustomerVNext(submitted).resultType !== 'INSTANT_ESTIMATE_READY') {
               customerCheck.failure = { type: 'invalid', kind: 'activation_customer_check', path: 'pricingCalculation', message: 'A customer quote for this service would not pass the customer check, so every request would go to follow-up.' };
               diagnostics.push(customerCheck.failure);
@@ -1424,7 +1434,7 @@ function fieldCopy(serviceType, field) {
   if(FLAT_REPAIR_COPY[field])return {...FLAT_REPAIR_COPY[field]};
   if(serviceType.startsWith('FLOORING_')&&FLOORING_FIELD_COPY[field])return {...FLOORING_FIELD_COPY[field]};
   if(['paintingSettings','paintingRates','surfaceExtraRates','sidingSettings'].includes(field))return {label:{paintingSettings:'Painting coats and height bands',paintingRates:'Additional painting component prices',surfaceExtraRates:'Optional surface work prices',sidingSettings:'Siding measurement conventions'}[field],type:'surface_configuration',help:field==='paintingSettings'?'Optional coat and height settings. Review the sourced additional-coat starting ratios in Quantity assumptions; existing services keep their prices until adoption. Primer ratios have no starting values.':'Optional owner-entered settings. No starting prices are supplied.'};
-  if(serviceType==='CUSTOM'&&field==='installedMaterialsPercent')return {label:'Custom price materials share',help:'Optional percentage at price; the remainder is labor. Blank keeps the existing charge category, so a busy-season surcharge counts the whole custom price as labor. Applies to all custom price scenarios.'};
+  if(serviceType==='CUSTOM'&&field==='installedMaterialsPercent')return {label:'Custom price materials share',help:'Optional. The materials share of the custom price; the rest is labor. It decides materials-only tax and which part the busy-season charge applies to. It never changes markup: the price keeps its own price basis. Blank keeps the whole price in its charge category. Applies to every custom price scenario.'};
   if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};
   if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};

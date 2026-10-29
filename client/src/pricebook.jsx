@@ -20,7 +20,7 @@ import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pri
 import { TaxLocationSettings } from './taxLocationEditor.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
-import {roofMaterialPresentationCopy} from '../../server/priceBookCopy.js';
+import {roofMaterialPresentationCopy,repairBandPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
 import { moneyKindForField, validatePricebookNumericDraft, ownerMoneyEntries } from '../../server/priceBookMoney.js';
 import {markEditedPriceMetadata} from './pricebookPriceMetadata.js';
@@ -433,6 +433,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       ?{...definition,...definition.copyByAccessoryPricingMode[pricing.accessoryPricingMode]}
       :definition;
   if(definition.copyForEarlierRoofRules&&!['new','adopted'].includes(service.startingValueAdoptions?.roofing_replacement_20261016?.mode))definition={...definition,help:definition.copyForEarlierRoofRules.help};
+  definition=repairBandPresentationCopy(definition,service.serviceType,pricing);
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
     ? moneyKindForField(service.serviceType, definition.field, pricing)
     : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
