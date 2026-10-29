@@ -22,14 +22,17 @@ function saveConfigured(f){
  db.prepare("INSERT OR IGNORE INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,enabled,updatedAt) VALUES(?,?,'SYNTHETIC','site_visit_first',0,?)").run('synthetic-a',service.id,date.quoteInstant);
  return service;
 }
-async function channels(t,f,{expected,review=false}={}){
+async function channels(t,f,{expected,review=false,partial=null}={}){
  const service=saveConfigured(f),h=quoteEmailFixture(t,{base});
  const body={requestId:randomUUID(),serviceId:service.id,serviceRequest:service.service,customerInputs:structuredClone(f.customerInputs),customerFeeSelections:{},additionalWork:[],contact:{email:'caller@example.invalid'},intakeFlow:'job-details-v1',context:'',explicitUnknowns:'',urgency:'flexible'};
  const prepared=bridge.prepareApplicationIntake('synthetic-a',body,date);
  if(review)assert.notEqual(prepared.status,'ready',JSON.stringify(prepared));else assert.equal(prepared.status,'ready',JSON.stringify(prepared));
  const response=submitQuote('synthetic-a',{...body,...(review?{reviewRequested:true}:{intakeConfirmation:prepared.confirmation})},{clock:()=>new Date(date.quoteInstant)});
  assert.equal(response.status,201,JSON.stringify(response));privateFree(response.response);
- if(review){assert.equal(response.response.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(response.response.midEstimate,undefined);}else{assert.equal(response.response.resultType,'INSTANT_ESTIMATE_READY');assert.equal(response.response.midEstimate,expected/100);}
+ if(review){assert.equal(response.response.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(response.response.midEstimate,undefined);}
+ // An extra the customer asked for that has no price leaves the priced work quoted and the quote partial.
+ else if(partial){assert.equal(response.response.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(response.response.pricedEstimate.midEstimate,expected/100);assert.deepEqual(response.response.additionalWork.map(item=>item.description),[partial]);}
+ else{assert.equal(response.response.resultType,'INSTANT_ESTIMATE_READY');assert.equal(response.response.midEstimate,expected/100);}
  const match=await h.tool('matchService',{query:service.service});assert.equal(match.status,'matched',JSON.stringify(match));
  const customerInputs=structuredClone(f.customerInputs);delete customerInputs.confirmedFacts;
  const args={serviceHandle:match.serviceHandle,customerInputs,customerConfirmed:true,additionalWork:[],productConfirmations:Object.fromEntries(Object.keys(f.customerInputs.confirmedFacts||{}).map(k=>[k,true]))};
@@ -41,7 +44,7 @@ async function channels(t,f,{expected,review=false}={}){
  return {result,response,prepared,service,body};
 }
 test('Agent1 F3 saved widget and actual voice tool include trim prep in seasonal labor',async t=>{await channels(t,paint(),{expected:16610});});
-for(const addon of FLOORING_ADDONS)test('Agent1 F4/F5 saved widget and voice safely disclose excluded '+addon.rate,async t=>{const f=flooring();f.customerInputs[addon.input]=2;if(addon.rate==='floorLevelingPerSqft')f.customerInputs.floorLevelingNeeded=true;if(addon.rate==='furnitureMovingPrice')f.ownerPricing.pricing.furnitureMovingPriceUnit='per_room';await channels(t,f,{expected:178000});});
+for(const addon of FLOORING_ADDONS)test('Agent1 F4/F5 saved widget and voice safely disclose excluded '+addon.rate,async t=>{const f=flooring();f.customerInputs[addon.input]=2;if(addon.rate==='floorLevelingPerSqft')f.customerInputs.floorLevelingNeeded=true;if(addon.rate==='furnitureMovingPrice')f.ownerPricing.pricing.furnitureMovingPriceUnit='per_room';const out=await channels(t,f,{expected:178000,partial:addon.label});assert.deepEqual(out.result.additionalWork,[addon.label]);});
 test('Agent1 F4 saved included zero survives approval, widget, and voice',async t=>{const f=flooring();f.ownerPricing.pricing.baseboardReinstallPerLF=0;f.ownerPricing=includedFixture(f.ownerPricing,{baseboardReinstallPerLF:'laborPerSqft.tile'});f.customerInputs.baseboardReinstallLF=40;const out=await channels(t,f,{expected:178000});assert.deepEqual(out.response.response.options[0].skippedAddons,[]);});
 // Confirmed flashing lines are always asked; zero means none.
 const NO_OTHER_FLASHING={valleyLengthLF:0,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0};
