@@ -18,7 +18,8 @@ async function ownerOutcomeEmail(f,{rejected=false,action}) {
   assert.equal(await worker.processOne(ownerId),true);assert.equal(messages.length,1);
   assert.equal(messages[0].to,ownerId+'@example.invalid');
   if(rejected){assert.match(messages[0].subject,/Booking change not applied/);assert.match(messages[0].text,/original appointment remains confirmed/);assert.doesNotMatch(messages[0].text,/CANCELLED/);}
-  else assert.match(messages[0].text,action==='cancel'?/CANCELLED/:/CONFIRMED/);
+  // Owner emails use plain words, never the stored status codes.
+  else {assert.match(messages[0].text,action==='cancel'?/^Status: Cancelled$/m:/^Status: Rescheduled$/m);assert.doesNotMatch(messages[0].text,/CANCELLED|CONFIRMED/);}
   assert.equal(await worker.processOne(ownerId),false,'The owner outcome is emitted once');
 }
 

@@ -3,6 +3,10 @@ import {randomUUID} from 'node:crypto';
 import {createOwnerAlertEmailSender,ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject} from './ownerRecordViews.js';
 import {accountEmailOrigin} from './authLinks.js';
+import {callFailureReason} from './callFailureReasons.js';
+import {formatAddress,formatOwnerDateTime,formatOwnerTimeRange,formatPreferredWindow,labeled,ownerTimeZone,plainAppointmentStatus,
+  plainCallResult,plainQuoteStatus,plainReason,serviceName} from './ownerMessageFormat.js';
+import {quoteMoneyFormatter} from '../quoteMoneyFormat.js';
 
 export const OWNER_ALERT_RETRY_MS=Object.freeze([1000,5000,30000,60000,300000,900000,3600000]);
 // Resend retains the same-key/same-payload dedupe for 24 hours. Keep a safety
@@ -14,35 +18,60 @@ const problem=(message,statusCode=400)=>Object.assign(Error(message),{statusCode
 const email=v=>typeof v==='string'&&v.length<=320&&/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(v);
 const parseArray=v=>{try{const a=JSON.parse(v);return Array.isArray(a)?a:[];}catch{return [];}};
 
+// "Better: $4,200 \u2013 $5,600 CAD per job" plus the tax line, from the saved customer view.
+export function quoteOptionLines(estimate){
+  if(!estimate||typeof estimate!=='object')return [];
+  const options=(Array.isArray(estimate.options)&&estimate.options.length?estimate.options:[estimate]).filter(o=>o&&typeof o==='object');
+  const amounts=options.flatMap(o=>[o.lowEstimate,o.highEstimate]).filter(v=>typeof v==='number');
+  let money;try{money=quoteMoneyFormatter(amounts);}catch{return [];}
+  const lines=[],taxes=new Set();
+  for(const o of options){
+    let range;try{range=money.range(o.lowEstimate,o.highEstimate);}catch{continue;}
+    const context=[o.currency||estimate.currency,o.priceUnit||estimate.priceUnit].filter(v=>typeof v==='string'&&v.trim()).join(' ');
+    lines.push(labeled(o.tierName?'Option '+o.tierName:'Price',range+(context?' '+context:'')));
+    const tax=o.taxTreatment||estimate.taxTreatment;if(typeof tax==='string'&&tax.trim())taxes.add(tax.trim());
+  }
+  for(const tax of taxes)lines.push(labeled('Tax',tax));
+  return lines;
+}
+
 export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(database),environment=process.env,
   clock=Date.now,ready=()=>ownerAlertEmailReady(environment),send=createOwnerAlertEmailSender({environment}),providerTimeoutMs=5000}={}){
   if(!Number.isSafeInteger(providerTimeoutMs)||providerTimeoutMs<1||providerTimeoutMs>10000)throw TypeError('Invalid owner alert provider timeout.');
   const query=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Owner alert query must bind tenant');return ownerQuery(sql);};
   const iso=()=>new Date(clock()).toISOString();
-  function source(row){
+  // Each message is a title line followed by labeled lines in the owner's own
+  // time zone. Empty values drop out; system codes never reach the owner.
+  function source(row,timeZone){
     const id=row.aggregateId,owner=row.ownerId;
     if(row.eventType==='booking.confirmed'){
       if(!query('SELECT id FROM appointments WHERE ownerId=? AND id=?').get(owner,id))throw Error('ALERT_SOURCE_MISSING');
       const saved=storedObject(row.sourceJson),customer=storedObject(saved.customer),location=storedObject(saved.location);
-      return ['Booking confirmed',saved.service,saved.mode==='site_visit_first'?'Site visit':saved.mode==='book_job'?'Job appointment':saved.mode,
-        saved.start&&'Start (UTC): '+saved.start,saved.end&&'End (UTC): '+saved.end,saved.timezone&&'Business timezone: '+saved.timezone,
-        saved.tier,customer.name,customer.phone,customer.email,...Object.values(location).filter(value=>typeof value==='string'),
-        'This is the saved confirmation. Check the dashboard for subsequent changes.'];
+      return ['Booking confirmed',labeled('Service',serviceName(saved.service)),
+        labeled('Type',saved.mode==='site_visit_first'?'Site visit':saved.mode==='book_job'?'Job appointment':null),
+        labeled('When',saved.start?formatOwnerTimeRange(saved.start,saved.end,saved.timezone||timeZone):null),
+        labeled('Option',saved.tier),labeled('Customer',customer.name),labeled('Phone',customer.phone),labeled('Email',customer.email),
+        labeled('Address',formatAddress(location)),
+        'This is the saved confirmation. Check the dashboard for later changes.'];
     }
     if(row.eventType==='voice.caller_throttled'){
       const call=query('SELECT callerNumber FROM calls WHERE ownerId=? AND id=?').get(owner,id);if(!call)throw Error('ALERT_SOURCE_MISSING');
-      return ['Repeated caller — review requested',call.callerNumber,'The caller reached the daily answering limit. Further calls use request capture. Review the calls or mark the number as spam in Calls.'];
+      return ['Repeated caller \u2014 review requested',labeled('Caller',call.callerNumber),'The caller reached the daily answering limit. Further calls use request capture. Review the calls or mark the number as spam in Calls.'];
     }
     if(['lead.created','lead.contact_updated'].includes(row.eventType)){
       const lead=query('SELECT * FROM leads WHERE ownerId=? AND id=?').get(owner,id);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const d=storedObject(lead.collectedInputsJson),submission=d.originalSubmission||{};
-      return [row.eventType==='lead.contact_updated'?'Callback contact updated':'New lead',lead.customerName||d.contact?.name||submission.contact?.name,d.contact?.phone||submission.contact?.phone||lead.callerNumber,d.contact?.email||submission.contact?.email,lead.describedService,d.notes,submission.context];
+      return [row.eventType==='lead.contact_updated'?'Callback contact updated':'New lead',labeled('Customer',lead.customerName||d.contact?.name||submission.contact?.name),
+        labeled('Phone',d.contact?.phone||submission.contact?.phone||lead.callerNumber),labeled('Email',d.contact?.email||submission.contact?.email),
+        labeled('Job',lead.describedService),labeled('Notes',d.notes),labeled('Details',submission.context)];
     }
     if(['callback.requested','callback.updated'].includes(row.eventType)){
       const callback=query('SELECT * FROM callbackRequests WHERE ownerId=? AND id=?').get(owner,id);if(!callback)throw Error('ALERT_SOURCE_MISSING');
       const lead=query('SELECT callerNumber,customerName,collectedInputsJson FROM leads WHERE ownerId=? AND id=? AND callId=?').get(owner,callback.leadId,callback.callId);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const history=parseArray(callback.historyJson),revision=row.eventType==='callback.updated'?Number(row.eventKey.split(':').at(-1))-1:0,entry=history[revision];
-      return [row.eventType==='callback.updated'?'Callback notes corrected':'Callback requested',lead.customerName,storedObject(lead.collectedInputsJson).contact?.phone||lead.callerNumber,entry?.notes??callback.notes??'No caller notes recorded',callback.reason];
+      return [row.eventType==='callback.updated'?'Callback notes corrected':'Callback requested',labeled('Customer',lead.customerName),
+        labeled('Phone',storedObject(lead.collectedInputsJson).contact?.phone||lead.callerNumber),labeled('Notes',entry?.notes??callback.notes??'No caller notes recorded'),
+        labeled('Reason',plainReason(callback.reason))];
     }
     if(row.eventType==='quote.created'){
       const quote=query('SELECT * FROM quotes WHERE ownerId=? AND id=?').get(owner,id);if(!quote)throw Error('ALERT_SOURCE_MISSING');
@@ -50,25 +79,32 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
       const receipt=storedObject(quote.resultJson),d=submission?storedObject(submission.originalSubmissionJson):receipt.originalSubmission||{},r=(receipt.applicationOutcome||receipt).customerResult;
       // The receipt is historical: use only its already sanitized customer view.
       const estimate=r?.pricedEstimate||r;
-      return ['New quote',quote.serviceType,quote.status,d.contact?.name,d.contact?.phone,d.contact?.email,...(estimate?.options||[estimate]).filter(Boolean).map(o=>[o.tierName,o.lowEstimate,o.highEstimate,o.currency,o.priceUnit,o.taxTreatment].filter(v=>v!==undefined&&v!==null).join(' | '))];
+      return ['New quote',labeled('Service',r?.pricedScope?.service||estimate?.pricedScope?.service||serviceName(quote.serviceType)),
+        labeled('Status',plainQuoteStatus(quote.status)),labeled('Customer',d.contact?.name),labeled('Phone',d.contact?.phone),labeled('Email',d.contact?.email),
+        ...quoteOptionLines(estimate)];
     }
     if(row.eventType==='quote.requested'){
       const request=query('SELECT describedService FROM quoteRequests WHERE ownerId=? AND id=?').get(owner,id);if(!request)throw Error('ALERT_SOURCE_MISSING');
-      return ['Quote review requested',request.describedService];
+      return ['Quote review requested',labeled('Job',request.describedService)];
     }
     if(row.eventType==='booking.preference_requested'){
       const request=query('SELECT * FROM bookingPreferences WHERE ownerId=? AND id=?').get(owner,id);if(!request)throw Error('ALERT_SOURCE_MISSING');
-      const c=storedObject(request.customerJson);return ['Preferred-time request (not booked)',c.name,c.phone,c.email,request.note,...parseArray(request.preferredWindowsJson).map(w=>JSON.stringify(w))];
+      const c=storedObject(request.customerJson);
+      return ['Preferred-time request (not booked)',labeled('Customer',c.name),labeled('Phone',c.phone),labeled('Email',c.email),labeled('Note',request.note),
+        ...parseArray(request.preferredWindowsJson).map(w=>labeled('Preferred time',formatPreferredWindow(w)))];
     }
     if(['appointment.booked','appointment.changed'].includes(row.eventType)){
       const event=query('SELECT aggregateId,payloadJson FROM outboxEvents WHERE ownerId=? AND id=? AND eventType=?').get(owner,id,row.eventType);
       const appointment=event&&query('SELECT customerJson,status,startAtUtc,endAtUtc,timezone,locationJson FROM appointments WHERE ownerId=? AND id=?').get(owner,event.aggregateId);
       if(!appointment)throw Error('ALERT_SOURCE_MISSING');
       const c=storedObject(appointment.customerJson),d=storedObject(event.payloadJson);
-      const rejected=d.status==='REJECTED';
-      return [row.eventType==='appointment.booked'?'Booking confirmed':rejected?'Booking change not applied':'Booking changed',c.name,c.phone,c.email,
-        rejected?'The requested '+(d.action==='cancel'?'cancellation':'reschedule')+' was not applied. The original appointment remains confirmed.':d.action==='cancel'?'CANCELLED':d.status||appointment.status,
-        d.startUtc||d.startAtUtc||appointment.startAtUtc,d.endUtc||d.endAtUtc||appointment.endAtUtc,d.timezone||appointment.timezone,JSON.stringify(storedObject(appointment.locationJson))];
+      const rejected=d.status==='REJECTED',zone=d.timezone||appointment.timezone||timeZone;
+      return [row.eventType==='appointment.booked'?'Booking confirmed':rejected?'Booking change not applied':'Booking changed',
+        labeled('Customer',c.name),labeled('Phone',c.phone),labeled('Email',c.email),
+        rejected?'The requested '+(d.action==='cancel'?'cancellation':'reschedule')+' was not applied. The original appointment remains confirmed.':
+          labeled('Status',d.action==='cancel'?'Cancelled':d.action==='reschedule'?'Rescheduled':plainAppointmentStatus(d.status||appointment.status)),
+        labeled('When',formatOwnerTimeRange(d.startUtc||d.startAtUtc||appointment.startAtUtc,d.endUtc||d.endAtUtc||appointment.endAtUtc,zone)),
+        labeled('Address',formatAddress(storedObject(appointment.locationJson)))];
     }
     if(row.eventType==='voice.settings_invalid')return ['Receptionist setting needs correction',storedObject(row.sourceJson).message];
     if(row.eventType==='voice.quoting_unavailable'){
@@ -77,11 +113,14 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     }
     if(row.eventType==='voice.urgent_flagged'){
       const outbox=query('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=?').get(owner,id);if(!outbox)throw Error('ALERT_SOURCE_MISSING');
-      const d=storedObject(outbox.payloadJson);return ['Urgent caller request',d.reason,d.summary,d.callerNumber];
+      const d=storedObject(outbox.payloadJson);
+      return ['Urgent caller request',labeled('Reason',plainReason(d.reason)),labeled('Summary',d.summary),labeled('Caller',d.callerNumber)];
     }
     if(row.eventType==='call.completed'){
-      const call=query('SELECT callerNumber,status,outcome,failureCode,summaryText FROM calls WHERE ownerId=? AND id=?').get(owner,id);if(!call)throw Error('ALERT_SOURCE_MISSING');
-      return ['Call ended',call.callerNumber,call.status,call.outcome,call.failureCode,call.summaryText||'No summary recorded'];
+      const call=query('SELECT callerNumber,status,outcome,failureCode,summaryText,completedAt FROM calls WHERE ownerId=? AND id=?').get(owner,id);if(!call)throw Error('ALERT_SOURCE_MISSING');
+      return ['Call ended',labeled('Caller',call.callerNumber),labeled('Ended',call.completedAt?formatOwnerDateTime(call.completedAt,timeZone):null),
+        labeled('Result',plainCallResult(call)),labeled('Why',call.failureCode?plainReason(call.failureCode)||callFailureReason(call.failureCode):null),
+        labeled('Summary',call.summaryText||'No summary recorded')];
     }
     throw Error('ALERT_TYPE_UNSUPPORTED');
   }
@@ -110,11 +149,11 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     if(!row)return null;
     if(row.firstAttemptAt!==null&&clock()-row.firstAttemptAt>=OWNER_ALERT_SAFE_REPLAY_MS){query("UPDATE ownerAlerts SET status='UNKNOWN',lastErrorCode='DEDUPE_WINDOW_EXPIRED',leaseId=NULL,leaseExpiresAt=NULL,updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
     if(!ready()){query("UPDATE ownerAlerts SET status='BLOCKED',lastErrorCode='EMAIL_NOT_CONFIGURED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
-    const owner=query("SELECT email FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId);
+    const owner=query("SELECT email,timezone FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId);
     if(!email(owner?.email)){query("UPDATE ownerAlerts SET status='BLOCKED',lastErrorCode='OWNER_EMAIL_MISSING',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
     let message=row.messageJson?storedObject(row.messageJson):null;
     if(message&&message.to!==owner.email){query("UPDATE ownerAlerts SET status='BLOCKED',lastErrorCode='OWNER_EMAIL_CHANGED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
-    if(!message){let values;try{values=source(row).filter(v=>v!==undefined&&v!==null&&v!=='');}catch{query("UPDATE ownerAlerts SET status='FAILED',lastErrorCode='ALERT_SOURCE_MISSING',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}const route=row.callId?'/calls?record='+encodeURIComponent(row.callId):row.eventType==='quote.created'?'/quotes?record='+encodeURIComponent(row.aggregateId):row.eventType==='lead.created'||row.eventType==='callback.requested'?'/leads?record='+encodeURIComponent(row.aggregateId):'/calendar';
+    if(!message){let values;try{values=source(row,ownerTimeZone(owner.timezone)).filter(v=>v!==undefined&&v!==null&&v!=='');}catch{query("UPDATE ownerAlerts SET status='FAILED',lastErrorCode='ALERT_SOURCE_MISSING',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}const route=row.callId?'/calls?record='+encodeURIComponent(row.callId):row.eventType==='quote.created'?'/quotes?record='+encodeURIComponent(row.aggregateId):row.eventType==='lead.created'||row.eventType==='callback.requested'?'/leads?record='+encodeURIComponent(row.aggregateId):'/calendar';
       let origin='';try{origin=accountEmailOrigin(environment);}catch{/* Relative path remains actionable on the owner dashboard. */}
       message={from:environment.EMAIL_FROM,to:owner.email,subject:'Off The Clock: '+values[0],text:values.map(String).join('\n')+'\nOpen saved record: '+origin+route,idempotencyKey:'owner-alert/'+row.id};
     }

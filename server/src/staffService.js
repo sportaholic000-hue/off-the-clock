@@ -6,6 +6,7 @@ import {createAuthSessionService} from './authSessionService.js';
 import {sendTransactionalEmail} from './email.js';
 import {passwordHashCost} from './passwordHashConfig.js';
 import {staffLimit} from './staffSeats.js';
+import {formatDuration,formatOwnerDateTime} from './ownerMessageFormat.js';
 
 export class StaffError extends Error {
   constructor(status, message) {super(message);this.status=status;}
@@ -37,12 +38,17 @@ export function createStaffService({database,ownerQuery,tokenService=createAuthT
       reason:index>=limit?'This plan does not include this staff seat.':null
     }))};
   }
+  // "in 7 days": the reader's own clock, never a raw UTC timestamp.
+  function linkLifetime(expiresAt){
+    const lifetime=formatDuration(Date.parse(expiresAt)-now().getTime());
+    return lifetime?'in '+lifetime:'at '+formatOwnerDateTime(expiresAt,'UTC');
+  }
   async function deliver(account,user,issued) {
     try {
       const link=accountEmailLink(environment,AUTH_TOKEN_PURPOSES.STAFF_INVITE,issued.token);
       const businessName=String(account.businessName||'the business').replace(/[\r\n]/g,' ');
       const result=await sendEmail({to:user.email,subject:'Your office-staff invitation',
-        text:`${businessName} invited you to set up your office-staff login: ${link}\n\nThis one-time link expires at ${issued.expiresAt}. If you did not expect this invitation, you can ignore it.`,
+        text:`${businessName} invited you to set up your office-staff login: ${link}\n\nThis one-time link expires ${linkLifetime(issued.expiresAt)}. If you did not expect this invitation, you can ignore it.`,
         idempotencyKey:'auth/staff_invite/'+hashAuthToken(issued.token)});
       if(result?.accepted!==true)throw Error('Email not accepted.');
     }catch{
