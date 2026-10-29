@@ -10,7 +10,8 @@ const DEMO_TAG = '<script src="https://app.offtheclockai.com/demo/otc-live-demo.
 const source = fs.readFileSync(new URL('index.html', www), 'utf8');
 if (source.split(DEMO_TAG).length !== 2) throw new Error('Expected exactly one live demo script tag in site/www/index.html');
 // Same page, but the demo script and its API come from this address instead of the future app host.
-const html = source.replace(DEMO_TAG, '<script src="/demo/otc-live-demo.js"');
+// Test link only: debug mode shows Copy diagnostics, so a call that ends early can be traced.
+const html = source.replace(DEMO_TAG, '<script src="/demo/otc-live-demo.js" data-debug="true"');
 const files = {
   '/support.js': ['support.js', 'text/javascript; charset=utf-8'],
   '/favicon.svg': ['favicon.svg', 'image/svg+xml'],

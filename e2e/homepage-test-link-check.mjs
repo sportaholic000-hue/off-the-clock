@@ -36,7 +36,8 @@ try {
       return u >= 0 && l.slice(u + 1).some(x => x.classList.contains('agent') && (x.innerText || '').length > 20);
     }, null, { timeout: 60000 });
   } catch (e) { result.errors.push('call: ' + String(e.message).split('\n')[0].slice(0, 200)); }
-  await page.waitForTimeout(1500);
+  // Let the agent finish answering the whole spoken question before reading the transcript.
+  await page.waitForTimeout(20000);
   result.call = { status: await page.innerText('#otc-live-demo [role=status]').catch(() => null), transcript: await lines() };
   await page.locator('#demo').screenshot({ path: path.join(out, 'demo-call.png') });
   const end = page.locator('#otc-live-demo .otcd-btn', { hasText: 'End call' });
